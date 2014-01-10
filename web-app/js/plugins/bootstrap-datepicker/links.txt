@@ -1,0 +1,5 @@
+sandbox
+http://eternicode.github.io/bootstrap-datepicker/
+
+docs
+http://bootstrap-datepicker.readthedocs.org/en/latest/

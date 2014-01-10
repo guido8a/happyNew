@@ -1,0 +1,61 @@
+body {
+    padding-top : 70px;
+}
+
+.toolbar {
+    margin-bottom : 10px;
+}
+
+input.required {
+    border-bottom : 2px solid #287418;
+    border-right  : 2px solid #287418;
+}
+
+input.help-block, select.help-block, textarea.help-block {
+    margin : auto;
+}
+
+th.sortable {
+    background-position : right;
+    background-repeat   : no-repeat;
+    background-image    : url(../images/skin/upDown.png);
+    padding-right       : 1.1em;
+}
+
+th.asc {
+    background-image : url(../images/skin/up.png);
+}
+
+th.desc {
+    background-image : url(../images/skin/down.png);
+}
+
+.dropdown-menu {
+    z-index : 1050;
+}
+
+.text-shadow {
+    text-shadow : 3px 5px 4px rgba(150, 150, 150, 0.95);
+}
+
+/* para los iconos grandotes */
+.fa-6x {
+    font-size : 6em;
+}
+
+/* el mensaje de not found */
+.not-found {
+    height     : 110px;
+    margin-top : 25px;
+}
+
+.not-found>i {
+    margin-right : 10px;
+    margin-left  : 20px;
+}
+
+.not-found>p {
+    line-height : 75px;
+    font-size   : 20px;
+    font-weight : bold;
+}

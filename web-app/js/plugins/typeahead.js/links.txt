@@ -1,0 +1,12 @@
+download
+http://twitter.github.io/typeahead.js/
+
+ejemplos
+https://blog.twitter.com/2013/twitter-typeaheadjs-you-autocomplete-me
+http://twitter.github.io/typeahead.js/examples/
+http://bootply.com/61459
+
+docs
+https://github.com/twitter/typeahead.js
+
+http://stackoverflow.com/questions/18059161/css-issue-on-twitter-typeahead-with-bootstrap-3
