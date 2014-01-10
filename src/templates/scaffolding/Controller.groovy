@@ -1,6 +1,6 @@
 <%=packageName ? "package ${packageName}\n\n" : ''%>
 
-class ${className}Controller {
+class ${className}Controller extends <%=packageName.split("\\.")[0]%>.seguridad.Shield {
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
