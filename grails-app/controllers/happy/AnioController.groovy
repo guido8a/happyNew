@@ -14,7 +14,7 @@ class AnioController {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def anioInstanceList = Anio.list(params)
         def anioInstanceCount = Anio.count()
-        if (anioInstanceList.size() == 0) {
+        if (anioInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         anioInstanceList = Anio.list(params)

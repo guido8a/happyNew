@@ -12,7 +12,7 @@ class ${className}Controller {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def ${propertyName}List = ${className}.list(params)
         def ${propertyName}Count = ${className}.count()
-        if(${propertyName}List.size() == 0) {
+        if(${propertyName}List.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         ${propertyName}List = ${className}.list(params)
