@@ -1,4 +1,4 @@
-<%@ page import="happy.TipoDependencia" %>
+<%@ page import="happy.tramites.TipoDependencia" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!tipoDependenciaInstance}">

@@ -16,7 +16,7 @@ class EstadoTramite {
         }
     }
     static constraints = {
-        codigo(maxSize: 4, blank: false)
-        descripcion(maxSize: 31, blank: false)
+        codigo(maxSize: 4, blank: false, attributes: [title: 'codigo'])
+        descripcion(maxSize: 31, blank: false, attributes: [title: 'descripcion'])
     }
 }

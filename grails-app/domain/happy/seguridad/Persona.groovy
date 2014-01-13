@@ -1,11 +1,11 @@
 package happy.seguridad
 
-import happy.Departamento
+import happy.tramites.Departamento
 
 
 class Persona implements Serializable {
     Departamento departamento
-    int codigo
+    String codigo
     String cedula
     String nombre
     String apellido
@@ -24,7 +24,10 @@ class Persona implements Serializable {
     Integer activo
     Date fechaActualizacionPass
 
-    String firma
+    String telefono
+    int jefe
+    String celular
+    String foto
 
     //static hasMany = [sesiones: Sesn, accesos: Accs, alertas: happy.alertas.Alerta]
     static hasMany = [sesiones: Sesn, accesos: Accs]
@@ -59,14 +62,17 @@ class Persona implements Serializable {
             activo column: 'prsnactv'
             fechaActualizacionPass column: 'prsnfcps'
 
-            firma column: 'prsnfrma'
+            telefono column: 'prsntelf'
+            jefe column: 'prsnjefe'
+            celular column: 'prsntfcl'
+            foto column: 'prsnfoto'
+            codigo column: 'prsncdgo'
         }
     }
     static constraints = {
         cedula(size: 1..10)
         nombre(size: 1..30)
         apellido(size: 1..30)
-        codigo(blank: true, nullable: true)
         fechaNacimiento(blank: true, nullable: true)
         departamento(blank: true, nullable: true)
         fechaInicio(blank: true, nullable: true)
@@ -83,7 +89,11 @@ class Persona implements Serializable {
         activo(blank: false, nullable: false)
         fechaActualizacionPass(blank: true, nullable: true)
 
-        firma(blank: true, nullable: true)
+        telefono(maxSize: 15, blank: true, nullable: true, attributes: [title: 'telefono'])
+        jefe(blank: false, attributes: [title: 'jefe'])
+        celular(maxSize: 15, blank: true, nullable: true, attributes: [title: 'celular'])
+        foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
+        codigo(maxSize: 15, blank: true, nullable: true, attributes: [title: 'codigo'])
     }
 
     String toString() {

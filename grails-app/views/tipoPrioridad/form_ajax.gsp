@@ -1,4 +1,4 @@
-<%@ page import="happy.TipoPrioridad" %>
+<%@ page import="happy.tramites.TipoPrioridad" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!tipoPrioridadInstance}">

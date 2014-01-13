@@ -26,7 +26,7 @@
                     Tipo Documento
                 </label>
                 <div class="col-md-6">
-                    <g:select id="tipoDocumento" name="tipoDocumento.id" from="${happy.TipoDocumento.list()}" optionKey="id" value="${numeroInstance?.tipoDocumento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                    <g:select id="tipoDocumento" name="tipoDocumento.id" from="${happy.tramites.TipoDocumento.list()}" optionKey="id" value="${numeroInstance?.tipoDocumento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>
                 
             </span>
@@ -37,8 +37,8 @@
                 <label for="valor" class="col-md-2 control-label text-info">
                     Valor
                 </label>
-                <div class="col-md-6">
-                    <g:textField name="valor" maxlength="8" required="" class="form-control required" value="${numeroInstance?.valor}"/>
+                <div class="col-md-2">
+                    <g:field name="valor" type="number" value="${numeroInstance.valor}" class="digits form-control required" required=""/>
                 </div>
                  *
             </span>

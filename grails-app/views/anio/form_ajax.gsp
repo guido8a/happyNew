@@ -1,4 +1,4 @@
-<%@ page import="happy.Anio" %>
+<%@ page import="happy.tramites.Anio" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!anioInstance}">

@@ -1,5 +1,5 @@
 
-<%@ page import="happy.TipoPrioridad" %>
+<%@ page import="happy.tramites.TipoPrioridad" %>
 
 
 <g:if test="${!tipoPrioridadInstance}">
