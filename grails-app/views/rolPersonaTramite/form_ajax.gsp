@@ -1,44 +1,32 @@
-<%@ page import="happy.tramites.TipoPrioridad" %>
+<%@ page import="happy.tramites.RolPersonaTramite" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
-<g:if test="${!tipoPrioridadInstance}">
-    <elm:notFound elem="TipoPrioridad" genero="o" />
+<g:if test="${!rolPersonaTramiteInstance}">
+    <elm:notFound elem="RolPersonaTramite" genero="o" />
 </g:if>
 <g:else>
-    <g:form class="form-horizontal" name="frmTipoPrioridad" role="form" action="save" method="POST">
-        <g:hiddenField name="id" value="${tipoPrioridadInstance?.id}" />
+    <g:form class="form-horizontal" name="frmRolPersonaTramite" role="form" action="save" method="POST">
+        <g:hiddenField name="id" value="${rolPersonaTramiteInstance?.id}" />
         
-        <div class="form-group ${hasErrors(bean: tipoPrioridadInstance, field: 'codigo', 'error')} required">
+        <div class="form-group ${hasErrors(bean: rolPersonaTramiteInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Codigo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${tipoPrioridadInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${rolPersonaTramiteInstance?.codigo}"/>
                 </div>
                  *
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: tipoPrioridadInstance, field: 'descripcion', 'error')} required">
+        <div class="form-group ${hasErrors(bean: rolPersonaTramiteInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
                     Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${tipoPrioridadInstance?.descripcion}"/>
-                </div>
-                 *
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: tipoPrioridadInstance, field: 'tiempo', 'error')} required">
-            <span class="grupo">
-                <label for="tiempo" class="col-md-2 control-label text-info">
-                    Tiempo
-                </label>
-                <div class="col-md-2">
-                    <g:field name="tiempo" type="number" value="${tipoPrioridadInstance.tiempo}" class="digits form-control required" required=""/>
+                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required" value="${rolPersonaTramiteInstance?.descripcion}"/>
                 </div>
                  *
             </span>
@@ -47,7 +35,7 @@
     </g:form>
 
     <script type="text/javascript">
-        var validator = $("#frmTipoPrioridad").validate({
+        var validator = $("#frmRolPersonaTramite").validate({
             errorClass     : "help-block",
             errorPlacement : function (error, element) {
                 if (element.parent().hasClass("input-group")) {

@@ -1,7 +1,6 @@
 package happy.tramites
 
 import happy.seguridad.Persona
-import happy.tramites.PermisoTramite
 
 class PermisoUsuario {
     Persona persona

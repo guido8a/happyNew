@@ -1,7 +1,5 @@
 package happy.tramites
 
-import happy.tramites.Numero
-
 
 class NumeroController extends happy.seguridad.Shield {
 

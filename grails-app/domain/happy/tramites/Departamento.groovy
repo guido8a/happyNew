@@ -1,7 +1,5 @@
 package happy.tramites
 
-import happy.tramites.TipoDependencia
-
 class Departamento {
     TipoDependencia tipoDependencia
     Departamento padre

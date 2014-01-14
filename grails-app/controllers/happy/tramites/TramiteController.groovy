@@ -13,7 +13,7 @@ class TramiteController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def tramiteInstanceList = Tramite.list(params)
         def tramiteInstanceCount = Tramite.count()
-        if (tramiteInstanceList.size() == 0 && params.offset && params.max) {
+        if(tramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         tramiteInstanceList = Tramite.list(params)
@@ -21,9 +21,9 @@ class TramiteController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tramiteInstance = Tramite.get(params.id)
-            if (!tramiteInstance) {
+            if(!tramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class TramiteController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tramiteInstance = new Tramite(params)
-        if (params.id) {
+        if(params.id) {
             tramiteInstance = Tramite.get(params.id)
-            if (!tramiteInstance) {
+            if(!tramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class TramiteController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def tramiteInstance = new Tramite()
-        if (params.id) {
+        if(params.id) {
             tramiteInstance = Tramite.get(params.id)
-            if (!tramiteInstance) {
+            if(!tramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tramiteInstance.properties = params
-        if (!tramiteInstance.save(flush: true)) {
+        if(!tramiteInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Tramite."
             msg += renderErrors(bean: tramiteInstance)
             render msg
@@ -65,11 +65,11 @@ class TramiteController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tramiteInstance = Tramite.get(params.id)
-            if (tramiteInstance) {
+            if(tramiteInstance) {
                 try {
-                    tramiteInstance.delete(flush: true)
+                    tramiteInstance.delete(flush:true)
                     render "OK_Eliminación de Tramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar Tramite."

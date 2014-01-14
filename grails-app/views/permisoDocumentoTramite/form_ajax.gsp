@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.PermisoDocumentoTramite" %>
+<%@ page import="happy.tramites.PersonaDocumentoTramite" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!permisoDocumentoTramiteInstance}">

@@ -1,4 +1,4 @@
-<%@ page import="happy.Departamento" %>
+<%@ page import="happy.tramites.Departamento" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!departamentoInstance}">
@@ -26,7 +26,7 @@
                     Padre
                 </label>
                 <div class="col-md-6">
-                    <g:select id="padre" name="padre.id" from="${happy.Departamento.list()}" optionKey="id" value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                    <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.list()}" optionKey="id" value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>
                 
             </span>

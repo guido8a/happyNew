@@ -1,10 +1,10 @@
 
-<%@ page import="happy.tramites.TipoPrioridad" %>
+<%@ page import="happy.tramites.PersonaDocumentoTramite" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoPrioridad</title>
+        <title>Lista de PersonaDocumentoTramite</title>
     </head>
     <body>
 
@@ -49,35 +49,47 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="codigo" title="Codigo" />
+                    <th>Rol Persona Tramite</th>
                     
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
+                    <th>Persona</th>
                     
-                    <g:sortableColumn property="tiempo" title="Tiempo" />
+                    <th>Tramite</th>
+                    
+                    <g:sortableColumn property="fecha" title="Fecha" />
+                    
+                    <g:sortableColumn property="observaciones" title="Observaciones" />
+                    
+                    <g:sortableColumn property="permiso" title="Permiso" />
                     
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${tipoPrioridadInstanceList}" status="i" var="tipoPrioridadInstance">
-                    <tr data-id="${tipoPrioridadInstance.id}">
+                <g:each in="${personaDocumentoTramiteInstanceList}" status="i" var="personaDocumentoTramiteInstance">
+                    <tr data-id="${personaDocumentoTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "codigo")}</td>
+                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "rolPersonaTramite")}</td>
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "descripcion")}</td>
+                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "persona")}</td>
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "tiempo")}</td>
+                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "tramite")}</td>
+                        
+                        <td><g:formatDate date="${personaDocumentoTramiteInstance.fecha}" format="dd-MM-yyyy" /></td>
+                        
+                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "observaciones")}</td>
+                        
+                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "permiso")}</td>
                         
                     </tr>
                 </g:each>
             </tbody>
         </table>
 
-        <elm:pagination total="${tipoPrioridadInstanceCount}" params="${params}"/>
+        <elm:pagination total="${personaDocumentoTramiteInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
             var id = null;
             function submitForm() {
-                var $form = $("#frmTipoPrioridad");
+                var $form = $("#frmPersonaDocumentoTramite");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
                 $btn.replaceWith(spinner);
@@ -103,7 +115,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoPrioridad seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el PersonaDocumentoTramite seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -144,7 +156,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoPrioridad",
+                            title   : title + " PersonaDocumentoTramite",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -203,7 +215,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoPrioridad",
+                                        title   : "Ver PersonaDocumentoTramite",
                                         message : msg,
                                         buttons : {
                                             ok : {

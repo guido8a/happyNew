@@ -15,21 +15,6 @@ input.help-block, select.help-block, textarea.help-block {
     margin : auto;
 }
 
-th.sortable {
-    background-position : right;
-    background-repeat   : no-repeat;
-    background-image    : url(../images/skin/upDown.png);
-    padding-right       : 1.1em;
-}
-
-th.asc {
-    background-image : url(../images/skin/up.png);
-}
-
-th.desc {
-    background-image : url(../images/skin/down.png);
-}
-
 .dropdown-menu {
     z-index : 1050;
 }
@@ -49,13 +34,37 @@ th.desc {
     margin-top : 25px;
 }
 
-.not-found>i {
+.not-found > i {
     margin-right : 10px;
     margin-left  : 20px;
 }
 
-.not-found>p {
+.not-found > p {
     line-height : 75px;
     font-size   : 20px;
     font-weight : bold;
+}
+
+.hasCountdown {
+    border-color     : #1260B3 !important;
+    color            : #1260B3 !important;
+    background-color : #ffab19;
+}
+
+.col2 {
+    -moz-column-count    : 2; /* Firefox */
+    -webkit-column-count : 2; /* Safari and Chrome */
+    column-count         : 2;
+}
+
+.col3 {
+    -moz-column-count    : 3; /* Firefox */
+    -webkit-column-count : 3; /* Safari and Chrome */
+    column-count         : 3;
+}
+
+.col4 {
+    -moz-column-count    : 4; /* Firefox */
+    -webkit-column-count : 4; /* Safari and Chrome */
+    column-count         : 4;
 }

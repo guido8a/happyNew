@@ -1,10 +1,10 @@
 
-<%@ page import="happy.tramites.TipoPrioridad" %>
+<%@ page import="happy.tramites.RolPersonaTramite" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoPrioridad</title>
+        <title>Lista de RolPersonaTramite</title>
     </head>
     <body>
 
@@ -53,31 +53,27 @@
                     
                     <g:sortableColumn property="descripcion" title="Descripcion" />
                     
-                    <g:sortableColumn property="tiempo" title="Tiempo" />
-                    
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${tipoPrioridadInstanceList}" status="i" var="tipoPrioridadInstance">
-                    <tr data-id="${tipoPrioridadInstance.id}">
+                <g:each in="${rolPersonaTramiteInstanceList}" status="i" var="rolPersonaTramiteInstance">
+                    <tr data-id="${rolPersonaTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "codigo")}</td>
+                        <td>${fieldValue(bean: rolPersonaTramiteInstance, field: "codigo")}</td>
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "descripcion")}</td>
-                        
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "tiempo")}</td>
+                        <td>${fieldValue(bean: rolPersonaTramiteInstance, field: "descripcion")}</td>
                         
                     </tr>
                 </g:each>
             </tbody>
         </table>
 
-        <elm:pagination total="${tipoPrioridadInstanceCount}" params="${params}"/>
+        <elm:pagination total="${rolPersonaTramiteInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
             var id = null;
             function submitForm() {
-                var $form = $("#frmTipoPrioridad");
+                var $form = $("#frmRolPersonaTramite");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
                 $btn.replaceWith(spinner);
@@ -103,7 +99,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoPrioridad seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el RolPersonaTramite seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -144,7 +140,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoPrioridad",
+                            title   : title + " RolPersonaTramite",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -203,7 +199,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoPrioridad",
+                                        title   : "Ver RolPersonaTramite",
                                         message : msg,
                                         buttons : {
                                             ok : {

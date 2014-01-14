@@ -6,10 +6,27 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${personaInstance?.cedula}">
+    <g:if test="${personaInstance?.departamento}">
         
         <div class="row">
             
+            <div class="col-md-2 text-info">
+                Departamento
+            </div>
+            
+            <div class="col-md-3">
+                ${personaInstance?.departamento?.encodeAsHTML()}</g:link>
+            </div>
+            
+            
+    </g:if>
+    
+<g:if test="${!personaInstance}">
+    <elm:notFound elem="Persona" genero="o" />
+</g:if>
+<g:else>
+    <g:if test="${personaInstance?.cedula}">
+        
             <div class="col-md-2 text-info">
                 Cedula
             </div>
@@ -27,31 +44,14 @@
 <g:else>
     <g:if test="${personaInstance?.nombre}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Nombre
             </div>
             
             <div class="col-md-3">
                 <g:fieldValue bean="${personaInstance}" field="nombre"/>
-            </div>
-            
-            
-    </g:if>
-    
-<g:if test="${!personaInstance}">
-    <elm:notFound elem="Persona" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${personaInstance?.apellido}">
-        
-        <div class="row">
-            
-            <div class="col-md-2 text-info">
-                Apellido
-            </div>
-            
-            <div class="col-md-3">
-                <g:fieldValue bean="${personaInstance}" field="apellido"/>
             </div>
             
             
@@ -63,14 +63,14 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${personaInstance?.fechaNacimiento}">
+    <g:if test="${personaInstance?.apellido}">
         
             <div class="col-md-2 text-info">
-                Fecha Nacimiento
+                Apellido
             </div>
             
             <div class="col-md-3">
-                <g:formatDate date="${personaInstance?.fechaNacimiento}" format="dd-MM-yyyy" />
+                <g:fieldValue bean="${personaInstance}" field="apellido"/>
             </div>
             
             
@@ -80,16 +80,16 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${personaInstance?.departamento}">
+    <g:if test="${personaInstance?.fechaNacimiento}">
         
         <div class="row">
             
             <div class="col-md-2 text-info">
-                Departamento
+                Fecha Nacimiento
             </div>
             
             <div class="col-md-3">
-                ${personaInstance?.departamento?.encodeAsHTML()}</g:link>
+                <g:formatDate date="${personaInstance?.fechaNacimiento}" format="dd-MM-yyyy" />
             </div>
             
             
@@ -194,16 +194,16 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${personaInstance?.login}">
+    <g:if test="${personaInstance?.mail}">
         
         <div class="row">
             
             <div class="col-md-2 text-info">
-                Login
+                Mail
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${personaInstance}" field="login"/>
+                <g:fieldValue bean="${personaInstance}" field="mail"/>
             </div>
             
             
@@ -215,14 +215,52 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
+    <g:if test="${personaInstance?.login}">
+        
+            <div class="col-md-2 text-info">
+                Login
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${personaInstance}" field="login"/>
+            </div>
+            
+            
+    </g:if>
+    
+<g:if test="${!personaInstance}">
+    <elm:notFound elem="Persona" genero="o" />
+</g:if>
+<g:else>
     <g:if test="${personaInstance?.password}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Password
             </div>
             
             <div class="col-md-3">
                 <g:fieldValue bean="${personaInstance}" field="password"/>
+            </div>
+            
+            
+        </div>
+        
+    </g:if>
+    
+<g:if test="${!personaInstance}">
+    <elm:notFound elem="Persona" genero="o" />
+</g:if>
+<g:else>
+    <g:if test="${personaInstance?.actividad}">
+        
+            <div class="col-md-2 text-info">
+                Actividad
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${personaInstance}" field="actividad"/>
             </div>
             
             
@@ -253,52 +291,14 @@
     <elm:notFound elem="Persona" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${personaInstance?.email}">
+    <g:if test="${personaInstance?.fechaCambioPass}">
         
             <div class="col-md-2 text-info">
-                Email
+                Fecha Cambio Pass
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${personaInstance}" field="email"/>
-            </div>
-            
-            
-    </g:if>
-    
-<g:if test="${!personaInstance}">
-    <elm:notFound elem="Persona" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${personaInstance?.activo}">
-        
-        <div class="row">
-            
-            <div class="col-md-2 text-info">
-                Activo
-            </div>
-            
-            <div class="col-md-3">
-                <g:fieldValue bean="${personaInstance}" field="activo"/>
-            </div>
-            
-            
-        </div>
-        
-    </g:if>
-    
-<g:if test="${!personaInstance}">
-    <elm:notFound elem="Persona" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${personaInstance?.fechaActualizacionPass}">
-        
-            <div class="col-md-2 text-info">
-                Fecha Actualizacion Pass
-            </div>
-            
-            <div class="col-md-3">
-                <g:formatDate date="${personaInstance?.fechaActualizacionPass}" format="dd-MM-yyyy" />
+                <g:formatDate date="${personaInstance?.fechaCambioPass}" format="dd-MM-yyyy" />
             </div>
             
             
@@ -394,52 +394,6 @@
             
             <div class="col-md-3">
                 <g:fieldValue bean="${personaInstance}" field="codigo"/>
-            </div>
-            
-            
-        </div>
-        
-    </g:if>
-    
-<g:if test="${!personaInstance}">
-    <elm:notFound elem="Persona" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${personaInstance?.accesos}">
-        
-            <div class="col-md-2 text-info">
-                Accesos
-            </div>
-            
-            <div class="col-md-3">
-                <ul>
-                    <g:each in="${personaInstance.accesos}" var="a">
-                        <li>${a?.encodeAsHTML()}</li>
-                    </g:each>
-                </ul>
-            </div>
-            
-            
-    </g:if>
-    
-<g:if test="${!personaInstance}">
-    <elm:notFound elem="Persona" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${personaInstance?.sesiones}">
-        
-        <div class="row">
-            
-            <div class="col-md-2 text-info">
-                Sesiones
-            </div>
-            
-            <div class="col-md-3">
-                <ul>
-                    <g:each in="${personaInstance.sesiones}" var="s">
-                        <li>${s?.encodeAsHTML()}</li>
-                    </g:each>
-                </ul>
             </div>
             
             

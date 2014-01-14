@@ -13,7 +13,7 @@ class TipoPersonaController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def tipoPersonaInstanceList = TipoPersona.list(params)
         def tipoPersonaInstanceCount = TipoPersona.count()
-        if (tipoPersonaInstanceList.size() == 0 && params.offset && params.max) {
+        if(tipoPersonaInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         tipoPersonaInstanceList = TipoPersona.list(params)
@@ -21,9 +21,9 @@ class TipoPersonaController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoPersonaInstance = TipoPersona.get(params.id)
-            if (!tipoPersonaInstance) {
+            if(!tipoPersonaInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class TipoPersonaController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tipoPersonaInstance = new TipoPersona(params)
-        if (params.id) {
+        if(params.id) {
             tipoPersonaInstance = TipoPersona.get(params.id)
-            if (!tipoPersonaInstance) {
+            if(!tipoPersonaInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class TipoPersonaController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def tipoPersonaInstance = new TipoPersona()
-        if (params.id) {
+        if(params.id) {
             tipoPersonaInstance = TipoPersona.get(params.id)
-            if (!tipoPersonaInstance) {
+            if(!tipoPersonaInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tipoPersonaInstance.properties = params
-        if (!tipoPersonaInstance.save(flush: true)) {
+        if(!tipoPersonaInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} TipoPersona."
             msg += renderErrors(bean: tipoPersonaInstance)
             render msg
@@ -65,11 +65,11 @@ class TipoPersonaController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoPersonaInstance = TipoPersona.get(params.id)
-            if (tipoPersonaInstance) {
+            if(tipoPersonaInstance) {
                 try {
-                    tipoPersonaInstance.delete(flush: true)
+                    tipoPersonaInstance.delete(flush:true)
                     render "OK_Eliminación de TipoPersona exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar TipoPersona."

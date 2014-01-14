@@ -1,5 +1,5 @@
 
-<%@ page import="happy.Departamento" %>
+<%@ page import="happy.tramites.Departamento" %>
 
 
 <g:if test="${!departamentoInstance}">

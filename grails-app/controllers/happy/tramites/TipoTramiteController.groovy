@@ -13,7 +13,7 @@ class TipoTramiteController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def tipoTramiteInstanceList = TipoTramite.list(params)
         def tipoTramiteInstanceCount = TipoTramite.count()
-        if (tipoTramiteInstanceList.size() == 0 && params.offset && params.max) {
+        if(tipoTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         tipoTramiteInstanceList = TipoTramite.list(params)
@@ -21,9 +21,9 @@ class TipoTramiteController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoTramiteInstance = TipoTramite.get(params.id)
-            if (!tipoTramiteInstance) {
+            if(!tipoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class TipoTramiteController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tipoTramiteInstance = new TipoTramite(params)
-        if (params.id) {
+        if(params.id) {
             tipoTramiteInstance = TipoTramite.get(params.id)
-            if (!tipoTramiteInstance) {
+            if(!tipoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class TipoTramiteController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def tipoTramiteInstance = new TipoTramite()
-        if (params.id) {
+        if(params.id) {
             tipoTramiteInstance = TipoTramite.get(params.id)
-            if (!tipoTramiteInstance) {
+            if(!tipoTramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tipoTramiteInstance.properties = params
-        if (!tipoTramiteInstance.save(flush: true)) {
+        if(!tipoTramiteInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} TipoTramite."
             msg += renderErrors(bean: tipoTramiteInstance)
             render msg
@@ -65,11 +65,11 @@ class TipoTramiteController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoTramiteInstance = TipoTramite.get(params.id)
-            if (tipoTramiteInstance) {
+            if(tipoTramiteInstance) {
                 try {
-                    tipoTramiteInstance.delete(flush: true)
+                    tipoTramiteInstance.delete(flush:true)
                     render "OK_Eliminación de TipoTramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar TipoTramite."

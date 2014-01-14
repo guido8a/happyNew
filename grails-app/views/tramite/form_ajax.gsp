@@ -56,18 +56,6 @@
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: tramiteInstance, field: 'para', 'error')} ">
-            <span class="grupo">
-                <label for="para" class="col-md-2 control-label text-info">
-                    Para
-                </label>
-                <div class="col-md-6">
-                    <g:select id="para" name="para.id" from="${happy.seguridad.Persona.list()}" optionKey="id" value="${tramiteInstance?.para?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
-                </div>
-                
-            </span>
-        </div>
-        
         <div class="form-group ${hasErrors(bean: tramiteInstance, field: 'tipoPersona', 'error')} ">
             <span class="grupo">
                 <label for="tipoPersona" class="col-md-2 control-label text-info">
@@ -75,18 +63,6 @@
                 </label>
                 <div class="col-md-6">
                     <g:select id="tipoPersona" name="tipoPersona.id" from="${happy.tramites.TipoPersona.list()}" optionKey="id" value="${tramiteInstance?.tipoPersona?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: tramiteInstance, field: 'ingresa', 'error')} ">
-            <span class="grupo">
-                <label for="ingresa" class="col-md-2 control-label text-info">
-                    Ingresa
-                </label>
-                <div class="col-md-6">
-                    <g:select id="ingresa" name="ingresa.id" from="${happy.seguridad.Persona.list()}" optionKey="id" value="${tramiteInstance?.ingresa?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>
                 
             </span>
@@ -123,18 +99,6 @@
                 </label>
                 <div class="col-md-6">
                     <g:select id="origenTramite" name="origenTramite.id" from="${happy.tramites.OrigenTramite.list()}" optionKey="id" value="${tramiteInstance?.origenTramite?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: tramiteInstance, field: 'recibe', 'error')} ">
-            <span class="grupo">
-                <label for="recibe" class="col-md-2 control-label text-info">
-                    Recibe
-                </label>
-                <div class="col-md-6">
-                    <g:select id="recibe" name="recibe.id" from="${happy.seguridad.Persona.list()}" optionKey="id" value="${tramiteInstance?.recibe?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>
                 
             </span>
@@ -315,18 +279,6 @@
                 </label>
                 <div class="col-md-6">
                     <g:textField name="estado" maxlength="1" class="form-control" value="${tramiteInstance?.estado}"/>
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: tramiteInstance, field: 'fechaEnvio', 'error')} ">
-            <span class="grupo">
-                <label for="fechaEnvio" class="col-md-2 control-label text-info">
-                    Fecha Envio
-                </label>
-                <div class="col-md-4">
-                    <elm:datepicker name="fechaEnvio" title="fechaEnvio"  class="datepicker form-control" value="${tramiteInstance?.fechaEnvio}" default="none" noSelection="['': '']" />
                 </div>
                 
             </span>

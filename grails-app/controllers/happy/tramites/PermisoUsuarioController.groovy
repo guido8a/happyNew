@@ -13,7 +13,7 @@ class PermisoUsuarioController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def permisoUsuarioInstanceList = PermisoUsuario.list(params)
         def permisoUsuarioInstanceCount = PermisoUsuario.count()
-        if (permisoUsuarioInstanceList.size() == 0 && params.offset && params.max) {
+        if(permisoUsuarioInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         permisoUsuarioInstanceList = PermisoUsuario.list(params)
@@ -21,9 +21,9 @@ class PermisoUsuarioController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def permisoUsuarioInstance = PermisoUsuario.get(params.id)
-            if (!permisoUsuarioInstance) {
+            if(!permisoUsuarioInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class PermisoUsuarioController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def permisoUsuarioInstance = new PermisoUsuario(params)
-        if (params.id) {
+        if(params.id) {
             permisoUsuarioInstance = PermisoUsuario.get(params.id)
-            if (!permisoUsuarioInstance) {
+            if(!permisoUsuarioInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class PermisoUsuarioController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def permisoUsuarioInstance = new PermisoUsuario()
-        if (params.id) {
+        if(params.id) {
             permisoUsuarioInstance = PermisoUsuario.get(params.id)
-            if (!permisoUsuarioInstance) {
+            if(!permisoUsuarioInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         permisoUsuarioInstance.properties = params
-        if (!permisoUsuarioInstance.save(flush: true)) {
+        if(!permisoUsuarioInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} PermisoUsuario."
             msg += renderErrors(bean: permisoUsuarioInstance)
             render msg
@@ -65,11 +65,11 @@ class PermisoUsuarioController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def permisoUsuarioInstance = PermisoUsuario.get(params.id)
-            if (permisoUsuarioInstance) {
+            if(permisoUsuarioInstance) {
                 try {
-                    permisoUsuarioInstance.delete(flush: true)
+                    permisoUsuarioInstance.delete(flush:true)
                     render "OK_Eliminación de PermisoUsuario exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar PermisoUsuario."

@@ -1,5 +1,5 @@
 
-<%@ page import="happy.tramites.PermisoDocumentoTramite" %>
+<%@ page import="happy.tramites.PersonaDocumentoTramite" %>
 
 
 <g:if test="${!permisoDocumentoTramiteInstance}">

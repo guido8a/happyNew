@@ -1,5 +1,5 @@
 
-<%@ page import="happy.tramites.PermisoDocumentoTramite" %>
+<%@ page import="happy.tramites.PersonaDocumentoTramite" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -103,7 +103,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el PermisoDocumentoTramite seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el PersonaDocumentoTramite seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -144,7 +144,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " PermisoDocumentoTramite",
+                            title   : title + " PersonaDocumentoTramite",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -203,7 +203,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver PermisoDocumentoTramite",
+                                        title   : "Ver PersonaDocumentoTramite",
                                         message : msg,
                                         buttons : {
                                             ok : {

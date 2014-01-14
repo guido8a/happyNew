@@ -1,5 +1,5 @@
 
-<%@ page import="happy.Numero" %>
+<%@ page import="happy.tramites.Numero" %>
 <!DOCTYPE html>
 <html>
     <head>

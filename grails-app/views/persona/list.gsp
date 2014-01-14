@@ -49,6 +49,8 @@
             <thead>
                 <tr>
                     
+                    <th>Departamento</th>
+                    
                     <g:sortableColumn property="cedula" title="Cedula" />
                     
                     <g:sortableColumn property="nombre" title="Nombre" />
@@ -56,8 +58,6 @@
                     <g:sortableColumn property="apellido" title="Apellido" />
                     
                     <g:sortableColumn property="fechaNacimiento" title="Fecha Nacimiento" />
-                    
-                    <th>Departamento</th>
                     
                     <g:sortableColumn property="fechaInicio" title="Fecha Inicio" />
                     
@@ -67,6 +67,8 @@
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
                     <tr data-id="${personaInstance.id}">
                         
+                        <td>${fieldValue(bean: personaInstance, field: "departamento")}</td>
+                        
                         <td>${fieldValue(bean: personaInstance, field: "cedula")}</td>
                         
                         <td>${fieldValue(bean: personaInstance, field: "nombre")}</td>
@@ -74,8 +76,6 @@
                         <td>${fieldValue(bean: personaInstance, field: "apellido")}</td>
                         
                         <td><g:formatDate date="${personaInstance.fechaNacimiento}" format="dd-MM-yyyy" /></td>
-                        
-                        <td>${fieldValue(bean: personaInstance, field: "departamento")}</td>
                         
                         <td><g:formatDate date="${personaInstance.fechaInicio}" format="dd-MM-yyyy" /></td>
                         

@@ -1,7 +1,7 @@
 package happy.tramites
 
 
-class PermisoDocumentoTramiteController extends happy.seguridad.Shield {
+class PersonaDocumentoTramiteController extends happy.seguridad.Shield {
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
@@ -11,53 +11,53 @@ class PermisoDocumentoTramiteController extends happy.seguridad.Shield {
 
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def permisoDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
-        def permisoDocumentoTramiteInstanceCount = PersonaDocumentoTramite.count()
-        if (permisoDocumentoTramiteInstanceList.size() == 0 && params.offset && params.max) {
+        def personaDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
+        def personaDocumentoTramiteInstanceCount = PersonaDocumentoTramite.count()
+        if (personaDocumentoTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        permisoDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
-        return [permisoDocumentoTramiteInstanceList: permisoDocumentoTramiteInstanceList, permisoDocumentoTramiteInstanceCount: permisoDocumentoTramiteInstanceCount]
+        personaDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
+        return [personaDocumentoTramiteInstanceList: personaDocumentoTramiteInstanceList, personaDocumentoTramiteInstanceCount: personaDocumentoTramiteInstanceCount]
     } //list
 
     def show_ajax() {
         if (params.id) {
-            def permisoDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
-            if (!permisoDocumentoTramiteInstance) {
+            def personaDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
+            if (!personaDocumentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
-            return [permisoDocumentoTramiteInstance: permisoDocumentoTramiteInstance]
+            return [personaDocumentoTramiteInstance: personaDocumentoTramiteInstance]
         } else {
             notFound_ajax()
         }
     } //show para cargar con ajax en un dialog
 
     def form_ajax() {
-        def permisoDocumentoTramiteInstance = new PersonaDocumentoTramite(params)
+        def personaDocumentoTramiteInstance = new PersonaDocumentoTramite(params)
         if (params.id) {
-            permisoDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
-            if (!permisoDocumentoTramiteInstance) {
+            personaDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
+            if (!personaDocumentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
         }
-        return [permisoDocumentoTramiteInstance: permisoDocumentoTramiteInstance]
+        return [personaDocumentoTramiteInstance: personaDocumentoTramiteInstance]
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
-        def permisoDocumentoTramiteInstance = new PersonaDocumentoTramite()
+        def personaDocumentoTramiteInstance = new PersonaDocumentoTramite()
         if (params.id) {
-            permisoDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
-            if (!permisoDocumentoTramiteInstance) {
+            personaDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
+            if (!personaDocumentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
-        permisoDocumentoTramiteInstance.properties = params
-        if (!permisoDocumentoTramiteInstance.save(flush: true)) {
+        personaDocumentoTramiteInstance.properties = params
+        if (!personaDocumentoTramiteInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} PersonaDocumentoTramite."
-            msg += renderErrors(bean: permisoDocumentoTramiteInstance)
+            msg += renderErrors(bean: personaDocumentoTramiteInstance)
             render msg
             return
         }
@@ -66,10 +66,10 @@ class PermisoDocumentoTramiteController extends happy.seguridad.Shield {
 
     def delete_ajax() {
         if (params.id) {
-            def permisoDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
-            if (permisoDocumentoTramiteInstance) {
+            def personaDocumentoTramiteInstance = PersonaDocumentoTramite.get(params.id)
+            if (personaDocumentoTramiteInstance) {
                 try {
-                    permisoDocumentoTramiteInstance.delete(flush: true)
+                    personaDocumentoTramiteInstance.delete(flush: true)
                     render "OK_Eliminación de PersonaDocumentoTramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar PersonaDocumentoTramite."

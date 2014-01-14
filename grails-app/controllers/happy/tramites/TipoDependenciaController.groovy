@@ -13,7 +13,7 @@ class TipoDependenciaController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def tipoDependenciaInstanceList = TipoDependencia.list(params)
         def tipoDependenciaInstanceCount = TipoDependencia.count()
-        if (tipoDependenciaInstanceList.size() == 0 && params.offset && params.max) {
+        if(tipoDependenciaInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         tipoDependenciaInstanceList = TipoDependencia.list(params)
@@ -21,9 +21,9 @@ class TipoDependenciaController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoDependenciaInstance = TipoDependencia.get(params.id)
-            if (!tipoDependenciaInstance) {
+            if(!tipoDependenciaInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class TipoDependenciaController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tipoDependenciaInstance = new TipoDependencia(params)
-        if (params.id) {
+        if(params.id) {
             tipoDependenciaInstance = TipoDependencia.get(params.id)
-            if (!tipoDependenciaInstance) {
+            if(!tipoDependenciaInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class TipoDependenciaController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def tipoDependenciaInstance = new TipoDependencia()
-        if (params.id) {
+        if(params.id) {
             tipoDependenciaInstance = TipoDependencia.get(params.id)
-            if (!tipoDependenciaInstance) {
+            if(!tipoDependenciaInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tipoDependenciaInstance.properties = params
-        if (!tipoDependenciaInstance.save(flush: true)) {
+        if(!tipoDependenciaInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} TipoDependencia."
             msg += renderErrors(bean: tipoDependenciaInstance)
             render msg
@@ -65,11 +65,11 @@ class TipoDependenciaController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoDependenciaInstance = TipoDependencia.get(params.id)
-            if (tipoDependenciaInstance) {
+            if(tipoDependenciaInstance) {
                 try {
-                    tipoDependenciaInstance.delete(flush: true)
+                    tipoDependenciaInstance.delete(flush:true)
                     render "OK_Eliminación de TipoDependencia exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar TipoDependencia."

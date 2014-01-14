@@ -80,54 +80,16 @@
     <elm:notFound elem="Tramite" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${tramiteInstance?.para}">
+    <g:if test="${tramiteInstance?.tipoPersona}">
         
         <div class="row">
             
-            <div class="col-md-2 text-info">
-                Para
-            </div>
-            
-            <div class="col-md-3">
-                ${tramiteInstance?.para?.encodeAsHTML()}</g:link>
-            </div>
-            
-            
-        </div>
-        
-    </g:if>
-    
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${tramiteInstance?.tipoPersona}">
-        
             <div class="col-md-2 text-info">
                 Tipo Persona
             </div>
             
             <div class="col-md-3">
                 ${tramiteInstance?.tipoPersona?.encodeAsHTML()}</g:link>
-            </div>
-            
-            
-    </g:if>
-    
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${tramiteInstance?.ingresa}">
-        
-        <div class="row">
-            
-            <div class="col-md-2 text-info">
-                Ingresa
-            </div>
-            
-            <div class="col-md-3">
-                ${tramiteInstance?.ingresa?.encodeAsHTML()}</g:link>
             </div>
             
             
@@ -194,29 +156,10 @@
     <elm:notFound elem="Tramite" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${tramiteInstance?.recibe}">
+    <g:if test="${tramiteInstance?.codigo}">
         
         <div class="row">
             
-            <div class="col-md-2 text-info">
-                Recibe
-            </div>
-            
-            <div class="col-md-3">
-                ${tramiteInstance?.recibe?.encodeAsHTML()}</g:link>
-            </div>
-            
-            
-        </div>
-        
-    </g:if>
-    
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${tramiteInstance?.codigo}">
-        
             <div class="col-md-2 text-info">
                 Codigo
             </div>
@@ -226,6 +169,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -234,8 +179,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.numero}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Numero
             </div>
@@ -245,8 +188,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -255,6 +196,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.fecha}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Fecha
             </div>
@@ -264,6 +207,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -272,8 +217,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.fechaLimiteRespuesta}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha Limite Respuesta
             </div>
@@ -283,8 +226,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -293,6 +234,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.asunto}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Asunto
             </div>
@@ -302,6 +245,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -310,8 +255,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.anexo}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Anexo
             </div>
@@ -321,8 +264,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -331,6 +272,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.texto}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Texto
             </div>
@@ -340,6 +283,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -348,8 +293,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.ampliacionPlazo}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Ampliacion Plazo
             </div>
@@ -359,8 +302,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -369,6 +310,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.fechaRespuesta}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Fecha Respuesta
             </div>
@@ -378,6 +321,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -386,8 +331,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.fechaIngreso}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha Ingreso
             </div>
@@ -397,8 +340,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -407,6 +348,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.fechaModificacion}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Fecha Modificacion
             </div>
@@ -416,6 +359,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -424,8 +369,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.fechaLectura}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha Lectura
             </div>
@@ -435,8 +378,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -445,6 +386,8 @@
 <g:else>
     <g:if test="${tramiteInstance?.externo}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Externo
             </div>
@@ -454,6 +397,8 @@
             </div>
             
             
+        </div>
+        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -462,8 +407,6 @@
 <g:else>
     <g:if test="${tramiteInstance?.nota}">
         
-        <div class="row">
-            
             <div class="col-md-2 text-info">
                 Nota
             </div>
@@ -473,8 +416,6 @@
             </div>
             
             
-        </div>
-        
     </g:if>
     
 <g:if test="${!tramiteInstance}">
@@ -483,31 +424,14 @@
 <g:else>
     <g:if test="${tramiteInstance?.estado}">
         
+        <div class="row">
+            
             <div class="col-md-2 text-info">
                 Estado
             </div>
             
             <div class="col-md-3">
                 <g:fieldValue bean="${tramiteInstance}" field="estado"/>
-            </div>
-            
-            
-    </g:if>
-    
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
-    <g:if test="${tramiteInstance?.fechaEnvio}">
-        
-        <div class="row">
-            
-            <div class="col-md-2 text-info">
-                Fecha Envio
-            </div>
-            
-            <div class="col-md-3">
-                <g:formatDate date="${tramiteInstance?.fechaEnvio}" format="dd-MM-yyyy" />
             </div>
             
             

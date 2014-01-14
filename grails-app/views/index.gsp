@@ -117,8 +117,23 @@
             <div id="controller-list" role="navigation">
                 <h2>Available Controllers:</h2>
                 <ul>
+                    <g:set var="pack" value=""/>
                     <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName }}">
-                        <li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
+                        <g:if test="${c.packageName != pack}">
+                            <g:if test="${pack!=''}">
+                                </ul>
+                                </li>
+                            </g:if>
+                            <li class="package">
+                                ${c.packageName}
+                                <g:set var="pack" value="${c.packageName}"/>
+                                <ul>
+                        </g:if>
+                        <li class="controller">
+                            <g:link controller="${c.logicalPropertyName}">
+                                ${c.name}
+                            </g:link>
+                        </li>
                     </g:each>
                 </ul>
             </div>

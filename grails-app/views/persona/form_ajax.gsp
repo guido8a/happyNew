@@ -8,39 +8,51 @@
     <g:form class="form-horizontal" name="frmPersona" role="form" action="save" method="POST">
         <g:hiddenField name="id" value="${personaInstance?.id}" />
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'cedula', 'error')} ">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'departamento', 'error')} ">
+            <span class="grupo">
+                <label for="departamento" class="col-md-2 control-label text-info">
+                    Departamento
+                </label>
+                <div class="col-md-6">
+                    <g:select id="departamento" name="departamento.id" from="${happy.tramites.Departamento.list()}" optionKey="id" value="${personaInstance?.departamento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                </div>
+                
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'cedula', 'error')} required">
             <span class="grupo">
                 <label for="cedula" class="col-md-2 control-label text-info">
                     Cedula
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="cedula" maxlength="10" class="form-control" value="${personaInstance?.cedula}"/>
+                    <g:textField name="cedula" maxlength="10" required="" class="form-control required" value="${personaInstance?.cedula}"/>
                 </div>
-                
+                 *
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'nombre', 'error')} ">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'nombre', 'error')} required">
             <span class="grupo">
                 <label for="nombre" class="col-md-2 control-label text-info">
                     Nombre
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="nombre" maxlength="30" class="form-control" value="${personaInstance?.nombre}"/>
+                    <g:textField name="nombre" maxlength="31" required="" class="form-control required" value="${personaInstance?.nombre}"/>
                 </div>
-                
+                 *
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'apellido', 'error')} ">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'apellido', 'error')} required">
             <span class="grupo">
                 <label for="apellido" class="col-md-2 control-label text-info">
                     Apellido
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="apellido" maxlength="30" class="form-control" value="${personaInstance?.apellido}"/>
+                    <g:textField name="apellido" maxlength="31" required="" class="form-control required" value="${personaInstance?.apellido}"/>
                 </div>
-                
+                 *
             </span>
         </div>
         
@@ -50,19 +62,7 @@
                     Fecha Nacimiento
                 </label>
                 <div class="col-md-4">
-                    <elm:datepicker name="fechaNacimiento"  class="datepicker form-control" value="${personaInstance?.fechaNacimiento}" default="none" noSelection="['': '']" />
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'departamento', 'error')} ">
-            <span class="grupo">
-                <label for="departamento" class="col-md-2 control-label text-info">
-                    Departamento
-                </label>
-                <div class="col-md-6">
-                    <g:select id="departamento" name="departamento.id" from="${happy.Departamento.list()}" optionKey="id" value="${personaInstance?.departamento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                    <elm:datepicker name="fechaNacimiento" title="fechaNacimiento"  class="datepicker form-control" value="${personaInstance?.fechaNacimiento}" default="none" noSelection="['': '']" />
                 </div>
                 
             </span>
@@ -74,7 +74,7 @@
                     Fecha Inicio
                 </label>
                 <div class="col-md-4">
-                    <elm:datepicker name="fechaInicio"  class="datepicker form-control" value="${personaInstance?.fechaInicio}" default="none" noSelection="['': '']" />
+                    <elm:datepicker name="fechaInicio" title="fechaInicio"  class="datepicker form-control" value="${personaInstance?.fechaInicio}" default="none" noSelection="['': '']" />
                 </div>
                 
             </span>
@@ -86,7 +86,7 @@
                     Fecha Fin
                 </label>
                 <div class="col-md-4">
-                    <elm:datepicker name="fechaFin"  class="datepicker form-control" value="${personaInstance?.fechaFin}" default="none" noSelection="['': '']" />
+                    <elm:datepicker name="fechaFin" title="fechaFin"  class="datepicker form-control" value="${personaInstance?.fechaFin}" default="none" noSelection="['': '']" />
                 </div>
                 
             </span>
@@ -98,7 +98,7 @@
                     Sigla
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="sigla" maxlength="3" class="form-control" value="${personaInstance?.sigla}"/>
+                    <g:textField name="sigla" maxlength="4" class="form-control" value="${personaInstance?.sigla}"/>
                 </div>
                 
             </span>
@@ -122,31 +122,55 @@
                     Cargo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="cargo" maxlength="50" class="form-control" value="${personaInstance?.cargo}"/>
+                    <g:textField name="cargo" maxlength="127" class="form-control" value="${personaInstance?.cargo}"/>
                 </div>
                 
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'login', 'error')} required">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'mail', 'error')} ">
+            <span class="grupo">
+                <label for="mail" class="col-md-2 control-label text-info">
+                    Mail
+                </label>
+                <div class="col-md-6">
+                    <g:textField name="mail" maxlength="63" class="form-control" value="${personaInstance?.mail}"/>
+                </div>
+                
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'login', 'error')} ">
             <span class="grupo">
                 <label for="login" class="col-md-2 control-label text-info">
                     Login
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="login" maxlength="16" required="" class="form-control required" value="${personaInstance?.login}"/>
+                    <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}"/>
                 </div>
-                 *
+                
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'password', 'error')} required">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'password', 'error')} ">
             <span class="grupo">
                 <label for="password" class="col-md-2 control-label text-info">
                     Password
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="password" maxlength="63" required="" class="form-control required" value="${personaInstance?.password}"/>
+                    <g:textField name="password" maxlength="63" class="form-control" value="${personaInstance?.password}"/>
+                </div>
+                
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'actividad', 'error')} required">
+            <span class="grupo">
+                <label for="actividad" class="col-md-2 control-label text-info">
+                    Actividad
+                </label>
+                <div class="col-md-2">
+                    <g:field name="actividad" type="number" value="${personaInstance.actividad}" class="digits form-control required" required=""/>
                 </div>
                  *
             </span>
@@ -164,37 +188,13 @@
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'email', 'error')} ">
+        <div class="form-group ${hasErrors(bean: personaInstance, field: 'fechaCambioPass', 'error')} ">
             <span class="grupo">
-                <label for="email" class="col-md-2 control-label text-info">
-                    Email
-                </label>
-                <div class="col-md-6">
-                    <div class="input-group"><span class="input-group-addon"><i class="fa fa-envelope"></i></span><g:field type="email" name="email" class="form-control" value="${personaInstance?.email}"/></div>
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">
-            <span class="grupo">
-                <label for="activo" class="col-md-2 control-label text-info">
-                    Activo
-                </label>
-                <div class="col-md-2">
-                    <g:field name="activo" type="number" value="${personaInstance.activo}" class="digits form-control required" required=""/>
-                </div>
-                 *
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'fechaActualizacionPass', 'error')} ">
-            <span class="grupo">
-                <label for="fechaActualizacionPass" class="col-md-2 control-label text-info">
-                    Fecha Actualizacion Pass
+                <label for="fechaCambioPass" class="col-md-2 control-label text-info">
+                    Fecha Cambio Pass
                 </label>
                 <div class="col-md-4">
-                    <elm:datepicker name="fechaActualizacionPass"  class="datepicker form-control" value="${personaInstance?.fechaActualizacionPass}" default="none" noSelection="['': '']" />
+                    <elm:datepicker name="fechaCambioPass" title="fechaCambioPass"  class="datepicker form-control" value="${personaInstance?.fechaCambioPass}" default="none" noSelection="['': '']" />
                 </div>
                 
             </span>
@@ -255,48 +255,6 @@
                 </label>
                 <div class="col-md-6">
                     <g:textField name="codigo" maxlength="15" class="form-control" value="${personaInstance?.codigo}"/>
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'accesos', 'error')} ">
-            <span class="grupo">
-                <label for="accesos" class="col-md-2 control-label text-info">
-                    Accesos
-                </label>
-                <div class="col-md-6">
-                    
-<ul class="one-to-many">
-<g:each in="${personaInstance?.accesos?}" var="a">
-    <li><g:link controller="accs" action="show" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
-</g:each>
-<li class="add">
-<g:link controller="accs" action="create" params="['persona.id': personaInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'accs.label', default: 'Accs')])}</g:link>
-</li>
-</ul>
-
-                </div>
-                
-            </span>
-        </div>
-        
-        <div class="form-group ${hasErrors(bean: personaInstance, field: 'sesiones', 'error')} ">
-            <span class="grupo">
-                <label for="sesiones" class="col-md-2 control-label text-info">
-                    Sesiones
-                </label>
-                <div class="col-md-6">
-                    
-<ul class="one-to-many">
-<g:each in="${personaInstance?.sesiones?}" var="s">
-    <li><g:link controller="sesn" action="show" id="${s.id}">${s?.encodeAsHTML()}</g:link></li>
-</g:each>
-<li class="add">
-<g:link controller="sesn" action="create" params="['persona.id': personaInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'sesn.label', default: 'Sesn')])}</g:link>
-</li>
-</ul>
-
                 </div>
                 
             </span>

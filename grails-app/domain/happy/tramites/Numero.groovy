@@ -1,7 +1,5 @@
 package happy.tramites
 
-import happy.tramites.TipoDocumento
-
 class Numero {
     Departamento departamento
     TipoDocumento tipoDocumento

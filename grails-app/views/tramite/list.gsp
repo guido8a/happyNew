@@ -57,9 +57,9 @@
                     
                     <th>De</th>
                     
-                    <th>Para</th>
-                    
                     <th>Tipo Persona</th>
+                    
+                    <th>Estado Tramite</th>
                     
                 </tr>
             </thead>
@@ -75,9 +75,9 @@
                         
                         <td>${fieldValue(bean: tramiteInstance, field: "de")}</td>
                         
-                        <td>${fieldValue(bean: tramiteInstance, field: "para")}</td>
-                        
                         <td>${fieldValue(bean: tramiteInstance, field: "tipoPersona")}</td>
+                        
+                        <td>${fieldValue(bean: tramiteInstance, field: "estadoTramite")}</td>
                         
                     </tr>
                 </g:each>

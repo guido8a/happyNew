@@ -13,7 +13,7 @@ class OrigenTramiteController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def origenTramiteInstanceList = OrigenTramite.list(params)
         def origenTramiteInstanceCount = OrigenTramite.count()
-        if (origenTramiteInstanceList.size() == 0 && params.offset && params.max) {
+        if(origenTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         origenTramiteInstanceList = OrigenTramite.list(params)
@@ -21,9 +21,9 @@ class OrigenTramiteController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def origenTramiteInstance = OrigenTramite.get(params.id)
-            if (!origenTramiteInstance) {
+            if(!origenTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class OrigenTramiteController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def origenTramiteInstance = new OrigenTramite(params)
-        if (params.id) {
+        if(params.id) {
             origenTramiteInstance = OrigenTramite.get(params.id)
-            if (!origenTramiteInstance) {
+            if(!origenTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class OrigenTramiteController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def origenTramiteInstance = new OrigenTramite()
-        if (params.id) {
+        if(params.id) {
             origenTramiteInstance = OrigenTramite.get(params.id)
-            if (!origenTramiteInstance) {
+            if(!origenTramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         origenTramiteInstance.properties = params
-        if (!origenTramiteInstance.save(flush: true)) {
+        if(!origenTramiteInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} OrigenTramite."
             msg += renderErrors(bean: origenTramiteInstance)
             render msg
@@ -65,11 +65,11 @@ class OrigenTramiteController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def origenTramiteInstance = OrigenTramite.get(params.id)
-            if (origenTramiteInstance) {
+            if(origenTramiteInstance) {
                 try {
-                    origenTramiteInstance.delete(flush: true)
+                    origenTramiteInstance.delete(flush:true)
                     render "OK_Eliminación de OrigenTramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar OrigenTramite."

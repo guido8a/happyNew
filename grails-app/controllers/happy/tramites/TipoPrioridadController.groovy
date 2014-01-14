@@ -13,7 +13,7 @@ class TipoPrioridadController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def tipoPrioridadInstanceList = TipoPrioridad.list(params)
         def tipoPrioridadInstanceCount = TipoPrioridad.count()
-        if (tipoPrioridadInstanceList.size() == 0 && params.offset && params.max) {
+        if(tipoPrioridadInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         tipoPrioridadInstanceList = TipoPrioridad.list(params)
@@ -21,9 +21,9 @@ class TipoPrioridadController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoPrioridadInstance = TipoPrioridad.get(params.id)
-            if (!tipoPrioridadInstance) {
+            if(!tipoPrioridadInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class TipoPrioridadController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tipoPrioridadInstance = new TipoPrioridad(params)
-        if (params.id) {
+        if(params.id) {
             tipoPrioridadInstance = TipoPrioridad.get(params.id)
-            if (!tipoPrioridadInstance) {
+            if(!tipoPrioridadInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class TipoPrioridadController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def tipoPrioridadInstance = new TipoPrioridad()
-        if (params.id) {
+        if(params.id) {
             tipoPrioridadInstance = TipoPrioridad.get(params.id)
-            if (!tipoPrioridadInstance) {
+            if(!tipoPrioridadInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tipoPrioridadInstance.properties = params
-        if (!tipoPrioridadInstance.save(flush: true)) {
+        if(!tipoPrioridadInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} TipoPrioridad."
             msg += renderErrors(bean: tipoPrioridadInstance)
             render msg
@@ -65,11 +65,11 @@ class TipoPrioridadController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def tipoPrioridadInstance = TipoPrioridad.get(params.id)
-            if (tipoPrioridadInstance) {
+            if(tipoPrioridadInstance) {
                 try {
-                    tipoPrioridadInstance.delete(flush: true)
+                    tipoPrioridadInstance.delete(flush:true)
                     render "OK_Eliminación de TipoPrioridad exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar TipoPrioridad."
