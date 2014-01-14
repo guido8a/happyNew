@@ -33,9 +33,9 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
-                    <input type="text" class="form-control span2" placeholder="Buscar">
+                    <input type="text" class="form-control" placeholder="Buscar">
                     <span class="input-group-btn">
                         <a href="#" class="btn btn-default" type="button">
                             <i class="fa fa-search"></i>&nbsp;

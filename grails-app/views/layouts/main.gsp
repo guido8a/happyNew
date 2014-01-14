@@ -19,6 +19,7 @@
         <link href="${resource(dir: 'css', file: 'custom.css')}" rel="stylesheet">
         <link href="${resource(dir: 'css', file: 'modals.css')}" rel="stylesheet">
         <link href="${resource(dir: 'css', file: 'tablas.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'datepicker.css')}" rel="stylesheet">
 
         <!-- JQuery -->
         <script src="${resource(dir: 'js/jquery/js', file: 'jquery-1.9.1.js')}"></script>
@@ -89,7 +90,7 @@
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Placed at the end of the document so the pages load faster -->
         <script src="${resource(dir: 'bootstrap-3.0.1/js', file: 'bootstrap.min.js')}"></script>
 
         <!-- funciones de ui (tooltips, maxlength, bootbox, contextmenu, validacion en keydown para los numeros) -->

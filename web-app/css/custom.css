@@ -15,6 +15,10 @@ input.help-block, select.help-block, textarea.help-block {
     margin : auto;
 }
 
+.allCaps {
+    text-transform : uppercase;
+}
+
 .dropdown-menu {
     z-index : 1050;
 }
@@ -67,4 +71,17 @@ input.help-block, select.help-block, textarea.help-block {
     -moz-column-count    : 4; /* Firefox */
     -webkit-column-count : 4; /* Safari and Chrome */
     column-count         : 4;
+}
+
+.form-group, .grupo {
+    -webkit-column-break-inside : avoid;
+    -moz-column-break-inside    : avoid;
+    -o-column-break-inside      : avoid;
+    -ms-column-break-inside     : avoid;
+    column-break-inside         : avoid;
+}
+
+.keeptogether {
+    display : inline-block;
+    width   : 100%;
 }

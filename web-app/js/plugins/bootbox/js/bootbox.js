@@ -525,6 +525,9 @@ window.bootbox = window.bootbox || (function init($, undefined) {
     if(options.id) {
         dialog.find(".modal-dialog").attr("id", options.id);
     }
+    if(options.class) {
+        dialog.find(".modal-dialog").addClass(options.class);
+    }
     var buttons = options.buttons;
     var buttonStr = "";
     var callbacks = {
