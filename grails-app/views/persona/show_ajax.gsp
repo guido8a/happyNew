@@ -175,14 +175,14 @@
         </div>
     </g:if>
     
-    <g:if test="${personaInstance?.actividad}">
+    <g:if test="${personaInstance?.activo}">
         <div class="row">
             <div class="col-md-2 text-info">
                 Actividad
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${personaInstance}" field="actividad"/>
+                <g:fieldValue bean="${personaInstance}" field="activo"/>
             </div>
             
         </div>

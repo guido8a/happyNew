@@ -16,7 +16,7 @@ class Persona {
     String mail
     String login
     String password
-    int actividad
+    int activo
     String autorizacion
     Date fechaCambioPass
     String telefono
@@ -45,7 +45,7 @@ class Persona {
             mail column: 'prsnmail'
             login column: 'prsnlogn'
             password column: 'prsnpass'
-            actividad column: 'prsnactv'
+            activo column: 'prsnactv'
             autorizacion column: 'prsnatrz'
             fechaCambioPass column: 'prsnfcps'
             telefono column: 'prsntelf'
@@ -57,7 +57,7 @@ class Persona {
     }
     static constraints = {
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
-        cedula(maxSize: 10, blank: false, attributes: [title: 'cedula'])
+        cedula(maxSize: 10, unique: true, blank: false, attributes: [title: 'cedula'])
         nombre(maxSize: 31, blank: false, attributes: [title: 'nombre'])
         apellido(maxSize: 31, blank: false, attributes: [title: 'apellido'])
         fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])
@@ -66,16 +66,16 @@ class Persona {
         sigla(maxSize: 4, blank: true, nullable: true, attributes: [title: 'sigla'])
         titulo(maxSize: 4, blank: true, nullable: true, attributes: [title: 'titulo'])
         cargo(maxSize: 127, blank: true, nullable: true, attributes: [title: 'cargo'])
-        mail(maxSize: 63, blank: true, nullable: true, attributes: [title: 'mail'])
-        login(maxSize: 15, blank: true, nullable: true, attributes: [title: 'login'])
+        mail(maxSize: 63, unique: true, blank: true, nullable: true, attributes: [title: 'mail'])
+        login(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'login'])
         password(maxSize: 63, blank: true, nullable: true, attributes: [title: 'password'])
-        actividad(blank: false, attributes: [title: 'actividad'])
+        activo(blank: false, attributes: [title: 'activo'])
         autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
         telefono(maxSize: 15, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
         celular(maxSize: 15, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
-        codigo(maxSize: 15, blank: true, nullable: true, attributes: [title: 'codigo'])
+        codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
     }
 }

@@ -17,7 +17,7 @@
                 <div class="col-md-6">
                     <g:select id="tipoDepartamento" name="tipoDepartamento.id" from="${TipoDepartamento.list()}"
                               optionKey="id" optionValue="descripcion"
-                              value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                              value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control"/>
                 </div>
 
             </span>
@@ -131,7 +131,7 @@
                 }
             },
             messages       : {
-                usuario : {
+                codigo : {
                     remote : "Código ya en uso"
                 }
             }
