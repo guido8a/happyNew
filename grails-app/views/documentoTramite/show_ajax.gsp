@@ -1,15 +1,13 @@
 
 <%@ page import="happy.tramites.DocumentoTramite" %>
 
-
 <g:if test="${!documentoTramiteInstance}">
     <elm:notFound elem="DocumentoTramite" genero="o" />
 </g:if>
 <g:else>
+
     <g:if test="${documentoTramiteInstance?.tramite}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Tramite
             </div>
@@ -18,15 +16,11 @@
                 ${documentoTramiteInstance?.tramite?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.anexo}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Anexo
             </div>
@@ -35,17 +29,11 @@
                 ${documentoTramiteInstance?.anexo?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.fecha}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha
             </div>
@@ -54,17 +42,11 @@
                 <g:formatDate date="${documentoTramiteInstance?.fecha}" format="dd-MM-yyyy" />
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.resumen}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Resumen
             </div>
@@ -73,17 +55,11 @@
                 <g:fieldValue bean="${documentoTramiteInstance}" field="resumen"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.clave}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Clave
             </div>
@@ -92,17 +68,11 @@
                 <g:fieldValue bean="${documentoTramiteInstance}" field="clave"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.path}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Path
             </div>
@@ -111,17 +81,11 @@
                 <g:fieldValue bean="${documentoTramiteInstance}" field="path"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.descripcion}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Descripcion
             </div>
@@ -130,17 +94,11 @@
                 <g:fieldValue bean="${documentoTramiteInstance}" field="descripcion"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!documentoTramiteInstance}">
-    <elm:notFound elem="DocumentoTramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${documentoTramiteInstance?.fechaLectura}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Fecha Lectura
             </div>
@@ -149,9 +107,7 @@
                 <g:formatDate date="${documentoTramiteInstance?.fechaLectura}" format="dd-MM-yyyy" />
             </div>
             
-            
         </div>
-        
     </g:if>
     
 </g:else>

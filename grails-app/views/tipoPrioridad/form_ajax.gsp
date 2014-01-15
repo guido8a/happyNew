@@ -11,7 +11,7 @@
         <div class="form-group ${hasErrors(bean: tipoPrioridadInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
-                    Codigo
+                    Código
                 </label>
                 <div class="col-md-6">
                     <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${tipoPrioridadInstance?.codigo}"/>
@@ -23,7 +23,7 @@
         <div class="form-group ${hasErrors(bean: tipoPrioridadInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripcion
+                    Descripción
                 </label>
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${tipoPrioridadInstance?.descripcion}"/>
@@ -37,8 +37,11 @@
                 <label for="tiempo" class="col-md-2 control-label text-info">
                     Tiempo
                 </label>
-                <div class="col-md-2">
-                    <g:field name="tiempo" type="number" value="${tipoPrioridadInstance.tiempo}" class="digits form-control required" required=""/>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <g:field name="tiempo" type="number" value="${tipoPrioridadInstance.tiempo}" class="digits form-control required" required=""/>
+                        <span class="input-group-addon">horas</span>
+                    </div>
                 </div>
                  *
             </span>

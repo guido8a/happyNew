@@ -1,15 +1,13 @@
 
 <%@ page import="happy.tramites.Tramite" %>
 
-
 <g:if test="${!tramiteInstance}">
     <elm:notFound elem="Tramite" genero="o" />
 </g:if>
 <g:else>
+
     <g:if test="${tramiteInstance?.anio}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Anio
             </div>
@@ -18,15 +16,11 @@
                 ${tramiteInstance?.anio?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.padre}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Padre
             </div>
@@ -35,17 +29,11 @@
                 ${tramiteInstance?.padre?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.tipoDocumento}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Tipo Documento
             </div>
@@ -54,17 +42,11 @@
                 ${tramiteInstance?.tipoDocumento?.encodeAsHTML()}</g:link>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.de}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 De
             </div>
@@ -73,17 +55,11 @@
                 ${tramiteInstance?.de?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.tipoPersona}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Tipo Persona
             </div>
@@ -92,17 +68,11 @@
                 ${tramiteInstance?.tipoPersona?.encodeAsHTML()}</g:link>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.estadoTramite}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Estado Tramite
             </div>
@@ -111,17 +81,11 @@
                 ${tramiteInstance?.estadoTramite?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.tipoTramite}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Tipo Tramite
             </div>
@@ -130,17 +94,11 @@
                 ${tramiteInstance?.tipoTramite?.encodeAsHTML()}</g:link>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.origenTramite}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Origen Tramite
             </div>
@@ -149,17 +107,11 @@
                 ${tramiteInstance?.origenTramite?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.codigo}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Codigo
             </div>
@@ -168,17 +120,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="codigo"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.numero}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Numero
             </div>
@@ -187,17 +133,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="numero"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fecha}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha
             </div>
@@ -206,17 +146,11 @@
                 <g:formatDate date="${tramiteInstance?.fecha}" format="dd-MM-yyyy" />
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fechaLimiteRespuesta}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Fecha Limite Respuesta
             </div>
@@ -225,17 +159,11 @@
                 <g:formatDate date="${tramiteInstance?.fechaLimiteRespuesta}" format="dd-MM-yyyy" />
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.asunto}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Asunto
             </div>
@@ -244,17 +172,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="asunto"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.anexo}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Anexo
             </div>
@@ -263,17 +185,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="anexo"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.texto}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Texto
             </div>
@@ -282,17 +198,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="texto"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.ampliacionPlazo}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Ampliacion Plazo
             </div>
@@ -301,17 +211,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="ampliacionPlazo"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fechaRespuesta}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha Respuesta
             </div>
@@ -320,17 +224,11 @@
                 <g:formatDate date="${tramiteInstance?.fechaRespuesta}" format="dd-MM-yyyy" />
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fechaIngreso}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Fecha Ingreso
             </div>
@@ -339,17 +237,11 @@
                 <g:formatDate date="${tramiteInstance?.fechaIngreso}" format="dd-MM-yyyy" />
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fechaModificacion}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Fecha Modificacion
             </div>
@@ -358,17 +250,11 @@
                 <g:formatDate date="${tramiteInstance?.fechaModificacion}" format="dd-MM-yyyy" />
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.fechaLectura}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Fecha Lectura
             </div>
@@ -377,17 +263,11 @@
                 <g:formatDate date="${tramiteInstance?.fechaLectura}" format="dd-MM-yyyy" />
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.externo}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Externo
             </div>
@@ -396,17 +276,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="externo"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.nota}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Nota
             </div>
@@ -415,17 +289,11 @@
                 <g:fieldValue bean="${tramiteInstance}" field="nota"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!tramiteInstance}">
-    <elm:notFound elem="Tramite" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${tramiteInstance?.estado}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Estado
             </div>
@@ -434,9 +302,7 @@
                 <g:fieldValue bean="${tramiteInstance}" field="estado"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
 </g:else>

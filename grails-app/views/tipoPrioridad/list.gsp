@@ -49,11 +49,11 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="codigo" title="Codigo" />
+                    <g:sortableColumn property="codigo" title="Código" />
                     
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
+                    <g:sortableColumn property="descripcion" title="Descripción" />
                     
-                    <g:sortableColumn property="tiempo" title="Tiempo" />
+                    <g:sortableColumn property="tiempo" title="Tiempo (horas)" />
                     
                 </tr>
             </thead>

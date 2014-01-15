@@ -1,15 +1,13 @@
 
 <%@ page import="happy.tramites.Departamento" %>
 
-
 <g:if test="${!departamentoInstance}">
     <elm:notFound elem="Departamento" genero="o" />
 </g:if>
 <g:else>
+
     <g:if test="${departamentoInstance?.tipoDepartamento}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Tipo Departamento
             </div>
@@ -18,15 +16,11 @@
                 ${departamentoInstance?.tipoDepartamento?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.padre}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Padre
             </div>
@@ -35,17 +29,11 @@
                 ${departamentoInstance?.padre?.encodeAsHTML()}</g:link>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.codigo}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Codigo
             </div>
@@ -54,17 +42,11 @@
                 <g:fieldValue bean="${departamentoInstance}" field="codigo"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.descripcion}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Descripcion
             </div>
@@ -73,17 +55,11 @@
                 <g:fieldValue bean="${departamentoInstance}" field="descripcion"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.telefono}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Telefono
             </div>
@@ -92,17 +68,11 @@
                 <g:fieldValue bean="${departamentoInstance}" field="telefono"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.extension}">
-        
+        <div class="row">
             <div class="col-md-2 text-info">
                 Extension
             </div>
@@ -111,17 +81,11 @@
                 <g:fieldValue bean="${departamentoInstance}" field="extension"/>
             </div>
             
-            
+        </div>
     </g:if>
     
-<g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
-</g:if>
-<g:else>
     <g:if test="${departamentoInstance?.direccion}">
-        
         <div class="row">
-            
             <div class="col-md-2 text-info">
                 Direccion
             </div>
@@ -130,9 +94,7 @@
                 <g:fieldValue bean="${departamentoInstance}" field="direccion"/>
             </div>
             
-            
         </div>
-        
     </g:if>
     
 </g:else>

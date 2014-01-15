@@ -1,19 +1,17 @@
 <% import grails.persistence.Event %>
 <%=packageName%>
 
+<g:if test="\${!${propertyName}}">
+    <elm:notFound elem="${domainClass.propertyName.capitalize()}" genero="o" />
+</g:if>
+<g:else>
 <%  excludedProps = Event.allEvents.toList() << 'id' << 'version'
 allowedNames = domainClass.persistentProperties*.name << 'dateCreated' << 'lastUpdated'
 props = domainClass.properties.findAll { allowedNames.contains(it.name) && !excludedProps.contains(it.name) }
 Collections.sort(props, comparator.constructors[0].newInstance([domainClass] as Object[]))
 props.eachWithIndex { p, i -> %>
-<g:if test="\${!${propertyName}}">
-    <elm:notFound elem="${domainClass.propertyName.capitalize()}" genero="o" />
-</g:if>
-<g:else>
     <g:if test="\${${propertyName}?.${p.name}}">
-        <% if(i % 2 == 0) { %>
         <div class="row">
-            <% } %>
             <div class="col-md-2 text-info">
                 ${p.naturalName}
             </div>
@@ -46,9 +44,7 @@ props.eachWithIndex { p, i -> %>
                 <g:fieldValue bean="\${${propertyName}}" field="${p.name}"/>
             </div>
             <%  } %>
-            <% if((i % 2 == 0 && i > 0) || i == props.size() - 1) { %>
         </div>
-        <% } %>
     </g:if>
     <%  } %>
 </g:else>
