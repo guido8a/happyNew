@@ -52,7 +52,7 @@
 
                     <th>Departamento</th>
 
-                    <g:sortableColumn property="cedula" title="Cedula"/>
+                    <g:sortableColumn property="cedula" title="Cédula"/>
 
                     <g:sortableColumn property="nombre" title="Nombre"/>
 
@@ -68,7 +68,7 @@
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
                     <tr data-id="${personaInstance.id}">
 
-                        <td>${fieldValue(bean: personaInstance, field: "departamento")}</td>
+                        <td>${personaInstance.departamento.descripcion}</td>
 
                         <td>${fieldValue(bean: personaInstance, field: "cedula")}</td>
 

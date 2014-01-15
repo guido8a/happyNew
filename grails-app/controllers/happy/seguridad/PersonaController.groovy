@@ -1,5 +1,7 @@
 package happy.seguridad
 
+import happy.tramites.Departamento
+
 
 class PersonaController extends happy.seguridad.Shield {
 
@@ -77,7 +79,7 @@ class PersonaController extends happy.seguridad.Shield {
     def save_ajax() {
 
         params.each { k, v ->
-            if (v instanceof java.lang.String) {
+            if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
             }
         }
@@ -93,32 +95,43 @@ class PersonaController extends happy.seguridad.Shield {
         else {
             //llena la parte de usuario si se esta creando la persona
             /*
-                Departamento departamento
-                String cedula
-                String nombre
-                String apellido
-                Date fechaNacimiento
+                    Departamento departamento
+                    String cedula
+                    String nombre
+                    String apellido
+                    Date fechaNacimiento
                 Date fechaInicio
                 Date fechaFin
-                String sigla
-                String titulo
+                    String sigla
+                    String titulo
                 String cargo
-                String mail
+                    String mail
                 String login
                 String password
                 int activo
                 String autorizacion
                 Date fechaCambioPass
-                String telefono
+                    String telefono
                 int jefe
-                String celular
+                    String celular
                 String foto
                 String codigo
              */
+            params.fechaInicio = new Date()
+            def p = params.nombre.split(" ")
+            params.login = ""
+            p.each {
+                params.login += it[0]
+            }
+            p = params.apellido.split(" ")
+            params.login += p[0]
+            params.password = params.cedula
+            params.activo = 0
+            params.fechaCambioPass = new Date() + 30
+            params.jefe = 0
+            params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
         personaInstance.properties = params
-
-
 
         if (!personaInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Persona."

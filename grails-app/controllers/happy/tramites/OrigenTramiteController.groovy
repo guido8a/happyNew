@@ -47,7 +47,7 @@ class OrigenTramiteController extends happy.seguridad.Shield {
 
     def save_ajax() {
         params.each { k, v ->
-            if (v instanceof java.lang.String) {
+            if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
             }
         }
