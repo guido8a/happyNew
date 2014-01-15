@@ -11,7 +11,7 @@
         <div class="form-group ${hasErrors(bean: tipoDocumentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
-                    Codigo
+                    Código
                 </label>
                 <div class="col-md-6">
                     <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${tipoDocumentoInstance?.codigo}"/>
@@ -23,7 +23,7 @@
         <div class="form-group ${hasErrors(bean: tipoDocumentoInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripcion
+                    Descripción
                 </label>
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${tipoDocumentoInstance?.descripcion}"/>

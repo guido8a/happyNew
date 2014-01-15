@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de Anio</title>
+        <title>Lista de Años</title>
     </head>
     <body>
 
@@ -30,7 +30,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
-                    <i class="fa fa-file-o"></i> Crear
+                    <i class="fa fa-plus-circle"></i> Crear
                 </g:link>
             </div>
             <div class="btn-group pull-right col-md-3">
@@ -49,7 +49,7 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="numero" title="Numero" />
+                    <g:sortableColumn property="numero" title="Año" />
                     
                 </tr>
             </thead>
@@ -95,7 +95,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Anio seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Año seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -136,7 +136,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " Anio",
+                            title   : title + " Año",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -195,7 +195,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver Anio",
+                                        title   : "Ver Año",
                                         message : msg,
                                         buttons : {
                                             ok : {
