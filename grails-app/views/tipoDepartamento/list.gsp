@@ -1,10 +1,10 @@
 
-<%@ page import="happy.tramites.TipoDependencia" %>
+<%@ page import="happy.tramites.TipoDepartamento" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoDependencia</title>
+        <title>Lista de TipoDepartamento</title>
     </head>
     <body>
 
@@ -56,24 +56,24 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${tipoDependenciaInstanceList}" status="i" var="tipoDependenciaInstance">
-                    <tr data-id="${tipoDependenciaInstance.id}">
+                <g:each in="${tipoDepartamentoInstanceList}" status="i" var="tipoDepartamentoInstance">
+                    <tr data-id="${tipoDepartamentoInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoDependenciaInstance, field: "codigo")}</td>
+                        <td>${fieldValue(bean: tipoDepartamentoInstance, field: "codigo")}</td>
                         
-                        <td>${fieldValue(bean: tipoDependenciaInstance, field: "descripcion")}</td>
+                        <td>${fieldValue(bean: tipoDepartamentoInstance, field: "descripcion")}</td>
                         
                     </tr>
                 </g:each>
             </tbody>
         </table>
 
-        <elm:pagination total="${tipoDependenciaInstanceCount}" params="${params}"/>
+        <elm:pagination total="${tipoDepartamentoInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
             var id = null;
             function submitForm() {
-                var $form = $("#frmTipoDependencia");
+                var $form = $("#frmTipoDepartamento");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
                 $btn.replaceWith(spinner);
@@ -99,7 +99,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoDependencia seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoDepartamento seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -140,7 +140,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoDependencia",
+                            title   : title + " TipoDepartamento",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -199,7 +199,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoDependencia",
+                                        title   : "Ver TipoDepartamento",
                                         message : msg,
                                         buttons : {
                                             ok : {

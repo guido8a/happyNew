@@ -49,7 +49,7 @@
             <thead>
                 <tr>
                     
-                    <th>Tipo Dependencia</th>
+                    <th>Tipo Departamento</th>
                     
                     <th>Padre</th>
                     
@@ -67,7 +67,7 @@
                 <g:each in="${departamentoInstanceList}" status="i" var="departamentoInstance">
                     <tr data-id="${departamentoInstance.id}">
                         
-                        <td>${fieldValue(bean: departamentoInstance, field: "tipoDependencia")}</td>
+                        <td>${fieldValue(bean: departamentoInstance, field: "tipoDepartamento")}</td>
                         
                         <td>${fieldValue(bean: departamentoInstance, field: "padre")}</td>
                         

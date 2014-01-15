@@ -1,7 +1,7 @@
 package happy.tramites
 
 class Departamento {
-    TipoDependencia tipoDependencia
+    TipoDepartamento tipoDepartamento
     Departamento padre
     String codigo
     String descripcion
@@ -16,7 +16,7 @@ class Departamento {
         version false
         columns {
             id column: 'dpto__id'
-            tipoDependencia column: 'tpdp__id'
+            tipoDepartamento column: 'tpdp__id'
             padre column: 'dptopdre'
             codigo column: 'dptocdgo'
             descripcion column: 'dptodscr'
@@ -26,7 +26,7 @@ class Departamento {
         }
     }
     static constraints = {
-        tipoDependencia(blank: true, nullable: true, attributes: [title: 'TipoDependencia'])
+        tipoDepartamento(blank: true, nullable: true, attributes: [title: 'TipoDepartamento'])
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         codigo(maxSize: 6, blank: false, attributes: [title: 'codigo'])
         descripcion(maxSize: 63, blank: false, attributes: [title: 'descripcion'])

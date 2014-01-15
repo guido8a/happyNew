@@ -1,6 +1,6 @@
 package happy.tramites
 
-class TipoDependencia {
+class TipoDepartamento {
     String codigo
     String descripcion
     static mapping = {

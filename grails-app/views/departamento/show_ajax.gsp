@@ -6,16 +6,16 @@
     <elm:notFound elem="Departamento" genero="o" />
 </g:if>
 <g:else>
-    <g:if test="${departamentoInstance?.tipoDependencia}">
+    <g:if test="${departamentoInstance?.tipoDepartamento}">
         
         <div class="row">
             
             <div class="col-md-2 text-info">
-                Tipo Dependencia
+                Tipo Departamento
             </div>
             
             <div class="col-md-3">
-                ${departamentoInstance?.tipoDependencia?.encodeAsHTML()}</g:link>
+                ${departamentoInstance?.tipoDepartamento?.encodeAsHTML()}</g:link>
             </div>
             
             

@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.Departamento" %>
+<%@ page import="happy.tramites.TipoDepartamento; happy.tramites.Departamento" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!departamentoInstance}">
@@ -8,13 +8,13 @@
     <g:form class="form-horizontal" name="frmDepartamento" role="form" action="save" method="POST">
         <g:hiddenField name="id" value="${departamentoInstance?.id}" />
         
-        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'tipoDependencia', 'error')} ">
+        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'tipoDepartamento', 'error')} ">
             <span class="grupo">
-                <label for="tipoDependencia" class="col-md-2 control-label text-info">
-                    Tipo Dependencia
+                <label for="tipoDepartamento" class="col-md-2 control-label text-info">
+                    Tipo Departamento
                 </label>
                 <div class="col-md-6">
-                    <g:select id="tipoDependencia" name="tipoDependencia.id" from="${happy.tramites.TipoDependencia.list()}" optionKey="id" value="${departamentoInstance?.tipoDependencia?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
+                    <g:select id="tipoDepartamento" name="tipoDepartamento.id" from="${TipoDepartamento.list()}" optionKey="id" value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>
                 
             </span>

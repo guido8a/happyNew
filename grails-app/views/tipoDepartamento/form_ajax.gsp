@@ -1,32 +1,32 @@
-<%@ page import="happy.tramites.TipoDependencia" %>
+<%@ page import="happy.tramites.TipoDepartamento" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
-<g:if test="${!tipoDependenciaInstance}">
-    <elm:notFound elem="TipoDependencia" genero="o" />
+<g:if test="${!tipoDepartamentoInstance}">
+    <elm:notFound elem="TipoDepartamento" genero="o" />
 </g:if>
 <g:else>
-    <g:form class="form-horizontal" name="frmTipoDependencia" role="form" action="save" method="POST">
-        <g:hiddenField name="id" value="${tipoDependenciaInstance?.id}" />
+    <g:form class="form-horizontal" name="frmTipoDepartamento" role="form" action="save" method="POST">
+        <g:hiddenField name="id" value="${tipoDepartamentoInstance?.id}" />
         
-        <div class="form-group ${hasErrors(bean: tipoDependenciaInstance, field: 'codigo', 'error')} required">
+        <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Codigo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${tipoDependenciaInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${tipoDepartamentoInstance?.codigo}"/>
                 </div>
                  *
             </span>
         </div>
         
-        <div class="form-group ${hasErrors(bean: tipoDependenciaInstance, field: 'descripcion', 'error')} required">
+        <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
                     Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${tipoDependenciaInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${tipoDepartamentoInstance?.descripcion}"/>
                 </div>
                  *
             </span>
@@ -35,7 +35,7 @@
     </g:form>
 
     <script type="text/javascript">
-        var validator = $("#frmTipoDependencia").validate({
+        var validator = $("#frmTipoDepartamento").validate({
             errorClass     : "help-block",
             errorPlacement : function (error, element) {
                 if (element.parent().hasClass("input-group")) {
