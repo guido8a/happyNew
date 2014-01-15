@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoPersona</title>
+        <title>Lista de Tipo de Persona</title>
     </head>
     <body>
 
@@ -30,7 +30,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
-                    <i class="fa fa-file-o"></i> Crear
+                    <i class="fa fa-male"></i> Crear
                 </g:link>
             </div>
             <div class="btn-group pull-right col-md-3">
@@ -49,9 +49,9 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="codigo" title="Codigo" />
+                    <g:sortableColumn property="codigo" title="Código" />
                     
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
+                    <g:sortableColumn property="descripcion" title="Descripción" />
                     
                 </tr>
             </thead>
@@ -140,7 +140,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoPersona",
+                            title   : title + " Tipo de Persona",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -199,7 +199,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoPersona",
+                                        title   : "Ver Tipo de Persona",
                                         message : msg,
                                         buttons : {
                                             ok : {

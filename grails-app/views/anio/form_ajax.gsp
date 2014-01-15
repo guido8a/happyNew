@@ -11,10 +11,10 @@
         <div class="form-group ${hasErrors(bean: anioInstance, field: 'numero', 'error')} required">
             <span class="grupo">
                 <label for="numero" class="col-md-2 control-label text-info">
-                    Numero
+                    Año
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="numero" maxlength="4" required="" class="form-control required" value="${anioInstance?.numero}"/>
+                    <g:textField name="numero" maxlength="4" required="" class="digits form-control required" value="${anioInstance?.numero}"/>
                 </div>
                  *
             </span>

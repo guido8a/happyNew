@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoDocumento</title>
+        <title>Lista de Tipo de Documento</title>
     </head>
     <body>
 
@@ -49,9 +49,9 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="codigo" title="Codigo" />
+                    <g:sortableColumn property="codigo" title="Código" />
                     
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
+                    <g:sortableColumn property="descripcion" title="Descripción" />
                     
                 </tr>
             </thead>
@@ -140,7 +140,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoDocumento",
+                            title   : title + " Tipo de Documento",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -199,7 +199,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoDocumento",
+                                        title   : "Ver Tipo de Documento",
                                         message : msg,
                                         buttons : {
                                             ok : {
