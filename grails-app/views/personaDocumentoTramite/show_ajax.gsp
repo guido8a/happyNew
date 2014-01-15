@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${personaDocumentoTramiteInstance?.rolPersonaTramite?.encodeAsHTML()}</g:link>
+                ${personaDocumentoTramiteInstance?.rolPersonaTramite?.encodeAsHTML()}
             </div>
             
         </div>
@@ -26,7 +26,7 @@
             </div>
             
             <div class="col-md-3">
-                ${personaDocumentoTramiteInstance?.persona?.encodeAsHTML()}</g:link>
+                ${personaDocumentoTramiteInstance?.persona?.encodeAsHTML()}
             </div>
             
         </div>
@@ -39,7 +39,7 @@
             </div>
             
             <div class="col-md-3">
-                ${personaDocumentoTramiteInstance?.tramite?.encodeAsHTML()}</g:link>
+                ${personaDocumentoTramiteInstance?.tramite?.encodeAsHTML()}
             </div>
             
         </div>

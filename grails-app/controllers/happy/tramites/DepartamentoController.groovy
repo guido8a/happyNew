@@ -13,7 +13,7 @@ class DepartamentoController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def departamentoInstanceList = Departamento.list(params)
         def departamentoInstanceCount = Departamento.count()
-        if(departamentoInstanceList.size() == 0 && params.offset && params.max) {
+        if (departamentoInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         departamentoInstanceList = Departamento.list(params)
@@ -21,9 +21,9 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if(params.id) {
+        if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
-            if(!departamentoInstance) {
+            if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +35,9 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def departamentoInstance = new Departamento(params)
-        if(params.id) {
+        if (params.id) {
             departamentoInstance = Departamento.get(params.id)
-            if(!departamentoInstance) {
+            if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
@@ -47,15 +47,15 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def departamentoInstance = new Departamento()
-        if(params.id) {
+        if (params.id) {
             departamentoInstance = Departamento.get(params.id)
-            if(!departamentoInstance) {
+            if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         departamentoInstance.properties = params
-        if(!departamentoInstance.save(flush:true)) {
+        if (!departamentoInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Departamento."
             msg += renderErrors(bean: departamentoInstance)
             render msg
@@ -65,11 +65,11 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if(params.id) {
+        if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
-            if(departamentoInstance) {
+            if (departamentoInstance) {
                 try {
-                    departamentoInstance.delete(flush:true)
+                    departamentoInstance.delete(flush: true)
                     render "OK_Eliminación de Departamento exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar Departamento."
@@ -85,5 +85,22 @@ class DepartamentoController extends happy.seguridad.Shield {
     protected void notFound_ajax() {
         render "NO_No se encontró Departamento."
     } //notFound para ajax
+
+    def validarCodigo_ajax() {
+        params.codigo = params.codigo.toString().trim()
+        if (params.id) {
+            def dpto = Departamento.get(params.id)
+            if (dpto.codigo == params.codigo) {
+                render true
+                return
+            } else {
+                render Departamento.countByCodigo(params.codigo) == 0
+                return
+            }
+        } else {
+            render Departamento.countByCodigo(params.codigo) == 0
+            return
+        }
+    }
 
 }

@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${departamentoInstance?.tipoDepartamento?.encodeAsHTML()}</g:link>
+                ${departamentoInstance?.tipoDepartamento?.encodeAsHTML()}
             </div>
             
         </div>
@@ -26,7 +26,7 @@
             </div>
             
             <div class="col-md-3">
-                ${departamentoInstance?.padre?.encodeAsHTML()}</g:link>
+                ${departamentoInstance?.padre?.encodeAsHTML()}
             </div>
             
         </div>
@@ -35,7 +35,7 @@
     <g:if test="${departamentoInstance?.codigo}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Codigo
+                Código
             </div>
             
             <div class="col-md-3">
@@ -48,7 +48,7 @@
     <g:if test="${departamentoInstance?.descripcion}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Descripcion
+                Descripción
             </div>
             
             <div class="col-md-3">
@@ -61,7 +61,7 @@
     <g:if test="${departamentoInstance?.telefono}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Telefono
+                Teléfono
             </div>
             
             <div class="col-md-3">
@@ -74,7 +74,7 @@
     <g:if test="${departamentoInstance?.extension}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Extension
+                Extensión
             </div>
             
             <div class="col-md-3">
@@ -87,7 +87,7 @@
     <g:if test="${departamentoInstance?.direccion}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Direccion
+                Dirección
             </div>
             
             <div class="col-md-3">

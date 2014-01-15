@@ -15,7 +15,7 @@
             </div>
             
             <div class="col-md-3">
-                ${permisoDocumentoTramiteInstance?.tramite?.encodeAsHTML()}</g:link>
+                ${permisoDocumentoTramiteInstance?.tramite?.encodeAsHTML()}
             </div>
             
             
@@ -32,7 +32,7 @@
             </div>
             
             <div class="col-md-3">
-                ${permisoDocumentoTramiteInstance?.persona?.encodeAsHTML()}</g:link>
+                ${permisoDocumentoTramiteInstance?.persona?.encodeAsHTML()}
             </div>
             
             

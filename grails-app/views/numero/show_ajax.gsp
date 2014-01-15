@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${numeroInstance?.departamento?.encodeAsHTML()}</g:link>
+                ${numeroInstance?.departamento?.encodeAsHTML()}
             </div>
             
         </div>
@@ -26,7 +26,7 @@
             </div>
             
             <div class="col-md-3">
-                ${numeroInstance?.tipoDocumento?.encodeAsHTML()}</g:link>
+                ${numeroInstance?.tipoDocumento?.encodeAsHTML()}
             </div>
             
         </div>

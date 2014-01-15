@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${observacionTramiteInstance?.tramite?.encodeAsHTML()}</g:link>
+                ${observacionTramiteInstance?.tramite?.encodeAsHTML()}
             </div>
             
         </div>
@@ -26,7 +26,7 @@
             </div>
             
             <div class="col-md-3">
-                ${observacionTramiteInstance?.persona?.encodeAsHTML()}</g:link>
+                ${observacionTramiteInstance?.persona?.encodeAsHTML()}
             </div>
             
         </div>

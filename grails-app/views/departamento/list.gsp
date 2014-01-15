@@ -1,4 +1,3 @@
-
 <%@ page import="happy.tramites.Departamento" %>
 <!DOCTYPE html>
 <html>
@@ -6,6 +5,7 @@
         <meta name="layout" content="main">
         <title>Lista de Departamento</title>
     </head>
+
     <body>
 
         <g:if test="${flash.message}">
@@ -33,6 +33,7 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Buscar">
@@ -48,37 +49,37 @@
         <table class="table table-condensed table-bordered table-striped">
             <thead>
                 <tr>
-                    
+
                     <th>Tipo Departamento</th>
-                    
+
                     <th>Padre</th>
-                    
-                    <g:sortableColumn property="codigo" title="Codigo" />
-                    
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
-                    
-                    <g:sortableColumn property="telefono" title="Telefono" />
-                    
-                    <g:sortableColumn property="extension" title="Extension" />
-                    
+
+                    <g:sortableColumn property="codigo" title="Código"/>
+
+                    <g:sortableColumn property="descripcion" title="Descripción"/>
+
+                    <g:sortableColumn property="telefono" title="Teléfono"/>
+
+                    <g:sortableColumn property="extension" title="Extensión"/>
+
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${departamentoInstanceList}" status="i" var="departamentoInstance">
                     <tr data-id="${departamentoInstance.id}">
-                        
-                        <td>${fieldValue(bean: departamentoInstance, field: "tipoDepartamento")}</td>
-                        
-                        <td>${fieldValue(bean: departamentoInstance, field: "padre")}</td>
-                        
+
+                        <td>${departamentoInstance.tipoDepartamento.descripcion}</td>
+
+                        <td>${departamentoInstance.padre?.descripcion}</td>
+
                         <td>${fieldValue(bean: departamentoInstance, field: "codigo")}</td>
-                        
+
                         <td>${fieldValue(bean: departamentoInstance, field: "descripcion")}</td>
-                        
+
                         <td>${fieldValue(bean: departamentoInstance, field: "telefono")}</td>
-                        
+
                         <td>${fieldValue(bean: departamentoInstance, field: "extension")}</td>
-                        
+
                     </tr>
                 </g:each>
             </tbody>
@@ -92,25 +93,25 @@
                 var $form = $("#frmDepartamento");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
-                $btn.replaceWith(spinner);
+                    $btn.replaceWith(spinner);
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(action:'save_ajax')}',
                         data    : $form.serialize(),
-                            success : function (msg) {
-                        var parts = msg.split("_");
-                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                        if (parts[0] == "OK") {
-                            location.reload(true);
-                        } else {
-                            spinner.replaceWith($btn);
-                            return false;
+                        success : function (msg) {
+                            var parts = msg.split("_");
+                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                            if (parts[0] == "OK") {
+                                location.reload(true);
+                            } else {
+                                spinner.replaceWith($btn);
+                                return false;
+                            }
                         }
-                    }
-                });
-            } else {
-                return false;
-            } //else
+                    });
+                } else {
+                    return false;
+                } //else
             }
             function deleteRow(itemId) {
                 bootbox.dialog({
@@ -148,7 +149,7 @@
             }
             function createEditRow(id) {
                 var title = id ? "Editar" : "Crear";
-                var data = id ? { id: id } : {};
+                var data = id ? { id : id } : {};
                 $.ajax({
                     type    : "POST",
                     url     : "${createLink(action:'form_ajax')}",
@@ -170,7 +171,7 @@
                                     label     : "<i class='fa fa-save'></i> Guardar",
                                     className : "btn-success",
                                     callback  : function () {
-                                        submitForm();
+                                        return submitForm();
                                     } //callback
                                 } //guardar
                             } //buttons
@@ -184,7 +185,7 @@
 
             $(function () {
 
-                $(".btnCrear").click(function() {
+                $(".btnCrear").click(function () {
                     createEditRow();
                     return false;
                 });

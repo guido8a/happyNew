@@ -29,7 +29,7 @@ props.eachWithIndex { p, i -> %>
             </div>
             <%  } else if (p.manyToOne || p.oneToOne) { %>
             <div class="col-md-3">
-                \${${propertyName}?.${p.name}?.encodeAsHTML()}</g:link>
+                \${${propertyName}?.${p.name}?.encodeAsHTML()}
             </div>
             <%  } else if (p.type == Boolean || p.type == boolean) { %>
             <div class="col-md-3">

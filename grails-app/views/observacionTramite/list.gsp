@@ -162,7 +162,7 @@
                                     label     : "<i class='fa fa-save'></i> Guardar",
                                     className : "btn-success",
                                     callback  : function () {
-                                        submitForm();
+                                        return submitForm();
                                     } //callback
                                 } //guardar
                             } //buttons

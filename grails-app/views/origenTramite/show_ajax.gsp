@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${origenTramiteInstance?.tipoPersona?.encodeAsHTML()}</g:link>
+                ${origenTramiteInstance?.tipoPersona?.encodeAsHTML()}
             </div>
             
         </div>

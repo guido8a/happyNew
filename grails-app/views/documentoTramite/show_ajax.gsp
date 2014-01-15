@@ -13,7 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                ${documentoTramiteInstance?.tramite?.encodeAsHTML()}</g:link>
+                ${documentoTramiteInstance?.tramite?.encodeAsHTML()}
             </div>
             
         </div>
@@ -26,7 +26,7 @@
             </div>
             
             <div class="col-md-3">
-                ${documentoTramiteInstance?.anexo?.encodeAsHTML()}</g:link>
+                ${documentoTramiteInstance?.anexo?.encodeAsHTML()}
             </div>
             
         </div>
