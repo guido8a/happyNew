@@ -50,6 +50,13 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+String.prototype.acronym = function () {
+    var str = this;
+    var matches = str.match(/\b(\w)/g);
+    var acronym = matches.join('');
+    return acronym;
+};
+
 function number_format(number, decimals, dec_point, thousands_sep) {
     // http://kevin.vanzonneveld.net
     // +   original by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)

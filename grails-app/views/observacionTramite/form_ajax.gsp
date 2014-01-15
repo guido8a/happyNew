@@ -50,7 +50,7 @@
                     Observaciones
                 </label>
                 <div class="col-md-6">
-                    <g:textArea name="observaciones" cols="40" rows="5" maxlength="1023" required="" class="form-control required" value="${observacionTramiteInstance?.observaciones}"/>
+                    <g:textArea name="observaciones" cols="40" rows="5" maxlength="1023" required="" class="form-control required allCaps" value="${observacionTramiteInstance?.observaciones}"/>
                 </div>
                  *
             </span>

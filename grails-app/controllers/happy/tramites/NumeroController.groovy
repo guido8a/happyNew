@@ -46,6 +46,11 @@ class NumeroController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def numeroInstance = new Numero()
         if(params.id) {
             numeroInstance = Numero.get(params.id)

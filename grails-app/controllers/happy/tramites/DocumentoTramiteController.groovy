@@ -46,6 +46,11 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def documentoTramiteInstance = new DocumentoTramite()
         if(params.id) {
             documentoTramiteInstance = DocumentoTramite.get(params.id)

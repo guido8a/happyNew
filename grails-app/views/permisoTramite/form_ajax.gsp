@@ -14,7 +14,7 @@
                     Codigo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${permisoTramiteInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${permisoTramiteInstance?.codigo}"/>
                 </div>
                  *
             </span>
@@ -26,7 +26,7 @@
                     Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required" value="${permisoTramiteInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps" value="${permisoTramiteInstance?.descripcion}"/>
                 </div>
                  *
             </span>

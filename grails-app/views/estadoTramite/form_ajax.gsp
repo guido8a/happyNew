@@ -14,7 +14,7 @@
                     Codigo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required" value="${estadoTramiteInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${estadoTramiteInstance?.codigo}"/>
                 </div>
                  *
             </span>
@@ -26,7 +26,7 @@
                     Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="31" required="" class="form-control required" value="${estadoTramiteInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="31" required="" class="form-control required allCaps" value="${estadoTramiteInstance?.descripcion}"/>
                 </div>
                  *
             </span>

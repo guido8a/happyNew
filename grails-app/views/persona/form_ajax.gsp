@@ -17,7 +17,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="cedula" maxlength="10" required="" class="form-control required" value="${personaInstance?.cedula}"/>
+                        <g:textField name="cedula" maxlength="10" required="" cedula="true" class="form-control required" value="${personaInstance?.cedula}"/>
                     </div>
                     *
                 </span>
@@ -30,7 +30,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="nombre" maxlength="31" required="" class="form-control required" value="${personaInstance?.nombre}"/>
+                        <g:textField name="nombre" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.nombre}"/>
                     </div>
                     *
                 </span>
@@ -43,7 +43,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="apellido" maxlength="31" required="" class="form-control required" value="${personaInstance?.apellido}"/>
+                        <g:textField name="apellido" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.apellido}"/>
                     </div>
                     *
                 </span>
@@ -56,7 +56,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="sigla" maxlength="4" class="form-control" value="${personaInstance?.sigla}"/>
+                        <g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>
                     </div>
 
                 </span>
@@ -69,7 +69,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="titulo" maxlength="4" class="form-control" value="${personaInstance?.titulo}"/>
+                        <g:textField name="titulo" maxlength="4" class="form-control allCaps" value="${personaInstance?.titulo}"/>
                     </div>
 
                 </span>
@@ -92,11 +92,11 @@
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'mail', 'error')} ">
                 <span class="grupo">
                     <label for="mail" class="col-md-3 control-label text-info">
-                        Mail
+                        E-mail
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="mail" maxlength="63" class="form-control" value="${personaInstance?.mail}"/>
+                        <g:textField name="mail" maxlength="63" email="true" class="form-control allCaps" value="${personaInstance?.mail}"/>
                     </div>
 
                 </span>
@@ -109,7 +109,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="telefono" maxlength="15" class="form-control" value="${personaInstance?.telefono}"/>
+                        <g:textField name="telefono" maxlength="15" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>
                     </div>
 
                 </span>
@@ -122,7 +122,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:textField name="celular" maxlength="15" class="form-control" value="${personaInstance?.celular}"/>
+                        <g:textField name="celular" maxlength="15" celular="true" class="form-control" value="${personaInstance?.celular}"/>
                     </div>
 
                 </span>
@@ -158,6 +158,22 @@
                 },
                 success        : function (label) {
                     label.parents(".grupo").removeClass('has-error');
+                },
+                rules          : {
+                    cedula : {
+                        remote : {
+                            url  : "${createLink(action: 'validarCedula_ajax')}",
+                            type : "post",
+                            data : {
+                                id : "${personaInstance.id}"
+                            }
+                        }
+                    }
+                },
+                messages       : {
+                    cedula : {
+                        remote : "Cédula ya ingresada"
+                    }
                 }
             });
             $(".form-control").keydown(function (ev) {
@@ -167,6 +183,14 @@
                 }
                 return true;
             });
+
+            $("#apellido, #nombre").blur(function () {
+                var nombre = $("#nombre").val();
+                var apellido = $("#apellido").val();
+                var sigla = (nombre + " " + apellido).acronym().toUpperCase();
+                $("#sigla").val(sigla);
+            });
+
         </script>
 
     </g:else>

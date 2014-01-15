@@ -46,6 +46,11 @@ class TipoDepartamentoController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def tipoDepartamentoInstance = new TipoDepartamento()
         if(params.id) {
             tipoDepartamentoInstance = TipoDepartamento.get(params.id)

@@ -26,7 +26,7 @@
                     Cedula
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="cedula" maxlength="13" required="" class="form-control required" value="${origenTramiteInstance?.cedula}"/>
+                    <g:textField name="cedula" maxlength="13" required="" class="form-control required allCaps" value="${origenTramiteInstance?.cedula}"/>
                 </div>
                  *
             </span>
@@ -50,7 +50,7 @@
                     Nombre
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="nombre" maxlength="127" required="" class="form-control required" value="${origenTramiteInstance?.nombre}"/>
+                    <g:textField name="nombre" maxlength="127" required="" class="form-control required allCaps" value="${origenTramiteInstance?.nombre}"/>
                 </div>
                  *
             </span>
@@ -62,7 +62,7 @@
                     Nombre Contacto
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="nombreContacto" maxlength="31" class="form-control" value="${origenTramiteInstance?.nombreContacto}"/>
+                    <g:textField name="nombreContacto" maxlength="31" class="form-control allCaps" value="${origenTramiteInstance?.nombreContacto}"/>
                 </div>
                 
             </span>
@@ -74,7 +74,7 @@
                     Apellido Contacto
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="apellidoContacto" maxlength="31" required="" class="form-control required" value="${origenTramiteInstance?.apellidoContacto}"/>
+                    <g:textField name="apellidoContacto" maxlength="31" required="" class="form-control required allCaps" value="${origenTramiteInstance?.apellidoContacto}"/>
                 </div>
                  *
             </span>
@@ -86,7 +86,7 @@
                     Titulo
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="titulo" maxlength="4" class="form-control" value="${origenTramiteInstance?.titulo}"/>
+                    <g:textField name="titulo" maxlength="4" class="form-control allCaps" value="${origenTramiteInstance?.titulo}"/>
                 </div>
                 
             </span>
@@ -110,7 +110,7 @@
                     Mail
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="mail" maxlength="63" class="form-control" value="${origenTramiteInstance?.mail}"/>
+                    <g:textField name="mail" maxlength="63" class="form-control allCaps" value="${origenTramiteInstance?.mail}"/>
                 </div>
                 
             </span>
@@ -122,7 +122,7 @@
                     Telefono
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="telefono" maxlength="63" class="form-control" value="${origenTramiteInstance?.telefono}"/>
+                    <g:textField name="telefono" maxlength="63" class="form-control allCaps" value="${origenTramiteInstance?.telefono}"/>
                 </div>
                 
             </span>

@@ -45,7 +45,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="6" required="" class="form-control required" value="${departamentoInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps" value="${departamentoInstance?.codigo}"/>
                 </div>
                 *
             </span>
@@ -58,7 +58,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required" value="${departamentoInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps" value="${departamentoInstance?.descripcion}"/>
                 </div>
                 *
             </span>
@@ -71,7 +71,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="telefono" maxlength="15" class="form-control" value="${departamentoInstance?.telefono}"/>
+                    <g:textField name="telefono" maxlength="15" class="form-control allCaps" value="${departamentoInstance?.telefono}"/>
                 </div>
 
             </span>
@@ -84,7 +84,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="extension" maxlength="7" class="form-control" value="${departamentoInstance?.extension}"/>
+                    <g:textField name="extension" maxlength="7" class="form-control allCaps" value="${departamentoInstance?.extension}"/>
                 </div>
 
             </span>
@@ -97,7 +97,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textArea name="direccion" cols="40" rows="5" maxlength="255" class="form-control" value="${departamentoInstance?.direccion}"/>
+                    <g:textArea name="direccion" cols="40" rows="5" maxlength="255" class="form-control allCaps" value="${departamentoInstance?.direccion}"/>
                 </div>
 
             </span>

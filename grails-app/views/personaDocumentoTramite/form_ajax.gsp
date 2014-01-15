@@ -62,7 +62,7 @@
                     Observaciones
                 </label>
                 <div class="col-md-6">
-                    <g:textArea name="observaciones" cols="40" rows="5" maxlength="1023" class="form-control" value="${personaDocumentoTramiteInstance?.observaciones}"/>
+                    <g:textArea name="observaciones" cols="40" rows="5" maxlength="1023" class="form-control allCaps" value="${personaDocumentoTramiteInstance?.observaciones}"/>
                 </div>
                 
             </span>
@@ -74,7 +74,7 @@
                     Permiso
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="permiso" maxlength="4" class="form-control" value="${personaDocumentoTramiteInstance?.permiso}"/>
+                    <g:textField name="permiso" maxlength="4" class="form-control allCaps" value="${personaDocumentoTramiteInstance?.permiso}"/>
                 </div>
                 
             </span>

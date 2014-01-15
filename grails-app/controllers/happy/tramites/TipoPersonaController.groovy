@@ -46,6 +46,11 @@ class TipoPersonaController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def tipoPersonaInstance = new TipoPersona()
         if(params.id) {
             tipoPersonaInstance = TipoPersona.get(params.id)

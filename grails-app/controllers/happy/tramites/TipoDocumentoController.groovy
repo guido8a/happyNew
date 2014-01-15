@@ -46,6 +46,11 @@ class TipoDocumentoController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def tipoDocumentoInstance = new TipoDocumento()
         if(params.id) {
             tipoDocumentoInstance = TipoDocumento.get(params.id)

@@ -38,7 +38,7 @@
                     Permiso
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="permiso" maxlength="4" class="form-control" value="${permisoDocumentoTramiteInstance?.permiso}"/>
+                    <g:textField name="permiso" maxlength="4" class="form-control allCaps" value="${permisoDocumentoTramiteInstance?.permiso}"/>
                 </div>
                 
             </span>

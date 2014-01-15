@@ -51,6 +51,7 @@
         <!-- la validacion del lado del cliente -->
         <script src="${resource(dir: 'js/plugins/jquery-validation-1.11.1/js', file: 'jquery.validate.min.js')}"></script>
         <script src="${resource(dir: 'js/plugins/jquery-validation-1.11.1/localization', file: 'messages_es.js')}"></script>
+        <script src="${resource(dir: 'js', file: 'jquery.validate.custom.js')}"></script>
 
         <!-- las alertas growl -->
         <script src="${resource(dir: 'js/plugins/pines/js', file: 'jquery.pnotify.js')}"></script>

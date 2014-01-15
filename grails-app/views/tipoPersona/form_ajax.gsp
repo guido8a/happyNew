@@ -14,7 +14,7 @@
                     Código
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="1" required="" class="form-control required" value="${tipoPersonaInstance?.codigo}"/>
+                    <g:textField name="codigo" maxlength="1" required="" class="form-control required allCaps" value="${tipoPersonaInstance?.codigo}"/>
                 </div>
                  *
             </span>
@@ -26,7 +26,7 @@
                     Descripción
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="15" required="" class="form-control required" value="${tipoPersonaInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="15" required="" class="form-control required allCaps" value="${tipoPersonaInstance?.descripcion}"/>
                 </div>
                  *
             </span>

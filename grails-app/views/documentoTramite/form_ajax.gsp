@@ -50,7 +50,7 @@
                     Resumen
                 </label>
                 <div class="col-md-6">
-                    <g:textArea name="resumen" cols="40" rows="5" maxlength="1024" class="form-control" value="${documentoTramiteInstance?.resumen}"/>
+                    <g:textArea name="resumen" cols="40" rows="5" maxlength="1024" class="form-control allCaps" value="${documentoTramiteInstance?.resumen}"/>
                 </div>
                 
             </span>
@@ -62,7 +62,7 @@
                     Clave
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="clave" maxlength="63" class="form-control" value="${documentoTramiteInstance?.clave}"/>
+                    <g:textField name="clave" maxlength="63" class="form-control allCaps" value="${documentoTramiteInstance?.clave}"/>
                 </div>
                 
             </span>
@@ -74,7 +74,7 @@
                     Path
                 </label>
                 <div class="col-md-6">
-                    <g:textArea name="path" cols="40" rows="5" maxlength="1024" class="form-control" value="${documentoTramiteInstance?.path}"/>
+                    <g:textArea name="path" cols="40" rows="5" maxlength="1024" class="form-control allCaps" value="${documentoTramiteInstance?.path}"/>
                 </div>
                 
             </span>
@@ -86,7 +86,7 @@
                     Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" class="form-control" value="${documentoTramiteInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="63" class="form-control allCaps" value="${documentoTramiteInstance?.descripcion}"/>
                 </div>
                 
             </span>

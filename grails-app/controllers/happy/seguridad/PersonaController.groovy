@@ -57,7 +57,31 @@ class PersonaController extends happy.seguridad.Shield {
         return [personaInstance: personaInstance]
     }
 
+    def validarCedula_ajax() {
+        params.cedula = params.cedula.toString().trim()
+        if (params.id) {
+            def prsn = Persona.get(params.id)
+            if (prsn.cedula == params.cedula) {
+                render true
+                return
+            } else {
+                render Persona.countByCedula(params.cedula) == 0
+                return
+            }
+        } else {
+            render Persona.countByCedula(params.cedula) == 0
+            return
+        }
+    }
+
     def save_ajax() {
+
+        params.each { k, v ->
+            if (v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
+
         def personaInstance = new Persona()
         if (params.id) {
             personaInstance = Persona.get(params.id)
@@ -66,7 +90,36 @@ class PersonaController extends happy.seguridad.Shield {
                 return
             }
         } //update
+        else {
+            //llena la parte de usuario si se esta creando la persona
+            /*
+                Departamento departamento
+                String cedula
+                String nombre
+                String apellido
+                Date fechaNacimiento
+                Date fechaInicio
+                Date fechaFin
+                String sigla
+                String titulo
+                String cargo
+                String mail
+                String login
+                String password
+                int activo
+                String autorizacion
+                Date fechaCambioPass
+                String telefono
+                int jefe
+                String celular
+                String foto
+                String codigo
+             */
+        } //create
         personaInstance.properties = params
+
+
+
         if (!personaInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Persona."
             msg += renderErrors(bean: personaInstance)
