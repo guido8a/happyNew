@@ -158,6 +158,139 @@ class ElementosTagLib {
     }
 
     /**
+     * crea un datepicker
+     *  attrs:
+     *      class           clase
+     *      name            name
+     *      id              id (opcional, si no existe usa el mismo name)
+     *      value           value (groovy Date o String)
+     *      format          format para el Date (groovy)
+     *      minDate         fecha mínima para el datepicker. cualquier cosa anterior se deshabilita
+     *                          ej: +5d para 5 días después de la fecha actual
+     *      maxDate         fecha máxima para el datepicker. cualquier cosa posterior se deshabilita
+     *      orientation     String. Default: “auto”
+     *                               A space-separated string consisting of one or two of “left” or “right”, “top” or “bottom”, and “auto” (may be omitted);
+     *                                      for example, “top left”, “bottom” (horizontal orientation will default to “auto”), “right” (vertical orientation will default to “auto”),
+     *                                      “auto top”. Allows for fixed placement of the picker popup.
+     *                               “orientation” refers to the location of the picker popup’s “anchor”; you can also think of it as the location of the trigger element (input, component, etc)
+     *                               relative to the picker.
+     *                               “auto” triggers “smart orientation” of the picker.
+     *                                  Horizontal orientation will default to “left” and left offset will be tweaked to keep the picker inside the browser viewport;
+     *                                  vertical orientation will simply choose “top” or “bottom”, whichever will show more of the picker in the viewport.
+     *      autoclose       boolean. default: true cierra automaticamente el datepicker cuando se selecciona una fecha
+     *      todayHighlight  boolean. default: true marca la fecha actual
+     *      beforeShowDay   funcion. funcion que se ejecuta antes de mostrar el día. se puede utilizar para deshabilitar una fecha en particular
+     *                          ej:
+     *                               beforeShowDay: function (date){*                                   if (date.getMonth() == (new Date()).getMonth())
+     *                                       switch (date.getDate()){*                                           case 4:
+     *                                               return {*                                                   tooltip: 'Example tooltip',
+     *                                                   classes: 'active'
+     *};
+     *                                           case 8:
+     *                                               return false;
+     *                                           case 12:
+     *                                               return "green";
+     *}*}*                                }
+     *      onChangeDate    funcion. funcion q se ejecuta al cambiar una fecha
+     *      daysOfWeekDisabled  lista de números para deshabilitar ciertos días: 0:domingo, 1:lunes, 2:martes, 3:miercoles, 4:jueves, 5:viernes, 6:sabado
+     *      img             imagen del calendario. clase de glyphicons o font awsome
+     **/
+    def datetimepicker = { attrs ->
+        def name = attrs.name
+        def nameInput = name + "_input"
+        def nameHiddenDay = name + "_day"
+        def nameHiddenMonth = name + "_month"
+        def nameHiddenYear = name + "_year"
+        def id = nameInput
+        if (attrs.id) {
+            id = attrs.id
+        }
+        def readonly = attrs.readonly ?: true
+        def value = attrs.value
+
+        def clase = attrs["class"]
+
+        def format = attrs.format ?: "dd-mm-yyyy"
+
+        def startDate = attrs.minDate ?: false
+        def endDate = attrs.maxDate ?: false
+
+        def orientation = attrs.orientation ?: "top auto"
+
+        def autoclose = attrs.autoclose ?: true
+        def todayHighlight = attrs.todayHighlight ?: true
+
+        def beforeShowDay = attrs.beforeShowDay ?: false
+        def onChangeDate = attrs.onChangeDate ?: false
+
+        def daysOfWeekDisabled = attrs.daysOfWeekDisabled ?: false
+
+        def img = attrs.img ?: "fa fa-calendar"
+
+        if (value instanceof Date) {
+            value = value.format(format)
+        }
+        if (!value) {
+            value = ""
+        }
+
+        def br = "\n"
+
+        def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") + " value='${value}' class='${clase}' />"
+        def hiddenDay = "<input type='hidden' name='${nameHiddenDay}' id='${nameHiddenDay}'/>"
+        def hiddenMonth = "<input type='hidden' name='${nameHiddenMonth}' id='${nameHiddenMonth}'/>"
+        def hiddenYear = "<input type='hidden' name='${nameHiddenYear}' id='${nameHiddenYear}'/>"
+        def hidden = "<input type='hidden' name='${name}' id='${name}' value='date.struct'/>"
+
+        def div = ""
+        div += hiddenDay + br
+        div += hiddenMonth + br
+        div += hiddenYear + br
+        div += hidden + br
+        div += "<div class='input-group'>" + br
+        div += textfield + br
+        div += "<span class=\"input-group-addon\"><i class=\"${img}\"></i></span>" + br
+        div += "</div>" + br
+
+        def js = "<script type=\"text/javascript\">" + br
+        js += '$("#' + id + '").datepicker({' + br
+        if (startDate) {
+            js += "startDate: '${startDate}'," + br
+        }
+        if (endDate) {
+            js += "endDate: '${endDate}'," + br
+        }
+        if (daysOfWeekDisabled) {
+            js += "daysOfWeekDisabled: '${daysOfWeekDisabled}'," + br
+        }
+        if (beforeShowDay) {
+//            js += "beforeShowDay: function() { ${beforeShowDay}() }," + br
+            js += "beforeShowDay: ${beforeShowDay}," + br
+        }
+        js += 'language: "es",' + br
+        js += "format: '${format}'," + br
+        js += "orientation: '${orientation}'," + br
+        js += "autoclose: ${autoclose}," + br
+        js += "todayHighlight: ${todayHighlight}" + br
+        js += "}).on('changeDate', function(e) {" + br
+        js += "var fecha = e.date;" + br
+        js += "if(fecha) {" + br
+        js += '$("#' + nameHiddenDay + '").val(fecha.getDate());' + br
+        js += '$("#' + nameHiddenMonth + '").val(fecha.getMonth() + 1);' + br
+        js += '$("#' + nameHiddenYear + '").val(fecha.getFullYear());' + br
+        js += '$(e.currentTarget).parents(".grupo").removeClass("has-error").find("label.help-block").hide();' + br
+        js += "}" + br
+        if (onChangeDate) {
+            js += onChangeDate + "();"
+        }
+        js += "});" + br
+        js += "</script>" + br
+
+        out << div
+        out << js
+    }
+
+    /**
      * hace la paginacion para una lista
      *  attrs:
      *          total       la cantidad total que tiene la tabla (el total de todas las páginas)

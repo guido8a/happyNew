@@ -56,7 +56,7 @@ class MenuTagLib {
 
         def html = ""
         html += '<nav class="navbar navbar-fixed-top navbar-inverse hidden-print">'
-        html += '<div class="container">'
+        html += '<div class="container" style="min-width: 1000px !important;">'
         //<!-- Brand and toggle get grouped for better mobile display -->
         html += '<div class="navbar-header">'
         html += '<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#happy-navbar-collapse">'

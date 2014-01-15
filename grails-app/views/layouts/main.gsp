@@ -64,6 +64,9 @@
         <script src="${resource(dir: 'js/plugins/jquery.countdown', file: 'jquery.countdown.min.js')}"></script>
         <link href="${resource(dir: 'js/plugins/jquery.countdown', file: 'jquery.countdown.css')}" rel="stylesheet">
 
+        <link href='${resource(dir: "font/open", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>
+        <link href='${resource(dir: "font/tulpen", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>
+
         <!-- el manager de fechas -->
         <script src="${resource(dir: 'js/plugins', file: 'date.js')}"></script>
 
@@ -83,7 +86,7 @@
 
         <mn:menu/>
 
-        <div class="container">
+        <div class="container" style="min-width: 1000px !important;">
             <g:layoutBody/>
         </div> <!-- /container -->
 

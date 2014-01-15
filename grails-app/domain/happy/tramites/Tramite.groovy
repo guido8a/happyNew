@@ -7,7 +7,7 @@ class Tramite {
     Tramite padre
     TipoDocumento tipoDocumento
     Persona de
-    TipoPersona tipoPersona
+    TipoPrioridad prioridad
     EstadoTramite estadoTramite
     TipoTramite tipoTramite
     OrigenTramite origenTramite
@@ -38,7 +38,7 @@ class Tramite {
             padre column: 'trmtpdre'
             tipoDocumento column: 'tpdc__id'
             de column: 'prsn__de'
-            tipoPersona column: 'tppr__id'
+            prioridad column: 'tppd__id'
             estadoTramite column: 'edtr__id'
             tipoTramite column: 'tptr__id'
             origenTramite column: 'orgn__id'
@@ -64,7 +64,7 @@ class Tramite {
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         tipoDocumento(blank: true, nullable: true, attributes: [title: 'tipoDocumento'])
         de(blank: true, nullable: true, attributes: [title: 'de'])
-        tipoPersona(blank: true, nullable: true, attributes: [title: 'tipoPersona'])
+        prioridad(blank: false, nullable: false, attributes: [title: 'tipoPersona'])
         estadoTramite(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
         tipoTramite(blank: true, nullable: true, attributes: [title: 'tipoTramite'])
         origenTramite(blank: true, nullable: true, attributes: [title: 'origenTRamite'])
