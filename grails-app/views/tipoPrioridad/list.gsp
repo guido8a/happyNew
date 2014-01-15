@@ -33,7 +33,7 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control span2" placeholder="Buscar">
                     <span class="input-group-btn">
