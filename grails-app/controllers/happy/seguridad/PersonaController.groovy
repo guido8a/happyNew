@@ -94,29 +94,6 @@ class PersonaController extends happy.seguridad.Shield {
         } //update
         else {
             //llena la parte de usuario si se esta creando la persona
-            /*
-                    Departamento departamento
-                    String cedula
-                    String nombre
-                    String apellido
-                    Date fechaNacimiento
-                Date fechaInicio
-                Date fechaFin
-                    String sigla
-                    String titulo
-                String cargo
-                    String mail
-                String login
-                String password
-                int activo
-                String autorizacion
-                Date fechaCambioPass
-                    String telefono
-                int jefe
-                    String celular
-                String foto
-                String codigo
-             */
             params.fechaInicio = new Date()
             def p = params.nombre.split(" ")
             params.login = ""
@@ -125,7 +102,7 @@ class PersonaController extends happy.seguridad.Shield {
             }
             p = params.apellido.split(" ")
             params.login += p[0]
-            params.password = params.cedula
+            params.password = params.cedula.toString().encodeAsMD5()
             params.activo = 0
             params.fechaCambioPass = new Date() + 30
             params.jefe = 0

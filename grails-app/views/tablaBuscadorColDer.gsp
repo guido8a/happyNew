@@ -1,7 +1,7 @@
 <g:if test="${lista?.size() > 0}">
     <div id="divBuscadorTabla">
         <div url="${url}" style="max-width: 200%;${(width) ? 'width:' + width + 'px' : ''}">
-            <table id="tablaBuscador" class="table table-bordered table-striped table-condensed table-hover" style="max-width: 100%;width: 100%">
+            <table id="tablaBuscador" class="table table-bordered table-condensed table-hover" style="max-width: 100%;width: 100%">
                 <thead>
 
                     <g:each in="${listaTitulos}">

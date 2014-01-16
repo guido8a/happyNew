@@ -8,25 +8,9 @@
 
     <body>
 
-        <g:if test="${flash.message}">
-            <div class="alert ${flash.tipo == 'error' ? 'alert-danger' : flash.tipo == 'success' ? 'alert-success' : 'alert-info'} ${flash.clase}">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <g:if test="${flash.tipo == 'error'}">
-                    <i class="fa fa-warning fa-2x pull-left"></i>
-                </g:if>
-                <g:elseif test="${flash.tipo == 'success'}">
-                    <i class="fa fa-check-square fa-2x pull-left"></i>
-                </g:elseif>
-                <g:elseif test="${flash.tipo == 'notFound'}">
-                    <i class="icon-ghost fa-2x pull-left"></i>
-                </g:elseif>
-                <p>
-                    ${flash.message}
-                </p>
-            </div>
-        </g:if>
+        <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-    <!-- botones -->
+        <!-- botones -->
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
@@ -46,7 +30,7 @@
             </div>
         </div>
 
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
 
@@ -59,8 +43,6 @@
                     <g:sortableColumn property="apellido" title="Apellido"/>
 
                     <g:sortableColumn property="fechaNacimiento" title="Fecha Nacimiento"/>
-
-                    <g:sortableColumn property="fechaInicio" title="Fecha Inicio"/>
 
                 </tr>
             </thead>
@@ -77,8 +59,6 @@
                         <td>${fieldValue(bean: personaInstance, field: "apellido")}</td>
 
                         <td><g:formatDate date="${personaInstance.fechaNacimiento}" format="dd-MM-yyyy"/></td>
-
-                        <td><g:formatDate date="${personaInstance.fechaInicio}" format="dd-MM-yyyy"/></td>
 
                     </tr>
                 </g:each>
@@ -147,18 +127,29 @@
                     }
                 });
             }
-            function createEditRow(id) {
-                var title = id ? "Editar" : "Crear";
+            function createEditRow(id, tipo) {
+                var title = id ? "Editar " : "Crear ";
                 var data = id ? { id : id } : {};
+
+                var url = "";
+                switch (tipo) {
+                    case "persona":
+                        url = "${createLink(action:'form_ajax')}";
+                        break;
+                    case "usuario":
+                        url = "${createLink(action:'formUsuario_ajax')}";
+                        break;
+                }
+
                 $.ajax({
                     type    : "POST",
-                    url     : "${createLink(action:'form_ajax')}",
+                    url     : url,
                     data    : data,
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
                             class   : "long",
-                            title   : title + " Persona",
+                            title   : title + tipo,
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -178,7 +169,7 @@
                             } //buttons
                         }); //dialog
                         setTimeout(function () {
-                            b.find(".form-control").first().focus()
+                            b.find(".form-control").not(".datepicker").first().focus()
                         }, 500);
                     } //success
                 }); //ajax
@@ -187,7 +178,7 @@
             $(function () {
 
                 $(".btnCrear").click(function () {
-                    createEditRow();
+                    createEditRow(null, "persona");
                     return false;
                 });
 
@@ -233,12 +224,31 @@
                         }
                     },
                     {
-                        text   : 'Editar',
+                        text   : 'Editar Persona',
                         icon   : "<i class='fa fa-pencil'></i>",
                         action : function (e) {
                             $("tr.success").removeClass("success");
                             e.preventDefault();
-                            createEditRow(id);
+                            createEditRow(id, "persona");
+                        }
+                    },
+                    {divider : true},
+                    {
+                        text   : 'Editar Usuario',
+                        icon   : "<i class='fa fa-pencil'></i>",
+                        action : function (e) {
+                            $("tr.success").removeClass("success");
+                            e.preventDefault();
+                            createEditRow(id, "usuario");
+                        }
+                    },
+                    {
+                        text   : 'Configuración',
+                        icon   : "<i class='fa fa-gears'></i>",
+                        action : function (e) {
+                            $("tr.success").removeClass("success");
+                            e.preventDefault();
+                            createEditRow(id, "usuario");
                         }
                     },
                     {divider : true},

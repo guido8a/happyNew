@@ -15,6 +15,12 @@
         <link href="${resource(dir: 'font-awesome-4.0.3/css', file: 'font-awesome.min.css')}" rel="stylesheet">
         <link href="${resource(dir: 'font-mfizz-1.2', file: 'font-mfizz.css')}" rel="stylesheet">
 
+        <!-- Custom styles -->
+        <link href="${resource(dir: 'css', file: 'custom.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'modals.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'tablas.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'datepicker.css')}" rel="stylesheet">
+
         <!-- JQuery -->
         <script src="${resource(dir: 'js/jquery/js', file: 'jquery-1.9.1.js')}"></script>
         <script src="${resource(dir: 'js/jquery/js', file: 'jquery-ui-1.10.3.custom.min.js')}"></script>
@@ -65,13 +71,6 @@
         <!-- el manager de fechas -->
         <script src="${resource(dir: 'js/plugins', file: 'date.js')}"></script>
 
-        <!-- Custom styles -->
-        <link href="${resource(dir: 'css', file: 'custom.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'modals.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'tablas.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'datepicker.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'context.css')}" rel="stylesheet">
-
         <script type="text/javascript">
             var spinner24Url = "${resource(dir:'images/spinners', file:'spinner_24.GIF')}";
             var spinner64Url = "${resource(dir:'images/spinners', file:'spinner_64.GIF')}";
@@ -85,8 +84,6 @@
     </head>
 
     <body>
-
-        <mn:menu/>
 
         <div class="container" style="min-width: 1000px !important;">
             <g:layoutBody/>

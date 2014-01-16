@@ -39,7 +39,7 @@
 
         <div id="list-DiaLaborable" role="main" style="margin-top: 10px;">
 
-            <table class="table table-bordered table-striped table-condensed table-hover">
+            <table class="table table-bordered table-condensed table-hover">
                 <thead>
                     <tr>
                     

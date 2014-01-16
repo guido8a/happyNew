@@ -17,8 +17,9 @@ class LoginController {
         if (session.usuario) {
             render "OK"
         } else {
-//            render "NO"
-            render "OK"
+            flash.message = "Su sesión ha caducado, por favor ingrese nuevamente."
+            render "NO"
+//            render "OK"
         }
     }
 
@@ -57,33 +58,43 @@ class LoginController {
     }
 
     def login() {
-
     }
 
     def validar() {
 //        println params
         def user = Persona.withCriteria {
-            eq("login", params.login)
+            eq("login", params.login, [ignoreCase: true])
             eq("password", params.pass.encodeAsMD5())
-            eq("activo", 1)
         }
 
-        if (user?.departamento?.id[0] == 13) {
-
-            flash.message = "El departamento al que pertenece el usuario no es válido para logear en el sistema!"
-
+//        if (user?.departamento?.id[0] == 13) {
+//            flash.message = "El departamento al que pertenece el usuario no es válido para logear en el sistema!"
+//        } else {
+        if (user.size() == 0) {
+            flash.message = "No se ha encontrado el usuario"
+            flash.tipo = "error"
+        } else if (user.size() > 1) {
+            flash.message = "Ha ocurrido un error grave"
+            flash.tipo = "error"
         } else {
-            if (user.size() == 0) {
-                flash.message = "No se ha encontrado el usuario"
-            } else if (user.size() > 1) {
-                flash.message = "Ha ocurrido un error grave"
+            user = user[0]
+            session.usuario = user
+            def perfiles = Sesn.findAllByUsuario(user)
+
+            if (perfiles.size() == 0) {
+                flash.message = "No puede ingresar. Comuníquese con el administrador."
+                flash.tipo = "error"
+                flash.icon = "icon-splatter"
+            } else if (perfiles.size() == 1) {
+                session.perfil = perfiles.first()
+                redirect(controller: "inicio", action: "index")
+                return
             } else {
-                user = user[0]
-                session.usuario = user
                 redirect(action: "perfiles")
                 return
             }
         }
+//        }
 
         redirect(controller: 'login', action: "login")
     }
@@ -91,10 +102,8 @@ class LoginController {
     def perfiles() {
         def usuarioLog = session.usuario
         def perfilesUsr = Sesn.findAllByUsuario(usuarioLog, [sort: 'perfil'])
-
         return [perfilesUsr: perfilesUsr]
     }
-
 
     def savePer() {
 //        println params

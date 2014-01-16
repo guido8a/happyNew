@@ -1,7 +1,7 @@
 <g:if test="${lista?.size() > 0}">
 
     <div url="${url}">
-        <table width="100%" id="tablaBuscador" class="table table-bordered table-striped table-condensed table-hover" style="font-size: 10px !important;">
+        <table width="100%" id="tablaBuscador" class="table table-bordered table-condensed table-hover" style="font-size: 10px !important;">
             <thead>
                 <g:each in="${listaTitulos}" status="k" var="it">
                     <th campo="${listaCampos[k]}">${it}</th>

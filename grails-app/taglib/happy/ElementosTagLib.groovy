@@ -25,6 +25,42 @@ class ElementosTagLib {
     }
 
     /**
+     * crea el div para el flash message
+     */
+    def flashMessage = { attrs, body ->
+        def contenido = body()
+
+        if (!contenido) {
+            if (attrs.contenido) {
+                contenido = attrs.contenido
+            }
+        }
+
+        if (contenido) {
+            def finHtml = "</p></div>"
+
+            def html = "<div class=\"alert ${attrs.tipo.toLowerCase() == 'error' ? 'alert-danger' : attrs.tipo.toLowerCase() == 'success' ? 'alert-success' : 'alert-info'} ${attrs.clase}\">"
+            html += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"
+
+            if (attrs.icon) {
+                html += "<i class=\"${attrs.icon} fa-2x pull-left iconMargin\"></i> "
+            } else {
+                if (attrs.tipo.toLowerCase() == 'error') {
+                    html += "<i class=\"fa fa-warning fa-2x pull-left iconMargin\"></i> "
+                } else if (attrs.tipo.toLowerCase() == 'success') {
+                    html += "<i class=\"fa fa-check-square fa-2x pull-left iconMargin\"></i> "
+                } else if (attrs.tipo.toLowerCase() == 'notfound') {
+                    html += "<i class=\"icon-ghost fa-2x pull-left iconMargin\"></i> "
+                }
+            }
+            html += "<p>"
+            out << html << contenido << finHtml
+        } else {
+            out << ""
+        }
+    }
+
+    /**
      * crea un datepicker
      *  attrs:
      *      class           clase
@@ -77,7 +113,8 @@ class ElementosTagLib {
 
         def clase = attrs["class"]
 
-        def format = attrs.format ?: "dd-mm-yyyy"
+        def format = attrs.format ?: "dd-MM-yyyy"
+        def formatJS = attrs.formatJS ?: format.replaceAll("M", "m")
 
         def startDate = attrs.minDate ?: false
         def endDate = attrs.maxDate ?: false
@@ -101,12 +138,20 @@ class ElementosTagLib {
             value = ""
         }
 
+        def valueDay = "", valueMonth = "", valueYear = ""
+        if (value != "") {
+            def parts = value.split("-")
+            valueDay = parts[0]
+            valueMonth = parts[1]
+            valueYear = parts[2]
+        }
+
         def br = "\n"
 
         def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") + " value='${value}' class='${clase}' />"
-        def hiddenDay = "<input type='hidden' name='${nameHiddenDay}' id='${nameHiddenDay}'/>"
-        def hiddenMonth = "<input type='hidden' name='${nameHiddenMonth}' id='${nameHiddenMonth}'/>"
-        def hiddenYear = "<input type='hidden' name='${nameHiddenYear}' id='${nameHiddenYear}'/>"
+        def hiddenDay = "<input type='hidden' name='${nameHiddenDay}' id='${nameHiddenDay}' value='${valueDay}'/>"
+        def hiddenMonth = "<input type='hidden' name='${nameHiddenMonth}' id='${nameHiddenMonth}' value='${valueMonth}'/>"
+        def hiddenYear = "<input type='hidden' name='${nameHiddenYear}' id='${nameHiddenYear}' value='${valueYear}'/>"
         def hidden = "<input type='hidden' name='${name}' id='${name}' value='date.struct'/>"
 
         def div = ""
@@ -135,7 +180,7 @@ class ElementosTagLib {
             js += "beforeShowDay: ${beforeShowDay}," + br
         }
         js += 'language: "es",' + br
-        js += "format: '${format}'," + br
+        js += "format: '${formatJS}'," + br
         js += "orientation: '${orientation}'," + br
         js += "autoclose: ${autoclose}," + br
         js += "todayHighlight: ${todayHighlight}" + br

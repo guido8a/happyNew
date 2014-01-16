@@ -8,23 +8,7 @@
 
     <body>
 
-        <g:if test="${flash.message}">
-            <div class="alert ${flash.tipo == 'error' ? 'alert-danger' : flash.tipo == 'success' ? 'alert-success' : 'alert-info'} ${flash.clase}">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <g:if test="${flash.tipo == 'error'}">
-                    <i class="fa fa-warning fa-2x pull-left"></i>
-                </g:if>
-                <g:elseif test="${flash.tipo == 'success'}">
-                    <i class="fa fa-check-square fa-2x pull-left"></i>
-                </g:elseif>
-                <g:elseif test="${flash.tipo == 'notFound'}">
-                    <i class="icon-ghost fa-2x pull-left"></i>
-                </g:elseif>
-                <p>
-                    ${flash.message}
-                </p>
-            </div>
-        </g:if>
+        <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
     <!-- botones -->
         <div class="btn-toolbar toolbar">
@@ -46,7 +30,7 @@
             </div>
         </div>
 
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
 
@@ -177,7 +161,7 @@
                             } //buttons
                         }); //dialog
                         setTimeout(function () {
-                            b.find(".form-control").first().focus()
+                            b.find(".form-control").not(".datepicker").first().focus()
                         }, 500);
                     } //success
                 }); //ajax

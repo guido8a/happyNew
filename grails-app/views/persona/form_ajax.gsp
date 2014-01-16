@@ -84,7 +84,6 @@
                     <div class="col-md-4">
                         <elm:datepicker name="fechaNacimiento" title="fechaNacimiento" class="datepicker form-control" maxDate="-15y"
                                         value="${personaInstance?.fechaNacimiento}" default="none" noSelection="['': '']"/>
-                        <g:datePicker name="test" />
                     </div>
 
                 </span>

@@ -85,3 +85,7 @@ input.help-block, select.help-block, textarea.help-block {
     display : inline-block;
     width   : 100%;
 }
+
+.iconMargin {
+    margin-right : 10px;
+}
