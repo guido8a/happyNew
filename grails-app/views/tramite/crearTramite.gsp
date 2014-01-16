@@ -7,10 +7,38 @@
     <link href='${resource(dir: "css", file: "CustomSvt.css")}' rel='stylesheet' type='text/css'>
     <style>
     .filaDest{
-        width: 90%;
-        height: 30px;
-        border: 1px solid black;
+        width: 95%;
+        height: 20px;
+        border-bottom: 1px solid black;
         margin: 10px;
+        vertical-align: middle;
+        text-align: left;
+        line-height: 10px;
+        padding-left: 10px;
+        padding-bottom: 20px;
+        font-size: 10px;
+    }
+    .span-rol{
+        padding-right: 10px;
+        padding-left: 10px;
+        height: 16px;
+        line-height: 16px;
+        background: #FFBD4C;
+        margin-right: 5px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .span-eliminar{
+        padding-right: 10px;
+        padding-left: 10px;
+        height: 16px;
+        line-height: 16px;
+        background: rgba(255, 2, 10, 0.35);
+        margin-right: 5px;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+        float: right;
     }
     </style>
 </head>
@@ -92,7 +120,12 @@
     <div style="width: 300px;height: 250px;margin: 10px;padding: 15px;float: left">
         <div class="row negrilla">
             Direccion:
-            <g:select name="direc" id="direccion" class="many-to-one form-control" from="${happy.tramites.Departamento.list(['sort':'descripcion'])}" value="" optionKey="id" optionValue="descripcion"></g:select>
+            <select name="direc" id="direccion" class="many-to-one form-control">
+                <g:each in="${happy.tramites.Departamento.list(['sort':'descripcion'])}" var="d">
+                    <option value="${d.id}" cod="${d.codigo}">${d.descripcion}</option>
+                </g:each>
+            </select>
+            %{--<g:select name="direc" id="direccion" class="many-to-one form-control" from="${happy.tramites.Departamento.list(['sort':'descripcion'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
         </div>
         <div class="row negrilla">
             Usuario:
@@ -107,16 +140,14 @@
     </div>
     <div style="width: 100px;height: 250px;margin: 10px;padding: 15px;float: left">
         <div class="row negrilla" style="text-align: center;margin-top: 100px">
-            <a href="#" class="btn btn-primary" style="margin: auto">Agregar</a>
+            <a href="#" id="agregar-usu" class="btn btn-primary" style="margin: auto">Agregar</a>
         </div>
     </div>
-    <fieldset style="width: 500px;height: 250px;border: 1px solid #0088CC;margin: 10px;padding: 15px;float: left;margin-bottom: 20px;" class="ui-corner-all">
+    <fieldset style="width: 500px;height: 250px;border: 1px solid #0088CC;margin: 10px;padding: 15px;float: left;margin-bottom: 20px;" class="ui-corner-all" id="dest">
         <legend style="margin-bottom: 1px">
             Destinatarios:
         </legend>
-        <div class="filaDest ui-corner-all"></div>
-        <div class="filaDest ui-corner-all"></div>
-        <div class="filaDest ui-corner-all"></div>
+
     </fieldset>
 
 
@@ -128,9 +159,51 @@
             url     : '${createLink(controller: "tramite", action: "cargaUsuarios")}',
             data :"dir="+$("#direccion").val(),
             success : function (msg) {
-                $("#div-usuarios").html(msg)
+//                console.log(msg)
+                $("#div_usuarios").html(msg)
             }
         });
+    })
+
+    $("#agregar-usu").click(function(){
+        var usu = $("#usuario").val()
+        var rol = $("#rol").val()
+        var verificacion=false
+        var band=true
+        var message
+        if(usu*1<1){
+            message="<b>Por favor, escoja un usuario</b>"
+            band=false
+        }
+        if($(".para").size()>0 && rol=="1" ){
+            message="<b>Solo puede asignar un destinatario con el rol : PARA</b>"
+            band=false
+        }
+        if($(".filaDest").size()==6 ){
+            message="<b>Ya ha asignado el máximo de 6 destinatarios</b>"
+            band=false
+        }
+
+        if(band){
+            var div = $("<div class='filaDest ui-corner-all'>")
+            var span = $("<span class='span-eliminar ui-corner-all' title='Click para eliminar'>Eliminar</span>")
+            div.html("<span class='span-rol ui-corner-all'>"+$("#rol option:selected").text()+"</span>"+$("#direccion option:selected").attr("cod")+": "+$("#usuario option:selected").text())
+            div.append(span)
+            if(rol=="1")
+                div.addClass("para")
+            div.attr("prsn",$("#usuario").val())
+            div.attr("rol",rol)
+            span.bind("click",function(){
+                $(this).parent().remove()
+            })
+            $("#dest").append(div)
+        }else{
+            bootbox.alert(message)
+        }
+
+    })
+    $(".span-eliminar").click(function(){
+        $(this).parent().remove()
     })
 </script>
 

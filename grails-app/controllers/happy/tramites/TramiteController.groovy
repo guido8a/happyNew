@@ -21,14 +21,14 @@ class TramiteController extends happy.seguridad.Shield {
     def cargaUsuarios(){
         def dir = Departamento.get(params.dir)
         def users= happy.seguridad.Persona.findAllByDepartamento(dir)
-        println "users "+users
+//        println "users "+users
         for(int i=users.size()-1;i>-1;i--){
-            println " "+users[i].estaActivo()+"  "+users[i].puedeRecibir()
+//            println " "+users[i].estaActivo()+"  "+users[i].puedeRecibir()
             if(!(users[i].estaActivo() && users[i].puedeRecibir())){
                 users.remove(i)
             }
         }
-
+//        println "users 2 "+users
         render g.select(from:users,name:"usuario",id:"usuario",class: "many-to-one form-control",optionKey: "id")
 //        <g:select name="usuario" id="usuario" class="many-to-one form-control" from="" value="" ></g:select>
     }
