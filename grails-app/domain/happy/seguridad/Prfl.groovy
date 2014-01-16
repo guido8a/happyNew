@@ -28,7 +28,7 @@ class Prfl implements Serializable {
     }
 
     static constraints = {
-
+        padre(blank: true, nullable: true)
     }
 
     String toString() {

@@ -11,6 +11,12 @@ class PersonaController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def config() {
+        def usu = Persona.get(params.id)
+
+        return [usuario: usu]
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def personaInstanceList = Persona.list(params)

@@ -6,16 +6,16 @@ th {
 th.sortable {
     background-position : right;
     background-repeat   : no-repeat;
-    background-image    : url(../images/skin/upDown.png);
+    background-image    : url(../../images/skin/upDown.png);
     padding-right       : 1.1em;
 }
 
 th.asc {
-    background-image : url(../images/skin/up.png);
+    background-image : url(../../images/skin/up.png);
 }
 
 th.desc {
-    background-image : url(../images/skin/down.png);
+    background-image : url(../../images/skin/down.png);
 }
 
 th a {

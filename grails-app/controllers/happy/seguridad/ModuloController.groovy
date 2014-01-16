@@ -8,14 +8,14 @@ class ModuloController extends happy.seguridad.Shield  {
         redirect(action: "list", params: params)
     }
 
-    def list = {
-        def title = g.message(code: "modulo.list", default: "Modulo List")
-//        <g:message code="default.list.label" args="[entityName]" />
-
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-
-        [moduloInstanceList: Modulo.list(params), moduloInstanceTotal: Modulo.count(), title: title, params: params]
-    }
+//    def list = {
+//        def title = g.message(code: "modulo.list", default: "Modulo List")
+////        <g:message code="default.list.label" args="[entityName]" />
+//
+//        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+//
+//        [moduloInstanceList: Modulo.list(params), moduloInstanceTotal: Modulo.count(), title: title, params: params]
+//    }
 
     def form = {
         def title
@@ -138,4 +138,86 @@ class ModuloController extends happy.seguridad.Shield  {
             redirect(action: "list")
         }
     }
+
+
+    def list() {
+        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+        def moduloInstanceList = Modulo.list(params)
+        def moduloInstanceCount = Modulo.count()
+        if (moduloInstanceList.size() == 0 && params.offset && params.max) {
+            params.offset = params.offset - params.max
+        }
+        moduloInstanceList = Modulo.list(params)
+        return [moduloInstanceList: moduloInstanceList, moduloInstanceCount: moduloInstanceCount]
+    } //list
+    def show_ajax() {
+        if (params.id) {
+            def numeroInstance = Modulo.get(params.id)
+            if (!numeroInstance) {
+                notFound_ajax()
+                return
+            }
+            return [numeroInstance: numeroInstance]
+        } else {
+            notFound_ajax()
+        }
+    } //show para cargar con ajax en un dialog
+
+    def form_ajax() {
+        def moduloInstance = new Modulo(params)
+        if (params.id) {
+            moduloInstance = Modulo.get(params.id)
+            if (!moduloInstance) {
+                notFound_ajax()
+                return
+            }
+        }
+        return [moduloInstance: moduloInstance]
+    } //form para cargar con ajax en un dialog
+
+    def save_ajax() {
+        params.each { k, v ->
+            if (v != "date.struct" && v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
+        def moduloInstance = new Modulo()
+        if (params.id) {
+            moduloInstance = Modulo.get(params.id)
+            if (!moduloInstance) {
+                notFound_ajax()
+                return
+            }
+        } //update
+        moduloInstance.properties = params
+        if (!moduloInstance.save(flush: true)) {
+            def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Modulo."
+            msg += renderErrors(bean: moduloInstance)
+            render msg
+            return
+        }
+        render "OK_${params.id ? 'Actualización' : 'Creación'} de Modulo exitosa."
+    } //save para grabar desde ajax
+
+    def delete_ajax() {
+        if (params.id) {
+            def moduloInstance = Modulo.get(params.id)
+            if (moduloInstance) {
+                try {
+                    moduloInstance.delete(flush: true)
+                    render "OK_Eliminación de Modulo exitosa."
+                } catch (e) {
+                    render "NO_No se pudo eliminar Modulo."
+                }
+            } else {
+                notFound_ajax()
+            }
+        } else {
+            notFound_ajax()
+        }
+    } //delete para eliminar via ajax
+
+    protected void notFound_ajax() {
+        render "NO_No se encontró Numero."
+    } //notFound para ajax
 }

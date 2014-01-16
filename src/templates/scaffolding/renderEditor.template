@@ -58,7 +58,7 @@
                  sb << ' cols="40" rows="5"'
                 if (cp.maxSize) sb << ' maxlength="' << cp.maxSize << '"'
                 if(isRequired()) sb << ' required=""'
-                sb << ' class="form-control'
+                sb << ' class="allCaps form-control'
                 if (isRequired()) {
                     sb << ' required'
                 }
@@ -97,7 +97,7 @@
                 if (!cp.editable) sb << ' readonly="readonly"'
                 if (cp.matches) sb << ' pattern="${' << "${domainInstance}.constraints.${property.name}.matches" << '}"'
                 if(isRequired()) sb << ' required=""'
-                sb << ' class="form-control'
+                sb << ' class="allCaps form-control'
                 if (isRequired()) {
                     sb << ' required'
                 }

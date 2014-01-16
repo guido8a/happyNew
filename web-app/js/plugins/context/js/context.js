@@ -114,7 +114,8 @@ var context = context || (function () {
             } else if (typeof options.above == 'string' && options.above == 'auto') {
                 $dd.removeClass('dropdown-context-up');
                 var autoH = $dd.height() + 12;
-                if ((e.pageY + autoH) > $('html').height()) {
+//                if ((e.pageY + autoH) > $('html').height()) {
+                if ((e.pageY + autoH) > $(document).height()) {
                     $dd.addClass('dropdown-context-up').css({
                         top  : e.pageY - 20 - autoH,
                         left : e.pageX - 13

@@ -39,17 +39,17 @@ class ElementosTagLib {
         if (contenido) {
             def finHtml = "</p></div>"
 
-            def html = "<div class=\"alert ${attrs.tipo.toLowerCase() == 'error' ? 'alert-danger' : attrs.tipo.toLowerCase() == 'success' ? 'alert-success' : 'alert-info'} ${attrs.clase}\">"
+            def html = "<div class=\"alert ${attrs.tipo?.toLowerCase() == 'error' ? 'alert-danger' : attrs.tipo?.toLowerCase() == 'success' ? 'alert-success' : 'alert-info'} ${attrs.clase}\">"
             html += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"
 
             if (attrs.icon) {
                 html += "<i class=\"${attrs.icon} fa-2x pull-left iconMargin\"></i> "
             } else {
-                if (attrs.tipo.toLowerCase() == 'error') {
+                if (attrs.tipo?.toLowerCase() == 'error') {
                     html += "<i class=\"fa fa-warning fa-2x pull-left iconMargin\"></i> "
-                } else if (attrs.tipo.toLowerCase() == 'success') {
+                } else if (attrs.tipo?.toLowerCase() == 'success') {
                     html += "<i class=\"fa fa-check-square fa-2x pull-left iconMargin\"></i> "
-                } else if (attrs.tipo.toLowerCase() == 'notfound') {
+                } else if (attrs.tipo?.toLowerCase() == 'notfound') {
                     html += "<i class=\"icon-ghost fa-2x pull-left iconMargin\"></i> "
                 }
             }
@@ -58,6 +58,16 @@ class ElementosTagLib {
         } else {
             out << ""
         }
+    }
+
+    def favicon = { attrs ->
+//        def html = "     <link rel=\"shortcut icon\" href=\"${resource(dir: 'images/ico', file: 'emoticon_smile.png')}\">\n" +
+//                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"144x144\" href=\"${resource(dir: 'images/ico', file: 'janus_144.png')}\">\n" +
+//                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"114x114\" href=\"${resource(dir: 'images/ico', file: 'janus_114.png')}\">\n" +
+//                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"72x72\" href=\"${resource(dir: 'images/ico', file: 'janus_72.png')}\">\n" +
+//                "        <link rel=\"apple-touch-icon-precomposed\" href=\"${resource(dir: 'images/ico', file: 'janus_57.png')}\">"
+        def html = "     <link rel=\"shortcut icon\" href=\"${resource(dir: 'images/ico', file: 'emoticon_smile.png')}\">"
+        out << html
     }
 
     /**

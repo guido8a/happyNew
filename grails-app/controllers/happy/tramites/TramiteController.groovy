@@ -32,8 +32,4 @@ class TramiteController extends happy.seguridad.Shield {
         render g.select(from:users,name:"usuario",id:"usuario",class: "many-to-one form-control",optionKey: "id")
 //        <g:select name="usuario" id="usuario" class="many-to-one form-control" from="" value="" ></g:select>
     }
-
-
-
-
 }

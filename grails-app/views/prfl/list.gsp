@@ -1,9 +1,9 @@
-<%@ page import="happy.seguridad.Persona" %>
+<%@ page import="happy.seguridad.Prfl" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de Persona</title>
+        <title>Lista de perfiles</title>
     </head>
 
     <body>
@@ -30,47 +30,47 @@
             </div>
         </div>
 
-        <table class="table table-condensed table-bordered">
+        <table class="table table-condensed table-bordered table-striped">
             <thead>
                 <tr>
 
-                    <th>Departamento</th>
+                    <g:sortableColumn property="codigo" title="Código"/>
 
-                    <g:sortableColumn property="cedula" title="Cédula"/>
+                    <g:sortableColumn property="descripcion" title="Descripción"/>
 
                     <g:sortableColumn property="nombre" title="Nombre"/>
 
-                    <g:sortableColumn property="apellido" title="Apellido"/>
+                    <g:sortableColumn property="observaciones" title="Observaciones"/>
 
-                    <g:sortableColumn property="fechaNacimiento" title="Fecha Nacimiento"/>
+                    <th>Padre</th>
 
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${personaInstanceList}" status="i" var="personaInstance">
-                    <tr data-id="${personaInstance.id}">
+                <g:each in="${prflInstanceList}" status="i" var="prflInstance">
+                    <tr data-id="${prflInstance.id}">
 
-                        <td>${personaInstance.departamento.descripcion}</td>
+                        <td>${fieldValue(bean: prflInstance, field: "codigo")}</td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "cedula")}</td>
+                        <td>${fieldValue(bean: prflInstance, field: "descripcion")}</td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "nombre")}</td>
+                        <td>${fieldValue(bean: prflInstance, field: "nombre")}</td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "apellido")}</td>
+                        <td>${fieldValue(bean: prflInstance, field: "observaciones")}</td>
 
-                        <td><g:formatDate date="${personaInstance.fechaNacimiento}" format="dd-MM-yyyy"/></td>
+                        <td>${fieldValue(bean: prflInstance, field: "padre")}</td>
 
                     </tr>
                 </g:each>
             </tbody>
         </table>
 
-        <elm:pagination total="${personaInstanceCount}" params="${params}"/>
+        <elm:pagination total="${prflInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
             var id = null;
             function submitForm() {
-                var $form = $("#frmPersona");
+                var $form = $("#frmPrfl");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
                     $btn.replaceWith(spinner);
@@ -96,7 +96,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Persona seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el perfil seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -127,29 +127,17 @@
                     }
                 });
             }
-            function createEditRow(id, tipo) {
-                var title = id ? "Editar " : "Crear ";
+            function createEditRow(id) {
+                var title = id ? "Editar" : "Crear";
                 var data = id ? { id : id } : {};
-
-                var url = "";
-                switch (tipo) {
-                    case "persona":
-                        url = "${createLink(action:'form_ajax')}";
-                        break;
-                    case "usuario":
-                        url = "${createLink(action:'formUsuario_ajax')}";
-                        break;
-                }
-
                 $.ajax({
                     type    : "POST",
-                    url     : url,
+                    url     : "${createLink(action:'form_ajax')}",
                     data    : data,
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            class   : "long",
-                            title   : title + tipo,
+                            title   : title + " perfil",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -169,7 +157,7 @@
                             } //buttons
                         }); //dialog
                         setTimeout(function () {
-                            b.find(".form-control").not(".datepicker").first().focus()
+                            b.find(".form-control").first().focus()
                         }, 500);
                     } //success
                 }); //ajax
@@ -178,7 +166,7 @@
             $(function () {
 
                 $(".btnCrear").click(function () {
-                    createEditRow(null, "persona");
+                    createEditRow();
                     return false;
                 });
 
@@ -208,7 +196,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver Persona",
+                                        title   : "Ver Prfl",
                                         message : msg,
                                         buttons : {
                                             ok : {
@@ -224,31 +212,13 @@
                         }
                     },
                     {
-                        text   : 'Editar Persona',
+                        text   : 'Editar',
                         icon   : "<i class='fa fa-pencil'></i>",
                         action : function (e) {
                             $("tr.success").removeClass("success");
                             e.preventDefault();
-                            createEditRow(id, "persona");
+                            createEditRow(id);
                         }
-                    },
-                    {divider : true},
-                    {
-                        text   : 'Editar Usuario',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.success").removeClass("success");
-                            e.preventDefault();
-                            createEditRow(id, "usuario");
-                        }
-                    },
-                    {
-                        text   : 'Configuración',
-                        icon   : "<i class='fa fa-gears'></i>",
-                        action : function (e) {
-                            location.href = "${createLink(action: 'config')}/" + id;
-                        }
-
                     },
                     {divider : true},
                     {

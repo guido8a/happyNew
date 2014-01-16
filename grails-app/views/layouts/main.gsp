@@ -4,7 +4,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-        %{--<link rel="shortcut icon" href="../../assets/ico/favicon.png">--}%
+
+        <!-- los favicon de todos los tamaños -->
+        <elm:favicon/>
 
         <title><g:layoutTitle default="Happy"/></title>
 
@@ -67,10 +69,10 @@
 
         <!-- Custom styles -->
         <link href="${resource(dir: 'css', file: 'custom.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'modals.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'tablas.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'datepicker.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'context.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/modals.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/tablas.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/datepicker.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/context.css')}" rel="stylesheet">
 
         <script type="text/javascript">
             var spinner24Url = "${resource(dir:'images/spinners', file:'spinner_24.GIF')}";
@@ -86,7 +88,7 @@
 
     <body>
 
-        <mn:menu/>
+        <mn:menu title="${g.layoutTitle(default: g.message(code: 'Happy'))}"/>
 
         <div class="container" style="min-width: 1000px !important;">
             <g:layoutBody/>

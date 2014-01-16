@@ -26,8 +26,7 @@ bootbox.setDefaults({
 
 //para el context menu deshabilita el click derecho en las paginas
 context.init({
-    preventDoubleContext : false,
-    compress             : true
+    preventDoubleContext : false
 });
 //context.attach('html', [
 //    {

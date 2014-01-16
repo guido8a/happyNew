@@ -4,7 +4,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-        %{--<link rel="shortcut icon" href="../../assets/ico/favicon.png">--}%
+
+        <!-- los favicon de todos los tamaños -->
+        <elm:favicon/>
 
         <title><g:layoutTitle default="Happy"/></title>
 
@@ -17,9 +19,9 @@
 
         <!-- Custom styles -->
         <link href="${resource(dir: 'css', file: 'custom.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'modals.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'tablas.css')}" rel="stylesheet">
-        <link href="${resource(dir: 'css', file: 'datepicker.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/modals.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/tablas.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'css', file: 'custom/datepicker.css')}" rel="stylesheet">
 
         <!-- JQuery -->
         <script src="${resource(dir: 'js/jquery/js', file: 'jquery-1.9.1.js')}"></script>
