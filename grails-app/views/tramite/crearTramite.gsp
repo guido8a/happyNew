@@ -5,6 +5,14 @@
     <meta name="layout" content="main">
     <title>Creación de trámites o documentos principales</title>
     <link href='${resource(dir: "css", file: "CustomSvt.css")}' rel='stylesheet' type='text/css'>
+    <style>
+    .filaDest{
+        width: 90%;
+        height: 30px;
+        border: 1px solid black;
+        margin: 10px;
+    }
+    </style>
 </head>
 
 <body>
@@ -77,7 +85,54 @@
         </div>
     </g:form>
 </div>
+<div style="vertical-align: middle;float: left;width: 100%" class="vertical-container"  >
+    <p class="css-vertical-text">Destinatarios</p>
+    <div class="linea"></div>
 
+    <div style="width: 300px;height: 250px;margin: 10px;padding: 15px;float: left">
+        <div class="row negrilla">
+            Direccion:
+            <g:select name="direc" id="direccion" class="many-to-one form-control" from="${happy.tramites.Departamento.list(['sort':'descripcion'])}" value="" optionKey="id" optionValue="descripcion"></g:select>
+        </div>
+        <div class="row negrilla">
+            Usuario:
+            <div id="div_usuarios">
+                <g:select name="usuario" id="usuario" class="many-to-one form-control" from="" value="" ></g:select>
+            </div>
+        </div>
+        <div class="row negrilla">
+            Rol:
+            <g:select name="rol" id="rol" class="many-to-one form-control" from="${happy.tramites.RolPersonaTramite.findAllByCodigoIlike('R%')}" value="" optionKey="id" optionValue="descripcion" ></g:select>
+        </div>
+    </div>
+    <div style="width: 100px;height: 250px;margin: 10px;padding: 15px;float: left">
+        <div class="row negrilla" style="text-align: center;margin-top: 100px">
+            <a href="#" class="btn btn-primary" style="margin: auto">Agregar</a>
+        </div>
+    </div>
+    <fieldset style="width: 500px;height: 250px;border: 1px solid #0088CC;margin: 10px;padding: 15px;float: left;margin-bottom: 20px;" class="ui-corner-all">
+        <legend style="margin-bottom: 1px">
+            Destinatarios:
+        </legend>
+        <div class="filaDest ui-corner-all"></div>
+        <div class="filaDest ui-corner-all"></div>
+        <div class="filaDest ui-corner-all"></div>
+    </fieldset>
+
+
+
+</div>
+<script type="text/javascript">
+    $("#direccion").change(function(){
+        $.ajax({
+            url     : '${createLink(controller: "tramite", action: "cargaUsuarios")}',
+            data :"dir="+$("#direccion").val(),
+            success : function (msg) {
+                $("#div-usuarios").html(msg)
+            }
+        });
+    })
+</script>
 
 </body>
 </html>

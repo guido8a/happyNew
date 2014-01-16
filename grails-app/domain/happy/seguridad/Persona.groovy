@@ -1,6 +1,8 @@
 package happy.seguridad
 
 import happy.tramites.Departamento
+import happy.tramites.PermisoTramite
+import happy.tramites.PermisoUsuario
 
 class Persona {
     Departamento departamento
@@ -78,4 +80,33 @@ class Persona {
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
     }
+
+    def estaActivo(){
+        if(this.activo!=1)
+            return false
+        def now = new Date()
+        def accs = Accs.findAllByUsuarioAndAccsFechaFinalGreaterThan(this,now)
+        accs.each {
+            if(it.accsFechaInicial > now)
+                return false
+        }
+        return true
+    }
+
+    def puedeRecibir(){
+        def permiso=PermisoTramite.findByCodigo("P003")
+        def perms = null
+        perms = PermisoUsuario.findByPersonaAndPermisoTramite(this,permiso)
+        if(perms)
+            return true
+        return false
+
+    }
+
+    String toString(){
+        return "${this.nombre} ${this.apellido}"
+    }
+
+
+
 }
