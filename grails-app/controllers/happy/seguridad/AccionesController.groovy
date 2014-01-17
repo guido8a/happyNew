@@ -36,6 +36,7 @@ class AccionesController extends happy.seguridad.Shield {
         def tx = ""
         tx = poneSQL(tipo, mdlo)
         //println "ajaxPermisos mdlo: ${mdlo}"
+        println tx
         if (tipo == '1') {
             titulos[0] = ['Permisos'] + ['Acción'] + ['Menú'] + ['Controlador']
         } else {
@@ -51,7 +52,8 @@ class AccionesController extends happy.seguridad.Shield {
             resultado[0] = ['0'] + ['<font color="red">no hay acciones</font>'] + [''] + [''] + ['']
         }
         cn.close()
-        render(view: 'detalle', model: [datos: resultado, mdlo__id: mdlo, tpac__id: tipo, titulos: titulos])
+//        render(view: 'detalle', model: [datos: resultado, mdlo__id: mdlo, tpac__id: tipo, titulos: titulos])
+        return [datos: resultado, mdlo__id: mdlo, tpac__id: tipo, titulos: titulos]
     }
 
     def grabaAccn = {
@@ -245,13 +247,17 @@ class AccionesController extends happy.seguridad.Shield {
     def cargarControladores = {
 //        println "cargar controladores"
         def i = 0
+
         grailsApplication.controllerClasses.each {
             //def  lista = Ctrl.list()
             def ctr = Ctrl.findByCtrlNombre(it.getName())
             if (!ctr) {
                 ctr = new Ctrl([ctrlNombre: it.getName()])
-                ctr.save(flush: true)
-                i++
+                if (!ctr.save(flush: true)) {
+                    println "error controladores: " + ctr.errors
+                } else {
+                    i++
+                }
             }
         }
         render("Se han agregado ${i} Controladores")
@@ -286,11 +292,12 @@ class AccionesController extends happy.seguridad.Shield {
                                         accn.tipo = Tpac.get(2)
                                     else
                                         accn.tipo = Tpac.get(1)
-                                    accn.modulo = Modulo.findByDescripcionLike("no%asignado")
-                                    accn.save(flush: true)
-                                    i++
-                                    println "errores " + accn.errors
-
+                                    accn.modulo = Modulo.findByDescripcionIlike("no%asignado")
+                                    if (!accn.save(flush: true)) {
+                                        println "errores accn" + accn.errors
+                                    } else {
+                                        i++
+                                    }
                                 }
                                 t.add(s.getAt(2))
                             }

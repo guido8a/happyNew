@@ -55,8 +55,9 @@ class PrflController extends happy.seguridad.Shield {
             i++
         }
         cn.close()
-        //println "-------------------------" + resultado
-        render(view: 'lsta', model: [datos: resultado, mdlo__id: ids, tpac__id: tpac])
+//        println "-------------------------" + resultado
+
+        return [datos: resultado, mdlo__id: ids, tpac__id: tpac]
     }
 
     def creaMdlo = {

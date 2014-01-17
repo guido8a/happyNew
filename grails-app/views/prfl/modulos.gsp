@@ -2,8 +2,6 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main"/>
-        <title>Perfil</title>
-        <g:set var="entityName" value="${message(code: 'prfl.label', default: 'Perfiles')}"/>
         <title>Gestión de Permisos, Módulos y Perfiles</title>
     </head>
 
@@ -35,20 +33,20 @@
             </div>
         </div>
 
-        <hr/>
-
-        <div id="tipo" style="width: 960px; margin-top:10px; padding: 4px;" class="ui-corner-all ui-widget-content">
+        <div id="tipo" class="alert ">
             Selecione el tipo de acción
-            <g:each var="tp" in="${happy.seguridad.Tpac.list()}" status="i">
-                <input class="rd_tipo" type="radio" id="tpac${i}" name="tpac" value="${tp.id}" ${(tp.id == 1) ? 'checked=' : ''}/><label
-                    for="tpac${i}">${tp.tipo}</label>
-            </g:each>
+            <div class="btn-group" data-toggle="buttons">
+                <g:each var="tp" in="${happy.seguridad.Tpac.list()}" status="i">
+                    <label class="btn btn-primary tipo ${(tp.id == 1) ? 'active' : ''}">
+                        <input type="radio" id="tpac${i}" name="tpac" value="${tp.id}" ${(tp.id == 1) ? 'checked=' : ''}> ${tp.tipo}
+                    </label>
+                </g:each>
+            </div>
+
             <span style="font-size: 10pt; color: black; margin-left: 160px;">Seleccione un Perfil
-            <g:select optionKey="id" from="${happy.seguridad.Prfl.list()}" name="perfil" value="${prflInstace?.id}" style="width: 180px;"></g:select>
+            <g:select optionKey="id" from="${happy.seguridad.Prfl.list()}" name="perfil" value="${prflInstace?.id}" style="width: 180px;"/>
             </span>
         </div>
-
-        <br/>
 
         <div class="" id="parm">
             <g:form action="registro" method="post">
@@ -56,15 +54,15 @@
 
                 <h3>Seleccione el módulo y fije los permisos</h3>
 
-                <div style="text-align: left; padding:5px; width: 840px;" class="ui-corner-all ui-widget-content">
-                    <div id="botones">
-                        <g:each in="${lstacmbo}" status="i" var="d">
-                            <input class="modulo" type="radio" id="check${i}" name="modulo"
-                                   value="${d[0]?.encodeAsHTML()}" nombre="${d[1]?.encodeAsHTML()}"/><label for="check${i}">${d[1]?.encodeAsHTML()}</label>
-                        </g:each>
-                    </div>
+                <div class="btn-group" data-toggle="buttons">
+                    <g:each in="${lstacmbo}" status="i" var="d">
+                        <label class="btn btn-primary modulo">
+                            <input type="radio" id="check${i}" name="modulo" value="${d[0]?.encodeAsHTML()}" nombre="${d[1]?.encodeAsHTML()}"> ${d[1]?.encodeAsHTML()}
+                        </label>
+                    </g:each>
                 </div>
                 <br>
+
             </g:form>
             <div id="ajx" style="width:820px; padding-left: 20px; "></div>
 
@@ -203,6 +201,7 @@
                     } //success
                 }); //ajax
             } //createEdit
+
             $(function () {
                 $(".btnCrear").click(function () {
                     createEditRow(null, "perfil");
@@ -228,219 +227,24 @@
                     deleteRow($("#perfil").val(), "perfil");
                     return false;
                 });
+
+                $(".modulo").click(function () {
+                    setTimeout(function () {
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(action:'ajaxPermisos')}",
+                            data    : {
+                                ids  : $(".modulo.active").find("input").val(),
+                                prfl : $('#perfil').val(),
+                                tpac : $(".tipo.active").find("input").val()
+                            },
+                            success : function (msg) {
+                                $("#ajx").html(msg)
+                            }
+                        });
+                    }, 1);
+                });
             });
-
-            //            $(document).ready(function () {
-            //                $("#tipo").buttonset();
-            //                $("#botones").buttonset();
-            //
-            //                $("#procesos").click(function () {
-            //                    var datos = armar()
-            //                    //alert(datos)
-            //                    $.ajax({
-            //                        type    : "POST", url : "../ajaxPermisos",
-            //                        data    : "ids=" + datos + "&tipo=P",
-            //                        success : function (msg) {
-            //                            $("#ajx").html(msg)
-            //                        }
-            //                    });
-            //                });
-            //
-            //                $(".modulo").click(function () {
-            //                    var datos = armar()
-            //                    //alert(datos)
-            //                    $.ajax({
-            //                        type    : "POST", url : "../ajaxPermisos",
-            //                        data    : "ids=" + datos + "&prfl=" + $('#perfil').val() + "&tpac=" + tipo(),
-            //                        success : function (msg) {
-            //                            $("#ajx").html(msg)
-            //                        }
-            //                    });
-            //                });
-            //
-            //                $(".rd_tipo").click(function () {
-            //                    $("#ajx").html('')
-            //                    //location.reload();
-            //                });
-            //
-            //                $("#perfil").click(function () {
-            //                    $("#ajx").html('')
-            //                    //location.reload();
-            //                });
-            //
-            //                $("#vermenu").button().click(function () {
-            //                    $.ajax({
-            //                        type    : "POST", url : "../verMenu",
-            //                        data    : "prfl=" + $('#perfil').val() + "&tpac=" + tipo(),
-            //                        success : function (msg) {
-            //                            $("#ajx").html(msg)
-            //                        }
-            //                    });
-            //                });
-            //
-            //                function armar() {
-            //                    var datos = new Array()
-            //                    $('.modulo:checked').each(function () {
-            //                        datos.push($(this).val());
-            //                    });
-            //                    return datos
-            //                }
-            //
-            //                function tipo() {
-            //                    var datos = new Array()
-            //                    $('.rd_tipo:checked').each(function () {
-            //                        datos.push($(this).val());
-            //                    });
-            //                    return datos
-            //                }
-            //
-            //                $("#creaPrfl").button().click(function () {
-            //                    //alert("crear un perfil");
-            //                    $.ajax({
-            //                        type    : "POST", url : "../creaPrfl",
-            //                        data    : "&tbla=prfl",
-            //                        success : function (msg) {
-            //                            $("#ajx_prfl").dialog("option", "title", "Crear Perfil")
-            //                            $("#ajx_prfl").html(msg).show("puff", 100)
-            //                        }
-            //                    });
-            //                    $("#ajx_prfl").dialog("open");
-            //                });
-            //
-            //                $("#editPrfl").button().click(function () {
-            //                    $.ajax({
-            //                        type    : "POST", url : "../editPrfl",
-            //                        data    : "&id=" + $('#perfil').val(),
-            //                        success : function (msg) {
-            //                            $("#ajx_prfl").dialog("option", "title", "Editar Perfil")
-            //                            $("#ajx_prfl").html(msg).show("puff", 100)
-            //                        }
-            //                    });
-            //                    $("#ajx_prfl").dialog("open");
-            //                });
-            //
-            //                $("#borraPrfl").button().click(function () {
-            //                    if (confirm("Seguro que desea Borrar el perfil \n" + $('#perfil :selected').text())) {
-            //                        $.ajax({
-            //                            type    : "POST", url : "../borraPrfl",
-            //                            data    : "&id=" + $('#perfil').val(),
-            //                            success : function (msg) {
-            //                                location.reload(true);
-            //                            }
-            //                        });
-            //                    }
-            //                });
-            //
-            //                $("#ajx_prfl").dialog({
-            //                    autoOpen  : false,
-            //                    resizable : false,
-            //                    title     : 'Crear un Perfil',
-            //                    modal     : true,
-            //                    draggable : false,
-            //                    width     : 420,
-            //                    position  : 'center',
-            //                    open      : function (event, ui) {
-            //                        $(".ui-dialog-titlebar-close").hide();
-            //                    },
-            //                    buttons   : {
-            //                        "Grabar"   : function () {
-            //                            $(this).dialog("close");
-            //                            $.ajax({
-            //                                type    : "POST", url : "../grabaPrfl",
-            //                                data    : "&nombre=" + $('#nombre').val() + "&descripcion=" + $('#descripcion').val() +
-            //                                          "&padre.id=" + $('#padre_id').val() + "&observaciones=" + $('#observaciones').val() +
-            //                                          "&id=" + $('#id_prfl').val() + "&codigo=" + $('#codigo').val(),
-            //                                success : function (msg) {
-            //                                    //$("#ajx").html(msg)
-            //                                    location.reload(true);
-            //
-            //                                }
-            //                            });
-            //                        },
-            //                        "Cancelar" : function () {
-            //                            $(this).dialog("close");
-            //                        }
-            //                    }
-            //                });
-            //
-            //                //módulos
-            //                $("#creaModulo").button().click(function () {
-            //                    if (confirm("Crear un nuevo módulo \n")) {
-            //                        $.ajax({
-            //                            type    : "POST", url : "../creaMdlo",
-            //                            data    : "&pdre=0",
-            //                            success : function (msg) {
-            //                                $("#ajx_menu").dialog("option", "title", "Crear Módulo")
-            //                                $("#ajx_menu").html(msg).show("puff", 100)
-            //                            }
-            //                        });
-            //                        $("#ajx_menu").dialog("open");
-            //                    }
-            //                });
-            //
-            //                $("#editModulo").button().click(function () {
-            //                    var datos = armar()
-            //                    //alert(datos + "longitud: " + datos.length)
-            //                    if (datos.length > 0) {
-            //                        $.ajax({
-            //                            type    : "POST", url : "../editMdlo",
-            //                            data    : "&id=" + datos,
-            //                            success : function (msg) {
-            //                                $("#ajx_menu").dialog("option", "title", "Editar Módulo")
-            //                                $("#ajx_menu").html(msg).show("puff", 100)
-            //                            }
-            //                        });
-            //                        $("#ajx_menu").dialog("open");
-            //                    } else alert("Selecione un módulo")
-            //                });
-            //
-            //                $("#borraModulo").button().click(function () {
-            //                    if ($('.modulo:checked').attr('nombre') == undefined) alert("Seleccione un Modulo")
-            //                    else {
-            //                        if (confirm("Seguro que desea Borrar el Módulo: " + $('.modulo:checked').attr('nombre'))) {
-            //                            $.ajax({
-            //                                type    : "POST", url : "../borraMdlo",
-            //                                data    : "&id=" + $('#perfil').val(),
-            //                                success : function (msg) {
-            //                                    location.reload(true);
-            //                                }
-            //                            });
-            //                        }
-            //                    }
-            //                });
-            //
-            //                $("#ajx_menu").dialog({
-            //                    autoOpen  : false,
-            //                    resizable : false,
-            //                    title     : 'Crear un Módulo',
-            //                    modal     : true,
-            //                    draggable : false,
-            //                    width     : 420,
-            //                    position  : 'center',
-            //                    open      : function (event, ui) {
-            //                        $(".ui-dialog-titlebar-close").hide();
-            //                    },
-            //                    buttons   : {
-            //                        "Grabar"   : function () {
-            //                            $(this).dialog("close");
-            //                            $.ajax({
-            //                                type    : "POST", url : "../grabaMdlo",
-            //                                data    : "&nombre=" + $('#nombre').val() + "&descripcion=" + $('#descripcion').val() +
-            //                                          "&id=" + $('#id_mdlo').val() + "&orden=" + $('#orden').val(),
-            //                                success : function (msg) {
-            //                                    $("#ajx").html(msg)
-            //                                    location.reload(true);
-            //
-            //                                }
-            //                            });
-            //                        },
-            //                        "Cancelar" : function () {
-            //                            $(this).dialog("close");
-            //                        }
-            //                    }
-            //                });
-            //            });
-
         </script>
 
     </body>

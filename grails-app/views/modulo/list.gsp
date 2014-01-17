@@ -65,6 +65,7 @@
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
                 $btn.replaceWith(spinner);
+                    openLoader("Grabando");
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(action:'save_ajax')}',
@@ -99,6 +100,7 @@
                             label     : "<i class='fa fa-trash-o'></i> Eliminar",
                             className : "btn-danger",
                             callback  : function () {
+                                openLoader("Eliminando");
                                 $.ajax({
                                     type    : "POST",
                                     url     : '${createLink(action:'delete_ajax')}',

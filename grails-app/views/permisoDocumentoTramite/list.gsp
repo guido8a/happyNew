@@ -1,4 +1,3 @@
-
 <%@ page import="happy.tramites.PersonaDocumentoTramite" %>
 <!DOCTYPE html>
 <html>
@@ -6,17 +5,19 @@
         <meta name="layout" content="main">
         <title>Lista de PermisoDocumentoTramite</title>
     </head>
+
     <body>
 
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-    <!-- botones -->
+        <!-- botones -->
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control span2" placeholder="Buscar">
@@ -32,25 +33,25 @@
         <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
-                    
+
                     <th>Tramite</th>
-                    
+
                     <th>Persona</th>
-                    
-                    <g:sortableColumn property="permiso" title="Permiso" />
-                    
+
+                    <g:sortableColumn property="permiso" title="Permiso"/>
+
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${permisoDocumentoTramiteInstanceList}" status="i" var="permisoDocumentoTramiteInstance">
                     <tr data-id="${permisoDocumentoTramiteInstance.id}">
-                        
+
                         <td>${fieldValue(bean: permisoDocumentoTramiteInstance, field: "tramite")}</td>
-                        
+
                         <td>${fieldValue(bean: permisoDocumentoTramiteInstance, field: "persona")}</td>
-                        
+
                         <td>${fieldValue(bean: permisoDocumentoTramiteInstance, field: "permiso")}</td>
-                        
+
                     </tr>
                 </g:each>
             </tbody>
@@ -64,25 +65,26 @@
                 var $form = $("#frmPermisoDocumentoTramite");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
-                $btn.replaceWith(spinner);
+                    $btn.replaceWith(spinner);
+                    openLoader("Grabando");
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(action:'save_ajax')}',
                         data    : $form.serialize(),
-                            success : function (msg) {
-                        var parts = msg.split("_");
-                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                        if (parts[0] == "OK") {
-                            location.reload(true);
-                        } else {
-                            spinner.replaceWith($btn);
-                            return false;
+                        success : function (msg) {
+                            var parts = msg.split("_");
+                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                            if (parts[0] == "OK") {
+                                location.reload(true);
+                            } else {
+                                spinner.replaceWith($btn);
+                                return false;
+                            }
                         }
-                    }
-                });
-            } else {
-                return false;
-            } //else
+                    });
+                } else {
+                    return false;
+                } //else
             }
             function deleteRow(itemId) {
                 bootbox.dialog({
@@ -99,6 +101,7 @@
                             label     : "<i class='fa fa-trash-o'></i> Eliminar",
                             className : "btn-danger",
                             callback  : function () {
+                                openLoader("Eliminando");
                                 $.ajax({
                                     type    : "POST",
                                     url     : '${createLink(action:'delete_ajax')}',
@@ -120,7 +123,7 @@
             }
             function createEditRow(id) {
                 var title = id ? "Editar" : "Crear";
-                var data = id ? { id: id } : {};
+                var data = id ? { id : id } : {};
                 $.ajax({
                     type    : "POST",
                     url     : "${createLink(action:'form_ajax')}",
@@ -156,7 +159,7 @@
 
             $(function () {
 
-                $(".btnCrear").click(function() {
+                $(".btnCrear").click(function () {
                     createEditRow();
                     return false;
                 });
