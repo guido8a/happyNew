@@ -28,5 +28,22 @@ class Accs implements Serializable {
         accsObservaciones(blank: true, nullable: true)
     }
 
+    boolean getEstaActivo() {
+        def now = new Date()
+        return (this.accsFechaInicial <= now && (this.accsFechaFinal >= now || this.accsFechaFinal == null))
+    }
+
+    String getEstado() {
+        def now = new Date()
+        if (this.estaActivo) {
+            return "A"
+        } else {
+            if (this.accsFechaInicial > now) {
+                return "F"
+            } else {
+                return "P"
+            }
+        }
+    }
 
 }

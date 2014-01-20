@@ -1,6 +1,9 @@
 package happy.seguridad
 
 import happy.tramites.Departamento
+import happy.tramites.PermisoTramite
+import happy.tramites.PermisoUsuario
+import sun.misc.Perf
 
 
 class PersonaController extends happy.seguridad.Shield {
@@ -11,10 +14,178 @@ class PersonaController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def accesos() {
+        def usu = Persona.get(params.id)
+        def accesos = Accs.findAllByUsuario(usu, [sort: 'accsFechaInicial'])
+        return [accesos: accesos]
+    }
+
+    def permisos() {
+        def usu = Persona.get(params.id)
+        def permisos = PermisoUsuario.findAllByPersona(usu, [sort: 'fechaInicio'])
+        return [permisos: permisos]
+    }
+
     def config() {
         def usu = Persona.get(params.id)
+        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id
+        def permisosUsu = PermisoUsuario.findAllByPersona(usu).permisoTramite.id
+        return [usuario: usu, perfilesUsu: perfilesUsu, permisosUsu: permisosUsu]
+    }
 
-        return [usuario: usu]
+    def savePermisos_ajax() {
+        println params
+        def perm = new PermisoUsuario(params)
+        println perm
+        if (!perm.save(flush: true)) {
+            println "error accesos: " + perm.errors
+            render "NO_" + g.renderErrors(bean: perm)
+        } else {
+            println "OK"
+            render "OK_Permiso agregado"
+        }
+        println perm.errors
+    }
+
+
+    def terminarPermiso_ajax() {
+        def perm = PermisoUsuario.get(params.id)
+        def now = new Date().clearTime()
+        if (perm.fechaFin <= now) {
+            render "OK_El permiso ya ha caducado, no puede terminarlo de nuevo."
+        } else {
+            if (perm.fechaInicio <= now && perm.fechaFin >= now) {
+                perm.fechaFin = now
+                if (!perm.save(flush: true)) {
+                    render "NO_" + renderErrors(bean: perm)
+                } else {
+                    render "OK_Terminación del permiso exitosa"
+                }
+            } else {
+                render "NO_No puede terminar un permiso que no ha empezado aún. Puede eliminarlo."
+            }
+        }
+    }
+
+    def eliminarPermiso_ajax() {
+        def perm = PermisoUsuario.get(params.id)
+        def now = new Date()
+        if (perm.fechaFin <= now) {
+            render "OK_El permiso ya ha caducado, no puede ser eliminado."
+        } else {
+            if (perm.fechaInicio <= now && perm.fechaFin >= now) {
+                render "NO_No puede eliminar un permiso en curso. Puede terminarlo."
+            } else {
+                try {
+                    perm.delete(flush: true)
+                    render "OK_Permiso eliminado."
+                } catch (e) {
+                    render "NO_Ha ocurrido un error al eliminar el permiso."
+                }
+            }
+        }
+    }
+
+    def saveAccesos_ajax() {
+        def accs = new Accs(params)
+        if (!accs.save(flush: true)) {
+            println "error accesos: " + accs.errors
+            render "NO_" + g.renderErrors(bean: accs)
+        } else {
+            render "OK_Restricción agregada"
+        }
+    }
+
+    def terminarAcceso_ajax() {
+        def accs = Accs.get(params.id)
+        def now = new Date().clearTime()
+        if (accs.accsFechaFinal <= now) {
+            render "OK_La restricción ya ha terminado, no puede terminarla de nuevo."
+        } else {
+            if (accs.accsFechaInicial <= now && accs.accsFechaFinal >= now) {
+                accs.accsFechaFinal = now
+                if (!accs.save(flush: true)) {
+                    render "NO_" + renderErrors(bean: accs)
+                } else {
+                    render "OK_Terminación de la restricción exitosa"
+                }
+            } else {
+                render "NO_No puede terminar una restricción que no ha empezado aún. Puede eliminarla."
+            }
+        }
+    }
+
+    def eliminarAcceso_ajax() {
+        def accs = Accs.get(params.id)
+        def now = new Date()
+        if (accs.accsFechaFinal <= now) {
+            render "OK_La restricción ya ha terminado, no puede ser eliminada."
+        } else {
+            if (accs.accsFechaInicial <= now && accs.accsFechaFinal >= now) {
+                render "NO_No puede eliminar una restricción en curso. Puede terminarla."
+            } else {
+                try {
+                    accs.delete(flush: true)
+                    render "OK_Restricción eliminada."
+                } catch (e) {
+                    render "NO_Ha ocurrido un error al eliminar la restricción."
+                }
+            }
+        }
+    }
+
+    def savePerfiles_ajax() {
+        def usu = Persona.get(params.id)
+        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
+//        println "**************"
+//        println Sesn.findAllByUsuario(usu)
+//        println Sesn.findAllByUsuario(usu).id
+//        println Sesn.findAllByUsuario(usu).id*.toString()
+//        println "**************"
+        def arrRemove = perfilesUsu, arrAdd = []
+        def errores = ""
+
+        if (params.perfil instanceof java.lang.String) {
+            params.perfil = [params.perfil]
+        }
+
+        params.perfil.each { pid ->
+            if (perfilesUsu.contains(pid)) {
+                //ya tiene este perfil: le quito de la lista de los de eliminar
+                arrRemove.remove(pid)
+            } else {
+                //no tiene este perfil: le pongo en la lista de agregar
+                arrAdd.add(pid)
+            }
+        }
+//        println "params: " + params
+//        println "perfilesUsu: " + perfilesUsu
+//        println "add: " + arrAdd
+//        println "remove: " + arrRemove
+        arrRemove.each { pid ->
+            def perf = Prfl.get(pid)
+            def sesn = Sesn.findByUsuarioAndPerfil(usu, perf)
+            try {
+                sesn.delete(flush: true)
+            } catch (e) {
+                println "erorr al eliminar perfil: " + e
+                errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
+            }
+        }
+        arrAdd.each { pid ->
+            def perf = Prfl.get(pid)
+            def sesn = new Sesn([usuario: usu, perfil: perf])
+            if (!sesn.save(flush: true)) {
+                println "error al asignar perfil: " + sesn.errors
+                errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
+            }
+        }
+
+        if (errores == "") {
+            render "OK_Cambios efectuados exitosamente"
+        } else {
+            render "<ul>" + errores + "</ul>"
+        }
     }
 
     def list() {

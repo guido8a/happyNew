@@ -86,7 +86,7 @@ class LoginController {
                 flash.tipo = "error"
                 flash.icon = "icon-splatter"
             } else if (perfiles.size() == 1) {
-                session.perfil = perfiles.first()
+                session.perfil = perfiles.first().perfil
                 redirect(controller: "inicio", action: "index")
                 return
             } else {
