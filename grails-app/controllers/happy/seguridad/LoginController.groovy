@@ -61,15 +61,11 @@ class LoginController {
     }
 
     def validar() {
-//        println params
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
             eq("password", params.pass.encodeAsMD5())
         }
 
-//        if (user?.departamento?.id[0] == 13) {
-//            flash.message = "El departamento al que pertenece el usuario no es válido para logear en el sistema!"
-//        } else {
         if (user.size() == 0) {
             flash.message = "No se ha encontrado el usuario"
             flash.tipo = "error"
@@ -80,13 +76,12 @@ class LoginController {
             user = user[0]
             session.usuario = user
             def perfiles = Sesn.findAllByUsuario(user)
-
             if (perfiles.size() == 0) {
                 flash.message = "No puede ingresar. Comuníquese con el administrador."
                 flash.tipo = "error"
                 flash.icon = "icon-splatter"
             } else if (perfiles.size() == 1) {
-                session.perfil = perfiles.first()
+                session.perfil = perfiles.first().perfil
                 redirect(controller: "inicio", action: "index")
                 return
             } else {
@@ -94,8 +89,6 @@ class LoginController {
                 return
             }
         }
-//        }
-
         redirect(controller: 'login', action: "login")
     }
 
@@ -106,12 +99,8 @@ class LoginController {
     }
 
     def savePer() {
-//        println params
-
         def sesn = Sesn.get(params.perfiles)
         def perf = sesn.perfil
-//        println perf
-
         if (perf) {
             session.perfil = perf
             if (session.an && session.cn) {
@@ -127,7 +116,6 @@ class LoginController {
             redirect(action: "login")
         }
     }
-
 
     def logout() {
 

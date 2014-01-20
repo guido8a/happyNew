@@ -104,7 +104,12 @@ class ElementosTagLib {
      *                                           case 12:
      *                                               return "green";
      *}*}*                                }
-     *      onChangeDate    funcion. funcion q se ejecuta al cambiar una fecha
+     *      onChangeDate    funcion. funcion q se ejecuta al cambiar una fecha. se manda solo el nombre, sin parentesis, como parametro recibe el datepicker y el objeto
+     *                          ej: onChangeDate="miFuncion"
+     *                          function miFuncion($elm, e) {
+     *                              console.log($elm); //el objeto jquery del datepicker, el textfield
+     *                              console.log(e); //el objeto que pasa el plugin
+     *                          }
      *      daysOfWeekDisabled  lista de números para deshabilitar ciertos días: 0:domingo, 1:lunes, 2:martes, 3:miercoles, 4:jueves, 5:viernes, 6:sabado
      *      img             imagen del calendario. clase de glyphicons o font awsome
      **/
@@ -203,7 +208,7 @@ class ElementosTagLib {
         js += '$(e.currentTarget).parents(".grupo").removeClass("has-error").find("label.help-block").hide();' + br
         js += "}" + br
         if (onChangeDate) {
-            js += onChangeDate + "();"
+            js += onChangeDate + "(\$(this), e);"
         }
         js += "});" + br
         js += "</script>" + br

@@ -7,9 +7,7 @@ class Shield {
      * Verifica si el usuario actual tiene los permisos para ejecutar una acción
      */
     def auth() {
-
 //        println "an " + actionName + " cn " + controllerName + "  "
-
 //        println session
         session.an = actionName
         session.cn = controllerName
@@ -18,20 +16,17 @@ class Shield {
         /** **************************************************************************/
         if (!session.usuario || !session.perfil) {
             //            println "1"
-//            redirect(controller: 'login', action: 'login')
-//            session.finalize()
-//            return false
-            return true
+            redirect(controller: 'login', action: 'login')
+            session.finalize()
+            return false
+//            return true
         } else {
-
-                return true
-
+            return true
         }
         /*************************************************************************** */
     }
 
     boolean isAllowed() {
-
 //        try {
 //            if (session.permisos[actionName] == controllerName)
 //                return true
