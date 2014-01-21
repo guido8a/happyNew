@@ -34,6 +34,10 @@
         return this.optional(element) || valueStripped.match(regex).length >= params[0] && valueStripped.match(regex).length <= params[1];
     }, jQuery.validator.format("Por favor ingrese entre {0} y {1} palabras."));
 
+    jQuery.validator.addMethod("notEqual", function (value, element, params) {
+        return value != params;
+    }, jQuery.validator.format("No ingrese ese valor."));
+
 }());
 
 jQuery.validator.addMethod("letterswithbasicpunc", function (value, element) {

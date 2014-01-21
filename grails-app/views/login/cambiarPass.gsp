@@ -16,12 +16,13 @@
         <elm:flashMessage tipo="${flash.tipo}" icon="${flash.icon}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <g:form name="frmLogin" action="guardarPass" class="form-signin well" role="form" style="width: 300px;">
+            <g:hiddenField name="id" value="${usu.id}"/>
             <h2 class="text-center">Cambiar password</h2>
 
             <p>Su password ha caducado. Por favor cámbielo.</p>
 
-            <input name="pass" type="password" class="form-control required" notEqual="${usu.cedula}" notEqual="${usu.password}" placeholder="Nuevo password" required>
-            <input name="pass2" type="password" class="form-control required" equalTo="#pass" placeholder="Repita su password" required>
+            <input name="pass" id="pass" type="password" class="form-control required" notEqual="${usu.cedula}" placeholder="Nuevo password" required>
+            <input name="pass2" id="pass2" type="password" class="form-control required" equalTo="#pass" placeholder="Repita su password" required>
 
             <div class="divBtn">
                 <a href="#" class="btn btn-success btn-lg btn-block btn-login">
@@ -39,7 +40,13 @@
                 }
             }
             $(function () {
-                $frm.validate();
+                $frm.validate({
+                    messages : {
+                        pass : {
+                            notEqual : "No ingrese su número de cédula"
+                        }
+                    }
+                });
                 $(".btn-login").click(function () {
                     doLogin();
                 });
