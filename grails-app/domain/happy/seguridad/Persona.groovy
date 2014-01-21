@@ -93,8 +93,8 @@ class Persona {
         return true
     }
 
-    def puedeRecibir() {
-        def permiso = PermisoTramite.findByCodigo("P003")
+    def puedeRecibir(){
+        def permiso=PermisoTramite.findByCodigo("P010")
         def perms = null
         perms = PermisoUsuario.findByPersonaAndPermisoTramite(this, permiso)
         if (perms)
@@ -103,9 +103,10 @@ class Persona {
 
     }
 
-    String toString() {
+    String toString(){
         return "${this.nombre} ${this.apellido}"
     }
+
 
 
 }

@@ -19,4 +19,7 @@ class PermisoTramite {
         codigo(maxSize: 4, blank: false, attributes: [title: 'codigo'])
         descripcion(maxSize: 63, blank: false, attributes: [title: 'descripcion'])
     }
+    String toString(){
+        return "${this.descripcion}"
+    }
 }

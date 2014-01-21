@@ -70,10 +70,10 @@ class BuscadorTagLib {
 
     def lista(name, value, campos, controlador, accion) {
         def salida = ""
-        salida += '<div style="border:1px solid black;margin-top:10px;float:left;width:99%;font-size:12px !important" class="ui-corner-all">'
-        salida += '<div class="filaBuscador ui-corner-all" style="margin-left:15px;margin-top:10px;width:100%" >'
-        salida += '<div id="campo" style="float: left; margin-right:  5px;">'
-        salida += 'Buscar por: <select name="campo" id="campo" style="width: 110px;font-size:12px" >'
+        salida += '<div  class="container-buscador ui-corner-all">'
+        salida += '<div class="filaBuscador ">'
+        salida += '<div id="campo" class="campoBuscador">'
+        salida += 'Buscar por: <select name="campo" id="campo" class="many-to-one form-control comboBuscador" style="width: 110px;font-size:12px" >'
         def i = 0
         campos.each {
             if (i == 0)
@@ -84,12 +84,12 @@ class BuscadorTagLib {
         }
         salida += '</select>'
         salida += '</div>'
-        salida += '<div id="Doperador" style="float: left; margin-right: 5px;">'
-        salida += '<select name="operador" style="width: 100px;font-size:12px" id="operador"></select>'
+        salida += '<div id="Doperador"  class="operadorBuscador">'
+        salida += '<select name="operador" class="many-to-one form-control comboBuscador" style="width: 100px;" id="operador"></select>'
         salida += '</div>'
         salida += '<input type="hidden" name="tipoCampo" id="tipoCampo" value="string">'
-        salida += 'Criterio:<input type="text" size="8" style="margin-right:5px; width:120px" name="criterio" id="criterio">'
-        salida += 'Ordenado por: <select name="campoOrdn" id="campoOrdn" style="width: 100px;font-size:12px;" >'
+        salida += 'Criterio:<input type="text" size="8"  class="form-control notBlock" style="margin-right:5px; width:140px;margin-left:5px;" name="criterio" id="criterio">'
+        salida += 'Ordenado por: <select name="campoOrdn"  class="many-to-one form-control comboBuscador" id="campoOrdn" style="width: 100px;font-size:12px;" >'
         i = 0
         campos.each {
             if (i == 0)
@@ -100,10 +100,16 @@ class BuscadorTagLib {
         }
         def url = resource(dir: 'images', file: 'spinner_24.gif')
         salida += '</select>'
-        salida += '<select name="orden" id="orden" style="width: 100px;;font-size:12px" ><option value="asc" selected>Ascendente</option><option value="desc">Descendente</option></select>'
-        salida += '<a href="#" id="mas" style="margin-left:5px">Agregar condición</a>'
-        salida += '<a href="#" id="reset" style="margin-left:5px">Resetear</a>'
-        salida += '<input id="buscarDialog" type="button" value="Buscar" style="width:80px;margin-left:10px" class="tbbtn " ><img class="hide" id="spinner" style="margin-left:15px;" src=' + url + ' alt="Cargando..."/>'
+        salida += '<select name="orden" id="orden" class="many-to-one form-control comboBuscador" style="width:70px" ><option value="asc" selected>Asc.</option><option value="desc">Desc.</option></select>'
+//        salida += '<a href="#" id="mas" style="margin-left:5px">Agregar condición</a>'
+        salida +='<a class="btn btn-small btn-primary" style="margin-left:5px" href="#" rel="tooltip" title="Agregar" id="mas">'
+        salida +=' <i class="fa fa-plus"></i>'
+        salida +='</a>'
+//        salida += '<a href="#" id="reset" style="margin-left:5px">Resetear</a>'
+        salida +='<a class="btn btn-small btn-primary" style="margin-left:5px" href="#" rel="tooltip" title="Resetear" id="reset">'
+        salida +=' <i class="fa fa-refresh"></i>'
+        salida +='</a>'
+        salida += '<a href="#" id="buscarDialog" style="width:80px;margin-left:10px" class="btn btn-small btn-azul " >Buscar'
         salida += '</div>'
         salida += '<div id="criterios" style="width:95%;height:35px;float:left"></div>'
         salida += '<div class="contenidoBuscador  ui-corner-all" id="contenidoBuscador" style="float:left;width:95%;margin-top:5px;margin-left:20px;overflow-y:auto"></div>'
@@ -111,13 +117,12 @@ class BuscadorTagLib {
         salida += '<a href="#" id="btn_excel" style="margin:10px;margin-left:20px;color:white">Excel</a>'
         salida += '</div>'
         salida += "<script type='text/javascript' src='${createLinkTo(dir: 'js', file: 'buscador.js')}' ></script>"
-        salida += "<script type='text/javascript' src='${createLinkTo(dir: 'js/jquery/plugins', file: 'jquery.livequery.js')}' ></script>"
+//        salida += "<script type='text/javascript' src='${createLinkTo(dir: 'js/jquery/plugins', file: 'jquery.livequery.js')}' ></script>"
         salida += "<script type='text/javascript'>"
 
         salida += 'function enviar() {'
         salida += 'var data = "";'
-        salida += '$("#buscarDialog").hide();'
-        salida += '$("#spinner").show();'
+        salida += 'openLoader();'
         salida += '$(".crit").each(function(){'
         salida += 'data+="&campos="+$(this).attr("campo");'
         salida += 'data+="&operadores="+$(this).attr("operador");'
@@ -136,14 +141,13 @@ class BuscadorTagLib {
         salida += 'data: data,'
 
         salida += 'success: function(msg){'
-        salida += '$("#spinner").hide();'
-        salida += '$("#buscarDialog").show();'
         salida += '$(".contenidoBuscador").html(msg).show("slide");'
+        salida += 'closeLoader();'
         salida += '}'
         salida += '});'
         salida += '};'
         salida += 'cambiaOperador();'
-        salida += '$("#buscarDialog").button().click(function(){'
+        salida += '$("#buscarDialog").click(function(){'
         salida += ' enviar();'
         salida += '});'
         salida += '$(".filaBuscador ").keyup(function(e){'

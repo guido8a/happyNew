@@ -7,8 +7,9 @@ class PersonaDocumentoTramite {
     Persona persona
     Tramite tramite
     Date fecha
+    Date fechaRecibido
     String observaciones
-    String permiso
+    String permiso /*R recibir (puertas de entrada al departamento), L lectura , P impresion, LP ambos dos*/
     static mapping = {
         table 'prtr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -23,14 +24,16 @@ class PersonaDocumentoTramite {
             fecha column: 'prtrfcha'
             observaciones column: 'prtrobsr'
             permiso column: 'prtrprms'
+            fechaRecibido column: 'prtrfcrc'
         }
     }
     static constraints = {
-        rolPersonaTramite(blank: true, nullable: true, attributes: [title: 'rolPersonaTramite'])
-        persona(blank: true, nullable: true, attributes: [title: 'persona'])
-        tramite(blank: true, nullable: true, attributes: [title: 'Tramite'])
+        rolPersonaTramite(blank: false, nullable: false, attributes: [title: 'rolPersonaTramite'])
+        persona(blank: false, nullable: false, attributes: [title: 'persona'])
+        tramite(blank: false, nullable: false, attributes: [title: 'Tramite'])
         fecha(blank: true, nullable: true, attributes: [title: 'fecha'])
         observaciones(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'observaciones'])
         permiso(maxSize: 4, blank: true, nullable: true, attributes: [title: 'permiso'])
+        fechaRecibido(nullable: true,blank:true)
     }
 }
