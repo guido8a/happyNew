@@ -5,12 +5,22 @@ class LoginController {
 
     def mail
 
-    def tests() {
-
-    }
-
     def index() {
         redirect(action: 'login')
+    }
+
+    def cambiarPass() {
+        def usu = Persona.get(session.usuario.id)
+        return [usu: usu]
+    }
+
+    def validarPass() {
+        println params
+        render "No puede ingresar este valor"
+    }
+
+    def guardarPass() {
+
     }
 
     def validarSesion() {
@@ -19,14 +29,10 @@ class LoginController {
         } else {
             flash.message = "Su sesión ha caducado, por favor ingrese nuevamente."
             render "NO"
-//            render "OK"
         }
     }
 
     def olvidoPass() {
-
-//        println(params)
-
         def mail = params.email
         def personas = Persona.findAllByEmail(mail)
         def msg
@@ -58,6 +64,16 @@ class LoginController {
     }
 
     def login() {
+        def usu = session.usuario
+        def cn = "inicio"
+        def an = "index"
+        if (usu) {
+            if (session.cn && session.an) {
+                cn = session.cn
+                an = session.an
+            }
+            redirect(controller: cn, action: an)
+        }
     }
 
     def validar() {
@@ -99,7 +115,7 @@ class LoginController {
     }
 
     def savePer() {
-        def sesn = Sesn.get(params.perfiles)
+        def sesn = Sesn.get(params.prfl)
         def perf = sesn.perfil
         if (perf) {
             session.perfil = perf
@@ -118,7 +134,6 @@ class LoginController {
     }
 
     def logout() {
-
         session.usuario = null
         session.perfil = null
         session.permisos = null
@@ -127,9 +142,5 @@ class LoginController {
         session.cn = null
         session.invalidate()
         redirect(controller: 'login', action: 'login')
-
-
     }
-
-
 }

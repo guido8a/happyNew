@@ -74,12 +74,26 @@
         <script src="${resource(dir: 'js/plugins', file: 'date.js')}"></script>
 
         <script type="text/javascript">
-            var spinner24Url = "${resource(dir:'images/spinners', file:'spinner_24.GIF')}";
+            var spinner24Url = "${resource(dir:'images/spinners', file:'spinner_login.GIF')}";
             var spinner64Url = "${resource(dir:'images/spinners', file:'spinner_64.GIF')}";
+
+            var spinnerSquare64Url = "${resource(dir: 'images/spinners', file: 'loading_new.GIF')}";
 
             var spinner = $("<img src='" + spinner24Url + "' alt='Cargando...'/>");
             var spinner64 = $("<img src='" + spinner64Url + "' alt='Cargando...'/>");
+            var spinnerSquare64 = $("<img src='" + spinnerSquare64Url + "' alt='Cargando...'/>");
         </script>
+
+        <style type="text/css">
+        input {
+            margin-top : 15px;
+        }
+
+        .divBtn {
+            margin-top : 30px;
+            text-align : center;
+        }
+        </style>
 
         <g:layoutHead/>
 
