@@ -97,7 +97,7 @@
     <img src="${resource(dir:'images/spinners', file:'loading_new.GIF')}">
     <div class="loading-footer">Espere por favor</div>
 </div>
-<mn:menu title="${g.layoutTitle(default: g.message(code: 'Happy'))}"/>
+        <mn:menu title="${g.layoutTitle(default: 'Happy')}"/>
 
 <div class="container" style="min-width: 1000px !important;">
     <g:layoutBody/>
@@ -115,7 +115,6 @@
 
 
     var ot = document.title;
-
 
     //    openLoader()
     //    openLoader("Con mensaje")

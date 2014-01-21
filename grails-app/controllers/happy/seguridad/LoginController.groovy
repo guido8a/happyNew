@@ -20,7 +20,7 @@ class LoginController {
     }
 
     def guardarPass() {
-
+        render params
     }
 
     def validarSesion() {
