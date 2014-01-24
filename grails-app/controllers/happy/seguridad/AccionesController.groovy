@@ -49,7 +49,7 @@ class AccionesController extends happy.seguridad.Shield {
         //cn.disconnect() TODO preguntar si se cierra la conexión
         //println "-------------------------" + resultado
         if (resultado.size() == 0) {
-            resultado[0] = ['0'] + ['<font color="red">no hay acciones</font>'] + [''] + [''] + ['']
+            resultado[0] = ['0'] + ['no hay acciones'] + [''] + [''] + ['']
         }
         cn.close()
 //        render(view: 'detalle', model: [datos: resultado, mdlo__id: mdlo, tpac__id: tipo, titulos: titulos])

@@ -1,6 +1,6 @@
 <style type="text/css">
 th, td {
-    padding: 2px !important;
+    padding : 2px !important;
 }
 </style>
 
@@ -42,28 +42,69 @@ th, td {
     <g:if test="${mdlo__id == '0'}">
         Enviar al módulo:
         <g:select optionKey="id" from="${happy.seguridad.Modulo.list()}" name="modulo" value="${modulo?.id}"></g:select>
-        <input id="mueveAJX" type="button" class="grabaPrms" value="Agregar al Módulo">
+        <input id="mueveAJX" type="button" class="btn btn-info grabaPrms" value="Agregar al Módulo">
     </g:if>
     <g:else>
-        <input id="aceptaAJX" type="button" class="grabaPrms" value="Eliminar del Módulo">
+        <input id="aceptaAJX" type="button" class="btn btn-danger grabaPrms" value="Eliminar del Módulo">
     </g:else>
-    <input id="cambia" type="button" class="grabaPrms" value="Cambiar Menú <- -> Proceso">
+    <input id="cambia" type="button" class="btn btn-info grabaPrms" value="Cambiar Menú <- -> Proceso">
 %{--<input id="borraAccn" type="button" class="grabaPrms" value="Eliminar la Acci&oacute;n">--}%
 </g:form>
 
 <script type="text/javascript">
-
-    $(".ok").click(function () {
-        //var datos = armar()
-        var id = $(this).attr('id');
-        //alert("dscr=" + $('#mn'+id).val() + ", id de la accion=" + id)
-        $.ajax({
-            type    : "POST", url : "${createLink(controller:'acciones', action:'grabaAccn')}",
-            data    : "dscr=" + $('#mn' + id).val() + "&id=" + id,
-            success : function (msg) {
-                alert(msg)
-            }
+    function armarAccn() {
+        var datos = [];
+        $(".chkAccn:checked").each(function () {
+            datos.push($(this).val());
         });
-    })
+        return datos
+    }
+
+    $(function () {
+        $("#mueveAJX").click(function () {
+            bootbox.confirm("Desea mover las acciones seleccionadas?", function (res) {
+                if (res) {
+                    var data = armarAccn();
+//                alert("datos armados" + data)
+                    $.ajax({
+                        type    : "POST", url : "${createLink(controller:'acciones', action:'moverAccn')}",
+                        data    : "&ids=" + data + "&mdlo=" + $('#modulo').val() + "&tipo=" + $(".tipo.active").find("input").val(),
+                        success : function (msg) {
+                            //$("#ajx").html(msg)
+                            bootbox.alert(msg);
+                        }
+                    });
+                }
+            });
+        });
+        $("#aceptaAJX").click(function () {
+            bootbox.confirm("Eliminar las acciones seleccionadas de este módulo?", function (res) {
+                if (res) {
+                    var data = armarAccn();
+//                        alert('datos armados:' + data);
+                    $.ajax({
+                        type    : "POST", url : "${createLink(controller:'acciones', action:'sacarAccn')}",
+                        data    : "&ids=" + data + "&mdlo=" + $('#mdlo__id').val() + "&tipo=" + $(".tipo.active").find("input").val(),
+                        success : function (msg) {
+                            $("#ajx").html(msg)
+                        }
+                    });
+                }
+            });
+        });
+        $(".ok").click(function () {
+            //var datos = armar()
+            var id = $(this).attr('id');
+            //alert("dscr=" + $('#mn'+id).val() + ", id de la accion=" + id)
+            $.ajax({
+                type    : "POST", url : "${createLink(controller:'acciones', action:'grabaAccn')}",
+                data    : "dscr=" + $('#mn' + id).val() + "&id=" + id,
+                success : function (msg) {
+                    bootbox.alert(msg)
+                }
+            });
+        });
+    });
+
 
 </script>

@@ -220,11 +220,11 @@
                     return false;
                 });
                 $(".btnEditMdlo").click(function () {
-                    createEditRow($("#perfil").val(), "perfil");
+                    createEditRow($(".modulo.active").find("input").val(), "modulo");
                     return false;
                 });
                 $(".btnDeleteMdlo").click(function () {
-                    deleteRow($("#perfil").val(), "perfil");
+                    deleteRow($(".modulo.active").find("input").val(), "modulo");
                     return false;
                 });
 

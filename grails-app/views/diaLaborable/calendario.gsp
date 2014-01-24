@@ -30,6 +30,10 @@
             cursor     : pointer;
         }
 
+        .dia:hover {
+            background : #9BBFCF;
+        }
+
         .vacio {
             background-color : #AAAAAA;
         }
@@ -107,7 +111,7 @@
                     </g:each>
                 </g:if>
             </g:if>
-            <td class="dia ${dia.ordinal == 0 ? 'vacacion' : ''}" data-fecha="${dia.fecha.format('dd-MM-yyyy')}" data-id="${dia.id}" title="${dia.fecha.format('dd-MM-yyyy')}">
+            <td class="dia ${dia.ordinal == 0 ? 'vacacion' : ''}" data-fecha="${dia.fecha.format('dd-MM-yyyy')}" data-id="${dia.id}">
                 ${dia.fecha.format("dd")}
             </td>
 
@@ -133,33 +137,13 @@
                 $("#btnCambiar").click(function () {
                     var anio = $("#anio").val();
                     if ("" + anio != "${params.anio}") {
-                        $.box({
-                            imageClass : "box_info",
-                            text       : "Por favor espere...",
-                            title      : "Trabajando",
-                            iconClose  : false,
-                            dialog     : {
-                                draggable : false,
-                                buttons   : false,
-                                resizable : false
-                            }
-                        });
+                        openLoader();
                         location.href = "${createLink(action: 'calendario')}?anio=" + anio;
                     }
                     return false;
                 });
                 $("#btnGuardar").click(function () {
-                    $.box({
-                        imageClass : "box_info",
-                        text       : "Por favor espere...",
-                        title      : "Trabajando",
-                        iconClose  : false,
-                        dialog     : {
-                            draggable : false,
-                            buttons   : false,
-                            resizable : false
-                        }
-                    });
+                    openLoader();
                     var cont = 1;
                     var data = "";
                     $(".dia").each(function () {
@@ -186,30 +170,11 @@
                             if (msg == "OK") {
                                 location.reload(true);
                             } else {
-                                $.box({
-                                    imageClass : "box_info",
-                                    text       : msg,
-                                    title      : "Alerta",
-                                    iconClose  : false,
-                                    dialog     : {
-                                        draggable : false,
-                                        buttons   : {
-                                            "Aceptar" : function () {
-                                                $.box({
-                                                    imageClass : "box_info",
-                                                    text       : "Por favor espere...",
-                                                    title      : "Trabajando",
-                                                    iconClose  : false,
-                                                    dialog     : {
-                                                        draggable : false,
-                                                        buttons   : false,
-                                                        resizable : false
-                                                    }
-                                                });
-                                                location.reload(true);
-                                            }
-                                        },
-                                        resizable : false
+
+                                bootbox.confirm(msg, function (res) {
+                                    if (res) {
+                                        openLoader();
+                                        location.reload(true);
                                     }
                                 });
                             }

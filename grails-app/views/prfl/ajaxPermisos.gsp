@@ -29,7 +29,7 @@
             </table>
         </div>
     </g:if>
-    <input id="aceptaAJX" type="button" class="grabaPrms" value="Fijar permisos del Menú">
+    <input id="aceptaAJX" type="button" class="btn btn-info grabaPrms" value="Fijar permisos del Menú">
 </g:form>
 
 <script type="text/javascript">
@@ -41,17 +41,20 @@
     });
 
     $("#aceptaAJX").click(function () {
-        if (confirm("Actualizar los permisos.. \n Seguro??")) {
-            var data = armarAccn()
-            //alert("armado: " + data);
-            $.ajax({
-                type    : "POST", url : "../grabar",
-                data    : "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
-                success : function (msg) {
-                    $("#ajx").html(msg)
-                }
-            });
-        }
+
+        bootbox.confirm("Actualizar los permisos..<br/>Seguro??", function (res) {
+            if (res) {
+                var data = armarAccn();
+                //alert("armado: " + data);
+                $.ajax({
+                    type    : "POST", url : "../grabar",
+                    data    : "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
+                    success : function (msg) {
+                        $("#ajx").html(msg)
+                    }
+                });
+            }
+        });
     });
 
     function armarAccn() {
