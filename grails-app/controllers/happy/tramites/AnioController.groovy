@@ -46,11 +46,14 @@ class AnioController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+
         params.each { k, v ->
-            if (v instanceof java.lang.String) {
+            if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
             }
         }
+
+
         def anioInstance = new Anio()
         if(params.id) {
             anioInstance = Anio.get(params.id)
@@ -90,5 +93,25 @@ class AnioController extends happy.seguridad.Shield {
     protected void notFound_ajax() {
         render "NO_No se encontró Anio."
     } //notFound para ajax
+
+
+    def validarAnio_ajax() {
+
+//        println("params validarAnio:" + params)
+        if (params.id) {
+            def anio = Anio.get(params.id)
+            if (anio.numero == params.numero) {
+                render true
+                return
+            } else {
+                render Anio.countByNumero(params.numero) == 0
+                return
+            }
+        } else {
+              render Anio.countByNumero(params.numero) == 0
+            return
+        }
+    }
+
 
 }

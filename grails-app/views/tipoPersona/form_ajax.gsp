@@ -47,7 +47,26 @@
             },
             success        : function (label) {
                 label.parents(".grupo").removeClass('has-error');
+            },
+
+            rules          : {
+                codigo : {
+                    remote : {
+                        url  : "${createLink(action: 'validarCodigo_ajax')}",
+                        type : "post",
+                        data : {
+                            id : "${tipoPersonaInstance.id}"
+                        }
+                    }
+                }
+            },
+            messages       : {
+                codigo : {
+                    remote : "Código ya ingresado"
+                }
             }
+
+
         });
         $(".form-control").keydown(function (ev) {
             if (ev.keyCode == 13) {

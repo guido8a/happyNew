@@ -18,7 +18,7 @@ class Tramite {
     String asunto
     String anexo
     String texto
-    int ampliacionPlazo
+    int ampliacionPlazo=0
     Date fechaRespuesta
     Date fechaIngreso
     Date fechaModificacion

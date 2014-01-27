@@ -91,4 +91,22 @@ class TipoDocumentoController extends happy.seguridad.Shield {
         render "NO_No se encontró TipoDocumento."
     } //notFound para ajax
 
+
+    def validarCodigo_ajax() {
+        params.codigo = params.codigo.toString().trim()
+        if (params.id) {
+            def tipo = TipoDocumento.get(params.id)
+            if (tipo.codigo == params.codigo) {
+                render true
+                return
+            } else {
+                render TipoDocumento.countByCodigo(params.codigo) == 0
+                return
+            }
+        } else {
+            render TipoDocumento.countByCodigo(params.codigo) == 0
+            return
+        }
+    }//validador unique
+
 }

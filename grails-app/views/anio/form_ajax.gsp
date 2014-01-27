@@ -35,7 +35,24 @@
             },
             success        : function (label) {
                 label.parents(".grupo").removeClass('has-error');
+            },
+            rules          : {
+                numero : {
+                    remote : {
+                        url  : "${createLink(action: 'validarAnio_ajax')}",
+                        type : "post",
+                        data : {
+                            id : "${anioInstance.id}"
+                        }
+                    }
+                }
+            },
+            messages       : {
+                numero : {
+                    remote : "Año ya ingresado"
+                }
             }
+
         });
         $(".form-control").keydown(function (ev) {
             if (ev.keyCode == 13) {

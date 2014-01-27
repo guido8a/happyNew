@@ -9,7 +9,7 @@
     <g:if test="${anioInstance?.numero}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Numero
+                Año
             </div>
             
             <div class="col-md-3">

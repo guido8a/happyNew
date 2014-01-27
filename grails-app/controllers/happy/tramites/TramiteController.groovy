@@ -1,5 +1,7 @@
 package happy.tramites
 
+import happy.seguridad.Persona
+
 
 class TramiteController extends happy.seguridad.Shield {
 
@@ -215,4 +217,113 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
     }
+
+
+    def bandejaEntrada () {
+
+        def usuario = session.usuario
+
+        def persona = Persona.get(usuario.id)
+
+        return [persona: persona]
+
+
+    }
+
+
+    def tablaBandeja () {
+
+
+        def tramites = Tramite.list()
+
+
+        return [tramites: tramites]
+
+
+    }
+
+
+    def busquedaBandeja () {
+        if (params.fecha){
+            params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
+        }
+//        println("params: " + params)
+
+        def res = Tramite.withCriteria{
+
+            if (params.fecha){
+                eq('fechaIngreso',params.fecha)
+            }
+            if(params.asunto) {
+                ilike('asunto', '%' + params.asunto + '%')
+            }
+            if(params.memorando) {
+
+                ilike('numero', '%' + params.memorando + '%')
+
+            }
+        }
+
+        return [tramites: res]
+
+
+    }
+
+
+
+    def archivados () {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+
+        return [persona: persona]
+
+
+    }
+
+
+    def tablaArchivados () {
+
+
+        def tramites = Tramite.list()
+
+
+        return [tramites: tramites]
+
+
+    }
+
+    def busquedaArchivados () {
+
+
+        if (params.fecha){
+            params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
+        }
+//        println("params: " + params)
+
+        def res = Tramite.withCriteria{
+
+            if (params.fecha){
+                eq('fechaIngreso',params.fecha)
+            }
+            if(params.asunto) {
+                ilike('asunto', '%' + params.asunto + '%')
+            }
+            if(params.memorando) {
+
+                ilike('numero', '%' + params.memorando + '%')
+
+            }
+        }
+
+        return [tramites: res]
+
+
+
+    }
+
+
+
+
+
 }

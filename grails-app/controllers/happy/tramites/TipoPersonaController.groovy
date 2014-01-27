@@ -91,4 +91,26 @@ class TipoPersonaController extends happy.seguridad.Shield {
         render "NO_No se encontró TipoPersona."
     } //notFound para ajax
 
+
+    def validarCodigo_ajax() {
+        params.codigo = params.codigo.toString().trim()
+        if (params.id) {
+            def tipo = TipoPersona.get(params.id)
+            if (tipo.codigo == params.codigo) {
+                render true
+                return
+            } else {
+                render TipoPersona.countByCodigo(params.codigo) == 0
+                return
+            }
+        } else {
+            render TipoPersona.countByCodigo(params.codigo) == 0
+            return
+        }
+    }//validador unique
+
+
+
+
+
 }
