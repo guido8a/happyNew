@@ -16,7 +16,7 @@
                         Cédula
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <g:textField name="cedula" maxlength="10" required="" cedula="true" class="form-control required" value="${personaInstance?.cedula}"/>
                     </div>
                     *
@@ -29,7 +29,7 @@
                         Nombre
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <g:textField name="nombre" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.nombre}"/>
                     </div>
                     *
@@ -42,7 +42,7 @@
                         Apellido
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <g:textField name="apellido" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.apellido}"/>
                     </div>
                     *
@@ -55,7 +55,7 @@
                         Sigla
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>
                     </div>
 
@@ -68,7 +68,7 @@
                         Título
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <g:textField name="titulo" maxlength="4" class="form-control allCaps" value="${personaInstance?.titulo}"/>
                     </div>
 
@@ -95,8 +95,8 @@
                         E-mail
                     </label>
 
-                    <div class="col-md-6">
-                        <g:textField name="mail" maxlength="63" email="true" class="form-control allCaps" value="${personaInstance?.mail}"/>
+                    <div class="col-md-7">
+                        <g:textField name="mail" maxlength="63" email="true" class="form-control" value="${personaInstance?.mail}"/>
                     </div>
 
                 </span>
@@ -108,7 +108,7 @@
                         Teléfono
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <g:textField name="telefono" maxlength="15" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>
                     </div>
 
@@ -121,7 +121,7 @@
                         Celular
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <g:textField name="celular" maxlength="15" celular="true" class="form-control" value="${personaInstance?.celular}"/>
                     </div>
 
@@ -134,7 +134,7 @@
                         Departamento
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <g:select id="departamento" name="departamento.id" from="${happy.tramites.Departamento.list()}"
                                   optionKey="id" optionValue="descripcion"
                                   value="${personaInstance?.departamento?.id}" class="many-to-one form-control"/>

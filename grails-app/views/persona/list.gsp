@@ -4,6 +4,13 @@
     <head>
         <meta name="layout" content="main">
         <title>Lista de Persona</title>
+
+        <style type="text/css">
+        .table {
+            font-size     : 13px;
+            margin-bottom : 0 !important;
+        }
+        </style>
     </head>
 
     <body>
@@ -30,7 +37,7 @@
             </div>
         </div>
 
-        <table class="table table-condensed table-bordered">
+        <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
 

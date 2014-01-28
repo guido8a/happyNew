@@ -54,7 +54,7 @@
                         Cargo
                     </label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <g:textField name="cargo" maxlength="127" class="form-control allCaps" value="${personaInstance?.cargo}"/>
                     </div>
 

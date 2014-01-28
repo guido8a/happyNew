@@ -24,7 +24,7 @@
         float: left;
 
         width: 350px;
-        height: 35px;
+        height: 25px;
         margin-left: 20px;
         /*margin-top: 5px;*/
     }
@@ -33,7 +33,7 @@
 
         float: left;
         width: 250px;
-        height: 35px;
+        height: 25px;
         margin-left: 90px;
         /*margin-top: 5px;*/
     }
@@ -108,13 +108,13 @@
         white-space : nowrap;
         display     : block;
         /*width       : 98%;*/
-        height      : 30px;
+        height      : 25px;
         font-family : 'open sans condensed';
         font-weight : bold;
-        font-size   : 20px;
+        font-size   : 16px;
         /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
         /*margin-top  : 10px;*/
-        line-height : 20px;
+        line-height : 18px;
 
         /*text-shadow: 0px 0px 1px #333;*/
     }

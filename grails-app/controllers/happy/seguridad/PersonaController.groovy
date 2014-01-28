@@ -189,7 +189,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+        params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
         def personaInstanceList = Persona.list(params)
         def personaInstanceCount = Persona.count()
         if (personaInstanceList.size() == 0 && params.offset && params.max) {
