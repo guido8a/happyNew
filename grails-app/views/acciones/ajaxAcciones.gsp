@@ -10,9 +10,9 @@ th, td {
     <input type="hidden" id="tpac__id" value="${tpac__id}">
     <g:if test="${datos?.size() > 0}">
         <div class="ui-corner-all"
-             style="height: 480px;overflow: auto; margin-bottom: 5px; background-color: #efeff8;
+             style="height: 480px; width: 900px; overflow: auto; margin-bottom: 5px; background-color: #efeff8;
              border-style: solid; border-color: #AAA; border-width: 1px; ">
-            <table border="0" cellpadding="0" width="800px" class="table table-bordered table-striped">
+            <table border="0" cellpadding="0" width="900px" class="table table-bordered table-striped table-condensed">
                 <thead>
                     <tr>
                         <g:each in="${titulos}" var="tt">
@@ -30,7 +30,7 @@ th, td {
                             <td><input type="checkbox" name="cdgo" class="chkAccn" value="${d[0].encodeAsHTML()}"></td>
                             <td>${d[1]}</td>
                             <td><input type="text" id="mn${d[0]}" value="${d[2]?.encodeAsHTML()}">
-                                <input class="ok btn btn-success" type="button" id="${d[0]}" value="Grabar"></td>
+                                <input class="ok btn btn-default btn-xs" type="button" id="${d[0]}" value="Grabar"></td>
                             <td>${d[3]?.encodeAsHTML()}</td>
                         </tr>
                     </g:each>

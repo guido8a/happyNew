@@ -176,10 +176,13 @@ class ModuloController extends happy.seguridad.Shield  {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        println params
         params.each { k, v ->
+/*
             if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
             }
+*/
         }
         def moduloInstance = new Modulo()
         if (params.id) {

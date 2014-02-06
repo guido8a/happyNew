@@ -11,10 +11,10 @@
         <div class="form-group ${hasErrors(bean: moduloInstance, field: 'descripcion', 'error')} ">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripcion
+                    Descripción
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" class="allCaps form-control" value="${moduloInstance?.descripcion}"/>
+                    <g:textField name="descripcion" class="form-control" value="${moduloInstance?.descripcion}"/>
                 </div>
                 
             </span>
@@ -26,7 +26,7 @@
                     Nombre
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="nombre" class="allCaps form-control" value="${moduloInstance?.nombre}"/>
+                    <g:textField name="nombre" class="form-control" value="${moduloInstance?.nombre}"/>
                 </div>
                 
             </span>
