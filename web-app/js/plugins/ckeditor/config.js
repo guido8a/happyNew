@@ -8,13 +8,16 @@ CKEDITOR.editorConfig = function (config) {
     // %REMOVE_START%
     // The configuration options below are needed when running CKEditor from source files.
 //    config.plugins = 'dialogui,dialog,about,a11yhelp,dialogadvtab,basicstyles,bidi,blockquote,clipboard,button,panelbutton,panel,floatpanel,colorbutton,colordialog,templates,menu,contextmenu,div,resize,toolbar,elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,floatingspace,listblock,richcombo,font,forms,format,horizontalrule,htmlwriter,iframe,wysiwygarea,image,indent,indentblock,indentlist,smiley,justify,menubutton,language,link,list,liststyle,magicline,maximize,newpage,pagebreak,pastetext,pastefromword,preview,print,removeformat,save,selectall,showblocks,showborders,sourcearea,specialchar,scayt,stylescombo,tab,table,tabletools,undo,wsc,autosave,eqneditor,wordcount';
-    config.skin = 'moonocolor';
-    config.language = "es";
     // %REMOVE_END%
 
     // Define changes to default configuration here. For example:
     // config.language = 'fr';
+    config.skin = 'moonocolor';
+    config.language = "es";
     config.uiColor = '#4D76A3';
+
+    config.scayt_autoStartup = true;
+    config.scayt_sLang = 'es_ES';
 
     /*
      // Toolbar configuration generated automatically by the editor based on config.toolbarGroups.

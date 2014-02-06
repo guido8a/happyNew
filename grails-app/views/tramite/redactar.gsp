@@ -27,10 +27,10 @@
                     $('textarea.editor').ckeditor({
                         height  : 600,
                         toolbar : [
-                            [ 'Save', 'NewPage', 'Preview', 'Print' ],
+                            [ 'Save', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
-                            [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ],
+                            [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak' ],
                             '/',
                             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ],
                             [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],
