@@ -59,7 +59,7 @@ class Persona {
     }
     static constraints = {
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
-        cedula(maxSize: 10, unique: true, blank: false, attributes: [title: 'cedula'])
+        cedula(maxSize: 10, nullable: true, unique: true, blank: true, attributes: [title: 'cedula'])
         nombre(maxSize: 31, blank: false, attributes: [title: 'nombre'])
         apellido(maxSize: 31, blank: false, attributes: [title: 'apellido'])
         fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])

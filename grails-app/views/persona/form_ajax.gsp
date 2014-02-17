@@ -10,16 +10,15 @@
         <g:form class="form-horizontal" name="frmPersona" role="form" action="save" method="POST">
             <g:hiddenField name="id" value="${personaInstance?.id}"/>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cedula', 'error')} required">
+            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cedula', 'error')}">
                 <span class="grupo">
                     <label for="cedula" class="col-md-3 control-label text-info">
                         Cédula
                     </label>
 
                     <div class="col-md-4">
-                        <g:textField name="cedula" maxlength="10" required="" cedula="true" class="form-control required" value="${personaInstance?.cedula}"/>
+                        <g:textField name="cedula" maxlength="10" cedula="true" class="form-control" value="${personaInstance?.cedula}"/>
                     </div>
-                    *
                 </span>
             </div>
 

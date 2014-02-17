@@ -149,6 +149,10 @@ jQuery.validator.addMethod("cedula", function (value, element) {
             return false;
         }
         return false;
+    } else {
+        if (cant == 0) {
+            return true;
+        }
     }
     return false;
 

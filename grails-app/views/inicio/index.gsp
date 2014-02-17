@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Sistema SEP - GADPP</title>
+    <title>Nuevo S.A.D.</title>
     <meta name="layout" content="main"/>
     <style type="text/css">
     @page {
@@ -69,7 +69,7 @@
 <body>
 <div class="dialog">
     <div style="text-align: center;"><h2 class="titl"
-                                         >Nuevo S.A.D.<br>
+                                         >S.A.D. Web<br>
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA<br/>
         Sistema de Administración de Documentos</h2></div>
 

@@ -15,35 +15,38 @@
 
     .etiqueta {
         float: left;
-        width: 100px;
+        /*width: 100px;*/
+        margin-left: 5px;
         /*margin-top: 5px;*/
 
     }
 
-    .textEtiqueta {
-        float: left;
+    .alert {
+        padding: 0;
+    !important;
+    }
 
-        width: 350px;
-        height: 25px;
-        margin-left: 20px;
-        /*margin-top: 5px;*/
+    .alert-blanco {
+        color: #666;
+        background-color: #ffffff;
+        border-color: #d0d0d0;
     }
 
     .alertas {
-
         float: left;
-        width: 250px;
-        height: 25px;
-        margin-left: 90px;
-        /*margin-top: 5px;*/
+        width: 100px;
+        height: 40px;
+        margin-left: 20px;
+        /*margin-top: -5px;*/
     }
 
     .cabecera {
         text-align: center;
-
+        font-size: 13px;
+    !important;
     }
 
-    .container-celdas{
+    .container-celdas {
         width: 1070px;
         height: 310px;
         float: left;
@@ -65,7 +68,7 @@
 
     }
 
-    .tres{
+    .tres {
         float: left;
         width: 270px;
 
@@ -77,25 +80,24 @@
         clear: both;
     }
 
-
     .css-vertical-text {
         /*position          : absolute;*/
-        left              : 5px;
-        bottom            : 5px;
-        color             : #0088CC;
-        border            : 0px solid red;
-        writing-mode      : tb-rl;
-        -webkit-transform : rotate(270deg);
-        -moz-transform    : rotate(270deg);
-        -o-transform      : rotate(270deg);
-        white-space       : nowrap;
-        display           : block;
-        width             : 20px;
-        height            : 20px;
-        font-size         : 25px;
-        font-family       : 'Tulpen One', cursive;
-        font-weight       : bold;
-        font-size         : 35px;
+        left: 5px;
+        bottom: 5px;
+        color: #0088CC;
+        border: 0px solid red;
+        writing-mode: tb-rl;
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -o-transform: rotate(270deg);
+        white-space: nowrap;
+        display: block;
+        width: 20px;
+        height: 20px;
+        font-size: 25px;
+        font-family: 'Tulpen One', cursive;
+        font-weight: bold;
+        font-size: 35px;
         /*text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
 
         /*text-shadow: 0px 0px 1px #333;*/
@@ -103,18 +105,18 @@
 
     .tituloChevere {
 
-        color       : #0088CC;
-        border      : 0px solid red;
-        white-space : nowrap;
-        display     : block;
+        color: #0088CC;
+        border: 0px solid red;
+        white-space: nowrap;
+        display: block;
         /*width       : 98%;*/
-        height      : 25px;
-        font-family : 'open sans condensed';
-        font-weight : bold;
-        font-size   : 16px;
+        height: 25px;
+        font-family: 'open sans condensed';
+        font-weight: bold;
+        font-size: 16px;
         /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
         /*margin-top  : 10px;*/
-        line-height : 18px;
+        line-height: 18px;
 
         /*text-shadow: 0px 0px 1px #333;*/
     }
@@ -131,26 +133,20 @@
 
 <body>
 
-<div class="row">
+<div class="row" style="margin-top: 0px">
     <span class="grupo">
-        <label class="etiqueta tituloChevere" style="margin-left: 20px">Usuario:</label>
-        <g:textField name="usuario" value="${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido}" readonly="true" class="textEtiqueta"/>
+        <label class="well well-sm"
+               style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
+                persona?.departamento?.descripcion}</label>
 
-        <label class="etiqueta tituloChevere" style="margin-left: 30px">Dirección:</label>
-        <g:textField name="direccion" value="${persona?.departamento?.descripcion}" readonly="true" class="textEtiqueta"/>
+        <div class="alert alert-info alertas" style="margin-left: 40px;"><label
+                class="etiqueta">Documentos Recibidos</label></div>
 
+        <div class="alert alert-blanco alertas" style="width: 160px;"><p
+                class="etiqueta">Documentos Pendientes o No Recibidos</p></div>
+
+        <div class="alert alert-danger alertas"><label class="etiqueta">Documentos Retrasados</label></div>
     </span>
-</div>
-
-<div class="row" style="margin-top: 20px">
-    <span class="grupo">
-        <div class="alert alert-success alertas"><label class="tituloChevere">Documentos Pendientes</label></div>
-        <div class="alert alert-info alertas"><label class="tituloChevere">Documentos Revisados</label></div>
-        <div class="alert alert-danger alertas"><label class="tituloChevere">Documentos no Recibidos</label></div>
-
-
-    </span>
-
 </div>
 
 
@@ -164,14 +160,13 @@
             <i class="fa fa-gears"></i> Trámites
         </g:link>
 
-        <g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite" >
+        <g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">
             <i class="fa fa-folder"></i> Archivados
         </g:link>
 
         <g:link action="" class="btn btn-success btnActualizar">
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
-
 
     </div>
 
@@ -185,7 +180,7 @@
 
         <div>
             <div class="col-md-2">
-                <label> # Memorando</label>
+                <label># Memorando</label>
                 <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
             </div>
 
@@ -201,14 +196,13 @@
 
 
             <div style="padding-top: 25px">
-                <a href="#" name="busqueda" class="btn btn-success btnBusqueda"><i class="fa fa-check-square-o"></i> Buscar</a>
+                <a href="#" name="busqueda" class="btn btn-success btnBusqueda"><i
+                        class="fa fa-check-square-o"></i> Buscar</a>
 
                 <a href="#" name="salir" class="btn btn-danger btnSalir"><i class="fa fa-times"></i> Cerrar</a>
             </div>
 
-
         </div>
-
 
     </fieldset>
 
@@ -226,18 +220,18 @@
 
 <script>
     $(function () {
-        var cellWidth=150;
-        var celHegth=25;
-        var select=null;
+        var cellWidth = 150;
+        var celHegth = 25;
+        var select = null;
         var headerTop = $(".header-columnas");
 //        var headerLeft=$(".header-filas");
 
-        $( ".h-A" ).resizable({
+        $(".h-A").resizable({
             handles: "e",
-            minWidth:30,
+            minWidth: 30,
             alsoResize: ".A"
         });
-        $(".container-celdas").scroll(function(){
+        $(".container-celdas").scroll(function () {
 //            $("#container-filas").scrollTop($(".container-celdas").scrollTop());
             $("#container-cols").scrollLeft($(".container-celdas").scrollLeft());
         });
@@ -255,7 +249,7 @@
 //        });
 
         context.settings({
-            onShow : function (e) {
+            onShow: function (e) {
                 $("tr.success").removeClass("success");
                 var $tr = $(e.target).parent();
                 $tr.addClass("success");
@@ -264,12 +258,20 @@
         });
         context.attach('tbody>tr', [
             {
-                header : 'Acciones'
+                header: 'Acciones'
             },
             {
-                text   : 'Contestar Documento',
-                icon   : "<i class='fa fa-comments-o'></i>",
-                action : function (e) {
+                text: 'Recibir Documento',
+                icon: "<i class='fa fa-check-square-o'></i>",
+                action: function (e) {
+                    $("tr.success").removeClass("success");
+                    e.preventDefault();
+                }
+            },
+            {
+                text: 'Contestar Documento',
+                icon: "<i class='fa fa-external-link'></i>",
+                action: function (e) {
                     $("tr.success").removeClass("success");
                     e.preventDefault();
                     %{--$.ajax({--}%
@@ -296,9 +298,9 @@
                 }
             },
             {
-                text   : 'Archivar Documentos',
-                icon   : "<i class='fa fa-folder-open-o'></i>",
-                action : function (e) {
+                text: 'Archivar Documentos',
+                icon: "<i class='fa fa-folder-open-o'></i>",
+                action: function (e) {
                     $("tr.success").removeClass("success");
                     e.preventDefault();
 //                    createEditRow(id);
@@ -333,7 +335,6 @@
     });
 
 
-
     function loading(div) {
         y = 0;
         $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
@@ -353,9 +354,9 @@
 
         var interval = loading("bandeja")
         var datos = ""
-        $.ajax({type : "POST", url : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
-            data     : datos,
-            success  : function (msg) {
+        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
+            data: datos,
+            success: function (msg) {
                 clearInterval(interval)
                 $("#bandeja").html(msg);
 
@@ -376,14 +377,14 @@
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-        $.ajax ({ type : "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
-                  data: datos,
-                  success: function (msg) {
-                      clearInterval(interval)
-                      $("#bandeja"). html(msg);
+        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
+            data: datos,
+            success: function (msg) {
+                clearInterval(interval)
+                $("#bandeja").html(msg);
 
 
-                  }
+            }
 
 
 
