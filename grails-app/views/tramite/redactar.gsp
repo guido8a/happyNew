@@ -30,16 +30,12 @@
                             [ 'Save', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
-                            [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak' ],
+                            [ 'Table', 'HorizontalRule', 'PageBreak'], ['Image'], ['About' ],
                             '/',
                             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ],
-                            [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],
-                            '/',
-                            [ 'Styles', 'Format', 'Font', 'FontSize' ],
-                            [ 'TextColor', 'BGColor' ] ,
-                            [ 'Maximize' ],
-                            [ '-' ] ,
-                            [ 'About' ]
+                            [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],
+
+                            [ 'Font', 'FontSize' ,'-', 'TextColor', 'BGColor' ]
                         ]
                     });
                 }
