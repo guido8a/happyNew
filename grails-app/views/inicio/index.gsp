@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Nuevo S.A.D.</title>
+    <title>S.A.D. Web</title>
     <meta name="layout" content="main"/>
     <style type="text/css">
     @page {

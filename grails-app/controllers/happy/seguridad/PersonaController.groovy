@@ -33,6 +33,11 @@ class PersonaController extends happy.seguridad.Shield {
                     ilike("cargo", "%" + params.search + "%")
                     ilike("login", "%" + params.search + "%")
                     ilike("codigo", "%" + params.search + "%")
+                    departamento {
+                        or {
+                            ilike("descripcion", "%" + params.search + "%")
+                        }
+                    }
                 }
             }
         } else {

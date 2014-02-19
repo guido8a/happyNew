@@ -44,12 +44,12 @@ class LoginController {
 
     def olvidoPass() {
         def mail = params.email
-        def personas = Persona.findAllByEmail(mail)
+        def personas = Persona.findAllByMail(mail)
         def msg
         if (personas.size() == 0) {
-            msg = "NO*No se encontró un usuario con ese email"
+            flash.message = "No se encontró un usuario con ese email"
         } else if (personas.size() > 1) {
-            msg = "NO*Ha ocurrido un error grave"
+            flash.message = "Ha ocurrido un error grave (n)"
         } else {
             def persona = personas[0]
 
@@ -70,7 +70,7 @@ class LoginController {
                 msg = "NO*Ha ocurrido un error al crear la nueva contraseña. Por favor vuelva a intentar."
             }
         }
-        render msg
+        redirect(action: 'login')
     }
 
     def login() {
