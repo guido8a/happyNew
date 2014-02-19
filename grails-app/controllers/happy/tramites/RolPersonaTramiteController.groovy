@@ -9,15 +9,36 @@ class RolPersonaTramiteController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = RolPersonaTramite.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("codigo", "%" + params.search + "%")
+                    ilike("descripcion", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = RolPersonaTramite.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def rolPersonaTramiteInstanceList = RolPersonaTramite.list(params)
-        def rolPersonaTramiteInstanceCount = RolPersonaTramite.count()
+        def rolPersonaTramiteInstanceList = getLista(params, false)
+        def rolPersonaTramiteInstanceCount = getLista(params, true).size()
         if (rolPersonaTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        rolPersonaTramiteInstanceList = RolPersonaTramite.list(params)
-        return [rolPersonaTramiteInstanceList: rolPersonaTramiteInstanceList, rolPersonaTramiteInstanceCount: rolPersonaTramiteInstanceCount]
+        rolPersonaTramiteInstanceList = getLista(params, false)
+        return [rolPersonaTramiteInstanceList: rolPersonaTramiteInstanceList, rolPersonaTramiteInstanceCount: rolPersonaTramiteInstanceCount, params: params]
     } //list
 
     def show_ajax() {

@@ -9,15 +9,42 @@ class DepartamentoController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = Departamento.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("codigo", "%" + params.search + "%")
+                    ilike("descripcion", "%" + params.search + "%")
+                    tipoDepartamento {
+                        or {
+                            ilike("codigo", "%" + params.search + "%")
+                            ilike("descripcion", "%" + params.search + "%")
+                        }
+                    }
+                }
+            }
+        } else {
+            lista = Departamento.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def departamentoInstanceList = Departamento.list(params)
-        def departamentoInstanceCount = Departamento.count()
+        def departamentoInstanceList = getLista(params, false)
+        def departamentoInstanceCount = getLista(params, true).size()
         if (departamentoInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        departamentoInstanceList = Departamento.list(params)
-        return [departamentoInstanceList: departamentoInstanceList, departamentoInstanceCount: departamentoInstanceCount]
+        departamentoInstanceList = getLista(params, false)
+        return [departamentoInstanceList: departamentoInstanceList, departamentoInstanceCount: departamentoInstanceCount, params: params]
     } //list
 
     def show_ajax() {

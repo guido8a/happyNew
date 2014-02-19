@@ -19,11 +19,11 @@
             </div>
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
-                    <input type="text" class="form-control span2" placeholder="Buscar">
+                    <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
                     <span class="input-group-btn">
-                        <a href="#" class="btn btn-default" type="button">
+                        <g:link action="list" class="btn btn-default btn-search">
                             <i class="fa fa-search"></i>&nbsp;
-                        </a>
+                        </g:link>
                     </span>
                 </div><!-- /input-group -->
             </div>

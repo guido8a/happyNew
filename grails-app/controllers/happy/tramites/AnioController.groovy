@@ -9,21 +9,41 @@ class AnioController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = Anio.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("numero", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = Anio.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def anioInstanceList = Anio.list(params)
         def anioInstanceCount = Anio.count()
-        if(anioInstanceList.size() == 0 && params.offset && params.max) {
+        if (anioInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         anioInstanceList = Anio.list(params)
-        return [anioInstanceList: anioInstanceList, anioInstanceCount: anioInstanceCount]
+        return [anioInstanceList: anioInstanceList, anioInstanceCount: anioInstanceCount, params: params]
     } //list
 
     def show_ajax() {
-        if(params.id) {
+        if (params.id) {
             def anioInstance = Anio.get(params.id)
-            if(!anioInstance) {
+            if (!anioInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +55,9 @@ class AnioController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def anioInstance = new Anio(params)
-        if(params.id) {
+        if (params.id) {
             anioInstance = Anio.get(params.id)
-            if(!anioInstance) {
+            if (!anioInstance) {
                 notFound_ajax()
                 return
             }
@@ -55,15 +75,15 @@ class AnioController extends happy.seguridad.Shield {
 
 
         def anioInstance = new Anio()
-        if(params.id) {
+        if (params.id) {
             anioInstance = Anio.get(params.id)
-            if(!anioInstance) {
+            if (!anioInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         anioInstance.properties = params
-        if(!anioInstance.save(flush:true)) {
+        if (!anioInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Anio."
             msg += renderErrors(bean: anioInstance)
             render msg
@@ -73,11 +93,11 @@ class AnioController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if(params.id) {
+        if (params.id) {
             def anioInstance = Anio.get(params.id)
-            if(anioInstance) {
+            if (anioInstance) {
                 try {
-                    anioInstance.delete(flush:true)
+                    anioInstance.delete(flush: true)
                     render "OK_Eliminación de Anio exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar Anio."
@@ -108,7 +128,7 @@ class AnioController extends happy.seguridad.Shield {
                 return
             }
         } else {
-              render Anio.countByNumero(params.numero) == 0
+            render Anio.countByNumero(params.numero) == 0
             return
         }
     }

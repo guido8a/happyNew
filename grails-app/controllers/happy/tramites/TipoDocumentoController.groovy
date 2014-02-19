@@ -9,21 +9,42 @@ class TipoDocumentoController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = TipoDocumento.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("codigo", "%" + params.search + "%")
+                    ilike("descripcion", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = TipoDocumento.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def tipoDocumentoInstanceList = TipoDocumento.list(params)
-        def tipoDocumentoInstanceCount = TipoDocumento.count()
-        if(tipoDocumentoInstanceList.size() == 0 && params.offset && params.max) {
+        def tipoDocumentoInstanceList = getLista(params, false)
+        def tipoDocumentoInstanceCount = getLista(params, true).size()
+        if (tipoDocumentoInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        tipoDocumentoInstanceList = TipoDocumento.list(params)
-        return [tipoDocumentoInstanceList: tipoDocumentoInstanceList, tipoDocumentoInstanceCount: tipoDocumentoInstanceCount]
+        tipoDocumentoInstanceList = getLista(params, false)
+        return [tipoDocumentoInstanceList: tipoDocumentoInstanceList, tipoDocumentoInstanceCount: tipoDocumentoInstanceCount, params: params]
     } //list
 
     def show_ajax() {
-        if(params.id) {
+        if (params.id) {
             def tipoDocumentoInstance = TipoDocumento.get(params.id)
-            if(!tipoDocumentoInstance) {
+            if (!tipoDocumentoInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +56,9 @@ class TipoDocumentoController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def tipoDocumentoInstance = new TipoDocumento(params)
-        if(params.id) {
+        if (params.id) {
             tipoDocumentoInstance = TipoDocumento.get(params.id)
-            if(!tipoDocumentoInstance) {
+            if (!tipoDocumentoInstance) {
                 notFound_ajax()
                 return
             }
@@ -52,15 +73,15 @@ class TipoDocumentoController extends happy.seguridad.Shield {
             }
         }
         def tipoDocumentoInstance = new TipoDocumento()
-        if(params.id) {
+        if (params.id) {
             tipoDocumentoInstance = TipoDocumento.get(params.id)
-            if(!tipoDocumentoInstance) {
+            if (!tipoDocumentoInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         tipoDocumentoInstance.properties = params
-        if(!tipoDocumentoInstance.save(flush:true)) {
+        if (!tipoDocumentoInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} TipoDocumento."
             msg += renderErrors(bean: tipoDocumentoInstance)
             render msg
@@ -70,11 +91,11 @@ class TipoDocumentoController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if(params.id) {
+        if (params.id) {
             def tipoDocumentoInstance = TipoDocumento.get(params.id)
-            if(tipoDocumentoInstance) {
+            if (tipoDocumentoInstance) {
                 try {
-                    tipoDocumentoInstance.delete(flush:true)
+                    tipoDocumentoInstance.delete(flush: true)
                     render "OK_Eliminación de TipoDocumento exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar TipoDocumento."

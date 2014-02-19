@@ -20,11 +20,11 @@
 
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
-                    <input type="text" class="form-control span2" placeholder="Buscar">
+                    <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
                     <span class="input-group-btn">
-                        <a href="#" class="btn btn-default" type="button">
+                        <g:link action="list" class="btn btn-default btn-search">
                             <i class="fa fa-search"></i>&nbsp;
-                        </a>
+                        </g:link>
                     </span>
                 </div><!-- /input-group -->
             </div>
@@ -33,29 +33,21 @@
         <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
-
-                    <th>Persona</th>
-
-                    <th>Permiso Tramite</th>
-
+                    <g:sortableColumn property="persona" title="Persona"/>
+                    <g:sortableColumn property="permisoTramite" title="Permiso Tramite"/>
                     <g:sortableColumn property="fechaInicio" title="Fecha Inicio"/>
-
                     <g:sortableColumn property="fechaFin" title="Fecha Fin"/>
-
+                    <g:sortableColumn property="asignadoPor" title="Asignado por"/>
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${permisoUsuarioInstanceList}" status="i" var="permisoUsuarioInstance">
                     <tr data-id="${permisoUsuarioInstance.id}">
-
                         <td>${fieldValue(bean: permisoUsuarioInstance, field: "persona")}</td>
-
                         <td>${fieldValue(bean: permisoUsuarioInstance, field: "permisoTramite")}</td>
-
                         <td><g:formatDate date="${permisoUsuarioInstance.fechaInicio}" format="dd-MM-yyyy"/></td>
-
                         <td><g:formatDate date="${permisoUsuarioInstance.fechaFin}" format="dd-MM-yyyy"/></td>
-
+                        <td>${fieldValue(bean: permisoUsuarioInstance, field: "asignadoPor")}</td>
                     </tr>
                 </g:each>
             </tbody>

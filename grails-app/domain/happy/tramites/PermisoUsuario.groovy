@@ -8,6 +8,8 @@ class PermisoUsuario {
     Date fechaInicio
     Date fechaFin
     String observaciones
+
+    Persona asignadoPor
     static mapping = {
         table 'prus'
         cache usage: 'read-write', include: 'non-lazy'
@@ -21,6 +23,8 @@ class PermisoUsuario {
             fechaInicio column: 'prusfcin'
             fechaFin column: 'prusfcfn'
             observaciones column: 'prusobsv'
+
+            asignadoPor column: 'prsnasgn'
         }
     }
     static constraints = {
@@ -29,6 +33,8 @@ class PermisoUsuario {
         fechaInicio(blank: false, attributes: [title: 'fechaInicio'])
         fechaFin(blank: true, nullable: true, attributes: [title: 'fechaFin'])
         observaciones(blank: true, nullable: true, maxSize: 100, attributes: [title: 'observaciones'])
+
+        asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el permiso'])
     }
 
     boolean getEstaActivo() {

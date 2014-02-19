@@ -9,15 +9,58 @@ class PersonaDocumentoTramiteController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = PersonaDocumentoTramite.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("permiso", "%" + params.search + "%")
+                    rolPersonaTramite {
+                        ilike("codigo", "%" + params.search + "%")
+                        ilike("descripcion", "%" + params.search + "%")
+                    }
+                    persona {
+                        or {
+                            ilike("cedula", "%" + params.search + "%")
+                            ilike("nombre", "%" + params.search + "%")
+                            ilike("apellido", "%" + params.search + "%")
+                            ilike("sigla", "%" + params.search + "%")
+                            ilike("titulo", "%" + params.search + "%")
+                            ilike("cargo", "%" + params.search + "%")
+                            ilike("login", "%" + params.search + "%")
+                            ilike("codigo", "%" + params.search + "%")
+                        }
+                    }
+                    tramite {
+                        or {
+                            ilike("codigo", "%" + params.search + "%")
+                            ilike("numero", "%" + params.search + "%")
+                            ilike("asunto", "%" + params.search + "%")
+                        }
+                    }
+                }
+            }
+        } else {
+            lista = PersonaDocumentoTramite.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def personaDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
-        def personaDocumentoTramiteInstanceCount = PersonaDocumentoTramite.count()
+        def personaDocumentoTramiteInstanceList = getLista(params, false)
+        def personaDocumentoTramiteInstanceCount = getLista(params, true).size()
         if (personaDocumentoTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        personaDocumentoTramiteInstanceList = PersonaDocumentoTramite.list(params)
-        return [personaDocumentoTramiteInstanceList: personaDocumentoTramiteInstanceList, personaDocumentoTramiteInstanceCount: personaDocumentoTramiteInstanceCount]
+        personaDocumentoTramiteInstanceList = getLista(params, false)
+        return [personaDocumentoTramiteInstanceList: personaDocumentoTramiteInstanceList, personaDocumentoTramiteInstanceCount: personaDocumentoTramiteInstanceCount, params: params]
     } //list
 
     def show_ajax() {

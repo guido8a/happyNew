@@ -1,31 +1,8 @@
-<style type="text/css">
-.table {
-    font-size     : 13px;
-    width         : auto !important;
-    margin-bottom : 0 !important;
-}
-
-.container-celdas {
-    max-height : 200px;
-    width      : 554px;
-    overflow   : auto;
-}
-
-.col100 {
-    width : 100px;
-}
-
-.col300 {
-    width : 304px;
-}
-
-</style>
-
 <g:if test="${accesos.size() > 0}">
     <h4>Historial</h4>
 
     <div class="">
-        <div id="container-cols">
+        <div class="container-colsAcc">
             <div class="header-columnas">
                 <div id="all"></div>
                 <table class=" table table-bordered table-condensed">
@@ -34,13 +11,14 @@
                             <th class="col100">Desde</th>
                             <th class="col100">Hasta</th>
                             <th class="col300">Observaciones</th>
+                            <th class="col200">Asigando por</th>
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
 
-        <div class="container-celdas">
+        <div class="container-celdasAcc">
             <div id="celdas">
                 <table class=" table table-bordered table-condensed">
                     <tbody>
@@ -49,6 +27,7 @@
                                 <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy")}</td>
                                 <td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy")}</td>
                                 <td class="col300">${acceso.accsObservaciones}</td>
+                                <td class="col200">${acceso.asignadoPor.nombre} ${acceso.asignadoPor.apellido}</td>
                             </tr>
                         </g:each>
                     </tbody>

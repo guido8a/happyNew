@@ -7,6 +7,7 @@ class Accs implements Serializable {
     String accsObservaciones
 
     Persona usuario
+    Persona asignadoPor
 
     static mapping = {
         table 'accs'
@@ -19,6 +20,8 @@ class Accs implements Serializable {
             accsFechaInicial column: 'accsfcin'
             accsFechaFinal column: 'accsfcfn'
             accsObservaciones column: 'accsobsr'
+
+            asignadoPor column: 'prsnasgn'
         }
     }
 
@@ -26,6 +29,7 @@ class Accs implements Serializable {
         accsFechaInicial(blank: false, nullable: false)
         accsFechaFinal(blank: false, nullable: false)
         accsObservaciones(blank: true, nullable: true)
+        asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el acceso'])
     }
 
     boolean getEstaActivo() {

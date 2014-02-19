@@ -9,21 +9,43 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = DocumentoTramite.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("resumen", "%" + params.search + "%")
+                    ilike("clave", "%" + params.search + "%")
+                    ilike("descripcion", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = DocumentoTramite.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def documentoTramiteInstanceList = DocumentoTramite.list(params)
-        def documentoTramiteInstanceCount = DocumentoTramite.count()
-        if(documentoTramiteInstanceList.size() == 0 && params.offset && params.max) {
+        def documentoTramiteInstanceList = getLista(params, false)
+        def documentoTramiteInstanceCount = getLista(params, true).size()
+        if (documentoTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        documentoTramiteInstanceList = DocumentoTramite.list(params)
-        return [documentoTramiteInstanceList: documentoTramiteInstanceList, documentoTramiteInstanceCount: documentoTramiteInstanceCount]
+        documentoTramiteInstanceList = getLista(params, false)
+        return [documentoTramiteInstanceList: documentoTramiteInstanceList, documentoTramiteInstanceCount: documentoTramiteInstanceCount, params: params]
     } //list
 
     def show_ajax() {
-        if(params.id) {
+        if (params.id) {
             def documentoTramiteInstance = DocumentoTramite.get(params.id)
-            if(!documentoTramiteInstance) {
+            if (!documentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +57,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def documentoTramiteInstance = new DocumentoTramite(params)
-        if(params.id) {
+        if (params.id) {
             documentoTramiteInstance = DocumentoTramite.get(params.id)
-            if(!documentoTramiteInstance) {
+            if (!documentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -52,15 +74,15 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             }
         }
         def documentoTramiteInstance = new DocumentoTramite()
-        if(params.id) {
+        if (params.id) {
             documentoTramiteInstance = DocumentoTramite.get(params.id)
-            if(!documentoTramiteInstance) {
+            if (!documentoTramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         documentoTramiteInstance.properties = params
-        if(!documentoTramiteInstance.save(flush:true)) {
+        if (!documentoTramiteInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} DocumentoTramite."
             msg += renderErrors(bean: documentoTramiteInstance)
             render msg
@@ -70,11 +92,11 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if(params.id) {
+        if (params.id) {
             def documentoTramiteInstance = DocumentoTramite.get(params.id)
-            if(documentoTramiteInstance) {
+            if (documentoTramiteInstance) {
                 try {
-                    documentoTramiteInstance.delete(flush:true)
+                    documentoTramiteInstance.delete(flush: true)
                     render "OK_Eliminación de DocumentoTramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar DocumentoTramite."

@@ -8,15 +8,37 @@ class ${className}Controller extends <%=packageName.split("\\.")[0]%>.seguridad.
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = ${className}.createCriteria()
+            lista = c.list(params) {
+                or {
+                    /* TODO: cambiar aqui segun sea necesario */
+                    ilike("codigo", "%" + params.search + "%")
+                    ilike("descripcion", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = ${className}.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def ${propertyName}List = ${className}.list(params)
-        def ${propertyName}Count = ${className}.count()
+        def ${propertyName}List = getLista(params, false)
+        def ${propertyName}Count = getLista(params, true).size()
         if(${propertyName}List.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        ${propertyName}List = ${className}.list(params)
-        return [${propertyName}List: ${propertyName}List, ${propertyName}Count: ${propertyName}Count]
+        ${propertyName}List = getLista(params, false)
+        return [${propertyName}List: ${propertyName}List, ${propertyName}Count: ${propertyName}Count, params: params]
     } //list
 
     def show_ajax() {

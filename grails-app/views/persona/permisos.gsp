@@ -1,35 +1,8 @@
-<style type="text/css">
-.table {
-    font-size     : 13px;
-    width         : auto !important;
-    margin-bottom : 0 !important;
-}
-
-.container-celdasPerm {
-    max-height : 200px;
-    width      : 815px;
-    overflow   : auto;
-}
-
-.col100 {
-    width : 100px;
-}
-
-.col200 {
-    width : 250px;
-}
-
-.col300 {
-    width : 304px;
-}
-
-</style>
-
 <g:if test="${permisos.size() > 0}">
     <h4>Historial</h4>
 
     <div class="">
-        <div id="container-cols">
+        <div class="container-colsPer">
             <div class="header-columnas">
                 <div id="all"></div>
                 <table class=" table table-bordered table-condensed">
@@ -38,7 +11,8 @@
                             <th class="col200">Permiso</th>
                             <th class="col100">Desde</th>
                             <th class="col100">Hasta</th>
-                            <th class="col300">Observaciones</th>
+                            <th class="col200">Observaciones</th>
+                            <th class="col200">Asignado por</th>
                         </tr>
                     </thead>
                 </table>
@@ -54,7 +28,8 @@
                                 <td class="col200">${permiso.permisoTramite.descripcion}</td>
                                 <td class="col100">${permiso.fechaInicio.format("dd-MM-yyyy")}</td>
                                 <td class="col100">${permiso.fechaFin ? permiso.fechaFin.format("dd-MM-yyyy") : ""}</td>
-                                <td class="col300">${permiso.observaciones}</td>
+                                <td class="col200">${permiso.observaciones}</td>
+                                <td class="col200">${permiso.asignadoPor.nombre} ${permiso.asignadoPor.apellido}</td>
                             </tr>
                         </g:each>
                     </tbody>

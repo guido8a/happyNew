@@ -9,21 +9,55 @@ class NumeroController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = Numero.createCriteria()
+            lista = c.list(params) {
+                or {
+                    if (params.search.toString().isNumber()) {
+                        eq("valor", params.search.toInteger())
+                    }
+                    tipoDocumento {
+                        or {
+                            ilike("codigo", "%" + params.search + "%")
+                            ilike("descripcion", "%" + params.search + "%")
+                        }
+                    }
+                    departamento {
+                        or {
+                            ilike("codigo", "%" + params.search + "%")
+                            ilike("descripcion", "%" + params.search + "%")
+                        }
+                    }
+                }
+            }
+        } else {
+            lista = Numero.list(params)
+        }
+        return lista
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def numeroInstanceList = Numero.list(params)
         def numeroInstanceCount = Numero.count()
-        if(numeroInstanceList.size() == 0 && params.offset && params.max) {
+        if (numeroInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         numeroInstanceList = Numero.list(params)
-        return [numeroInstanceList: numeroInstanceList, numeroInstanceCount: numeroInstanceCount]
+        return [numeroInstanceList: numeroInstanceList, numeroInstanceCount: numeroInstanceCount, params: params]
     } //list
 
     def show_ajax() {
-        if(params.id) {
+        if (params.id) {
             def numeroInstance = Numero.get(params.id)
-            if(!numeroInstance) {
+            if (!numeroInstance) {
                 notFound_ajax()
                 return
             }
@@ -35,9 +69,9 @@ class NumeroController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def numeroInstance = new Numero(params)
-        if(params.id) {
+        if (params.id) {
             numeroInstance = Numero.get(params.id)
-            if(!numeroInstance) {
+            if (!numeroInstance) {
                 notFound_ajax()
                 return
             }
@@ -52,15 +86,15 @@ class NumeroController extends happy.seguridad.Shield {
             }
         }
         def numeroInstance = new Numero()
-        if(params.id) {
+        if (params.id) {
             numeroInstance = Numero.get(params.id)
-            if(!numeroInstance) {
+            if (!numeroInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         numeroInstance.properties = params
-        if(!numeroInstance.save(flush:true)) {
+        if (!numeroInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Numero."
             msg += renderErrors(bean: numeroInstance)
             render msg
@@ -70,11 +104,11 @@ class NumeroController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if(params.id) {
+        if (params.id) {
             def numeroInstance = Numero.get(params.id)
-            if(numeroInstance) {
+            if (numeroInstance) {
                 try {
-                    numeroInstance.delete(flush:true)
+                    numeroInstance.delete(flush: true)
                     render "OK_Eliminación de Numero exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar Numero."

@@ -1,4 +1,3 @@
-
 <%@ page import="happy.tramites.PermisoTramite" %>
 <!DOCTYPE html>
 <html>
@@ -6,24 +5,26 @@
         <meta name="layout" content="main">
         <title>Lista de PermisoTramite</title>
     </head>
+
     <body>
 
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-    <!-- botones -->
+        <!-- botones -->
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
-                    <input type="text" class="form-control span2" placeholder="Buscar">
+                    <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
                     <span class="input-group-btn">
-                        <a href="#" class="btn btn-default" type="button">
+                        <g:link action="list" class="btn btn-default btn-search" type="button">
                             <i class="fa fa-search"></i>&nbsp;
-                        </a>
+                        </g:link>
                     </span>
                 </div><!-- /input-group -->
             </div>
@@ -32,21 +33,21 @@
         <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
-                    
-                    <g:sortableColumn property="codigo" title="Codigo" />
-                    
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
-                    
+
+                    <g:sortableColumn property="codigo" title="Codigo"/>
+
+                    <g:sortableColumn property="descripcion" title="Descripcion"/>
+
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${permisoTramiteInstanceList}" status="i" var="permisoTramiteInstance">
                     <tr data-id="${permisoTramiteInstance.id}">
-                        
+
                         <td>${fieldValue(bean: permisoTramiteInstance, field: "codigo")}</td>
-                        
+
                         <td>${fieldValue(bean: permisoTramiteInstance, field: "descripcion")}</td>
-                        
+
                     </tr>
                 </g:each>
             </tbody>
@@ -60,26 +61,26 @@
                 var $form = $("#frmPermisoTramite");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
-                $btn.replaceWith(spinner);
+                    $btn.replaceWith(spinner);
                     openLoader("Grabando");
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(action:'save_ajax')}',
                         data    : $form.serialize(),
-                            success : function (msg) {
-                        var parts = msg.split("_");
-                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                        if (parts[0] == "OK") {
-                            location.reload(true);
-                        } else {
-                            spinner.replaceWith($btn);
-                            return false;
+                        success : function (msg) {
+                            var parts = msg.split("_");
+                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                            if (parts[0] == "OK") {
+                                location.reload(true);
+                            } else {
+                                spinner.replaceWith($btn);
+                                return false;
+                            }
                         }
-                    }
-                });
-            } else {
-                return false;
-            } //else
+                    });
+                } else {
+                    return false;
+                } //else
             }
             function deleteRow(itemId) {
                 bootbox.dialog({
@@ -118,7 +119,7 @@
             }
             function createEditRow(id) {
                 var title = id ? "Editar" : "Crear";
-                var data = id ? { id: id } : {};
+                var data = id ? { id : id } : {};
                 $.ajax({
                     type    : "POST",
                     url     : "${createLink(action:'form_ajax')}",
@@ -154,7 +155,7 @@
 
             $(function () {
 
-                $(".btnCrear").click(function() {
+                $(".btnCrear").click(function () {
                     createEditRow();
                     return false;
                 });

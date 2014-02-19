@@ -41,3 +41,18 @@ $(".digits").keydown(function (ev) {
 $(".number").keydown(function (ev) {
     return validarDec(ev);
 });
+
+function doSearch($btn) {
+    var str = $btn.parent().prev().val();
+    location.href = $btn.attr("href") + "?search=" + str;
+}
+$(".btn-search").click(function () {
+    doSearch($(this));
+    return false;
+});
+$(".input-search").focus().keyup(function (ev) {
+    if (ev.keyCode == 13) {
+        doSearch($(this).next().children("a"));
+    }
+});
+

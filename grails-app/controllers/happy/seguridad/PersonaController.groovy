@@ -14,6 +14,108 @@ class PersonaController extends happy.seguridad.Shield {
         redirect(action: "list", params: params)
     } //index
 
+    def getLista(params, all) {
+        params = params.clone()
+        if (all) {
+            params.remove("offset")
+            params.remove("max")
+        }
+        def lista
+        if (params.search) {
+            def c = Persona.createCriteria()
+            lista = c.list(params) {
+                or {
+                    ilike("cedula", "%" + params.search + "%")
+                    ilike("nombre", "%" + params.search + "%")
+                    ilike("apellido", "%" + params.search + "%")
+                    ilike("sigla", "%" + params.search + "%")
+                    ilike("titulo", "%" + params.search + "%")
+                    ilike("cargo", "%" + params.search + "%")
+                    ilike("login", "%" + params.search + "%")
+                    ilike("codigo", "%" + params.search + "%")
+                }
+            }
+        } else {
+            lista = Persona.list(params)
+        }
+        return lista
+    }
+
+    def uploadFile() {
+        def usuario = Persona.get(session.usuario.id)
+        def path = servletContext.getRealPath("/") + "images/" + usuario.id + "/"   //web-app/archivos
+        new File(path).mkdirs()
+
+        def f = request.getFile('file')  //archivo = name del input type file
+
+        def extOk = ["jpg", "jpeg", "png", "bmp"]
+
+        if (f && !f.empty) {
+            def fileName = f.getOriginalFilename() //nombre original del archivo
+            def ext
+
+            def parts = fileName.split("\\.")
+            fileName = ""
+            parts.eachWithIndex { obj, i ->
+                if (i < parts.size() - 1) {
+                    fileName += obj
+                } else {
+                    ext = obj
+                }
+            }
+
+            if (extOk.contains(ext)) {
+                fileName = fileName.tr(/áéíóúñÑÜüÁÉÍÓÚàèìòùÀÈÌÒÙÇç .!¡¿?&#°"'/, "aeiounNUuAEIOUaeiouAEIOUCc_")
+
+                def fn = fileName
+                fileName = fileName + "." + ext
+
+                def pathFile = path + fileName
+                def src = new File(pathFile)
+
+                def i = 1
+                while (src.exists()) {
+                    pathFile = path + fn + "_" + i + "." + ext
+                    src = new File(pathFile)
+                    i++
+                }
+
+                f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
+
+            } else {
+                render "NO_No se acepta esa extensión"
+                return
+            }
+
+        }
+
+        render "OK"
+    }
+
+    def personal() {
+        def usuario = Persona.get(session.usuario.id)
+        return [usuario: usuario]
+    }
+
+    def validarPass_ajax() {
+        def usuario = Persona.get(session.usuario.id)
+        render usuario.password == params.password_actual.toString().trim().encodeAsMD5()
+    }
+
+    def savePass_ajax() {
+        def usuario = Persona.get(session.usuario.id)
+        if (usuario.password == params.password_actual.toString().trim().encodeAsMD5()) {
+            usuario.password = params.password.toString().trim().encodeAsMD5()
+            if (usuario.save(flush: true)) {
+                render "OK_Password actualizado correctamente"
+            } else {
+                render "NO_Ha ocurrido un error al actualizar el password: " + renderErrors(bean: usuario)
+            }
+        } else {
+            render "NO_El password actual no coincide"
+        }
+    }
+
     def accesos() {
         def usu = Persona.get(params.id)
         def accesos = Accs.findAllByUsuario(usu, [sort: 'accsFechaInicial'])
@@ -35,6 +137,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def savePermisos_ajax() {
         println params
+        params.asignadoPor = session.usuario
         def perm = new PermisoUsuario(params)
         println perm
         if (!perm.save(flush: true)) {
@@ -87,6 +190,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def saveAccesos_ajax() {
+        params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
             println "error accesos: " + accs.errors
@@ -190,13 +294,13 @@ class PersonaController extends happy.seguridad.Shield {
 
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
-        def personaInstanceList = Persona.list(params)
-        def personaInstanceCount = Persona.count()
+        def personaInstanceList = getLista(params, false)
+        def personaInstanceCount = getLista(params, true).size()
         if (personaInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
-        personaInstanceList = Persona.list(params)
-        return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount]
+        personaInstanceList = getLista(params, false)
+        return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params]
     } //list
 
     def show_ajax() {
