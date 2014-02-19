@@ -13,5 +13,7 @@ class InicioController extends happy.seguridad.Shield {
         }
     }
 
+    def parametros = {
 
+    }
 }
