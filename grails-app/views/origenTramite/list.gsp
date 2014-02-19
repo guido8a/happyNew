@@ -51,17 +51,17 @@
                 <g:each in="${origenTramiteInstanceList}" status="i" var="origenTramiteInstance">
                     <tr data-id="${origenTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: origenTramiteInstance, field: "tipoPersona")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: origenTramiteInstance, field: "tipoPersona")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: origenTramiteInstance, field: "cedula")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: origenTramiteInstance, field: "cedula")}' search='${params.search}' /></td>
                         
                         <td><g:formatDate date="${origenTramiteInstance.fecha}" format="dd-MM-yyyy" /></td>
                         
-                        <td>${fieldValue(bean: origenTramiteInstance, field: "nombre")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: origenTramiteInstance, field: "nombre")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: origenTramiteInstance, field: "nombreContacto")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: origenTramiteInstance, field: "nombreContacto")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: origenTramiteInstance, field: "apellidoContacto")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: origenTramiteInstance, field: "apellidoContacto")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

@@ -52,17 +52,17 @@
                 <g:each in="${departamentoInstanceList}" status="i" var="departamentoInstance">
                     <tr data-id="${departamentoInstance.id}">
 
-                        <td>${departamentoInstance.tipoDepartamento.descripcion}</td>
+                        <td><elm:textoBusqueda texto='${departamentoInstance.tipoDepartamento.descripcion}' search='${params.search}' /></td>
 
-                        <td>${departamentoInstance.padre?.descripcion}</td>
+                        <td><elm:textoBusqueda texto='${departamentoInstance.padre?.descripcion}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: departamentoInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: departamentoInstance, field: "codigo")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: departamentoInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: departamentoInstance, field: "descripcion")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: departamentoInstance, field: "telefono")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: departamentoInstance, field: "telefono")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: departamentoInstance, field: "extension")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: departamentoInstance, field: "extension")}' search='${params.search}' /></td>
 
                     </tr>
                 </g:each>

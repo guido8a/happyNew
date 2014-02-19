@@ -44,9 +44,9 @@
                 <g:each in="${permisoTramiteInstanceList}" status="i" var="permisoTramiteInstance">
                     <tr data-id="${permisoTramiteInstance.id}">
 
-                        <td>${fieldValue(bean: permisoTramiteInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: permisoTramiteInstance, field: "codigo")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: permisoTramiteInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: permisoTramiteInstance, field: "descripcion")}' search='${params.search}' /></td>
 
                     </tr>
                 </g:each>

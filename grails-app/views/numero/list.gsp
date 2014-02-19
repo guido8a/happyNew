@@ -46,11 +46,11 @@
                 <g:each in="${numeroInstanceList}" status="i" var="numeroInstance">
                     <tr data-id="${numeroInstance.id}">
 
-                        <td>${fieldValue(bean: numeroInstance, field: "departamento")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: numeroInstance, field: "departamento")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: numeroInstance, field: "tipoDocumento")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: numeroInstance, field: "tipoDocumento")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: numeroInstance, field: "valor")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: numeroInstance, field: "valor")}' search='${params.search}' /></td>
 
                     </tr>
                 </g:each>

@@ -43,11 +43,11 @@
             <tbody>
                 <g:each in="${permisoUsuarioInstanceList}" status="i" var="permisoUsuarioInstance">
                     <tr data-id="${permisoUsuarioInstance.id}">
-                        <td>${fieldValue(bean: permisoUsuarioInstance, field: "persona")}</td>
-                        <td>${fieldValue(bean: permisoUsuarioInstance, field: "permisoTramite")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: permisoUsuarioInstance, field: "persona")}' search='${params.search}' /></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: permisoUsuarioInstance, field: "permisoTramite")}' search='${params.search}' /></td>
                         <td><g:formatDate date="${permisoUsuarioInstance.fechaInicio}" format="dd-MM-yyyy"/></td>
                         <td><g:formatDate date="${permisoUsuarioInstance.fechaFin}" format="dd-MM-yyyy"/></td>
-                        <td>${fieldValue(bean: permisoUsuarioInstance, field: "asignadoPor")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: permisoUsuarioInstance, field: "asignadoPor")}' search='${params.search}' /></td>
                     </tr>
                 </g:each>
             </tbody>

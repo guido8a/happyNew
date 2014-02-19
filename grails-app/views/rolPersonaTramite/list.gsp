@@ -44,9 +44,9 @@
                 <g:each in="${rolPersonaTramiteInstanceList}" status="i" var="rolPersonaTramiteInstance">
                     <tr data-id="${rolPersonaTramiteInstance.id}">
 
-                        <td>${fieldValue(bean: rolPersonaTramiteInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: rolPersonaTramiteInstance, field: "codigo")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: rolPersonaTramiteInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: rolPersonaTramiteInstance, field: "descripcion")}' search='${params.search}' /></td>
 
                     </tr>
                 </g:each>

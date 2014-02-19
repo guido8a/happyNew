@@ -56,11 +56,11 @@
                 <g:each in="${diaLaborableInstanceList}" status="i" var="diaLaborableInstance">
                     <tr>
                     
-                        <td>${fieldValue(bean: diaLaborableInstance, field: "observaciones")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: diaLaborableInstance, field: "observaciones")}' search='${params.search}' /></td>
                     
                         <td><g:formatDate date="${diaLaborableInstance.fecha}" /></td>
                     
-                        <td>${fieldValue(bean: diaLaborableInstance, field: "ordinal")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: diaLaborableInstance, field: "ordinal")}' search='${params.search}' /></td>
                     
                         <td>
                             <a class="btn btn-small btn-show btn-ajax" href="#" rel="tooltip" title="Ver" data-id="${diaLaborableInstance.id}">

@@ -70,6 +70,36 @@ class ElementosTagLib {
         out << html
     }
 
+    def textoBusqueda = { attrs, body ->
+        def texto = body()
+
+        def busca
+        if (attrs.search) {
+            busca = attrs.search
+        } else if (attrs.busca) {
+            busca = attrs.busca
+        }
+
+        if (!texto) {
+            if (attrs.contenido) {
+                texto = attrs.contenido
+            }
+            if (attrs.texto) {
+                texto = attrs.texto
+            }
+        }
+
+        try {
+            texto = texto.toString().replaceAll("(?iu)" + busca) {
+                "<span class='found'>" + it + "</span>"
+            }
+        } catch (e) {
+            println e
+        }
+
+        out << texto
+    }
+
     /**
      * crea un datepicker
      *  attrs:
@@ -106,11 +136,9 @@ class ElementosTagLib {
      *}*}*                                }
      *      onChangeDate    funcion. funcion q se ejecuta al cambiar una fecha. se manda solo el nombre, sin parentesis, como parametro recibe el datepicker y el objeto
      *                          ej: onChangeDate="miFuncion"
-     *                          function miFuncion($elm, e) {
-     *                              console.log($elm); //el objeto jquery del datepicker, el textfield
+     *                          function miFuncion($elm, e) {*                              console.log($elm); //el objeto jquery del datepicker, el textfield
      *                              console.log(e); //el objeto que pasa el plugin
-     *                          }
-     *      daysOfWeekDisabled  lista de números para deshabilitar ciertos días: 0:domingo, 1:lunes, 2:martes, 3:miercoles, 4:jueves, 5:viernes, 6:sabado
+     *}*      daysOfWeekDisabled  lista de números para deshabilitar ciertos días: 0:domingo, 1:lunes, 2:martes, 3:miercoles, 4:jueves, 5:viernes, 6:sabado
      *      img             imagen del calendario. clase de glyphicons o font awsome
      **/
     def datepicker = { attrs ->

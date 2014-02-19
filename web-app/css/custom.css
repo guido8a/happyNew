@@ -1,6 +1,6 @@
 body {
     padding-top : 70px;
-    font-size: 12px;  /* gdo*/
+    font-size   : 12px; /* gdo*/
 }
 
 .toolbar {
@@ -89,4 +89,9 @@ input.help-block, select.help-block, textarea.help-block {
 
 .iconMargin {
     margin-right : 10px;
+}
+
+.found {
+    background-color : #157ab5;
+    color            : #f5f5f5;
 }

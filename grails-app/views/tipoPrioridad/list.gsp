@@ -45,11 +45,11 @@
                 <g:each in="${tipoPrioridadInstanceList}" status="i" var="tipoPrioridadInstance">
                     <tr data-id="${tipoPrioridadInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoPrioridadInstance, field: "codigo")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoPrioridadInstance, field: "descripcion")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: tipoPrioridadInstance, field: "tiempo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoPrioridadInstance, field: "tiempo")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

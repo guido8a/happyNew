@@ -51,17 +51,17 @@
                 <g:each in="${documentoTramiteInstanceList}" status="i" var="documentoTramiteInstance">
                     <tr data-id="${documentoTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: documentoTramiteInstance, field: "tramite")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: documentoTramiteInstance, field: "tramite")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: documentoTramiteInstance, field: "anexo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: documentoTramiteInstance, field: "anexo")}' search='${params.search}' /></td>
                         
                         <td><g:formatDate date="${documentoTramiteInstance.fecha}" format="dd-MM-yyyy" /></td>
                         
-                        <td>${fieldValue(bean: documentoTramiteInstance, field: "resumen")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: documentoTramiteInstance, field: "resumen")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: documentoTramiteInstance, field: "clave")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: documentoTramiteInstance, field: "clave")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: documentoTramiteInstance, field: "path")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: documentoTramiteInstance, field: "path")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

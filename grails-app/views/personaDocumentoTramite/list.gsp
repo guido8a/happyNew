@@ -51,17 +51,17 @@
                 <g:each in="${personaDocumentoTramiteInstanceList}" status="i" var="personaDocumentoTramiteInstance">
                     <tr data-id="${personaDocumentoTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "rolPersonaTramite")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaDocumentoTramiteInstance, field: "rolPersonaTramite")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "persona")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaDocumentoTramiteInstance, field: "persona")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "tramite")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaDocumentoTramiteInstance, field: "tramite")}' search='${params.search}' /></td>
                         
                         <td><g:formatDate date="${personaDocumentoTramiteInstance.fecha}" format="dd-MM-yyyy" /></td>
                         
-                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "observaciones")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaDocumentoTramiteInstance, field: "observaciones")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: personaDocumentoTramiteInstance, field: "permiso")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaDocumentoTramiteInstance, field: "permiso")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

@@ -47,13 +47,13 @@
                 <g:each in="${observacionTramiteInstanceList}" status="i" var="observacionTramiteInstance">
                     <tr data-id="${observacionTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: observacionTramiteInstance, field: "tramite")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: observacionTramiteInstance, field: "tramite")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: observacionTramiteInstance, field: "persona")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: observacionTramiteInstance, field: "persona")}' search='${params.search}' /></td>
                         
                         <td><g:formatDate date="${observacionTramiteInstance.fecha}" format="dd-MM-yyyy" /></td>
                         
-                        <td>${fieldValue(bean: observacionTramiteInstance, field: "observaciones")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: observacionTramiteInstance, field: "observaciones")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

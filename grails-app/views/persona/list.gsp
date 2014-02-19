@@ -57,13 +57,13 @@
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
                     <tr data-id="${personaInstance.id}">
 
-                        <td>${personaInstance.departamento.descripcion}</td>
+                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "cedula")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "cedula")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "nombre")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}' /></td>
 
-                        <td>${fieldValue(bean: personaInstance, field: "apellido")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}' /></td>
 
                         <td><g:formatDate date="${personaInstance.fechaNacimiento}" format="dd-MM-yyyy"/></td>
 

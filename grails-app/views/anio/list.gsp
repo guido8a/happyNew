@@ -41,7 +41,7 @@
                 <g:each in="${anioInstanceList}" status="i" var="anioInstance">
                     <tr data-id="${anioInstance.id}">
                         
-                        <td>${fieldValue(bean: anioInstance, field: "numero")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: anioInstance, field: "numero")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

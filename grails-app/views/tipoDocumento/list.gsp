@@ -43,9 +43,9 @@
                 <g:each in="${tipoDocumentoInstanceList}" status="i" var="tipoDocumentoInstance">
                     <tr data-id="${tipoDocumentoInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoDocumentoInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoDocumentoInstance, field: "codigo")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: tipoDocumentoInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoDocumentoInstance, field: "descripcion")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>

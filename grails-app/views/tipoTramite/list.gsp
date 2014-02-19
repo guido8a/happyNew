@@ -43,9 +43,9 @@
                 <g:each in="${tipoTramiteInstanceList}" status="i" var="tipoTramiteInstance">
                     <tr data-id="${tipoTramiteInstance.id}">
                         
-                        <td>${fieldValue(bean: tipoTramiteInstance, field: "codigo")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoTramiteInstance, field: "codigo")}' search='${params.search}' /></td>
                         
-                        <td>${fieldValue(bean: tipoTramiteInstance, field: "descripcion")}</td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: tipoTramiteInstance, field: "descripcion")}' search='${params.search}' /></td>
                         
                     </tr>
                 </g:each>
