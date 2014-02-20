@@ -92,7 +92,8 @@
                     <div class="descripcion hide">
                         <h4>Tipo de Departamento</h4>
 
-                        <p>Sirve para diferenciar entre Direcciones, Gestiones y otras dependencias.</p>
+                        <p>Sirve para para la clasificación jerárquica de las distintas dependencias que conforman elGADPP.</p>
+                        <p>De este modo se puede por ejemplo, obtener las Gestiones que pertenecen a una Dirección.</p>
                     </div>
                 </li>
                 <li>
@@ -105,9 +106,10 @@
                     <div class="descripcion hide">
                         <h4>Permisos</h4>
 
-                        <p>Sirve para fijar los peromisos que poseen los usuarios para interactuar con el sistema.</p>
+                        <p>Sirve para fijar los permisos que que pueden ser otorgados en el sistema a un usuario de
+                        acuerdo a su cargo y función dentro de la Dependencia u Oficina a la que pertenece.</p>
 
-                        <p>Un usuario puede poseer varios permisos conforme a su perfil y su rango.</p>
+                        <p>Un usuario puede poseer varios permisos conforme a su perfil y cargo.</p>
                     </div>
                 </li>
 
@@ -159,7 +161,8 @@
                     <i class="fa-li ${iconTrmt}"></i>
                     <span id="tpdc">
                         <g:link controller="tipoDocumento" action="list">Tipo de documento</g:link>
-                        para diferenciar los distintos trámites y documentos que se producen en cada uno de ellos
+                        para diferenciar los distintos documentos que se producen dentro de un trámite, por ejemplo:
+                        Memorando, Oficio, Sumilla, Circular, etc.
                     </span>
 
                     <div class="descripcion hide">

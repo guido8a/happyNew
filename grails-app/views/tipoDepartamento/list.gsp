@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoDepartamento</title>
+        <title>Tipos de Departamento</title>
     </head>
     <body>
 
@@ -33,9 +33,9 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="codigo" title="Codigo" />
+                    <g:sortableColumn property="codigo" title="Código" />
                     
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
+                    <g:sortableColumn property="descripcion" title="Descripción" />
                     
                 </tr>
             </thead>
@@ -117,6 +117,7 @@
                 });
             }
             function createEditRow(id) {
+                console.log("ASDF")
                 var title = id ? "Editar" : "Crear";
                 var data = id ? { id: id } : {};
                 $.ajax({
@@ -126,7 +127,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoDepartamento",
+                            title   : title + " Tipo de Departamento",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -145,14 +146,23 @@
                                 } //guardar
                             } //buttons
                         }); //dialog
+
+                        console.log($("#dlgCreateEdit"));
+
+                        $("#dlgCreateEdit").draggable({
+                            handle: ".modal-header"
+                        });
+
+
                         setTimeout(function () {
                             b.find(".form-control").not(".datepicker").first().focus()
-                        }, 500);
+                        }, 400);
                     } //success
                 }); //ajax
             } //createEdit
 
             $(function () {
+
 
                 $(".btnCrear").click(function() {
                     createEditRow();

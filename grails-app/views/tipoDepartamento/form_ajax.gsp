@@ -11,10 +11,11 @@
         <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
-                    Codigo
+                    Código
                 </label>
-                <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoDepartamentoInstance?.codigo}"/>
+                <div class="col-md-6" style="width: 100px;">
+                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps"
+                                 value="${tipoDepartamentoInstance?.codigo}" />
                 </div>
                  *
             </span>
@@ -23,7 +24,7 @@
         <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripcion
+                    Descripción
                 </label>
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="31" required="" class="form-control required allCaps" value="${tipoDepartamentoInstance?.descripcion}"/>
