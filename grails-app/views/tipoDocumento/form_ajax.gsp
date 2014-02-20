@@ -13,7 +13,7 @@
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Código
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-2">
                     <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoDocumentoInstance?.codigo}"/>
                 </div>
                  *

@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de TipoPrioridad</title>
+        <title>Tipos de Prioridad</title>
     </head>
     <body>
 
@@ -17,6 +17,7 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
@@ -88,7 +89,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoPrioridad seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Tipo de Prioridad seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -130,7 +131,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " TipoPrioridad",
+                            title   : title + " Tipo de Prioridad",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -189,7 +190,7 @@
                                 },
                                 success : function (msg) {
                                     bootbox.dialog({
-                                        title   : "Ver TipoPrioridad",
+                                        title   : "Ver Tipo de Prioridad",
                                         message : msg,
                                         buttons : {
                                             ok : {

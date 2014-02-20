@@ -17,6 +17,7 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
 
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
@@ -83,9 +84,10 @@
                 } //else
             }
             function deleteRow(itemId) {
-                bootbox.dialog({
+                var b = bootbox.dialog({
+                    id      : "dlgBorrar",
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoDepartamento seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Tipo de Departamento seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -116,7 +118,11 @@
                         }
                     }
                 });
+                b.find("#dlgBorrar").draggable({
+                    handle : ".modal-header"
+                });
             }
+
             function createEditRow(id) {
                 console.log("ASDF")
                 var title = id ? "Editar" : "Crear";
@@ -154,7 +160,7 @@
 
                         setTimeout(function () {
                             b.find(".form-control").not(".datepicker").first().focus()
-                        }, 400);
+                        }, 500);
                     } //success
                 }); //ajax
             } //createEdit
@@ -191,8 +197,9 @@
                                     id : id
                                 },
                                 success : function (msg) {
-                                    bootbox.dialog({
-                                        title   : "Ver TipoDepartamento",
+                                    var b = bootbox.dialog({
+                                        id      : "dlgVer",
+                                        title   : "Ver Tipo de Departamento",
                                         message : msg,
                                         buttons : {
                                             ok : {
@@ -202,6 +209,9 @@
                                                 }
                                             }
                                         }
+                                    });
+                                    b.find("#dlgVer").draggable({
+                                        handle : ".modal-header"
                                     });
                                 }
                             });

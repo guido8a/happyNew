@@ -13,7 +13,7 @@
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Código
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-2">
                     <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoPrioridadInstance?.codigo}"/>
                 </div>
                  *
@@ -37,7 +37,7 @@
                 <label for="tiempo" class="col-md-2 control-label text-info">
                     Tiempo
                 </label>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="input-group">
                         <g:field name="tiempo" type="number" value="${tipoPrioridadInstance.tiempo}" class="digits form-control required" required=""/>
                         <span class="input-group-addon">horas</span>

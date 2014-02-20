@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de Tipo de Documento</title>
+        <title>Tipos de Documento</title>
     </head>
     <body>
 
@@ -17,6 +17,8 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
+
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
@@ -84,7 +86,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el TipoDocumento seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Tipo de Documento seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",

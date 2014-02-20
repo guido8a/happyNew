@@ -17,6 +17,8 @@
                     <i class="fa fa-plus-circle"></i> Crear
                 </g:link>
             </div>
+        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
+
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
                     <input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">
@@ -33,7 +35,7 @@
             <thead>
                 <tr>
                     
-                    <g:sortableColumn property="numero" title="Año" />
+                    <g:sortableColumn property="numero" title="Año de proceso" />
                     
                 </tr>
             </thead>
