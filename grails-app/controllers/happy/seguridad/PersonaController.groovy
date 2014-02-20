@@ -1,9 +1,12 @@
 package happy.seguridad
 
+import groovy.json.JsonBuilder
 import happy.tramites.Departamento
-import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
-import sun.misc.Perf
+
+import static java.awt.RenderingHints.*
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
 
 
 class PersonaController extends happy.seguridad.Shield {
@@ -48,7 +51,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def uploadFile() {
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/" + usuario.id + "/"   //web-app/archivos
+        def path = servletContext.getRealPath("/") + "images/perfiles/" + usuario.id + "/"   //web-app/archivos
         new File(path).mkdirs()
 
         def f = request.getFile('file')  //archivo = name del input type file
@@ -78,18 +81,140 @@ class PersonaController extends happy.seguridad.Shield {
                 def pathFile = path + fileName
                 def src = new File(pathFile)
 
+                def nombre = fileName
+
                 def i = 1
                 while (src.exists()) {
-                    pathFile = path + fn + "_" + i + "." + ext
+                    nombre = fn + "_" + i + "." + ext
+                    pathFile = path + nombre
                     src = new File(pathFile)
                     i++
                 }
 
                 f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
 
+                /* RESIZE */
+                def img = ImageIO.read(new File(pathFile))
+
+                def scale = 0.5
+
+                def maxW = 600
+                def maxH = 900
+
+                def w = img.width
+                def h = img.height
+
+                int newWidth = w * scale
+                int newHeight = h * scale
+                if (w > h) {
+                    def r = w / maxW
+                    newWidth = maxW
+                    newHeight = h / r
+                } else {
+                    def r = h / maxH
+                    newHeight = maxH
+                    newWidth = w / r
+                }
+
+                new BufferedImage(newWidth, newHeight, img.type).with { j ->
+                    createGraphics().with {
+                        setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
+                        drawImage(img, 0, 0, newWidth, newHeight, null)
+                        dispose()
+                    }
+                    ImageIO.write(j, ext, new File(pathFile))
+                }
+                /* fin resize */
+
+                if (usuario.foto) {
+                    def old = new File(path + usuario.foto)
+                    old.delete()
+                }
+                usuario.foto = nombre
+                if (usuario.save(flush: true)) {
+                    def data = [
+                            files: [
+                                    [
+                                            name: nombre,
+                                            url: resource(dir: 'images/' + usuario.id, file: nombre),
+                                            size: f.getSize(),
+                                            url: pathFile
+                                    ]
+                            ]
+                    ]
+                    def json = new JsonBuilder(data)
+                    println json.toPrettyString()
+                    render json
+                    return
+                } else {
+                    def data = [
+                            files: [
+                                    [
+                                            name: nombre,
+                                            size: f.getSize(),
+                                            error: "Ha ocurrido un error al guardar"
+                                    ]
+                            ]
+                    ]
+                    def json = new JsonBuilder(data)
+                    println json.toPrettyString()
+                    render json
+                    return
+                }
             } else {
-                render "NO_No se acepta esa extensión"
+//                render "NO_No se acepta esa extensión"
+
+                def data = [
+                        files: [
+                                [
+                                        name: fileName + "." + ext,
+                                        size: f.getSize(),
+                                        error: "Extensión no permitida"
+                                ]
+                        ]
+                ]
+
+                def json = new JsonBuilder(data)
+//                println json.toPrettyString()
+                render json
                 return
+
+                /*
+                {"files": [
+                  {
+                    "name": "picture1.jpg",
+                    "size": 902604,
+                    "url": "http:\/\/example.org\/files\/picture1.jpg",
+                    "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                    "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
+                    "deleteType": "DELETE"
+                  },
+                  {
+                    "name": "picture2.jpg",
+                    "size": 841946,
+                    "url": "http:\/\/example.org\/files\/picture2.jpg",
+                    "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                    "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
+                    "deleteType": "DELETE"
+                  }
+                ]}
+                {"files": [
+                  {
+                    "name": "picture1.jpg",
+                    "size": 902604,
+                    "error": "Filetype not allowed"
+                  },
+                  {
+                    "name": "picture2.jpg",
+                    "size": 841946,
+                    "error": "Filetype not allowed"
+                  }
+                ]}
+                 */
+
+//                def json = new JsonBuilder(data)
+//                println json.toPrettyString()
+
             }
 
         }
@@ -100,6 +225,13 @@ class PersonaController extends happy.seguridad.Shield {
     def personal() {
         def usuario = Persona.get(session.usuario.id)
         return [usuario: usuario]
+    }
+
+    def loadFoto() {
+        def usuario = Persona.get(session.usuario.id)
+        def path = servletContext.getRealPath("/") + "images/perfiles/" + usuario.id + "/"   //web-app/archivos
+        def img = ImageIO.read(new File(path + usuario.foto));
+        return [usuario: usuario, w: img.getWidth(), h: img.getHeight()]
     }
 
     def validarPass_ajax() {

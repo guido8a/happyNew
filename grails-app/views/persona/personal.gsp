@@ -155,7 +155,9 @@
                 <div id="collapseFoto" class="panel-collapse collapse in ">
                     <div class="panel-body">
                         <g:if test="${usuario.foto && usuario.foto != ''}">
-                            FOTO AQUI
+                            <div id="divFoto">
+
+                            </div>
                         </g:if>
                         <g:else>
                             <div class="alert alert-info">
@@ -171,6 +173,11 @@
                             <input type="file" multiple="" name="file" id="file">
                         </span>
 
+                        <div id="progress" class="progress progress-striped active">
+                            <div class="progress-bar progress-bar-success"></div>
+                        </div>
+
+                        <div id="files"></div>
                     </div>
                 </div>
             </div>
@@ -265,27 +272,91 @@
                 var $frmPass = $("#frmPass");
 
                 $('#file').fileupload({
-                    url                : '${createLink(action:'uploadFile')}',
-                    dataType           : 'json',
-                    maxNumberOfFiles   : 1,
-                    add                : function (e, data) {
-                        console.log("add", data);
-                        data.context = $('<p/>').text('Uploading...').appendTo(document.body);
-                        data.submit();
-                    },
-                    done               : function (e, data) {
-                        console.log("done");
-                        data.context.text('Upload finished.');
-                    },
-                    // Enable image resizing, except for Android and Opera,
-                    // which actually support image resizing, but fail to
-                    // send Blob objects via XHR requests:
-                    disableImageResize : /Android(?!.*Chrome)|Opera/
-                            .test(window.navigator && navigator.userAgent),
-                    imageMaxWidth      : 80,
-                    imageMaxHeight     : 80,
-                    imageCrop          : true // Force cropped images
+                    url              : '${createLink(action:'uploadFile')}',
+                    dataType         : 'json',
+                    maxNumberOfFiles : 1,
+                    acceptFileTypes  : /(\.|\/)(jpe?g|png)$/i,
+                    maxFileSize      : 1000000 // 1 MB
+                }).on('fileuploadadd',function (e, data) {
+//                    console.log("fileuploadadd");
+                    openLoader("Cargando");
+                    data.context = $('<div/>').appendTo('#files');
+                    $.each(data.files, function (index, file) {
+                        var node = $('<p/>')
+                                .append($('<span/>').text(file.name));
+                        if (!index) {
+                            node
+                                    .append('<br>');
+                        }
+                        node.appendTo(data.context);
+                    });
+                }).on('fileuploadprocessalways',function (e, data) {
+//                    console.log("fileuploadprocessalways");
+                    var index = data.index,
+                            file = data.files[index],
+                            node = $(data.context.children()[index]);
+                    if (file.preview) {
+                        node
+                                .prepend('<br>')
+                                .prepend(file.preview);
+                    }
+                    if (file.error) {
+                        node
+                                .append('<br>')
+                                .append($('<span class="text-danger"/>').text(file.error));
+                    }
+                    if (index + 1 === data.files.length) {
+                        data.context.find('button')
+                                .text('Upload')
+                                .prop('disabled', !!data.files.error);
+                    }
+                }).on('fileuploadprogressall',function (e, data) {
+//                    console.log("fileuploadprogressall");
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                    );
+                }).on('fileuploaddone',function (e, data) {
+                    closeLoader();
+                    $.each(data.result.files, function (index, file) {
+                        $('#progress .progress-bar').css(
+                                'width', '0%'
+                        );
+                        $("#files").empty();
+                        loadFoto();
+                        if (file.url) {
+//                            var link = $('<a>')
+//                                    .attr('target', '_blank')
+//                                    .prop('href', file.url);
+//                            $(data.context.children()[index])
+//                                    .wrap(link);
+                        } else if (file.error) {
+                            var error = $('<span class="text-danger"/>').text(file.error);
+                            $(data.context.children()[index])
+                                    .append('<br>')
+                                    .append(error);
+                        }
+                    });
+                }).on('fileuploadfail', function (e, data) {
+                    closeLoader();
+                    $.each(data.files, function (index, file) {
+                        var error = $('<span class="text-danger"/>').text('File upload failed.');
+                        $(data.context.children()[index])
+                                .append('<br>')
+                                .append(error);
+                    });
                 });
+
+                function loadFoto() {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${createLink(action: 'loadFoto')}",
+                        success : function (msg) {
+                            $("#divFoto").html(msg);
+                        }
+                    });
+                }
 
                 function submitPass() {
                     var url = $frmPass.attr("action");
@@ -307,6 +378,7 @@
                 }
 
                 loadAccesos();
+                loadFoto();
 
                 $frmPass.find("input").keyup(function (ev) {
                     if (ev.keyCode == 13) {
@@ -384,7 +456,8 @@
 
                     return false;
                 });
-            });
+            })
+            ;
         </script>
 
     </body>
