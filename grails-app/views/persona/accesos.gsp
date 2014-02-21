@@ -11,7 +11,7 @@
                             <th class="col100">Desde</th>
                             <th class="col100">Hasta</th>
                             <th class="col300">Observaciones</th>
-                            <th class="col200">Asigando por</th>
+                            <th class="col200">Asignado por</th>
                         </tr>
                     </thead>
                 </table>

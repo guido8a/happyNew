@@ -51,7 +51,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def uploadFile() {
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/perfiles/" + usuario.id + "/"   //web-app/archivos
+        def path = servletContext.getRealPath("/") + "images/perfiles/"    //web-app/archivos
         new File(path).mkdirs()
 
         def f = request.getFile('file')  //archivo = name del input type file
@@ -73,23 +73,22 @@ class PersonaController extends happy.seguridad.Shield {
             }
 
             if (extOk.contains(ext)) {
-                fileName = fileName.tr(/áéíóúñÑÜüÁÉÍÓÚàèìòùÀÈÌÒÙÇç .!¡¿?&#°"'/, "aeiounNUuAEIOUaeiouAEIOUCc_")
-
-                def fn = fileName
-                fileName = fileName + "." + ext
+//                fileName = fileName.tr(/áéíóúñÑÜüÁÉÍÓÚàèìòùÀÈÌÒÙÇç .!¡¿?&#°"'/, "aeiounNUuAEIOUaeiouAEIOUCc_")
+//
+//                def fn = fileName
+                fileName = usuario.id + "." + ext
 
                 def pathFile = path + fileName
-                def src = new File(pathFile)
-
+//                def src = new File(pathFile)
                 def nombre = fileName
-
-                def i = 1
-                while (src.exists()) {
-                    nombre = fn + "_" + i + "." + ext
-                    pathFile = path + nombre
-                    src = new File(pathFile)
-                    i++
-                }
+//
+//                def i = 1
+//                while (src.exists()) {
+//                    nombre = fn + "_" + i + "." + ext
+//                    pathFile = path + nombre
+//                    src = new File(pathFile)
+//                    i++
+//                }
 
                 f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
 
@@ -98,8 +97,8 @@ class PersonaController extends happy.seguridad.Shield {
 
                 def scale = 0.5
 
-                def maxW = 600
-                def maxH = 900
+                def maxW = 200 * 4
+                def maxH = 300 * 4
 
                 def w = img.width
                 def h = img.height
@@ -136,7 +135,7 @@ class PersonaController extends happy.seguridad.Shield {
                             files: [
                                     [
                                             name: nombre,
-                                            url: resource(dir: 'images/' + usuario.id, file: nombre),
+                                            url: resource(dir: 'images/perfiles/', file: nombre),
                                             size: f.getSize(),
                                             url: pathFile
                                     ]
@@ -222,6 +221,31 @@ class PersonaController extends happy.seguridad.Shield {
         render "OK"
     }
 
+    def resizeCropImage() {
+        println params
+        def usuario = Persona.get(session.usuario.id)
+        def path = servletContext.getRealPath("/") + "images/perfiles/"    //web-app/archivos
+        def fileName = usuario.foto
+
+        def pathFile = path + fileName
+        /* RESIZE */
+        def img = ImageIO.read(new File(pathFile))
+
+        int newWidth = 200
+        int newHeight = 300
+
+        new BufferedImage(newWidth, newHeight, img.type).with { j ->
+            createGraphics().with {
+                setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
+                drawImage(img, params.x, params.y, newWidth, newHeight, null)
+                dispose()
+            }
+            ImageIO.write(j, ext, new File(pathFile+"2"))
+        }
+        /* fin resize */
+        render "OK"
+    }
+
     def personal() {
         def usuario = Persona.get(session.usuario.id)
         return [usuario: usuario]
@@ -229,7 +253,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def loadFoto() {
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/perfiles/" + usuario.id + "/"   //web-app/archivos
+        def path = servletContext.getRealPath("/") + "images/perfiles/" //web-app/archivos
         def img = ImageIO.read(new File(path + usuario.foto));
         return [usuario: usuario, w: img.getWidth(), h: img.getHeight()]
     }
