@@ -16,13 +16,14 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
-        //
+//        println("params " + params)
         session.usuario = new happy.seguridad.Persona()
         session.usuario.nombre = "Juan"
+        def padre = Tramite.get(params.id)
         def campos = ["codigo": ["Código", "string"], "nombre": ["Descripción", "string"]]
         def de = session.usuario
         def fecha = new Date()
-        [de: de, fecha: fecha, campos: campos]
+        [de: de, fecha: fecha, campos: campos, padre: padre ]
     }
 
     def cargaUsuarios() {
@@ -46,6 +47,7 @@ class TramiteController extends happy.seguridad.Shield {
         params.fechaLimiteRespuesta_hour = "13"
         params.fechaLimiteRespuesta_minutes = "26"
         println " save tramite " + params
+        def estadoTramite = EstadoTramite.get(1)
         def tramite
         def error = false
         if (params.tramite.id) {
@@ -64,6 +66,7 @@ class TramiteController extends happy.seguridad.Shield {
         /*Aqui falta generar el numero de tramite*/
         params.tramite.numero = "MEMPRUEBA-0001"
         tramite.properties = params.tramite
+        tramite.estadoTramite = estadoTramite
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
@@ -221,6 +224,182 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
+def alertRecibidos () {
+
+    def usuario = session.usuario
+
+    def persona = Persona.get(usuario.id)
+
+    def recibidos = EstadoTramite.get(4)
+
+//    def tramitesRecibidos = Tramite.findAllByEstadoTramite(recibidos).size()
+
+    def tramites = Tramite.findAllByEstadoTramite(recibidos)
+
+    def fechaIngreso
+    def prioridad
+
+    def hora  = 3600000  //milisegundos
+
+    def totalPrioridad = 0
+    def fecha
+
+    Date nuevaFecha
+
+    def tramitesRecibidos = 0
+
+    def idTramites = []
+
+    tramites.each {
+
+        fechaIngreso = it.fechaIngreso
+
+        prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
+
+        totalPrioridad = hora*prioridad
+
+        fecha = fechaIngreso.getTime()
+
+        nuevaFecha = new Date(fecha + totalPrioridad)
+
+        if(!nuevaFecha.before(new Date())){
+
+            tramitesRecibidos++
+            idTramites.add(it.id)
+
+        }
+
+    }
+
+
+
+    return [tramitesRecibidos: tramitesRecibidos, idTramites: idTramites]
+
+}
+
+def alertaPendientes () {
+
+    def usuario = session.usuario
+
+    def persona = Persona.get(usuario.id)
+
+    def pendientes = EstadoTramite.get(8)
+
+    def tramitesPendientes = Tramite.findAllByEstadoTramite(pendientes).size()
+
+    def totalPendientes = Tramite.findAllByEstadoTramite(pendientes)
+
+    def dosHoras = 6200000
+
+    def fechaEnvio
+    def fecha
+    def fechaRoja
+
+    def tramitesPendientesRojos = 0
+    def idRojos = []
+
+    totalPendientes.each {
+
+        if(it.fechaEnvio){
+            fechaEnvio = it.fechaEnvio
+            fecha = fechaEnvio.getTime()
+            fechaRoja = new Date(fecha + dosHoras)
+
+
+            if(fechaRoja.before(new Date())){
+
+                tramitesPendientesRojos++
+                idRojos.add(it.id)
+
+            }
+
+        }
+
+    }
+
+//    if(tramitesPendientesRojos > 0) {
+//
+//        return[tramitesPendientesRojos: tramitesPendientesRojos, idRojos: idRojos,redirect:true]
+//
+//    }else {
+//
+//        return [, redirect: false]
+//
+//    }
+
+  return[tramitesPendientesRojos: tramitesPendientesRojos,tramitesPendientes : tramitesPendientes, idRojos: idRojos]
+
+
+}
+
+
+def alertaRetrasados () {
+
+    def recibidos = EstadoTramite.get(4)
+
+    def tramites = Tramite.findAllByEstadoTramite(recibidos)
+
+    def fechaIngreso
+    def prioridad
+
+    def hora  = 3600000  //milisegundos
+
+    def totalPrioridad = 0
+    def fecha
+
+    Date nuevaFecha
+
+    def tramitesAtrasados = 0
+
+    def idTramites = []
+
+    tramites.each {
+
+        fechaIngreso = it.fechaIngreso
+
+        prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
+
+        totalPrioridad = hora*prioridad
+
+        fecha = fechaIngreso.getTime()
+
+        nuevaFecha = new Date(fecha + totalPrioridad)
+
+        if(nuevaFecha.before(new Date())){
+
+            tramitesAtrasados++
+            idTramites.add(it.id)
+
+        }
+
+//        println("fecha:" + nuevaFecha.after(new Date()))
+    }
+
+//    println("-->" + tramitesAtrasados)
+
+
+    return [tramitesAtrasados : tramitesAtrasados, idTramites: idTramites]
+}
+
+
+
+    def rojoPendiente () {
+
+
+        def usuario = session.usuario
+
+        def persona = Persona.get(usuario.id)
+
+        def pendientes = EstadoTramite.get(8)
+
+        def tramitesPendientes = Tramite.findAllByEstadoTramite(pendientes).size()
+
+
+        return [tramitesPendientes : tramitesPendientes]
+
+    }
+
+
 
     def bandejaEntrada() {
 
@@ -228,22 +407,87 @@ class TramiteController extends happy.seguridad.Shield {
 
         def persona = Persona.get(usuario.id)
 
-        return [persona: persona]
+        def recibidos = EstadoTramite.get(4)
+
+        def tramitesRecibidos = Tramite.findAllByEstadoTramite(recibidos).size()
+
+        return [persona: persona, tramitesRecibidos: tramitesRecibidos]
 
 
     }
+
+
+
 
 
     def tablaBandeja() {
+        def idTramitesRetrasados = alertaRetrasados().idTramites
 
+        def idTramitesRecibidos = alertRecibidos().idTramites
+
+        def idRojos = alertaPendientes().idRojos
 
         def tramites = Tramite.list()
+        return [tramites: tramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+    }
 
+
+    def tablaBandejaSalida () {
+
+        def estadoBorrador = EstadoTramite.get(1)
+        def estadoRevisado = EstadoTramite.get(2)
+        def estadoPendiente = EstadoTramite.get(8)
+
+        def tramites = Tramite.findAllByEstadoTramiteOrEstadoTramiteOrEstadoTramite(estadoBorrador,estadoRevisado,estadoPendiente);
 
         return [tramites: tramites]
 
+    }
+
+
+
+    def bandejaSalida () {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        return[persona : persona]
 
     }
+
+
+
+
+    def observaciones () {
+
+        def tramite = Tramite.get(params.id)
+
+        return [tramite: tramite]
+
+    }
+
+
+    def guardarObservacion () {
+
+//        println("paramsObservaciones" + params)
+
+        def tramite = Tramite.get(params.id)
+
+//        println("tramite:" + tramite)
+
+        tramite.observaciones = params.texto
+
+        if(!tramite.save(flush: true)){
+
+            render "Ocurrió un error al guardar"
+        }else{
+
+            render "Observación guardada correctamente"
+        }
+
+    }
+
+
+
 
 
     def busquedaBandeja() {
@@ -287,7 +531,10 @@ class TramiteController extends happy.seguridad.Shield {
     def tablaArchivados() {
 
 
-        def tramites = Tramite.list()
+        def archivados = EstadoTramite.get(5)
+
+        def tramites = Tramite.findAllByEstadoTramite(archivados)
+
 
 
         return [tramites: tramites]

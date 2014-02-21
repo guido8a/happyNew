@@ -26,6 +26,8 @@ class Tramite {
     String externo
     String nota
     String estado
+    String observaciones
+    Date fechaEnvio
     static mapping = {
         table 'trmt'
         cache usage: 'read-write', include: 'non-lazy'
@@ -57,6 +59,8 @@ class Tramite {
             externo column: 'trmtextr'
             nota column: 'trmtnota'
             estado column: 'trmtetdo'
+            observaciones column: 'trmtobsr'
+            fechaEnvio column: 'trmtfcen'
         }
     }
     static constraints = {
@@ -83,5 +87,8 @@ class Tramite {
         externo(maxSize: 1, blank: true, nullable: true, attributes: [title: 'externo'])
         nota(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'nota'])
         estado(maxSize: 1, blank: true, nullable: true, attributes: [title: 'estado'])
+        observaciones(maxSize: 255, blank: true, nullable: true, attributes: [title: 'observaciones'])
+        fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
+
     }
 }

@@ -83,6 +83,8 @@
 
                 <div class="linea"></div>
 
+                <g:hiddenField name="tramitePadre" value="${padre?.id}"/>
+
                 <div class="row">
                     <div class="col-xs-3 negrilla">
                         De:
@@ -103,7 +105,8 @@
 
                     <div class="col-xs-2 negrilla">
                         Prioridad:
-                        <g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>
+                        %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
+                        <g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list()}" value="3" optionKey="id" optionValue="descripcion"></g:select>
                     </div>
 
                     <div class="col-xs-3 negrilla">
@@ -115,7 +118,7 @@
 
                     <div class="col-xs-2 negrilla">
                         <br/>
-                        Externo:
+                        Vino del Exterior:
                         <input type="checkbox" id="externo" style="width: 30px">
                     </div>
                 </div>
@@ -140,7 +143,7 @@
 
             <div style="width: 300px;height: 250px;margin: 10px;padding: 15px;float: left">
                 <div class="row negrilla">
-                    Direccion:
+                    Para:
                     <select name="direc" id="direccion" class="many-to-one form-control">
                         <g:each in="${happy.tramites.Departamento.list(['sort': 'descripcion'])}" var="d">
                             <option value="${d.id}" cod="${d.codigo}">${d.descripcion}</option>

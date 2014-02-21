@@ -1,16 +1,22 @@
 <%--
   Created by IntelliJ IDEA.
+  User: gato
+  Date: 18/02/14
+  Time: 01:02 PM
+--%>
+
+<%--
+  Created by IntelliJ IDEA.
   User: fabricio
   Date: 1/20/14
   Time: 4:51 PM
 --%>
 
-<div style="height: 450px"  class="container-celdas">
+<div style="margin-top: 10px; height: 450px"  class="container-celdas">
     <span class="grupo">
-        <table class="table table-bordered table-condensed table-hover">
+        <table class="table table-bordered table-striped table-condensed table-hover">
             <thead>
             <tr>
-
                 <th class="cabecera">Documento</th>
                 <th class="cabecera">Fecha Recepción</th>
                 <th class="cabecera">De</th>
@@ -27,33 +33,7 @@
             <tbody>
             <g:each in="${tramites}" var="tramite">
 
-                <g:set var="type" value=""/>
-                %{--<g:if test="${tramite.estadoTramite?.codigo == 'E004'}">--}%
-                    %{--<g:set var="type" value="recibido"/>--}%
-                %{--</g:if>--}%
-
-                <g:if test="${idTramitesRecibidos.contains(tramite.id)}">
-                    <g:set var="type" value="recibido"/>
-                </g:if>
-
-
-                <g:if test="${tramite?.estadoTramite?.codigo == 'EX03'}">
-                    <g:set var="type" value="pendiente"/>
-                </g:if>
-                <g:if test="${idTramitesRetrasados.contains(tramite.id)}">
-                    <g:set var="type" value="retrasado"/>
-                </g:if>
-
-                <g:if test="${idRojos.contains(tramite.id)}">
-                    %{--<g:set var="type" value="pendienteRojo"/>--}%
-                    <g:set var="type" value="pendiente pendienteRojo"/>
-                </g:if>
-
-
-
-
-                <tr data-id="${tramite?.id}" class="${type}">
-
+                <tr>
                     <td>${tramite?.numero}</td>
                     <td>${tramite?.fechaRespuesta}</td>
                     <td>${tramite?.de}</td>
@@ -70,6 +50,10 @@
 
                     %{--</td>--}%
                 </tr>
+
+
+
+
             </g:each>
 
             </tbody>
@@ -78,16 +62,3 @@
     </span>
 
 </div>
-
-<script type="text/javascript">
-    function clean() {
-        $(".recibidoColor").removeClass("recibidoColor");
-        $(".retrasadoColor").removeClass("retrasadoColor");
-        $(".pendienteColor").removeClass("pendienteColor");
-        $(".pendienteRojoColor").removeClass("pendienteRojoColor");
-    }
-    function getRows(clase) {
-        clean();
-        $("."+clase).addClass(clase+"Color");
-    }
-</script>
