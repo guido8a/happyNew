@@ -49,6 +49,9 @@
         .col-md-1.xs {
             width : 45px;
         }
+        .fecha {
+            width : 160px;
+        }
 
         </style>
 
@@ -82,8 +85,8 @@
                 <div id="collapsePerfiles" class="panel-collapse collapse in">
                     <div class="panel-body">
                         <p>
-                            <a href="#" class="btn btn-default" id="allPerf">Asignar todos los perfiles</a>
-                            <a href="#" class="btn btn-default" id="nonePerf">Quitar todos los perfiles</a>
+                            <a href="#" class="btn btn-default btn-sm" id="allPerf">Asignar todos los perfiles</a>
+                            <a href="#" class="btn btn-default btn-sm" id="nonePerf">Quitar todos los perfiles</a>
                         </p>
                         <g:form name="frmPerfiles" action="savePerfiles_ajax">
                             <ul class="fa-ul">
@@ -127,7 +130,7 @@
                                         Permiso
                                     </label>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-2" style="margin-left: -20px;">
                                         <g:select name="permisoTramite.id" class="form-control"
                                                   from="${happy.tramites.PermisoTramite.list([sort: 'descripcion'])}"
                                                   optionKey="id" optionValue="descripcion"/>
@@ -138,7 +141,7 @@
                                         Desde
                                     </label>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 fecha">
                                         <elm:datepicker name="fechaInicio" title="desde"
                                                         class="datepicker form-control required" daysOfWeekDisabled="0,6"
                                                         onChangeDate="validarFechasPermiso"/>
@@ -146,11 +149,11 @@
                                 </span>
 
                                 <span class="grupo">
-                                    <label for="fechaFin" class="col-md-1 xs control-label text-info">
+                                    <label for="fechaFin" class="col-md-1 xs control-label text-info" style="margin-left: -20px;">
                                         Hasta
                                     </label>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 fecha">
                                         <elm:datepicker name="fechaFin" title="hasta" class="datepicker form-control"
                                                         daysOfWeekDisabled="0,6"/>
                                     </div>
@@ -158,15 +161,15 @@
 
                                 <span class="grupo">
                                     <label for="accsObservaciones" class="col-md-1 xs control-label text-info">
-                                        Obs.
+                                        Obsr.
                                     </label>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-2" style="width: 240px;">
                                         <g:textField class=" form-control" name="observaciones" style="width:100%;"/>
                                     </div>
                                 </span>
 
-                                <div class="col-md-1 text-center">
+                                <div class="col-md-1 text-center" style="margin-left: -20px;">
                                     <a href="#" class="btn btn-success" id="btnPermisos">
                                         <i class="fa fa-plus"></i> Agregar
                                     </a>
@@ -224,7 +227,7 @@
                                         Obs.
                                     </label>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <g:textField class=" form-control" name="accsObservaciones" style="width:100%;"/>
                                     </div>
                                 </span>

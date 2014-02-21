@@ -48,6 +48,7 @@
                 </span>
             </div>
 
+%{--
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cargo', 'error')} ">
                 <span class="grupo">
                     <label for="cargo" class="col-md-3 control-label text-info">
@@ -60,6 +61,7 @@
 
                 </span>
             </div>
+--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">
                 <span class="grupo">
@@ -89,6 +91,7 @@
                 </span>
             </div>
 
+%{--
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'jefe', 'error')} required">
                 <span class="grupo">
                     <label for="jefe" class="col-md-3 control-label text-info">
@@ -96,13 +99,16 @@
                     </label>
 
                     <div class="col-md-3">
-                        %{--<g:field name="jefe" type="number" value="${personaInstance.jefe}" class="digits form-control required" required=""/>--}%
+                        --}%
+%{--<g:field name="jefe" type="number" value="${personaInstance.jefe}" class="digits form-control required" required=""/>--}%%{--
+
                         <g:select name="jefe" from="[0: 'NO', 1: 'SI']" value="${personaInstance.jefe}" class="form-control required span-2" required=""
                                   optionKey="key" optionValue="value"/>
                     </div>
                     *
                 </span>
             </div>
+--}%
 
         </g:form>
 

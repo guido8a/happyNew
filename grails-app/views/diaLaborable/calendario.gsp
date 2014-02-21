@@ -10,7 +10,7 @@
         div.mes {
             float  : left;
             margin : 0 0 10px 10px;
-            height : 215px;
+            height : 175px;
         }
 
         table.mes {
@@ -18,7 +18,7 @@
         }
 
         .dia {
-            width      : 40px;
+            width      : 33px;
             text-align : center;
             cursor     : pointer;
         }
@@ -41,7 +41,7 @@
 
         .demo {
             width      : 20px;
-            height     : 20px;
+            height     : 17px;
             text-align : center;
             display    : inline-block;
             color      : #444;
