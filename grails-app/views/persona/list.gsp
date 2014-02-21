@@ -3,11 +3,11 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de Persona</title>
+        <title>Personal GADPP</title>
 
         <style type="text/css">
         .table {
-            font-size     : 13px;
+            font-size     : 12px;
             margin-bottom : 0 !important;
         }
         </style>
@@ -49,7 +49,7 @@
 
                     <g:sortableColumn property="apellido" title="Apellido"/>
 
-                    <g:sortableColumn property="fechaNacimiento" title="Fecha Nacimiento"/>
+                    <th>Cargo</th>
 
                 </tr>
             </thead>
@@ -65,7 +65,7 @@
 
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}' /></td>
 
-                        <td><g:formatDate date="${personaInstance.fechaNacimiento}" format="dd-MM-yyyy"/></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.cargo}' /></td>
 
                     </tr>
                 </g:each>

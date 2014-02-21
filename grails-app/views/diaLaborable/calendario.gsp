@@ -1,23 +1,16 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: luz
-  Date: 9/2/13
-  Time: 3:00 PM
---%>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html xmlns="http://www.w3.org/1999/html">
     <head>
         <meta name="layout" content="main">
         <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
         <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
-        <title>Días laborables</title>
+        <title>Días Laborables</title>
 
         <style type="text/css">
         div.mes {
             float  : left;
             margin : 0 0 10px 10px;
-            height : 185px;
+            height : 215px;
         }
 
         table.mes {
@@ -25,7 +18,7 @@
         }
 
         .dia {
-            width      : 38px;
+            width      : 40px;
             text-align : center;
             cursor     : pointer;
         }
@@ -42,7 +35,7 @@
             background-color : #5CAACE;
         }
 
-        h1 {
+        h3 {
             text-align : center;
         }
 
@@ -51,25 +44,27 @@
             height     : 20px;
             text-align : center;
             display    : inline-block;
+            color      : #444;
         }
 
         .nombreMes {
+            text-align: center;
             font-size : 18px;
         }
         </style>
     </head>
 
     <body>
-        <h1>
+        <h3>
             Año <g:select style="font-size:large;" name="anio" class="input-small" from="${anio - 5..anio + 5}" value="${params.anio}"/>
-            <a href="#" class="btn btn-primary" id="btnCambiar"><i class="icon icon-exchange"></i> Cambiar</a>
-            <a href="#" class="btn btn-success" id="btnGuardar"><i class="icon icon-save"></i> Guardar</a>
-        </h1>
+            <a href="#" class="btn btn-primary" id="btnCambiar"><i class="icon fa fa-refresh"></i> Cambiar</a>
+            <a href="#" class="btn btn-success" id="btnGuardar"><i class="icon fa fa-check"></i> Guardar</a>
+        </h3>
 
-        <div class="well">
-            Los días marcados con <div class="demo vacacion">1</div> son no laborables. <br/>
-            Para cambiar el estado de un día haga cilck sobre el mismo.<br/>
-            Los cambios se guardarán únicamente haciendo click en el botón "Guardar".
+        <div class="well well-sm">
+            Los días marcados con <div class="demo vacacion">1</div> son <b>no laborables</b>.
+            Haciendo clic sobre el día se cambia de laborable a no laborable y viceversa.
+            Los cambios se guardan haciendo clic en el botón "Guardar".
         </div>
 
         <g:set var="mesAct" value="${null}"/>
