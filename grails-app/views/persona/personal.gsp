@@ -66,15 +66,9 @@
     </head>
 
     <body>
-        <div class="form-group keeptogether">
-            <div>
-                <span class="col-md-12" style="text-align: center">
-                    <div class="panel panel-default" style="margin-left: 30px;">
-                        <div class="panel-heading">
-                            Configuración personal de los datos del usuario: <strong>${usuario.nombre} ${usuario.apellido}</strong>
-                        </div>
-                    </div>
-                </span>
+        <div class="form-group">
+            <div class="alert alert-info">
+                Configuración personal de los datos del usuario: <strong>${usuario.nombre} ${usuario.apellido}</strong>
             </div>
         </div>
 
@@ -88,7 +82,7 @@
                     </h4>
                 </div>
 
-                <div id="collapsePass" class="panel-collapse collapse ">
+                <div id="collapsePass" class="panel-collapse collapse  ${params.tipo == 'foto' ? '' : 'in'}">
                     <div class="panel-body">
                         <g:form class="form-horizontal" name="frmPass" role="form" action="savePass_ajax" method="POST">
                             <div class="form-group required">
@@ -152,8 +146,13 @@
                     </h4>
                 </div>
 
-                <div id="collapseFoto" class="panel-collapse collapse in ">
+                <div id="collapseFoto" class="panel-collapse collapse ${params.tipo == 'foto' ? 'in' : ''} ">
                     <div class="panel-body">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-warning fa-3x pull-left"></i>
+                            Si usted selecciona una foto con un tamaño mayor a 200x300 px se mostrará un área de selección parcial de la imagen.
+                            Mientras la imagen guardada sea de un tamaño superior al mensionado antes no se mostrará en otras pantallas.
+                        </div>
                         <g:if test="${usuario.foto && usuario.foto != ''}">
                             <div id="divFoto">
 
@@ -318,26 +317,30 @@
                             progress + '%'
                     );
                 }).on('fileuploaddone',function (e, data) {
-                    closeLoader();
-                    $.each(data.result.files, function (index, file) {
-                        $('#progress .progress-bar').css(
-                                'width', '0%'
-                        );
-                        $("#files").empty();
-                        loadFoto();
-                        if (file.url) {
-//                            var link = $('<a>')
-//                                    .attr('target', '_blank')
-//                                    .prop('href', file.url);
+//                    closeLoader();
+                    setTimeout(function () {
+                        location.href = "${createLink(action: 'personal', params:[tipo:'foto'])}";
+                    }, 1000);
+
+//                    $.each(data.result.files, function (index, file) {
+//                        $('#progress .progress-bar').css(
+//                                'width', '0%'
+//                        );
+//                        $("#files").empty();
+////                        loadFoto();
+//                        if (file.url) {
+////                            var link = $('<a>')
+////                                    .attr('target', '_blank')
+////                                    .prop('href', file.url);
+////                            $(data.context.children()[index])
+////                                    .wrap(link);
+//                        } else if (file.error) {
+//                            var error = $('<span class="text-danger"/>').text(file.error);
 //                            $(data.context.children()[index])
-//                                    .wrap(link);
-                        } else if (file.error) {
-                            var error = $('<span class="text-danger"/>').text(file.error);
-                            $(data.context.children()[index])
-                                    .append('<br>')
-                                    .append(error);
-                        }
-                    });
+//                                    .append('<br>')
+//                                    .append(error);
+//                        }
+//                    });
                 }).on('fileuploadfail', function (e, data) {
                     closeLoader();
                     $.each(data.files, function (index, file) {

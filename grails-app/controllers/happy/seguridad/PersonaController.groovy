@@ -3,6 +3,7 @@ package happy.seguridad
 import groovy.json.JsonBuilder
 import happy.tramites.Departamento
 import happy.tramites.PermisoUsuario
+import org.fusesource.jansi.Ansi
 
 import static java.awt.RenderingHints.*
 import java.awt.image.BufferedImage
@@ -56,26 +57,31 @@ class PersonaController extends happy.seguridad.Shield {
 
         def f = request.getFile('file')  //archivo = name del input type file
 
-        def extOk = ["jpg", "jpeg", "png", "bmp"]
+        def okContents = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
 
         if (f && !f.empty) {
             def fileName = f.getOriginalFilename() //nombre original del archivo
             def ext
 
-            def parts = fileName.split("\\.")
-            fileName = ""
-            parts.eachWithIndex { obj, i ->
-                if (i < parts.size() - 1) {
-                    fileName += obj
-                } else {
-                    ext = obj
-                }
-            }
+//            def parts = fileName.split("\\.")
+//            fileName = ""
+//            parts.eachWithIndex { obj, i ->
+//                if (i < parts.size() - 1) {
+//                    fileName += obj
+//                } else {
+//                    ext = obj
+//                }
+//            }
 
-            if (extOk.contains(ext)) {
+//            if (extOk.contains(ext)) {
+            if (okContents.containsKey(f.getContentType())) {
+//                //println "filename: " + fileName
+//                //println "ext: " + ext
+//                //println f.getContentType()
 //                fileName = fileName.tr(/áéíóúñÑÜüÁÉÍÓÚàèìòùÀÈÌÒÙÇç .!¡¿?&#°"'/, "aeiounNUuAEIOUaeiouAEIOUCc_")
 //
 //                def fn = fileName
+                ext = okContents[f.getContentType()]
                 fileName = usuario.id + "." + ext
 
                 def pathFile = path + fileName
@@ -90,47 +96,102 @@ class PersonaController extends happy.seguridad.Shield {
 //                    i++
 //                }
 
-                f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
-
+                try {
+                    f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
+                    //println pathFile
+                } catch (e) {
+                    //println "????????\n" + e + "\n???????????"
+                }
                 /* RESIZE */
                 def img = ImageIO.read(new File(pathFile))
 
                 def scale = 0.5
 
-                def maxW = 200 * 4
-                def maxH = 300 * 4
+                def minW = 200
+                def minH = 300
+
+                def maxW = minW * 3
+                def maxH = minH * 3
 
                 def w = img.width
                 def h = img.height
 
-                int newWidth = w * scale
-                int newHeight = h * scale
-                if (w > h) {
-                    def r = w / maxW
-                    newWidth = maxW
-                    newHeight = h / r
-                } else {
-                    def r = h / maxH
-                    newHeight = maxH
-                    newWidth = w / r
-                }
-
-                new BufferedImage(newWidth, newHeight, img.type).with { j ->
-                    createGraphics().with {
-                        setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
-                        drawImage(img, 0, 0, newWidth, newHeight, null)
-                        dispose()
+                if (w > maxW || h > maxH || w < minW || h < minH) {
+                    int newW = w * scale
+                    int newH = h * scale
+                    int r = 1
+                    if (w > h) {
+                        if (w > maxW) {
+                            r = w / maxW
+                            newW = maxW
+                        }
+                        if (w < minW) {
+                            r = minW / w
+                            newW = minW
+                        }
+                        newH = h / r
+                    } else {
+                        if (h > maxH) {
+                            r = h / maxH
+                            newH = maxH
+                        }
+                        if (h < minH) {
+                            r = minH / h
+                            newH = minH
+                        }
+                        newW = w / r
                     }
-                    ImageIO.write(j, ext, new File(pathFile))
+
+                    new BufferedImage(newW, newH, img.type).with { j ->
+                        createGraphics().with {
+                            setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
+                            drawImage(img, 0, 0, newW, newH, null)
+                            dispose()
+                        }
+                        ImageIO.write(j, ext, new File(pathFile))
+                    }
                 }
+                //println ">" + pathFile
+                //println ">>" + new File(pathFile).exists()
+
                 /* fin resize */
 
-                if (usuario.foto) {
-                    def old = new File(path + usuario.foto)
-                    old.delete()
-                }
-                usuario.foto = nombre
-                if (usuario.save(flush: true)) {
+                if (!usuario.foto || usuario.foto != nombre) {
+                    usuario.foto = nombre
+                    if (usuario.save(flush: true)) {
+                        //println "OK"
+                        def data = [
+                                files: [
+                                        [
+                                                name: nombre,
+                                                url: resource(dir: 'images/perfiles/', file: nombre),
+                                                size: f.getSize(),
+                                                url: pathFile
+                                        ]
+                                ]
+                        ]
+                        def json = new JsonBuilder(data)
+//                    //println json.toPrettyString()
+                        render json
+                        return
+                    } else {
+                        //println "NOPE: " + usuario.errors
+                        def data = [
+                                files: [
+                                        [
+                                                name: nombre,
+                                                size: f.getSize(),
+                                                error: "Ha ocurrido un error al guardar"
+                                        ]
+                                ]
+                        ]
+                        def json = new JsonBuilder(data)
+//                    //println json.toPrettyString()
+                        render json
+                        return
+                    }
+                } else {
+                    //println "()()()()"
                     def data = [
                             files: [
                                     [
@@ -142,21 +203,7 @@ class PersonaController extends happy.seguridad.Shield {
                             ]
                     ]
                     def json = new JsonBuilder(data)
-                    println json.toPrettyString()
-                    render json
-                    return
-                } else {
-                    def data = [
-                            files: [
-                                    [
-                                            name: nombre,
-                                            size: f.getSize(),
-                                            error: "Ha ocurrido un error al guardar"
-                                    ]
-                            ]
-                    ]
-                    def json = new JsonBuilder(data)
-                    println json.toPrettyString()
+//                    //println json.toPrettyString()
                     render json
                     return
                 }
@@ -174,7 +221,7 @@ class PersonaController extends happy.seguridad.Shield {
                 ]
 
                 def json = new JsonBuilder(data)
-//                println json.toPrettyString()
+//                //println json.toPrettyString()
                 render json
                 return
 
@@ -212,7 +259,7 @@ class PersonaController extends happy.seguridad.Shield {
                  */
 
 //                def json = new JsonBuilder(data)
-//                println json.toPrettyString()
+//                //println json.toPrettyString()
 
             }
 
@@ -222,25 +269,37 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def resizeCropImage() {
-        println params
+        //println params
         def usuario = Persona.get(session.usuario.id)
         def path = servletContext.getRealPath("/") + "images/perfiles/"    //web-app/archivos
         def fileName = usuario.foto
-
+        def ext = fileName.split("\\.").last()
         def pathFile = path + fileName
         /* RESIZE */
         def img = ImageIO.read(new File(pathFile))
 
-        int newWidth = 200
-        int newHeight = 300
+        def oldW = img.getWidth()
+        def oldH = img.getHeight()
 
-        new BufferedImage(newWidth, newHeight, img.type).with { j ->
+        int newW = 200
+        int newH = 300
+        int newX = params.x.toInteger()
+        int newY = params.y.toInteger()
+        def rx = newW / (params.w.toDouble())
+        def ry = newH / (params.h.toDouble())
+
+        int resW = oldW * rx
+        int resH = oldH * ry
+        int resX = newX * rx * -1
+        int resY = newY * ry * -1
+
+        new BufferedImage(newW, newH, img.type).with { j ->
             createGraphics().with {
                 setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
-                drawImage(img, params.x, params.y, newWidth, newHeight, null)
+                drawImage(img, resX, resY, resW, resH, null)
                 dispose()
             }
-            ImageIO.write(j, ext, new File(pathFile+"2"))
+            ImageIO.write(j, ext, new File(pathFile))
         }
         /* fin resize */
         render "OK"
@@ -248,7 +307,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def personal() {
         def usuario = Persona.get(session.usuario.id)
-        return [usuario: usuario]
+        return [usuario: usuario, params: params]
     }
 
     def loadFoto() {
@@ -297,18 +356,18 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def savePermisos_ajax() {
-        println params
+        //println params
         params.asignadoPor = session.usuario
         def perm = new PermisoUsuario(params)
-        println perm
+        //println perm
         if (!perm.save(flush: true)) {
-            println "error accesos: " + perm.errors
+            //println "error accesos: " + perm.errors
             render "NO_" + g.renderErrors(bean: perm)
         } else {
-            println "OK"
+            //println "OK"
             render "OK_Permiso agregado"
         }
-        println perm.errors
+        //println perm.errors
     }
 
 
@@ -354,7 +413,7 @@ class PersonaController extends happy.seguridad.Shield {
         params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
-            println "error accesos: " + accs.errors
+            //println "error accesos: " + accs.errors
             render "NO_" + g.renderErrors(bean: accs)
         } else {
             render "OK_Restricción agregada"
@@ -402,11 +461,11 @@ class PersonaController extends happy.seguridad.Shield {
     def savePerfiles_ajax() {
         def usu = Persona.get(params.id)
         def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
-//        println "**************"
-//        println Sesn.findAllByUsuario(usu)
-//        println Sesn.findAllByUsuario(usu).id
-//        println Sesn.findAllByUsuario(usu).id*.toString()
-//        println "**************"
+//        //println "**************"
+//        //println Sesn.findAllByUsuario(usu)
+//        //println Sesn.findAllByUsuario(usu).id
+//        //println Sesn.findAllByUsuario(usu).id*.toString()
+//        //println "**************"
         def arrRemove = perfilesUsu, arrAdd = []
         def errores = ""
 
@@ -423,17 +482,17 @@ class PersonaController extends happy.seguridad.Shield {
                 arrAdd.add(pid)
             }
         }
-//        println "params: " + params
-//        println "perfilesUsu: " + perfilesUsu
-//        println "add: " + arrAdd
-//        println "remove: " + arrRemove
+//        //println "params: " + params
+//        //println "perfilesUsu: " + perfilesUsu
+//        //println "add: " + arrAdd
+//        //println "remove: " + arrRemove
         arrRemove.each { pid ->
             def perf = Prfl.get(pid)
             def sesn = Sesn.findByUsuarioAndPerfil(usu, perf)
             try {
                 sesn.delete(flush: true)
             } catch (e) {
-                println "erorr al eliminar perfil: " + e
+                //println "erorr al eliminar perfil: " + e
                 errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
             }
         }
@@ -441,7 +500,7 @@ class PersonaController extends happy.seguridad.Shield {
             def perf = Prfl.get(pid)
             def sesn = new Sesn([usuario: usu, perfil: perf])
             if (!sesn.save(flush: true)) {
-                println "error al asignar perfil: " + sesn.errors
+                //println "error al asignar perfil: " + sesn.errors
                 errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
             }
         }
