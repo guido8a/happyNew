@@ -422,12 +422,10 @@ def alertaRetrasados () {
 
     def tablaBandeja() {
         def idTramitesRetrasados = alertaRetrasados().idTramites
-
         def idTramitesRecibidos = alertRecibidos().idTramites
-
         def idRojos = alertaPendientes().idRojos
-
         def tramites = Tramite.list()
+
         return [tramites: tramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
     }
 
@@ -437,10 +435,13 @@ def alertaRetrasados () {
         def estadoBorrador = EstadoTramite.get(1)
         def estadoRevisado = EstadoTramite.get(2)
         def estadoPendiente = EstadoTramite.get(8)
+        def estadoEnviado = EstadoTramite.get(3)
 
-        def tramites = Tramite.findAllByEstadoTramiteOrEstadoTramiteOrEstadoTramite(estadoBorrador,estadoRevisado,estadoPendiente);
+        def tramites = Tramite.findAllByEstadoTramiteOrEstadoTramiteOrEstadoTramiteOrEstadoTramite(estadoBorrador,estadoRevisado,estadoPendiente, estadoEnviado);
 
-        return [tramites: tramites]
+        def idTramitesNoRecibidos = alertaNoRecibidos().idTramitesNoRecibidos
+
+        return [tramites: tramites, idTramitesNoRecibidos: idTramitesNoRecibidos]
 
     }
 
@@ -450,7 +451,71 @@ def alertaRetrasados () {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
+
+
+
         return[persona : persona]
+
+    }
+
+
+
+    def alertaRevisados () {
+
+
+        def usuario = session.usuario
+        def revisados = EstadoTramite.get(2)
+        def tramites = Tramite.findAllByEstadoTramite(revisados).size()
+
+        return [tramites: tramites]
+
+    }
+
+
+    def alertaEnviados () {
+
+        def usuario = session.usuario
+        def enviados = EstadoTramite.get(3)
+        def tramites = Tramite.findAllByEstadoTramite(enviados).size()
+
+        return [tramites: tramites ]
+    }
+
+
+    def alertaNoRecibidos () {
+
+    def usuario = session.usuario
+    def enviados = EstadoTramite.get(3)
+    def tramites = Tramite.findAllByEstadoTramite(enviados)
+
+    def fechaEnvio
+    def dosHoras =  7200000  //milisegundos
+    def fecha
+    Date nuevaFecha
+
+    def tramitesNoRecibidos = 0
+    def idTramitesNoRecibidos = []
+
+    tramites.each {
+
+        fechaEnvio = it.fechaEnvio
+        fecha = fechaEnvio.getTime()
+        nuevaFecha = new Date(fecha+dosHoras)
+
+        if(nuevaFecha.before(new Date())){
+
+            tramitesNoRecibidos++
+            idTramitesNoRecibidos.add(it.id)
+        }
+
+
+
+    }
+
+
+    return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos]
+
+
 
     }
 

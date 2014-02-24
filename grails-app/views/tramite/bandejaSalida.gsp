@@ -127,6 +127,26 @@
     }
 
 
+    tr.revisadoColor, tr.revisadoColor td {
+        background-color: #DFF0D8! important;
+    }
+
+    tr.enviadoColor, tr.enviadoColor td {
+        background-color: #FFFFCC! important;
+    }
+
+    tr.noRecibidoColor, tr.noRecibidoColor td {
+        background-color: #F2DEDE! important;
+    }
+
+    /*tr.pendienteColor.pendienteRojo, tr.pendienteColor.pendienteRojo td {*/
+        /*background-color: #fc2c04! important;*/
+        /*color: #ffffff;*/
+    /*}*/
+
+
+
+
 
     </style>
 
@@ -134,19 +154,12 @@
 
 <body>
 
-<div class="row" style="margin-top: 0px">
+<div class="row" style="margin-top: 0px; margin-left: 1px">
     <span class="grupo">
         <label class="well well-sm"
                style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
                 persona?.departamento?.descripcion}</label>
 
-        <div class="alert alert-success alertas" style="margin-left: 40px;"><label
-                class="etiqueta">Revisados</label></div>
-
-        <div class="alert alert-blanco alertas" style="width: 160px;"><p
-                class="etiqueta">Enviados</p></div>
-
-        <div class="alert alert-danger alertas"><label class="etiqueta">No recibido</label></div>
     </span>
 </div>
 
@@ -161,15 +174,31 @@
             <i class="fa fa-gears"></i> Trámites
         </g:link>
 
-        %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
-            %{--<i class="fa fa-folder"></i> Archivados--}%
-        %{--</g:link>--}%
-
         <g:link action="" class="btn btn-success btnActualizar">
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
 
     </div>
+
+    <span class="grupo">
+
+        <div id="alertaRevisados">
+            <div data-type="revisado" class="alert alert-success alertas" style="margin-left: 40px; width: 150px"><label
+                    class="etiqueta" style="padding-top: 10px; padding-left: 30px">Revisados</label></div>
+        </div>
+
+        <div id="alertaEnviados">
+            <div data-type="enviado" class="alert alert-blanco alertas" style="width: 150px;"><p
+                    class="etiqueta" style="padding-top: 10px; padding-left: 40px">Enviados</p></div>
+        </div>
+
+        <div id="alertaNoRecibidos">
+            <div data-type="noRecibido" class="alert alert-danger alertas"
+                 style="padding-left: 30px; padding-top: 10px; width: 150px"><label class="etiqueta">No recibido</label></div>
+        </div>
+
+
+    </span>
 
 </div>
 
@@ -251,9 +280,9 @@
 
         context.settings({
             onShow: function (e) {
-                $("tr.success").removeClass("success");
+                $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
-                $tr.addClass("success");
+                $tr.addClass("trHighlight");
                 id = $tr.data("id");
             }
         });
@@ -265,7 +294,7 @@
 //                text: 'Recibir Documento',
 //                icon: "<i class='fa fa-check-square-o'></i>",
 //                action: function (e) {
-//                    $("tr.success").removeClass("success");
+//                    $("tr.trHighlight").removeClass("trHighlight");
 //                    e.preventDefault();
 //                }
 //            },
@@ -302,7 +331,7 @@
                 text: 'Archivar Documentos',
                 icon: "<i class='fa fa-folder-open-o'></i>",
                 action: function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
 //                    createEditRow(id);
                 }
@@ -313,7 +342,7 @@
 //                text   : 'Eliminar',
 //                icon   : "<i class='fa fa-trash-o'></i>",
 //                action : function (e) {
-//                    $("tr.success").removeClass("success");
+//                    $("tr.trHighlight").removeClass("trHighlight");
 //                    e.preventDefault();
 //                    deleteRow(id);
 //                }
@@ -338,9 +367,13 @@
 
     $(".btnActualizar").click(function () {
 
+
+        cargarAlertaRevisados();
+        cargarAlertaEnviados();
+        cargarAlertaNoRecibidos();
         cargarBandeja();
 
-        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites actualizada!</label>')
+        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas!</label>')
 
         return false;
 
@@ -379,6 +412,66 @@
     cargarBandeja();
 
 
+
+    function cargarAlertaRevisados () {
+
+        var interval = loading("alertaRevisados")
+        var datos = ""
+
+        $.ajax({
+           type: 'POST',
+            url:"${createLink(controller: 'tramite', action: 'alertaRevisados')}",
+            data: datos,
+            success: function (msg){
+                clearInterval(interval);
+                $("#alertaRevisados").html(msg);
+            }
+        });
+    }
+
+    cargarAlertaRevisados();
+
+    function cargarAlertaEnviados () {
+
+
+        var interval = loading("alertaEnviados")
+        var datos = ""
+        $.ajax({
+           type: 'POST',
+           url:"${createLink(controller: 'tramite', action: 'alertaEnviados')}",
+           data: datos,
+           success : function (msg){
+               clearInterval(interval);
+               $("#alertaEnviados").html(msg);
+
+           }
+
+        });
+
+    }
+
+    cargarAlertaEnviados();
+
+    function cargarAlertaNoRecibidos () {
+        var interval = loading("alertaNoRecibidos");
+        var datos =""
+        $.ajax ({
+           type: 'POST',
+            url: "${createLink(controller: 'tramite', action: 'alertaNoRecibidos')}",
+            data: datos,
+            success : function (msg) {
+                clearInterval(interval);
+                $("#alertaNoRecibidos").html(msg);
+
+            }
+
+        });
+
+
+    }
+
+    cargarAlertaNoRecibidos();
+
     $(".btnBusqueda").click(function () {
 
         var interval = loading("bandeja")
@@ -398,16 +491,8 @@
 
             }
 
-
-
         });
-
     });
-
-
-
-
-
 
 </script>
 

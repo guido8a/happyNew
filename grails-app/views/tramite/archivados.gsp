@@ -239,9 +239,9 @@
 
         context.settings({
             onShow : function (e) {
-                $("tr.success").removeClass("success");
+                $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
-                $tr.addClass("success");
+                $tr.addClass("trHighlight");
                 id = $tr.data("id");
             }
         });
@@ -253,7 +253,7 @@
                 text   : 'Contestar Documento',
                 icon   : "<i class='fa fa-comments-o'></i>",
                 action : function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                     %{--$.ajax({--}%
                     %{--type    : "POST",--}%
@@ -282,7 +282,7 @@
                 text   : 'Archivar Documentos',
                 icon   : "<i class='fa fa-folder-open-o'></i>",
                 action : function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
 //                    createEditRow(id);
                 }
@@ -293,7 +293,7 @@
 //                text   : 'Eliminar',
 //                icon   : "<i class='fa fa-trash-o'></i>",
 //                action : function (e) {
-//                    $("tr.success").removeClass("success");
+//                    $("tr.trHighlight").removeClass("trHighlight");
 //                    e.preventDefault();
 //                    deleteRow(id);
 //                }

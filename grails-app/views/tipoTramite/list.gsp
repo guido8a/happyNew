@@ -163,9 +163,9 @@
 
                 context.settings({
                     onShow : function (e) {
-                        $("tr.success").removeClass("success");
+                        $("tr.trHighlight").removeClass("trHighlight");
                         var $tr = $(e.target).parent();
-                        $tr.addClass("success");
+                        $tr.addClass("trHighlight");
                         id = $tr.data("id");
                     }
                 });
@@ -177,7 +177,7 @@
                         text   : 'Ver',
                         icon   : "<i class='fa fa-search'></i>",
                         action : function (e) {
-                            $("tr.success").removeClass("success");
+                            $("tr.trHighlight").removeClass("trHighlight");
                             e.preventDefault();
                             $.ajax({
                                 type    : "POST",
@@ -206,7 +206,7 @@
                         text   : 'Editar',
                         icon   : "<i class='fa fa-pencil'></i>",
                         action : function (e) {
-                            $("tr.success").removeClass("success");
+                            $("tr.trHighlight").removeClass("trHighlight");
                             e.preventDefault();
                             createEditRow(id);
                         }
@@ -216,7 +216,7 @@
                         text   : 'Eliminar',
                         icon   : "<i class='fa fa-trash-o'></i>",
                         action : function (e) {
-                            $("tr.success").removeClass("success");
+                            $("tr.trHighlight").removeClass("trHighlight");
                             e.preventDefault();
                             deleteRow(id);
                         }

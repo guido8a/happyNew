@@ -168,30 +168,6 @@
  </span>
 </div>
 
-%{--<div class="row">--}%
-    %{--<span class="grupo">--}%
-        %{--<div id="alertaRecibido">--}%
-            %{--<div data-type="recibido" class="alert alert-info alertas" style="width: 190px;">--}%
-                %{--<label  class="etiqueta" style="padding-top: 10px; padding-left: 10px">Documentos Recibidos</label>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-
-        %{--<div id="alertaPendientes">--}%
-            %{--<div data-type="pendiente" class="alert alert-blanco alertas" style="width: 270px;">--}%
-                %{--<label class="etiqueta" style="padding-top: 10px; padding-left: 10px">Documentos Pendientes o No Recibidos</label>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-
-        %{--<div id="alertaRetrasados">--}%
-            %{--<div data-type="retrasado" class="alert alert-danger alertas"  style="width: 190px">--}%
-                %{--<label class="etiqueta" style="padding-left: 10px; padding-top: 10px">Documentos Retrasados</label></div>--}%
-        %{--</div>--}%
-
-    %{--</span>--}%
-
-%{--</div>--}%
-
-
 <div class="btn-toolbar toolbar">
     <div class="btn-group">
 
@@ -310,9 +286,9 @@
 
         context.settings({
             onShow: function (e) {
-                $("tr.success").removeClass("success");
+                $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
-                $tr.addClass("success");
+                $tr.addClass("trHighlight");
                 id = $tr.data("id");
 //                console.log("id" + id)
 
@@ -326,7 +302,7 @@
                 text: 'Recibir Documento',
                 icon: "<i class='fa fa-check-square-o'></i>",
                 action: function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                 }
             },
@@ -334,7 +310,7 @@
                 text: 'Contestar Documento',
                 icon: "<i class='fa fa-external-link'></i>",
                 action: function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
 
                     location.href="${g.createLink(action: 'crearTramite')}/"+id;
@@ -344,7 +320,7 @@
                 text: 'Archivar Documentos',
                 icon: "<i class='fa fa-folder-open-o'></i>",
                 action: function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
 //                    createEditRow(id);
                 }
@@ -354,7 +330,7 @@
                 text: 'Distribuir a Jefes',
                 icon: "<i class='fa fa-eye'></i>",
                 action: function (e){
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                     $.ajax ({
                         type : "POST",

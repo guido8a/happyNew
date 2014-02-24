@@ -33,7 +33,21 @@
             <tbody>
             <g:each in="${tramites}" var="tramite">
 
-                <tr>
+                <g:set var="type" value=""/>
+
+                <g:if test="${tramite?.estadoTramite?.codigo == 'E002'}">
+                    <g:set var="type" value="revisado"/>
+                </g:if>
+
+                <g:if test="${tramite?.estadoTramite?.codigo == 'E003'}">
+                    <g:set var="type" value="enviado"/>
+                </g:if>
+
+                <g:if test="${idTramitesNoRecibidos.contains(tramite.id)}">
+                    <g:set var="type" value="noRecibido"/>
+                </g:if>
+
+                <tr data-id="${tramite?.id}" class="${type}">
                     <td>${tramite?.numero}</td>
                     <td>${tramite?.fechaRespuesta}</td>
                     <td>${tramite?.de}</td>
@@ -62,3 +76,17 @@
     </span>
 
 </div>
+
+
+<script type="text/javascript">
+    function clean() {
+        $(".revisadoColor").removeClass("revisadoColor");
+        $(".enviadoColor").removeClass("enviadoColor");
+        $(".noRecibidoColor").removeClass("noRecibidoColor");
+//        $(".pendienteRojoColor").removeClass("pendienteRojoColor");
+    }
+    function getRows(clase) {
+        clean();
+        $("."+clase).addClass(clase+"Color");
+    }
+</script>

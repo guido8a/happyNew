@@ -44,9 +44,9 @@
         var id = null;
         context.settings({
             onShow : function (e) {
-                $("tr.success").removeClass("success");
+                $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
-                $tr.addClass("success");
+                $tr.addClass("trHighlight");
                 id = $tr.data("id");
             }
         });
@@ -58,7 +58,7 @@
                 text   : 'Terminar',
                 icon   : "<i class='fa fa-stop'></i>",
                 action : function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                     bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>Esto cambiará la fecha final de la restricción a la fecha actual. ¿Desea continuar?</p>", function (res) {
                         if (res) {
@@ -82,7 +82,7 @@
                 text   : 'Eliminar',
                 icon   : "<i class='fa fa-trash-o'></i>",
                 action : function (e) {
-                    $("tr.success").removeClass("success");
+                    $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                     bootbox.confirm("<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>Esto eliminará completamente la restricción. ¿Desea continuar?</p>", function (res) {
                         if (res) {

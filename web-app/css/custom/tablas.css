@@ -29,3 +29,7 @@ th a {
 th a:hover, th a:focus {
     color : #ffc766;
 }
+
+tr.trHighlight, tr.trHighlight td, td.trHighlight {
+    background: #ffc766 !important;
+}
