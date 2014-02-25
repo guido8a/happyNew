@@ -17,12 +17,12 @@
 
     <body>
 
-       <div>
-           <label></label>
-       </div>
+        <div class="alert alert-blanco">
+            HEADER DEL TRAMITE
+        </div>
 
 
-        <textarea class="editor" rows="100" cols="80"></textarea>
+        <textarea id="editorTramite" class="editor" rows="100" cols="80"></textarea>
 
 
         <script>
@@ -31,13 +31,20 @@
 
                 if (typeof CKEDITOR != "undefined") {
                     $('textarea.editor').ckeditor({
-                        height  : 600,
-                        toolbar : [
-                            [ 'Save', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
+                        height                  : 600,
+//                        filebrowserUploadUrl : '/notes/add/ajax/upload-inline-image/index.cfm',
+//                        filebrowserBrowseUrl : '/browser/browse.php',
+                        filebrowserBrowseUrl    : '${createLink(controller: "tramiteImagenes", action: "browser")}',
+                        filebrowserUploadUrl    : '${createLink(controller: "tramiteImagenes", action: "uploader")}',
+                        %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%
+                        filebrowserWindowWidth  : 950,
+                        filebrowserWindowHeight : 500,
+                        toolbar                 : [
+                            [ 'ServerSave', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
                             [ 'Table', 'HorizontalRule', 'PageBreak'],
-                            ['Image'],
+                            ['Image', 'Timestamp'],
                             ['About' ],
                             '/',
                             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ],

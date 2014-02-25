@@ -16,8 +16,12 @@ CKEDITOR.editorConfig = function (config) {
     config.language = "es";
     config.uiColor = '#4D76A3';
 
+    config.extraPlugins = 'timestamp,serverSave';
+
     config.scayt_autoStartup = true;
     config.scayt_sLang = 'es_ES';
+
+    config.removePlugins = 'elementspath';
 
     /*
      // Toolbar configuration generated automatically by the editor based on config.toolbarGroups.

@@ -98,7 +98,7 @@ class PersonaController extends happy.seguridad.Shield {
                     f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
                     //println pathFile
                 } catch (e) {
-                    //println "????????\n" + e + "\n???????????"
+                    println "????????\n" + e + "\n???????????"
                 }
                 /* RESIZE */
                 def img = ImageIO.read(new File(pathFile))

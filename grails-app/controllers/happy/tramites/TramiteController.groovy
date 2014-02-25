@@ -17,8 +17,6 @@ class TramiteController extends happy.seguridad.Shield {
 
     def crearTramite() {
 //        println("params " + params)
-        session.usuario = new happy.seguridad.Persona()
-        session.usuario.nombre = "Juan"
         def padre = Tramite.get(params.id)
         def campos = ["codigo": ["Código", "string"], "nombre": ["Descripción", "string"]]
         def de = session.usuario

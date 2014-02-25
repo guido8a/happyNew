@@ -96,3 +96,16 @@ input.help-block, select.help-block, textarea.help-block {
     background-color : #157ab5;
     color            : #f5f5f5;
 }
+
+.alert-blanco {
+    color            : #666;
+    background-color : #ffffff;
+    border-color     : #d0d0d0;
+}
+
+.alert-otroRojo {
+    color            : #FFFFCC;
+    background-color : #fc2c04;
+    border-color     : #d0d0d0;
+
+}

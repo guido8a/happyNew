@@ -1,5 +1,9 @@
 package happy
 
+import happy.seguridad.Persona
+import happy.tramites.Departamento
+import happy.tramites.PermisoTramite
+import happy.tramites.PermisoUsuario
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.springframework.beans.SimpleTypeConverter
 import org.springframework.context.MessageSourceResolvable
@@ -60,6 +64,9 @@ class ElementosTagLib {
         }
     }
 
+    /**
+     * pone el favicon
+     */
     def favicon = { attrs ->
 //        def html = "     <link rel=\"shortcut icon\" href=\"${resource(dir: 'images/ico', file: 'emoticon_smile.png')}\">\n" +
 //                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"144x144\" href=\"${resource(dir: 'images/ico', file: 'janus_144.png')}\">\n" +
@@ -70,6 +77,16 @@ class ElementosTagLib {
         out << html
     }
 
+    /**
+     * marca el texto encontrado en el texto:
+     *      se puede usar con o sin body
+     *          <elm:textoBusqueda busca="busca">Texto donde buscar "busca"</textoBusqueda>
+     *          <elm:textoBusqueda busca="busca" contenido='Texto donde buscar "busca"'/>
+     *
+     *          params:
+     *              busca/search                            el texto a buscar y subrayar si se encuentra
+     *              contenido/texto/text/body del tag       el texto donde buscar
+     */
     def textoBusqueda = { attrs, body ->
         def texto = body()
 
@@ -83,6 +100,9 @@ class ElementosTagLib {
         if (!texto) {
             if (attrs.contenido) {
                 texto = attrs.contenido
+            }
+            if (attrs.text) {
+                texto = attrs.text
             }
             if (attrs.texto) {
                 texto = attrs.texto
@@ -98,6 +118,43 @@ class ElementosTagLib {
         }
 
         out << texto
+    }
+
+    /**
+     * muestra un combobox con las personas que pueden recibir un tramite
+     * si el usuario tiene permiso TRAMITAR (P006) muestra un combo direccion y un combo persona, sino solamente persona
+     */
+    def comboPara = { attrs ->
+        def html = ''
+        def persona = Persona.get(session.usuario.id)
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", persona)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        if (permisos.size() > 0) {
+            //si tiene permiso TRAMITAR activo
+        }//si tiene permiso TRAMITAR activo
+        else {
+            //no tiene permiso TRAMITAR activo
+
+            html = '<div class="row negrilla">\n' +
+                    '                    Dirección:\n' +
+                    '                    <select name="direc" id="direccion" class="many-to-one form-control">\n' +
+                    '                        <g:each in="${happy.tramites.Departamento.list([\'sort\': \'descripcion\'])}" var="d">\n' +
+                    '                            <option value="${d.id}" cod="${d.codigo}">${d.descripcion}</option>\n' +
+                    '                        </g:each>\n' +
+                    '                    </select>\n' +
+                    '                    <g:select name="direc" id="direccion" class="many-to-one form-control" from="${happy.tramites.Departamento.list([\'sort\':\'descripcion\'])}" value="" optionKey="id" optionValue="descripcion"></g:select>\n' +
+                    '                </div>'
+
+            html = '<div class="row negrilla">' +
+                    'Dirección:' +
+                    g.select(name: 'direc', id: 'direccion', class: 'form-control', from: Departamento.list([sort: 'descripcion']), optionKey: "id", optionValue: "descripcion") +
+                    '</div>'
+
+        }//no tiene permiso TRAMITAR activo
+        out << html
     }
 
     /**

@@ -26,21 +26,6 @@
     !important;
     }
 
-    .alert-blanco {
-        color: #666;
-        background-color: #ffffff;
-        border-color: #d0d0d0;
-    }
-
-    .alert-otroRojo {
-
-        color: #FFFFCC;
-        background-color: #fc2c04;
-        border-color: #d0d0d0;
-
-
-    }
-
     .alertas {
         float: left;
         width: 100px;

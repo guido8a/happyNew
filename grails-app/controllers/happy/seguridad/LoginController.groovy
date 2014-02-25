@@ -91,7 +91,6 @@ class LoginController {
             eq("login", params.login, [ignoreCase: true])
             eq("password", params.pass.encodeAsMD5())
         }
-
         if (user.size() == 0) {
             flash.message = "No se ha encontrado el usuario"
             flash.tipo = "error"
@@ -108,7 +107,13 @@ class LoginController {
                 flash.icon = "icon-splatter"
             } else if (perfiles.size() == 1) {
                 session.perfil = perfiles.first().perfil
-                redirect(controller: "inicio", action: "index")
+                def cn = "inicio"
+                def an = "index"
+                if (session.cn && session.an) {
+                    cn = session.cn
+                    an = session.an
+                }
+                redirect(controller: cn, action: an)
                 return
             } else {
                 redirect(action: "perfiles")
