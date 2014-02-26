@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: gato
-  Date: 18/02/14
-  Time: 01:02 PM
+  Date: 25/02/14
+  Time: 04:52 PM
 --%>
 
 <div style="margin-top: 10px; height: 450px"  class="container-celdas">
@@ -50,12 +50,7 @@
                     <td>${tramite?.estado}</td>
                     <td>${tramite?.fechaLimiteRespuesta}</td>
                     <td>${tramite?.padre}</td>
-                    %{--<td style="text-align: center">--}%
-                    %{--<g:link action="" class="btn btn-success btnRecibir">--}%
-                    %{--<i class="fa fa-check-circle"></i> Recibir--}%
-                    %{--</g:link>--}%
 
-                    %{--</td>--}%
                 </tr>
 
 
@@ -69,17 +64,3 @@
     </span>
 
 </div>
-
-
-<script type="text/javascript">
-    function clean() {
-        $(".revisadoColor").removeClass("revisadoColor");
-        $(".enviadoColor").removeClass("enviadoColor");
-        $(".noRecibidoColor").removeClass("noRecibidoColor");
-//        $(".pendienteRojoColor").removeClass("pendienteRojoColor");
-    }
-    function getRows(clase) {
-        clean();
-        $("."+clase).addClass(clase+"Color");
-    }
-</script>

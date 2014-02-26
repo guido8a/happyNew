@@ -8,6 +8,10 @@ class UrlMappings {
         }
 
         "/"(controller: "inicio", action: "index")
-        "500"(view: '/error')
+
+        "401"(controller: 'shield', action: 'unauthorized')
+        "404"(controller: 'shield', action: 'notFound')
+        "403"(controller: 'shield', action: 'forbidden')
+        "500"(controller: 'shield', action: 'internalServerError')
     }
 }

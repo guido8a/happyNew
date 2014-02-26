@@ -1,5 +1,8 @@
 package happy.seguridad
 
+import happy.tramites.EstadoTramite
+import happy.tramites.Tramite
+
 class ShieldController {
     def loginService
     def ataques = {
@@ -7,11 +10,91 @@ class ShieldController {
         render(view:"advertencia",model:[msn:msn])
     }
 
-    def error404 = {
+    def alertaNoRecibidos () {
+
+        def usuario = session.usuario
+        def enviados = EstadoTramite.get(3)
+        def tramites = Tramite.findAllByEstadoTramite(enviados)
+
+        def fechaEnvio
+        def dosHoras =  7200000  //milisegundos
+        def ch = 172800000
+
+        def fecha
+        Date nuevaFecha
+        Date fechaLimite
+
+        def tramitesNoRecibidos = 0
+        def idTramitesNoRecibidos = []
+
+        def tramitesPasados = 0
+        def idTramitesPasados = []
+
+        tramites.each {
+
+            fechaEnvio = it.fechaEnvio
+            fecha = fechaEnvio.getTime()
+            nuevaFecha = new Date(fecha+dosHoras)
+            fechaLimite = new Date(fecha+ch)
+
+            if(nuevaFecha.before(new Date())){
+
+                tramitesNoRecibidos++
+                idTramitesNoRecibidos.add(it.id)
+            }
+            if(fechaLimite.before(new Date())){
+
+                tramitesPasados++
+                idTramitesPasados.add(it.id)
+            }
+        }
+
+        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados, idTramitesPasados: idTramitesPasados ]
+
+    }
+
+
+
+    def unauthorized = {
+
+        def msn="No autorizado"
+
+        def tramitePasado = alertaNoRecibidos().idTramitesPasados
+
+        def tram
+
+        def tramitesPasados = []
+
+        tramitePasado.each {
+
+        tram = Tramite.get(it)
+            tramitesPasados.add(tram)
+
+        }
+//        println("-->" + tramitesPasados)
+
+        return [tramitesPasados: tramitesPasados]
+
+
+    }
+
+
+
+    def forbidden = {
+
+        def msn="Forbidden"
+        render(view:"advertencia",model:[msn:msn])
+
+    }
+
+
+    def notFound = {
         def msn="Esta tratando de ingresar a una accion no registrada en el sistema. Por favor use las opciones del menu para navegar por el sistema."
         render(view:"advertencia",model:[msn:msn])
     }
-    def error = {
+
+
+    def internalServerError = {
         def msn="Ha ocurrido un error interno."
         try{
             def er = new ErrorLog()

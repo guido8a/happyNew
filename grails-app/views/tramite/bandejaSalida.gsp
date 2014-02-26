@@ -14,6 +14,7 @@
 
     <style type="text/css">
 
+
     .etiqueta {
         float: left;
         /*width: 100px;*/
@@ -150,9 +151,17 @@
 
     </style>
 
+    <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
+
 </head>
 
 <body>
+
+
+<div id="modalTabelGray"></div>
+
+
+
 
 <div class="row" style="margin-top: 0px; margin-left: 1px">
     <span class="grupo">
@@ -380,6 +389,17 @@
 
     });
 
+
+    %{--function bloquearPantalla () {--}%
+
+    %{--if(${tramitesPasados != 0}){--}%
+
+        %{--$('#modalTabelGray').css('height', $(document).height()).css('width', $(document).width()).fadeIn();--}%
+    %{--}--}%
+   %{--}--}%
+
+    %{--bloquearPantalla();--}%
+
     function loading(div) {
         y = 0;
         $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
@@ -472,17 +492,28 @@
 
     cargarAlertaNoRecibidos();
 
+
+    setInterval(function () {
+
+        cargarAlertaEnviados();
+        cargarAlertaNoRecibidos();
+        cargarAlertaRevisados();
+
+    },300000);
+
+
+
     $(".btnBusqueda").click(function () {
 
         var interval = loading("bandeja")
 
         var memorando = $("#memorando").val();
         var asunto = $("#asunto").val();
-        var fecha = $("#fechaBusqueda_input").val();
+        var fecha = $("#fechaBusqueda").val();
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
+        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandejaSalida')}",
             data: datos,
             success: function (msg) {
                 clearInterval(interval)

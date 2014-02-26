@@ -450,9 +450,11 @@ def alertaRetrasados () {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
 
+        def tramitesPasados = alertaNoRecibidos().tramitesPasados
 
+//        response.sendError(403)
 
-        return[persona : persona]
+        return[persona : persona, tramitesPasados: tramitesPasados]
 
     }
 
@@ -488,30 +490,41 @@ def alertaRetrasados () {
 
     def fechaEnvio
     def dosHoras =  7200000  //milisegundos
+    def ch = 172800000
+
     def fecha
     Date nuevaFecha
+    Date fechaLimite
 
     def tramitesNoRecibidos = 0
     def idTramitesNoRecibidos = []
+
+    def tramitesPasados = 0
 
     tramites.each {
 
         fechaEnvio = it.fechaEnvio
         fecha = fechaEnvio.getTime()
         nuevaFecha = new Date(fecha+dosHoras)
+        fechaLimite = new Date(fecha+ch)
 
         if(nuevaFecha.before(new Date())){
 
             tramitesNoRecibidos++
             idTramitesNoRecibidos.add(it.id)
         }
+        if(fechaLimite.before(new Date())){
+
+            tramitesPasados++
+        }
 
 
 
     }
 
+//   println("tramites pasados:" + tramitesPasados)
 
-    return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos]
+    return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados ]
 
 
 
@@ -633,5 +646,31 @@ def alertaRetrasados () {
 
     }
 
+    def busquedaBandejaSalida () {
+
+
+        if (params.fecha) {
+            params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
+        }
+
+        def res = Tramite.withCriteria {
+
+            if (params.fecha) {
+                eq('fechaIngreso', params.fecha)
+            }
+            if (params.asunto) {
+                ilike('asunto', '%' + params.asunto + '%')
+            }
+            if (params.memorando) {
+
+                ilike('numero', '%' + params.memorando + '%')
+
+            }
+        }
+
+        return [tramites: res]
+
+
+    }
 
 }

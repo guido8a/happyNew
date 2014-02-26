@@ -7,5 +7,6 @@
 	</head>
 	<body>
 		<g:renderException exception="${exception}" />
+
 	</body>
 </html>
