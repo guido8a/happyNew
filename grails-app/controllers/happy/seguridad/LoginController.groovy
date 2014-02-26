@@ -161,15 +161,4 @@ class LoginController {
         redirect(controller: 'login', action: 'login')
     }
 
-    def pantallaBloqueo () {
-
-//    println("params" + params)
-
-    def tramitePasado = Tramite.get(params.alerta)
-
-//    println("-->" + tramitePasado)
-
-     return [tramitePasado: tramitePasado]
-
-    }
 }
