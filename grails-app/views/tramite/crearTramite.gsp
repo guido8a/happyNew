@@ -166,7 +166,9 @@
                             <g:textField name="origen.nombreContacto" class="form-control" maxlength="31"/>
                         </span>
                     </div>
+                </div>
 
+                <div class="row">
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Apellido contacto:
@@ -197,7 +199,9 @@
                             </div>
                         </span>
                     </div>
+                </div>
 
+                <div class="row">
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Teléfono:

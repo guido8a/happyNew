@@ -4,7 +4,6 @@ import happy.seguridad.Persona
 
 class Tramite3Controller {
     def save() {
-        println params
         /*
             [
                 tramite:[
@@ -82,7 +81,7 @@ class Tramite3Controller {
                 max "numero"
             }
         }
-
+        println
         println num
 
 
