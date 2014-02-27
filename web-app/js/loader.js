@@ -13,16 +13,16 @@ jQuery.fn.center = function () {
 
 function openLoader(){
     $('#modalTabelGray').css('height', $(document).height()).css('width', $(document).width()).fadeIn();
-    $("#modalDiv").show().center()
+    $("#modalDiv").show().center();
 
 }
 function openLoader(msg){
     $('#modalTabelGray').css('height', $(document).height()).css('width', $(document).width()).fadeIn();
-    $(".loading-title").html(msg)
-    $("#modalDiv").show().center()
+    $(".loading-title").html(msg);
+    $("#modalDiv").show().center();
 
 }
 function closeLoader(){
-    $('#modalTabelGray').hide()
-    $("#modalDiv").hide()
+    $('#modalTabelGray').hide();
+    $("#modalDiv").hide();
 }

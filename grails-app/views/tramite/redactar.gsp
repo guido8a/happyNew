@@ -39,6 +39,15 @@
                         %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%
                         filebrowserWindowWidth  : 950,
                         filebrowserWindowHeight : 500,
+                        serverSave              : {
+                            saveUrl  : '${createLink(controller:"tramiteImagenes", action: "saveTramite")}',
+                            saveData : {
+                                id : "${tramite.id}"
+                            },
+                            saveDone : function (msg) {
+                                console.log("AQUI", msg);
+                            }
+                        },
                         toolbar                 : [
                             [ 'ServerSave', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],

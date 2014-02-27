@@ -1,5 +1,6 @@
 package happy.tramites
 
+import groovy.json.JsonBuilder
 import happy.seguridad.Persona
 
 
@@ -12,35 +13,114 @@ class TramiteController extends happy.seguridad.Shield {
     } //index
 
     def redactar() {
-
+        def tramite = new Tramite()
+        tramite.id = 4
+        return [tramite: tramite]
     }
 
     def crearTramite() {
 //        println("params " + params)
-        def padre = Tramite.get(params.id)
-        def campos = ["codigo": ["Código", "string"], "nombre": ["Descripción", "string"]]
+        def padre = null
+        def tramite = new Tramite(params)
+        if (params.padre) {
+            padre = Tramite.get(params.padre)
+        }
+        if (params.id) {
+            tramite = Tramite.get(params.id)
+            padre = tramite.padre
+        } else {
+            tramite.fecha = new Date()
+        }
+
+        def persona = Persona.get(session.usuario.id)
+
         def de = session.usuario
-        def fecha = new Date()
-        [de: de, fecha: fecha, campos: campos, padre: padre ]
+        def disp, disponibles = []
+
+        if (persona.puedeTramitar) {
+            disp = Departamento.list([sort: 'descripcion'])
+        } else {
+            disp = [persona.departamento]
+        }
+        disp.each { dep ->
+            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.id == persona.departamentoId) {
+                def users = Persona.findAllByDepartamento(dep)
+                for (int i = users.size() - 1; i > -1; i--) {
+                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                        users.remove(i)
+                    } else {
+                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                    }
+                }
+            }
+        }
+        return [de: de, padre: padre, disponibles: disponibles, tramite: tramite]
     }
 
     def cargaUsuarios() {
         def dir = Departamento.get(params.dir)
-        def users = happy.seguridad.Persona.findAllByDepartamento(dir)
-//        println "users "+users
+        def users = Persona.findAllByDepartamento(dir)
         for (int i = users.size() - 1; i > -1; i--) {
-            println " (${users[i].id}) " + users[i].estaActivo() + "  " + users[i].puedeRecibir()
-            if (!(users[i].estaActivo() && users[i].puedeRecibir())) {
+            if (!(users[i].estaActivo && users[i].puedeRecibir)) {
                 users.remove(i)
             }
         }
-//        println "users 2 "+users
-        render g.select(from: users, name: "usuario", id: "usuario", class: "many-to-one form-control required", optionKey: "id")
-//        <g:select name="usuario" id="usuario" class="many-to-one form-control" from="" value="" ></g:select>
+        return [users: users]
     }
 
-
     def save() {
+        println params
+        /*
+        [
+            id:,
+            tipoDocumento.id:5,
+            tipoDocumento:[id:5],
+            asunto:fsadfasdf,
+            hiddenCC:158_150_119_,
+            prioridad.id:3,
+            prioridad:[id:3],
+            padre.id:,
+            padre:[id:],
+            cc:on,
+            para:-10,
+            action:save,
+            format:null,
+            controller:tramite
+        ]
+         */
+        def persona = Persona.get(session.usuario.id)
+        def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
+        params.de = persona
+        params.estadoTramite = estadoTramiteBorrador
+        params.fecha = new Date()
+        params.anio = Anio.findByNumero(params.fecha.format("yyyy"))
+        def tramite
+        def error = false
+        if (params.id) {
+            tramite = Tramite.get(params.id)
+        } else {
+            tramite = new Tramite()
+        }
+
+        /* TODO: Aqui falta generar el numero de tramite */
+        params.numero = "MEMPRUEBA-0001"
+
+        tramite.properties = params
+
+//        if (!tramite.save(flush: true)) {
+//            println "error save tramite " + tramite.errors
+//            flash.tipo = "error"
+//            flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
+//            redirect(action: "crearTramite")
+//            return
+//        } else {
+//
+//        }
+        render "OK"
+    }
+
+    def save_bck() {
         /*todo comentar esto*/
         params.fechaLimiteRespuesta_hour = "13"
         params.fechaLimiteRespuesta_minutes = "26"
@@ -222,98 +302,98 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-def alertRecibidos () {
+    def alertRecibidos() {
 
-    def usuario = session.usuario
+        def usuario = session.usuario
 
-    def persona = Persona.get(usuario.id)
+        def persona = Persona.get(usuario.id)
 
-    def recibidos = EstadoTramite.get(4)
+        def recibidos = EstadoTramite.get(4)
 
 //    def tramitesRecibidos = Tramite.findAllByEstadoTramite(recibidos).size()
 
-    def tramites = Tramite.findAllByEstadoTramite(recibidos)
+        def tramites = Tramite.findAllByEstadoTramite(recibidos)
 
-    def fechaIngreso
-    def prioridad
+        def fechaIngreso
+        def prioridad
 
-    def hora  = 3600000  //milisegundos
+        def hora = 3600000  //milisegundos
 
-    def totalPrioridad = 0
-    def fecha
+        def totalPrioridad = 0
+        def fecha
 
-    Date nuevaFecha
+        Date nuevaFecha
 
-    def tramitesRecibidos = 0
+        def tramitesRecibidos = 0
 
-    def idTramites = []
+        def idTramites = []
 
-    tramites.each {
+        tramites.each {
 
-        fechaIngreso = it.fechaIngreso
+            fechaIngreso = it.fechaIngreso
 
-        prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
+            prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
 
-        totalPrioridad = hora*prioridad
+            totalPrioridad = hora * prioridad
 
-        fecha = fechaIngreso.getTime()
+            fecha = fechaIngreso.getTime()
 
-        nuevaFecha = new Date(fecha + totalPrioridad)
+            nuevaFecha = new Date(fecha + totalPrioridad)
 
-        if(!nuevaFecha.before(new Date())){
+            if (!nuevaFecha.before(new Date())) {
 
-            tramitesRecibidos++
-            idTramites.add(it.id)
-
-        }
-
-    }
-
-
-
-    return [tramitesRecibidos: tramitesRecibidos, idTramites: idTramites]
-
-}
-
-def alertaPendientes () {
-
-    def usuario = session.usuario
-
-    def persona = Persona.get(usuario.id)
-
-    def pendientes = EstadoTramite.get(8)
-
-    def tramitesPendientes = Tramite.findAllByEstadoTramite(pendientes).size()
-
-    def totalPendientes = Tramite.findAllByEstadoTramite(pendientes)
-
-    def dosHoras = 6200000
-
-    def fechaEnvio
-    def fecha
-    def fechaRoja
-
-    def tramitesPendientesRojos = 0
-    def idRojos = []
-
-    totalPendientes.each {
-
-        if(it.fechaEnvio){
-            fechaEnvio = it.fechaEnvio
-            fecha = fechaEnvio.getTime()
-            fechaRoja = new Date(fecha + dosHoras)
-
-
-            if(fechaRoja.before(new Date())){
-
-                tramitesPendientesRojos++
-                idRojos.add(it.id)
+                tramitesRecibidos++
+                idTramites.add(it.id)
 
             }
 
         }
 
+
+
+        return [tramitesRecibidos: tramitesRecibidos, idTramites: idTramites]
+
     }
+
+    def alertaPendientes() {
+
+        def usuario = session.usuario
+
+        def persona = Persona.get(usuario.id)
+
+        def pendientes = EstadoTramite.get(8)
+
+        def tramitesPendientes = Tramite.findAllByEstadoTramite(pendientes).size()
+
+        def totalPendientes = Tramite.findAllByEstadoTramite(pendientes)
+
+        def dosHoras = 6200000
+
+        def fechaEnvio
+        def fecha
+        def fechaRoja
+
+        def tramitesPendientesRojos = 0
+        def idRojos = []
+
+        totalPendientes.each {
+
+            if (it.fechaEnvio) {
+                fechaEnvio = it.fechaEnvio
+                fecha = fechaEnvio.getTime()
+                fechaRoja = new Date(fecha + dosHoras)
+
+
+                if (fechaRoja.before(new Date())) {
+
+                    tramitesPendientesRojos++
+                    idRojos.add(it.id)
+
+                }
+
+            }
+
+        }
 
 //    if(tramitesPendientesRojos > 0) {
 //
@@ -325,63 +405,62 @@ def alertaPendientes () {
 //
 //    }
 
-  return[tramitesPendientesRojos: tramitesPendientesRojos,tramitesPendientes : tramitesPendientes, idRojos: idRojos]
+        return [tramitesPendientesRojos: tramitesPendientesRojos, tramitesPendientes: tramitesPendientes, idRojos: idRojos]
 
 
-}
+    }
 
 
-def alertaRetrasados () {
+    def alertaRetrasados() {
 
-    def recibidos = EstadoTramite.get(4)
+        def recibidos = EstadoTramite.get(4)
 
-    def tramites = Tramite.findAllByEstadoTramite(recibidos)
+        def tramites = Tramite.findAllByEstadoTramite(recibidos)
 
-    def fechaIngreso
-    def prioridad
+        def fechaIngreso
+        def prioridad
 
-    def hora  = 3600000  //milisegundos
+        def hora = 3600000  //milisegundos
 
-    def totalPrioridad = 0
-    def fecha
+        def totalPrioridad = 0
+        def fecha
 
-    Date nuevaFecha
+        Date nuevaFecha
 
-    def tramitesAtrasados = 0
+        def tramitesAtrasados = 0
 
-    def idTramites = []
+        def idTramites = []
 
-    tramites.each {
+        tramites.each {
 
-        fechaIngreso = it.fechaIngreso
+            fechaIngreso = it.fechaIngreso
 
-        prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
+            prioridad = TipoPrioridad.get(it.prioridad.id).tiempo
 
-        totalPrioridad = hora*prioridad
+            totalPrioridad = hora * prioridad
 
-        fecha = fechaIngreso.getTime()
+            fecha = fechaIngreso.getTime()
 
-        nuevaFecha = new Date(fecha + totalPrioridad)
+            nuevaFecha = new Date(fecha + totalPrioridad)
 
-        if(nuevaFecha.before(new Date())){
+            if (nuevaFecha.before(new Date())) {
 
-            tramitesAtrasados++
-            idTramites.add(it.id)
+                tramitesAtrasados++
+                idTramites.add(it.id)
 
-        }
+            }
 
 //        println("fecha:" + nuevaFecha.after(new Date()))
-    }
+        }
 
 //    println("-->" + tramitesAtrasados)
 
 
-    return [tramitesAtrasados : tramitesAtrasados, idTramites: idTramites]
-}
+        return [tramitesAtrasados: tramitesAtrasados, idTramites: idTramites]
+    }
 
 
-
-    def rojoPendiente () {
+    def rojoPendiente() {
 
 
         def usuario = session.usuario
@@ -393,10 +472,9 @@ def alertaRetrasados () {
         def tramitesPendientes = Tramite.findAllByEstadoTramite(pendientes).size()
 
 
-        return [tramitesPendientes : tramitesPendientes]
+        return [tramitesPendientes: tramitesPendientes]
 
     }
-
 
 
     def bandejaEntrada() {
@@ -415,9 +493,6 @@ def alertaRetrasados () {
     }
 
 
-
-
-
     def tablaBandeja() {
         def idTramitesRetrasados = alertaRetrasados().idTramites
         def idTramitesRecibidos = alertRecibidos().idTramites
@@ -428,14 +503,14 @@ def alertaRetrasados () {
     }
 
 
-    def tablaBandejaSalida () {
+    def tablaBandejaSalida() {
 
         def estadoBorrador = EstadoTramite.get(1)
         def estadoRevisado = EstadoTramite.get(2)
         def estadoPendiente = EstadoTramite.get(8)
         def estadoEnviado = EstadoTramite.get(3)
 
-        def tramites = Tramite.findAllByEstadoTramiteOrEstadoTramiteOrEstadoTramiteOrEstadoTramite(estadoBorrador,estadoRevisado,estadoPendiente, estadoEnviado);
+        def tramites = Tramite.findAllByEstadoTramiteOrEstadoTramiteOrEstadoTramiteOrEstadoTramite(estadoBorrador, estadoRevisado, estadoPendiente, estadoEnviado);
 
         def idTramitesNoRecibidos = alertaNoRecibidos().idTramitesNoRecibidos
 
@@ -444,8 +519,7 @@ def alertaRetrasados () {
     }
 
 
-
-    def bandejaSalida () {
+    def bandejaSalida() {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -454,13 +528,12 @@ def alertaRetrasados () {
 
 //        response.sendError(403)
 
-        return[persona : persona, tramitesPasados: tramitesPasados]
+        return [persona: persona, tramitesPasados: tramitesPasados]
 
     }
 
 
-
-    def alertaRevisados () {
+    def alertaRevisados() {
 
 
         def usuario = session.usuario
@@ -472,68 +545,64 @@ def alertaRetrasados () {
     }
 
 
-    def alertaEnviados () {
+    def alertaEnviados() {
 
         def usuario = session.usuario
         def enviados = EstadoTramite.get(3)
         def tramites = Tramite.findAllByEstadoTramite(enviados).size()
 
-        return [tramites: tramites ]
+        return [tramites: tramites]
     }
 
 
-    def alertaNoRecibidos () {
+    def alertaNoRecibidos() {
 
-    def usuario = session.usuario
-    def enviados = EstadoTramite.get(3)
-    def tramites = Tramite.findAllByEstadoTramite(enviados)
+        def usuario = session.usuario
+        def enviados = EstadoTramite.get(3)
+        def tramites = Tramite.findAllByEstadoTramite(enviados)
 
-    def fechaEnvio
-    def dosHoras =  7200000  //milisegundos
-    def ch = 172800000
+        def fechaEnvio
+        def dosHoras = 7200000  //milisegundos
+        def ch = 172800000
 
-    def fecha
-    Date nuevaFecha
-    Date fechaLimite
+        def fecha
+        Date nuevaFecha
+        Date fechaLimite
 
-    def tramitesNoRecibidos = 0
-    def idTramitesNoRecibidos = []
+        def tramitesNoRecibidos = 0
+        def idTramitesNoRecibidos = []
 
-    def tramitesPasados = 0
+        def tramitesPasados = 0
 
-    tramites.each {
+        tramites.each {
 
-        fechaEnvio = it.fechaEnvio
-        fecha = fechaEnvio.getTime()
-        nuevaFecha = new Date(fecha+dosHoras)
-        fechaLimite = new Date(fecha+ch)
+            fechaEnvio = it.fechaEnvio
+            fecha = fechaEnvio?.getTime()
+            nuevaFecha = new Date(fecha + dosHoras)
+            fechaLimite = new Date(fecha + ch)
 
-        if(nuevaFecha.before(new Date())){
+            if (nuevaFecha.before(new Date())) {
 
-            tramitesNoRecibidos++
-            idTramitesNoRecibidos.add(it.id)
+                tramitesNoRecibidos++
+                idTramitesNoRecibidos.add(it.id)
+            }
+            if (fechaLimite.before(new Date())) {
+
+                tramitesPasados++
+            }
+
+
         }
-        if(fechaLimite.before(new Date())){
-
-            tramitesPasados++
-        }
-
-
-
-    }
 
 //   println("tramites pasados:" + tramitesPasados)
 
-    return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados ]
-
+        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados]
 
 
     }
 
 
-
-
-    def observaciones () {
+    def observaciones() {
 
         def tramite = Tramite.get(params.id)
 
@@ -542,7 +611,7 @@ def alertaRetrasados () {
     }
 
 
-    def guardarObservacion () {
+    def guardarObservacion() {
 
 //        println("paramsObservaciones" + params)
 
@@ -552,18 +621,15 @@ def alertaRetrasados () {
 
         tramite.observaciones = params.texto
 
-        if(!tramite.save(flush: true)){
+        if (!tramite.save(flush: true)) {
 
             render "Ocurrió un error al guardar"
-        }else{
+        } else {
 
             render "Observación guardada correctamente"
         }
 
     }
-
-
-
 
 
     def busquedaBandeja() {
@@ -646,7 +712,7 @@ def alertaRetrasados () {
 
     }
 
-    def busquedaBandejaSalida () {
+    def busquedaBandejaSalida() {
 
 
         if (params.fecha) {

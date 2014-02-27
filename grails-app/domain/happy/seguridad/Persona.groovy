@@ -3,6 +3,7 @@ package happy.seguridad
 import happy.tramites.Departamento
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
+import org.apache.commons.lang.WordUtils
 
 class Persona {
     Departamento departamento
@@ -81,7 +82,7 @@ class Persona {
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
     }
 
-    def estaActivo() {
+    def getEstaActivo() {
         if (this.activo != 1)
             return false
         def now = new Date()
@@ -93,20 +94,28 @@ class Persona {
         return true
     }
 
-    def puedeRecibir(){
-        def permiso=PermisoTramite.findByCodigo("P010")
+    def getPuedeRecibir() {
+        def permiso = PermisoTramite.findByCodigo("P010")
         def perms = null
         perms = PermisoUsuario.findByPersonaAndPermisoTramite(this, permiso)
-        if (perms)
+        if (perms) {
             return true
+        }
         return false
-
     }
 
-    String toString(){
-        return "${this.nombre} ${this.apellido}"
+    def getPuedeTramitar() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
     }
 
+    String toString() {
+        return "${WordUtils.capitalizeFully(this.nombre)} ${WordUtils.capitalizeFully(this.apellido)}"
+    }
 
 
 }

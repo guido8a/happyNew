@@ -125,36 +125,52 @@ class ElementosTagLib {
      * si el usuario tiene permiso TRAMITAR (P006) muestra un combo direccion y un combo persona, sino solamente persona
      */
     def comboPara = { attrs ->
-        def html = ''
+        def html
         def persona = Persona.get(session.usuario.id)
-        def perm = PermisoUsuario.withCriteria {
-            eq("persona", persona)
-            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
-        }
-        def permisos = perm.findAll { it.estaActivo }
-        if (permisos.size() > 0) {
+        if (persona.puedeTramitar) {
             //si tiene permiso TRAMITAR activo
+            html = '<div class="row negrilla">' +
+                    'Dirección' +
+                    elm.select(name: 'direc', id: 'direccion', class: 'form-control', from: Departamento.list([sort: 'descripcion']),
+                            optionKey: "id", optionValue: "descripcion", optionClass: "codigo", noSelection: ["": "Seleccione la dirección"]) +
+                    '</div>'
         }//si tiene permiso TRAMITAR activo
         else {
             //no tiene permiso TRAMITAR activo
-
-            html = '<div class="row negrilla">\n' +
-                    '                    Dirección:\n' +
-                    '                    <select name="direc" id="direccion" class="many-to-one form-control">\n' +
-                    '                        <g:each in="${happy.tramites.Departamento.list([\'sort\': \'descripcion\'])}" var="d">\n' +
-                    '                            <option value="${d.id}" cod="${d.codigo}">${d.descripcion}</option>\n' +
-                    '                        </g:each>\n' +
-                    '                    </select>\n' +
-                    '                    <g:select name="direc" id="direccion" class="many-to-one form-control" from="${happy.tramites.Departamento.list([\'sort\':\'descripcion\'])}" value="" optionKey="id" optionValue="descripcion"></g:select>\n' +
-                    '                </div>'
-
             html = '<div class="row negrilla">' +
-                    'Dirección:' +
-                    g.select(name: 'direc', id: 'direccion', class: 'form-control', from: Departamento.list([sort: 'descripcion']), optionKey: "id", optionValue: "descripcion") +
+                    'Dirección' +
+                    elm.select(name: 'direc', id: 'direccion', class: 'form-control', from: [persona.departamento],
+                            optionKey: "id", optionValue: "descripcion", optionClass: "codigo", noSelection: ["": "Seleccione la dirección"]) +
                     '</div>'
-
         }//no tiene permiso TRAMITAR activo
-        out << html
+
+        html += '<div class="row negrilla" id="div_usuarios"></div>'
+
+        def js = "<script type='text/javascript'>" +
+                "function loadPersonas() {" +
+                "   var dir = \$('#direccion').val();" +
+                "   if(dir!='' && dir==${persona.departamento?.id}) {" +
+                '       $.ajax({' +
+                '           type   : "POST",' +
+                '           url    : "' + createLink(controller: "tramite", action: "cargaUsuarios") + '",' +
+                '           data   : {' +
+                '               dir: dir' +
+                '           },' +
+                '           success: function(msg){' +
+                '               $("#div_usuarios").html(msg);' +
+                '           }' +
+                '       });' +
+                "   } else {" +
+                "        \$(\"#div_usuarios\").html('');" +
+                "   }" +
+                "}" +
+                "loadPersonas();" +
+                "\$('#direccion').val('').change(function() {" +
+                "   loadPersonas();" +
+                "});" +
+                "</script>"
+
+        out << html + js
     }
 
     /**

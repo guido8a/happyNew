@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.io.FileType
 import happy.seguridad.Persona
+import org.apache.commons.lang.WordUtils
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -167,6 +168,16 @@ class TramiteImagenesController extends happy.seguridad.Shield {
         def fileDel = new File(path + file)
         fileDel.delete()
         render "OK_Archivo eliminado exitosamente"
+    }
+
+    def saveTramite() {
+        /*
+         ['editorTramite':'<p>s asdf asdfasd asdf</p>\n', 'tramite':'4', 'action':'saveTramite', 'format':null, 'controller':'tramiteImagenes']
+         */
+        def tramite = Tramite.get(params.id)
+        tramite.texto = params.editorTramite
+        tramite.fechaModificacion = new Date()
+        render params
     }
 
 }
