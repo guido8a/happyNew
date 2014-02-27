@@ -67,7 +67,7 @@
         </div>
 
 
-        <g:form class="frmTramite" action="save">
+        <g:form class="frmTramite" controller="tramite3" action="save">
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value=""/>
