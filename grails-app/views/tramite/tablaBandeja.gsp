@@ -32,19 +32,17 @@
                     %{--<g:set var="type" value="recibido"/>--}%
                 %{--</g:if>--}%
 
-                <g:if test="${idTramitesRecibidos.contains(tramite.id)}">
+                <g:if test="${idTramitesRecibidos.contains(tramite.tramite.id)}">
                     <g:set var="type" value="recibido"/>
                 </g:if>
-
-
-                <g:if test="${tramite?.estadoTramite?.codigo == 'EX03'}">
+                <g:if test="${tramite?.tramite?.estadoTramite?.codigo == 'EX03'}">
                     <g:set var="type" value="pendiente"/>
                 </g:if>
-                <g:if test="${idTramitesRetrasados.contains(tramite.id)}">
+                <g:if test="${idTramitesRetrasados.contains(tramite.tramite.id)}">
                     <g:set var="type" value="retrasado"/>
                 </g:if>
 
-                <g:if test="${idRojos.contains(tramite.id)}">
+                <g:if test="${idRojos.contains(tramite.tramite.id)}">
                     %{--<g:set var="type" value="pendienteRojo"/>--}%
                     <g:set var="type" value="pendiente pendienteRojo"/>
                 </g:if>
@@ -52,17 +50,17 @@
 
 
 
-                <tr data-id="${tramite?.id}" class="${type}">
+                <tr data-id="${tramite?.tramite?.id}" class="${type}">
 
-                    <td>${tramite?.numero}</td>
-                    <td>${tramite?.fechaRespuesta}</td>
-                    <td>${tramite?.de}</td>
-                    <td>${tramite?.de?.departamento?.descripcion}</td>
+                    <td>${tramite?.tramite?.numero}</td>
+                    <td>${tramite?.tramite?.fechaRespuesta}</td>
+                    <td>${tramite?.tramite?.de}</td>
+                    <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
                     <td></td>
                     <td></td>
-                    <td>${tramite?.estado}</td>
-                    <td>${tramite?.fechaLimiteRespuesta}</td>
-                    <td>${tramite?.padre}</td>
+                    <td>${tramite?.tramite?.estado}</td>
+                    <td>${tramite?.tramite?.fechaLimiteRespuesta}</td>
+                    <td>${tramite?.tramite?.padre}</td>
                     %{--<td style="text-align: center">--}%
                     %{--<g:link action="" class="btn btn-success btnRecibir">--}%
                     %{--<i class="fa fa-check-circle"></i> Recibir--}%

@@ -10,48 +10,48 @@ class ShieldController {
         render(view:"advertencia",model:[msn:msn])
     }
 
-    def alertaNoRecibidos () {
-
-        def usuario = session.usuario
-        def enviados = EstadoTramite.get(3)
-        def tramites = Tramite.findAllByEstadoTramite(enviados)
-
-        def fechaEnvio
-        def dosHoras =  7200000  //milisegundos
-        def ch = 172800000
-
-        def fecha
-        Date nuevaFecha
-        Date fechaLimite
-
-        def tramitesNoRecibidos = 0
-        def idTramitesNoRecibidos = []
-
-        def tramitesPasados = 0
-        def idTramitesPasados = []
-
-        tramites.each {
-
-            fechaEnvio = it.fechaEnvio
-            fecha = fechaEnvio.getTime()
-            nuevaFecha = new Date(fecha+dosHoras)
-            fechaLimite = new Date(fecha+ch)
-
-            if(nuevaFecha.before(new Date())){
-
-                tramitesNoRecibidos++
-                idTramitesNoRecibidos.add(it.id)
-            }
-            if(fechaLimite.before(new Date())){
-
-                tramitesPasados++
-                idTramitesPasados.add(it.id)
-            }
-        }
-
-        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados, idTramitesPasados: idTramitesPasados ]
-
-    }
+//    def alertaNoRecibidos () {
+//
+//        def usuario = session.usuario
+//        def enviados = EstadoTramite.get(3)
+//        def tramites = Tramite.findAllByEstadoTramite(enviados)
+//
+//        def fechaEnvio
+//        def dosHoras =  7200000  //milisegundos
+//        def ch = 172800000
+//
+//        def fecha
+//        Date nuevaFecha
+//        Date fechaLimite
+//
+//        def tramitesNoRecibidos = 0
+//        def idTramitesNoRecibidos = []
+//
+//        def tramitesPasados = 0
+//        def idTramitesPasados = []
+//
+//        tramites.each {
+//
+//            fechaEnvio = it.fechaEnvio
+//            fecha = fechaEnvio.getTime()
+//            nuevaFecha = new Date(fecha+dosHoras)
+//            fechaLimite = new Date(fecha+ch)
+//
+//            if(nuevaFecha.before(new Date())){
+//
+//                tramitesNoRecibidos++
+//                idTramitesNoRecibidos.add(it.id)
+//            }
+//            if(fechaLimite.before(new Date())){
+//
+//                tramitesPasados++
+//                idTramitesPasados.add(it.id)
+//            }
+//        }
+//
+//        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados, idTramitesPasados: idTramitesPasados ]
+//
+//    }
 
 
 
@@ -59,21 +59,21 @@ class ShieldController {
 
         def msn="No autorizado"
 
-        def tramitePasado = alertaNoRecibidos().idTramitesPasados
-
-        def tram
-
-        def tramitesPasados = []
-
-        tramitePasado.each {
-
-        tram = Tramite.get(it)
-            tramitesPasados.add(tram)
-
-        }
-//        println("-->" + tramitesPasados)
-
-        return [tramitesPasados: tramitesPasados]
+//        def tramitePasado = alertaNoRecibidos().idTramitesPasados
+//
+//        def tram
+//
+//        def tramitesPasados = []
+//
+//        tramitePasado.each {
+//
+//        tram = Tramite.get(it)
+//            tramitesPasados.add(tram)
+//
+//        }
+////        println("-->" + tramitesPasados)
+//
+//        return [tramitesPasados: tramitesPasados]
 
 
     }

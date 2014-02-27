@@ -19,7 +19,6 @@
                 <th class="cabecera">Prioridad</th>
                 <th class="cabecera">Fecha Límite</th>
                 <th class="cabecera">Doc. Principal</th>
-                %{--<th class="cabecera">Recepción</th>--}%
             </tr>
 
             </thead>
@@ -50,16 +49,7 @@
                     <td>${tramite?.estado}</td>
                     <td>${tramite?.fechaLimiteRespuesta}</td>
                     <td>${tramite?.padre}</td>
-                    %{--<td style="text-align: center">--}%
-                    %{--<g:link action="" class="btn btn-success btnRecibir">--}%
-                    %{--<i class="fa fa-check-circle"></i> Recibir--}%
-                    %{--</g:link>--}%
-
-                    %{--</td>--}%
                 </tr>
-
-
-
 
             </g:each>
 
