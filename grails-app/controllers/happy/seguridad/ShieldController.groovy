@@ -83,14 +83,15 @@ class ShieldController {
     def forbidden = {
 
         def msn="Forbidden"
-        render(view:"advertencia",model:[msn:msn])
+      return [msn:msn]
 
     }
 
 
     def notFound = {
+        println ""
         def msn="Esta tratando de ingresar a una accion no registrada en el sistema. Por favor use las opciones del menu para navegar por el sistema."
-        render(view:"advertencia",model:[msn:msn])
+       return [msn:msn]
     }
 
 
@@ -111,7 +112,7 @@ class ShieldController {
         }catch (e){
             println "error en error "+e
         }
-        render(view:"advertencia",model:[msn:msn,error:true])
+        return [msn:msn,error:true]
     }
     def comprobarPassword = {
         if(request.method=='POST'){
