@@ -12,13 +12,13 @@ class Tramite {
     TipoTramite tipoTramite
     OrigenTramite origenTramite
     String codigo
-    String numero
+    Integer numero
     Date fecha
     Date fechaLimiteRespuesta
     String asunto
     String anexo
     String texto
-    int ampliacionPlazo=0
+    int ampliacionPlazo = 0
     Date fechaRespuesta
     Date fechaIngreso
     Date fechaModificacion
@@ -73,7 +73,7 @@ class Tramite {
         tipoTramite(blank: true, nullable: true, attributes: [title: 'tipoTramite'])
         origenTramite(blank: true, nullable: true, attributes: [title: 'origenTRamite'])
         codigo(maxSize: 20, blank: true, nullable: true, attributes: [title: 'codigo'])
-        numero(maxSize: 20, blank: false, attributes: [title: 'numero'])
+        numero(blank: false, attributes: [title: 'numero'])
         fecha(blank: true, nullable: true, attributes: [title: 'fecha'])
         fechaLimiteRespuesta(blank: true, nullable: true, attributes: [title: 'fechaLimiteRespuesta'])
         asunto(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'asunto'])

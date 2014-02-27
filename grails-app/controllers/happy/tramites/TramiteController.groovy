@@ -72,41 +72,94 @@ class TramiteController extends happy.seguridad.Shield {
     def save() {
         println params
         /*
-        [
-            id:,
-            tipoDocumento.id:5,
-            tipoDocumento:[id:5],
-            asunto:fsadfasdf,
-            hiddenCC:158_150_119_,
-            prioridad.id:3,
-            prioridad:[id:3],
-            padre.id:,
-            padre:[id:],
-            cc:on,
-            para:-10,
-            action:save,
-            format:null,
-            controller:tramite
-        ]
+            [
+                tramite:[
+                    padre.id:,
+                    padre:[id:],
+                    id:,
+                    hiddenCC:-10_41_150_1004_,
+                    para:-10,
+                    tipoDocumento.id:5,
+                    tipoDocumento:[id:5],
+                    prioridad.id:3,
+                    prioridad:[id:3],
+                    asunto:fgs dfgsdf
+                ],
+                origen:[
+                   tipoPersona.id:2,
+                   tipoPersona:[id:2],
+                   cedula:1234523,
+                   nombre:sdfg sdfgsd,
+                   nombreContacto:sdfgsdfgsdf,
+                   apellidoContacto:sdgsdfgsd,
+                   titulo:sdfg,
+                   cargo:sdfgsdgsdf,
+                   mail:235sgdfgs,
+                   telefono:sdfgsdfgsdf
+                ],
+
+                tramite.asunto:fgs dfgsdf,
+                tramite.id:,
+                tramite.padre.id:,
+                tramite.prioridad.id:3,
+                tramite.hiddenCC:,
+                tramite.para:-10,
+                tramite.tipoDocumento.id:5,
+
+                origen.cargo:sdfgsdgsdf,
+                origen.telefono:sdfgsdfgsdf,
+                origen.titulo:sdfg,
+                origen.nombre:sdfg sdfgsd,
+                origen.cedula:1234523,
+                origen.mail:235sgdfgs,
+                origen.nombreContacto:sdfgsdfgsdf,
+                origen.apellidoContacto:sdgsdfgsd,
+                origen.tipoPersona.id:2,
+
+                cc:on,
+                action:save,
+                format:null,
+                controller:tramite
+            ]
          */
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
-        params.de = persona
-        params.estadoTramite = estadoTramiteBorrador
-        params.fecha = new Date()
-        params.anio = Anio.findByNumero(params.fecha.format("yyyy"))
+
+        def paramsOrigen = params.remove("origen")
+        def paramsTramite = params.remove("tramite")
+
+        paramsTramite.de = persona
+        paramsTramite.estadoTramite = estadoTramiteBorrador
+        paramsTramite.fecha = new Date()
+        paramsTramite.anio = Anio.findByNumero(paramsTramite.fecha.format("yyyy"))
+//        paramsTramite.numero = "MEMPRUEBA-0001"
+        /* CODIGO DEL TRAMITE:
+         *      tipoDoc.codigo-secuencial-dtpoEnvia.codigo-anio(yy)
+         *      INF-1-DGCP-14       MEM-10-CEV-13
+         */
+        //el numero del ultimo tramite del anio, por tipo doc y dpto
+        def num = Tramite.withCriteria {
+            eq("anio", paramsTramite.anio)
+            eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
+            de {
+                eq("departamento", persona.departamento)
+            }
+            projections {
+                max "numero"
+            }
+        }
+
+        println num
+
+
         def tramite
         def error = false
-        if (params.id) {
-            tramite = Tramite.get(params.id)
+        if (paramsTramite.id) {
+            tramite = Tramite.get(paramsTramite.id)
         } else {
             tramite = new Tramite()
         }
-
-        /* TODO: Aqui falta generar el numero de tramite */
-        params.numero = "MEMPRUEBA-0001"
-
-        tramite.properties = params
+        tramite.properties = paramsTramite
 
 //        if (!tramite.save(flush: true)) {
 //            println "error save tramite " + tramite.errors
@@ -302,12 +355,9 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-
-
-
     //ALERTAS BANDEJA ENTRADA
 
-    def alertRecibidos () {
+    def alertRecibidos() {
 
         def usuario = session.usuario
 
@@ -320,7 +370,7 @@ class TramiteController extends happy.seguridad.Shield {
         def tramites = []
 
         pxt.each {
-            if(it.tramite.estadoTramite == recibidos){
+            if (it.tramite.estadoTramite == recibidos) {
                 tramites.add(it.tramite)
             }
         }
@@ -328,7 +378,7 @@ class TramiteController extends happy.seguridad.Shield {
         def fechaIngreso
         def prioridad
 
-        def hora  = 3600000  //milisegundos
+        def hora = 3600000  //milisegundos
 
         def totalPrioridad = 0
         def fecha
@@ -345,13 +395,13 @@ class TramiteController extends happy.seguridad.Shield {
 
             prioridad = TipoPrioridad.get(it?.prioridad?.id).tiempo
 
-            totalPrioridad = hora*prioridad
+            totalPrioridad = hora * prioridad
 
             fecha = fechaIngreso.getTime()
 
             nuevaFecha = new Date(fecha + totalPrioridad)
 
-            if(!nuevaFecha.before(new Date())){
+            if (!nuevaFecha.before(new Date())) {
 
                 tramitesRecibidos++
                 idTramites.add(it.id)
@@ -362,7 +412,7 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-    def alertaPendientes () {
+    def alertaPendientes() {
 
         def usuario = session.usuario
 
@@ -375,7 +425,7 @@ class TramiteController extends happy.seguridad.Shield {
         def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
 
         pxt.each {
-            if(it.tramite.estadoTramite == pendientes){
+            if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
         }
@@ -393,25 +443,24 @@ class TramiteController extends happy.seguridad.Shield {
 
         totalPendientes.each {
 
-            if(it.fechaEnvio){
+            if (it.fechaEnvio) {
                 fechaEnvio = it.fechaEnvio
                 fecha = fechaEnvio.getTime()
                 fechaRoja = new Date(fecha + dosHoras)
 
-                if(fechaRoja.before(new Date())){
+                if (fechaRoja.before(new Date())) {
                     tramitesPendientesRojos++
                     idRojos.add(it.id)
                 }
             }
         }
 
-        return[tramitesPendientesRojos: tramitesPendientesRojos,tramitesPendientes : tramitesPendientes, idRojos: idRojos]
+        return [tramitesPendientesRojos: tramitesPendientesRojos, tramitesPendientes: tramitesPendientes, idRojos: idRojos]
 
     }
 
 
-
-    def rojoPendiente () {
+    def rojoPendiente() {
 
 
         def usuario = session.usuario
@@ -425,16 +474,16 @@ class TramiteController extends happy.seguridad.Shield {
         def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
 
         pxt.each {
-            if(it.tramite.estadoTramite == pendientes){
+            if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
         }
         tramitesPendientes = totalPendientes.size()
-        return [tramitesPendientes : tramitesPendientes]
+        return [tramitesPendientes: tramitesPendientes]
     }
 
 
-    def alertaRetrasados () {
+    def alertaRetrasados() {
 
 
         def usuario = session.usuario
@@ -450,7 +499,7 @@ class TramiteController extends happy.seguridad.Shield {
         def tramitesRetrasados = []
 
         pxt.each {
-            if(it.tramite.estadoTramite == recibidos){
+            if (it.tramite.estadoTramite == recibidos) {
                 tramitesRetrasados.add(it.tramite)
             }
         }
@@ -458,7 +507,7 @@ class TramiteController extends happy.seguridad.Shield {
         def fechaIngreso
         def prioridad
 
-        def hora  = 3600000  //milisegundos
+        def hora = 3600000  //milisegundos
 
         def totalPrioridad = 0
         def fecha
@@ -475,13 +524,13 @@ class TramiteController extends happy.seguridad.Shield {
 
             prioridad = TipoPrioridad.get(it?.prioridad?.id).tiempo
 
-            totalPrioridad = hora*prioridad
+            totalPrioridad = hora * prioridad
 
             fecha = fechaIngreso.getTime()
 
             nuevaFecha = new Date(fecha + totalPrioridad)
 
-            if(nuevaFecha.before(new Date())){
+            if (nuevaFecha.before(new Date())) {
 
                 tramitesAtrasados++
                 idTramites.add(it.id)
@@ -489,7 +538,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
 
-        return [tramitesAtrasados : tramitesAtrasados, idTramites: idTramites]
+        return [tramitesAtrasados: tramitesAtrasados, idTramites: idTramites]
     }
 
     //fin alertas bandeja entrada
@@ -503,9 +552,9 @@ class TramiteController extends happy.seguridad.Shield {
 
         def rolTramite = RolPersonaTramite.findByCodigo('E003');
 
-        def pxt = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolTramite)
+        def pxt = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolTramite)
 
-        def tramitesRecibidos = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolTramite).size()
+        def tramitesRecibidos = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolTramite).size()
 
         return [persona: persona, tramitesRecibidos: tramitesRecibidos, pxt: pxt]
 
@@ -521,15 +570,15 @@ class TramiteController extends happy.seguridad.Shield {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def rolTramite = RolPersonaTramite.findByCodigo('E003');
-        def pxt = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolTramite)
-        def tramitesRecibidos = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolTramite).size()
+        def pxt = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolTramite)
+        def tramitesRecibidos = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolTramite).size()
 
 
         return [tramites: pxt, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
     }
 
 
-    def tablaBandejaSalida () {
+    def tablaBandejaSalida() {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -537,7 +586,7 @@ class TramiteController extends happy.seguridad.Shield {
         def tramites = []
         def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
         pxt.each {
-            if(it?.tramite?.de?.id == usuario?.id){
+            if (it?.tramite?.de?.id == usuario?.id) {
                 tramites.add(it.tramite)
             }
         }
@@ -549,8 +598,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
 
-
-    def bandejaSalida () {
+    def bandejaSalida() {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -559,13 +607,12 @@ class TramiteController extends happy.seguridad.Shield {
 
 //        response.sendError(403)
 
-        return[persona : persona, tramitesPasados: tramitesPasados]
+        return [persona: persona, tramitesPasados: tramitesPasados]
 
     }
 
 
-
-    def alertaRevisados () {
+    def alertaRevisados() {
 
 
         def usuario = session.usuario
@@ -577,7 +624,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
 
-    def alertaEnviados () {
+    def alertaEnviados() {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -590,18 +637,18 @@ class TramiteController extends happy.seguridad.Shield {
         enviados = EstadoTramite.get(3)
         def tramites = Tramite.findAllByEstadoTramite(enviados).size()
 
-        return [tramites: tramites ]
+        return [tramites: tramites]
     }
 
 
-    def alertaNoRecibidos () {
+    def alertaNoRecibidos() {
 
         def usuario = session.usuario
         def enviados = EstadoTramite.get(3)
         def tramites = Tramite.findAllByEstadoTramite(enviados)
 
         def fechaEnvio
-        def dosHoras =  7200000  //milisegundos
+        def dosHoras = 7200000  //milisegundos
         def ch = 172800000
 
         def fecha
@@ -617,32 +664,28 @@ class TramiteController extends happy.seguridad.Shield {
 
             fechaEnvio = it.fechaEnvio
             fecha = fechaEnvio.getTime()
-            nuevaFecha = new Date(fecha+dosHoras)
-            fechaLimite = new Date(fecha+ch)
+            nuevaFecha = new Date(fecha + dosHoras)
+            fechaLimite = new Date(fecha + ch)
 
-            if(nuevaFecha.before(new Date())){
+            if (nuevaFecha.before(new Date())) {
 
                 tramitesNoRecibidos++
                 idTramitesNoRecibidos.add(it.id)
             }
-            if(fechaLimite.before(new Date())){
+            if (fechaLimite.before(new Date())) {
 
                 tramitesPasados++
             }
-
 
 
         }
 
 //   println("tramites pasados:" + tramitesPasados)
 
-        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados ]
-
+        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados]
 
 
     }
-
-
 
 
     def observaciones() {

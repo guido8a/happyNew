@@ -44,6 +44,10 @@
             margin-top : 75px;
             float      : left;
         }
+
+        .vertical-container {
+            padding-bottom : 10px;;
+        }
         </style>
     </head>
 
@@ -64,9 +68,9 @@
 
 
         <g:form class="frmTramite" action="save">
-            <g:hiddenField name="padre.id" value="${padre?.id}"/>
-            <g:hiddenField name="id" value="${tramite?.id}"/>
-            <g:hiddenField name="hiddenCC" value=""/>
+            <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
+            <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
+            <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value=""/>
             <div style="margin-top: 30px;" class="vertical-container">
 
                 <p class="css-vertical-text">Tramite</p>
@@ -76,25 +80,25 @@
                 <div class="row">
                     <div class="col-xs-3 negrilla">
                         De:
-                        <input type="text" name="de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled>
+                        <input type="text" name="tramite.de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled/>
                     </div>
 
                     <div class="col-xs-4 negrilla" id="divPara">
-                        <g:select name="para" from="${disponibles}" optionKey="id" optionValue="label" style="width:300px;" class="form-control label-shared required"/>
+                        <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label" style="width:300px;" class="form-control label-shared required"/>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-xs-3 negrilla">
                         Tipo de documento:
-                        <elm:select id="tipoDocumento" name="tipoDocumento.id" class="many-to-one form-control required" from="${TipoDocumento.list(['sort': 'descripcion'])}"
+                        <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required" from="${TipoDocumento.list(['sort': 'descripcion'])}"
                                     value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion" optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
                     </div>
 
                     <div class="col-xs-2 negrilla">
                         Prioridad:
                         %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
-                        <g:select name="prioridad.id" class="many-to-one form-control required" from="${TipoPrioridad.list()}"
+                        <g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${TipoPrioridad.list()}"
                                   value="${tramite.prioridadId ?: 3}" optionKey="id" optionValue="descripcion"/>
                     </div>
 
@@ -108,7 +112,7 @@
 
                     <div class="col-xs-2 negrilla">
                         Creado el:
-                        <input type="text" name="fecha" class="form-control required label-shared" id="creado" maxlength="30"
+                        <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
                                value="${tramite.fecha.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
                     </div>
 
@@ -121,7 +125,7 @@
                     <div class="col-xs-12 negrilla">
                         <span class="grupo">
                             Asunto:
-                            <input type="text" name="asunto" class="form-control required" id="asunto" maxlength="1023"
+                            <input type="text" name="tramite.asunto" class="form-control required" id="asunto" maxlength="1023"
                                    style="width: 900px;display: inline" value="${tramite.asunto}"/>
                         </span>
                     </div>
@@ -134,31 +138,73 @@
                 <div class="linea"></div>
 
                 <div class="row">
-                    <div class="col-xs-12 negrilla">
+                    <div class="col-xs-3 negrilla">
                         <span class="grupo">
-                            Asunto:
-                            <input type="text" name="asunto" class="form-control required" id="" maxlength="1023"
-                                   style="width: 900px;display: inline" value="${tramite.asunto}"/>
+                            Tipo de Persona:
+                            <g:select name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="form-control"
+                                      from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}"/>
                         </span>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-xs-12 negrilla">
+                    <div class="col-xs-3 negrilla">
                         <span class="grupo">
-                            Asunto:
-                            <input type="text" name="asunto" class="form-control required" id="" maxlength="1023"
-                                   style="width: 900px;display: inline" value="${tramite.asunto}"/>
+                            Cédula/R.U.C.:
+                            <g:textField name="origen.cedula" class="form-control" maxlength="13"/>
                         </span>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-xs-12 negrilla">
+                    <div class="col-xs-3 negrilla">
                         <span class="grupo">
-                            Asunto:
-                            <input type="text" name="asunto" class="form-control required" id="" maxlength="1023"
-                                   style="width: 900px;display: inline" value="${tramite.asunto}"/>
+                            Nombre:
+                            <g:textField name="origen.nombre" class="form-control" maxlength="127"/>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            Nombre contacto:
+                            <g:textField name="origen.nombreContacto" class="form-control" maxlength="31"/>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            Apellido contacto:
+                            <g:textField name="origen.apellidoContacto" class="form-control" maxlength="31"/>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            Título:
+                            <g:textField name="origen.titulo" class="form-control" maxlength="4"/>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            Cargo:
+                            <g:textField name="origen.cargo" class="form-control" maxlength="127"/>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            E-mail:
+                            <div class="input-group">
+                                <g:textField name="origen.mail" class="form-control" maxlength="63"/>
+                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                            </div>
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 negrilla">
+                        <span class="grupo">
+                            Teléfono:
+                            <div class="input-group">
+                                <g:textField name="origen.telefono" class="form-control" maxlength="63"/>
+                                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                            </div>
                         </span>
                     </div>
                 </div>
@@ -238,6 +284,7 @@
                 var $divPara = $("#divPara");
                 var $divCopia = $("#divCopia");
                 var $divCc = $("#divCc");
+                var $divOrigen = $("#divOrigen");
                 var $cc = $("#cc");
                 var $tituloCopia = $("#tituloCopia");
 
@@ -245,6 +292,7 @@
                 $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
                 $cc.prop('checked', false);
                 $tituloCopia.text("Con copia");
+                $divOrigen.addClass("hide");
                 switch (cod) {
                     case "CIR":
                         $divPara.html("");
@@ -257,6 +305,12 @@
                         $divPara.html("");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
+                        break;
+                    case "DEX":
+                        $divPara.html($selPara).prepend("Para: ");
+                        $divCopia.addClass("hide");
+                        $divCc.removeClass("hide");
+                        $divOrigen.removeClass("hide");
                         break;
                     default :
                         $divPara.html($selPara).prepend("Para: ");
