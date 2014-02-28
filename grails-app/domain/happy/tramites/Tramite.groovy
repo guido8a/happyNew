@@ -13,21 +13,20 @@ class Tramite {
     OrigenTramite origenTramite
     String codigo
     Integer numero
-    Date fecha
-    Date fechaLimiteRespuesta
     String asunto
     String anexo
     String texto
     int ampliacionPlazo = 0
-    Date fechaRespuesta
-    Date fechaIngreso
-    Date fechaModificacion
-    Date fechaLectura
     String externo
-    String nota
+    String nota                         //para guardar las observaciones de revision
     String estado
     String observaciones
-    Date fechaEnvio
+
+    Date fechaCreacion                  //fecha en la q se crea el tramite
+    Date fechaModificacion              //ultima modificacion realizada
+    Date fechaRevision                  //ultima revision realizada --> estado cambiado a revisado
+    Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
+
     static mapping = {
         table 'trmt'
         cache usage: 'read-write', include: 'non-lazy'
@@ -46,20 +45,18 @@ class Tramite {
             origenTramite column: 'orgn__id'
             codigo column: 'trmtcdgo'
             numero column: 'trmtnmro'
-            fecha column: 'trmtfcha'
-            fechaLimiteRespuesta column: 'trmtfclr'
             asunto column: 'trmtasnt'
             anexo column: 'trmtanxo'
             texto column: 'trmttxto'
             ampliacionPlazo column: 'trmtampz'
-            fechaRespuesta column: 'trmtfcrp'
-            fechaIngreso column: 'trmtfcig'
-            fechaModificacion column: 'trmtfcmd'
-            fechaLectura column: 'trmtfcrv'
             externo column: 'trmtextr'
             nota column: 'trmtnota'
             estado column: 'trmtetdo'
             observaciones column: 'trmtobsr'
+
+            fechaCreacion column: 'trmtfccr'
+            fechaModificacion column: 'trmtfcmd'
+            fechaRevision column: 'trmtfcrv'
             fechaEnvio column: 'trmtfcen'
         }
     }
@@ -74,20 +71,18 @@ class Tramite {
         origenTramite(blank: true, nullable: true, attributes: [title: 'origenTRamite'])
         codigo(maxSize: 20, blank: true, nullable: true, attributes: [title: 'codigo'])
         numero(blank: false, attributes: [title: 'numero'])
-        fecha(blank: true, nullable: true, attributes: [title: 'fecha'])
-        fechaLimiteRespuesta(blank: true, nullable: true, attributes: [title: 'fechaLimiteRespuesta'])
         asunto(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'asunto'])
         anexo(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'anexo'])
         texto(blank: true, nullable: true, attributes: [title: 'texto'])
         ampliacionPlazo(blank: true, nullable: true, attributes: [title: 'ampliacionPlazo'])
-        fechaRespuesta(blank: true, nullable: true, attributes: [title: 'fechaRespuesta'])
-        fechaIngreso(blank: true, nullable: true, attributes: [title: 'fechaIngreso'])
-        fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
-        fechaLectura(blank: true, nullable: true, attributes: [title: 'fechaLectura'])
         externo(maxSize: 1, blank: true, nullable: true, attributes: [title: 'externo'])
         nota(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'nota'])
         estado(maxSize: 1, blank: true, nullable: true, attributes: [title: 'estado'])
         observaciones(maxSize: 255, blank: true, nullable: true, attributes: [title: 'observaciones'])
+
+        fechaCreacion(blank: true, nullable: true, attributes: [title: 'fechaCreacion'])
+        fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
+        fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
 
     }

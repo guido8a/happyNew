@@ -29,7 +29,7 @@ class TramiteController extends happy.seguridad.Shield {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
         } else {
-            tramite.fecha = new Date()
+            tramite.fechaCreacion = new Date()
         }
 
         def persona = Persona.get(session.usuario.id)

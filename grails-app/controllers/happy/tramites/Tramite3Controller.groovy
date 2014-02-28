@@ -8,19 +8,15 @@ class Tramite3Controller {
             [
                 tramite:[
                     padre.id:,
-                    padre:[id:],
                     id:,
                     hiddenCC:-10_41_150_1004_,
                     para:-10,
                     tipoDocumento.id:5,
-                    tipoDocumento:[id:5],
                     prioridad.id:3,
-                    prioridad:[id:3],
                     asunto:fgs dfgsdf
                 ],
                 origen:[
                    tipoPersona.id:2,
-                   tipoPersona:[id:2],
                    cedula:1234523,
                    nombre:sdfg sdfgsd,
                    nombreContacto:sdfgsdfgsdf,
@@ -29,30 +25,7 @@ class Tramite3Controller {
                    cargo:sdfgsdgsdf,
                    mail:235sgdfgs,
                    telefono:sdfgsdfgsdf
-                ],
-
-                tramite.asunto:fgs dfgsdf,
-                tramite.id:,
-                tramite.padre.id:,
-                tramite.prioridad.id:3,
-                tramite.hiddenCC:,
-                tramite.para:-10,
-                tramite.tipoDocumento.id:5,
-
-                origen.cargo:sdfgsdgsdf,
-                origen.telefono:sdfgsdfgsdf,
-                origen.titulo:sdfg,
-                origen.nombre:sdfg sdfgsd,
-                origen.cedula:1234523,
-                origen.mail:235sgdfgs,
-                origen.nombreContacto:sdfgsdfgsdf,
-                origen.apellidoContacto:sdgsdfgsd,
-                origen.tipoPersona.id:2,
-
-                cc:on,
-                action:save,
-                format:null,
-                controller:tramite
+                ]
             ]
          */
         def persona = Persona.get(session.usuario.id)
@@ -65,7 +38,6 @@ class Tramite3Controller {
         paramsTramite.estadoTramite = estadoTramiteBorrador
         paramsTramite.fecha = new Date()
         paramsTramite.anio = Anio.findByNumero(paramsTramite.fecha.format("yyyy"))
-//        paramsTramite.numero = "MEMPRUEBA-0001"
         /* CODIGO DEL TRAMITE:
          *      tipoDoc.codigo-secuencial-dtpoEnvia.codigo-anio(yy)
          *      INF-1-DGCP-14       MEM-10-CEV-13
@@ -81,9 +53,12 @@ class Tramite3Controller {
                 max "numero"
             }
         }
-        println
-        println num
-
+        if (num.size() > 0) {
+            num = num.first()
+        }
+        num = num + 1
+        paramsTramite.numero = num
+        paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
 
         def tramite
         def error = false
@@ -101,7 +76,13 @@ class Tramite3Controller {
 //            redirect(action: "crearTramite")
 //            return
 //        } else {
-//
+
+        /*
+         * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
+         *          si es positivo es una persona
+         */
+        def para = paramsTramite
+
 //        }
         render "OK"
     }

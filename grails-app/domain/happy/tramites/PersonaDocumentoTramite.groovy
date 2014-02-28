@@ -3,13 +3,26 @@ package happy.tramites
 import happy.seguridad.Persona
 
 class PersonaDocumentoTramite {
-    RolPersonaTramite rolPersonaTramite
-    Persona persona
     Tramite tramite
-    Date fechaRecibido
-    String observaciones
-    String permiso /*R recibir (puertas de entrada al departamento), L lectura , P impresion, LP ambos dos*/
-    Date fechaEnvio
+
+    Persona persona                         // persona q envia/recibe el tramite
+    Departamento departamento               // departamento q recibe el tramite (para la bandeja de entrada de los triangulos)
+
+    RolPersonaTramite rolPersonaTramite     // rol de la persona/departamento (para, envia, recibe, copia, imprimir)
+                                            //      envia    triangulo o circulo que envió
+                                            //      recibe   triangulo o circulo que recibió
+                                            //      para     triangulo o circulo que debe recibir, puede ser persona o dpto = debe salir en la bandeja de entrada
+                                            //      copia    triangulo o circulo que recibe copia puede ser persona o dpto = debe salir en la bandeja de entrada
+                                            //      imprimir circulo que puede ver, imprimir y enviar el tramite = debe salir en la bandeja de salida
+
+    String observaciones                    // observaciones al momento de enviar o recibir
+
+    Date fechaEnvio                         // la misma fecha que fechaEnvio del tramite
+    Date fechaRecepcion                     // fecha de recepcion del doc fisico
+    Date fechaLimiteRespuesta               // segun la prioridad, se setea el mismo rato que fechaRecepcion (fechaRecepcion + horas segun prioridad)
+    Date fechaRespuesta                     // fecha en la q se crea el tramite hijo de respuesta
+    Date fechaArchivo                       // fecha en la q se archivo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
+
     static mapping = {
         table 'prtr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -22,9 +35,12 @@ class PersonaDocumentoTramite {
             persona column: 'prsn__id'
             tramite column: 'trmt__id'
             observaciones column: 'prtrobsr'
-            permiso column: 'prtrprms'
-            fechaRecibido column: 'prtrfcrc'
+
             fechaEnvio column: 'prtrfcen'
+            fechaRecepcion column: 'prtrfcrc'
+            fechaLimiteRespuesta column: 'prtrfclr'
+            fechaRespuesta column: 'prtrfcrs'
+            fechaArchivo column: 'prtrfcar'
         }
     }
     static constraints = {
@@ -32,8 +48,11 @@ class PersonaDocumentoTramite {
         persona(blank: false, nullable: false, attributes: [title: 'persona'])
         tramite(blank: false, nullable: false, attributes: [title: 'Tramite'])
         observaciones(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'observaciones'])
-        permiso(maxSize: 4, blank: true, nullable: true, attributes: [title: 'permiso'])
-        fechaRecibido(nullable: true,blank:true)
-        fechaEnvio(nullable: true,blank:true)
+
+        fechaEnvio(nullable: true, blank: true)
+        fechaRecepcion(nullable: true, blank: true)
+        fechaLimiteRespuesta(nullable: true, blank: true)
+        fechaRespuesta(nullable: true, blank: true)
+        fechaArchivo(nullable: true, blank: true)
     }
 }

@@ -113,7 +113,7 @@
                     <div class="col-xs-2 negrilla">
                         Creado el:
                         <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
-                               value="${tramite.fecha.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
+                               value="${tramite.fechaCreacion.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
                     </div>
 
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
