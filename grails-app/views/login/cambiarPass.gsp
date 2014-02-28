@@ -8,6 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
+        <link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.spacelab.css')}" rel="stylesheet">
+
         <meta name="layout" content="login">
         <title>Cambio de password</title>
     </head>
@@ -15,18 +17,27 @@
     <body>
         <elm:flashMessage tipo="${flash.tipo}" icon="${flash.icon}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-        <g:form name="frmLogin" action="guardarPass" class="form-signin well" role="form" style="width: 300px;">
+        <g:form name="frmLogin" action="guardarPass" class="form-signin well" role="form" style="width: 360px;">
             <g:hiddenField name="id" value="${usu.id}"/>
-            <h2 class="text-center">Cambiar password</h2>
+            <h2 class="text-center">Cambiar contraseña</h2>
 
-            <p>Su password ha caducado. Por favor cámbielo.</p>
+            <p>Su contraseña ha caducado. Por favor cámbiela.</p>
 
-            <input name="pass" id="pass" type="password" class="form-control required" notEqual="${usu.cedula}" placeholder="Nuevo password" required>
-            <input name="pass2" id="pass2" type="password" class="form-control required" equalTo="#pass" placeholder="Repita su password" required>
+            <input name="pass" id="pass" type="password" class="form-control required" notEqual="${usu.cedula}" placeholder="Nueva contraseña" required>
+            <br>
+            <input name="pass2" id="pass2" type="password" class="form-control required" equalTo="#pass" placeholder="Repita su contraseña" required>
 
+%{--
             <div class="divBtn">
-                <a href="#" class="btn btn-success btn-lg btn-block btn-login">
+                <a href="#" class="btn btn-success btn-lg btn-block btn-login btn-sm">
                     <i class="fa fa-save"></i> Guardar
+                </a>
+            </div>
+--}%
+            <div class="divBtn" style="width: 100%">
+                <a href="#" class="btn btn-primary btn-block btn-login"
+                   style="width: 140px; margin: auto">
+                    <i class="fa fa-lock"></i> Guardar
                 </a>
             </div>
         </g:form>
@@ -40,6 +51,7 @@
                 }
             }
             $(function () {
+                $("#pass").val("");
                 $frm.validate({
                     messages : {
                         pass : {

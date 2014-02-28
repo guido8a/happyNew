@@ -9,6 +9,9 @@
     <body>
 
         <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <p class="well well-sm"> Tipo de Acción:</p>
+            </div>
             <div class="btn-group" data-toggle="buttons">
                 <g:each var="tp" in="${happy.seguridad.Tpac.list([sort: id])}" status="i">
                     <label class="btn btn-primary tipo ${(tp.id == 1) ? 'active' : ''}">
@@ -30,7 +33,7 @@
             </div>
         </div>
 
-        <h3>Seleccione el módulo para fijar permisos o editar acciones y procesos</h3>
+        <p class="text-primary"><strong>Seleccione el módulo para fijar permisos o editar acciones y procesos</strong></p>
 
         <div class="" id="parm">
             <div class="btn-group" data-toggle="buttons">

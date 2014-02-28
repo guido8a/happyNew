@@ -77,7 +77,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapsePass">
-                            Cambiar password
+                            Cambiar contraseña
                         </a>
                     </h4>
                 </div>
@@ -86,47 +86,48 @@
                     <div class="panel-body">
                         <g:form class="form-horizontal" name="frmPass" role="form" action="savePass_ajax" method="POST">
                             <div class="form-group required">
-                                <span class="grupo">
-                                    <label for="accsFechaInicial" class="col-md-2 xs control-label text-info">
-                                        Password actual
+                            %{--<div class="form-group required">--}%
+                                %{--<span class="grupo">--}%
+                                <span class="form-grup col-md-3">
+                                    <label for="accsFechaInicial" class="control-label text-info">
+                                        Contraseña actual
                                     </label>
 
-                                    <div class="col-md-3">
+                                    %{--<div class="col-md-2">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password_actual" class="form-control required"/>
                                             <span class="input-group-addon"><i class="fa fa-unlock"></i></span>
                                         </div>
-                                    </div>
+                                    %{--</div>--}%
                                 </span>
-                            </div>
+                            %{--</div>--}%
 
-                            <div class="form-group required">
-                                <span class="grupo">
-                                    <label for="accsFechaInicial" class="col-md-2 xs control-label text-info">
-                                        Nuevo password
+                                <span class="form-grup col-md-3">
+                                    <label for="accsFechaInicial" class="control-label text-info">
+                                        Nueva contraseña
                                     </label>
 
-                                    <div class="col-md-3">
+                                    %{--<div class="col-md-3">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password" class="form-control required"/>
                                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                         </div>
-                                    </div>
+                                    %{--</div>--}%
                                 </span>
-                                <span class="grupo">
-                                    <label for="accsFechaInicial" class="col-md-2 xs control-label text-info">
-                                        Repita password
+                                <span class="form-grup col-md-3">
+                                    <label for="accsFechaInicial" class="control-label text-info">
+                                        Confirme la contraseña
                                     </label>
 
-                                    <div class="col-md-3">
+                                    %{--<div class="col-md-3">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password_again" class="form-control required" equalTo="#password"/>
                                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                         </div>
-                                    </div>
+                                    %{--</div>--}%
                                 </span>
 
-                                <div class="col-md-2">
+                                <div class="col-md-2" style="margin-top: 20px;">
                                     <a href="#" class="btn btn-success" id="btnPass">
                                         <i class="fa fa-save"></i> Guardar
                                     </a>
@@ -148,10 +149,9 @@
 
                 <div id="collapseFoto" class="panel-collapse collapse ${params.tipo == 'foto' ? 'in' : ''} ">
                     <div class="panel-body">
-                        <div class="alert alert-warning">
+                        <div class="alert alert-warning" style="float: right; width: 600px;">
                             <i class="fa fa-warning fa-3x pull-left"></i>
-                            Si usted selecciona una foto con un tamaño mayor a 200x300 px se mostrará un área de selección parcial de la imagen.
-                            Mientras la imagen guardada sea de un tamaño superior al mensionado antes no se mostrará en otras pantallas.
+                            Si la foto subida es muy grande, se mostrará un área de selección para recortar la imagen al formato requerido.
                         </div>
                         <g:if test="${usuario.foto && usuario.foto != ''}">
                             <div id="divFoto">
@@ -224,7 +224,7 @@
 
                                 <span class="grupo">
                                     <label for="accsObservaciones" class="col-md-1 xs control-label text-info">
-                                        Obs.
+                                        Obsr.
                                     </label>
 
                                     <div class="col-md-3">
@@ -269,6 +269,8 @@
                 var $frmAccesos = $("#frmAccesos");
                 var $btnPass = $("#btnPass");
                 var $frmPass = $("#frmPass");
+
+                $("#password_actual").val("");
 
                 $('#file').fileupload({
                     url              : '${createLink(action:'uploadFile')}',

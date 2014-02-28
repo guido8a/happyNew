@@ -166,7 +166,7 @@
                         break;
                     case "modulo":
                         url = '${createLink(controller: 'modulo', action:'form_ajax')}';
-                        title += "módulo";
+                        title += " módulo";
                         break;
                 }
                 $.ajax({
