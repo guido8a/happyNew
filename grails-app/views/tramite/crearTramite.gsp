@@ -141,7 +141,7 @@
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Tipo de Persona:
-                            <g:select name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="form-control"
+                            <g:select name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="form-control origen required"
                                       from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}"/>
                         </span>
                     </div>
@@ -149,21 +149,21 @@
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Cédula/R.U.C.:
-                            <g:textField name="origen.cedula" class="form-control" maxlength="13"/>
+                            <g:textField name="origen.cedula" id="cedulaOrigen" class="form-control required" maxlength="13"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Nombre:
-                            <g:textField name="origen.nombre" class="form-control" maxlength="127"/>
+                            <g:textField name="origen.nombre" class="form-control " maxlength="127"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Nombre contacto:
-                            <g:textField name="origen.nombreContacto" class="form-control" maxlength="31"/>
+                            <g:textField name="origen.nombreContacto" class="form-control " maxlength="31"/>
                         </span>
                     </div>
                 </div>
@@ -172,14 +172,14 @@
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Apellido contacto:
-                            <g:textField name="origen.apellidoContacto" class="form-control" maxlength="31"/>
+                            <g:textField name="origen.apellidoContacto" class="form-control " maxlength="31"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 negrilla">
                         <span class="grupo">
                             Título:
-                            <g:textField name="origen.titulo" class="form-control" maxlength="4"/>
+                            <g:textField name="origen.titulo" class="form-control " maxlength="4"/>
                         </span>
                     </div>
 
@@ -206,7 +206,7 @@
                         <span class="grupo">
                             Teléfono:
                             <div class="input-group">
-                                <g:textField name="origen.telefono" class="form-control" maxlength="63"/>
+                                <g:textField name="origen.telefono" class="form-control " maxlength="63"/>
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                             </div>
                         </span>
@@ -448,6 +448,15 @@
                     },
                     success        : function (label) {
                         label.parents(".grupo").removeClass('has-error');
+                    },
+                    rules          : {
+                        cedulaOrigen : {
+                            required : {
+                                depends : function (element) {
+                                    return  $("#tipoDocumento").find("option:selected").hasClass("DEX");
+                                }
+                            }
+                        }
                     }
                 });
             });

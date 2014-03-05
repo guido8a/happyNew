@@ -81,7 +81,43 @@ class Tramite3Controller {
          * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
          *          si es positivo es una persona
          */
-        def para = paramsTramite
+        if (paramsTramite.para) {
+            def para = paramsTramite.para.toInteger()
+            def paraDocumentoTramite = new PersonaDocumentoTramite([
+                    tramite: tramite,
+                    rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
+            ])
+            if (para > 0) {
+                //persona
+                paraDocumentoTramite.persona = Persona.get(para)
+            } else {
+                //departamento
+                paraDocumentoTramite.departamento = Departamento.get(para * -1)
+            }
+//            if (!paraDocumentoTramite.save(flush: true)) {
+//                println "error para: " + paraDocumentoTramite.errors
+//            }
+        }
+        if (paramsTramite.hiddenCC.toString().size() > 0) {
+            (paramsTramite.hiddenCC.split("_")).each { cc ->
+                def ccDocumentoTramite = new PersonaDocumentoTramite([
+                        tramite: tramite,
+                        rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
+                ])
+                if (cc > 0) {
+                    //persona
+                    ccDocumentoTramite.persona = Persona.get(cc)
+                } else {
+                    //departamento
+                    ccDocumentoTramite.departamento = Departamento.get(cc * -1)
+                }
+                if (!ccDocumentoTramite.save(flush: true)) {
+                    println "error cc: " + ccDocumentoTramite.errors
+                }
+            }
+
+
+        }
 
 //        }
         render "OK"
