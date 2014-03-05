@@ -69,57 +69,54 @@ class Tramite3Controller {
         }
         tramite.properties = paramsTramite
 
-//        if (!tramite.save(flush: true)) {
-//            println "error save tramite " + tramite.errors
-//            flash.tipo = "error"
-//            flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
-//            redirect(action: "crearTramite")
-//            return
-//        } else {
+        if (!tramite.save(flush: true)) {
+            println "error save tramite " + tramite.errors
+            flash.tipo = "error"
+            flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
+            redirect(action: "crearTramite")
+            return
+        } else {
 
-        /*
-         * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
-         *          si es positivo es una persona
-         */
-        if (paramsTramite.para) {
-            def para = paramsTramite.para.toInteger()
-            def paraDocumentoTramite = new PersonaDocumentoTramite([
-                    tramite: tramite,
-                    rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
-            ])
-            if (para > 0) {
-                //persona
-                paraDocumentoTramite.persona = Persona.get(para)
-            } else {
-                //departamento
-                paraDocumentoTramite.departamento = Departamento.get(para * -1)
-            }
-//            if (!paraDocumentoTramite.save(flush: true)) {
-//                println "error para: " + paraDocumentoTramite.errors
-//            }
-        }
-        if (paramsTramite.hiddenCC.toString().size() > 0) {
-            (paramsTramite.hiddenCC.split("_")).each { cc ->
-                def ccDocumentoTramite = new PersonaDocumentoTramite([
+            /*
+             * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
+             *          si es positivo es una persona
+             */
+            if (paramsTramite.para) {
+                def para = paramsTramite.para.toInteger()
+                def paraDocumentoTramite = new PersonaDocumentoTramite([
                         tramite: tramite,
-                        rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
+                        rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
                 ])
-                if (cc > 0) {
+                if (para > 0) {
                     //persona
-                    ccDocumentoTramite.persona = Persona.get(cc)
+                    paraDocumentoTramite.persona = Persona.get(para)
                 } else {
                     //departamento
-                    ccDocumentoTramite.departamento = Departamento.get(cc * -1)
+                    paraDocumentoTramite.departamento = Departamento.get(para * -1)
                 }
-                if (!ccDocumentoTramite.save(flush: true)) {
-                    println "error cc: " + ccDocumentoTramite.errors
+                if (!paraDocumentoTramite.save(flush: true)) {
+                    println "error para: " + paraDocumentoTramite.errors
                 }
             }
-
-
+            if (paramsTramite.hiddenCC.toString().size() > 0) {
+                (paramsTramite.hiddenCC.split("_")).each { cc ->
+                    def ccDocumentoTramite = new PersonaDocumentoTramite([
+                            tramite: tramite,
+                            rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
+                    ])
+                    if (cc.toInteger() > 0) {
+                        //persona
+                        ccDocumentoTramite.persona = Persona.get(cc.toInteger())
+                    } else {
+                        //departamento
+                        ccDocumentoTramite.departamento = Departamento.get(cc.toInteger() * -1)
+                    }
+                    if (!ccDocumentoTramite.save(flush: true)) {
+                        println "error cc: " + ccDocumentoTramite.errors
+                    }
+                }
+            }
         }
-
-//        }
-        render "OK"
+        redirect(controller: "tramite", action: "redactar", id: tramite.id)
     }
 }

@@ -18,7 +18,8 @@
     <body>
 
         <div class="alert alert-blanco">
-            HEADER DEL TRAMITE
+            de: ${tramite.de}
+            código: ${tramite.codigo}
         </div>
 
 
