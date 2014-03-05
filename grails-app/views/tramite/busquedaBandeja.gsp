@@ -28,7 +28,7 @@
             <g:each in="${tramites}" var="tramite">
 
                 <tr>
-                    <td>${tramite?.numero}</td>
+                    <td>${tramite?.codigo}</td>
                     <td>${tramite?.fechaRespuesta}</td>
                     <td>${tramite?.de}</td>
                     <td>${tramite?.de?.departamento?.descripcion}</td>
@@ -37,12 +37,6 @@
                     <td>${tramite?.estado}</td>
                     <td>${tramite?.fechaLimiteRespuesta}</td>
                     <td>${tramite?.padre}</td>
-                    %{--<td style="text-align: center">--}%
-                        %{--<g:link action="" class="btn btn-success btnRecibir">--}%
-                            %{--<i class="fa fa-check-circle"></i> Recibir--}%
-                        %{--</g:link>--}%
-
-                    %{--</td>--}%
                 </tr>
 
 

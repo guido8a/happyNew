@@ -20,7 +20,6 @@
                 <th class="cabecera">Prioridad</th>
                 <th class="cabecera">Fecha Límite</th>
                 <th class="cabecera">Doc. Principal</th>
-                %{--<th class="cabecera">Recepción</th>--}%
             </tr>
 
             </thead>
@@ -28,9 +27,6 @@
             <g:each in="${tramites}" var="tramite">
 
                 <g:set var="type" value=""/>
-                %{--<g:if test="${tramite.estadoTramite?.codigo == 'E004'}">--}%
-                    %{--<g:set var="type" value="recibido"/>--}%
-                %{--</g:if>--}%
 
                 <g:if test="${idTramitesRecibidos.contains(tramite.tramite.id)}">
                     <g:set var="type" value="recibido"/>
@@ -47,26 +43,18 @@
                     <g:set var="type" value="pendiente pendienteRojo"/>
                 </g:if>
 
-
-
-
                 <tr data-id="${tramite?.tramite?.id}" class="${type}">
 
-                    <td>${tramite?.tramite?.numero}</td>
-                    <td>${tramite?.tramite?.fechaRespuesta}</td>
+                    <td>${tramite?.tramite?.codigo}</td>
+                    <td>${tramite?.fechaRespuesta}</td>
                     <td>${tramite?.tramite?.de}</td>
                     <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
                     <td></td>
                     <td></td>
                     <td>${tramite?.tramite?.estado}</td>
-                    <td>${tramite?.tramite?.fechaLimiteRespuesta}</td>
+                    <td>${tramite?.fechaLimiteRespuesta}</td>
                     <td>${tramite?.tramite?.padre}</td>
-                    %{--<td style="text-align: center">--}%
-                    %{--<g:link action="" class="btn btn-success btnRecibir">--}%
-                    %{--<i class="fa fa-check-circle"></i> Recibir--}%
-                    %{--</g:link>--}%
 
-                    %{--</td>--}%
                 </tr>
             </g:each>
 
