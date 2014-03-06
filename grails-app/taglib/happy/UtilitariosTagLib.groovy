@@ -1,5 +1,7 @@
 package happy
 
+import happy.tramites.Tramite
+
 class UtilitariosTagLib {
 
     static namespace = "util"
@@ -112,6 +114,9 @@ class UtilitariosTagLib {
         def meses = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
         def mesesLargo = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         def strFecha = ""
+        if(attrs.ciudad) {
+            formato = "CCC, dd MMMM yyyy"
+        }
 //        println ">>" + fecha + "    " + formato
         if (fecha) {
             switch (formato) {
@@ -130,6 +135,9 @@ class UtilitariosTagLib {
                 case "dd MMMM yyyy":
                     strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
                     break;
+                case "CCC, dd MMMM yyyy":
+                    strFecha = attrs.ciudad + ", " + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
+                    break;
                 default:
                     strFecha = "Formato " + formato + " no reconocido"
                     break;
@@ -137,6 +145,11 @@ class UtilitariosTagLib {
         }
 //        println ">>>>>>" + strFecha
         out << strFecha
+    }
+
+    def textoTramite = {attrs->
+        def tramite = Tramite.get(attrs.tramite)
+        out<<tramite.texto
     }
 
 }

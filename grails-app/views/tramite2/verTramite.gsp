@@ -55,7 +55,7 @@
         <div class="col-xs-12 negrilla">
             <input type="text" name="" style="width: 708px" class="form-control required label-shared" value="${""+traminte.de.departamento.codigo+": "+traminte.de}" title="Dirección: ${traminte.de.departamento}" disabled>
             el día
-            <input type="text" class="form-control required label-shared" maxlength="30" value="${traminte.fecha?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">
+            <input type="text" class="form-control required label-shared" maxlength="30" value="${traminte.fechaCreacion?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">
         </div>
     </div>
     <div class="row">
@@ -63,7 +63,7 @@
             Para:
         </div>
         <div class="col-xs-4 negrilla" style="padding-left: 0px">
-            <input type="text" name=""  class="form-control required " value="${para}" title="Dirección: ${traminte.de.departamento}" disabled>
+            <input type="text" name=""  class="form-control required " value="${para}" title="Dirección: ${para}" disabled>
         </div>
         <div class="col-xs-1 negrilla">
             Enviado:

@@ -37,11 +37,27 @@
     font-size   : 25px;
     /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
     margin-top  : 10px;
-    line-height : 25px;
+    line-height : 20px;
 
     /*text-shadow: 0px 0px 1px #333;*/
 }
 
+.negrilla-puntos:after{
+    content: ":";
+    position: absolute;
+    right: 0px;
+}
+
+.titulo-horizontal{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000000;
+    text-align: center;
+    width: 105%;
+}
+
+.row-low-margin-top{
+    margin-top: 0px !important;
+}
 .linea {
     position    : absolute;
     left        : 30px;
