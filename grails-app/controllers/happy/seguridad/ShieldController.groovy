@@ -6,8 +6,8 @@ import happy.tramites.Tramite
 class ShieldController {
     def loginService
     def ataques = {
-        def msn="Se ha detectado que esta ejecutando una acción que atenta contra la seguridad del sistema.<br>Dicha accion sera registrada en su historial.<br>"
-        render(view:"advertencia",model:[msn:msn])
+        def msn = "Se ha detectado que esta ejecutando una acción que atenta contra la seguridad del sistema.<br>Dicha accion sera registrada en su historial.<br>"
+        render(view: "advertencia", model: [msn: msn])
     }
 
 //    def alertaNoRecibidos () {
@@ -54,10 +54,9 @@ class ShieldController {
 //    }
 
 
-
     def unauthorized = {
 
-        def msn="No autorizado"
+        def msn = "No autorizado"
 
 //        def tramitePasado = alertaNoRecibidos().idTramitesPasados
 //
@@ -79,47 +78,46 @@ class ShieldController {
     }
 
 
-
     def forbidden = {
 
-        def msn="Forbidden"
-      return [msn:msn]
+        def msn = "Forbidden"
+        return [msn: msn]
 
     }
 
 
     def notFound = {
         println ""
-        def msn="Esta tratando de ingresar a una accion no registrada en el sistema. Por favor use las opciones del menu para navegar por el sistema."
-       return [msn:msn]
+        def msn = "Esta tratando de ingresar a una accion no registrada en el sistema. Por favor use las opciones del menu para navegar por el sistema."
+        return [msn: msn]
     }
 
 
     def internalServerError = {
-        def msn="Ha ocurrido un error interno."
-        try{
+        def msn = "Ha ocurrido un error interno."
+        try {
             def er = new ErrorLog()
-            er.fecha=new Date()
-            er.error=request["exception"].message?.encodeAsHTML()
-            er.causa=request["exception"].cause?.message?.encodeAsHTML()
-            er.url=request["javax.servlet.forward.request_uri"];
-            er.usuario=session.usuario
+            er.fecha = new Date()
+            er.error = request["exception"].message?.encodeAsHTML()
+            er.causa = request["exception"].cause?.message?.encodeAsHTML()
+            er.url = request["javax.servlet.forward.request_uri"];
+            er.usuario = session.usuario
             er.save()
-           // println " \n<===Error Aqui===> "+request["javax.servlet.forward.request_uri"]
+            // println " \n<===Error Aqui===> "+request["javax.servlet.forward.request_uri"]
             //println " \n<===Que eres pal burro?????? ===> "+request["exception"].message?.encodeAsHTML()
             //println " \n<===Causa===> "+request["exception"].cause?.message?.encodeAsHTML()
-            
-        }catch (e){
-            println "error en error "+e
+
+        } catch (e) {
+            println "error en error " + e
         }
-        return [msn:msn,error:true]
+        return [msn: msn, error: true]
     }
     def comprobarPassword = {
-        if(request.method=='POST'){
+        if (request.method == 'POST') {
 //            println "comprobar password "+params
-            def resp=loginService.autorizaciones(session.usuario,params.atrz)
+            def resp = loginService.autorizaciones(session.usuario, params.atrz)
             render(resp)
-        }else{
+        } else {
             response.sendError(403)
         }
     }

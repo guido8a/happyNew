@@ -177,7 +177,11 @@ class TramiteImagenesController extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         tramite.texto = params.editorTramite
         tramite.fechaModificacion = new Date()
-        render params
+        if (tramite.save(flush: true)) {
+            render "OK_Trámite guardado exitosamente"
+        } else {
+            render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+        }
     }
 
 }

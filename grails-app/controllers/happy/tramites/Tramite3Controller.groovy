@@ -4,30 +4,6 @@ import happy.seguridad.Persona
 
 class Tramite3Controller {
     def save() {
-        /*
-            [
-                tramite:[
-                    padre.id:,
-                    id:,
-                    hiddenCC:-10_41_150_1004_,
-                    para:-10,
-                    tipoDocumento.id:5,
-                    prioridad.id:3,
-                    asunto:fgs dfgsdf
-                ],
-                origen:[
-                   tipoPersona.id:2,
-                   cedula:1234523,
-                   nombre:sdfg sdfgsd,
-                   nombreContacto:sdfgsdfgsdf,
-                   apellidoContacto:sdgsdfgsd,
-                   titulo:sdfg,
-                   cargo:sdfgsdgsdf,
-                   mail:235sgdfgs,
-                   telefono:sdfgsdfgsdf
-                ]
-            ]
-         */
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
 
@@ -36,8 +12,8 @@ class Tramite3Controller {
 
         paramsTramite.de = persona
         paramsTramite.estadoTramite = estadoTramiteBorrador
-        paramsTramite.fecha = new Date()
-        paramsTramite.anio = Anio.findByNumero(paramsTramite.fecha.format("yyyy"))
+        paramsTramite.fechaCreacion = new Date()
+        paramsTramite.anio = Anio.findByNumero(paramsTramite.fechaCreacion.format("yyyy"))
         /* CODIGO DEL TRAMITE:
          *      tipoDoc.codigo-secuencial-dtpoEnvia.codigo-anio(yy)
          *      INF-1-DGCP-14       MEM-10-CEV-13
@@ -53,8 +29,13 @@ class Tramite3Controller {
                 max "numero"
             }
         }
-        if (num.size() > 0) {
+        if (num && num.size() > 0) {
             num = num.first()
+        } else {
+            num = 0
+        }
+        if (!num) {
+            num = 0
         }
         num = num + 1
         paramsTramite.numero = num

@@ -27,8 +27,6 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
-        } else {
-            tramite.fechaCreacion = new Date()
         }
 
         def persona = Persona.get(session.usuario.id)

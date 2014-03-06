@@ -13,17 +13,51 @@
 
         <script src="${resource(dir: 'js/plugins/ckeditor', file: 'ckeditor.js')}"></script>
         <script src="${resource(dir: 'js/plugins/ckeditor/adapters', file: 'jquery.js')}"></script>
+        <style type="text/css">
+        .row {
+            margin-top : 2px;
+        }
+        </style>
     </head>
 
     <body>
 
         <div class="alert alert-blanco">
-            de: ${tramite.de}
-            código: ${tramite.codigo}
+            <h3 class="tituloTramite">MEMO</h3>
+
+            <div class="row">
+                <div class="col-md-1 text-right"><b>N.</b></div>
+
+                <div class="col-md-11">${tramite.codigo}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-right"><b>DE</b></div>
+
+                <div class="col-md-11"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-right"><b>PARA</b></div>
+
+                <div class="col-md-11"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-right"><b>FECHA</b></div>
+
+                <div class="col-md-11">${tramite.fechaCreacion}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-right"><b>ASUNTO</b></div>
+
+                <div class="col-md-11">${tramite.asunto}</div>
+            </div>
         </div>
 
 
-        <textarea id="editorTramite" class="editor" rows="100" cols="80"></textarea>
+        <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
 
 
         <script>
@@ -46,7 +80,8 @@
                                 id : "${tramite.id}"
                             },
                             saveDone : function (msg) {
-                                console.log("AQUI", msg);
+                                var parts = msg.split("_");
+                                log(parts[1], parts[0] == "NO" ? "error" : "success");
                             }
                         },
                         toolbar                 : [
