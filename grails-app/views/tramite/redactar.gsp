@@ -75,7 +75,7 @@
                         filebrowserWindowWidth  : 950,
                         filebrowserWindowHeight : 500,
                         serverSave              : {
-                            saveUrl  : '${createLink(controller:"tramiteImagenes", action: "saveTramite")}',
+                            saveUrl  : '${createLink(controller:"tramite", action: "saveTramite")}',
                             saveData : {
                                 id : "${tramite.id}"
                             },

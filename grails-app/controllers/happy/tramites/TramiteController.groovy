@@ -17,6 +17,20 @@ class TramiteController extends happy.seguridad.Shield {
         return [tramite: tramite]
     }
 
+    def saveTramite() {
+        /*
+         ['editorTramite':'<p>s asdf asdfasd asdf</p>\n', 'tramite':'4', 'action':'saveTramite', 'format':null, 'controller':'tramiteImagenes']
+         */
+        def tramite = Tramite.get(params.id)
+        tramite.texto = params.editorTramite
+        tramite.fechaModificacion = new Date()
+        if (tramite.save(flush: true)) {
+            render "OK_Trámite guardado exitosamente"
+        } else {
+            render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+        }
+    }
+
     def crearTramite() {
 //        println("params " + params)
         def padre = null
@@ -27,6 +41,8 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
+        } else {
+            tramite.fechaCreacion = new Date()
         }
 
         def persona = Persona.get(session.usuario.id)

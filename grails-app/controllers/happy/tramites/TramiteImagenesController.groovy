@@ -169,19 +169,4 @@ class TramiteImagenesController extends happy.seguridad.Shield {
         fileDel.delete()
         render "OK_Archivo eliminado exitosamente"
     }
-
-    def saveTramite() {
-        /*
-         ['editorTramite':'<p>s asdf asdfasd asdf</p>\n', 'tramite':'4', 'action':'saveTramite', 'format':null, 'controller':'tramiteImagenes']
-         */
-        def tramite = Tramite.get(params.id)
-        tramite.texto = params.editorTramite
-        tramite.fechaModificacion = new Date()
-        if (tramite.save(flush: true)) {
-            render "OK_Trámite guardado exitosamente"
-        } else {
-            render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
-        }
-    }
-
 }
