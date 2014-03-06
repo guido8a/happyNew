@@ -113,6 +113,22 @@ class Persona {
         return permisos.size() > 0
     }
 
+    def getJefePersona() {
+        def personas = Persona.withCriteria {
+            eq("departamento", this.departamento)
+            eq("jefe", 1)
+        }
+        if (personas.size() == 1) {
+            return personas.first()
+        } else if (personas.size() > 1) {
+            println "Se encontraron ${personas.size()} jefes en el departamento ${this.departamento.descripcion}: ${personas}"
+            return personas.first()
+        } else {
+            println "No se encontraron jefes en el departamento ${this.departamento.descripcion}"
+            return null
+        }
+    }
+
     String toString() {
         return "${WordUtils.capitalizeFully(this.nombre)} ${WordUtils.capitalizeFully(this.apellido)}"
     }

@@ -97,6 +97,15 @@ class Tramite3Controller {
                     }
                 }
             }
+            if (params.cc == "on") {
+                paramsOrigen.tramite = tramite
+                paramsOrigen.fecha = paramsTramite.fechaCreacion
+                def origen = new OrigenTramite(paramsOrigen)
+                if (!origen.save(flush: true)) {
+                    println "error origen tramite: " + origen.errors
+                }
+            }
+
         }
         redirect(controller: "tramite", action: "redactar", id: tramite.id)
     }

@@ -18,44 +18,24 @@
         .row {
             margin-top : 2px;
         }
+
+        .negrilla {
+            padding-left : 0px;
+        }
+
+        .col-xs-1 {
+            line-height : 25px;
+        }
+
+        .col-buen-height {
+            line-height : 25px;
+        }
         </style>
     </head>
 
     <body>
 
-        <div class="alert alert-blanco">
-            <h3 class="tituloTramite">MEMO</h3>
-
-            <div class="row">
-                <div class="col-md-1 text-right"><b>N.</b></div>
-
-                <div class="col-md-11">${tramite.codigo}</div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-1 text-right"><b>DE</b></div>
-
-                <div class="col-md-11"></div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-1 text-right"><b>PARA</b></div>
-
-                <div class="col-md-11"></div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-1 text-right"><b>FECHA</b></div>
-
-                <div class="col-md-11">${tramite.fechaCreacion}</div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-1 text-right"><b>ASUNTO</b></div>
-
-                <div class="col-md-11">${tramite.asunto}</div>
-            </div>
-        </div>
+        <elm:headerTramite tramite="${tramite}"/>
 
         <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
 

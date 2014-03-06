@@ -4,6 +4,8 @@ import happy.seguridad.Persona
 import happy.tramites.Departamento
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
+import happy.tramites.PersonaDocumentoTramite
+import happy.tramites.RolPersonaTramite
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.springframework.beans.SimpleTypeConverter
 import org.springframework.context.MessageSourceResolvable
@@ -171,6 +173,71 @@ class ElementosTagLib {
                 "</script>"
 
         out << html + js
+    }
+
+    def headerTramite = { attrs ->
+        def tramite = attrs.tramite
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001')
+        def rolCC = RolPersonaTramite.findByCodigo('R002')
+
+        def para = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolPara)
+        def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
+
+        def html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container\">"
+        html += ""
+        html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
+        html += "                ${tramite.tipoDocumento?.descripcion}"
+        html += "            </div>"
+        html += ""
+        html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
+        html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
+        html += "                    No. <span style=\"font-weight: 500\">${tramite.codigo}</span>"
+        html += "                </div>"
+        html += "            </div>"
+        html += ""
+        html += "            <div class=\"row row-low-margin-top\">"
+        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+        html += "                    DE"
+        html += "                </div>"
+        html += ""
+        html += "                <div class=\"col-xs-10  col-buen-height\">"
+        html += "                    ${tramite.de.departamento.descripcion}"
+        html += "                </div>"
+        html += "            </div>"
+        if (para) {
+            html += "                <div class=\"row row-low-margin-top\">"
+            html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                        PARA"
+            html += "                    </div>"
+            html += ""
+            html += "                    <div class=\"col-xs-10  col-buen-height\">"
+            html += "                        ${para}"
+            html += "                    </div>"
+            html += "                </div>"
+        }
+        html += "            <div class=\"row row-low-margin-top\">"
+        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+        html += "                    FECHA"
+        html += "                </div>"
+        html += ""
+        html += "                <div class=\"col-xs-10  col-buen-height\">"
+        html += "                    <util:fechaConFormato fecha=\"${tramite.fechaCreacion}\" ciudad=\"Quito\"/>"
+        html += "                </div>"
+        html += "            </div>"
+        html += ""
+        html += "            <div class=\"row row-low-margin-top\">"
+        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+        html += "                    ASUNTO"
+        html += "                </div>"
+        html += ""
+        html += "                <div class=\"col-xs-10  col-buen-height\">"
+        html += "                    ${tramite.asunto}"
+        html += "                </div>"
+        html += "            </div>"
+        html += ""
+        html += "        </div>"
+        out << html
     }
 
     /**
