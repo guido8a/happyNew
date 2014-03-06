@@ -212,7 +212,22 @@ class ElementosTagLib {
             html += "                    </div>"
             html += ""
             html += "                    <div class=\"col-xs-10  col-buen-height\">"
-            html += "                        ${para}"
+            def strPara = ""
+            para.each { p ->
+                if (p.persona) {
+                    if (strPara != "") {
+                        strPara += ", "
+                    }
+                    strPara += util.nombrePersona(persona: p.persona)
+                }
+                if (p.departamento) {
+                    if (strPara != "") {
+                        strPara += ", "
+                    }
+                    strPara += p.departamento.descripcion
+                }
+            }
+            html += strPara
             html += "                    </div>"
             html += "                </div>"
         }
@@ -222,7 +237,7 @@ class ElementosTagLib {
         html += "                </div>"
         html += ""
         html += "                <div class=\"col-xs-10  col-buen-height\">"
-        html += "                    <util:fechaConFormato fecha=\"${tramite.fechaCreacion}\" ciudad=\"Quito\"/>"
+        html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
         html += "                </div>"
         html += "            </div>"
         html += ""
