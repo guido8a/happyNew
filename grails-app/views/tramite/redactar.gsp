@@ -5,7 +5,8 @@
   Time: 2:57 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+%{--<%@ page contentType="text/html;charset=UTF-8" %>--}%
+<!DOCTYPE HTML>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -56,9 +57,7 @@
             </div>
         </div>
 
-
         <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
-
 
         <script>
             $(function () {
@@ -84,8 +83,17 @@
                                 log(parts[1], parts[0] == "NO" ? "error" : "success");
                             }
                         },
+                        createPdf               : {
+                            saveUrl    : '${createLink(controller:"tramiteExport", action: "crearPdf")}',
+                            saveData   : {
+                                id : "${tramite.id}"
+                            },
+                            createDone : function (msg) {
+                                console.log(msg);
+                            }
+                        },
                         toolbar                 : [
-                            [ 'ServerSave', 'NewPage', 'Preview', 'Print' , '-', 'Scayt'],
+                            [ 'ServerSave', 'NewPage', 'Preview', 'CreatePdf' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
                             [ 'Table', 'HorizontalRule', 'PageBreak'],
