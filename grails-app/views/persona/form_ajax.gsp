@@ -170,7 +170,6 @@
                 </span>
             </div>
 
-
         </g:form>
 
         <script type="text/javascript">
@@ -196,11 +195,23 @@
                                 id : "${personaInstance.id}"
                             }
                         }
+                    },
+                    mail   : {
+                        remote : {
+                            url  : "${createLink(action: 'validarMail_ajax')}",
+                            type : "post",
+                            data : {
+                                id : "${personaInstance.id}"
+                            }
+                        }
                     }
                 },
                 messages       : {
                     cedula : {
                         remote : "Cédula ya ingresada"
+                    },
+                    mail   : {
+                        remote : "E-mail ya registrado"
                     }
                 }
             });

@@ -575,6 +575,23 @@ class PersonaController extends happy.seguridad.Shield {
         }
     }
 
+    def validarMail_ajax() {
+        params.mail = params.mail.toString().trim()
+        if (params.id) {
+            def prsn = Persona.get(params.id)
+            if (prsn.mail == params.mail) {
+                render true
+                return
+            } else {
+                render Persona.countByMail(params.mail) == 0
+                return
+            }
+        } else {
+            render Persona.countByMail(params.mail) == 0
+            return
+        }
+    }
+
     def save_ajax() {
 
         params.each { k, v ->
