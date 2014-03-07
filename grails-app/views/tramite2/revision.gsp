@@ -38,74 +38,82 @@
 <!-- botones -->
 <div class="btn-toolbar toolbar">
     <div class="btn-group">
-        <g:link action="bandejaEntrada" controller="tramite" class="btn btn-primary">
+        <g:link action="bandejaSalida" controller="tramite" class="btn btn-primary">
             <i class="fa fa-list"></i> Bandeja de salida
         </g:link>
+        <g:if test="${tramite.estadoTramite.codigo!='E002'}">
+            <a href="#" id="rev" class="btn btn-success">
+                <i class="fa fa-check"></i>
+                Revisado y listo para enviar
+            </a>
+        </g:if>
+        <div style="display: inline;margin-left: 10px;height: 37px;line-height: 37px"> Estado del tramite: <span style="font-weight: bold">${tramite.estadoTramite.descripcion}</span></div>
     </div>
 </div>
-
-
-<div style="margin-top: 30px;padding-bottom: 10px" class="vertical-container">
-
-    <div class="titulo-azul titulo-horizontal" style="margin-left: -50px">
-        ${tramite.tipoDocumento?.descripcion }
-    </div>
-    <div class="row row-low-margin-top" style="margin-top: 5px;">
-        <div class="col-xs-4 negrilla" style="padding-left: 0px;margin-top: 2px" >
-            No. <span style="font-weight: 500">${tramite.codigo}</span>
-        </div>
-    </div>
-    <div class="row row-low-margin-top" >
-        <div class="col-xs-1  negrilla negrilla-puntos">
-            DE
-        </div>
-        <div class="col-xs-10  col-buen-height">
-            ${tramite.de.departamento.descripcion}
-        </div>
-    </div>
-    <g:if test="${para}">
-        <div class="row row-low-margin-top" >
-            <div class="col-xs-1  negrilla negrilla-puntos">
-                PARA
-            </div>
-            <div class="col-xs-10  col-buen-height">
-                ${para}
-            </div>
-        </div>
-    </g:if>
-    <div class="row row-low-margin-top" >
-        <div class="col-xs-1  negrilla negrilla-puntos">
-            FECHA
-        </div>
-        <div class="col-xs-10  col-buen-height">
-            <util:fechaConFormato fecha="${tramite.fechaCreacion}" ciudad="Quito"/>
-        </div>
-    </div>
-    <div class="row row-low-margin-top" >
-        <div class="col-xs-1  negrilla negrilla-puntos">
-            ASUNTO
-        </div>
-        <div class="col-xs-10  col-buen-height">
-            ${tramite.asunto}
-        </div>
-    </div>
-
-</div>
+<elm:headerTramite tramite="${tramite}"/>
 <div style="margin-top: 15px;" class="vertical-container">
-    <div id="detalle" style="width: 95%;height: 500px;overflow: auto;margin-left:-15px ;margin-top: 5px;margin-bottom: 20px;border: 1px solid #000000">
-        %{--<plaintext>--}%
+    <div id="detalle" style="width: 95%;height: 500px;overflow: auto;margin-left:-15px ;margin-top: 5px;margin-bottom: 20px;">
         <util:textoTramite tramite="${tramite.id}"/>
-
-
-        %{--</plaintext>--}%
     </div>
 </div>
-
+<div class="vertical-container" style="margin-top: 25px;color: black;padding-bottom: 10px;margin-bottom: 20px">
+    <p class="css-vertical-text">Observaciones</p>
+    <div class="linea"></div>
+    <div class="row">
+        <textarea id="notas" class="form-control" style="width: 95%;height: 200px;" maxlength="1023" title="notas u observaciones" ${(tramite.estadoTramite.codigo!='E001')?'disabled':''}>${tramite.nota}</textarea>
+    </div>
+    <div class="row">
+        <g:if test="${tramite.estadoTramite.codigo=='E001'}">
+            <a href="#" id="save-notes" class="btn btn-primary">
+                <i class="fa fa-save"></i>
+                Guardar
+            </a>
+        </g:if>
+    </div>
+</div>
 <script type="text/javascript">
 
-    %{--console.log('${tramite.texto.encodeAsHTML()}');--}%
-    %{--$("#detalle").html('${tramite.texto}');--}%
+    $("#save-notes").click(function(){
+        openLoader("Guardando")
+        $.ajax({
+            type    : "POST",
+            url     : "${g.createLink(controller: 'tramite2',action: 'saveNotas')}",
+            data    : "tramite=${tramite.id}&notas=" + $("#notas").val(),
+            success : function (msg) {
+                closeLoader()
+                if(msg=="ok"){
+                    bootbox.alert("Datos guardados exitosamente")
+                }else{
+                    bootbox.alert("Ha ocurrido un error")
+                }
+            }
+        });
+    });
+    $("#rev").click(function(){
+        console.log("wtf")
+        bootbox.confirm("Esta seguro?.<br>Una vez revisado no se podran hacer modificaciones u observaciones y el tramite estará disponible para ser enviado.",function(result){
+            if(result){
+                openLoader()
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'tramite2',action: 'revisar')}",
+                    data    : "id=${tramite.id}",
+                    success : function (msg) {
+                        closeLoader()
+                        if(msg=="ok")
+                            location.reload(true);
+                        else
+                            bootbox.alert("Ha ocurrido un error.")
+                    },
+                    error   : function () {
+                        closeLoader()
+                        bootbox.alert("Ha ocurrido un error.")
+                    }
+                });
+            }
 
+        })
+    });
 </script>
 
 </body>
