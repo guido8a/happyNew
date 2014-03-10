@@ -63,7 +63,7 @@ class Tramite2Controller extends happy.seguridad.Shield{
     def tablaBandejaSalida() {
         def persona = Persona.get( session.usuario.id)
         def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
-        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados)
+        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
 
         return [persona: persona, tramites: tramites,idTramitesNoRecibidos:[] ]
     }

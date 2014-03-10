@@ -86,4 +86,18 @@ class Tramite {
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
 
     }
+
+    def getPara(){
+        def para = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("R001"))
+        if(para){
+            return [persona:para.persona,departamento:para.departamento]
+
+        }
+        return [persona:null,departamento: null]
+    }
+
+    def getFechaLimite(){
+        def limtie = fechaEnvio
+        return limtie
+    }
 }

@@ -34,4 +34,7 @@ class Departamento {
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
     }
+    String toString(){
+        return "${this.descripcion}"
+    }
 }
