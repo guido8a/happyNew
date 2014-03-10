@@ -90,7 +90,7 @@
         });
     });
     $("#rev").click(function(){
-        console.log("wtf")
+       // console.log("wtf")
         bootbox.confirm("Esta seguro?.<br>Una vez revisado no se podran hacer modificaciones u observaciones y el tramite estará disponible para ser enviado.",function(result){
             if(result){
                 openLoader()

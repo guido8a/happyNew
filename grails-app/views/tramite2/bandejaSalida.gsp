@@ -279,13 +279,59 @@
 </script>
 
 <script type="text/javascript">
+    function cargarBandeja() {
+        var datos = ""
+        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
+            data: datos,
+            success: function (msg) {
+                $("#bandeja").html(msg);
+            }
+        });
+    }
+
+    function cargarAlertaRevisados () {
+        var datos = ""
+        $.ajax({
+            type: 'POST',
+            url:"${createLink(controller: 'tramite2', action: 'alertaRevisados')}",
+            data: datos,
+            success: function (msg){
+                $("#alertaRevisados").html(msg);
+            }
+        });
+    }
+
+    function cargarAlertaEnviados () {
+        var datos = ""
+        $.ajax({
+            type: 'POST',
+            url:"${createLink(controller: 'tramite2', action: 'alertaEnviados')}",
+            data: datos,
+            success : function (msg){
+                $("#alertaEnviados").html(msg);
+
+            }
+
+        });
+
+    }
+
+    function cargarAlertaNoRecibidos () {
+        var datos =""
+        $.ajax ({
+            type: 'POST',
+            url: "${createLink(controller: 'tramite2', action: 'alertaNoRecibidos')}",
+            data: datos,
+            success : function (msg) {
+                $("#alertaNoRecibidos").html(msg);
+                closeLoader()
+            }
+
+        });
+    }
 
     $(function () {
 
-//        $(".btnCrear").click(function() {
-//            createEditRow();
-//            return false;
-//        });
 
         context.settings({
             onShow: function (e) {
@@ -360,141 +406,31 @@
     });
 
     $(".btnBuscar").click(function () {
-
         $(".buscar").attr("hidden", false)
-
     });
 
 
     $(".btnSalir").click(function () {
-
-
         $(".buscar").attr("hidden", true)
-
     });
 
 
     $(".btnActualizar").click(function () {
-
-
+        openLoader()
+        cargarBandeja();
         cargarAlertaRevisados();
         cargarAlertaEnviados();
         cargarAlertaNoRecibidos();
-        cargarBandeja();
-
-        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas!</label>')
-
+        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas</label>')
         return false;
-
+        closeLoader()
 
     });
 
-
-    %{--function bloquearPantalla () {--}%
-
-    %{--if(${tramitesPasados != 0}){--}%
-
-        %{--$('#modalTabelGray').css('height', $(document).height()).css('width', $(document).width()).fadeIn();--}%
-    %{--}--}%
-   %{--}--}%
-
-    %{--bloquearPantalla();--}%
-
-    function loading(div) {
-        y = 0;
-        $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-        var interval = setInterval(function () {
-            if (y == 30) {
-                $("#detalle").html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-                y = 0
-            }
-            $("#loading").append(".");
-            y++
-        }, 500);
-        return interval
-    }
-
-
-    function cargarBandeja() {
-
-        var interval = loading("bandeja")
-        var datos = ""
-        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'tablaBandejaSalida')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#bandeja").html(msg);
-
-            }
-        });
-    }
-
-    cargarBandeja();
-
-
-
-    function cargarAlertaRevisados () {
-
-        var interval = loading("alertaRevisados")
-        var datos = ""
-
-        $.ajax({
-           type: 'POST',
-            url:"${createLink(controller: 'tramite', action: 'alertaRevisados')}",
-            data: datos,
-            success: function (msg){
-                clearInterval(interval);
-                $("#alertaRevisados").html(msg);
-            }
-        });
-    }
-
-    cargarAlertaRevisados();
-
-    function cargarAlertaEnviados () {
-
-
-        var interval = loading("alertaEnviados")
-        var datos = ""
-        $.ajax({
-           type: 'POST',
-           url:"${createLink(controller: 'tramite', action: 'alertaEnviados')}",
-           data: datos,
-           success : function (msg){
-               clearInterval(interval);
-               $("#alertaEnviados").html(msg);
-
-           }
-
-        });
-
-    }
-
-    cargarAlertaEnviados();
-
-    function cargarAlertaNoRecibidos () {
-        var interval = loading("alertaNoRecibidos");
-        var datos =""
-        $.ajax ({
-           type: 'POST',
-            url: "${createLink(controller: 'tramite', action: 'alertaNoRecibidos')}",
-            data: datos,
-            success : function (msg) {
-                clearInterval(interval);
-                $("#alertaNoRecibidos").html(msg);
-
-            }
-
-        });
-
-
-    }
-
-    cargarAlertaNoRecibidos();
+    $(".btnActualizar").click()
 
 
     setInterval(function () {
-
         cargarAlertaEnviados();
         cargarAlertaNoRecibidos();
         cargarAlertaRevisados();
@@ -513,7 +449,7 @@
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandejaSalida')}",
+        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
             data: datos,
             success: function (msg) {
                 clearInterval(interval)
