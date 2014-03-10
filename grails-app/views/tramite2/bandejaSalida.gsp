@@ -53,6 +53,14 @@
         overflow: auto;
         overflow-y: auto;
     }
+    .enviado{
+        background-color:#c5c5c5 ;
+        border:1px solid #a5a5a5 ;
+    }
+    .borrador{
+        background-color:#FFFFCC ;
+        border:1px solid #eaeab7;
+    }
     .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
         background-color: #FFBD4C;
     }
@@ -63,12 +71,15 @@
         background-color: #FFFFCC! important;
     }
     tr.E003, tr.enviado td {
-        background-color: #9abbf2 ! important;
+        background-color: #c5c5c5 ! important;
     }
-    tr.noRecibido, tr.noRecibido td {
-        background-color: #f2c1b9 ! important;
+    tr.alerta, tr.alerta td {
+        background-color: #f2c1b9;
+        font-weight: bold;
     }
-
+    .alertas{
+        cursor: pointer;
+    }
 
 
     </style>
@@ -112,20 +123,32 @@
     </div>
 
     <span class="grupo">
+        <div>
+            <div data-type="" class="alert borrador alertas" clase="E001" style="margin-left: 30px;padding-left: 30px; padding-top: 10px; width: 150px">
+                (<span id="numBor"></span>)
+            Borradores
+            </div>
+        </div>
 
         <div id="alertaRevisados">
-            <div data-type="revisado" class="alert alert-success alertas" style="margin-left: 40px; width: 150px"><label
-                    class="etiqueta" style="padding-top: 10px; padding-left: 30px">Revisados</label></div>
+            <div data-type="revisado" class="alert alert-success alertas" clase="E002" style="margin-left: 20px;padding-left: 30px; padding-top: 10px; width: 150px">
+                (<span id="numRev"></span>)
+            Revisados
+            </div>
         </div>
 
         <div id="alertaEnviados">
-            <div data-type="enviado" class="alert alert-blanco alertas" style="width: 150px;"><p
-                    class="etiqueta" style="padding-top: 10px; padding-left: 40px">Enviados</p></div>
+            <div data-type="enviado" class="alert enviado alertas" clase="E003" style="width: 150px;padding-left: 30px; padding-top: 10px;">
+                (<span id="numEnv"></span>)
+            Enviados
+            </div>
         </div>
 
         <div id="alertaNoRecibidos">
-            <div data-type="noRecibido" class="alert alert-danger alertas"
-                 style="padding-left: 30px; padding-top: 10px; width: 150px"><label class="etiqueta">No recibido</label></div>
+            <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta" style="padding-left: 30px; padding-top: 10px; width: 150px">
+                (<span id="numNoRec"></span>)
+            No recibidos
+            </div>
         </div>
 
 
@@ -207,54 +230,36 @@
             data: datos,
             success: function (msg) {
                 $("#bandeja").html(msg);
+                cargarAlertaRevisados();
+                cargarAlertaEnviados();
+                cargarAlertaNoRecibidos();
+                cargarBorrador();
             }
         });
     }
 
     function cargarAlertaRevisados () {
-        var datos = ""
-        $.ajax({
-            type: 'POST',
-            url:"${createLink(controller: 'tramite2', action: 'alertaRevisados')}",
-            data: datos,
-            success: function (msg){
-                $("#alertaRevisados").html(msg);
-            }
-        });
+        $("#numRev").html($(".E002").size())
     }
 
     function cargarAlertaEnviados () {
-        var datos = ""
-        $.ajax({
-            type: 'POST',
-            url:"${createLink(controller: 'tramite2', action: 'alertaEnviados')}",
-            data: datos,
-            success : function (msg){
-                $("#alertaEnviados").html(msg);
-
-            }
-
-        });
-
+        $("#numEnv").html($(".E003").size())
     }
 
     function cargarAlertaNoRecibidos () {
-        var datos =""
-        $.ajax ({
-            type: 'POST',
-            url: "${createLink(controller: 'tramite2', action: 'alertaNoRecibidos')}",
-            data: datos,
-            success : function (msg) {
-                $("#alertaNoRecibidos").html(msg);
-                closeLoader()
-            }
-
-        });
+        $("#numNoRec").html($(".alerta").size())
+    }
+    function cargarBorrador () {
+//        console.log($(".E001"),$(".E001").size())
+        $("#numBor").html($(".E001").size())
     }
 
     $(function () {
 
-
+        $(".alertas").click(function(){
+            $("tr").removeClass("trHighlight")
+            $("."+$(this).attr("clase")).addClass("trHighlight")
+        })
         context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
@@ -276,33 +281,33 @@
 //                }
 //            },
             %{--{--}%
-                %{--text: 'Contestar Documento',--}%
-                %{--icon: "<i class='fa fa-external-link'></i>",--}%
-                %{--action: function (e) {--}%
-                    %{--$("tr.success").removeClass("success");--}%
-                    %{--e.preventDefault();--}%
-                    %{--$.ajax({--}%
-                    %{--type    : "POST",--}%
-                    %{--url     : "${createLink(action:'show_ajax')}",--}%
-                    %{--data    : {--}%
-                    %{--id : id--}%
-                    %{--},--}%
-                    %{--success : function (msg) {--}%
-                    %{--//                            bootbox.dialog({--}%
-                    %{--//                                title   : "Ver Año",--}%
-                    %{--//                                message : msg,--}%
-                    %{--//                                buttons : {--}%
-                    %{--//                                    ok : {--}%
-                    %{--//                                        label     : "Aceptar",--}%
-                    %{--//                                        className : "btn-primary",--}%
-                    %{--//                                        callback  : function () {--}%
-                    %{--//                                        }--}%
-                    %{--//                                    }--}%
-                    %{--//                                }--}%
-                    %{--//                            });--}%
-                    %{--}--}%
-                    %{--});--}%
-                %{--}--}%
+            %{--text: 'Contestar Documento',--}%
+            %{--icon: "<i class='fa fa-external-link'></i>",--}%
+            %{--action: function (e) {--}%
+            %{--$("tr.success").removeClass("success");--}%
+            %{--e.preventDefault();--}%
+            %{--$.ajax({--}%
+            %{--type    : "POST",--}%
+            %{--url     : "${createLink(action:'show_ajax')}",--}%
+            %{--data    : {--}%
+            %{--id : id--}%
+            %{--},--}%
+            %{--success : function (msg) {--}%
+            %{--//                            bootbox.dialog({--}%
+            %{--//                                title   : "Ver Año",--}%
+            %{--//                                message : msg,--}%
+            %{--//                                buttons : {--}%
+            %{--//                                    ok : {--}%
+            %{--//                                        label     : "Aceptar",--}%
+            %{--//                                        className : "btn-primary",--}%
+            %{--//                                        callback  : function () {--}%
+            %{--//                                        }--}%
+            %{--//                                    }--}%
+            %{--//                                }--}%
+            %{--//                            });--}%
+            %{--}--}%
+            %{--});--}%
+            %{--}--}%
             %{--},--}%
             {
                 text: 'Archivar Documentos',
@@ -340,12 +345,9 @@
     $(".btnActualizar").click(function () {
         openLoader()
         cargarBandeja();
-        cargarAlertaRevisados();
-        cargarAlertaEnviados();
-        cargarAlertaNoRecibidos();
-        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas</label>')
-        return false;
         closeLoader()
+        return false;
+
 
     });
 
@@ -353,9 +355,7 @@
 
 
     setInterval(function () {
-        cargarAlertaEnviados();
-        cargarAlertaNoRecibidos();
-        cargarAlertaRevisados();
+        $(".btnActualizar").click()
 
     },300000);
 

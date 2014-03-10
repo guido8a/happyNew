@@ -1,7 +1,7 @@
 package happy.tramites
 
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
-
 class Tramite {
     Anio anio
     Tramite padre
@@ -97,7 +97,14 @@ class Tramite {
     }
 
     def getFechaLimite(){
-        def limtie = fechaEnvio
-        return limtie
+        def limite = this.fechaEnvio
+        if(limite){
+            use(TimeCategory) {
+                limite=limite+this.prioridad.tiempo.hours
+            }
+            return limite
+        }
+        return null
+
     }
 }

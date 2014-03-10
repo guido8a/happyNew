@@ -12,12 +12,11 @@
                 <th class="cabecera">Fecha Límite</th>
                 <th class="cabecera">Estado</th>
             </tr>
-
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
-
-                <tr data-id="${tramite?.id}" class="${tramite.estadoTramite.codigo}">
+                    <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+                <tr data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}">
                     <td>${tramite?.codigo}</td>
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                     <g:set var="para" value="${tramite.getPara()}"/>
@@ -25,13 +24,10 @@
                     <td>${para.persona}</td>
                     <td>${tramite?.prioridad.descripcion}</td>
                     <td>${tramite.fechaEnvio?.format("dd-MM-yyyy hh:mm")}</td>
-                    <td>?</td>
+                    <td>${limite?limite.format("dd-MM-yyyy hh:mm"):''}</td>
                     <td>${tramite?.estadoTramite.descripcion}</td>
-
                 </tr>
-
             </g:each>
-
             </tbody>
         </table>
 
