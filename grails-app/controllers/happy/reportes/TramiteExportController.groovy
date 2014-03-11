@@ -65,6 +65,7 @@ class TramiteExportController {
 
         def content = "<!DOCTYPE HTML>\n<html>\n"
         content += "<head>\n"
+        content += "<link href=\"${realPath + 'font/open/stylesheet.css'}\" rel=\"stylesheet\"/>"
         content += "<style language='text/css'>\n"
         content += "  @page {\n" +
                 "            size   : 21cm 29.7cm;  /*width height */\n" +
@@ -72,12 +73,12 @@ class TramiteExportController {
                 "        }\n" +
                 ".hoja {\n" +
 //                "            background  : #123456;\n" +
-                "            width       : 15.5cm; /*21-2.5-3*/\n" +
+//                "            width       : 15.5cm; /*21-2.5-3*/\n" +
                 "            font-family : arial;\n" +
-                "            font-size   : 10px;\n" +
+                "            font-size   : 12pt;\n" +
                 "        }\n" +
                 ".titulo-horizontal {\n" +
-                "    padding-bottom : 10px;\n" +
+                "    padding-bottom : 15px;\n" +
                 "    border-bottom  : 1px solid #000000;\n" +
                 "    text-align     : center;\n" +
                 "    width          : 105%;\n" +
@@ -119,7 +120,9 @@ class TramiteExportController {
         renderer.createPDF(baos);
         byte[] b = baos.toByteArray();
 
-        file.delete()
+        if (params.type == "download") {
+            file.delete()
+        }
 
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + (params.filename ?: tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))

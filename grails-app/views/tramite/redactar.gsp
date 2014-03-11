@@ -72,7 +72,8 @@
                         createPdf               : {
                             saveUrl   : '${createLink(controller:"tramiteExport", action: "crearPdf")}',
                             saveData  : {
-                                id : "${tramite.id}"
+                                id   : "${tramite.id}",
+                                type : "download"
                             },
                             pdfAction : "download"/*,
                              createDone : function (msg) {
@@ -80,7 +81,7 @@
                              }*/
                         },
                         toolbar                 : [
-                            [ 'ServerSave', 'NewPage', 'CreatePdf' , '-', 'Scayt'],
+                            [ /*'Source',*/'ServerSave', 'NewPage', 'CreatePdf' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
                             [ 'Table', 'HorizontalRule', 'PageBreak'],

@@ -34,17 +34,17 @@
         <table class="table table-condensed table-bordered">
             <thead>
                 <tr>
-                    
+
                     <g:sortableColumn property="numero" title="Año de proceso" />
-                    
+
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${anioInstanceList}" status="i" var="anioInstance">
                     <tr data-id="${anioInstance.id}">
-                        
+
                         <td><elm:textoBusqueda texto='${fieldValue(bean: anioInstance, field: "numero")}' search='${params.search}' /></td>
-                        
+
                     </tr>
                 </g:each>
             </tbody>
