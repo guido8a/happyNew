@@ -5,8 +5,8 @@
       <configuration>
         <webroots>
           <root url="file://$MODULE_DIR$/target/work/plugins/jquery-1.10.2.2/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/resources-1.2.1/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/grails-app/views" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>

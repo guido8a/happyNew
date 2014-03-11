@@ -7,21 +7,37 @@ CKEDITOR.plugins.add('createPdf', {
                 var cont = $("#" + id).val();
                 var url = editor.config.createPdf.saveUrl;
                 var data = editor.config.createPdf.saveData;
-
+                var action = editor.config.createPdf.pdfAction.toLowerCase();
                 data[id] = cont;
 
-                $.ajax({
-                    type    : "POST",
-                    url     : url,
-                    data    : data,
-                    success : function (msg) {
-                        editor.config.createPdf.createDone(msg);
-                    }
-                });
+                switch (action) {
+                    case "download":
+                        location.href = url + "?" + $.param(data);
+                        break;
+                    case "save":
+                        $.ajax({
+                            type    : "POST",
+                            url     : url,
+                            data    : data,
+                            success : function (msg) {
+                                editor.config.createPdf.createDone(msg);
+                            }
+                        });
+                        break;
+                    default:
+                        $.ajax({
+                            type    : "POST",
+                            url     : url,
+                            data    : data,
+                            success : function (msg) {
+                                editor.config.createPdf.createDone(msg);
+                            }
+                        });
+                }
             }
         });
         editor.ui.addButton('CreatePdf', {
-            label   : 'Crear Pdf',
+            label   : 'Descargar Pdf',
             command : 'createPdf',
             toolbar : 'insert'
         });

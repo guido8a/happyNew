@@ -20,11 +20,14 @@
 
     /*text-shadow: 0px 0px 1px #333;*/
 }
-.vertical-container{
-    border-bottom: 1px solid black;padding-left: 50px;position: relative;
+
+.vertical-container {
+    border-bottom : 1px solid black;
+    padding-left  : 50px;
+    position      : relative;
 }
 
-.titulo-azul{
+.titulo-azul {
     /* Antes conocido como titulo chevere */
     color       : #0088CC;
     border      : 0px solid red;
@@ -42,33 +45,35 @@
     /*text-shadow: 0px 0px 1px #333;*/
 }
 
-.negrilla-puntos:after{
-    content: ":";
-    position: absolute;
-    right: 0px;
+/*.negrilla-puntos:after{*/
+/*content: ":";*/
+/*position: absolute;*/
+/*right: 0;*/
+/*}*/
+
+.titulo-horizontal {
+    padding-bottom : 10px;
+    border-bottom  : 1px solid #000000;
+    text-align     : center;
+    width          : 105%;
 }
 
-.titulo-horizontal{
-    padding-bottom: 10px;
-    border-bottom: 1px solid #000000;
-    text-align: center;
-    width: 105%;
+.row-low-margin-top {
+    margin-top : 0 !important;
 }
 
-.row-low-margin-top{
-    margin-top: 0px !important;
-}
 .linea {
     position    : absolute;
     left        : 30px;
     bottom      : 5px;
     width       : 1px;
     border-left : 1px solid #0088CC;
-    height: 95%;
+    height      : 95%;
 
 }
-.negrilla{
-    font-weight: bold;
+
+.negrilla {
+    font-weight : bold;
 }
 
 .label-azul {
@@ -81,24 +86,27 @@
 
 }
 
-.label-shared{
-    width: auto;
-    display: inline;
-    font-weight: normal;
+.label-shared {
+    width       : auto;
+    display     : inline;
+    font-weight : normal;
 }
-.row{
-    margin-top: 15px;
+
+.row {
+    margin-top : 15px;
 }
-.btn-azul{
-    background: #0088CC;
-    color:white;
-    font-weight: bold;
+
+.btn-azul {
+    background  : #0088CC;
+    color       : white;
+    font-weight : bold;
 }
-a.btn-azul:hover{
-    background: #327BbA;
-    color: #ffffff;
-    border: 1px solid #327BbA;
-    text-shadow:-2px 2px 1px rgba(0, 0, 0, 0.25);
+
+a.btn-azul:hover {
+    background  : #327BbA;
+    color       : #ffffff;
+    border      : 1px solid #327BbA;
+    text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);
 
 }
 

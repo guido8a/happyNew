@@ -184,74 +184,101 @@ class ElementosTagLib {
         def para = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolPara)
         def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
 
-        def html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container\">"
-        html += ""
-        html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
-        html += "                ${tramite.tipoDocumento?.descripcion}"
-        html += "            </div>"
-        html += ""
-        html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
-        html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
-        html += "                    No. <span style=\"font-weight: 500\">${tramite.codigo}</span>"
-        html += "                </div>"
-        html += "            </div>"
-        html += ""
-        html += "            <div class=\"row row-low-margin-top\">"
-        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-        html += "                    DE"
-        html += "                </div>"
-        html += ""
-        html += "                <div class=\"col-xs-10  col-buen-height\">"
-        html += "                    ${tramite.de.departamento.descripcion}"
-        html += "                </div>"
-        html += "            </div>"
-        if (para) {
-            html += "                <div class=\"row row-low-margin-top\">"
-            html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-            html += "                        PARA"
-            html += "                    </div>"
-            html += ""
-            html += "                    <div class=\"col-xs-10  col-buen-height\">"
-            def strPara = ""
-            para.each { p ->
-                if (p.persona) {
-                    if (strPara != "") {
-                        strPara += ", "
-                    }
-                    strPara += util.nombrePersona(persona: p.persona)
+        def strPara = ""
+        para.each { p ->
+            if (p.persona) {
+                if (strPara != "") {
+                    strPara += ", "
                 }
-                if (p.departamento) {
-                    if (strPara != "") {
-                        strPara += ", "
-                    }
-                    strPara += p.departamento.descripcion
-                }
+                strPara += util.nombrePersona(persona: p.persona)
             }
-            html += strPara
-            html += "                    </div>"
-            html += "                </div>"
+            if (p.departamento) {
+                if (strPara != "") {
+                    strPara += ", "
+                }
+                strPara += p.departamento.descripcion
+            }
         }
-        html += "            <div class=\"row row-low-margin-top\">"
-        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-        html += "                    FECHA"
-        html += "                </div>"
-        html += ""
-        html += "                <div class=\"col-xs-10  col-buen-height\">"
-        html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
-        html += "                </div>"
-        html += "            </div>"
-        html += ""
-        html += "            <div class=\"row row-low-margin-top\">"
-        html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-        html += "                    ASUNTO"
-        html += "                </div>"
-        html += ""
-        html += "                <div class=\"col-xs-10  col-buen-height\">"
-        html += "                    ${tramite.asunto}"
-        html += "                </div>"
-        html += "            </div>"
-        html += ""
-        html += "        </div>"
+        def html
+
+        if (!attrs.pdf) {
+            html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container\">"
+            html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
+            html += "                ${tramite.tipoDocumento?.descripcion}"
+            html += "            </div>"
+            html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
+            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
+            html += "                    No. <span style=\"font-weight: 500\">${tramite.codigo}</span>"
+            html += "                </div>"
+            html += "            </div>"
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    DE"
+            html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                    ${tramite.de.departamento.descripcion}"
+            html += "                </div>"
+            html += "            </div>"
+            if (para) {
+                html += "                <div class=\"row row-low-margin-top\">"
+                html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                html += "                        PARA"
+                html += "                    </div>"
+                html += ""
+                html += "                    <div class=\"col-xs-10  col-buen-height\">"
+                html += strPara
+                html += "                    </div>"
+                html += "                </div>"
+            }
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    FECHA"
+            html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+            html += "                </div>"
+            html += "            </div>"
+            html += ""
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    ASUNTO"
+            html += "                </div>"
+            html += ""
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                    ${tramite.asunto}"
+            html += "                </div>"
+            html += "            </div>"
+            html += "        </div>"
+        } else {
+            html = "<div class=\"titulo-azul titulo-horizontal\">"
+            html += tramite.tipoDocumento?.descripcion
+            html += "</div>"
+            html += "<table class='tramiteHeader'>"
+            html += "<tr>"
+            html += "<td colspan='2'>"
+            html += "<b>No.</b> ${tramite.codigo}"
+            html += "</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>DE</b></td>"
+            html += "<td>${tramite.de.departamento.descripcion}</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>PARA</b></td>"
+            html += "<td>${strPara}</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>FECHA</b></td>"
+            html += "<td>"
+            html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+            html += "</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>ASUNTO</b></td>"
+            html += "<td>${tramite.asunto}</td>"
+            html += "</tr>"
+            html += "</table>"
+        }
         out << html
     }
 
