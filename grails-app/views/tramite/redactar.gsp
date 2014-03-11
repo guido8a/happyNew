@@ -30,15 +30,21 @@
         .col-buen-height {
             line-height : 25px;
         }
+
+        .hoja {
+            /*background: #abcdef;*/
+            margin : auto;
+            width  : 16cm;
+        }
         </style>
     </head>
 
     <body>
+        <div class="hoja">
+            <elm:headerTramite tramite="${tramite}"/>
 
-        <elm:headerTramite tramite="${tramite}"/>
-
-        <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
-
+            <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
+        </div>
         <script>
             $(function () {
                 //  Checks whether CKEDITOR is defined or not
@@ -64,26 +70,27 @@
                             }
                         },
                         createPdf               : {
-                            saveUrl    : '${createLink(controller:"tramiteExport", action: "crearPdf")}',
-                            saveData   : {
+                            saveUrl   : '${createLink(controller:"tramiteExport", action: "crearPdf")}',
+                            saveData  : {
                                 id : "${tramite.id}"
                             },
-                            createDone : function (msg) {
-                                console.log(msg);
-                            }
+                            pdfAction : "download"/*,
+                             createDone : function (msg) {
+                             location.href = msg;
+                             }*/
                         },
                         toolbar                 : [
-                            [ 'ServerSave', 'NewPage', 'Preview', 'CreatePdf' , '-', 'Scayt'],
+                            [ 'ServerSave', 'NewPage', 'CreatePdf' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
                             [ 'Table', 'HorizontalRule', 'PageBreak'],
-                            ['Image', 'Timestamp'],
-                            ['About' ],
+                            ['Image'/*, 'Timestamp'*/],
                             '/',
                             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ],
                             [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],
 
-                            [ 'Font', 'FontSize' , '-', 'TextColor', 'BGColor' ]
+                            [ 'Font', 'FontSize' , '-', 'TextColor', 'BGColor' ],
+                            ['About' ]
                         ]
                     });
                 }

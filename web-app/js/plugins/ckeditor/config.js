@@ -21,7 +21,7 @@ CKEDITOR.editorConfig = function (config) {
     config.scayt_autoStartup = true;
     config.scayt_sLang = 'es_ES';
 
-    config.removePlugins = 'elementspath';
+    config.removePlugins = 'elementspath,resize';
 
     /*
      // Toolbar configuration generated automatically by the editor based on config.toolbarGroups.

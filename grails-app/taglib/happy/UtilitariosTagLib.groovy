@@ -14,12 +14,22 @@ class UtilitariosTagLib {
                 "&oacute;": "ó",
                 "&uacute;": "ú",
                 "&ntilde;": "ñ",
+
                 "&Aacute;": "Á",
                 "&Eacute;": "É",
                 "&Iacute;": "Í",
                 "&Oacute;": "Ó",
                 "&Uacute;": "Ú",
                 "&Ntilde;": "Ñ",
+
+                "&nbsp;": " ",
+
+                "&lt;": "<",
+                "&gt;": ">",
+
+                "&amp;": "&",
+
+                "&quot;": '"'
         ]
         def str = attrs.str
 
@@ -114,7 +124,7 @@ class UtilitariosTagLib {
         def meses = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
         def mesesLargo = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         def strFecha = ""
-        if(attrs.ciudad) {
+        if (attrs.ciudad) {
             formato = "CCC, dd MMMM yyyy"
         }
 //        println ">>" + fecha + "    " + formato
@@ -147,9 +157,9 @@ class UtilitariosTagLib {
         out << strFecha
     }
 
-    def textoTramite = {attrs->
+    def textoTramite = { attrs ->
         def tramite = Tramite.get(attrs.tramite)
-        out<<tramite.texto
+        out << util.clean(str: tramite.texto)
     }
 
 }

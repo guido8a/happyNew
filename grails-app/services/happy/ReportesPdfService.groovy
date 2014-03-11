@@ -27,7 +27,7 @@ class ReportesPdfService {
         } else {
             documento = new Document(PageSize.A4.rotate())
         }
-        documento.setMargins(margenes[3].toString().toInteger() * 28.1, margenes[1].toString().toInteger() * 28.1, margenes[0].toString().toInteger() * 28.1, margenes[2].toString().toInteger() * 28.1)
+        documento.setMargins((margenes.left.toString().toDouble() * 28.1).toFloat(), (margenes.right.toString().toDouble() * 28.1).toFloat(), (margenes.top.toString().toDouble() * 28.1).toFloat(), (margenes.bottom.toString().toDouble() * 28.1).toFloat())
 
         return documento
     }
@@ -38,7 +38,7 @@ class ReportesPdfService {
      * @return Document
      */
     def crearDocumento(String orientacion) {
-        return crearDocumento(orientacion, [2, 2, 2, 2])
+        return crearDocumento(orientacion, [top: 2, right: 2, bottom: 2, left: 2])
     }
     /**
      * crearDocumento: crea el Documento para hacer pdfs con orientacion vertical
@@ -54,7 +54,7 @@ class ReportesPdfService {
      * @return Document
      */
     def crearDocumento() {
-        return crearDocumento("v", [2, 2, 2, 2])
+        return crearDocumento("v", [top: 2, right: 2, bottom: 2, left: 2])
     }
 
     /**
@@ -104,16 +104,16 @@ class ReportesPdfService {
     def documentoFooter(Document documento, String footer, numerosPagina, bordes, int alignment) {
         HeaderFooter footer1 = new HeaderFooter(new Phrase(footer, fontFooter), numerosPagina);
         footer1.setBorder(Rectangle.NO_BORDER);
-        if (bordes[0]) {
+        if (bordes.top) {
             footer1.setBorder(Rectangle.TOP);
         }
-        if (bordes[1]) {
+        if (bordes.right) {
             footer1.setBorder(Rectangle.RIGHT);
         }
-        if (bordes[2]) {
+        if (bordes.bottom) {
             footer1.setBorder(Rectangle.BOTTOM);
         }
-        if (bordes[3]) {
+        if (bordes.left) {
             footer1.setBorder(Rectangle.LEFT);
         }
         footer1.setAlignment(alignment);
@@ -127,7 +127,7 @@ class ReportesPdfService {
      * @param numerosPagina
      */
     def documentoFooter(Document documento, String footer, numerosPagina) {
-        documentoFooter(documento, footer, numerosPagina, [true, false, false, false], Element.ALIGN_CENTER)
+        documentoFooter(documento, footer, numerosPagina, [top: true, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
     }
 
     /**
@@ -150,16 +150,16 @@ class ReportesPdfService {
     def documentoHeader(Document documento, String header, numerosPagina, bordes, alignment) {
         HeaderFooter header1 = new HeaderFooter(new Phrase(header, fontHeader), numerosPagina);
         header1.setBorder(Rectangle.NO_BORDER);
-        if (bordes[0]) {
+        if (bordes.top) {
             header1.setBorder(Rectangle.TOP);
         }
-        if (bordes[1]) {
+        if (bordes.right) {
             header1.setBorder(Rectangle.RIGHT);
         }
-        if (bordes[2]) {
+        if (bordes.bottom) {
             header1.setBorder(Rectangle.BOTTOM);
         }
-        if (bordes[3]) {
+        if (bordes.left) {
             header1.setBorder(Rectangle.LEFT);
         }
         header1.setAlignment(alignment);
@@ -173,7 +173,7 @@ class ReportesPdfService {
      * @param numerosPagina
      */
     def documentoHeader(Document documento, String header, numerosPagina) {
-        documentoHeader(documento, header, numerosPagina, [true, false, false, false], Element.ALIGN_CENTER)
+        documentoHeader(documento, header, numerosPagina, [top: true, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
     }
 
     /**
@@ -195,7 +195,7 @@ class ReportesPdfService {
      * @return PdfPTable: la tabla para poner en el documento
      */
     def crearTabla(columnas, width, widthsColumnas, espacioAntes, espacioDespues) {
-        println "-1 "
+//        println "-1 "
         PdfPTable tabla = new PdfPTable(columnas)
         tabla.setWidthPercentage(width)
         if (widthsColumnas) {
@@ -225,7 +225,7 @@ class ReportesPdfService {
      * @return PdfPTable
      */
     def crearTabla(int columnas) {
-        println "1 " + columnas
+//        println "1 " + columnas
         return crearTabla(columnas, 100, null, 0, 0)
     }
 
@@ -235,8 +235,20 @@ class ReportesPdfService {
      * @return PdfPTable
      */
     def crearTabla(int[] widthsColumnas) {
-        println "2 " + widthsColumnas + "   " + widthsColumnas.length
+//        println "2 " + widthsColumnas + "   " + widthsColumnas.length
         return crearTabla(widthsColumnas.length, 100, widthsColumnas, 0, 0)
+    }
+
+    /**
+     * crearTabla: crea una tabla para los pdfs de 100% del ancho de la hoja, pasando el espacio de antes y despues, y el arreglo de tamanios de las columnas
+     * @param widthsColumnas
+     * @param espacioAntes
+     * @param espacioDespues
+     * @return PdfPTable
+     */
+    def crearTabla(int[] widthsColumnas, espacioAntes, espacioDespues) {
+//        println "2 " + widthsColumnas + "   " + widthsColumnas.length
+        return crearTabla(widthsColumnas.length, 100, widthsColumnas, espacioAntes, espacioDespues)
     }
 
     /**
@@ -246,7 +258,7 @@ class ReportesPdfService {
      * @return PdfPTable
      */
     def crearTabla(int width, int[] widthsColumnas) {
-        println "3 w:" + width + "   wc:" + widthsColumnas
+//        println "3 w:" + width + "   wc:" + widthsColumnas
         return crearTabla(widthsColumnas.length, width, widthsColumnas, 0, 0)
     }
 
