@@ -38,7 +38,7 @@
 <!-- botones -->
 <div class="btn-toolbar toolbar">
     <div class="btn-group">
-        <g:link action="bandejaSalida" controller="tramite" class="btn btn-primary">
+        <g:link action="bandejaSalida" controller="tramite2" class="btn btn-primary">
             <i class="fa fa-list"></i> Bandeja de salida
         </g:link>
         <g:if test="${tramite.estadoTramite.codigo!='E002'}">

@@ -159,7 +159,10 @@ class UtilitariosTagLib {
 
     def textoTramite = { attrs ->
         def tramite = Tramite.get(attrs.tramite)
-        out << util.clean(str: tramite.texto)
+        if(tramite.texto)
+            out << util.clean(str: tramite.texto)
+        else
+            out<<""
     }
 
 }

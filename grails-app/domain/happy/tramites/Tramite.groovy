@@ -95,12 +95,30 @@ class Tramite {
         }
         return [persona:null,departamento: null]
     }
+    def getCopias(){
+        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("R002"))
+        if(para){
+            return copias
+        }
+        return []
+    }
+    def getImprime(){
+        def impirme = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("I005"))
+        if(para){
+            return impirme
+        }
+        return []
+    }
+
 
     def getFechaLimite(){
         def limite = this.fechaEnvio
         if(limite){
             use(TimeCategory) {
-                limite=limite+this.prioridad.tiempo.hours
+                if(limite.hours>13 || (limite.hours>12 && limite.minutes>30) )
+                    limite=limite+2.hours+15.hours+30.minutes
+                else
+                    limite=limite+2.hours
             }
             return limite
         }

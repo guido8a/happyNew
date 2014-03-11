@@ -53,9 +53,9 @@
             Creado por:
         </div>
         <div class="col-xs-12 negrilla">
-            <input type="text" name="" style="width: 708px" class="form-control required label-shared" value="${""+traminte.de.departamento.codigo+": "+traminte.de}" title="Dirección: ${traminte.de.departamento}" disabled>
+            <input type="text" name="" style="width: 708px" class="form-control required label-shared" value="${""+tramite.de.departamento.codigo+": "+tramite.de}" title="Dirección: ${tramite.de.departamento}" disabled>
             el día
-            <input type="text" class="form-control required label-shared" maxlength="30" value="${traminte.fechaCreacion?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">
+            <input type="text" class="form-control required label-shared" maxlength="30" value="${tramite.fechaCreacion?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">
         </div>
     </div>
     <div class="row">
@@ -69,7 +69,7 @@
             Enviado:
         </div>
         <div class="col-xs-2 negrilla" style="padding: 0px">
-            <input type="text" class="form-control required "  value="${traminte.fechaEnvio?.format('dd-MM-yyyy hh:mm') }" disabled  style="width: 160px">
+            <input type="text" class="form-control required "  value="${tramite.fechaEnvio?.format('dd-MM-yyyy hh:mm') }" disabled  style="width: 160px">
         </div>
         <div class="col-xs-1 negrilla">
             Recibido:
@@ -82,7 +82,7 @@
     %{--<div class="row">--}%
     %{--<div class="col-xs-3 negrilla">--}%
     %{--Enviado el:--}%
-    %{--<input type="text" class="form-control required label-shared"  maxlength="30" value="${traminte.fechaEnvio?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">--}%
+    %{--<input type="text" class="form-control required label-shared"  maxlength="30" value="${tramite.fechaEnvio?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">--}%
     %{--</div>--}%
     %{--</div>--}%
     <div class="row">
@@ -90,19 +90,19 @@
             Código:
         </div>
         <div class="col-xs-3 negrilla" style="padding: 0px">
-            <input type="text" class="form-control required "  value="${traminte.codigo+''+traminte.numero }" disabled >
+            <input type="text" class="form-control required "  value="${tramite.codigo+''+tramite.numero }" disabled >
         </div>
         <div class="col-xs-1 negrilla">
             Tipo:
         </div>
         <div class="col-xs-2 negrilla" style="padding: 0px">
-            <input type="text" class="form-control required "  value="${traminte.tipoDocumento?.descripcion }" disabled >
+            <input type="text" class="form-control required "  value="${tramite.tipoDocumento?.descripcion }" disabled >
         </div>
         <div class="col-xs-1  negrilla">
             Prioridad:
         </div>
         <div class="col-xs-2 negrilla" style="padding: 0px">
-            <input type="text" class="form-control required "  value="${traminte.prioridad?.descripcion}" disabled >
+            <input type="text" class="form-control required "  value="${tramite.prioridad?.descripcion}" disabled >
         </div>
     </div>
 
@@ -111,7 +111,7 @@
             Asunto:
         </div>
         <div class="col-xs-10 negrilla" style="padding: 0px">
-            <input type="text" name="" style="width: 905px" class="form-control required" value="${traminte.asunto}" title="Dirección: ${traminte.de.departamento}" disabled>
+            <input type="text" name="" style="width: 905px" class="form-control required" value="${tramite.asunto}" title="Dirección: ${tramite.de.departamento}" disabled>
         </div>
     </div>
 </div>

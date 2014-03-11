@@ -7,7 +7,6 @@ class Tramite2Controller extends happy.seguridad.Shield{
 
     def verTramite(){
         /*comentar esto*/
-        params.id="13"
         def tramite = Tramite.get(params.id)
         /*Aqui controlar los permisos para ver el tramite por el usuario*/
 
@@ -18,8 +17,7 @@ class Tramite2Controller extends happy.seguridad.Shield{
     }
 
     def revision(){
-        /*comentar esto*/
-        params.id="12"
+
         def tramite = Tramite.get(params.id).refresh()
 
 
@@ -61,6 +59,7 @@ class Tramite2Controller extends happy.seguridad.Shield{
     }
 
     def tablaBandejaSalida() {
+//        println "carga bandeja"
         def persona = Persona.get( session.usuario.id)
         def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
         def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])

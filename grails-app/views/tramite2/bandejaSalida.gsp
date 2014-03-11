@@ -196,7 +196,7 @@
 %{--//bandeja--}%
 
 
-<div id="bandeja">
+<div id="bandeja" style=";height: 600px;overflow: auto">
 
 </div>
 
@@ -224,16 +224,21 @@
 </script>
 
 <script type="text/javascript">
-    function cargarBandeja() {
-        var datos = ""
+
+    function cargarBandeja(band) {
+        $("#bandeja").html("")
         $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
-            data: datos,
+            data: "",
+            async:false,
             success: function (msg) {
-                $("#bandeja").html(msg);
+                $("#bandeja").html(msg).show("slide");
                 cargarAlertaRevisados();
                 cargarAlertaEnviados();
                 cargarAlertaNoRecibidos();
                 cargarBorrador();
+                if(band){
+                    bootbox.alert("Datos actualizados")
+                }
             }
         });
     }
@@ -257,8 +262,19 @@
     $(function () {
 
         $(".alertas").click(function(){
-            $("tr").removeClass("trHighlight")
-            $("."+$(this).attr("clase")).addClass("trHighlight")
+
+            var clase = $(this).attr("clase")
+            $("tr").each(function(){
+                if($(this).hasClass(clase)){
+                    if($(this).hasClass("trHighlight"))
+                        $(this).removeClass("trHighlight")
+                    else
+                        $(this).addClass("trHighlight")
+                }else{
+                    $(this).removeClass("trHighlight")
+                }
+            });
+
         })
         context.settings({
             onShow: function (e) {
@@ -266,123 +282,143 @@
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
+                var estado = $tr.attr("estado");
+
+
+
+
             }
         });
-        context.attach('tbody>tr', [
+
+        context.attach(".E001", [
             {
                 header: 'Acciones'
             },
-//            {
-//                text: 'Recibir Documento',
-//                icon: "<i class='fa fa-check-square-o'></i>",
-//                action: function (e) {
-//                    $("tr.trHighlight").removeClass("trHighlight");
-//                    e.preventDefault();
-//                }
-//            },
-            %{--{--}%
-            %{--text: 'Contestar Documento',--}%
-            %{--icon: "<i class='fa fa-external-link'></i>",--}%
-            %{--action: function (e) {--}%
-            %{--$("tr.success").removeClass("success");--}%
-            %{--e.preventDefault();--}%
-            %{--$.ajax({--}%
-            %{--type    : "POST",--}%
-            %{--url     : "${createLink(action:'show_ajax')}",--}%
-            %{--data    : {--}%
-            %{--id : id--}%
-            %{--},--}%
-            %{--success : function (msg) {--}%
-            %{--//                            bootbox.dialog({--}%
-            %{--//                                title   : "Ver Año",--}%
-            %{--//                                message : msg,--}%
-            %{--//                                buttons : {--}%
-            %{--//                                    ok : {--}%
-            %{--//                                        label     : "Aceptar",--}%
-            %{--//                                        className : "btn-primary",--}%
-            %{--//                                        callback  : function () {--}%
-            %{--//                                        }--}%
-            %{--//                                    }--}%
-            %{--//                                }--}%
-            %{--//                            });--}%
-            %{--}--}%
-            %{--});--}%
-            %{--}--}%
-            %{--},--}%
             {
-                text: 'Archivar Documentos',
-                icon: "<i class='fa fa-folder-open-o'></i>",
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-//                    createEditRow(id);
+                    location.href="${g.createLink(action: 'verTramite',controller: 'tramite2')}/"+id
+                }
+
+            },
+            {
+                text: 'Editar',
+                icon: "<i class='fa fa-pencil'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'redactar',controller: 'tramite')}/"+id
+                }
+
+            },
+            {
+                text: 'Revisar',
+                icon: "<i class='fa fa-check'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'revision',controller: 'tramite2')}/"+id
                 }
 
             }
-//            {divider : true},
-//            {
-//                text   : 'Eliminar',
-//                icon   : "<i class='fa fa-trash-o'></i>",
-//                action : function (e) {
-//                    $("tr.trHighlight").removeClass("trHighlight");
-//                    e.preventDefault();
-//                    deleteRow(id);
-//                }
-//            }
         ]);
-    });
+        context.attach(".E002", [
+            {
+                header: 'Acciones'
+            },
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'verTramite',controller: 'tramite2')}/"+id
+                }
 
-    $(".btnBuscar").click(function () {
-        $(".buscar").attr("hidden", false)
-    });
-
-
-    $(".btnSalir").click(function () {
-        $(".buscar").attr("hidden", true)
-    });
-
-
-    $(".btnActualizar").click(function () {
-        openLoader()
-        cargarBandeja();
-        closeLoader()
-        return false;
-
-
-    });
-
-    $(".btnActualizar").click()
-
-
-    setInterval(function () {
-        $(".btnActualizar").click()
-
-    },300000);
-
-
-
-    $(".btnBusqueda").click(function () {
-
-        var interval = loading("bandeja")
-
-        var memorando = $("#memorando").val();
-        var asunto = $("#asunto").val();
-        var fecha = $("#fechaBusqueda").val();
-
-        var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#bandeja").html(msg);
-
+            },
+            {
+                text: 'Enviar',
+                icon: "<i class='fa fa-pencil'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'enviar',controller: 'tramite2')}/"+id
+                    /*ajax aqui*/
+                }
 
             }
+        ]);
+        context.attach(".E003", [
+            {
+                header: 'Acciones'
+            },
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'verTramite',controller: 'tramite2')}/"+id
+                }
+
+            }
+        ]);
+        context.attach(".alerta", [
+            {
+                header: 'Sistema bloqueado'
+            }
+        ]);
+
+        $(".btnBuscar").click(function () {
+            $(".buscar").attr("hidden", false)
+        });
+
+
+        $(".btnSalir").click(function () {
+            $(".buscar").attr("hidden", true)
+        });
+
+
+        $(".btnActualizar").click(function () {
+            openLoader()
+            cargarBandeja(true);
+            closeLoader()
+            return false;
+
 
         });
-    });
 
+        cargarBandeja(false);
+
+
+        setInterval(function () {
+            openLoader()
+            cargarBandeja(false);
+            closeLoader()
+
+        },300000);
+
+
+
+        $(".btnBusqueda").click(function () {
+
+            var interval = loading("bandeja")
+
+            var memorando = $("#memorando").val();
+            var asunto = $("#asunto").val();
+            var fecha = $("#fechaBusqueda").val();
+
+            var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+
+            $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
+                data: datos,
+                success: function (msg) {
+                    clearInterval(interval)
+                    $("#bandeja").html(msg);
+
+
+                }
+
+            });
+        });
+    });
 </script>
 
 </body>
