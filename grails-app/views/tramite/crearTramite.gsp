@@ -83,6 +83,16 @@
                         <input type="text" name="tramite.de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled/>
                     </div>
 
+                    <g:if test="${padre}">
+
+                        <div class="col-xs-3 negrilla">
+                            Padre:
+                        <input type="text" name="padre" class="form-control label-shared" id="padre"  value="${padre?.codigo}" disabled/>
+                        </div>
+
+                    </g:if>
+
+
                     <div class="col-xs-4 negrilla" id="divPara">
                         <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label" style="width:300px;" class="form-control label-shared required"/>
                     </div>

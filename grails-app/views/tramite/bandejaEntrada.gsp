@@ -157,12 +157,6 @@
     <div class="btn-group">
 
         <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-
-
-        %{--<g:link action="" class="btn btn-primary btnTramites">--}%
-            %{--<i class="fa fa-gears"></i> Trámites--}%
-        %{--</g:link>--}%
-
         <g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">
             <i class="fa fa-folder"></i> Archivados
         </g:link>
@@ -190,12 +184,7 @@
             <div data-type="retrasado" class="alert alert-danger alertas"  style="width: 190px">
                 <label class="etiqueta" style="padding-left: 10px; padding-top: 10px">Documentos Retrasados</label></div>
         </div>
-
     </span>
-
-
-
-
 </div>
 
 
@@ -269,48 +258,202 @@
 
     $(function () {
 
-        context.settings({
+        var contestar = {
+            text: 'Contestar Documento',
+            icon: "<i class='fa fa-external-link'></i>",
+            action: function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+
+                location.href="${g.createLink(action: 'crearTramite')}/"+id;
+            }
+        };
+
+        var archivar =             {
+                    text: 'Archivar Documentos',
+                    icon: "<i class='fa fa-folder-open-o'></i>",
+                    action: function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                    }
+
+                };
+
+
+        var distribuir =             {
+            text: 'Distribuir a Jefes',
+            icon: "<i class='fa fa-eye'></i>",
+            action: function (e){
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                $.ajax ({
+                    type : "POST",
+                    url  : "${createLink(action: 'observaciones')}/" + id,
+//                        data  : id,
+                    success :function (msg){
+                        var b = bootbox.dialog({
+                            id: "dlgObservaciones",
+                            title : "Distribución al Jefe: Observaciones",
+                            message : msg,
+                            buttons : {
+                                cancelar : {
+                                    label  : "Cancelar",
+                                    className : 'btn-danger',
+                                    callback :  function () {
+
+                                    }
+
+                                },
+                                guardar : {
+                                    id   : 'btnSave',
+                                    label : '<i class="fa fa-save"></i> Guardar',
+                                    className : "btn-success",
+                                    callback: function () {
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '${createLink(action: 'guardarObservacion')}/'+ id,
+                                            data :{
+
+                                                texto: $("#observacion").val()
+                                            },
+                                            success : function (msg) {
+
+                                                bootbox.alert(msg)
+
+                                            }
+
+
+                                        });
+
+
+                                    }
+
+
+                                }
+
+                            }
+
+                        })
+                    }
+                });
+
+
+            }
+
+        }
+
+        var anular =      {
+                    text: 'Anular',
+                    icon: "<i class='fa fa-times'></i>",
+                    action: function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+
+                        location.href="${g.createLink(action: 'anular')}";
+                    }
+                }
+
+
+                context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
-//                console.log("id" + id)
-
             }
+
+
+
         });
-        context.attach('tbody>tr', [
+
+        context.attach('.E003',[
             {
-                header: 'Acciones'
+               header: 'Acciones'
             },
+                contestar,
+                archivar,
+                anular,
+                distribuir,
             {
+
                 text: 'Recibir Documento',
                 icon: "<i class='fa fa-check-square-o'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: "${createLink(action: 'recibir')}/" + id,
+                        success: function (msg){
+                            var b = bootbox.dialog({
+                                id: "dlgRecibido",
+                                title: "Trámite ha ser recibido",
+                                message: msg,
+                                buttons : {
+                                    cancelar : {
+                                        label :  '<i class="fa fa-times"></i> Cancelar',
+                                        className : 'btn-danger',
+                                        callback: function () {
+                                        }
+                                    },
+                                    recibir : {
+                                        id : 'btnRecibir',
+                                        label: '<i class="fa fa-thumbs-o-up"></i> Recibir',
+                                        className: 'btn-success',
+                                        callback: function () {
+                                            $.ajax ({
+                                                type: 'POST',
+                                                url: '${createLink(action: 'guardarRecibir')}/' + id,
+                                                success: function (msg) {
+                                                    bootbox.alert(msg)
+                                                }
+
+
+
+                                            });
+
+
+
+                                        }
+                                    }
+                                }
+
+                            })
+
+                        }
+
+                    });
                 }
-            },
+
+            }
+        ]);
+
+        context.attach('.E004', [
             {
+                header: 'Acciones'
+            },
+                   {
                 text: 'Contestar Documento',
                 icon: "<i class='fa fa-external-link'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
 
-                    location.href="${g.createLink(action: 'crearTramite')}/"+id;
+                    location.href="${g.createLink(action: 'crearTramite')}?padre="+id;
                 }
             },
+
             {
                 text: 'Archivar Documentos',
                 icon: "<i class='fa fa-folder-open-o'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
-//                    createEditRow(id);
                 }
 
             },
+            anular,
             {
                 text: 'Distribuir a Jefes',
                 icon: "<i class='fa fa-eye'></i>",
@@ -394,11 +537,12 @@
 
     $(".btnActualizar").click(function () {
 
-
+        openLoader();
         cargarAlertaRecibidos();
         cargarAlertaPendientes();
         cargarAlertaRetrasados();
         cargarBandeja();
+        closeLoader();
 
         bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas!</label>')
 
@@ -424,7 +568,6 @@
 
 
     function cargarBandeja() {
-
         var interval = loading("bandeja")
         var datos = ""
         $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
@@ -462,10 +605,11 @@
 
     setInterval(function () {
 
-
+        openLoader();
         cargarAlertaRecibidos();
         cargarAlertaPendientes();
         cargarAlertaRetrasados();
+        closeLoader();
 
     },300000);
 

@@ -275,11 +275,32 @@ class TramiteController extends happy.seguridad.Shield {
 
         def recibidos = EstadoTramite.get(4)
 
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+//        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+
+        //------------------------------------------------
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def pxtTodos = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+
+
+        //------------------------------------------------
+
+
 
         def tramites = []
 
-        pxt.each {
+        pxtTodos.each {
             if (it.tramite.estadoTramite == recibidos) {
                 tramites.add(it.tramite)
             }
@@ -332,9 +353,29 @@ class TramiteController extends happy.seguridad.Shield {
 
         def tramitesPendientes = 0
         def totalPendientes = []
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+//        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
 
-        pxt.each {
+        //------------------------------------------------
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def pxtTodos = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+
+
+        //------------------------------------------------
+
+
+        pxtTodos.each {
             if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
@@ -354,6 +395,7 @@ class TramiteController extends happy.seguridad.Shield {
         totalPendientes.each {
 
             if (it.fechaEnvio) {
+//                println("fecha envio" + it.fechaEnvio)
                 fechaEnvio = it.fechaEnvio
                 fecha = fechaEnvio.getTime()
                 fechaRoja = new Date(fecha + dosHoras)
@@ -381,9 +423,29 @@ class TramiteController extends happy.seguridad.Shield {
 
         def tramitesPendientes = 0
         def totalPendientes = []
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+//        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
 
-        pxt.each {
+        //------------------------------------------------
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def pxtTodos = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+
+
+        //------------------------------------------------
+
+
+        pxtTodos.each {
             if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
@@ -400,15 +462,33 @@ class TramiteController extends happy.seguridad.Shield {
 
         def persona = Persona.get(usuario.id)
 
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+//        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
+
+
+        //------------------------------------------------
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def pxtTodos = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+
+
+        //------------------------------------------------
 
         def recibidos = EstadoTramite.get(4)
-//
-//    def tramites = Tramite.findAllByEstadoTramite(recibidos)
 
         def tramitesRetrasados = []
 
-        pxt.each {
+        pxtTodos.each {
             if (it.tramite.estadoTramite == recibidos) {
                 tramitesRetrasados.add(it.tramite)
             }
@@ -474,19 +554,22 @@ class TramiteController extends happy.seguridad.Shield {
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
 
         def pxtTodos = []
+        def tramitesEntrada = []
 
         def pxtPara =  PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolPara);
         def pxtCopia = PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolCopia);
+        def pxtImprimir = PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolImprimir);
 
         pxtTodos = pxtPara
-
         pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
 
-        println("todos Departamento:" + pxtTodos)
+//        println("todos Entrada:" + tramitesEntrada)
 
-       return[persona: persona, tramites: pxtTodos]
+       return[persona: persona, tramites: tramitesEntrada]
 
     }
 
@@ -501,19 +584,14 @@ class TramiteController extends happy.seguridad.Shield {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        def tramitesDepartamento = PersonaDocumentoTramite.findAllByDepartamento(persona?.departamento)
-//        println("tramites departamento" + tramitesDepartamento)
-        def tramitesSalida = []
+        def departamento = persona?.departamento
+        def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
+        def personasDepartamento = Persona.findAllByDepartamento(departamento)
+//        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
+        def tramites = Tramite.findAllByDeInListAndEstadoTramiteInList(personasDepartamento,estados,[sort:"fechaCreacion",order:"desc"])
 
-        tramitesDepartamento.each {
-            if(it?.rolPersonaTramite?.codigo == 'R001' || it?.rolPersonaTramite?.codigo == 'R002' || it?.rolPersonaTramite?.codigo == 'I005'){
-                if(!it?.fechaRecepcion){
-                    tramitesSalida.add(it)
-                }
-            }
-        }
-//        println("-->" + tramitesSalida)
-       return [persona: persona, tramites: tramitesSalida]
+//        println("tramites salida departamento" + tramites)
+       return [persona: persona, tramites: tramites]
     }
 
 
@@ -539,17 +617,19 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def pxtTodos = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
 
         pxtTodos = pxtPara
-
         pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
 
-        println("todos:" + pxtTodos)
+//        println("todos:" + pxtTodos)
 
         def tramitesRecibidos = pxtTodos.size()
 
@@ -557,64 +637,6 @@ class TramiteController extends happy.seguridad.Shield {
         return [tramites: pxtTodos, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
     }
 
-
-    def tablaBandejaSalida() {
-
-        //old
-
-//        def usuario = session.usuario
-//        def persona = Persona.get(usuario.id)
-//        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
-//
-//        def tramites = []
-//
-//        //tramites normales de salida
-//
-//        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
-//
-//        //tramites que se puede imprimir
-//
-//
-//        def pxti = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
-//
-//        def idTramitesNoRecibidos = alertaNoRecibidos().idTramitesNoRecibidos
-//
-//        return [tramites: tramites, idTramitesNoRecibidos: idTramitesNoRecibidos]
-
-        //nuevo
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-
-        def tramitesSalidaPersona = PersonaDocumentoTramite.findAllByPersona(persona)
-
-//        println("tramitesSalidaPersona" + tramitesSalidaPersona)
-
-        def tramitesSalida = []
-
-        tramitesSalidaPersona.each {
-            if(it?.rolPersonaTramite?.codigo == 'R001' || it?.rolPersonaTramite?.codigo == 'R002' || it?.rolPersonaTramite?.codigo == 'I005'){
-                if(!it?.fechaRecepcion){
-                    tramitesSalida.add(it)
-                }
-            }
-        }
-//        println("tramites de salida" + tramitesSalida)
-
-        def idTramitesNoRecibidos = alertaNoRecibidos().idTramitesNoRecibidos
-
-        return [persona: persona, tramites: tramitesSalida, idTramitesNoRecibidos: idTramitesNoRecibidos ]
-    }
-
-
-    def bandejaSalida() {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def tramitesPasados = alertaNoRecibidos().tramitesPasados
-        return [persona: persona, tramitesPasados: tramitesPasados]
-
-    }
 
     //alertas
 
@@ -757,6 +779,36 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
     }
+
+    def recibir () {
+
+        def tramite = Tramite.get(params.id)
+        return [tramite: tramite]
+
+
+    }
+
+    def guardarRecibir () {
+
+        def tramite = Tramite.get(params.id)
+        def estado = EstadoTramite.get(4)
+        def pxt = PersonaDocumentoTramite.findByTramite(tramite)
+
+        tramite.estadoTramite = estado
+        pxt.fechaRecepcion = new Date()
+
+        if (!tramite.save(flush: true)) {
+            render "Ocurrió un error al recibir"
+        } else {
+            render "Trámite recibido correctamente"
+        }
+
+
+    }
+
+
+
+
 
 
     def busquedaBandeja() {

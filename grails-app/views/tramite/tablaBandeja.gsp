@@ -15,11 +15,9 @@
                 <th class="cabecera">Fecha Recepción</th>
                 <th class="cabecera">De</th>
                 <th class="cabecera">Creado Por</th>
-                <th class="cabecera">Para</th>
-                <th class="cabecera">Destinatario</th>
                 <th class="cabecera">Prioridad</th>
-                <th class="cabecera">Fecha Límite</th>
-                <th class="cabecera">Doc. Principal</th>
+                <th class="cabecera">Fecha Respuesta</th>
+                <th class="cabecera">Doc. Padre</th>
             </tr>
 
             </thead>
@@ -27,6 +25,8 @@
             <g:each in="${tramites}" var="tramite">
 
                 <g:set var="type" value=""/>
+                <g:set var="estado" value=""/>
+                <g:set var="sinEstado" value=""/>
 
                 <g:if test="${idTramitesRecibidos.contains(tramite.tramite.id)}">
                     <g:set var="type" value="recibido"/>
@@ -39,23 +39,19 @@
                 </g:if>
 
                 <g:if test="${idRojos.contains(tramite.tramite.id)}">
-                    %{--<g:set var="type" value="pendienteRojo"/>--}%
                     <g:set var="type" value="pendiente pendienteRojo"/>
                 </g:if>
 
-                <tr data-id="${tramite?.tramite?.id}" class="${type}">
+                    <tr data-id="${tramite?.tramite?.id}" class="${type} ${tramite?.tramite?.estadoTramite?.codigo}">
+                        <td>${tramite?.tramite?.codigo}</td>
+                        <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
+                        <td>${tramite?.tramite?.de}</td>
+                        <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
+                        <td>${tramite?.tramite?.prioridad?.descripcion}</td>
+                        <td>${tramite?.fechaLimiteRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
+                        <td>${tramite?.tramite?.padre?.codigo}</td>
 
-                    <td>${tramite?.tramite?.codigo}</td>
-                    <td>${tramite?.fechaRespuesta}</td>
-                    <td>${tramite?.tramite?.de}</td>
-                    <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
-                    <td></td>
-                    <td></td>
-                    <td>${tramite?.tramite?.estado}</td>
-                    <td>${tramite?.fechaLimiteRespuesta}</td>
-                    <td>${tramite?.tramite?.padre}</td>
-
-                </tr>
+                    </tr>
             </g:each>
 
             </tbody>
