@@ -25,8 +25,6 @@
             <g:each in="${tramites}" var="tramite">
 
                 <g:set var="type" value=""/>
-                <g:set var="estado" value=""/>
-                <g:set var="sinEstado" value=""/>
 
                 <g:if test="${idTramitesRecibidos.contains(tramite.tramite.id)}">
                     <g:set var="type" value="recibido"/>
@@ -42,7 +40,7 @@
                     <g:set var="type" value="pendiente pendienteRojo"/>
                 </g:if>
 
-                    <tr data-id="${tramite?.tramite?.id}" class="${type} ${tramite?.tramite?.estadoTramite?.codigo}">
+                    <tr data-id="${tramite?.tramite?.id}" class="${type} ${tramite?.tramite?.getEstadoBandeja(session.usuario)}">
                         <td>${tramite?.tramite?.codigo}</td>
                         <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                         <td>${tramite?.tramite?.de}</td>

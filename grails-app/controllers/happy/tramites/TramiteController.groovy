@@ -1,6 +1,7 @@
 package happy.tramites
 
 import groovy.json.JsonBuilder
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
 
@@ -284,6 +285,7 @@ class TramiteController extends happy.seguridad.Shield {
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def pxtTodos = []
+        def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
@@ -293,14 +295,16 @@ class TramiteController extends happy.seguridad.Shield {
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
 
-
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E003' || it?.tramite?.estadoTramite?.codigo == 'E004'){
+                pxtTramites.add(it)
+            }
+        }
         //------------------------------------------------
-
-
 
         def tramites = []
 
-        pxtTodos.each {
+        pxtTramites.each {
             if (it.tramite.estadoTramite == recibidos) {
                 tramites.add(it.tramite)
             }
@@ -321,7 +325,9 @@ class TramiteController extends happy.seguridad.Shield {
         def idTramites = []
 
         tramites.each {
-
+//
+//            println("--->>" + it?.getFechaLimite())
+//
             fechaEnvio = it.fechaEnvio
 
             prioridad = TipoPrioridad.get(it?.prioridad?.id).tiempo
@@ -337,6 +343,22 @@ class TramiteController extends happy.seguridad.Shield {
                 tramitesRecibidos++
                 idTramites.add(it.id)
             }
+
+
+            ////////////////////
+            def limite = it.fechaEnvio
+            if(limite){
+                use(TimeCategory) {
+                    if(limite.hours>13 || (limite.hours>12 && limite.minutes>30) )
+                        limite=limite+2.hours+15.hours+30.minutes
+                    else
+                        limite=limite+2.hours
+                }
+            }
+
+            println("limite"+ limite)
+//            ///////////////////////
+
         }
 
         return [tramitesRecibidos: tramitesRecibidos, idTramites: idTramites]
@@ -356,12 +378,12 @@ class TramiteController extends happy.seguridad.Shield {
 //        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
 
         //------------------------------------------------
-
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def pxtTodos = []
+        def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
@@ -371,11 +393,17 @@ class TramiteController extends happy.seguridad.Shield {
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
 
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E003'){
+                pxtTramites.add(it)
+            }
+        }
+
 
         //------------------------------------------------
 
 
-        pxtTodos.each {
+        pxtTramites.each {
             if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
@@ -432,6 +460,7 @@ class TramiteController extends happy.seguridad.Shield {
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def pxtTodos = []
+        def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
@@ -441,11 +470,16 @@ class TramiteController extends happy.seguridad.Shield {
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
 
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E003'){
+                pxtTramites.add(it)
+            }
+        }
 
         //------------------------------------------------
 
 
-        pxtTodos.each {
+        pxtTramites.each {
             if (it.tramite.estadoTramite == pendientes) {
                 totalPendientes.add(it.tramite)
             }
@@ -466,12 +500,12 @@ class TramiteController extends happy.seguridad.Shield {
 
 
         //------------------------------------------------
-
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def pxtTodos = []
+        def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
@@ -481,6 +515,12 @@ class TramiteController extends happy.seguridad.Shield {
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
 
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E003'){
+                pxtTramites.add(it)
+            }
+        }
+
 
         //------------------------------------------------
 
@@ -488,7 +528,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         def tramitesRetrasados = []
 
-        pxtTodos.each {
+        pxtTramites.each {
             if (it.tramite.estadoTramite == recibidos) {
                 tramitesRetrasados.add(it.tramite)
             }
@@ -619,22 +659,31 @@ class TramiteController extends happy.seguridad.Shield {
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
+//        def estadoEnviado = EstadoTramite.findByCodigo('E003')
+
         def pxtTodos = []
+        def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
         def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
 
+
         pxtTodos = pxtPara
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
 
-//        println("todos:" + pxtTodos)
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E003' || it?.tramite?.estadoTramite?.codigo == 'E004'){
+                pxtTramites.add(it)
+            }
+        }
+//        println("todos:" + pxtTramites)
 
-        def tramitesRecibidos = pxtTodos.size()
+        def tramitesRecibidos = pxtTramites.size()
 
 
-        return [tramites: pxtTodos, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+        return [tramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
     }
 
 
@@ -691,7 +740,7 @@ class TramiteController extends happy.seguridad.Shield {
         Date nuevaFecha
 
         tramitesEnviados.each {
-
+            println("fecha:" + it?.getFechaLimite())
             fechaEnvio = it?.fechaEnvio
             fecha = fechaEnvio.getTime()
             nuevaFecha = new Date(fecha + dosHoras)
@@ -790,12 +839,23 @@ class TramiteController extends happy.seguridad.Shield {
 
     def guardarRecibir () {
 
-        def tramite = Tramite.get(params.id)
-        def estado = EstadoTramite.get(4)
-        def pxt = PersonaDocumentoTramite.findByTramite(tramite)
+        def persona = session.usuario
 
-        tramite.estadoTramite = estado
+
+        def tramite = Tramite.get(params.id)
+        def para = tramite.getPara().persona
+
+        def estado = EstadoTramite.get(4)
+        def pxt = PersonaDocumentoTramite.findByTramiteAndPersona(tramite,persona)
+
+        if(persona.id == para.id){
+            tramite.estadoTramite = estado
+        }
+
         pxt.fechaRecepcion = new Date()
+
+        tramite.save(flush: true)
+        pxt.save(flush: true)
 
         if (!tramite.save(flush: true)) {
             render "Ocurrió un error al recibir"
