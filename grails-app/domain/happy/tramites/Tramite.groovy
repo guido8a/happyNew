@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+
 class Tramite {
     Anio anio
     Tramite padre
@@ -87,53 +88,69 @@ class Tramite {
 
     }
 
-    def getPara(){
-        def para = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("R001"))
-        if(para){
-            return [persona:para.persona,departamento:para.departamento]
-
-        }
-        return [persona:null,departamento: null]
+    def getPara() {
+//        def para = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R001"))
+//        if (para) {
+//            return [persona: para.persona, departamento: para.departamento]
+//
+//        }
+//        return [persona: null, departamento: null]
+        return PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R001"))
     }
-    def getCopias(){
-        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("R002"))
-        if(para){
+
+//    def getParaObj() {
+//        return PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R001"))
+//    }
+
+    def getCopias() {
+        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
+        if (para) {
             return copias
         }
         return []
     }
-    def getImprime(){
-        def impirme = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this,RolPersonaTramite.findByCodigo("I005"))
-        if(para){
+
+    def getImprime() {
+        def impirme = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("I005"))
+        if (para) {
             return impirme
         }
         return []
     }
 
 
-    def getFechaLimite(){
+    def getFechaLimite() {
         def limite = this.fechaEnvio
-        if(limite){
+        if (limite) {
             use(TimeCategory) {
-                if(limite.hours>13 || (limite.hours>12 && limite.minutes>30) )
-                    limite=limite+2.hours+15.hours+30.minutes
+                if (limite.hours > 13 || (limite.hours > 12 && limite.minutes > 30))
+                    limite = limite + 2.hours + 15.hours + 30.minutes
                 else
-                    limite=limite+2.hours
+                    limite = limite + 2.hours
             }
             return limite
         }
         return null
-
     }
 
-    def getEstadoBandeja(persona){
+    def getFechaMaximoRespuesta() {
+        def fechaRecepcion = this.para?.fechaRecepcion
+        if (fechaRecepcion) {
+            def limite = fechaRecepcion
+            use(TimeCategory) {
+                limite = limite + this.prioridad.tiempo.hours
+            }
+            return limite
+        }
+        return null
+    }
 
-        def prtr = PersonaDocumentoTramite.findByTramiteAndPersona(this,persona)
-        if(prtr.fechaRecepcion){
+    def getEstadoBandeja(persona) {
+        def prtr = PersonaDocumentoTramite.findByTramiteAndPersona(this, persona)
+        if (prtr.fechaRecepcion) {
             return "E004"
-        }else{
+        } else {
             return "E003"
         }
-
     }
 }

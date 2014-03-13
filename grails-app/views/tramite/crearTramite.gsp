@@ -12,12 +12,12 @@
         }
 
         li {
-            border-bottom : solid 1px #0088CC;
-            margin-left   : 20px;
         }
 
         .selectable li {
             cursor : pointer;
+            border-bottom : solid 1px #0088CC;
+            margin-left   : 20px;
         }
 
         .selectable li:hover {
@@ -84,12 +84,10 @@
                     </div>
 
                     <g:if test="${padre}">
-
                         <div class="col-xs-3 negrilla">
                             Padre:
-                        <input type="text" name="padre" class="form-control label-shared" id="padre"  value="${padre?.codigo}" disabled/>
+                            <input type="text" name="padre" class="form-control label-shared" id="padre" value="${padre?.codigo}" disabled/>
                         </div>
-
                     </g:if>
 
 
@@ -275,7 +273,18 @@
                 </legend>
 
                 <ul id="ulSeleccionados" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
-
+                    %{--<g:each in="${cc}" var="disp">--}%
+                    %{--<g:if test="${disp.persona}">--}%
+                    %{--<li data-id="${disp.persona.id}">--}%
+                    %{--<i class="fa fa-li fa-user"></i> ${disp.persona.toString()}--}%
+                    %{--</li>--}%
+                    %{--</g:if>--}%
+                    %{--<g:else>--}%
+                    %{--<li data-id="-${disp.departamento.id}">--}%
+                    %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
+                    %{--</li>--}%
+                    %{--</g:else>--}%
+                    %{--</g:each>--}%
                 </ul>
             </fieldset>
 
@@ -304,7 +313,9 @@
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
                 $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
+                <g:if test="${tramite.id && tramite.copias.size() == 0}">
                 $cc.prop('checked', false);
+                </g:if>
                 $tituloCopia.text("Con copia");
                 $divOrigen.addClass("hide");
                 switch (cod) {
@@ -391,8 +402,6 @@
 
                 var $selPara = $("#para").clone(true);
 
-                validarCheck();
-
                 $dir.change(function () {
                     var id = $(this).val();
                     var $div = $("#divBtnDir");
@@ -417,6 +426,8 @@
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc($selPara);
                 }).change();
+
+                validarCheck();
 
                 $(".selectable li").click(function () {
                     $(this).toggleClass("selected");

@@ -159,10 +159,13 @@ class UtilitariosTagLib {
 
     def textoTramite = { attrs ->
         def tramite = Tramite.get(attrs.tramite)
-        if(tramite.texto)
+        if (tramite.texto)
             out << util.clean(str: tramite.texto)
         else
-            out<<""
+            out << ""
     }
 
+    def renderHTML = { attrs ->
+        out << attrs.html
+    }
 }

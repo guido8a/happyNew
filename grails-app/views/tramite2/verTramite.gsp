@@ -5,7 +5,7 @@
     <link href='${resource(dir: "css", file: "CustomSvt.css")}' rel='stylesheet' type='text/css'>
     <title>Ver tramite</title>
     <style>
-    .col-xs-un-medio{
+    .col-xs-uno-y-medio {
         width: 110px !important;
         line-height: 37px;
         padding-left: 3px;
@@ -49,7 +49,7 @@
     <div class="linea"></div>
 
     <div class="row">
-        <div class="col-xs-1 col-xs-un-medio negrilla">
+        <div class="col-xs-1 col-xs-uno-y-medio negrilla">
             Creado por:
         </div>
         <div class="col-xs-12 negrilla">
@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-1 col-xs-un-medio negrilla">
+        <div class="col-xs-1 col-xs-uno-y-medio negrilla">
             Para:
         </div>
         <div class="col-xs-4 negrilla" style="padding-left: 0px">
@@ -86,7 +86,7 @@
     %{--</div>--}%
     %{--</div>--}%
     <div class="row">
-        <div class="col-xs-1 col-xs-un-medio negrilla">
+        <div class="col-xs-1 col-xs-uno-y-medio negrilla">
             Código:
         </div>
         <div class="col-xs-3 negrilla" style="padding: 0px">
@@ -107,7 +107,7 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-1 col-xs-un-medio negrilla">
+        <div class="col-xs-1 col-xs-uno-y-medio negrilla">
             Asunto:
         </div>
         <div class="col-xs-10 negrilla" style="padding: 0px">
