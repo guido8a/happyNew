@@ -388,7 +388,7 @@
                         success: function (msg){
                             var b = bootbox.dialog({
                                 id: "dlgRecibido",
-                                title: "Trámite ha ser recibido",
+                                title: "Trámite a ser recibido",
                                 message: msg,
                                 buttons : {
                                     cancelar : {

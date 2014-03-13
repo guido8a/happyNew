@@ -20,10 +20,10 @@
 
         <div class="container-celdasAcc">
             <div id="celdas">
-                <table class=" table table-bordered table-condensed">
+                <table class=" table table-bordered table-condensed" id="tablaAcc">
                     <tbody>
                         <g:each in="${accesos}" var="acceso">
-                            <tr data-id="${acceso.id}" class="${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">
+                            <tr data-id="${acceso.id}" class="rowAcc ${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">
                                 <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy")}</td>
                                 <td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy")}</td>
                                 <td class="col300">${acceso.accsObservaciones}</td>
@@ -50,7 +50,7 @@
                 id = $tr.data("id");
             }
         });
-        context.attach('tbody>tr', [
+        context.attach('.rowAcc', [
             {
                 header : 'Acciones'
             },

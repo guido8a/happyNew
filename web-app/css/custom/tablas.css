@@ -30,6 +30,8 @@ th a:hover, th a:focus {
     color : #ffc766;
 }
 
-tr.trHighlight, tr.trHighlight td, td.trHighlight {
-    background: #ffc766 !important;
+tr.trHighlight, tr.trHighlight td, td.trHighlight, .trHighlight {
+    color      : #444444;
+    background : #ffc766 !important;
 }
+

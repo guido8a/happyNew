@@ -109,6 +109,12 @@ input.help-block, select.help-block, textarea.help-block {
     border-color     : #d0d0d0;
 }
 
+.alert-azul {
+    color            : #3A87AD;
+    background-color : #BCE8F1;
+    border-color     : #81C2CF;
+}
+
 .tituloTramite {
     margin-top     : 5px;
     margin-bottom  : 5px;
@@ -128,5 +134,5 @@ input.help-block, select.help-block, textarea.help-block {
     /*padding-left   : 15px;*/
     /*padding-top    : 20px;*/
     /*padding-bottom : 20px;*/
-    border         : black dotted 1px
+    border : black dotted 1px
 }

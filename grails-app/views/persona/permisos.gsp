@@ -21,10 +21,10 @@
 
         <div class="container-celdasPerm">
             <div id="celdas">
-                <table class=" table table-bordered table-condensed">
+                <table class=" table table-bordered table-condensed" id="tablaPerm">
                     <tbody>
                         <g:each in="${permisos}" var="permiso">
-                            <tr data-id="${permiso.id}" class="${permiso.estado == 'A' ? 'success' : permiso.estado == 'F' ? 'active' : 'danger'}">
+                            <tr data-id="${permiso.id}" class="rowPerm ${permiso.estado == 'A' ? 'success' : permiso.estado == 'F' ? 'active' : 'danger'}">
                                 <td class="col200">${permiso.permisoTramite.descripcion}</td>
                                 <td class="col100">${permiso.fechaInicio.format("dd-MM-yyyy")}</td>
                                 <td class="col100">${permiso.fechaFin ? permiso.fechaFin.format("dd-MM-yyyy") : ""}</td>
@@ -50,9 +50,10 @@
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
+//                console.log(id)
             }
         });
-        context.attach('tbody>tr', [
+        context.attach('.rowPerm', [
             {
                 header : 'Acciones'
             },

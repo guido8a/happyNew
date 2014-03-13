@@ -12,7 +12,7 @@
 </head>
 
 <body>
-<label>Trámite  ha ser recibido: </label> ${tramite?.codigo} <br>
+<label>Trámite a ser recibido: </label> ${tramite?.codigo} <br>
 <label>Está seguro que desea recibir este trámite?</label>
 
 </body>

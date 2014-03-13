@@ -1,5 +1,6 @@
 package happy.tramites
 
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
 class Tramite3Controller extends happy.seguridad.Shield {
@@ -239,4 +240,128 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return html
     }
 
+    def bandejaEntradaDpto() {
+        def usu = Persona.get(session.usuario.id)
+        def triangulo = PermisoTramite.findByCodigo("E001")
+        def tienePermiso = PermisoUsuario.withCriteria {
+            eq("persona", usu)
+            eq("permisoTramite", triangulo)
+            lt("fechaInicio", new Date())
+            or {
+                gt("fechaFin", new Date())
+                isNull("fechaFin")
+            }
+        }
+        if (tienePermiso.size() == 0) {
+            redirect(controller: "tramite", action: "bandejaEntrada")
+            return
+        }
+        return [persona: usu]
+    }
+
+    def tablaBandejaEntradaDpto() {
+        def persona = Persona.get(session.usuario.id)
+        def departamento = persona?.departamento
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+
+        def pxtTodos
+
+        def pxtPara = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolPara)
+            isNotNull("fechaEnvio")
+        }
+        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolCopia)
+            isNotNull("fechaEnvio")
+        }
+        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolImprimir)
+            isNotNull("fechaEnvio")
+        }
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+        return [persona: persona, tramites: pxtTodos]
+    }
+
+    def recibirTramite() {
+        def persona = Persona.get(session.usuario.id)
+
+        def tramite = Tramite.get(params.id)
+        def para = tramite.para.departamento
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCC = RolPersonaTramite.findByCodigo("R002")
+        def rolImprimir = RolPersonaTramite.findByCodigo("I005")
+
+
+        def estado = EstadoTramite.findByCodigo('E004') //recibido
+        def pxt = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            eq("departamento", persona.departamento)
+            or {
+                eq("rolPersonaTramite", rolPara)
+                eq("rolPersonaTramite", rolCC)
+                eq("rolPersonaTramite", rolImprimir)
+            }
+        }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
+
+        if (pxt.size() > 1) {
+            flash.message = "ERROR"
+            println "mas de 1 PDT: ${pxt}"
+            redirect(action: "errores")
+            return
+        } else if (pxt.size() == 0) {
+            flash.message = "ERROR"
+            println "0 PDT"
+            redirect(action: "errores")
+        } else {
+            pxt = pxt.first()
+        }
+
+        if (persona.departamentoId == para.id) {
+            tramite.estadoTramite = estado
+        }
+
+        def hoy = new Date()
+        def limite = hoy
+        use(TimeCategory) {
+            limite = limite + tramite.prioridad.tiempo.hours
+        }
+
+        pxt.fechaRecepcion = hoy
+        pxt.fechaLimiteRespuesta = limite
+
+        if (pxt.save(flush: true) && tramite.save(flush: true)) {
+            def pdt = new PersonaDocumentoTramite([
+                    tramite: tramite,
+                    persona: persona,
+                    rolPersonaTramite: RolPersonaTramite.findByCodigo("E003"),
+                    fechaRecepcion: hoy,
+                    fechaLimiteRespuesta: limite
+            ])
+            if (pdt.save(flush: true)) {
+                render "OK_Trámite recibido correctamente"
+            } else {
+                println pdt.errors
+                render "NO_Ocurrió un error al recibir"
+            }
+        } else {
+            println pxt.errors
+            println tramite.errors
+            render "NO_Ocurrió un error al recibir"
+        }
+    }
+
+
+    def errores() {
+        return [params: params]
+    }
 }

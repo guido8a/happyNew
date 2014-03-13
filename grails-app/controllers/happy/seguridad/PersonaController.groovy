@@ -372,10 +372,10 @@ class PersonaController extends happy.seguridad.Shield {
     def terminarPermiso_ajax() {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date().clearTime()
-        if (perm.fechaFin <= now) {
+        if (perm.fechaFin && perm.fechaFin <= now) {
             render "OK_El permiso ya ha caducado, no puede terminarlo de nuevo."
         } else {
-            if (perm.fechaInicio <= now && perm.fechaFin >= now) {
+            if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
                 perm.fechaFin = now
                 if (!perm.save(flush: true)) {
                     render "NO_" + renderErrors(bean: perm)
@@ -391,10 +391,10 @@ class PersonaController extends happy.seguridad.Shield {
     def eliminarPermiso_ajax() {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date()
-        if (perm.fechaFin <= now) {
+        if (perm.fechaFin && perm.fechaFin <= now) {
             render "OK_El permiso ya ha caducado, no puede ser eliminado."
         } else {
-            if (perm.fechaInicio <= now && perm.fechaFin >= now) {
+            if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
                 render "NO_No puede eliminar un permiso en curso. Puede terminarlo."
             } else {
                 try {
@@ -424,7 +424,7 @@ class PersonaController extends happy.seguridad.Shield {
         if (accs.accsFechaFinal <= now) {
             render "OK_La restricción ya ha terminado, no puede terminarla de nuevo."
         } else {
-            if (accs.accsFechaInicial <= now && accs.accsFechaFinal >= now) {
+            if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 accs.accsFechaFinal = now
                 if (!accs.save(flush: true)) {
                     render "NO_" + renderErrors(bean: accs)
@@ -443,7 +443,7 @@ class PersonaController extends happy.seguridad.Shield {
         if (accs.accsFechaFinal <= now) {
             render "OK_La restricción ya ha terminado, no puede ser eliminada."
         } else {
-            if (accs.accsFechaInicial <= now && accs.accsFechaFinal >= now) {
+            if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 render "NO_No puede eliminar una restricción en curso. Puede terminarla."
             } else {
                 try {
