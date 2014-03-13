@@ -11,7 +11,7 @@
         <title><g:layoutTitle default="Happy"/></title>
 
         <!-- Bootstrap core CSS -->
-        <link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.happy1.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.spacelab.css')}" rel="stylesheet">
 
         <!-- FontAwsome y mFizz: las fuentes con dibujitos para los iconos -->
         <link href="${resource(dir: 'font-awesome-4.0.3/css', file: 'font-awesome.min.css')}" rel="stylesheet">

@@ -14,6 +14,14 @@
         .current {
             background : #FFAB1A;
         }
+
+        #detalle tr {
+            cursor : pointer;
+        }
+
+        #detalle tr:hover, .selected {
+            background : #EFDFC2;
+        }
         </style>
     </head>
 
@@ -124,14 +132,46 @@
             </div>
         </div>
 
-        <div style="margin-top: 30px;" class="vertical-container">
+        <div style="margin-top: 0;" class="vertical-container">
             <p class="css-vertical-text">Seguimiento</p>
 
             <div class="linea"></div>
 
-            <div id="detalle" style="width: 95%;height: 400px;overflow: auto;margin-left:18px ;margin-top: 20px;margin-bottom: 20px;border: 1px solid #000000">
+            <div id="detalle" style="width: 95%;height: 300px;overflow: auto;margin-left:18px ;margin-top: 20px;margin-bottom: 20px;border: 1px solid #000000">
                 <util:renderHTML html="${html}"/>
             </div>
+
+            <div id="info" class="ui-helper-hidden">
+                <div class="row">
+                    <div class="col-xs-1 negrilla">
+                        Asunto:
+                    </div>
+
+                    <div class="col-xs-11 text-primary" style="padding: 0" id="divAsunto">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-1 negrilla">
+                        Observaciones:
+                    </div>
+
+                    <div class="col-xs-11 text-primary" style="padding: 0" id="divObservaciones">
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script type="text/javascript">
+            $(function () {
+                $("#detalle").find("tr").click(function () {
+                    $(".selected").removeClass("selected");
+                    $(this).addClass("selected");
+                    $("#divAsunto").html($(this).data("asunto"));
+                    $("#divObservaciones").html($(this).data("observaciones"));
+                    $("#info").show();
+                });
+            });
+        </script>
     </body>
 </html>
