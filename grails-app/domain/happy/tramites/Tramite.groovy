@@ -153,4 +153,16 @@ class Tramite {
             return "E003"
         }
     }
+
+    def getFechaBloqueo(){
+        if(this.estadoTramite.codigo!="E003"){
+            return null
+        }else{
+            def limite = this.fechaLimite
+            use(TimeCategory) {
+                    limite = limite + 48.hours
+            }
+            return limite
+        }
+    }
 }

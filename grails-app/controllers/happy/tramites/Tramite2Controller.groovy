@@ -37,15 +37,35 @@ class Tramite2Controller extends happy.seguridad.Shield{
     }
 
     def revisar(){
-        /*todo validar que sea el jefe*/
-        def tramite = Tramite.get(params.id)
-        if(tramite.estadoTramite.codigo=="E001"){
-            tramite.estadoTramite=EstadoTramite.findByCodigo("E002")
+
+        if(request.getMethod()=="POST"){
+            def tramite = Tramite.get(params.id)
+            /*validaciones*/
+            def user = Persona.get(session.usuario.id)
+            def msg =""
+            def band = true
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(user,PermisoTramite.findByCodigo("P005"))
+            if(tramite.de.departamento.id!=user.departamento.id ){
+                band=false
+            }
+            if(user.jefe!=1 && !per )
+                band=false
+            if(band){
+                if(tramite.estadoTramite.codigo=="E001"){
+                    tramite.estadoTramite=EstadoTramite.findByCodigo("E002")
+                }
+                if(tramite.save(flush: true))
+                    render "ok"
+                else
+                    render "error"
+            }else{
+                msg="Usted no tiene autorización para revisar este tramite"
+                render "error_"+msg
+            }
+
+        }else{
+            response.sendError(403)
         }
-        if(tramite.save(flush: true))
-            render "ok"
-        else
-            render "error"
     }
 
 
@@ -54,20 +74,65 @@ class Tramite2Controller extends happy.seguridad.Shield{
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        return [persona: persona]
+        def revisar = false
+        if(persona.jefe==1)
+            revisar=true
+        else{
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(persona,PermisoTramite.findByCodigo("P005"))
+            if(per)
+                revisar=true
+        }
+        return [persona: persona,revisar:revisar]
 
     }
 
     def tablaBandejaSalida() {
 //        println "carga bandeja"
         def persona = Persona.get( session.usuario.id)
+        def tramites = []
         def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
-        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
+        if(persona.jefe==1){
+            Persona.findAllByDepartamento(persona.departamento).each {p->
+                def t =  Tramite.findAllByDeAndEstadoTramiteInList(p,estados,[sort:"fechaCreacion",order:"desc"])
+                if(t.size()>0)
+                    tramites+=t
+            }
+        }else{
+            tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
+        }
+
+
 
         return [persona: persona, tramites: tramites,idTramitesNoRecibidos:[] ]
     }
 
     //alertas
+
+    def enviar(){
+//        println "method "+request.getMethod()
+        if(request.getMethod()=="POST"){
+            def msg =""
+            def tramite = Tramite.get(params.id)
+            if(tramite.de.id!=session.usuario.id){
+                msg="No puede enviar tramites creados por otro usuario"
+                render "error_"+msg
+                return
+            }else{
+                def envio = new Date()
+                PersonaDocumentoTramite.findAllByTramite(tramite).each{t->
+                    t.fechaEnvio=envio
+                    t.save(flush: true)
+                }
+                tramite.fechaEnvio=envio
+                tramite.estadoTramite=EstadoTramite.findByCodigo('E003')
+                if(tramite.save(flush: true))
+                    render "ok"
+            }
+        }else{
+            response.sendError(403)
+        }
+
+    }
 
 
 

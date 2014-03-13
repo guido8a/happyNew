@@ -54,7 +54,7 @@
         overflow-y: auto;
     }
     .enviado{
-        background-color:#c5c5c5 ;
+        background-color:#e0e0e0 ;
         border:1px solid #a5a5a5 ;
     }
     .borrador{
@@ -71,7 +71,7 @@
         background-color: #FFFFCC! important;
     }
     tr.E003, tr.enviado td {
-        background-color: #c5c5c5 ! important;
+        background-color: #e0e0e0 ! important;
     }
     tr.alerta, tr.alerta td {
         background-color: #f2c1b9;
@@ -276,17 +276,17 @@
             });
 
         })
+
+        var estado
+        var de
         context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
-                var estado = $tr.attr("estado");
-
-
-
-
+                estado = $tr.attr("estado");
+                de = $tr.attr("de");
             }
         });
 
@@ -311,7 +311,8 @@
                     location.href="${g.createLink(action: 'redactar',controller: 'tramite')}/"+id
                 }
 
-            },
+            }
+            <g:if test="${revisar}">,
             {
                 text: 'Revisar',
                 icon: "<i class='fa fa-check'></i>",
@@ -321,6 +322,7 @@
                 }
 
             }
+            </g:if>
         ]);
         context.attach(".E002", [
             {
@@ -340,7 +342,34 @@
                 icon: "<i class='fa fa-pencil'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'enviar',controller: 'tramite2')}/"+id
+                    if(de!="${persona.id}"){
+                        bootbox.alert("Solo la persona que creo que documento puede enviarlo")
+                    }else{
+                        bootbox.confirm("Esta seguro?",function(result){
+                            if(result){
+                                openLoader()
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
+                                    data    : "id="+id,
+                                    success : function (msg) {
+                                        closeLoader()
+                                        if(msg=="ok"){
+                                            bootbox.alert("Documento enviado.")
+                                            cargarBandeja(false)
+                                        }else{
+                                            var mensaje = msg.split("_")
+                                            mensaje = mensaje[1]
+                                            bootbox.alert(mensaje)
+                                        }
+                                    }
+                                });
+                            }
+
+                        })
+
+                    }
+
                     /*ajax aqui*/
                 }
 

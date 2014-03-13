@@ -8,6 +8,7 @@ class Departamento {
     String telefono
     String extension
     String direccion
+    String estado /*para controlar los bloqueos*/
     static mapping = {
         table 'dpto'
         cache usage: 'read-write', include: 'non-lazy'
@@ -23,6 +24,7 @@ class Departamento {
             telefono column: 'dptotelf'
             extension column: 'dptoextn'
             direccion column: 'dptodire'
+            estado column: 'dptoetdo'
         }
     }
     static constraints = {
@@ -33,6 +35,7 @@ class Departamento {
         telefono(maxSize: 15, blank: true, nullable: true, attributes: [title: 'telefono'])
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
+        estado(blank: true,nullable: true,size: 1..1)
     }
     String toString(){
         return "${this.descripcion}"

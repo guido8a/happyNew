@@ -89,6 +89,7 @@ class LoginController {
     }
 
     def validar() {
+//        println "valida "+params
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
             eq("password", params.pass.encodeAsMD5())
@@ -103,11 +104,14 @@ class LoginController {
             user = user[0]
             session.usuario = user
             def perfiles = Sesn.findAllByUsuario(user)
+//            println "perfiles ? "+perfiles
             if (perfiles.size() == 0) {
-                flash.message = "No puede ingresar. Comuníquese con el administrador."
+                flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
                 flash.tipo = "error"
-                flash.icon = "icon-splatter"
+                flash.icon = "icon-warning"
+                session.usuario=null
             } else if (perfiles.size() == 1) {
+
                 session.perfil = perfiles.first().perfil
                 def cn = "inicio"
                 def an = "index"

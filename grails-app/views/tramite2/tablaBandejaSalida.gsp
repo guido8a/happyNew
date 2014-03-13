@@ -3,6 +3,7 @@
     <thead>
     <tr>
         <th class="cabecera">Documento</th>
+        <th>De</th>
         <th class="cabecera">Fec. Creación</th>
         <th class="cabecera">Para</th>
         <th class="cabecera">Destinatario</th>
@@ -15,8 +16,9 @@
     <tbody>
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
-        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}">
+        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
             <td>${tramite?.codigo}</td>
+            <td>${tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
             <g:set var="para" value="${tramite.getPara()}"/>
             <td >${para.departamento?.codigo}</td>
