@@ -31,7 +31,7 @@ environments {
             dbCreate = "update"
             url = "jdbc:postgresql://127.0.0.1:5432/happy"
             username = "postgres"
-            password = "postgres"
+            password = "janus"
         }
     }
 }
