@@ -103,6 +103,8 @@ class LoginController {
         } else {
             user = user[0]
             session.usuario = user
+            session.departamento = user.departamento
+            println "session dep "+session.departamento.id
             def perfiles = Sesn.findAllByUsuario(user)
 //            println "perfiles ? "+perfiles
             if (perfiles.size() == 0) {

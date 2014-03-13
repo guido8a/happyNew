@@ -90,12 +90,6 @@
 
 <body>
 
-
-<div id="modalTabelGray"></div>
-
-
-
-
 <div class="row" style="margin-top: 0px; margin-left: 1px">
     <span class="grupo">
         <label class="well well-sm"
@@ -196,32 +190,13 @@
 %{--//bandeja--}%
 
 
-<div id="bandeja" style=";height: 600px;overflow: auto">
+<div id="" style=";height: 600px;overflow: auto;position: relative">
+    <div class="modalTabelGray" id="bloqueo-salida"></div>
+    <div id="bandeja"></div>
 
 </div>
 
 
-
-<script>
-    $(function () {
-        var cellWidth = 150;
-        var celHegth = 25;
-        var select = null;
-        var headerTop = $(".header-columnas");
-//        var headerLeft=$(".header-filas");
-
-        $(".h-A").resizable({
-            handles: "e",
-            minWidth: 30,
-            alsoResize: ".A"
-        });
-        $(".container-celdas").scroll(function () {
-//            $("#container-filas").scrollTop($(".container-celdas").scrollTop());
-            $("#container-cols").scrollLeft($(".container-celdas").scrollLeft());
-        });
-
-    });
-</script>
 
 <script type="text/javascript">
 
@@ -261,6 +236,10 @@
 
     $(function () {
 
+        <g:if test="${bloqueo}">
+        $("#bloqueo-salida").show()
+        </g:if>
+
         $(".alertas").click(function(){
 
             var clase = $(this).attr("clase")
@@ -289,7 +268,7 @@
                 de = $tr.attr("de");
             }
         });
-
+        <g:if test="${!bloqueo}">
         context.attach(".E001", [
             {
                 header: 'Acciones'
@@ -357,6 +336,7 @@
                                         if(msg=="ok"){
                                             bootbox.alert("Documento enviado.")
                                             cargarBandeja(false)
+                                            location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id
                                         }else{
                                             var mensaje = msg.split("_")
                                             mensaje = mensaje[1]
@@ -389,12 +369,7 @@
 
             }
         ]);
-        context.attach(".alerta", [
-            {
-                header: 'Sistema bloqueado'
-            }
-        ]);
-
+        </g:if>
         $(".btnBuscar").click(function () {
             $(".buscar").attr("hidden", false)
         });
@@ -441,8 +416,6 @@
                 success: function (msg) {
                     clearInterval(interval)
                     $("#bandeja").html(msg);
-
-
                 }
 
             });

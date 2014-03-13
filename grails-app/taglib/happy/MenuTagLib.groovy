@@ -7,6 +7,7 @@ class MenuTagLib {
         def items = [:]
         def usuario = session.usuario
         def perfil = session.perfil
+        def dpto = session.departamento
         def strItems = ""
         if (!attrs.title) {
             attrs.title = "Happy"
@@ -55,7 +56,7 @@ class MenuTagLib {
         }
 
         def html = ""
-        html += '<nav class="navbar navbar-fixed-top navbar-inverse hidden-print">'
+        html += '<nav class="navbar navbar-fixed-top navbar-inverse hidden-print ">'
         html += '<div class="container" style="min-width: 1000px !important;">'
         //<!-- Brand and toggle get grouped for better mobile display -->
         html += '<div class="navbar-header">'

@@ -107,6 +107,19 @@ a.btn-azul:hover {
     color       : #ffffff;
     border      : 1px solid #327BbA;
     text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);
-
+}
+.modalTabelGray {
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-color:#000000;
+    filter:alpha(opacity=60);
+    opacity:0.6;
+    -moz-opacity:0.6;
+    z-index:1060;
+    margin-top: -70px;
+    display: none;
+    text-align:center;
+    vertical-align:middle;
 }
 

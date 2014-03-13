@@ -75,6 +75,10 @@ class Tramite2Controller extends happy.seguridad.Shield{
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def revisar = false
+        def bloqueo = false
+        if(session.departamento.estado=="B")
+            bloqueo=true
+        println "bloqueo "+bloqueo
         if(persona.jefe==1)
             revisar=true
         else{
@@ -82,7 +86,7 @@ class Tramite2Controller extends happy.seguridad.Shield{
             if(per)
                 revisar=true
         }
-        return [persona: persona,revisar:revisar]
+        return [persona: persona,revisar:revisar,bloqueo:bloqueo]
 
     }
 
@@ -110,24 +114,28 @@ class Tramite2Controller extends happy.seguridad.Shield{
 
     def enviar(){
 //        println "method "+request.getMethod()
+        /*todo sin validacion alguna... que envie no mas cualquiera*/
         if(request.getMethod()=="POST"){
             def msg =""
             def tramite = Tramite.get(params.id)
-            if(tramite.de.id!=session.usuario.id){
-                msg="No puede enviar tramites creados por otro usuario"
-                render "error_"+msg
-                return
-            }else{
-                def envio = new Date()
-                PersonaDocumentoTramite.findAllByTramite(tramite).each{t->
-                    t.fechaEnvio=envio
-                    t.save(flush: true)
-                }
-                tramite.fechaEnvio=envio
-                tramite.estadoTramite=EstadoTramite.findByCodigo('E003')
-                if(tramite.save(flush: true))
-                    render "ok"
+            def envio = new Date()
+
+            PersonaDocumentoTramite.findAllByTramite(tramite).each{t->
+                t.fechaEnvio=envio
+                t.save(flush: true)
             }
+            def pdt = new PersonaDocumentoTramite()
+            pdt.tramite=tramite
+            pdt.persona=session.usuario
+            pdt.departamento=session.departamento
+            pdt.fechaEnvio = envio
+            pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+            pdt.save(flush: true)
+            tramite.fechaEnvio=envio
+            tramite.estadoTramite=EstadoTramite.findByCodigo('E003')
+            if(tramite.save(flush: true))
+                render "ok"
+
         }else{
             response.sendError(403)
         }
@@ -161,6 +169,23 @@ class Tramite2Controller extends happy.seguridad.Shield{
         return [tramites: res]
 
 
+    }
+
+    def verRezagados(){
+        def dep = session.departamento
+        def tramites =[]
+        def ahora = new Date().plus(2)
+        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
+            if(pdt.tramite.de.departamento.id==dep.id)
+                println "pdt --> "+pdt.id+" tramite "+pdt.tramite.id+" - ${pdt.tramite.de.departamento.descripcion} "+pdt.fechaEnvio+"  "+pdt.departamento+"   "+pdt.persona
+            println "fecha bloqueo "+pdt.tramite.fechaBloqueo
+            def fechaBloqueo = pdt.tramite.fechaBloqueo
+            if(fechaBloqueo && fechaBloqueo<ahora){
+                println "add tramites "+pdt
+                tramites.add(pdt)
+            }
+        }
+        [tramites:tramites ]
     }
 
 }
