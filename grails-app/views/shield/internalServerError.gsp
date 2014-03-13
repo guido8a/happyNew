@@ -14,7 +14,7 @@
 
     <body>
 
-        <div class="alert alert-danger">
+        <div class="alert alert-danger text-shadow">
             <i class="fa fa-exclamation-triangle fa-4x pull-left"></i>
 
             <h1 class="text-danger tituloError">Ha ocurrido un error interno</h1>

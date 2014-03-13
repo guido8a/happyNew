@@ -7,20 +7,23 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-<head>
-    <meta name="layout" content="main">
-    <title>Forbidden</title>
-</head>
+    <head>
+        <meta name="layout" content="main">
+        <title>No disponible</title>
+    </head>
 
-<body>
+    <body>
 
-<div class="row" style="margin-top: 0px; margin-left: 200px">
-    <span class="grupo">
-        <label class="alert alert-danger"
-               style="text-align: center; float: left"><i class="fa fa-exclamation-triangle fa-4x"></i> Esta pantalla no se encuentra disponible </label>
-    </span>
-</div>
+        <div class="alert alert-warning text-shadow">
+            <i class="fa fa-ban fa-4x pull-left"></i>
 
+            <h1 class="text-warning tituloError">Ha ocurrido un error</h1>
 
-</body>
+            <p style="font-size: 16px; margin-top: 25px;">La página solicitada no está disponible.</p>
+
+            <p style="font-size: 16px; margin-top: 25px;">Por favor utilice el menú de navegación para acceder a
+            las diferentes pantallas del sistema.</p>
+        </div>
+
+    </body>
 </html>

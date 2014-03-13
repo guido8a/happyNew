@@ -2,7 +2,7 @@ package happy.tramites
 
 import happy.seguridad.Persona
 
-class Tramite3Controller {
+class Tramite3Controller extends happy.seguridad.Shield {
     def save() {
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
@@ -199,7 +199,7 @@ class Tramite3Controller {
         html += "</tr>"
         html += "</thead>"
         html += "<tbody>"
-        html += creaHtmlSeguimiento(primerTramite, tramite)
+        html += creaHtmlSeguimiento(primerTramite, tramite, "62, 100, 141")
         html += "</tbody>"
         html += "</table>"
 
@@ -208,14 +208,21 @@ class Tramite3Controller {
 
     def creaHtmlSeguimiento(Tramite tramite, Tramite selected, String colorAnterior) {
         def partsColor = colorAnterior.split(",")
-        def nr = partsColor[0].toInteger()+10
-        def ng = partsColor[1].toInteger()+10
-        def nb = partsColor[2].toInteger()+10
+        def nr = partsColor[0].toInteger() + 10
+        def ng = partsColor[1].toInteger() + 10
+        def nb = partsColor[2].toInteger() + 10
+        def nc = nr + "," + ng + "," + nb
         def html = ""
+//        def hijos = Tramite.findAllByPadreAndFechaEnvioIsNotNull(tramite)
         def hijos = Tramite.findAllByPadre(tramite)
         hijos.each { h ->
-            def hijos2 = Tramite.countByPadre(h)
-            html += "<tr class='hijo ${hijos2 > 0 ? 'padre' : ''} ${h == selected ? 'current' : ''}' data-id='${h.id}'>"
+            def hijos2 = Tramite.countByPadreAndFechaEnvioIsNotNull(h)
+            def style = ""
+            if (hijos2 > 0) {
+                style = " style='background: rgb(${nc})' "
+            }
+            html += "<tr ${style} class='hijo ${hijos2 > 0 ? 'padre' : ''} ${h == selected ? 'current' : ''}' " +
+                    "data-id='${h.id}' data-asunto='${h.asunto}' data-observaciones='${h.observaciones}'>"
             html += "<td>${h.codigo}</td>"
             html += "<td>${h.fechaEnvio ? h.fechaEnvio.format('dd-MM-yyyy HH:mm') : 'no enviado'}</td>"
             html += "<td title='${h.de.departamento.descripcion}'>${h.de.departamento.codigo}</td>"
@@ -227,7 +234,7 @@ class Tramite3Controller {
             html += "<td>${h.para.fechaRecepcion ? h.para.fechaRecepcion.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
             html += "<td>${h.estadoTramite.descripcion}</td>"
             html += "</tr>"
-            creaHtmlSeguimiento(h, selected)
+            creaHtmlSeguimiento(h, selected, nc)
         }
         return html
     }
