@@ -147,7 +147,7 @@ class Tramite {
 
     def getEstadoBandeja(persona) {
         def prtr = PersonaDocumentoTramite.findByTramiteAndPersona(this, persona)
-        if (prtr.fechaRecepcion) {
+        if (prtr?.fechaRecepcion) {
             return "E004"
         } else {
             return "E003"

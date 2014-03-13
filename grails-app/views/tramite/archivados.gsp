@@ -161,7 +161,7 @@
 </div>
 
 
-<div class="buscar" hidden="hidden">
+<div class="buscar" hidden="hidden" style="margin-bottom: 20px">
 
     <fieldset>
         <legend>Búsqueda</legend>
@@ -232,11 +232,6 @@
 
     $(function () {
 
-//        $(".btnCrear").click(function() {
-//            createEditRow();
-//            return false;
-//        });
-
         context.settings({
             onShow : function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
@@ -247,57 +242,10 @@
         });
         context.attach('tbody>tr', [
             {
-                header : 'Acciones'
+                header : 'Sin Acciones'
             },
-            {
-                text   : 'Contestar Documento',
-                icon   : "<i class='fa fa-comments-o'></i>",
-                action : function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    %{--$.ajax({--}%
-                    %{--type    : "POST",--}%
-                    %{--url     : "${createLink(action:'show_ajax')}",--}%
-                    %{--data    : {--}%
-                    %{--id : id--}%
-                    %{--},--}%
-                    %{--success : function (msg) {--}%
-                    %{--//                            bootbox.dialog({--}%
-                    %{--//                                title   : "Ver Año",--}%
-                    %{--//                                message : msg,--}%
-                    %{--//                                buttons : {--}%
-                    %{--//                                    ok : {--}%
-                    %{--//                                        label     : "Aceptar",--}%
-                    %{--//                                        className : "btn-primary",--}%
-                    %{--//                                        callback  : function () {--}%
-                    %{--//                                        }--}%
-                    %{--//                                    }--}%
-                    %{--//                                }--}%
-                    %{--//                            });--}%
-                    %{--}--}%
-                    %{--});--}%
-                }
-            },
-            {
-                text   : 'Archivar Documentos',
-                icon   : "<i class='fa fa-folder-open-o'></i>",
-                action : function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-//                    createEditRow(id);
-                }
 
-            }
-//            {divider : true},
-//            {
-//                text   : 'Eliminar',
-//                icon   : "<i class='fa fa-trash-o'></i>",
-//                action : function (e) {
-//                    $("tr.trHighlight").removeClass("trHighlight");
-//                    e.preventDefault();
-//                    deleteRow(id);
-//                }
-//            }
+
         ]);
     });
 
@@ -316,14 +264,11 @@
     });
 
     $(".btnActualizar").click(function () {
-
+        openLoader();
         cargarBandeja();
-
+        closeLoader();
         bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites actualizada!</label>')
-
         return false;
-
-
     });
 
 
@@ -376,11 +321,7 @@
                 clearInterval(interval)
                 $("#bandeja"). html(msg);
 
-
             }
-
-
-
         });
 
     });

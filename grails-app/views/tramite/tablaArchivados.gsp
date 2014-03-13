@@ -1,44 +1,40 @@
 <%--
   Created by IntelliJ IDEA.
   User: fabricio
-  Date: 1/22/14
-  Time: 12:38 PM
+  Date: 1/20/14
+  Time: 4:51 PM
 --%>
 
-
-<div style="margin-top: 10px; height: 450px"  class="container-celdas">
+<div style="height: 450px"  class="container-celdas">
     <span class="grupo">
-        <table class="table table-bordered table-striped table-condensed table-hover">
+        <table class="table table-bordered table-condensed table-hover">
             <thead>
             <tr>
+
                 <th class="cabecera">Documento</th>
                 <th class="cabecera">Fecha Recepción</th>
                 <th class="cabecera">De</th>
                 <th class="cabecera">Creado Por</th>
-                <th class="cabecera">Para</th>
-                <th class="cabecera">Destinatario</th>
                 <th class="cabecera">Prioridad</th>
-                <th class="cabecera">Fecha Límite</th>
-                <th class="cabecera">Doc. Principal</th>
+                <th class="cabecera">Fecha Respuesta</th>
+                <th class="cabecera">Doc. Padre</th>
             </tr>
 
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
 
+
                 <tr>
-                    <td>${tramite?.numero}</td>
-                    <td>${tramite?.fechaRespuesta}</td>
-                    <td>${tramite?.de}</td>
-                    <td>${tramite?.de?.departamento?.descripcion}</td>
-                    <td></td>
-                    <td></td>
-                    <td>${tramite?.estado}</td>
-                    <td>${tramite?.fechaLimiteRespuesta}</td>
-                    <td>${tramite?.padre}</td>
+                    <td>${tramite?.tramite?.codigo}</td>
+                    <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
+                    <td>${tramite?.tramite?.de}</td>
+                    <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
+                    <td>${tramite?.tramite?.prioridad?.descripcion}</td>
+                    <td>${tramite?.fechaLimiteRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
+                    <td>${tramite?.tramite?.padre?.codigo}</td>
+
                 </tr>
-
-
             </g:each>
 
             </tbody>
@@ -47,3 +43,4 @@
     </span>
 
 </div>
+

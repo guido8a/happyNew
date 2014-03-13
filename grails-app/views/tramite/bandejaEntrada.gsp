@@ -269,12 +269,82 @@
             }
         };
 
-        var archivar =             {
+        var seguimiento = {
+
+            text: 'Seguimiento Tramite',
+            icon: "<i class='fa fa-code-fork'></i>",
+            action: function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+
+                location.href="${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/"+id;
+            }
+
+        };
+
+        var archivar =  {
                     text: 'Archivar Documentos',
                     icon: "<i class='fa fa-folder-open-o'></i>",
                     action: function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
+                        $.ajax({
+                           type : "POST",
+                            url: "${createLink(controller: 'tramite', action: "revisarHijos")}/" + id,
+                            success: function (msg){
+                                console.log("mensaje" + msg)
+                                if(msg == 'ok'){
+                                    var b = bootbox.dialog({
+                                        id: "dlgArchivar",
+                                        title: 'Archivar Tramite',
+                                        message: "Desea archivar el siguiente tramite?",
+                                        buttons: {
+                                            cancelar : {
+                                               label : '<i class="fa fa-times"></i> Cancelar',
+                                                className : 'btn-danger',
+                                                callback :  function () {
+
+                                                }
+                                            },
+                                            archivar: {
+                                                id   : 'btnArchivar',
+                                                label : '<i class="fa fa-check"></i> Archivar',
+                                                className : "btn-success",
+                                                callback: function () {
+
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: '${createLink(action: 'archivar')}/'+ id,
+                                                        success : function (msg) {
+                                                            openLoader();
+                                                            cargarAlertaRecibidos();
+                                                            cargarAlertaPendientes();
+                                                            cargarAlertaRetrasados();
+                                                            cargarBandeja();
+                                                            closeLoader();
+                                                            bootbox.alert(msg)
+                                                        }
+
+
+                                                    });
+
+
+                                                }
+
+                                            }
+
+
+                                        }
+
+                                    })
+                                }else if (msg == 'no'){
+
+                                    bootbox.alert("Este tramite no puede ser archivado!")
+                                }
+
+                            }
+
+                        });
                     }
 
                 };
@@ -373,8 +443,9 @@
             },
                 contestar,
                 archivar,
+                seguimiento,
                 anular,
-                distribuir,
+
             {
 
                 text: 'Recibir Documento',
@@ -440,78 +511,11 @@
                 }
             },
 
-            {
-                text: 'Archivar Documentos',
-                icon: "<i class='fa fa-folder-open-o'></i>",
-                action: function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                }
 
-            },
+            archivar,
             anular,
-            {
-                text: 'Distribuir a Jefes',
-                icon: "<i class='fa fa-eye'></i>",
-                action: function (e){
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    $.ajax ({
-                        type : "POST",
-                        url  : "${createLink(action: 'observaciones')}/" + id,
-//                        data  : id,
-                        success :function (msg){
-                            var b = bootbox.dialog({
-                                id: "dlgObservaciones",
-                                title : "Distribución al Jefe: Observaciones",
-                                message : msg,
-                                buttons : {
-                                    cancelar : {
-                                        label  : "Cancelar",
-                                        className : 'btn-danger',
-                                        callback :  function () {
+            seguimiento
 
-                                        }
-
-                                    },
-                                    guardar : {
-                                        id   : 'btnSave',
-                                        label : '<i class="fa fa-save"></i> Guardar',
-                                        className : "btn-success",
-                                        callback: function () {
-
-                                            $.ajax({
-                                                type: 'POST',
-                                                url: '${createLink(action: 'guardarObservacion')}/'+ id,
-                                                data :{
-
-                                                    texto: $("#observacion").val()
-                                                },
-                                                success : function (msg) {
-
-                                                    bootbox.alert(msg)
-
-                                                }
-
-
-                                            });
-
-
-                                        }
-
-
-                                    }
-
-                                }
-
-                            })
-                        }
-                    });
-
-
-                }
-
-            }
 
         ]);
     });
