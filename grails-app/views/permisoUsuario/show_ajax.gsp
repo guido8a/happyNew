@@ -20,7 +20,7 @@
             
             
     </g:if>
-    
+</g:else>
 <g:if test="${!permisoUsuarioInstance}">
     <elm:notFound elem="PermisoUsuario" genero="o" />
 </g:if>
@@ -37,7 +37,8 @@
             
             
     </g:if>
-    
+</g:else>
+
 <g:if test="${!permisoUsuarioInstance}">
     <elm:notFound elem="PermisoUsuario" genero="o" />
 </g:if>
@@ -58,7 +59,7 @@
         </div>
         
     </g:if>
-    
+</g:else>
 <g:if test="${!permisoUsuarioInstance}">
     <elm:notFound elem="PermisoUsuario" genero="o" />
 </g:if>
