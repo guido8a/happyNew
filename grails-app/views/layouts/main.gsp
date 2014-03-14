@@ -119,7 +119,7 @@
             </a>
         </div>
         <div class="texto-bloqueo">
-            La bandeja de salida del departamento ${session.departamento} está bloqueada temporalmente debido a tramites rezagados.
+            La bandeja de salida del departamento ${session.departamento} está bloqueada temporalmente debido a trámites rezagados.
         </div>
         <a href="${g.createLink(controller: 'tramite2',action: 'verRezagados')}" class="" style="margin-top: 30px">Ver tramites rezagados</a>
     </div>
@@ -134,7 +134,7 @@
             </a>
         </div>
         <div class="texto-bloqueo">
-            El departamento ${session.departamento} tiene tramites por recibir que sobrepasan el tiempo máximo.
+            El departamento ${session.departamento} tiene trámites por recibir que sobrepasan el tiempo máximo.
         </div>
     </div>
 </g:if>
