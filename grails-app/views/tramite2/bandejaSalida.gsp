@@ -312,7 +312,7 @@
                 icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'verTramite',controller: 'tramite2')}/"+id
+                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
                 }
 
             },
