@@ -461,7 +461,7 @@
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
-                    location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
+                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
                 }
             },
             {
