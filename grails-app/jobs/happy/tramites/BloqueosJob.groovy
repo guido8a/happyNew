@@ -16,7 +16,7 @@ class BloqueosJob {
         def warning = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
             //println "pdt --> "+pdt.id+" tramite "+pdt.tramite.id+" - ${pdt.tramite.de.departamento.descripcion} "+pdt.fechaEnvio+"  "+pdt.departamento+"   "+pdt.persona
-            //println "fecha bloqueo "+pdt.tramite.fechaBloqueo
+            println "fecha bloqueo "+pdt.tramite.fechaBloqueo
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if(fechaBloqueo && fechaBloqueo<ahora){
               // println "add bloquear "+pdt.tramite.de.departamento.codigo
