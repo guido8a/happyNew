@@ -321,34 +321,32 @@
                 icon: "<i class='fa fa-pencil'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    if(de!="${persona.id}"){
-                        bootbox.alert("Solo la persona que creo que documento puede enviarlo")
-                    }else{
-                        bootbox.confirm("Esta seguro?",function(result){
-                            if(result){
-                                openLoader()
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
-                                    data    : "id="+id,
-                                    success : function (msg) {
-                                        closeLoader()
-                                        if(msg=="ok"){
-                                            bootbox.alert("Documento enviado.")
-                                            cargarBandeja(false)
-                                            location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id
-                                        }else{
-                                            var mensaje = msg.split("_")
-                                            mensaje = mensaje[1]
-                                            bootbox.alert(mensaje)
-                                        }
+
+                    bootbox.confirm("Esta seguro?",function(result){
+                        if(result){
+                            openLoader()
+                            $.ajax({
+                                type    : "POST",
+                                url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
+                                data    : "id="+id,
+                                success : function (msg) {
+                                    closeLoader()
+                                    if(msg=="ok"){
+                                        bootbox.alert("Documento enviado.")
+                                        cargarBandeja(false)
+                                        location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id
+                                    }else{
+                                        var mensaje = msg.split("_")
+                                        mensaje = mensaje[1]
+                                        bootbox.alert(mensaje)
                                     }
-                                });
-                            }
+                                }
+                            });
+                        }
 
-                        })
+                    })
 
-                    }
+
 
                     /*ajax aqui*/
                 }
