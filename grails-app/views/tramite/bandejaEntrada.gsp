@@ -368,13 +368,14 @@
             }
         }
 
-
+        var archivo
         context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
+                archivo = $tr.attr("codigo")
             }
 
 
@@ -392,7 +393,7 @@
                     $("tr.trHighlight").removeClass("trHighlight");
                     e.preventDefault();
                     %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
-                    location.href = "${resource(dir:'tramites', file:'MEM-11-GSTI-14.pdf')}";
+                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
                 }
             },
             contestar,
