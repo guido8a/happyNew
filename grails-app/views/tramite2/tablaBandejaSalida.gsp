@@ -1,3 +1,4 @@
+<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
 <table class="table table-bordered  table-condensed table-hover">
     <thead>
@@ -17,7 +18,7 @@
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
         <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
-            <td>${tramite?.codigo}</td>
+            <td title="${tramite.asunto}">${tramite?.codigo}</td>
             <td>${tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
             <g:set var="para" value="${tramite.getPara()}"/>

@@ -459,7 +459,7 @@
                 intervalBandeja = setInterval(function () {
                     cargarBandeja();
                 }, 1000 * 60 * 5);
-                bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas!</label>')
+                log('Tabla de trámites y alertas actualizadas!', "success");
                 return false;
             });
 

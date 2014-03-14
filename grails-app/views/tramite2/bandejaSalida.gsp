@@ -332,7 +332,7 @@
                                     if(msg=="ok"){
                                         bootbox.alert("Documento enviado.")
                                         cargarBandeja(false)
-                                        location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id
+                                        location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"
                                     }else{
                                         var mensaje = msg.split("_")
                                         mensaje = mensaje[1]

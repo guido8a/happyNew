@@ -26,7 +26,8 @@ class TramiteExportController {
 //    def reportesPdfService
 
     def crearPdf() {
-        def tramite = Tramite.get(params.id)
+        println params
+        def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
 
         if (params.editorTramite) {
@@ -120,14 +121,29 @@ class TramiteExportController {
         renderer.createPDF(baos);
         byte[] b = baos.toByteArray();
 
-        if (params.type == "download") {
-            file.delete()
+        file.delete()
+
+        if (params.enviar == "1") {
+            def pathPdf = realPath + "tramites/"
+            new File(pathPdf).mkdirs()
+            def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
+            OutputStream os = new FileOutputStream(fileSave);
+            renderer.layout();
+            renderer.createPDF(os);
+            os.close();
         }
 
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + (params.filename ?: tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
+    }
+
+    def verPdf() {
+        def tramite = Tramite.get(params.id)
+        def usuarioEnvia = tramite.deId
+        def realPath = servletContext.getRealPath("/") + "tramites/" + tramite.codigo + ".pdf"
+
     }
 
 //    def crearPdf_old() {
