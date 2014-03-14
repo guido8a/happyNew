@@ -21,8 +21,8 @@
             <td>${tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
             <g:set var="para" value="${tramite.getPara()}"/>
-            <td >${para.departamento?.codigo}</td>
-            <td>${para.persona}</td>
+            <td >${para?.departamento?.codigo}</td>
+            <td>${para?.persona}</td>
             <td>${tramite?.prioridad.descripcion}</td>
             <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
             <td>${limite?limite.format("dd-MM-yyyy HH:mm"):''}</td>
