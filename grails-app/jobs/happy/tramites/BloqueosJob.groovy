@@ -25,7 +25,7 @@ class BloqueosJob {
                     warning.add(pdt.departamento)
             }
         }
-        Departamento.list().each {dep->
+       /* Departamento.list().each {dep->
             if(bloquear.id.contains(dep.id)){
                 println "bloqueando "+dep
                 dep.estado="B"
@@ -44,6 +44,6 @@ class BloqueosJob {
                 }
 
             }
-        }
+        }*/
     }
 }
