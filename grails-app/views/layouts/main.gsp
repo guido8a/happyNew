@@ -121,14 +121,14 @@
         <div class="texto-bloqueo">
             La bandeja de salida del departamento ${session.departamento} está bloqueada temporalmente debido a trámites rezagados.
         </div>
-        <a href="${g.createLink(controller: 'tramite2',action: 'verRezagados')}" class="" style="margin-top: 30px">Ver tramites rezagados</a>
+        <a href="${g.createLink(controller: 'tramite2',action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites rezagados</a>
     </div>
 </g:if>
 <g:if test="${session.departamento.estado=='W'}">
     <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="width: 240px">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
-            Alerta de tramites no recibidos
+            Alerta de trámites no recibidos
             <a href="#" id="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                 <i class="fa fa-times"></i>
             </a>
