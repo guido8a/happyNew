@@ -34,6 +34,15 @@
                 <g:link action="bandejaSalida" controller="tramite2" class="btn btn-primary">
                     <i class="fa fa-list"></i> Bandeja de salida
                 </g:link>
+                <g:if test="${params.prev == 'crearTramite'}">
+                %{--<util:renderHTML html="${g.link(controller: params.controller, action: params.action, params: [padre:params.padre], class: '') {--}%
+                %{--params.lbl--}%
+                %{--}}"/>--}%
+                    <g:link controller="tramite" action="crearTramite" params="[padre: selected.id]" class="btn btn-primary">
+                        Ir a crear trámite
+                    </g:link>
+
+                </g:if>
             </div>
         </div>
 

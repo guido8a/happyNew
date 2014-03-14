@@ -38,12 +38,12 @@
                 </g:else>
 
                 <g:if test="${tramite.tramite.estadoTramite.codigo == 'E007'}">
-                    <g:set var="type" value="jefe"/>
-                    <g:set var="clase" value="alert-azul"/>
+                    <g:set var="type" value="${type} jefe"/>
+                    <g:set var="clase" value="${clase} alert-azul"/>
                 </g:if>
 
                 <tr data-id="${tramite?.tramite?.id}" class="${clase} ${type}">
-                    <td>${tramite?.tramite?.codigo}</td>
+                    <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
                     <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                     <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
