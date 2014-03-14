@@ -38,7 +38,7 @@
         width: 100px;
         height: 40px;
         margin-left: 20px;
-        /*margin-top: -5px;*/
+        cursor: pointer;
     }
 
     .cabecera {
@@ -77,9 +77,7 @@
         background-color: #f2c1b9;
         font-weight: bold;
     }
-    .alertas{
-        cursor: pointer;
-    }
+
 
 
     </style>

@@ -52,7 +52,7 @@
 </div>
 <elm:headerTramite tramite="${tramite}"/>
 <div style="margin-top: 15px;" class="vertical-container">
-    <div id="detalle" style="width: 95%;height: 500px;overflow: auto;margin-left:-15px ;margin-top: 5px;margin-bottom: 20px;">
+    <div id="detalle" style="width: 95%;height: 450px;overflow: auto;margin-left:-15px ;margin-top: 5px;margin-bottom: 20px;">
         <util:textoTramite tramite="${tramite.id}"/>
     </div>
 </div>

@@ -12,7 +12,6 @@
     <title>Bandeja de Entrada</title>
 
     <style type="text/css">
-
     .etiqueta {
         float: left;
         /*width: 100px;*/
@@ -20,26 +19,19 @@
         /*margin-top: 5px;*/
 
     }
-
     .alert {
         padding: 0;
     !important;
     }
-
     .alertas {
-        float: left;
-        width: 100px;
-        height: 40px;
-        margin-left: 20px;
+        float       : left;
+        /*width       : 100px;*/
+        /*height      : 40px;*/
+        margin-left : 20px;
+        padding     : 10px;
+        cursor      : pointer;
         /*margin-top: -5px;*/
     }
-
-    .cabecera {
-        text-align: center;
-        font-size: 13px;
-    !important;
-    }
-
     .container-celdas {
         width: 1070px;
         height: 310px;
@@ -48,90 +40,23 @@
         overflow-y: auto;
     }
 
-    .uno {
-        float: left;
-
-        width: 450px;
-
-    }
-
-    .dos {
-
-        float: left;
-        width: 350px;
-
-    }
-
-    .tres {
-        float: left;
-        width: 270px;
-
-    }
-
-    .fila {
-
-        /*height: 10px;*/
-        clear: both;
-    }
-
-    .css-vertical-text {
-        /*position          : absolute;*/
-        left: 5px;
-        bottom: 5px;
-        color: #0088CC;
-        border: 0px solid red;
-        writing-mode: tb-rl;
-        -webkit-transform: rotate(270deg);
-        -moz-transform: rotate(270deg);
-        -o-transform: rotate(270deg);
-        white-space: nowrap;
-        display: block;
-        width: 20px;
-        height: 20px;
-        font-size: 25px;
-        font-family: 'Tulpen One', cursive;
-        font-weight: bold;
-        font-size: 35px;
-        /*text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
-
-        /*text-shadow: 0px 0px 1px #333;*/
-    }
-
-    .tituloChevere {
-
-        color: #0088CC;
-        border: 0px solid red;
-        white-space: nowrap;
-        display: block;
-        /*width       : 98%;*/
-        height: 25px;
-        font-family: 'open sans condensed';
-        font-weight: bold;
-        font-size: 16px;
-        /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
-        /*margin-top  : 10px;*/
-        line-height: 18px;
-
-        /*text-shadow: 0px 0px 1px #333;*/
-    }
-
     .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
         background-color: #FFBD4C;
     }
 
-    tr.recibidoColor, tr.recibidoColor td {
+    tr.E004, tr.recibidoColor td {
         background-color: #D9EDF7! important;
     }
 
-    tr.retrasadoColor, tr.retrasadoColor td {
-        background-color: #F2DEDE! important;
+    tr.E003, tr.retrasadoColor td {
+        background-color: transparent ;
     }
 
-    tr.pendienteColor, tr.pendienteColor td {
+    tr.pendiente {
         background-color: #FFFFCC! important;
     }
 
-    tr.pendienteColor.pendienteRojo, tr.pendienteColor.pendienteRojo td {
+    tr.retrasado {
         background-color: #fc2c04! important;
         color: #ffffff;
     }
@@ -150,7 +75,7 @@
         <label class="well well-sm"
                style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
                 persona?.departamento?.descripcion}</label>
- </span>
+    </span>
 </div>
 
 <div class="btn-toolbar toolbar">
@@ -168,21 +93,32 @@
     </div>
 
     <span class="grupo">
-        <div id="alertaRecibido">
-            <div data-type="recibido" class="alert alert-info alertas" style="width: 190px;">
-                <label  class="etiqueta" style="padding-top: 10px; padding-left: 10px">Documentos Recibidos</label>
+        <div>
+            <div data-type="recibido" class="alert alert-info alertas"  clase="E004">
+                (<span id="numRec"></span>)
+            Recibidos
             </div>
         </div>
 
-        <div id="alertaPendientes">
-            <div data-type="pendiente" class="alert alert-blanco alertas" style="width: 270px;">
-                <label class="etiqueta" style="padding-top: 10px; padding-left: 10px">Documentos Pendientes o No Recibidos</label>
+        <div>
+            <div data-type="pendiente" class="alert alert-otroRojo alertas"  clase="E003">
+                (<span id="numPen"></span>)
+            No recibidos
             </div>
         </div>
 
-        <div id="alertaRetrasados">
-            <div data-type="retrasado" class="alert alert-danger alertas"  style="width: 190px">
-                <label class="etiqueta" style="padding-left: 10px; padding-top: 10px">Documentos Retrasados</label></div>
+        <div>
+            <div data-type="pendiente" class="alert alert-blanco alertas"  clase="E003">
+                (<span id="numEnv"></span>)
+            Pendientes
+            </div>
+        </div>
+
+        <div>
+            <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado" >
+                (<span id="numRet"></span>)
+            Retrasados
+            </div>
         </div>
     </span>
 </div>
@@ -232,29 +168,37 @@
 </div>
 
 
-
-<script>
-    $(function () {
-        var cellWidth = 150;
-        var celHegth = 25;
-        var select = null;
-        var headerTop = $(".header-columnas");
-//        var headerLeft=$(".header-filas");
-
-        $(".h-A").resizable({
-            handles: "e",
-            minWidth: 30,
-            alsoResize: ".A"
-        });
-        $(".container-celdas").scroll(function () {
-//            $("#container-filas").scrollTop($(".container-celdas").scrollTop());
-            $("#container-cols").scrollLeft($(".container-celdas").scrollLeft());
-        });
-
-    });
-</script>
-
 <script type="text/javascript">
+
+    function cargarBandeja(band) {
+        var datos = ""
+        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
+            data: datos,
+            async:false,
+            success: function (msg) {
+                $("#bandeja").html(msg);
+                cargarAlertaPendientes()
+                cargarAlertaRetrasados()
+                cargarEnviados()
+                cargarAlertaRecibidos()
+                if(band)
+                    bootbox.alert("Datos actualizados")
+            }
+        });
+    }
+    function cargarAlertaPendientes () {
+        $("#numPen").html($(".pendiente").size())
+    }
+    function cargarAlertaRetrasados () {
+        $("#numRet").html($(".retrasado").size())
+    }
+    function cargarEnviados() {
+        $("#numEnv").html($(".E003").size())
+    }
+    function cargarAlertaRecibidos () {
+        $("#numRec").html($(".E004").size())
+    }
+
 
     $(function () {
 
@@ -283,75 +227,72 @@
         };
 
         var archivar =  {
-                    text: 'Archivar Documentos',
-                    icon: "<i class='fa fa-folder-open-o'></i>",
-                    action: function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
-                        $.ajax({
-                           type : "POST",
-                            url: "${createLink(controller: 'tramite', action: "revisarHijos")}/" + id,
-                            success: function (msg){
-                                if(msg == 'ok'){
+            text: 'Archivar Documentos',
+            icon: "<i class='fa fa-folder-open-o'></i>",
+            action: function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                $.ajax({
+                    type : "POST",
+                    url: "${createLink(controller: 'tramite', action: "revisarHijos")}/" + id,
+                    success: function (msg){
+                        if(msg == 'ok'){
 
-                                    $.ajax({
-                                       type : 'POST',
-                                       url : "${createLink(controller: 'tramite', action: 'observacionArchivado')}/" + id,
-                                       success: function (msg){
+                            $.ajax({
+                                type : 'POST',
+                                url : "${createLink(controller: 'tramite', action: 'observacionArchivado')}/" + id,
+                                success: function (msg){
 
-                                           var b = bootbox.dialog({
-                                               id: "dlgArchivar",
-                                               title: 'Archivar Tramite',
-                                               message: msg,
-                                               buttons: {
-                                                   cancelar : {
-                                                       label : '<i class="fa fa-times"></i> Cancelar',
-                                                       className : 'btn-danger',
-                                                       callback :  function () {
+                                    var b = bootbox.dialog({
+                                        id: "dlgArchivar",
+                                        title: 'Archivar Tramite',
+                                        message: msg,
+                                        buttons: {
+                                            cancelar : {
+                                                label : '<i class="fa fa-times"></i> Cancelar',
+                                                className : 'btn-danger',
+                                                callback :  function () {
 
-                                                       }
-                                                   },
-                                                   archivar: {
-                                                       id   : 'btnArchivar',
-                                                       label : '<i class="fa fa-check"></i> Archivar',
-                                                       className : "btn-success",
-                                                       callback: function () {
+                                                }
+                                            },
+                                            archivar: {
+                                                id   : 'btnArchivar',
+                                                label : '<i class="fa fa-check"></i> Archivar',
+                                                className : "btn-success",
+                                                callback: function () {
 
-                                                           $.ajax({
-                                                               type: 'POST',
-                                                               url: '${createLink(action: 'archivar')}/'+ id,
-                                                               data: {
-                                                                 texto: $("#observacionArchivar").val()
-                                                               },
-                                                               success : function (msg) {
-                                                                   openLoader();
-                                                                   cargarAlertaRecibidos();
-                                                                   cargarAlertaPendientes();
-                                                                   cargarAlertaRetrasados();
-                                                                   cargarBandeja();
-                                                                   closeLoader();
-                                                                   bootbox.alert(msg)
-                                                               }
-                                                           });
-                                                       }
-                                                   }
-                                               }
-                                           })
-                                       }
-                                    });
-
-
-                                }else if (msg == 'no'){
-
-                                    bootbox.alert("Este tramite no puede ser archivado!")
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: '${createLink(action: 'archivar')}/'+ id,
+                                                        data: {
+                                                            texto: $("#observacionArchivar").val()
+                                                        },
+                                                        success : function (msg) {
+                                                            openLoader();
+                                                            cargarBandeja();
+                                                            closeLoader();
+                                                            bootbox.alert(msg)
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    })
                                 }
+                            });
 
-                            }
 
-                        });
+                        }else if (msg == 'no'){
+
+                            bootbox.alert("Este tramite no puede ser archivado!")
+                        }
+
                     }
 
-                };
+                });
+            }
+
+        };
 
 
         var distribuir =             {
@@ -417,18 +358,18 @@
         }
 
         var anular =      {
-                    text: 'Anular',
-                    icon: "<i class='fa fa-times'></i>",
-                    action: function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+            text: 'Anular',
+            icon: "<i class='fa fa-times'></i>",
+            action: function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
 
-                        location.href="${g.createLink(action: 'anular')}";
-                    }
-                }
+                location.href="${g.createLink(action: 'anular')}";
+            }
+        }
 
 
-                context.settings({
+        context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parent();
@@ -442,12 +383,21 @@
 
         context.attach('.E003',[
             {
-               header: 'Acciones'
+                header: 'Acciones'
             },
-                contestar,
-                archivar,
-                seguimiento,
-                anular,
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    e.preventDefault();
+                    location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
+                }
+            },
+            contestar,
+            archivar,
+            seguimiento,
+            anular,
 
             {
 
@@ -503,7 +453,16 @@
             {
                 header: 'Acciones'
             },
-                   {
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    e.preventDefault();
+                    location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
+                }
+            },
+            {
                 text: 'Contestar Documento',
                 icon: "<i class='fa fa-external-link'></i>",
                 action: function (e) {
@@ -524,166 +483,58 @@
     });
 
     $(".btnBuscar").click(function () {
-
         $(".buscar").attr("hidden", false)
-
     });
 
 
     $(".btnSalir").click(function () {
-
-
         $(".buscar").attr("hidden", true)
         cargarBandeja();
 
     });
 
     $(".btnActualizar").click(function () {
-
         openLoader();
-        cargarAlertaRecibidos();
-        cargarAlertaPendientes();
-        cargarAlertaRetrasados();
-        cargarBandeja();
+        cargarBandeja(false);
         closeLoader();
-
-        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites y alertas actualizadas!</label>')
-
         return false;
-
-
     });
 
-
-    function loading(div) {
-        y = 0;
-        $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-        var interval = setInterval(function () {
-            if (y == 30) {
-                $("#detalle").html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-                y = 0
-            }
-            $("#loading").append(".");
-            y++
-        }, 500);
-        return interval
-    }
-
-
-    function cargarBandeja() {
-        var interval = loading("bandeja")
-        var datos = ""
-        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#bandeja").html(msg);
-
-            }
-        });
-    }
-
     cargarBandeja();
-
-
-    function cargarAlertaRecibidos () {
-
-        var interval = loading("alertaRecibido")
-        var datos = ""
-        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'alertRecibidos')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#alertaRecibido").html(msg);
-
-            }
-        });
-
-
-    }
-
-    cargarAlertaRecibidos();
-
-
 
     setInterval(function () {
 
         openLoader();
-        cargarAlertaRecibidos();
-        cargarAlertaPendientes();
-        cargarAlertaRetrasados();
+        cargarBandeja(false)
         closeLoader();
 
     },300000);
 
 
-    function cargarAlertaPendientes () {
-
-        var interval = loading("alertaPendientes")
-        var datos = ""
-        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'alertaPendientes')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#alertaPendientes").html(msg);
-
+    $(".alertas").click(function(){
+        var clase = $(this).attr("clase")
+        $("tr").each(function(){
+            if($(this).hasClass(clase)){
+                if($(this).hasClass("trHighlight"))
+                    $(this).removeClass("trHighlight")
+                else
+                    $(this).addClass("trHighlight")
+            }else{
+                $(this).removeClass("trHighlight")
             }
         });
-    }
 
-    cargarAlertaPendientes();
-
-
-    function cargarAlertaRetrasados () {
-
-        var interval = loading("alertaRetrasados")
-        var datos = ""
-        $.ajax({type: "POST", url: "${g.createLink(controller: 'tramite',action:'alertaRetrasados')}",
-            data: datos,
-            success: function (msg) {
-                clearInterval(interval)
-                $("#alertaRetrasados").html(msg);
-
-            }
-        });
-    }
-
-    cargarAlertaRetrasados();
-
-
-    function cargarRojoPendiente() {
-
-        var interval = loading("alertaPendientes")
-        var datos = ""
-        $.ajax({
-            type: 'POST',
-            url :  "${g.createLink(controller: 'tramite', action: 'rojoPendiente')}",
-            datos: datos,
-            success: function (msg){
-                clearInterval(interval)
-                $("#alertaPendientes").html(msg);
-            }
-
-        })
-
-
-    }
-
+    })
 
     $(".btnBusqueda").click(function () {
-
-        var interval = loading("bandeja")
-
         var memorando = $("#memorando").val();
         var asunto = $("#asunto").val();
         var fecha = $("#fechaBusqueda_input").val();
-
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
         $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
             data: datos,
             success: function (msg) {
-                clearInterval(interval)
                 $("#bandeja").html(msg);
 
 

@@ -606,162 +606,21 @@ class TramiteController extends happy.seguridad.Shield {
 
     def tablaBandeja() {
 
-        def idTramitesRetrasados = alertaRetrasados().idTramites
-        def idTramitesRecibidos = alertRecibidos().idTramites
-        def idRojos = alertaPendientes().idRojos
-
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-//        def estadoEnviado = EstadoTramite.findByCodigo('E003')
+        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id+","+rolCopia.id+","+rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
-        def pxtTodos = []
-        def pxtTramites = []
-
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona,rolImprimir)
-
-
-        pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
-
-        pxtTodos.each {
-            if(it?.tramite?.estadoTramite?.codigo == 'E003' || it?.tramite?.estadoTramite?.codigo == 'E004'){
-                pxtTramites.add(it)
-            }
-        }
-//        println("todos:" + pxtTramites)
-
-        def tramitesRecibidos = pxtTramites.size()
-
-
-        return [tramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+        return [tramites: tramites]
     }
 
 
     //alertas
 
-    def alertaRevisados() {
 
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def revisados = EstadoTramite.get(2)
-        def tramitesRevisados = []
-        def tramites = []
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
-        pxt.each {
-            if (it?.tramite?.de?.id == usuario?.id) {
-                tramites.add(it.tramite)
-            }
-        }
-
-        tramites.each {
-            if (it.estadoTramite == revisados) {
-                tramitesRevisados.add(it)
-            }
-        }
-
-        return [tramites: tramitesRevisados.size()]
-    }
-
-
-    def alertaEnviados() {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def enviados = EstadoTramite.get(3)
-        def tramites = []
-        def tramitesEnviados = []
-        def idTramitesEnviados = []
-        def cantidadEnviados = 0
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
-        pxt.each {
-            if (it?.tramite?.de?.id == usuario?.id) {
-                tramites.add(it.tramite)
-            }
-        }
-        tramites.each {
-            if (it?.estadoTramite == enviados) {
-                tramitesEnviados.add(it)
-            }
-        }
-
-        def fechaEnvio
-        def dosHoras = 7200000  //milisegundos
-        def fecha
-        Date nuevaFecha
-
-        tramitesEnviados.each {
-            println("fecha:" + it?.getFechaLimite())
-            fechaEnvio = it?.fechaEnvio
-            fecha = fechaEnvio.getTime()
-            nuevaFecha = new Date(fecha + dosHoras)
-            if (!nuevaFecha.before(new Date())) {
-                cantidadEnviados++
-                idTramitesEnviados.add(it.id)
-            }
-        }
-
-        return [tramites: cantidadEnviados, idTramitesEnviados: idTramitesEnviados]
-    }
-
-
-    def alertaNoRecibidos() {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def enviados = EstadoTramite.get(3)
-        def listaNoRecibidos = []
-        def tramites = []
-
-        def pxt = PersonaDocumentoTramite.findAllByPersona(persona)
-        pxt.each {
-            if (it?.tramite?.de?.id == usuario?.id) {
-                listaNoRecibidos.add(it?.tramite)
-            }
-        }
-        listaNoRecibidos.each {
-
-            if (it?.estadoTramite == enviados) {
-                tramites.add(it)
-            }
-        }
-
-        def fechaEnvio
-        def dosHoras = 7200000  //milisegundos
-        def ch = 172800000
-
-        def fecha
-        Date nuevaFecha
-        Date fechaLimite
-
-        def tramitesNoRecibidos = 0
-        def idTramitesNoRecibidos = []
-
-        def tramitesPasados = 0
-
-        tramites.each {
-            fechaEnvio = it?.fechaEnvio
-            fecha = fechaEnvio.getTime()
-            nuevaFecha = new Date(fecha + dosHoras)
-            fechaLimite = new Date(fecha + ch)
-            if (nuevaFecha.before(new Date())) {
-                tramitesNoRecibidos++
-                idTramitesNoRecibidos.add(it.id)
-            }
-            if (fechaLimite.before(new Date())) {
-
-                tramitesPasados++
-            }
-        }
-
-        return [tramitesNoRecibidos: tramitesNoRecibidos, idTramitesNoRecibidos: idTramitesNoRecibidos, tramitesPasados: tramitesPasados]
-    }
 
 
     def observaciones() {
