@@ -571,47 +571,6 @@ class TramiteController extends happy.seguridad.Shield {
 
     //fin alertas bandeja entrada
 
-
-
-
-
-    //BANDEJA DEPARTAMENTO
-
-    def bandejaEntradaDepartamento () {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        return [persona: persona]
-    }
-
-    def tablaBandejaEntradaDepartamento () {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def departamento = persona?.departamento
-
-        def rolPara = RolPersonaTramite.findByCodigo('R001');
-        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
-
-        def pxtTodos = []
-        def tramitesEntrada = []
-
-        def pxtPara =  PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolPara);
-        def pxtCopia = PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolCopia);
-        def pxtImprimir = PersonaDocumentoTramite.findAllByDepartamentoAndRolPersonaTramite(departamento,rolImprimir);
-
-        pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
-
-//        println("todos Entrada:" + tramitesEntrada)
-
-        return[persona: persona, tramites: tramitesEntrada]
-
-    }
-
-
     def bandejaSalidaDepartamento (){
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
