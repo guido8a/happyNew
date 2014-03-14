@@ -15,7 +15,7 @@
         }
 
         .selectable li {
-            cursor : pointer;
+            cursor        : pointer;
             border-bottom : solid 1px #0088CC;
             margin-left   : 20px;
         }
@@ -71,11 +71,24 @@
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value=""/>
+        %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <div style="margin-top: 30px;" class="vertical-container">
 
                 <p class="css-vertical-text">Tramite</p>
 
                 <div class="linea"></div>
+
+                <g:if test="${padre}">
+                    <div class="alert alert-info">
+                        <p>
+                            <b>Trámite principal:</b>
+                            ${padre.codigo} - ${padre.asunto}
+                            <g:link controller="tramite3" action="seguimientoTramite" id="${padre.id}" params="[prev: 'crearTramite']" class="alert-link pull-right">
+                                Seguimiento del trámite
+                            </g:link>
+                        </p>
+                    </div>
+                </g:if>
 
                 <div class="row">
                     <div class="col-xs-3 negrilla">
@@ -83,12 +96,12 @@
                         <input type="text" name="tramite.de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled/>
                     </div>
 
-                    <g:if test="${padre}">
-                        <div class="col-xs-3 negrilla">
-                            Padre:
-                            <input type="text" name="padre" class="form-control label-shared" id="padre" value="${padre?.codigo}" disabled/>
-                        </div>
-                    </g:if>
+                    %{--<g:if test="${padre}">--}%
+                    %{--<div class="col-xs-3 negrilla">--}%
+                    %{--Padre:--}%
+                    %{--<input type="text" name="padre" class="form-control label-shared" id="padre" value="${padre?.codigo}" disabled/>--}%
+                    %{--</div>--}%
+                    %{--</g:if>--}%
 
 
                     <div class="col-xs-4 negrilla" id="divPara">
@@ -106,8 +119,8 @@
                     <div class="col-xs-2 negrilla">
                         Prioridad:
                         %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
-                        <g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${TipoPrioridad.list()}"
-                                  value="${tramite.prioridadId ?: 3}" optionKey="id" optionValue="descripcion"/>
+                        <elm:select name="tramite.prioridad.id" id="prioridad" class="many-to-one form-control required" from="${TipoPrioridad.list()}"
+                                    value="${tramite.prioridadId ?: 3}" optionKey="id" optionValue="descripcion" optionClass="tiempo"/>
                     </div>
 
                     %{--<div class="col-xs-3 negrilla">--}%
@@ -122,6 +135,11 @@
                         Creado el:
                         <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
                                value="${tramite.fechaCreacion.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
+                    </div>
+
+                    <div class="col-xs-2 negrilla">
+                        Respuesta esperada:
+                        <span id="respuesta" class="uneditable-input">FECHA</span>
                     </div>
 
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
@@ -397,10 +415,33 @@
                 }
             }
 
+            function validarTiempos() {
+                var tiempo = parseInt($("#prioridad").find("option:selected").attr("class"));
+                var fecha = $("#creado").val();
+                fecha = Date.parse(fecha);
+                var limite = fecha.clone();
+                var maxHoy = fecha.clone().set({ hour : 12, minute : 30 });
+                if (tiempo > 4) {
+                    limite.add(tiempo).hours();
+                } else {
+                    var comp = fecha.compareTo(maxHoy); //-1: maxHoy=future, 0: igual, 1: maxHoy=past
+                    if (comp > -1) {
+                        limite.add(tiempo + 15).hours().add(30).minutes();
+                    } else {
+                        limite.add(tiempo).hours();
+                    }
+                }
+                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
+            }
+
             $(function () {
                 var $dir = $("#direccion");
-
+                var $selPrioridad = $("#prioridad");
                 var $selPara = $("#para").clone(true);
+
+                $selPrioridad.change(function () {
+                    validarTiempos();
+                }).change();
 
                 $dir.change(function () {
                     var id = $(this).val();

@@ -109,12 +109,12 @@
                 <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span> Doc. Recibidos
             </div>
 
-            <div data-type="jefe" class="alert alert-azul alertas">
-                <span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe
-            </div>
-
             <div data-type="retrasado" class="alert alert-danger alertas">
                 <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span> Doc. Retrasados
+            </div>
+
+            <div data-type="jefe" class="alert alert-azul alertas">
+                <span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe
             </div>
         </div>
 
@@ -187,7 +187,83 @@
                     }
                 });
 
-                context.attach(".pendiente", [
+                var contestar = {
+                    text   : 'Contestar trámite',
+                    icon   : "<i class='fa fa-external-link'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        var b = bootbox.dialog({
+                            id      : "dlgContestar",
+                            title   : "Contestar trámite",
+                            message : "¿Está seguro de querer contestar este trámite?",
+                            buttons : {
+                                cancelar : {
+                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback  : function () {
+                                    }
+                                },
+                                recibir  : {
+                                    id        : 'btnEnviar',
+                                    label     : '<i class="fa fa-thumbs-o-up"></i> Contestar',
+                                    className : 'btn-success',
+                                    callback  : function () {
+                                        openLoader();
+                                        location.href = '${createLink(controller: 'tramite', action: 'crearTramite')}?padre=' + id;
+                                    }
+                                }
+                            }
+                        })
+                    }
+                };
+                var archivar = {
+                    text   : 'Archivar trámite',
+                    icon   : "<i class='fa fa-folder-open-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        var b = bootbox.dialog({
+                            id      : "dlgArchivar",
+                            title   : "Archivar trámite",
+                            message : "¿Está seguro de querer archivar este trámite?<br/>" +
+                                      "Una vez archivado no podrá utilizarlo de ninguna manera.",
+                            buttons : {
+                                cancelar : {
+                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback  : function () {
+                                    }
+                                },
+                                recibir  : {
+                                    id        : 'btnEnviar',
+                                    label     : '<i class="fa fa-thumbs-o-up"></i> Archivar',
+                                    className : 'btn-success',
+                                    callback  : function () {
+                                        var obs = $("#txaObsJefe").val();
+                                        openLoader();
+                                        %{--$.ajax({--}%
+                                        %{--type    : 'POST',--}%
+                                        %{--url     : '${createLink(action: 'enviarTramiteJefe')}',--}%
+                                        %{--data    : {--}%
+                                        %{--id  : id,--}%
+                                        %{--obs : obs--}%
+                                        %{--},--}%
+                                        %{--success : function (msg) {--}%
+                                        %{--var parts = msg.split("_");--}%
+                                        %{--cargarBandeja();--}%
+                                        %{--closeLoader();--}%
+                                        %{--log(parts[1], parts[0] == "NO" ? "error" : "success");--}%
+                                        %{--}--}%
+                                        %{--});--}%
+                                    }
+                                }
+                            }
+                        })
+                    }
+                };
+
+                context.attach(".pendiente,.noRecibido", [
                     {
                         header : 'Acciones'
                     },
@@ -199,7 +275,7 @@
                             e.preventDefault();
                             var b = bootbox.dialog({
                                 id      : "dlgRecibido",
-                                title   : "Trámite a ser recibido",
+                                title   : "Recibir trámite",
                                 message : "¿Está seguro de querer recibir este trámite?",
                                 buttons : {
                                     cancelar : {
@@ -230,88 +306,147 @@
                                         }
                                     }
                                 }
-                            })
-                        }
-                    }
-                ]);
-
-                context.attach('th', [
-                    {
-                        header : 'Acciones'
-                    },
-                    {
-                        text   : 'Recibir Documento',
-                        icon   : "<i class='fa fa-check-square-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                        }
-                    },
-                    {
-                        text   : 'Contestar Documento',
-                        icon   : "<i class='fa fa-external-link'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-
-                            location.href = "${g.createLink(action: 'crearTramite')}/" + id;
-                        }
-                    },
-                    {
-                        text   : 'Archivar Documentos',
-                        icon   : "<i class='fa fa-folder-open-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-//                    createEditRow(id);
-                        }
-                    },
-                    {
-                        text   : 'Distribuir a Jefes',
-                        icon   : "<i class='fa fa-eye'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action: 'observaciones')}/" + id,
-//                        data  : id,
-                                success : function (msg) {
-                                    var b = bootbox.dialog({
-                                        id      : "dlgObservaciones",
-                                        title   : "Distribución al Jefe: Observaciones",
-                                        message : msg,
-                                        buttons : {
-                                            cancelar : {
-                                                label     : "Cancelar",
-                                                className : 'btn-danger',
-                                                callback  : function () {
-                                                }
-                                            },
-                                            guardar  : {
-                                                id        : 'btnSave',
-                                                label     : '<i class="fa fa-save"></i> Guardar',
-                                                className : "btn-success",
-                                                callback  : function () {
-                                                    $.ajax({
-                                                        type    : 'POST',
-                                                        url     : '${createLink(action: 'guardarObservacion')}/' + id,
-                                                        data    : {
-                                                            texto : $("#observacion").val()
-                                                        },
-                                                        success : function (msg) {
-                                                            bootbox.alert(msg)
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    })
-                                }
                             });
                         }
                     }
                 ]);
+
+                context.attach(".recibido,.retrasado", [
+                    {
+                        header : 'Acciones'
+                    },
+                    {
+                        text   : 'Enviar a jefe',
+                        icon   : "<i class='fa fa-eye'></i>",
+                        action : function (e) {
+                            $("tr.trHighlight").removeClass("trHighlight");
+                            e.preventDefault();
+                            var b = bootbox.dialog({
+                                id      : "dlgJefe",
+                                title   : "Enviar trámite a jefe",
+                                message : "¿Está seguro de querer enviar este trámite al jefe?</br><br/>" +
+                                          "Escriba las observaciones: " +
+                                          "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                                buttons : {
+                                    cancelar : {
+                                        label     : '<i class="fa fa-times"></i> Cancelar',
+                                        className : 'btn-danger',
+                                        callback  : function () {
+                                        }
+                                    },
+                                    recibir  : {
+                                        id        : 'btnEnviar',
+                                        label     : '<i class="fa fa-thumbs-o-up"></i> Enviar',
+                                        className : 'btn-success',
+                                        callback  : function () {
+                                            var obs = $("#txaObsJefe").val();
+                                            openLoader();
+                                            $.ajax({
+                                                type    : 'POST',
+                                                url     : '${createLink(action: 'enviarTramiteJefe')}',
+                                                data    : {
+                                                    id  : id,
+                                                    obs : obs
+                                                },
+                                                success : function (msg) {
+                                                    var parts = msg.split("_");
+                                                    cargarBandeja();
+                                                    closeLoader();
+                                                    log(parts[1], parts[0] == "NO" ? "error" : "success");
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    contestar,
+                    archivar
+                ]);
+
+                context.attach(".jefe", [
+                    contestar,
+                    archivar
+                ]);
+
+                %{--context.attach('th', [--}%
+                %{--{--}%
+                %{--header : 'Acciones'--}%
+                %{--},--}%
+                %{--{--}%
+                %{--text   : 'Recibir Documento',--}%
+                %{--icon   : "<i class='fa fa-check-square-o'></i>",--}%
+                %{--action : function (e) {--}%
+                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                %{--e.preventDefault();--}%
+                %{--}--}%
+                %{--},--}%
+                %{--{--}%
+                %{--text   : 'Contestar Documento',--}%
+                %{--icon   : "<i class='fa fa-external-link'></i>",--}%
+                %{--action : function (e) {--}%
+                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                %{--e.preventDefault();--}%
+
+                %{--location.href = "${g.createLink(action: 'crearTramite')}/" + id;--}%
+                %{--}--}%
+                %{--},--}%
+                %{--{--}%
+                %{--text   : 'Archivar Documentos',--}%
+                %{--icon   : "<i class='fa fa-folder-open-o'></i>",--}%
+                %{--action : function (e) {--}%
+                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                %{--e.preventDefault();--}%
+                %{--//                    createEditRow(id);--}%
+                %{--}--}%
+                %{--},--}%
+                %{--{--}%
+                %{--text   : 'Distribuir a Jefes',--}%
+                %{--icon   : "<i class='fa fa-eye'></i>",--}%
+                %{--action : function (e) {--}%
+                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                %{--e.preventDefault();--}%
+                %{--$.ajax({--}%
+                %{--type    : "POST",--}%
+                %{--url     : "${createLink(action: 'observaciones')}/" + id,--}%
+                %{--//                        data  : id,--}%
+                %{--success : function (msg) {--}%
+                %{--var b = bootbox.dialog({--}%
+                %{--id      : "dlgObservaciones",--}%
+                %{--title   : "Distribución al Jefe: Observaciones",--}%
+                %{--message : msg,--}%
+                %{--buttons : {--}%
+                %{--cancelar : {--}%
+                %{--label     : "Cancelar",--}%
+                %{--className : 'btn-danger',--}%
+                %{--callback  : function () {--}%
+                %{--}--}%
+                %{--},--}%
+                %{--guardar  : {--}%
+                %{--id        : 'btnSave',--}%
+                %{--label     : '<i class="fa fa-save"></i> Guardar',--}%
+                %{--className : "btn-success",--}%
+                %{--callback  : function () {--}%
+                %{--$.ajax({--}%
+                %{--type    : 'POST',--}%
+                %{--url     : '${createLink(action: 'guardarObservacion')}/' + id,--}%
+                %{--data    : {--}%
+                %{--texto : $("#observacion").val()--}%
+                %{--},--}%
+                %{--success : function (msg) {--}%
+                %{--bootbox.alert(msg)--}%
+                %{--}--}%
+                %{--});--}%
+                %{--}--}%
+                %{--}--}%
+                %{--}--}%
+                %{--})--}%
+                %{--}--}%
+                %{--});--}%
+                %{--}--}%
+                %{--}--}%
+                %{--]);--}%
             });
 
             $(".btnBuscar").click(function () {

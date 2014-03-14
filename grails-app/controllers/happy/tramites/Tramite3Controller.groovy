@@ -204,7 +204,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         html += "</tbody>"
         html += "</table>"
 
-        return [tramite: primerTramite, html: html]
+        return [tramite: primerTramite, html: html, selected: tramite, params: params]
     }
 
     def creaHtmlSeguimiento(Tramite tramite, Tramite selected, String colorAnterior) {
@@ -360,6 +360,20 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
     }
 
+    def enviarTramiteJefe() {
+        def tramite = Tramite.get(params.id)
+        def obs = params.obs
+
+        tramite.observaciones = obs
+        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
+
+        if (tramite.save(flush: true)) {
+            render "OK_Trámite enviado al jefe"
+        } else {
+            println tramite.errors
+            render "NO_Ha ocurrido un error al enviar el trámite al jefe"
+        }
+    }
 
     def errores() {
         return [params: params]

@@ -123,7 +123,7 @@ class Tramite {
         def limite = this.fechaEnvio
         if (limite) {
             use(TimeCategory) {
-                if (limite.hours > 13 || (limite.hours > 12 && limite.minutes > 30))
+                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
                     limite = limite + 2.hours + 15.hours + 30.minutes
                 else
                     limite = limite + 2.hours
@@ -138,7 +138,10 @@ class Tramite {
         if (fechaRecepcion) {
             def limite = fechaRecepcion
             use(TimeCategory) {
-                limite = limite + this.prioridad.tiempo.hours
+                if (limite.hours > 12 || (limite.hours >= 12 && limite.minutes > 30))
+                    limite = limite + this.prioridad.tiempo.hours + 15.hours + 30.minutes
+                else
+                    limite = limite + this.prioridad.tiempo.hours
             }
             return limite
         }
@@ -154,13 +157,13 @@ class Tramite {
         }
     }
 
-    def getFechaBloqueo(){
-        if(this.estadoTramite.codigo!="E003"){
+    def getFechaBloqueo() {
+        if (this.estadoTramite.codigo != "E003") {
             return null
-        }else{
+        } else {
             def limite = this.fechaLimite
             use(TimeCategory) {
-                    limite = limite + 48.hours
+                limite = limite + 48.hours
             }
             return limite
         }
