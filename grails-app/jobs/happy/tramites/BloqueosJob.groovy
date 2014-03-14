@@ -10,16 +10,16 @@ class BloqueosJob {
     def execute() {
         // execute job
         /*todo cambiar esto*/
-        def ahora = new Date().plus(2)
+        def ahora = new Date()
         //println "bloqueo bandeja salida "+ahora
         def bloquear = []
         def warning = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
-            println "pdt --> "+pdt.id+" tramite "+pdt.tramite.id+" - ${pdt.tramite.de.departamento.descripcion} "+pdt.fechaEnvio+"  "+pdt.departamento+"   "+pdt.persona
-            println "fecha bloqueo "+pdt.tramite.fechaBloqueo
+            //println "pdt --> "+pdt.id+" tramite "+pdt.tramite.id+" - ${pdt.tramite.de.departamento.descripcion} "+pdt.fechaEnvio+"  "+pdt.departamento+"   "+pdt.persona
+            //println "fecha bloqueo "+pdt.tramite.fechaBloqueo
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if(fechaBloqueo && fechaBloqueo<ahora){
-               println "add bloquear "+pdt.tramite.de.departamento.codigo
+              // println "add bloquear "+pdt.tramite.de.departamento.codigo
                 bloquear.add(pdt.tramite.de.departamento)
                 if(pdt.departamento)
                     warning.add(pdt.departamento)
