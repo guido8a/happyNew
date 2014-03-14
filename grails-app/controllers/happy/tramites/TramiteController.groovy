@@ -786,6 +786,19 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
+  def observacionArchivado () {
+
+    def tramite = Tramite.get(params.id)
+
+    def observacion = ObservacionTramite.findByTramite(tramite)
+
+     return [tramite: tramite, observacion: observacion]
+
+  }
+
+
+
+
     def recibir () {
 
         def tramite = Tramite.get(params.id)
@@ -1046,17 +1059,27 @@ class TramiteController extends happy.seguridad.Shield {
 
         println("params" + params)
 
+        def persona = Persona.get(session.usuario.id)
         def tramite = Tramite.get(params.id)
         def estadoTramite = EstadoTramite.get(5);
 
         tramite.estadoTramite=estadoTramite
 
-        if(!tramite.save(flush: true)){
-           render("Ocurrio un error al archivar el tramite")
+        def observacion = new ObservacionTramite()
+
+        observacion.persona = persona
+        observacion.tramite = tramite
+        observacion.fecha = new Date()
+        observacion.observaciones = params.texto
+
+        observacion.save(flush: true)
+
+
+        if(!tramite.save(flush: true) || !observacion.save(flush: true)){
+            render("Ocurrio un error al archivar el tramite")
         }else {
             render("Tramite archivado correctamente")
         }
-
 
 
 

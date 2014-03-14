@@ -292,51 +292,55 @@
                            type : "POST",
                             url: "${createLink(controller: 'tramite', action: "revisarHijos")}/" + id,
                             success: function (msg){
-                                console.log("mensaje" + msg)
                                 if(msg == 'ok'){
-                                    var b = bootbox.dialog({
-                                        id: "dlgArchivar",
-                                        title: 'Archivar Tramite',
-                                        message: "Desea archivar el siguiente tramite?",
-                                        buttons: {
-                                            cancelar : {
-                                               label : '<i class="fa fa-times"></i> Cancelar',
-                                                className : 'btn-danger',
-                                                callback :  function () {
 
-                                                }
-                                            },
-                                            archivar: {
-                                                id   : 'btnArchivar',
-                                                label : '<i class="fa fa-check"></i> Archivar',
-                                                className : "btn-success",
-                                                callback: function () {
+                                    $.ajax({
+                                       type : 'POST',
+                                       url : "${createLink(controller: 'tramite', action: 'observacionArchivado')}/" + id,
+                                       success: function (msg){
 
-                                                    $.ajax({
-                                                        type: 'POST',
-                                                        url: '${createLink(action: 'archivar')}/'+ id,
-                                                        success : function (msg) {
-                                                            openLoader();
-                                                            cargarAlertaRecibidos();
-                                                            cargarAlertaPendientes();
-                                                            cargarAlertaRetrasados();
-                                                            cargarBandeja();
-                                                            closeLoader();
-                                                            bootbox.alert(msg)
-                                                        }
+                                           var b = bootbox.dialog({
+                                               id: "dlgArchivar",
+                                               title: 'Archivar Tramite',
+                                               message: msg,
+                                               buttons: {
+                                                   cancelar : {
+                                                       label : '<i class="fa fa-times"></i> Cancelar',
+                                                       className : 'btn-danger',
+                                                       callback :  function () {
+
+                                                       }
+                                                   },
+                                                   archivar: {
+                                                       id   : 'btnArchivar',
+                                                       label : '<i class="fa fa-check"></i> Archivar',
+                                                       className : "btn-success",
+                                                       callback: function () {
+
+                                                           $.ajax({
+                                                               type: 'POST',
+                                                               url: '${createLink(action: 'archivar')}/'+ id,
+                                                               data: {
+                                                                 texto: $("#observacionArchivar").val()
+                                                               },
+                                                               success : function (msg) {
+                                                                   openLoader();
+                                                                   cargarAlertaRecibidos();
+                                                                   cargarAlertaPendientes();
+                                                                   cargarAlertaRetrasados();
+                                                                   cargarBandeja();
+                                                                   closeLoader();
+                                                                   bootbox.alert(msg)
+                                                               }
+                                                           });
+                                                       }
+                                                   }
+                                               }
+                                           })
+                                       }
+                                    });
 
 
-                                                    });
-
-
-                                                }
-
-                                            }
-
-
-                                        }
-
-                                    })
                                 }else if (msg == 'no'){
 
                                     bootbox.alert("Este tramite no puede ser archivado!")
@@ -359,7 +363,6 @@
                 $.ajax ({
                     type : "POST",
                     url  : "${createLink(action: 'observaciones')}/" + id,
-//                        data  : id,
                     success :function (msg){
                         var b = bootbox.dialog({
                             id: "dlgObservaciones",
