@@ -31,6 +31,9 @@
                 <g:link action="bandejaEntrada" controller="tramite" class="btn btn-primary">
                     <i class="fa fa-list"></i> Bandeja de entrada
                 </g:link>
+                <g:link action="bandejaSalida" controller="tramite2" class="btn btn-primary">
+                    <i class="fa fa-list"></i> Bandeja de salida
+                </g:link>
             </div>
         </div>
 
