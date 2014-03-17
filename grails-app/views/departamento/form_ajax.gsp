@@ -5,7 +5,7 @@
     <elm:notFound elem="Departamento" genero="o"/>
 </g:if>
 <g:else>
-    <g:form class="form-horizontal" name="frmDepartamento" role="form" action="save" method="POST">
+    <g:form class="form-horizontal" name="frmDepartamento" role="form" action="save_ajax" method="POST">
         <g:hiddenField name="id" value="${departamentoInstance?.id}"/>
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'tipoDepartamento', 'error')} ">
@@ -30,7 +30,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.list()}"
+                    <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
                               optionKey="id" optionValue="descripcion"
                               value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" noSelection="['null': '']"/>
                 </div>

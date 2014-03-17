@@ -12,8 +12,8 @@
                 Tipo Departamento
             </div>
 
-            <div class="col-md-4">
-                ${departamentoInstance?.tipoDepartamento?.encodeAsHTML()}
+            <div class="col-md-9">
+                ${departamentoInstance?.tipoDepartamento?.descripcion}
             </div>
 
         </div>
@@ -25,7 +25,7 @@
                 Padre
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-9">
                 ${departamentoInstance?.padre?.encodeAsHTML()}
             </div>
 
@@ -38,7 +38,7 @@
                 Código
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="codigo"/>
             </div>
 
@@ -51,7 +51,7 @@
                 Descripción
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="descripcion"/>
             </div>
 
@@ -64,7 +64,7 @@
                 Teléfono
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="telefono"/>
             </div>
 
@@ -77,7 +77,7 @@
                 Extensión
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="extension"/>
             </div>
 
@@ -90,7 +90,7 @@
                 Dirección
             </div>
             
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="direccion"/>
             </div>
             
