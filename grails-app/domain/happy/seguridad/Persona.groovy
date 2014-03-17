@@ -3,6 +3,7 @@ package happy.seguridad
 import happy.tramites.Departamento
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
+import happy.tramites.TipoDocumento
 import org.apache.commons.lang.WordUtils
 
 class Persona {
@@ -152,7 +153,7 @@ class Persona {
     def getPuedeExternos() {
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)
-            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
+            eq("permisoTramite", PermisoTramite.findByCodigo("P015"))
         }
         def permisos = perm.findAll { it.estaActivo }
         return permisos.size() > 0
@@ -181,6 +182,14 @@ class Persona {
             println "No se encontraron jefes en el departamento ${this.departamento.descripcion}"
             return null
         }
+    }
+
+    def getTiposDocumento() {
+        def lista = TipoDocumento.list(['sort': 'descripcion'])
+        if (!this.puedeExternos) {
+            lista.remove(TipoDocumento.findByCodigo("DEX"))
+        }
+        return lista
     }
 
     String toString() {

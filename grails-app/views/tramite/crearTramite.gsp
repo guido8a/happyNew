@@ -113,7 +113,7 @@
                     <div class="col-xs-3 negrilla">
                         Tipo de documento:
                         <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                    from="${TipoDocumento.list(['sort': 'descripcion'])}"
+                                    from="${session.usuario.tiposDocumento}"
                                     value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"
                                     optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
                     </div>
