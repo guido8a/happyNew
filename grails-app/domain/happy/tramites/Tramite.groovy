@@ -8,6 +8,7 @@ class Tramite {
     Tramite padre
     TipoDocumento tipoDocumento
     Persona de
+    Departamento deDepartamento
     TipoPrioridad prioridad
     EstadoTramite estadoTramite
     TipoTramite tipoTramite
@@ -22,7 +23,6 @@ class Tramite {
     String nota                         //para guardar las observaciones de revision
     String estado
     String observaciones
-
     Date fechaCreacion                  //fecha en la q se crea el tramite
     Date fechaModificacion              //ultima modificacion realizada
     Date fechaRevision                  //ultima revision realizada --> estado cambiado a revisado
@@ -54,11 +54,11 @@ class Tramite {
             nota column: 'trmtnota'
             estado column: 'trmtetdo'
             observaciones column: 'trmtobsr'
-
             fechaCreacion column: 'trmtfccr'
             fechaModificacion column: 'trmtfcmd'
             fechaRevision column: 'trmtfcrv'
             fechaEnvio column: 'trmtfcen'
+            deDepartamento column: 'dpto__de'
         }
     }
     static constraints = {
@@ -80,7 +80,7 @@ class Tramite {
         nota(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'nota'])
         estado(maxSize: 1, blank: true, nullable: true, attributes: [title: 'estado'])
         observaciones(maxSize: 255, blank: true, nullable: true, attributes: [title: 'observaciones'])
-
+        deDepartamento(blank:true,nullable: true)
         fechaCreacion(blank: true, nullable: true, attributes: [title: 'fechaCreacion'])
         fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
         fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
