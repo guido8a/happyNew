@@ -122,10 +122,46 @@ class Persona {
         return permisos.size() > 0
     }
 
+    def getPuedeAnular() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P009"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
+    def getPuedeReactivar() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P012"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
+    def getPuedeRedireccionar() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P008"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
     def getPuedeExternos() {
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)
             eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
+    def getPuedeVer() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P004"))
         }
         def permisos = perm.findAll { it.estaActivo }
         return permisos.size() > 0

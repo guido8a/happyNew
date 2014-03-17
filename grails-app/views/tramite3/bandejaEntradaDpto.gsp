@@ -5,7 +5,7 @@
   Time: 11:44 AM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -361,13 +361,19 @@
                             })
                         }
                     },
-                    contestar,
+                    contestar
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    ,
                     archivar
+                    </g:if>
                 ]);
 
                 context.attach(".jefe", [
-                    contestar,
+                    contestar
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    ,
                     archivar
+                    </g:if>
                 ]);
 
                 %{--context.attach('th', [--}%
