@@ -1,5 +1,7 @@
 package happy.tramites
 
+import happy.seguridad.Persona
+
 
 class DepartamentoController extends happy.seguridad.Shield {
 
@@ -158,11 +160,16 @@ class DepartamentoController extends happy.seguridad.Shield {
         if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
             if (departamentoInstance) {
-                try {
-                    departamentoInstance.delete(flush: true)
-                    render "OK_Eliminación de Departamento exitosa."
-                } catch (e) {
-                    render "NO_No se pudo eliminar Departamento."
+                def personas = Persona.countByDepartamento(departamentoInstance)
+                if (personas == 0) {
+                    try {
+                        departamentoInstance.delete(flush: true)
+                        render "OK_Eliminación de Departamento exitosa."
+                    } catch (e) {
+                        render "NO_No se pudo eliminar Departamento."
+                    }
+                } else {
+                    render "NO_No se pudo eliminar el departamento pues tiene ${personas} persona${personas == 1 ? '' : 's'}."
                 }
             } else {
                 notFound_ajax()

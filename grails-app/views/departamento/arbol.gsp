@@ -32,7 +32,7 @@
             <div class="btn-toolbar toolbar">
                 <div class="btn-group">
                     <g:link controller="inicio" action="parametros" class="btn btn-default">
-                        <i class="fa fa-cogs"></i> Parámetros
+                        <i class="fa fa-arrow-left"></i> Regresar
                     </g:link>
                 </div>
             </div>
