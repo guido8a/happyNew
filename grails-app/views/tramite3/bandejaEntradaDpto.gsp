@@ -242,20 +242,20 @@
                                     callback  : function () {
                                         var obs = $("#txaObsJefe").val();
                                         openLoader();
-                                        %{--$.ajax({--}%
-                                        %{--type    : 'POST',--}%
-                                        %{--url     : '${createLink(action: 'enviarTramiteJefe')}',--}%
-                                        %{--data    : {--}%
-                                        %{--id  : id,--}%
-                                        %{--obs : obs--}%
-                                        %{--},--}%
-                                        %{--success : function (msg) {--}%
-                                        %{--var parts = msg.split("_");--}%
-                                        %{--cargarBandeja();--}%
-                                        %{--closeLoader();--}%
-                                        %{--log(parts[1], parts[0] == "NO" ? "error" : "success");--}%
-                                        %{--}--}%
-                                        %{--});--}%
+                                        $.ajax({
+                                            type    : 'POST',
+                                            url     : '${createLink(controller: 'tramite', action: 'archivar')}',
+                                            data    : {
+                                                id  : id,
+                                                obs : obs
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                cargarBandeja();
+                                                closeLoader();
+                                                log(parts[1], parts[0] == "NO" ? "error" : "success");
+                                            }
+                                        });
                                     }
                                 }
                             }

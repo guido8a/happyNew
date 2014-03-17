@@ -113,6 +113,24 @@ class Persona {
         return permisos.size() > 0
     }
 
+    def getPuedeArchivar() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P011"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
+    def getPuedeExternos() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
     def getJefePersona() {
         def personas = Persona.withCriteria {
             eq("departamento", this.departamento)
