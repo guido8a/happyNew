@@ -645,15 +645,15 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-  def observacionArchivado () {
+    def observacionArchivado () {
 
-    def tramite = Tramite.get(params.id)
+        def tramite = Tramite.get(params.id)
 
-    def observacion = ObservacionTramite.findByTramite(tramite)
+        def observacion = ObservacionTramite.findByTramite(tramite)
 
-     return [tramite: tramite, observacion: observacion]
+        return [tramite: tramite, observacion: observacion]
 
-  }
+    }
 
 
 
@@ -695,14 +695,7 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-
-
-
-
-
     def busquedaBandeja() {
-
-
 
         def idTramitesRetrasados = alertaRetrasados().idTramites
         def idTramitesRecibidos = alertRecibidos().idTramites
@@ -895,32 +888,43 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
 
+    def todaDescendencia(Tramite tramite) {
+        def decendencia = []
+        def hijos =  Tramite.findAllByPadre(tramite)
+        hijos.each { h->
+            decendencia += h
+            if(Tramite.countByPadre(h) > 0) {
+                decendencia += todaDescendencia(h)
+            }
+        }
+        return decendencia
+    }
+
     def revisarHijos () {
 
 //        println("params" + params)
 
         def tramite = Tramite.get(params.id)
+        def observacion = ObservacionTramite.findByTramite(tramite)
+        def hijos
 
-        def hijos = Tramite.findAllByPadre(tramite)
-
-        if(hijos.size() > 0){
-
-            render "no"
-        }else{
-
-            render "ok"
+        if(params.tipo == 'archivar') {
+            hijos = Tramite.findAllByPadre(tramite)
+        } else if(params.tipo == 'anular') {
+            def padre = tramite
+            hijos = todaDescendencia(tramite)
+//            println ("hijos--->" + hijos)
         }
-
-
+        return [tramite: tramite, observacion: observacion, hijos: hijos, params: params]
     }
 
     def archivar () {
 
-        println("params" + params)
+//        println("params" + params)
 
         def persona = Persona.get(session.usuario.id)
         def tramite = Tramite.get(params.id)
-        def estadoTramite = EstadoTramite.get(5);
+        def estadoTramite = EstadoTramite.findByCodigo('E005')
 
         tramite.estadoTramite=estadoTramite
 
@@ -930,16 +934,96 @@ class TramiteController extends happy.seguridad.Shield {
         observacion.tramite = tramite
         observacion.fecha = new Date()
         observacion.observaciones = params.texto
-
+        observacion.tipo = 'archivar'
         observacion.save(flush: true)
 
+        if(!tramite.save(flush: true) || !observacion.save(flush: true)){
+            render("no")
+        }else {
+            render("ok")
+        }
+    }
+
+
+    def anular () {
+
+        print("params anular" + params)
+
+        def persona = Persona.get(session.usuario.id)
+        def tramite = Tramite.get(params.id)
+        def estadoTramite = EstadoTramite.findByCodigo('E006')
+        def hijos = todaDescendencia(tramite)
+
+        tramite.estadoTramite = estadoTramite
+        def observacion = new ObservacionTramite()
+        observacion.persona = persona
+        observacion.tramite = tramite
+        observacion.fecha = new Date()
+        observacion.observaciones = params.texto
+        observacion.tipo = 'anular'
+        observacion.save(flush: true)
 
         if(!tramite.save(flush: true) || !observacion.save(flush: true)){
-            render("Ocurrio un error al archivar el tramite")
+            render("no")
         }else {
-            render("Tramite archivado correctamente")
+            render("ok")
         }
 
+       if(hijos){
+           hijos.each {t->
+               t.estadoTramite = estadoTramite
+               def observacionHijos = new ObservacionTramite()
+               observacionHijos.persona = persona
+               observacionHijos.tramite = tramite
+               observacionHijos.fecha = new Date()
+               observacionHijos.observaciones = "Trámite padre anulado:" + tramite?.codigo + "observaciones originales:" + params.texto
+               observacion.tipo = 'anular'
+               observacionHijos.save(flush: true)
+           }
+       }
+    }
+
+
+    //trámites anulados
+
+    def anulados () {
+
+
+        def persona = Persona.get(session.usuario.id)
+
+        return [persona: persona]
+
+    }
+
+    def tablaAnulados () {
+
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+
+        def pxtTodos = []
+        def pxtTramites = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+
+
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E006' ){
+                pxtTramites.add(it)
+            }
+        }
+
+
+
+
+        return [tramites: pxtTramites]
 
 
     }

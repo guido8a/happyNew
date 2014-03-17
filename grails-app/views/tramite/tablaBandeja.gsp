@@ -30,7 +30,7 @@
             </g:else>
             <td>${tramite?.tramite?.prioridad?.descripcion}</td>
             <td>${tramite?.tramite?.fechaMaximoRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
-            <td>${tramite?.rolPersonaTramite.descripcion}</td>
+            <td>${tramite?.rolPersonaTramite?.descripcion}</td>
         </tr>
     </g:each>
 

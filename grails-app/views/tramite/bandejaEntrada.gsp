@@ -19,10 +19,10 @@
         /*margin-top: 5px;*/
 
     }
-    .alert {
-        padding: 0;
-    !important;
-    }
+    /*.alert {*/
+        /*padding: 0;*/
+    /*!important;*/
+    /*}*/
     .alertas {
         float       : left;
         /*width       : 100px;*/
@@ -215,8 +215,8 @@
 
         var seguimiento = {
 
-            text: 'Seguimiento Tramite',
-            icon: "<i class='fa fa-code-fork'></i>",
+            text: 'Seguimiento Trámite',
+            icon: "<i class='fa fa-sitemap'></i>",
             action: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 e.preventDefault();
@@ -234,58 +234,53 @@
                 e.preventDefault();
                 $.ajax({
                     type : "POST",
-                    url: "${createLink(controller: 'tramite', action: "revisarHijos")}/" + id,
+                    url: "${createLink(controller: 'tramite', action: "revisarHijos")}",
+                    data: {
+                        id:id,
+                        tipo:"archivar"
+                    },
                     success: function (msg){
-                        if(msg == 'ok'){
+                        var b = bootbox.dialog({
+                            id: "dlgArchivar",
+                            title: 'Archivar Tramite',
+                            message: msg,
+                            buttons: {
+                                cancelar : {
+                                    label : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback :  function () {
 
-                            $.ajax({
-                                type : 'POST',
-                                url : "${createLink(controller: 'tramite', action: 'observacionArchivado')}/" + id,
-                                success: function (msg){
+                                    }
+                                },
+                                archivar: {
+                                    id   : 'btnArchivar',
+                                    label : '<i class="fa fa-check"></i> Archivar',
+                                    className : "btn-success",
+                                    callback: function () {
 
-                                    var b = bootbox.dialog({
-                                        id: "dlgArchivar",
-                                        title: 'Archivar Tramite',
-                                        message: msg,
-                                        buttons: {
-                                            cancelar : {
-                                                label : '<i class="fa fa-times"></i> Cancelar',
-                                                className : 'btn-danger',
-                                                callback :  function () {
-
-                                                }
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '${createLink(action: 'archivar')}/'+ id,
+                                            data: {
+                                                texto: $("#observacionArchivar").val()
                                             },
-                                            archivar: {
-                                                id   : 'btnArchivar',
-                                                label : '<i class="fa fa-check"></i> Archivar',
-                                                className : "btn-success",
-                                                callback: function () {
-
-                                                    $.ajax({
-                                                        type: 'POST',
-                                                        url: '${createLink(action: 'archivar')}/'+ id,
-                                                        data: {
-                                                            texto: $("#observacionArchivar").val()
-                                                        },
-                                                        success : function (msg) {
-                                                            openLoader();
-                                                            cargarBandeja();
-                                                            closeLoader();
-                                                            bootbox.alert(msg)
-                                                        }
-                                                    });
+                                            success : function (msg) {
+                                                openLoader();
+                                                cargarBandeja();
+                                                closeLoader();
+                                                if(msg == 'ok')
+                                                {
+                                                 log("Trámite archivado correctamente", 'success')
+                                                }else if(msg == 'no'){
+                                                 log("Error al archivar el trámite", 'error')
                                                 }
                                             }
-                                        }
-                                    })
+                                        });
+                                    }
                                 }
-                            });
+                            }
+                        })
 
-
-                        }else if (msg == 'no'){
-
-                            bootbox.alert("Este tramite no puede ser archivado!")
-                        }
 
                     }
 
@@ -314,9 +309,7 @@
                                     label  : "Cancelar",
                                     className : 'btn-danger',
                                     callback :  function () {
-
                                     }
-
                                 },
                                 guardar : {
                                     id   : 'btnSave',
@@ -328,44 +321,85 @@
                                             type: 'POST',
                                             url: '${createLink(action: 'guardarObservacion')}/'+ id,
                                             data :{
-
                                                 texto: $("#observacion").val()
                                             },
                                             success : function (msg) {
-
                                                 bootbox.alert(msg)
-
                                             }
-
-
                                         });
-
-
                                     }
-
-
                                 }
-
                             }
-
                         })
                     }
                 });
-
-
             }
-
         }
 
-        var anular =      {
-            text: 'Anular',
-            icon: "<i class='fa fa-times'></i>",
+        var anular = {
+
+
+            text: 'Anular Trámite',
+            icon: "<i class='fa fa-flash'></i>",
             action: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 e.preventDefault();
+                $.ajax({
+                    type : "POST",
+                    url: "${createLink(controller: 'tramite', action: "revisarHijos")}",
+                    data: {
+                        id:id,
+                        tipo:"anular"
+                    },
+                    success: function (msg){
+                        var b = bootbox.dialog({
+                            id: "dlgAnular",
+                            title: 'Anular Trámite',
+                            message: msg,
+                            buttons: {
+                                cancelar : {
+                                    label : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback :  function () {
 
-                location.href="${g.createLink(action: 'anular')}";
+                                    }
+                                },
+                                archivar: {
+                                    id   : 'btnAnular',
+                                    label : '<i class="fa fa-check"></i> Anular',
+                                    className : "btn-success",
+                                    callback: function () {
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '${createLink(action: 'anular')}/'+ id,
+                                            data: {
+                                                texto: $("#observacionArchivar").val()
+                                            },
+                                            success : function (msg) {
+                                                openLoader();
+                                                cargarBandeja();
+                                                closeLoader();
+                                                if(msg == 'ok')
+                                                {
+                                                    log("Trámite anulado correctamente", 'success')
+                                                }else if(msg == 'no'){
+                                                    log("Error al anular el trámite", 'error')
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        })
+
+
+                    }
+
+                });
             }
+
+
         }
 
         var archivo
@@ -377,12 +411,9 @@
                 id = $tr.data("id");
                 archivo = $tr.attr("codigo")
             }
-
-
-
         });
 
-        context.attach('.E003',[
+        context.attach('.pendiente',[
             {
                 header: 'Acciones'
             },
@@ -397,9 +428,16 @@
                 }
             },
             contestar,
+
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeArchivar()}">
             archivar,
+            </g:if>
+
             seguimiento,
+
+           <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
             anular,
+           </g:if>
 
             {
 
@@ -451,7 +489,7 @@
             }
         ]);
 
-        context.attach('.E004', [
+        context.attach('.retrasado', [
             {
                 header: 'Acciones'
             },
@@ -475,9 +513,14 @@
                 }
             },
 
-
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeArchivar()}">
             archivar,
+            </g:if>
+
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
             anular,
+            </g:if>
+
             seguimiento
 
 
