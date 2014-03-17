@@ -5,8 +5,66 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
+    def arbol() {
+
+    }
+
+    def loadTreePart() {
+        render(makeTreeNode(params.id))
+    }
+
+    def makeTreeNode(id) {
+        String tree = "", clase = "", rel = ""
+        Departamento padre
+        Departamento[] hijos
+
+        if (id == "#") {
+            //root
+            def hh = Departamento.countByPadreIsNull([sort: "descripcion"])
+            if (hh > 0) {
+                clase = "hasChildren jstree-closed"
+            }
+            tree = "<li id='root' class='root ${clase}' data-jstree='{\"type\":\"root\"}' level='0' >" +
+                    "<a href='#' class='label_arbol'>Departamentos</a>" +
+                    "</li>"
+        } else if (id == "root") {
+            hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+        } else {
+            def parts = id.split("_")
+            def node_id = parts[1].toLong()
+
+            padre = Departamento.get(node_id)
+            if (padre) {
+                hijos = Departamento.findAllByPadre(padre, [sort: "descripcion"])
+            }
+        }
+
+        if (tree == "" && (padre || hijos.size() > 0)) {
+            tree += "<ul>"
+
+            hijos.each { hijo ->
+                def hijosH = Departamento.findAllByPadre(hijo, [sort: "descripcion"])
+
+                clase = (hijosH.size() > 0) ? "jstree-closed hasChildren" : ""
+                rel = (hijosH.size() > 0) ? "padre" : "hijo"
+
+                if (hijosH.size() > 0) {
+                    clase += " ocupado "
+                }
+
+                tree += "<li id='li_" + hijo.id + "' class='" + clase + "' data-jstree='{\"type\":\"${rel}\"}' >"
+                tree += "<a href='#' class='label_arbol'>" + hijo + "</a>"
+                tree += "</li>"
+            }
+
+            tree += "</ul>"
+        }
+
+        return tree
+    }
+
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: "arbol", params: params)
     } //index
 
     def getLista(params, all) {
