@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Tipos de Departamento</title>
+        <title>Codificación de la estructura</title>
     </head>
 
     <body>
@@ -87,7 +87,7 @@
                 var b = bootbox.dialog({
                     id      : "dlgBorrar",
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Tipo de Departamento seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Codigo de la estructura Departamental seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -134,7 +134,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " Tipo de Departamento",
+                            title   : title + " Codificación de la estructura",
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -199,7 +199,7 @@
                                 success : function (msg) {
                                     var b = bootbox.dialog({
                                         id      : "dlgVer",
-                                        title   : "Ver Tipo de Departamento",
+                                        title   : "Ver Codificación de la estructura",
                                         message : msg,
                                         buttons : {
                                             ok : {

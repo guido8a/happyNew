@@ -86,12 +86,12 @@
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="tpdp">
-                                <g:link controller="tipoDepartamento" action="list">Tipo de departamento</g:link>
+                                <g:link controller="tipoDepartamento" action="list">Codificación de la estructura departamental</g:link>
                                 para clasificar  jerárquicamente las dependencias o departamentos del GADPP
                             </span>
 
                             <div class="descripcion hide">
-                                <h4>Tipo de Departamento</h4>
+                                <h4>Codificación de la Estructura</h4>
 
                                 <p>Sirve para para la clasificación jerárquica de las distintas dependencias que conforman elGADPP.</p>
 
@@ -151,13 +151,15 @@
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="departamento">
-                                <g:link controller="departamento" action="arbol">Departamentos</g:link>
+                                <g:link controller="departamento" action="arbol">Estructura Departamental</g:link> del GADPP conforme al
+                                organigrama de procesos institucional.
                             </span>
 
                             <div class="descripcion hide">
-                                <h4>Departamento</h4>
+                                <h4>Estructura Organizacional</h4>
 
-                                <p>Distribución organizacional de los departamentos.</p>
+                                <p>Distribución organizacional del GADPP.</p>
+                                <p>Conforme a la estructura orgánica.</p>
                             </div>
                         </li>
 
