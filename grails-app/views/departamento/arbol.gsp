@@ -193,9 +193,6 @@
                         icon             : "fa fa-trash-o text-danger",
                         action           : function (obj) {
                             var $node = $('#' + nodeStrId);
-                            console.log($node, nodeStrId);
-                            console.log($('#jstree').jstree('get_rules', $node));
-                            $('#jstree').jstree('set_type', $node, "padre");
                             bootbox.dialog({
                                 title   : "Alerta",
                                 message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
@@ -221,10 +218,9 @@
                                                     var parts = msg.split("_");
                                                     log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                                     if (parts[0] == "OK") {
-                                                        var $liParent = $node.parent().parent();
                                                         var siblings = $node.siblings().size();
                                                         if (siblings == 0) {
-                                                            $node.parent().parent().data("jstree").type = "hijo";
+                                                            $('#tree').jstree('set_type', "#" + nodeStrId, "hijo");
                                                         }
                                                         $('#tree').jstree('delete_node', $node);
                                                     } else {
