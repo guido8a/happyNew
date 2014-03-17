@@ -53,12 +53,16 @@ function log(msg, type, title, hide) {
         hide = type != "error";
     }
     if (!title) {
-        title = type == 'error' ? "Error" : "";
+        title = type == 'error' ? "Ha ocurrido un error" : "";
     }
     $.pnotify({
-        title : title,
-        text  : msg,
-        type  : type,
-        hide  : hide
+        title        : title,
+        addclass     : "stack-bar-top",
+        cornerclass  : 'ui-pnotify-sharp',
+        icon         : "",
+        closer_hover : false,
+        text         : msg,
+        type         : type,
+        hide         : hide
     });
 }

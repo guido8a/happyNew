@@ -1,0 +1,6 @@
+.ui-pnotify.stack-bar-top {
+    right      : 0;
+    top        : 50px;
+    width      : 100% !important;
+    text-align : center;
+}
