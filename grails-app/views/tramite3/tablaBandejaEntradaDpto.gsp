@@ -42,7 +42,7 @@
                     <g:set var="clase" value="${clase} alert-azul"/>
                 </g:if>
 
-                <tr data-id="${tramite?.tramite?.id}" class="${clase} ${type}">
+                <tr data-id="${tramite?.tramite?.id}" data-codigo="${tramite?.tramite?.codigo}" class="${clase} ${type}">
                     <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
                     <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>

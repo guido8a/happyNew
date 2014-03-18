@@ -322,7 +322,7 @@
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-        $.ajax ({ type : "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaArchivadosAnulados')}",
+        $.ajax ({ type : "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaAnulados')}",
             data: datos,
             success: function (msg) {
                 clearInterval(interval)

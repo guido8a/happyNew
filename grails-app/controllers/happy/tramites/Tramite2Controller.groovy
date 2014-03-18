@@ -68,7 +68,49 @@ class Tramite2Controller extends happy.seguridad.Shield{
         }
     }
 
+    def bandejaSalidaDep() {
 
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        def triangulo = PermisoTramite.findByCodigo("E001")
+//        if(session.departamento.estado=="B")
+//            bloqueo=true
+//        println "bloqueo "+bloqueo
+        def tienePermiso = PermisoUsuario.withCriteria {
+            eq("persona", persona)
+            eq("permisoTramite", triangulo)
+            lt("fechaInicio", new Date())
+            or {
+                gt("fechaFin", new Date())
+                isNull("fechaFin")
+            }
+        }
+        println "tiene "+tienePermiso+" jefe "+persona.jefe
+        if (tienePermiso.size() == 0 && persona.jefe!=1) {
+            redirect(controller: "tramite", action: "bandejaEntrada")
+            return
+        }
+        if(persona.jefe==1)
+            revisar=true
+        else{
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(persona,PermisoTramite.findByCodigo("P005"))
+            if(per)
+                revisar=true
+        }
+        return [persona: persona,revisar:revisar,bloqueo:bloqueo]
+
+    }
+    def tablaBandejaSalidaDep() {
+//        println "carga bandeja"
+        def persona = Persona.get( session.usuario.id)
+        def tramites = []
+        def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
+        tramites =  Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento,estados,[sort:"fechaCreacion",order:"desc"])
+
+        return [persona: persona, tramites: tramites ]
+    }
 
     def bandejaSalida() {
 
@@ -101,13 +143,17 @@ class Tramite2Controller extends happy.seguridad.Shield{
                 if(t.size()>0)
                     tramites+=t
             }
+            def t =  Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento,estados,[sort:"fechaCreacion",order:"desc"])
+            if(t.size()>0)
+                tramites+=t
         }else{
             tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
         }
 
 
-
-        return [persona: persona, tramites: tramites,idTramitesNoRecibidos:[] ]
+        tramites?.sort{it.fechaCreacion}
+        tramites=tramites?.reverse()
+        return [persona: persona, tramites: tramites]
     }
 
     //alertas
@@ -186,6 +232,157 @@ class Tramite2Controller extends happy.seguridad.Shield{
             }
         }
         [tramites:tramites ]
+    }
+
+
+
+    def crearTramiteDep() {
+//        println("params " + params)
+        def padre = null
+        def tramite = new Tramite(params)
+        if (params.padre) {
+            padre = Tramite.get(params.padre)
+        }
+        if (params.id) {
+            tramite = Tramite.get(params.id)
+            padre = tramite.padre
+        } else {
+            tramite.fechaCreacion = new Date()
+        }
+
+        def persona = Persona.get(session.usuario.id)
+
+        def de = session.usuario
+        def disp, disponibles = []
+
+        if (persona.puedeTramitar) {
+            disp = Departamento.list([sort: 'descripcion'])
+        } else {
+            disp = [persona.departamento]
+        }
+        disp.each { dep ->
+            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.id == persona.departamentoId) {
+                def users = Persona.findAllByDepartamento(dep)
+                for (int i = users.size() - 1; i > -1; i--) {
+                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                        users.remove(i)
+                    } else {
+                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                    }
+                }
+            }
+        }
+        return [de: de, padre: padre, disponibles: disponibles, tramite: tramite]
+    }
+
+    def saveDep() {
+        def persona = Persona.get(session.usuario.id)
+        def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
+
+        def paramsOrigen = params.remove("origen")
+        def paramsTramite = params.remove("tramite")
+
+        paramsTramite.de = persona
+        paramsTramite.deDepartamento = persona.departamento
+        paramsTramite.deDepartamento.id = persona.departamento.id
+        paramsTramite.estadoTramite = estadoTramiteBorrador
+        paramsTramite.fechaCreacion = new Date()
+        paramsTramite.anio = Anio.findByNumero(paramsTramite.fechaCreacion.format("yyyy"))
+        /* CODIGO DEL TRAMITE:
+         *      tipoDoc.codigo-secuencial-dtpoEnvia.codigo-anio(yy)
+         *      INF-1-DGCP-14       MEM-10-CEV-13
+         */
+        //el numero del ultimo tramite del anio, por tipo doc y dpto
+        def num = Tramite.withCriteria {
+            eq("anio", paramsTramite.anio)
+            eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
+            de {
+                eq("departamento", persona.departamento)
+            }
+            projections {
+                max "numero"
+            }
+        }
+        if (num && num.size() > 0) {
+            num = num.first()
+        } else {
+            num = 0
+        }
+        if (!num) {
+            num = 0
+        }
+        num = num + 1
+        paramsTramite.numero = num
+        paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
+
+        def tramite
+        def error = false
+        if (paramsTramite.id) {
+            tramite = Tramite.get(paramsTramite.id)
+        } else {
+            tramite = new Tramite()
+        }
+        tramite.properties = paramsTramite
+
+        if (!tramite.save(flush: true)) {
+            println "error save tramite " + tramite.errors
+            flash.tipo = "error"
+            flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
+            redirect(action: "crearTramite")
+            return
+        } else {
+
+            /*
+             * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
+             *          si es positivo es una persona
+             */
+            if (paramsTramite.para) {
+                def para = paramsTramite.para.toInteger()
+                def paraDocumentoTramite = new PersonaDocumentoTramite([
+                        tramite: tramite,
+                        rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
+                ])
+                if (para > 0) {
+                    //persona
+                    paraDocumentoTramite.persona = Persona.get(para)
+                } else {
+                    //departamento
+                    paraDocumentoTramite.departamento = Departamento.get(para * -1)
+                }
+                if (!paraDocumentoTramite.save(flush: true)) {
+                    println "error para: " + paraDocumentoTramite.errors
+                }
+            }
+            if (paramsTramite.hiddenCC.toString().size() > 0) {
+                (paramsTramite.hiddenCC.split("_")).each { cc ->
+                    def ccDocumentoTramite = new PersonaDocumentoTramite([
+                            tramite: tramite,
+                            rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
+                    ])
+                    if (cc.toInteger() > 0) {
+                        //persona
+                        ccDocumentoTramite.persona = Persona.get(cc.toInteger())
+                    } else {
+                        //departamento
+                        ccDocumentoTramite.departamento = Departamento.get(cc.toInteger() * -1)
+                    }
+                    if (!ccDocumentoTramite.save(flush: true)) {
+                        println "error cc: " + ccDocumentoTramite.errors
+                    }
+                }
+            }
+            if (params.cc == "on") {
+                paramsOrigen.tramite = tramite
+                paramsOrigen.fecha = paramsTramite.fechaCreacion
+                def origen = new OrigenTramite(paramsOrigen)
+                if (!origen.save(flush: true)) {
+                    println "error origen tramite: " + origen.errors
+                }
+            }
+
+        }
+        redirect(controller: "tramite", action: "redactar", id: tramite.id)
     }
 
 }

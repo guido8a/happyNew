@@ -3,6 +3,8 @@ package happy.seguridad
 import groovy.json.JsonBuilder
 import happy.tramites.Departamento
 import happy.tramites.PermisoUsuario
+import happy.tramites.PersonaDocumentoTramite
+import happy.tramites.RolPersonaTramite
 import org.fusesource.jansi.Ansi
 
 import static java.awt.RenderingHints.*
@@ -373,7 +375,7 @@ class PersonaController extends happy.seguridad.Shield {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date().clearTime()
         if (perm.fechaFin && perm.fechaFin <= now) {
-            render "OK_El permiso ya ha caducado, no puede terminarlo de nuevo."
+            render "INFO_El permiso ya ha caducado, no puede terminarlo de nuevo."
         } else {
             if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
                 perm.fechaFin = now
@@ -383,7 +385,7 @@ class PersonaController extends happy.seguridad.Shield {
                     render "OK_Terminación del permiso exitosa"
                 }
             } else {
-                render "NO_No puede terminar un permiso que no ha empezado aún. Puede eliminarlo."
+                render "INFO_No puede terminar un permiso que no ha empezado aún. Puede eliminarlo."
             }
         }
     }
@@ -392,10 +394,10 @@ class PersonaController extends happy.seguridad.Shield {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date()
         if (perm.fechaFin && perm.fechaFin <= now) {
-            render "OK_El permiso ya ha caducado, no puede ser eliminado."
+            render "INFO_El permiso ya ha caducado, no puede ser eliminado."
         } else {
             if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
-                render "NO_No puede eliminar un permiso en curso. Puede terminarlo."
+                render "INFO_No puede eliminar un permiso en curso. Puede terminarlo."
             } else {
                 try {
                     perm.delete(flush: true)
@@ -422,7 +424,7 @@ class PersonaController extends happy.seguridad.Shield {
         def accs = Accs.get(params.id)
         def now = new Date().clearTime()
         if (accs.accsFechaFinal <= now) {
-            render "OK_La restricción ya ha terminado, no puede terminarla de nuevo."
+            render "INFO_La restricción ya ha terminado, no puede terminarla de nuevo."
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 accs.accsFechaFinal = now
@@ -432,7 +434,7 @@ class PersonaController extends happy.seguridad.Shield {
                     render "OK_Terminación de la restricción exitosa"
                 }
             } else {
-                render "NO_No puede terminar una restricción que no ha empezado aún. Puede eliminarla."
+                render "INFO_No puede terminar una restricción que no ha empezado aún. Puede eliminarla."
             }
         }
     }
@@ -441,10 +443,10 @@ class PersonaController extends happy.seguridad.Shield {
         def accs = Accs.get(params.id)
         def now = new Date()
         if (accs.accsFechaFinal <= now) {
-            render "OK_La restricción ya ha terminado, no puede ser eliminada."
+            render "INFO_La restricción ya ha terminado, no puede ser eliminada."
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
-                render "NO_No puede eliminar una restricción en curso. Puede terminarla."
+                render "INFO_No puede eliminar una restricción en curso. Puede terminarla."
             } else {
                 try {
                     accs.delete(flush: true)
@@ -593,7 +595,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def save_ajax() {
-
+        def validarDpto = false
         params.each { k, v ->
             if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
@@ -607,6 +609,7 @@ class PersonaController extends happy.seguridad.Shield {
                 notFound_ajax()
                 return
             }
+            validarDpto = true
         } //update
         else {
             //llena la parte de usuario si se esta creando la persona
@@ -618,12 +621,46 @@ class PersonaController extends happy.seguridad.Shield {
             }
             p = params.apellido.split(" ")
             params.login += p[0]
+
+            def cantLogin = Persona.countByLogin(params.login)
+            if (cantLogin > 0) {
+                params.login = params.login + (cantLogin + 1)
+            }
+            cantLogin = Persona.countByLogin(params.login)
+            def i = cantLogin
+            while (cantLogin > 0) {
+                params.login = params.login + (i + 1)
+                cantLogin = Persona.countByLogin(params.login)
+                i++
+            }
+
             params.password = params.cedula.toString().encodeAsMD5()
             params.activo = 0
             params.fechaCambioPass = new Date() + 30
             params.jefe = 0
             params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
+        def msgDpto = ""
+        if (validarDpto) {
+            if (params.departamento.id != personaInstance.departamentoId) {
+                def rolPara = RolPersonaTramite.findByCodigo('R001');
+                def rolCopia = RolPersonaTramite.findByCodigo('R002');
+                def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+                def cantTramites = tramites.size()
+                msgDpto = "<h3 class='text-warning text-shadow'>Está cambiando a la persona de departamento.</h3>" +
+                        "<p>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
+                        "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observacion de" +
+                        "notificación de esta acción.</p>" +
+                        "<p>Para continuar con el cambio presione el botón 'Continuar'.<br/>" +
+                        "Para cancelar el cambio presione el botón 'Cancelar'.<br/>" +
+                        "Para ver los trámites que se redireccionarán presione el botón 'Ver trámites'.</p>"
+//                render "DPTO_Está cambiando a la persona de departamento."
+//                return
+                params.departamento.id = personaInstance.departamentoId
+            }
+        }
         personaInstance.properties = params
 
         if (!personaInstance.save(flush: true)) {
@@ -632,7 +669,11 @@ class PersonaController extends happy.seguridad.Shield {
             render msg
             return
         }
-        render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+        if (msgDpto != "") {
+            render "DPTO_" + msgDpto
+        } else {
+            render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+        }
     } //save para grabar desde ajax
 
     def delete_ajax() {

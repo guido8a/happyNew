@@ -98,7 +98,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     }
                 }
             }
-            if (params.cc == "on") {
+//            if (params.cc == "on") {
+            def tipoDoc = TipoDocumento.get(params.tramite.tipoDocumento.id)
+            if (tipoDoc.codigo == "DEX") {
                 paramsOrigen.tramite = tramite
                 paramsOrigen.fecha = paramsTramite.fechaCreacion
                 def origen = new OrigenTramite(paramsOrigen)
@@ -273,16 +275,37 @@ class Tramite3Controller extends happy.seguridad.Shield {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolPara)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolCopia)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
         def pxtImprimir = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolImprimir)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
 
         pxtTodos = pxtPara
