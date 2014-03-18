@@ -73,7 +73,7 @@
                                 },
                                 success : function (msg) {
                                     var parts = msg.split("_");
-                                    log(parts[1], parts[0] == "OK" ? "success" : "error");
+                                    log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
                                     loadPermisos();
                                 }
                             });
@@ -97,7 +97,7 @@
                                 },
                                 success : function (msg) {
                                     var parts = msg.split("_");
-                                    log(parts[1], parts[0] == "OK" ? "success" : "error");
+                                    log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
                                     loadPermisos();
                                 }
                             });

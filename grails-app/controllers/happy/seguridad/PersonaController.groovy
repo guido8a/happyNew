@@ -373,7 +373,7 @@ class PersonaController extends happy.seguridad.Shield {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date().clearTime()
         if (perm.fechaFin && perm.fechaFin <= now) {
-            render "OK_El permiso ya ha caducado, no puede terminarlo de nuevo."
+            render "INFO_El permiso ya ha caducado, no puede terminarlo de nuevo."
         } else {
             if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
                 perm.fechaFin = now
@@ -383,7 +383,7 @@ class PersonaController extends happy.seguridad.Shield {
                     render "OK_Terminación del permiso exitosa"
                 }
             } else {
-                render "NO_No puede terminar un permiso que no ha empezado aún. Puede eliminarlo."
+                render "INFO_No puede terminar un permiso que no ha empezado aún. Puede eliminarlo."
             }
         }
     }
@@ -392,10 +392,10 @@ class PersonaController extends happy.seguridad.Shield {
         def perm = PermisoUsuario.get(params.id)
         def now = new Date()
         if (perm.fechaFin && perm.fechaFin <= now) {
-            render "OK_El permiso ya ha caducado, no puede ser eliminado."
+            render "INFO_El permiso ya ha caducado, no puede ser eliminado."
         } else {
             if (perm.fechaInicio <= now && (perm.fechaFin >= now || !perm.fechaFin)) {
-                render "NO_No puede eliminar un permiso en curso. Puede terminarlo."
+                render "INFO_No puede eliminar un permiso en curso. Puede terminarlo."
             } else {
                 try {
                     perm.delete(flush: true)
@@ -422,7 +422,7 @@ class PersonaController extends happy.seguridad.Shield {
         def accs = Accs.get(params.id)
         def now = new Date().clearTime()
         if (accs.accsFechaFinal <= now) {
-            render "OK_La restricción ya ha terminado, no puede terminarla de nuevo."
+            render "INFO_La restricción ya ha terminado, no puede terminarla de nuevo."
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 accs.accsFechaFinal = now
@@ -432,7 +432,7 @@ class PersonaController extends happy.seguridad.Shield {
                     render "OK_Terminación de la restricción exitosa"
                 }
             } else {
-                render "NO_No puede terminar una restricción que no ha empezado aún. Puede eliminarla."
+                render "INFO_No puede terminar una restricción que no ha empezado aún. Puede eliminarla."
             }
         }
     }
@@ -441,10 +441,10 @@ class PersonaController extends happy.seguridad.Shield {
         def accs = Accs.get(params.id)
         def now = new Date()
         if (accs.accsFechaFinal <= now) {
-            render "OK_La restricción ya ha terminado, no puede ser eliminada."
+            render "INFO_La restricción ya ha terminado, no puede ser eliminada."
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
-                render "NO_No puede eliminar una restricción en curso. Puede terminarla."
+                render "INFO_No puede eliminar una restricción en curso. Puede terminarla."
             } else {
                 try {
                     accs.delete(flush: true)
@@ -593,7 +593,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def save_ajax() {
-
+        def validarDpto = false
         params.each { k, v ->
             if (v != "date.struct" && v instanceof java.lang.String) {
                 params[k] = v.toUpperCase()
@@ -607,6 +607,7 @@ class PersonaController extends happy.seguridad.Shield {
                 notFound_ajax()
                 return
             }
+            validarDpto = true
         } //update
         else {
             //llena la parte de usuario si se esta creando la persona
@@ -618,12 +619,29 @@ class PersonaController extends happy.seguridad.Shield {
             }
             p = params.apellido.split(" ")
             params.login += p[0]
+
+            def cantLogin = Persona.countByLogin(params.login)
+            if (cantLogin > 0) {
+                params.login = params.login + (cantLogin + 1)
+            }
+            cantLogin = Persona.countByLogin(params.login)
+            def i = cantLogin
+            while (cantLogin > 0) {
+                params.login = params.login + (i + 1)
+                cantLogin = Persona.countByLogin(params.login)
+                i++
+            }
+
             params.password = params.cedula.toString().encodeAsMD5()
             params.activo = 0
             params.fechaCambioPass = new Date() + 30
             params.jefe = 0
             params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
+        def error
+        if (validarDpto) {
+
+        }
         personaInstance.properties = params
 
         if (!personaInstance.save(flush: true)) {

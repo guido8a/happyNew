@@ -273,16 +273,37 @@ class Tramite3Controller extends happy.seguridad.Shield {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolPara)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolCopia)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
         def pxtImprimir = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolImprimir)
             isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
         }
 
         pxtTodos = pxtPara

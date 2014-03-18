@@ -57,9 +57,9 @@ function log(msg, type, title, hide) {
     }
     $.pnotify({
         title        : title,
-        addclass     : "stack-bar-top",
-        cornerclass  : 'ui-pnotify-sharp',
-        icon         : "",
+//        addclass     : "stack-bar-top",
+//        cornerclass  : 'ui-pnotify-sharp',
+//        icon         : "",
         closer_hover : false,
         text         : msg,
         type         : type,

@@ -165,7 +165,7 @@
                 intervalBandeja = setInterval(function () {
                     cargarBandeja();
                 }, 1000 * 60 * 5);
-                var id;
+                var id, codigo;
 
                 $(".alertas").click(function () {
                     if (!$(this).hasClass("trHighlight")) {
@@ -184,6 +184,7 @@
                         var $tr = $(e.target).parent();
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
+                        codigo = $tr.data("codigo");
                     }
                 });
 
@@ -196,7 +197,7 @@
                         var b = bootbox.dialog({
                             id      : "dlgContestar",
                             title   : "Contestar trámite",
-                            message : "¿Está seguro de querer contestar este trámite?",
+                            message : "¿Está seguro de querer contestar el trámite <b>" + codigo + "</b>?",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',
@@ -210,7 +211,7 @@
                                     className : 'btn-success',
                                     callback  : function () {
                                         openLoader();
-                                        location.href = '${createLink(controller: 'tramite', action: 'crearTramite')}?padre=' + id;
+                                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
                                     }
                                 }
                             }
@@ -226,8 +227,10 @@
                         var b = bootbox.dialog({
                             id      : "dlgArchivar",
                             title   : "Archivar trámite",
-                            message : "¿Está seguro de querer archivar este trámite?<br/>" +
-                                      "Una vez archivado no podrá utilizarlo de ninguna manera.",
+                            message : "<p>¿Está seguro de querer archivar el trámite <b>" + codigo + "</b>?<br/>" +
+                                      "Una vez archivado no podrá utilizarlo de ninguna manera.</p>" +
+                                      "<p>Observaciones</p>" +
+                                      "<textarea id='txaObsArchivar' rows='6' class='form-control'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',
@@ -240,14 +243,14 @@
                                     label     : '<i class="fa fa-thumbs-o-up"></i> Archivar',
                                     className : 'btn-success',
                                     callback  : function () {
-                                        var obs = $("#txaObsJefe").val();
+                                        var obs = $("#txaObsArchivar").val();
                                         openLoader();
                                         $.ajax({
                                             type    : 'POST',
                                             url     : '${createLink(controller: 'tramite', action: 'archivar')}',
                                             data    : {
-                                                id  : id,
-                                                obs : obs
+                                                id    : id,
+                                                texto : obs
                                             },
                                             success : function (msg) {
                                                 var parts = msg.split("_");
@@ -276,7 +279,7 @@
                             var b = bootbox.dialog({
                                 id      : "dlgRecibido",
                                 title   : "Recibir trámite",
-                                message : "¿Está seguro de querer recibir este trámite?",
+                                message : "¿Está seguro de querer recibir el trámite <b>" + codigo + "</b>?",
                                 buttons : {
                                     cancelar : {
                                         label     : '<i class="fa fa-times"></i> Cancelar',
@@ -324,7 +327,7 @@
                             var b = bootbox.dialog({
                                 id      : "dlgJefe",
                                 title   : "Enviar trámite a jefe",
-                                message : "¿Está seguro de querer enviar este trámite al jefe?</br><br/>" +
+                                message : "¿Está seguro de querer enviar el trámite <b>" + codigo + "</b> al jefe?</br><br/>" +
                                           "Escriba las observaciones: " +
                                           "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
                                 buttons : {
