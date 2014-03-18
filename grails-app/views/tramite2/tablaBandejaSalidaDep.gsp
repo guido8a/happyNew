@@ -19,7 +19,7 @@
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
         <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
             <td title="${tramite.asunto}">${tramite?.codigo}</td>
-            <td title="${tramite.de.departamento}">${(tramite.deDepartamento)?tramite.deDepartamento.codigo:tramite.de}</td>
+            <td title="${tramite.deTexto.codigo}">${tramite.deTexto.codigo}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
             <g:set var="para" value="${tramite.getPara()}"/>
             <td >${para?.departamento?.codigo}</td>

@@ -168,4 +168,12 @@ class Tramite {
             return limite
         }
     }
+
+    def getDeTexto(){
+        if(this.deDepartamento)
+            return ["codigo":this.deDepartamento.codigo,"nombre":this.deDepartamento.descripcion]
+        else
+            return ["codigo":this.de.sigla,"nombre":this.de.toString()]
+    }
+
 }
