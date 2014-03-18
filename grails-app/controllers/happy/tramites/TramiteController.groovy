@@ -1028,4 +1028,56 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
+
+    def busquedaAnulados () {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+
+        def pxtTodos = []
+        def pxtTramites = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+
+
+        pxtTodos.each {
+            if(it?.tramite?.estadoTramite?.codigo == 'E006' ){
+                pxtTramites.add(it)
+            }
+        }
+
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 23:59:59")
+        }
+
+        def res = PersonaDocumentoTramite.withCriteria {
+
+            if (params.fecha) {
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
+            }
+
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+            }
+        }
+
+        return [tramites: res, pxtTramites: pxtTramites]
+
+
+    }
+
 }

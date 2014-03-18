@@ -433,7 +433,9 @@
             archivar,
             </g:if>
 
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
             seguimiento,
+            </g:if>
 
            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
             anular,
@@ -517,11 +519,15 @@
             archivar,
             </g:if>
 
-            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
-            anular,
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
+            seguimiento,
             </g:if>
 
-            seguimiento
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
+            anular
+            </g:if>
+
+
 
 
         ]);

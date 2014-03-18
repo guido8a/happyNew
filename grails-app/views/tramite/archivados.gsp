@@ -267,7 +267,7 @@
         openLoader();
         cargarBandeja();
         closeLoader();
-        bootbox.alert('<label><i class="fa fa-exclamation-triangle"></i> Tabla de trámites actualizada!</label>')
+        log("Tabla de trámites archivados actualizada", 'success', 'Trámites Archivados', true)
         return false;
     });
 
