@@ -57,15 +57,15 @@
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
                     <tr data-id="${personaInstance.id}">
 
-                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}' /></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}'/></td>
 
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "cedula")}' search='${params.search}' /></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "cedula")}' search='${params.search}'/></td>
 
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}' /></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
 
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}' /></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
 
-                        <td><elm:textoBusqueda texto='${personaInstance.cargo}' /></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.cargo}'/></td>
 
                     </tr>
                 </g:each>
@@ -88,12 +88,49 @@
                         data    : $form.serialize(),
                         success : function (msg) {
                             var parts = msg.split("_");
-                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                            if (parts[0] == "OK") {
-                                location.reload(true);
+                            if (parts[0] != "DPTO") {
+                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                if (parts[0] == "OK") {
+                                    location.reload(true);
+                                } else {
+                                    spinner.replaceWith($btn);
+                                    return false;
+                                }
                             } else {
-                                spinner.replaceWith($btn);
-                                return false;
+                                closeLoader();
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" + parts[1],
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        aceptar  : {
+                                            label     : "<i class='fa fa-trash-o'></i> Eliminar",
+                                            className : "btn-danger",
+                                            callback  : function () {
+                                                openLoader("Eliminando");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(action:'delete_ajax')}',
+                                                    data    : {
+                                                        id : itemId
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            location.reload(true);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     });

@@ -98,7 +98,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     }
                 }
             }
-            if (params.cc == "on") {
+//            if (params.cc == "on") {
+            def tipoDoc = TipoDocumento.get(params.tramite.tipoDocumento.id)
+            if (tipoDoc.codigo == "DEX") {
                 paramsOrigen.tramite = tramite
                 paramsOrigen.fecha = paramsTramite.fechaCreacion
                 def origen = new OrigenTramite(paramsOrigen)

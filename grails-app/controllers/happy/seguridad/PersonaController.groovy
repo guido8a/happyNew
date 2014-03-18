@@ -3,6 +3,8 @@ package happy.seguridad
 import groovy.json.JsonBuilder
 import happy.tramites.Departamento
 import happy.tramites.PermisoUsuario
+import happy.tramites.PersonaDocumentoTramite
+import happy.tramites.RolPersonaTramite
 import org.fusesource.jansi.Ansi
 
 import static java.awt.RenderingHints.*
@@ -638,9 +640,26 @@ class PersonaController extends happy.seguridad.Shield {
             params.jefe = 0
             params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
-        def error
+        def msgDpto = ""
         if (validarDpto) {
+            if (params.departamento.id != personaInstance.departamentoId) {
+                def rolPara = RolPersonaTramite.findByCodigo('R001');
+                def rolCopia = RolPersonaTramite.findByCodigo('R002');
+                def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
+                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+                def cantTramites = tramites.size()
+                msgDpto = "<h3 class='text-warning text-shadow'>Está cambiando a la persona de departamento.</h3>" +
+                        "<p>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
+                        "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observacion de" +
+                        "notificación de esta acción.</p>" +
+                        "<p>Para continuar con el cambio presione el botón 'Continuar'.<br/>" +
+                        "Para cancelar el cambio presione el botón 'Cancelar'.<br/>" +
+                        "Para ver los trámites que se redireccionarán presione el botón 'Ver trámites'.</p>"
+//                render "DPTO_Está cambiando a la persona de departamento."
+//                return
+                params.departamento.id = personaInstance.departamentoId
+            }
         }
         personaInstance.properties = params
 
@@ -650,7 +669,11 @@ class PersonaController extends happy.seguridad.Shield {
             render msg
             return
         }
-        render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+        if (msgDpto != "") {
+            render "DPTO_" + msgDpto
+        } else {
+            render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+        }
     } //save para grabar desde ajax
 
     def delete_ajax() {
