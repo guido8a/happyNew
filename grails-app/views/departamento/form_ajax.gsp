@@ -8,20 +8,20 @@
     <g:form class="form-horizontal" name="frmDepartamento" role="form" action="save_ajax" method="POST">
         <g:hiddenField name="id" value="${departamentoInstance?.id}"/>
 
-        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'tipoDepartamento', 'error')} ">
-            <span class="grupo">
-                <label for="tipoDepartamento" class="col-md-2 control-label text-info">
-                    Tipo Departamento
-                </label>
+    %{--<div class="form-group ${hasErrors(bean: departamentoInstance, field: 'tipoDepartamento', 'error')} ">--}%
+    %{--<span class="grupo">--}%
+    %{--<label for="tipoDepartamento" class="col-md-2 control-label text-info">--}%
+    %{--Tipo Departamento--}%
+    %{--</label>--}%
 
-                <div class="col-md-6">
-                    <g:select id="tipoDepartamento" name="tipoDepartamento.id" from="${TipoDepartamento.list()}"
-                              optionKey="id" optionValue="descripcion"
-                              value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control"/>
-                </div>
+    %{--<div class="col-md-6">--}%
+    %{--<g:select id="tipoDepartamento" name="tipoDepartamento.id" from="${TipoDepartamento.list()}"--}%
+    %{--optionKey="id" optionValue="descripcion"--}%
+    %{--value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control"/>--}%
+    %{--</div>--}%
 
-            </span>
-        </div>
+    %{--</span>--}%
+    %{--</div>--}%
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
             <span class="grupo">

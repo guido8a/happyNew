@@ -48,6 +48,7 @@
                     <g:sortableColumn property="nombre" title="Nombre"/>
 
                     <g:sortableColumn property="apellido" title="Apellido"/>
+                    <g:sortableColumn property="apellido" title="Login"/>
 
                     <th>Cargo</th>
 
@@ -64,6 +65,7 @@
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
 
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
 
                         <td><elm:textoBusqueda texto='${personaInstance.cargo}'/></td>
 
@@ -109,24 +111,30 @@
                                             }
                                         },
                                         aceptar  : {
-                                            label     : "<i class='fa fa-trash-o'></i> Eliminar",
-                                            className : "btn-danger",
+                                            label     : "<i class='fa fa-thumbs-o-up '></i> Continuar",
+                                            className : "btn-success",
                                             callback  : function () {
-                                                openLoader("Eliminando");
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : '${createLink(action:'delete_ajax')}',
-                                                    data    : {
-                                                        id : itemId
-                                                    },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        if (parts[0] == "OK") {
-                                                            location.reload(true);
+                                                var $sel = $("#selWarning");
+                                                var resp = $sel.val();
+                                                var dpto = $sel.data("dpto");
+                                                if (resp == 1 || resp == "1") {
+                                                    openLoader("Cambiando");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : '${createLink(action:'cambioDpto_ajax')}',
+                                                        data    : {
+                                                            id   : id,
+                                                            dpto : dpto
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            if (parts[0] == "OK") {
+                                                                location.reload(true);
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
                                         }
                                     }
