@@ -183,20 +183,20 @@
                 </span>
             </div>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">
-                <span class="grupo">
-                    <label for="activo" class="col-md-3 control-label text-info">
-                        Activo
-                    </label>
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="activo" class="col-md-3 control-label text-info">--}%
+        %{--Activo--}%
+        %{--</label>--}%
 
-                    <div class="col-md-3">
-                        %{--<g:field name="activo" type="number" value="${personaInstance.activo}" class="digits form-control required" required=""/>--}%
-                        <g:select name="activo" from="[0: 'NO', 1: 'SI']" value="${personaInstance.activo}" class="form-control required" required=""
-                                  optionKey="key" optionValue="value"/>
-                    </div>
-                    *
-                </span>
-            </div>
+        %{--<div class="col-md-3">--}%
+        %{--<g:field name="activo" type="number" value="${personaInstance.activo}" class="digits form-control required" required=""/>--}%
+        %{--<g:select name="activo" from="[0: 'NO', 1: 'SI']" value="${personaInstance.activo}" class="form-control required" required=""--}%
+        %{--optionKey="key" optionValue="value"/>--}%
+        %{--</div>--}%
+        %{--*--}%
+        %{--</span>--}%
+        %{--</div>--}%
         </g:form>
 
         <script type="text/javascript">

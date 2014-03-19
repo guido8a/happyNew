@@ -15,6 +15,9 @@
 
     <body>
 
+        <g:set var="iconActivar" value="fa-hdd-o"/>
+        <g:set var="iconDesactivar" value="fa-power-off"/>
+
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <!-- botones -->
@@ -40,6 +43,7 @@
         <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Login</th>
                     <g:sortableColumn property="nombre" title="Nombre"/>
                     <g:sortableColumn property="apellido" title="Apellido"/>
@@ -77,6 +81,9 @@
                     <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
                     <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
+                        <td>
+                            <i class="fa fa-${personaInstance.activo == 1 ? 'hdd-o' : 'power-off'} text-${personaInstance.activo == 1 ? 'success' : 'danger'}"></i>
+                        </td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
@@ -197,15 +204,17 @@
                 });
             }
             function cambiarEstadoRow(itemId, activar, tramites) {
-                var icon, textMsg, textBtn, textLoader, url;
+                var icon, textMsg, textBtn, textLoader, url, clase;
                 if (activar) {
-                    icon = "fa-hdd-o";
+                    clase = "success";
+                    icon = "${iconActivar}";
                     textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
                     textBtn = "Activar";
                     textLoader = "Activando";
                     url = "${createLink(action:'activar_ajax')}";
                 } else {
-                    icon = "fa-power-off";
+                    clase = "danger";
+                    icon = "${iconDesactivar}";
                     textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>"
                     if (tramites > 0) {
                         textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
@@ -219,7 +228,7 @@
                 }
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa " + icon + " fa-3x pull-left text-danger text-shadow'></i>" + textMsg,
+                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -229,7 +238,7 @@
                         },
                         eliminar : {
                             label     : "<i class='fa " + icon + "'></i> " + textBtn,
-                            className : "btn-danger",
+                            className : "btn-" + clase,
                             callback  : function () {
                                 openLoader(textLoader);
                                 $.ajax({
@@ -364,7 +373,7 @@
                 };
                 var desactivar = {
                     text   : 'Desactivar',
-                    icon   : "<i class='fa fa-power-off'></i>",
+                    icon   : "<i class='fa ${iconDesactivar}'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -373,7 +382,7 @@
                 };
                 var activar = {
                     text   : 'Activar',
-                    icon   : "<i class='fa fa-hdd-o'></i>",
+                    icon   : "<i class='fa ${iconActivar}'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -422,8 +431,7 @@
                     ver,
                     editar,
                     {divider : true},
-                    activar,
-                    desactivar
+                    activar
                 ]);
 
                 context.attach('.inactivo.eliminar', [

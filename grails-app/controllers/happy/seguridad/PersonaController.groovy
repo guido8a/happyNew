@@ -735,16 +735,35 @@ class PersonaController extends happy.seguridad.Shield {
         } //create
         personaInstance.properties = params
 
+//        println "AAAAAAAAA"
+
         if (!personaInstance.save(flush: true)) {
+            println "ERROR"
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Persona."
             msg += renderErrors(bean: personaInstance)
             render msg
             return
-        }
-        if (msgDpto != "") {
-            render "INFO_" + msgDpto
         } else {
-            render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+//            println "******************"
+//            println personaInstance
+//            println personaInstance.id
+//            println "******************"
+            def perfiles = Sesn.countByUsuario(personaInstance)
+            if (perfiles == 0) {
+                def perfilUsuario = Prfl.findByCodigo("USU")
+                def sesion = new Sesn([
+                        usuario: personaInstance,
+                        perfil: perfilUsuario
+                ])
+                if (!sesion.save(flush: true)) {
+                    println "error asignando el perfil usuario"
+                }
+            }
+            if (msgDpto != "") {
+                render "INFO_" + msgDpto
+            } else {
+                render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
+            }
         }
     } //save para grabar desde ajax
 
