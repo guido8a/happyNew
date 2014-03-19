@@ -93,6 +93,7 @@ class LoginController {
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
             eq("password", params.pass.encodeAsMD5())
+            eq("activo", 1)
         }
         if (user.size() == 0) {
             flash.message = "No se ha encontrado el usuario"
@@ -104,14 +105,14 @@ class LoginController {
             user = user[0]
             session.usuario = user
             session.departamento = user.departamento
-            println "session dep "+session.departamento.id
+            println "session dep " + session.departamento.id
             def perfiles = Sesn.findAllByUsuario(user)
 //            println "perfiles ? "+perfiles
             if (perfiles.size() == 0) {
                 flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
                 flash.tipo = "error"
                 flash.icon = "icon-warning"
-                session.usuario=null
+                session.usuario = null
             } else if (perfiles.size() == 1) {
 
                 session.perfil = perfiles.first().perfil

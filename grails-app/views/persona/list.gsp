@@ -1,4 +1,4 @@
-<%@ page import="happy.seguridad.Persona" %>
+<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.PermisoUsuario; happy.seguridad.Sesn; happy.tramites.PersonaDocumentoTramite; happy.tramites.Tramite; happy.tramites.ObservacionTramite; happy.seguridad.Accs; happy.seguridad.Persona" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -40,35 +40,49 @@
         <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
-
-                    <th>Departamento</th>
-
-                    <g:sortableColumn property="cedula" title="Cédula"/>
-
+                    <th>Login</th>
                     <g:sortableColumn property="nombre" title="Nombre"/>
-
                     <g:sortableColumn property="apellido" title="Apellido"/>
-                    <g:sortableColumn property="apellido" title="Login"/>
-
-                    <th>Cargo</th>
-
+                    <g:sortableColumn property="departamento" title="Departamento"/>
+                    <th>E-mail</th>
+                    <th>Autoridad</th>
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
-                    <tr data-id="${personaInstance.id}">
+                    <g:set var="del" value="${true}"/>
+                    <g:if test="${Tramite.countByDe(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${PersonaDocumentoTramite.countByPersona(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${ObservacionTramite.countByPersona(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${Accs.countByUsuarioOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${Sesn.countByUsuario(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${PermisoUsuario.countByPersonaOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
 
-                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}'/></td>
+                    <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
+                    <g:set var="rolCopia" value="${RolPersonaTramite.findByCodigo('R002')}"/>
+                    <g:set var="rolImprimir" value="${RolPersonaTramite.findByCodigo('I005')}"/>
 
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "cedula")}' search='${params.search}'/></td>
+                    <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
-
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
+                    <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
-
-                        <td><elm:textoBusqueda texto='${personaInstance.cargo}'/></td>
-
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.mail}' search='${params.search}'/></td>
+                        <td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>
                     </tr>
                 </g:each>
             </tbody>
@@ -77,7 +91,7 @@
         <elm:pagination total="${personaInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
-            var id = null;
+            var id = null, tramites = 0;
             function submitForm() {
                 var $form = $("#frmPersona");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
@@ -90,7 +104,7 @@
                         data    : $form.serialize(),
                         success : function (msg) {
                             var parts = msg.split("_");
-                            if (parts[0] != "DPTO") {
+                            if (parts[0] != "INFO") {
                                 log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                 if (parts[0] == "OK") {
                                     location.reload(true);
@@ -149,7 +163,8 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar la Persona seleccionada? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
+                              "<p>¿Está seguro que desea eliminar la Persona seleccionada? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -165,6 +180,61 @@
                                 $.ajax({
                                     type    : "POST",
                                     url     : '${createLink(action:'delete_ajax')}',
+                                    data    : {
+                                        id : itemId
+                                    },
+                                    success : function (msg) {
+                                        var parts = msg.split("_");
+                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                        if (parts[0] == "OK") {
+                                            location.reload(true);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+            function cambiarEstadoRow(itemId, activar, tramites) {
+                var icon, textMsg, textBtn, textLoader, url;
+                if (activar) {
+                    icon = "fa-hdd-o";
+                    textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
+                    textBtn = "Activar";
+                    textLoader = "Activando";
+                    url = "${createLink(action:'activar_ajax')}";
+                } else {
+                    icon = "fa-power-off";
+                    textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>"
+                    if (tramites > 0) {
+                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
+                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
+                    } else {
+                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
+                    }
+                    textBtn = "Desactivar";
+                    textLoader = "Desactivando";
+                    url = "${createLink(action:'desactivar_ajax')}";
+                }
+                bootbox.dialog({
+                    title   : "Alerta",
+                    message : "<i class='fa " + icon + " fa-3x pull-left text-danger text-shadow'></i>" + textMsg,
+                    buttons : {
+                        cancelar : {
+                            label     : "Cancelar",
+                            className : "btn-primary",
+                            callback  : function () {
+                            }
+                        },
+                        eliminar : {
+                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                            className : "btn-danger",
+                            callback  : function () {
+                                openLoader(textLoader);
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : url,
                                     data    : {
                                         id : itemId
                                     },
@@ -242,78 +312,129 @@
                         var $tr = $(e.target).parent();
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
+                        tramites = $tr.data("tramites");
                     }
                 });
-                context.attach('tbody>tr', [
+
+                var ver = {
+                    text   : 'Ver',
+                    icon   : "<i class='fa fa-search'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(action:'show_ajax')}",
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Ver Persona",
+                                    message : msg,
+                                    buttons : {
+                                        ok : {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
+                var editar = {
+                    text   : 'Editar',
+                    icon   : "<i class='fa fa-pencil'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        createEditRow(id, "persona");
+                    }
+                };
+                var config = {
+                    text   : 'Configuración',
+                    icon   : "<i class='fa fa-gears'></i>",
+                    action : function (e) {
+                        location.href = "${createLink(action: 'config')}/" + id;
+                    }
+
+                };
+                var desactivar = {
+                    text   : 'Desactivar',
+                    icon   : "<i class='fa fa-power-off'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        cambiarEstadoRow(id, false, tramites);
+                    }
+                };
+                var activar = {
+                    text   : 'Activar',
+                    icon   : "<i class='fa fa-hdd-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        cambiarEstadoRow(id, true, tramites);
+                    }
+                };
+                var eliminar = {
+                    text   : 'Eliminar',
+                    icon   : "<i class='fa fa-trash-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        deleteRow(id);
+                    }
+                };
+
+                context.attach('.activo', [
                     {
                         header : 'Acciones'
                     },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action:'show_ajax')}",
-                                data    : {
-                                    id : id
-                                },
-                                success : function (msg) {
-                                    bootbox.dialog({
-                                        title   : "Ver Persona",
-                                        message : msg,
-                                        buttons : {
-                                            ok : {
-                                                label     : "Aceptar",
-                                                className : "btn-primary",
-                                                callback  : function () {
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    },
-                    {
-                        text   : 'Editar Persona',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            createEditRow(id, "persona");
-                        }
-                    },
+                    ver,
+                    editar,
                     {divider : true},
-                    {
-                        text   : 'Editar Usuario',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            createEditRow(id, "usuario");
-                        }
-                    },
-                    {
-                        text   : 'Configuración',
-                        icon   : "<i class='fa fa-gears'></i>",
-                        action : function (e) {
-                            location.href = "${createLink(action: 'config')}/" + id;
-                        }
+                    config,
+                    {divider : true},
+                    desactivar
+                ]);
 
-                    },
-                    {divider : true},
+                context.attach('.activo.eliminar', [
                     {
-                        text   : 'Eliminar',
-                        icon   : "<i class='fa fa-trash-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            deleteRow(id);
-                        }
-                    }
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    config,
+                    {divider : true},
+                    desactivar,
+                    eliminar
+                ]);
+
+                context.attach('.inactivo', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    activar,
+                    desactivar
+                ]);
+
+                context.attach('.inactivo.eliminar', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    activar,
+                    eliminar
                 ]);
             });
         </script>

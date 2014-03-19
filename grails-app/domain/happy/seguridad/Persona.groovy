@@ -78,7 +78,7 @@ class Persona {
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
         telefono(maxSize: 15, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
-        celular(maxSize: 15, blank: true, nullable: true, attributes: [title: 'celular'])
+        celular(maxSize: 63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
     }

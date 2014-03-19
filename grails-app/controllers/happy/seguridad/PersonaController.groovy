@@ -548,6 +548,67 @@ class PersonaController extends happy.seguridad.Shield {
         return [personaInstance: personaInstance]
     } //form para cargar con ajax en un dialog
 
+    def activar_ajax() {
+        def persona = Persona.get(params.id)
+        persona.activo = 1
+        persona.fechaInicio = new Date()
+        persona.fechaFin = null
+        if (persona.save(flush: true)) {
+            render "OK_Persona activada exitosamente"
+        } else {
+            "NO_Ha ocurrido un error: " + renderErrors(bean: persona)
+        }
+    }
+
+    def desactivar_ajax() {
+//        println "cambio dpto"
+        def persona = Persona.get(params.id)
+        def dpto = persona.departamento
+        persona.activo = 0
+        persona.fechaFin = new Date()
+        if (persona.save(flush: true)) {
+//            println "Persona.dpto save ok"
+            def rolPara = RolPersonaTramite.findByCodigo('R001');
+            def rolCopia = RolPersonaTramite.findByCodigo('R002');
+            def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+            def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+            def errores = "", ok = 0
+            tramites.each { pr ->
+                if (pr.rolPersonaTramite.codigo == "I005") {
+                    pr.delete(flush: true)
+                } else {
+                    pr.persona = null
+                    pr.departamento = dpto
+                    def tramite = pr.tramite
+                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+                    if (tramite.save(flush: true)) {
+//                        println "tr.save ok"
+                    } else {
+                        errores += renderErrors(bean: tramite)
+                        println tramite.errors
+                    }
+                    if (pr.save(flush: true)) {
+//                        println "pr save ok"
+                        ok++
+                    } else {
+                        println pr.errors
+                        errores += renderErrors(bean: pr)
+                    }
+                }
+            }
+            if (errores != "") {
+                println "NOPE: " + errores
+                render "NO_" + errores
+            } else {
+//                println "OK"
+                render "OK_Cambio realizado exitosamente"
+            }
+        } else {
+            render "NO_Ha ocurrido un error al cambiar el departamento de la persona.<br/>" + renderErrors(bean: persona)
+        }
+    }
+
     def formUsuario_ajax() {
         def personaInstance = new Persona(params)
         if (params.id) {
@@ -594,6 +655,23 @@ class PersonaController extends happy.seguridad.Shield {
         }
     }
 
+    def validarLogin_ajax() {
+        params.login = params.login.toString().trim()
+        if (params.id) {
+            def prsn = Persona.get(params.id)
+            if (prsn.login == params.login) {
+                render true
+                return
+            } else {
+                render Persona.countByLoginIlike(params.login) == 0
+                return
+            }
+        } else {
+            render Persona.countByLoginIlike(params.login) == 0
+            return
+        }
+    }
+
     def save_ajax() {
         def msgDpto = ""
         params.each { k, v ->
@@ -616,41 +694,42 @@ class PersonaController extends happy.seguridad.Shield {
 
                 def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
                 def cantTramites = tramites.size()
-                msgDpto = "<h4 class='text-warning text-shadow'>Está cambiando a la persona de departamento.</h4>" +
-                        "<p style='font-size:larger;'>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
-                        "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observación de " +
-                        "notificación de esta acción.</p>" +
-                        g.select("data-dpto": params.departamento.id, name: "selWarning", class: 'form-control', optionKey: "key", optionValue: "value",
-                                from: [0: "Cancelar el cambio", 1: "Cambiar y efectuar el redireccionamiento"])
+                if (params.departamento.id != personaInstance.departamentoId)
+                    msgDpto = "<h4 class='text-warning text-shadow'>Está cambiando a la persona de departamento.</h4>" +
+                            "<p style='font-size:larger;'>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
+                            "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observación de " +
+                            "notificación de esta acción.</p>" +
+                            g.select("data-dpto": params.departamento.id, name: "selWarning", class: 'form-control', optionKey: "key", optionValue: "value",
+                                    from: [0: "Cancelar el cambio", 1: "Cambiar y efectuar el redireccionamiento"])
                 params.departamento.id = personaInstance.departamentoId
             }
         } //update
         else {
             //llena la parte de usuario si se esta creando la persona
-            params.fechaInicio = new Date()
-            def p = params.nombre.split(" ")
-            params.login = ""
-            p.each {
-                params.login += it[0]
-            }
-            p = params.apellido.split(" ")
-            params.login += p[0]
-
-            def cantLogin = Persona.countByLogin(params.login)
-            if (cantLogin > 0) {
-                params.login = params.login + (cantLogin + 1)
-            }
-            cantLogin = Persona.countByLogin(params.login)
-            def i = cantLogin
-            while (cantLogin > 0) {
-                params.login = params.login + (i + 1)
-                cantLogin = Persona.countByLogin(params.login)
-                i++
-            }
+//            params.fechaInicio = new Date()
+//            def p = params.nombre.split(" ")
+//            params.login = ""
+//            p.each {
+//                params.login += it[0]
+//            }
+//            p = params.apellido.split(" ")
+//            params.login += p[0]
+//
+//            def cantLogin = Persona.countByLogin(params.login)
+//            if (cantLogin > 0) {
+//                params.login = params.login + (cantLogin + 1)
+//            }
+//            cantLogin = Persona.countByLogin(params.login)
+//            def i = cantLogin
+//            while (cantLogin > 0) {
+//                params.login = params.login + (i + 1)
+//                cantLogin = Persona.countByLogin(params.login)
+//                i++
+//            }
 
             params.password = params.cedula.toString().encodeAsMD5()
             params.activo = 0
-            params.fechaCambioPass = new Date() + 30
+//            params.fechaCambioPass = new Date() + 30
             params.jefe = 0
             params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
@@ -663,20 +742,20 @@ class PersonaController extends happy.seguridad.Shield {
             return
         }
         if (msgDpto != "") {
-            render "DPTO_" + msgDpto
+            render "INFO_" + msgDpto
         } else {
             render "OK_${params.id ? 'Actualización' : 'Creación'} de Persona exitosa."
         }
     } //save para grabar desde ajax
 
     def cambioDpto_ajax() {
-        println "cambio dpto"
+//        println "cambio dpto"
         def persona = Persona.get(params.id)
         def dpto = Departamento.get(params.dpto)
         def dptoOld = persona.departamento
         persona.departamento = dpto
         if (persona.save(flush: true)) {
-            println "Persona.dpto save ok"
+//            println "Persona.dpto save ok"
             def rolPara = RolPersonaTramite.findByCodigo('R001');
             def rolCopia = RolPersonaTramite.findByCodigo('R002');
             def rolImprimir = RolPersonaTramite.findByCodigo('I005')
@@ -692,13 +771,13 @@ class PersonaController extends happy.seguridad.Shield {
                     def tramite = pr.tramite
                     tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
                     if (tramite.save(flush: true)) {
-                        println "tr.save ok"
+//                        println "tr.save ok"
                     } else {
                         errores += renderErrors(bean: tramite)
                         println tramite.errors
                     }
                     if (pr.save(flush: true)) {
-                        println "pr save ok"
+//                        println "pr save ok"
                         ok++
                     } else {
                         println pr.errors
@@ -710,7 +789,7 @@ class PersonaController extends happy.seguridad.Shield {
                 println "NOPE: " + errores
                 render "NO_" + errores
             } else {
-                println "OK"
+//                println "OK"
                 render "OK_Cambio realizado exitosamente"
             }
         } else {

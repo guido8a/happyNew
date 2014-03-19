@@ -10,17 +10,17 @@
         <g:form class="form-horizontal" name="frmPersona" role="form" action="save" method="POST">
             <g:hiddenField name="id" value="${personaInstance?.id}"/>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cedula', 'error')}">
-                <span class="grupo">
-                    <label for="cedula" class="col-md-3 control-label text-info">
-                        Cédula
-                    </label>
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cedula', 'error')}">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="cedula" class="col-md-3 control-label text-info">--}%
+        %{--Cédula--}%
+        %{--</label>--}%
 
-                    <div class="col-md-4">
-                        <g:textField name="cedula" maxlength="10" cedula="true" class="form-control" value="${personaInstance?.cedula}"/>
-                    </div>
-                </span>
-            </div>
+        %{--<div class="col-md-4">--}%
+        %{--<g:textField name="cedula" maxlength="10" cedula="true" class="form-control" value="${personaInstance?.cedula}"/>--}%
+        %{--</div>--}%
+        %{--</span>--}%
+        %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'nombre', 'error')} required">
                 <span class="grupo">
@@ -74,19 +74,19 @@
                 </span>
             </div>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaNacimiento', 'error')} ">
-                <span class="grupo">
-                    <label for="fechaNacimiento" class="col-md-3 control-label text-info">
-                        Fecha Nacimiento
-                    </label>
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaNacimiento', 'error')} ">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="fechaNacimiento" class="col-md-3 control-label text-info">--}%
+        %{--Fecha Nacimiento--}%
+        %{--</label>--}%
 
-                    <div class="col-md-4">
-                        <elm:datepicker name="fechaNacimiento" title="fechaNacimiento" class="datepicker form-control" maxDate="-15y"
-                                        value="${personaInstance?.fechaNacimiento}" default="none" noSelection="['': '']"/>
-                    </div>
+        %{--<div class="col-md-4">--}%
+        %{--<elm:datepicker name="fechaNacimiento" title="fechaNacimiento" class="datepicker form-control" maxDate="-15y"--}%
+        %{--value="${personaInstance?.fechaNacimiento}" default="none" noSelection="['': '']"/>--}%
+        %{--</div>--}%
 
-                </span>
-            </div>
+        %{--</span>--}%
+        %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'mail', 'error')} ">
                 <span class="grupo">
@@ -108,24 +108,24 @@
                     </label>
 
                     <div class="col-md-5">
-                        <g:textField name="telefono" maxlength="15" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>
+                        <g:textField name="telefono" maxlength="63" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>
                     </div>
 
                 </span>
             </div>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'celular', 'error')} ">
-                <span class="grupo">
-                    <label for="celular" class="col-md-3 control-label text-info">
-                        Celular
-                    </label>
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'celular', 'error')} ">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="celular" class="col-md-3 control-label text-info">--}%
+        %{--Celular--}%
+        %{--</label>--}%
 
-                    <div class="col-md-5">
-                        <g:textField name="celular" maxlength="15" celular="true" class="form-control" value="${personaInstance?.celular}"/>
-                    </div>
+        %{--<div class="col-md-5">--}%
+        %{--<g:textField name="celular" maxlength="15" celular="true" class="form-control" value="${personaInstance?.celular}"/>--}%
+        %{--</div>--}%
 
-                </span>
-            </div>
+        %{--</span>--}%
+        %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'departamento', 'error')} ">
                 <span class="grupo">
@@ -142,18 +142,18 @@
                 </span>
             </div>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cargo', 'error')} ">
-                <span class="grupo">
-                    <label for="cargo" class="col-md-3 control-label text-info">
-                        Cargo
-                    </label>
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cargo', 'error')} ">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="cargo" class="col-md-3 control-label text-info">--}%
+        %{--Cargo--}%
+        %{--</label>--}%
 
-                    <div class="col-md-8">
-                        <g:textField name="cargo" maxlength="127" class="form-control allCaps" value="${personaInstance?.cargo}"/>
-                    </div>
+        %{--<div class="col-md-8">--}%
+        %{--<g:textField name="cargo" maxlength="127" class="form-control allCaps" value="${personaInstance?.cargo}"/>--}%
+        %{--</div>--}%
 
-                </span>
-            </div>
+        %{--</span>--}%
+        %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'jefe', 'error')} required">
                 <span class="grupo">
@@ -169,7 +169,34 @@
                     *
                 </span>
             </div>
+            <!------------------------------------------------------------------------------------------------------------------------------->
+            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaInicio', 'error')} ">
+                <span class="grupo">
+                    <label for="login" class="col-md-3 control-label text-info">
+                        Login
+                    </label>
 
+                    <div class="col-md-4">
+                        <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}"/>
+                    </div>
+
+                </span>
+            </div>
+
+            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">
+                <span class="grupo">
+                    <label for="activo" class="col-md-3 control-label text-info">
+                        Activo
+                    </label>
+
+                    <div class="col-md-3">
+                        %{--<g:field name="activo" type="number" value="${personaInstance.activo}" class="digits form-control required" required=""/>--}%
+                        <g:select name="activo" from="[0: 'NO', 1: 'SI']" value="${personaInstance.activo}" class="form-control required" required=""
+                                  optionKey="key" optionValue="value"/>
+                    </div>
+                    *
+                </span>
+            </div>
         </g:form>
 
         <script type="text/javascript">
@@ -204,6 +231,15 @@
                                 id : "${personaInstance.id}"
                             }
                         }
+                    },
+                    login  : {
+                        remote : {
+                            url  : "${createLink(action: 'validarLogin_ajax')}",
+                            type : "post",
+                            data : {
+                                id : "${personaInstance.id}"
+                            }
+                        }
                     }
                 },
                 messages       : {
@@ -212,6 +248,9 @@
                     },
                     mail   : {
                         remote : "E-mail ya registrado"
+                    },
+                    login  : {
+                        remote : "Login ya registrado"
                     }
                 }
             });
@@ -224,10 +263,14 @@
             });
 
             $("#apellido, #nombre").blur(function () {
-                var nombre = $("#nombre").val();
-                var apellido = $("#apellido").val();
-                var sigla = (nombre + " " + apellido).acronym().toUpperCase();
-                $("#sigla").val(sigla);
+                var nombre = $.trim($("#nombre").val());
+                var apellido = $.trim($("#apellido").val());
+                if (nombre != "" || apellido != "") {
+                    var sigla = (nombre + " " + apellido).acronym();
+                    var login = nombre.acronym() + "" + apellido.split(" ")[0];
+                    $("#sigla").val(sigla);
+                    $("#login").val(login);
+                }
             });
 
         </script>
