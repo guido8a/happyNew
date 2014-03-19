@@ -245,6 +245,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def bandejaEntradaDpto() {
         def usu = Persona.get(session.usuario.id)
         def triangulo = PermisoTramite.findByCodigo("E001")
+        def bloqueo = false
+        if(session.departamento.estado=="B")
+            bloqueo=true
         def tienePermiso = PermisoUsuario.withCriteria {
             eq("persona", usu)
             eq("permisoTramite", triangulo)
@@ -258,7 +261,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite", action: "bandejaEntrada")
             return
         }
-        return [persona: usu]
+        return [persona: usu,bloqueo:bloqueo]
     }
 
     def tablaBandejaEntradaDpto() {
@@ -307,7 +310,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
         }
-
         pxtTodos = pxtPara
         pxtTodos += pxtCopia
         pxtTodos += pxtImprimir
@@ -316,15 +318,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     def recibirTramite() {
         def persona = Persona.get(session.usuario.id)
-
         def tramite = Tramite.get(params.id)
         def para = tramite.para.departamento
-
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCC = RolPersonaTramite.findByCodigo("R002")
         def rolImprimir = RolPersonaTramite.findByCodigo("I005")
-
-
         def estado = EstadoTramite.findByCodigo('E004') //recibido
         def pxt = PersonaDocumentoTramite.withCriteria {
             eq("tramite", tramite)
@@ -334,8 +332,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 eq("rolPersonaTramite", rolCC)
                 eq("rolPersonaTramite", rolImprimir)
             }
-        }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
-
+        }
         if (pxt.size() > 1) {
             flash.message = "ERROR"
             println "mas de 1 PDT: ${pxt}"
@@ -348,20 +345,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
         } else {
             pxt = pxt.first()
         }
-
         if (persona.departamentoId == para.id) {
             tramite.estadoTramite = estado
         }
-
         def hoy = new Date()
         def limite = hoy
         use(TimeCategory) {
             limite = limite + tramite.prioridad.tiempo.hours
         }
-
         pxt.fechaRecepcion = hoy
         pxt.fechaLimiteRespuesta = limite
-
         if (pxt.save(flush: true) && tramite.save(flush: true)) {
             def pdt = new PersonaDocumentoTramite([
                     tramite: tramite,

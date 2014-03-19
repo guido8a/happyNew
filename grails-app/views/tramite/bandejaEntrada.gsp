@@ -20,7 +20,7 @@
 
     }
     /*.alert {*/
-        /*padding: 0;*/
+    /*padding: 0;*/
     /*!important;*/
     /*}*/
     .alertas {
@@ -163,8 +163,9 @@
 %{--//bandeja--}%
 
 
-<div id="bandeja">
-
+<div>
+    <div class="modalTabelGray" id="bloqueo-salida"></div>
+    <div id="bandeja"></div>
 </div>
 
 
@@ -201,6 +202,9 @@
 
 
     $(function () {
+        <g:if test="${bloqueo}">
+        $("#bloqueo-salida").show()
+        </g:if>
 
         var contestar = {
             text: 'Contestar Documento',
@@ -270,9 +274,9 @@
                                                 closeLoader();
                                                 if(msg == 'ok')
                                                 {
-                                                 log("Trámite archivado correctamente", 'success')
+                                                    log("Trámite archivado correctamente", 'success')
                                                 }else if(msg == 'no'){
-                                                 log("Error al archivar el trámite", 'error')
+                                                    log("Error al archivar el trámite", 'error')
                                                 }
                                             }
                                         });
@@ -412,7 +416,7 @@
                 archivo = $tr.attr("codigo")
             }
         });
-
+        <g:if test="${!bloqueo}">
         context.attach('.pendiente',[
             {
                 header: 'Acciones'
@@ -437,9 +441,9 @@
             seguimiento,
             </g:if>
 
-           <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
             anular,
-           </g:if>
+            </g:if>
 
             {
 
@@ -490,7 +494,8 @@
                 }
             }
         ]);
-
+        </g:if>
+        <g:if test="${!bloqueo}">
         context.attach('.retrasado', [
             {
                 header: 'Acciones'
@@ -531,72 +536,73 @@
 
 
         ]);
-    });
-
-    $(".btnBuscar").click(function () {
-        $(".buscar").attr("hidden", false)
-    });
+        </g:if>
 
 
-    $(".btnSalir").click(function () {
-        $(".buscar").attr("hidden", true)
+        $(".btnBuscar").click(function () {
+            $(".buscar").attr("hidden", false)
+        });
+
+
+        $(".btnSalir").click(function () {
+            $(".buscar").attr("hidden", true)
+            cargarBandeja();
+
+        });
+
+        $(".btnActualizar").click(function () {
+            openLoader();
+            cargarBandeja(false);
+            closeLoader();
+            return false;
+        });
+
         cargarBandeja();
 
-    });
+        setInterval(function () {
 
-    $(".btnActualizar").click(function () {
-        openLoader();
-        cargarBandeja(false);
-        closeLoader();
-        return false;
-    });
+            openLoader();
+            cargarBandeja(false)
+            closeLoader();
 
-    cargarBandeja();
-
-    setInterval(function () {
-
-        openLoader();
-        cargarBandeja(false)
-        closeLoader();
-
-    },300000);
+        },300000);
 
 
-    $(".alertas").click(function(){
-        var clase = $(this).attr("clase")
-        $("tr").each(function(){
-            if($(this).hasClass(clase)){
-                if($(this).hasClass("trHighlight"))
+        $(".alertas").click(function(){
+            var clase = $(this).attr("clase")
+            $("tr").each(function(){
+                if($(this).hasClass(clase)){
+                    if($(this).hasClass("trHighlight"))
+                        $(this).removeClass("trHighlight")
+                    else
+                        $(this).addClass("trHighlight")
+                }else{
                     $(this).removeClass("trHighlight")
-                else
-                    $(this).addClass("trHighlight")
-            }else{
-                $(this).removeClass("trHighlight")
-            }
-        });
+                }
+            });
 
-    })
+        })
 
-    $(".btnBusqueda").click(function () {
-        var memorando = $("#memorando").val();
-        var asunto = $("#asunto").val();
-        var fecha = $("#fechaBusqueda_input").val();
-        var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+        $(".btnBusqueda").click(function () {
+            var memorando = $("#memorando").val();
+            var asunto = $("#asunto").val();
+            var fecha = $("#fechaBusqueda_input").val();
+            var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
-            data: datos,
-            success: function (msg) {
-                $("#bandeja").html(msg);
+            $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
+                data: datos,
+                success: function (msg) {
+                    $("#bandeja").html(msg);
 
 
-            }
+                }
 
 
+
+            });
 
         });
-
     });
-
 
 </script>
 

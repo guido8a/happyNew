@@ -819,4 +819,39 @@ class PersonaController extends happy.seguridad.Shield {
         render "NO_No se encontró Persona."
     } //notFound para ajax
 
+    def cargarUsuariosLdap(){
+        def file = new File("C:\\Users\\svt\\Downloads\\users")
+
+        file.eachLine {
+            println "--> "+it
+            def parts = it.split("&")
+            def nombres = parts[0].split(" ")
+            def mail = parts[1]
+            def logn=parts[2]
+            def nombre = nombres[0]+" "+nombres[1]
+            def apellido=null
+            if(nombres.size()==3)
+                apellido = nombres[2]
+            if(nombres.size()==4)
+                apellido = nombres[2]+" "+nombres[3]
+            if(nombres.size()==5)
+                apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
+            if(!apellido)
+                apellido=nombre.split(" ")[1]
+            def prsn = Persona.findByNombreAndApellido(nombre,apellido)
+            if(!prsn){
+                prsn = new Persona()
+                prsn.nombre=nombre
+                prsn.apellido=apellido
+                prsn.mail=mail
+                prsn.login=logn
+                prsn.password="123".encodeAsMD5()
+                if(!prsn.save(flush: true)){
+                    println "error save prns "+prsn.errors
+                }
+            }
+        }
+    }
+
+
 }
