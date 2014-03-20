@@ -35,7 +35,6 @@ environments {
         }
     }
 
-
     produccionSAD {
         dataSource {
             dbCreate = "update"
