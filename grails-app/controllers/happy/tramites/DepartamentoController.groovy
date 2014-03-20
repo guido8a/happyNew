@@ -300,7 +300,54 @@ class DepartamentoController extends happy.seguridad.Shield {
                 return
             }
         }
-        return [departamentoInstance: departamentoInstance]
+
+        //cuenta los tramites de la bandeja de entrada de la oficina
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+
+        def pxtPara = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamentoInstance)
+            eq("rolPersonaTramite", rolPara)
+            isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
+        }
+        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamentoInstance)
+            eq("rolPersonaTramite", rolCopia)
+            isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
+        }
+        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamentoInstance)
+            eq("rolPersonaTramite", rolImprimir)
+            isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
+        }
+
+        def pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        pxtTodos += pxtImprimir
+
+        return [departamentoInstance: departamentoInstance, tramites: pxtTodos.size()]
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {

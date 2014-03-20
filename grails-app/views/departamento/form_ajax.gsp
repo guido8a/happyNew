@@ -45,7 +45,15 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps" value="${departamentoInstance?.codigo}"/>
+                    <g:if test="${tramites == 0}">
+                        <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps" value="${departamentoInstance?.codigo}"/>
+                    </g:if>
+                    <g:else>
+                        <span class="uneditable-input">
+                            ${departamentoInstance?.codigo}
+                            <g:hiddenField name="codigo" value="${departamentoInstance?.codigo}"/>
+                        </span>
+                    </g:else>
                 </div>
                 *
             </span>
