@@ -185,7 +185,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">
-                            Acceso <small>Restringir temporalmente el acceso al sistema</small>
+                            Ausentismo <small>Restringir temporalmente el acceso al sistema</small>
                         </a>
                     </h4>
                 </div>
