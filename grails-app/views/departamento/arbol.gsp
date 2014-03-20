@@ -5,7 +5,7 @@
   Time: 3:13 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.Departamento" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -19,13 +19,16 @@
             background : #DEDEDE;
             overflow-y : auto;
             width      : 950px;
-            height     : 700px;
+            height     : 600px;
         }
         </style>
 
     </head>
 
     <body>
+        <g:set var="iconActivar" value="fa-hdd-o"/>
+        <g:set var="iconDesactivar" value="fa-power-off"/>
+
         <div id="list-cuenta">
 
             <!-- botones -->
@@ -55,6 +58,9 @@
 
             </div>
         </div>
+
+        <elm:select name="selDptoOrig" from="${Departamento.findAllByActivo(1, [sort: 'descripcion'])}"
+                    optionKey="id" optionValue="descripcion" optionClass="id" class="form-control hide"/>
 
         <script type="text/javascript">
 
@@ -87,9 +93,77 @@
                     return false;
                 } //else
             }
+            function submitFormPersona(id) {
+                var $form = $("#frmPersona");
+                var $btn = $("#dlgCreateEditPersona").find("#btnSave");
+                if ($form.valid()) {
+                    $btn.replaceWith(spinner);
+                    openLoader("Grabando");
+                    $.ajax({
+                        type    : "POST",
+                        url     : $form.attr("action"),
+                        data    : $form.serialize(),
+                        success : function (msg) {
+                            var parts = msg.split("_");
+                            if (parts[0] != "INFO") {
+                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                if (parts[0] == "OK") {
+                                    location.reload(true);
+                                } else {
+                                    spinner.replaceWith($btn);
+                                    return false;
+                                }
+                            } else {
+                                closeLoader();
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" + parts[1],
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        aceptar  : {
+                                            label     : "<i class='fa fa-thumbs-o-up '></i> Continuar",
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var $sel = $("#selWarning");
+                                                var resp = $sel.val();
+                                                var dpto = $sel.data("dpto");
+                                                if (resp == 1 || resp == "1") {
+                                                    openLoader("Cambiando");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : '${createLink(controller: 'persona', action:'cambioDpto_ajax')}',
+                                                        data    : {
+                                                            id   : id,
+                                                            dpto : dpto
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            if (parts[0] == "OK") {
+                                                                location.reload(true);
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    return false;
+                } //else
+            }
 
-            function createEditRow(id, lvl, tipo) {
-                var data = tipo == "Crear" ? { padre : id, lvl : lvl } : {id : id, lvl : lvl};
+            function createEditRow(id, tipo) {
+                var data = tipo == "Crear" ? { padre : id} : {id : id};
                 $.ajax({
                     type    : "POST",
                     url     : "${createLink(action:'form_ajax')}",
@@ -129,112 +203,378 @@
                 }); //ajax
             } //createEdit
 
+            function createEditRowPersona(id, tipo) {
+                var data = tipo == "Crear" ? { 'departamento.id' : id} : {id : id};
+                $.ajax({
+                    type    : "POST",
+                    url     : "${createLink(controller: 'persona', action:'form_ajax')}",
+                    data    : data,
+                    success : function (msg) {
+                        var b = bootbox.dialog({
+                            id      : "dlgCreateEditPersona",
+                            class   : "long",
+                            title   : tipo + " Persona",
+                            message : msg,
+                            buttons : {
+                                cancelar : {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                },
+                                guardar  : {
+                                    id        : "btnSave",
+                                    label     : "<i class='fa fa-save'></i> Guardar",
+                                    className : "btn-success",
+                                    callback  : function () {
+                                        return submitFormPersona(id);
+                                    } //callback
+                                } //guardar
+                            } //buttons
+                        }); //dialog
+                        setTimeout(function () {
+                            var $input = b.find(".form-control").not(".datepicker").first();
+                            var val = $input.val();
+                            $input.focus();
+                            $input.val("");
+                            $input.val(val);
+                        }, 500);
+                    } //success
+                }); //ajax
+            } //createEditPersona
+
+            function cambiarEstadoRowPersona(itemId, strId, activar, tramites) {
+                var icon, textMsg, textBtn, textLoader, url, clase;
+                if (activar) {
+                    clase = "success";
+                    icon = "${iconActivar}";
+                    textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
+                    textBtn = "Activar";
+                    textLoader = "Activando";
+                    url = "${createLink(controller: 'persona', action:'activar_ajax')}";
+                } else {
+                    clase = "danger";
+                    icon = "${iconDesactivar}";
+                    textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
+                    if (tramites > 0) {
+                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
+                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
+                    } else {
+                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
+                    }
+                    textBtn = "Desactivar";
+                    textLoader = "Desactivando";
+                    url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
+                }
+                bootbox.dialog({
+                    title   : "Alerta",
+                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                    buttons : {
+                        cancelar : {
+                            label     : "Cancelar",
+                            className : "btn-primary",
+                            callback  : function () {
+                            }
+                        },
+                        eliminar : {
+                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                            className : "btn-" + clase,
+                            callback  : function () {
+                                openLoader(textLoader);
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : url,
+                                    data    : {
+                                        id : itemId
+                                    },
+                                    success : function (msg) {
+                                        var parts = msg.split("_");
+                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                        if (parts[0] == "OK") {
+                                            location.reload(true);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            } //cambiar estado row persona
+
+            function cambiarEstadoRow(itemId, strId, activar, tramites) {
+                var icon, textMsg, textBtn, textLoader, url, clase;
+                if (activar) {
+                    clase = "success";
+                    icon = "${iconActivar}";
+                    textMsg = "<p>¿Está seguro que desea activar el departamento seleccionado?</p>";
+                    textBtn = "Activar";
+                    textLoader = "Activando";
+                    url = "${createLink(action:'activar_ajax')}";
+                } else {
+                    clase = "danger";
+                    icon = "${iconDesactivar}";
+                    textMsg = "<p>¿Está seguro que desea desactivar el departamento seleccionado?</p>";
+                    if (tramites > 0) {
+                        textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
+                                   "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
+
+                    } else {
+                        textMsg += "<p>No tiene trámites en su bandeja de entrada.</p>"
+                    }
+                    var $sel = $("#selDptoOrig").clone();
+
+                    %{--textMsg += "${g.select(name:'selDpto', from:Departamento.list([sort:'descripcion']), class: 'form-control')}";--}%
+                    textBtn = "Desactivar";
+                    textLoader = "Desactivando";
+                    url = "${createLink(action:'desactivar_ajax')}";
+                }
+                bootbox.dialog({
+                    id      : "dlgWarning",
+                    title   : "Alerta",
+                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                    buttons : {
+                        cancelar : {
+                            label     : "Cancelar",
+                            className : "btn-primary",
+                            callback  : function () {
+                            }
+                        },
+                        eliminar : {
+                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                            className : "btn-" + clase,
+                            callback  : function () {
+                                openLoader(textLoader);
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : url,
+                                    data    : {
+                                        id : itemId
+                                    },
+                                    success : function (msg) {
+                                        var parts = msg.split("_");
+                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                        if (parts[0] == "OK") {
+                                            location.reload(true);
+                                        }
+                                        closeLoader();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+                if ($sel) {
+                    $sel.removeClass("hide");
+                    $sel.attr("name", "selDpto");
+                    $sel.attr("id", "selDpto");
+                    $sel.find("option." + itemId).remove();
+                    $("#pWarning").append($sel);
+                }
+            } //cambiar estado row
+
             function createContextMenu(node) {
                 var nodeStrId = node.id;
                 var $node = $("#" + nodeStrId);
                 var nodeId = nodeStrId.split("_")[1];
-                var nodeLvl = $node.attr("level");
+                var nodeType = $node.data("jstree").type;
 
-                var parentStrId = node.parent;
-                var $parent = $("#" + parentStrId);
-                var parentId = parentStrId.split("_")[1];
+//                var parentStrId = node.parent;
+//                var $parent = $("#" + parentStrId);
+//                var parentId = parentStrId.split("_")[1];
 
                 var nodeHasChildren = $node.hasClass("hasChildren");
                 var nodeOcupado = $node.hasClass("ocupado");
 
-                var items = {
-                    crear  : {
-                        label  : "Nuevo departamento hijo",
-                        icon   : "fa fa-plus-circle text-success",
-                        action : function (obj) {
-                            createEditRow(nodeId, nodeLvl, "Crear");
-                        }
-                    },
-                    editar : {
-                        label  : "Editar departamento",
-                        icon   : "fa fa-pencil text-info",
-                        action : function (obj) {
-                            createEditRow(nodeId, nodeLvl, "Editar");
-                        }
-                    },
-                    ver    : {
-                        label  : "Ver departamento",
-                        icon   : "fa fa-laptop text-info",
-                        action : function (obj) {
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action:'show_ajax')}",
-                                data    : {
-                                    id : nodeId
-                                },
-                                success : function (msg) {
-                                    bootbox.dialog({
-                                        title   : "Ver Departamento",
-                                        message : msg,
-                                        buttons : {
-                                            ok : {
-                                                label     : "Aceptar",
-                                                className : "btn-primary",
-                                                callback  : function () {
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                };
+                var nodeTramites = $node.data("tramites");
 
-                if (!nodeHasChildren && !nodeOcupado) {
-                    items.eliminar = {
-                        label            : "Eliminar departamento",
-                        separator_before : true,
-                        icon             : "fa fa-trash-o text-danger",
-                        action           : function (obj) {
-                            var $node = $('#' + nodeStrId);
-                            bootbox.dialog({
-                                title   : "Alerta",
-                                message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
-                                          "<p>¿Está seguro que desea eliminar el departamento seleccionado? Esta acción no se puede deshacer.</p>",
-                                buttons : {
-                                    cancelar : {
-                                        label     : "Cancelar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                        }
+                if (nodeType.contains('padre') || nodeType.contains('hijo')) {
+                    var items = {
+                        crear        : {
+                            label  : "Nuevo departamento hijo",
+                            icon   : "fa fa-plus-circle text-success",
+                            action : function (obj) {
+                                createEditRow(nodeId, "Crear");
+                            }
+                        },
+                        editar       : {
+                            label  : "Editar departamento",
+                            icon   : "fa fa-pencil text-info",
+                            action : function (obj) {
+                                createEditRow(nodeId, "Editar");
+                            }
+                        },
+                        ver          : {
+                            label  : "Ver departamento",
+                            icon   : "fa fa-laptop text-info",
+                            action : function (obj) {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(action:'show_ajax')}",
+                                    data    : {
+                                        id : nodeId
                                     },
-                                    eliminar : {
-                                        label     : "<i class='fa fa-trash-o'></i> Eliminar",
-                                        className : "btn-danger",
-                                        callback  : function () {
-                                            $.ajax({
-                                                type    : "POST",
-                                                url     : '${createLink(action:'delete_ajax')}',
-                                                data    : {
-                                                    id : nodeId
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("_");
-                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                    if (parts[0] == "OK") {
-                                                        var siblings = $node.siblings().size();
-                                                        if (siblings == 0) {
-                                                            $('#tree').jstree('set_type', "#" + nodeStrId, "hijo");
-                                                        }
-                                                        $('#tree').jstree('delete_node', $node);
-                                                    } else {
-                                                        closeLoader();
-                                                        return false;
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            title   : "Ver Departamento",
+                                            message : msg,
+                                            buttons : {
+                                                ok : {
+                                                    label     : "Aceptar",
+                                                    className : "btn-primary",
+                                                    callback  : function () {
                                                     }
                                                 }
-                                            });
-                                        }
+                                            }
+                                        });
                                     }
-                                }
-                            });
+                                });
+                            }
+                        },
+                        crearPersona : {
+                            separator_before : true,
+                            label            : "Nueva persona",
+                            icon             : "fa fa-user text-success",
+                            action           : function (obj) {
+                                createEditRowPersona(nodeId, "Crear");
+                            }
                         }
                     };
+
+                    if (nodeType.indexOf('Inactivo') !== -1) {
+                        delete items.crear;
+                        delete items.crearPersona;
+                        delete items.desactivar;
+
+                        items.activar = {
+                            separator_before : true,
+                            label            : "Activar",
+                            icon             : "fa ${iconActivar} text-success",
+                            action           : function (obj) {
+                                cambiarEstadoRow(nodeId, nodeStrId, true, nodeTramites);
+                            }
+                        }
+                    }
+
+                    if (!nodeHasChildren && !nodeOcupado) {
+                        if (!nodeType.contains('Inactivo')) {
+                            items.desactivar = {
+                                separator_before : true,
+                                label            : "Desactivar",
+                                icon             : "fa ${iconDesactivar}",
+                                action           : function (obj) {
+                                    cambiarEstadoRow(nodeId, nodeStrId, false, nodeTramites);
+                                }
+                            };
+                        }
+                        items.eliminar = {
+                            label  : "Eliminar departamento",
+                            icon   : "fa fa-trash-o text-danger",
+                            action : function (obj) {
+                                var $node = $('#' + nodeStrId);
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
+                                              "<p>¿Está seguro que desea eliminar el departamento seleccionado? Esta acción no se puede deshacer.</p>",
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        eliminar : {
+                                            label     : "<i class='fa fa-trash-o'></i> Eliminar",
+                                            className : "btn-danger",
+                                            callback  : function () {
+                                                openLoader("Eliminando");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(action:'delete_ajax')}',
+                                                    data    : {
+                                                        id : nodeId
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            location.reload(true);
+//                                                            var siblings = $node.siblings().size();
+//                                                            if (siblings == 0) {
+//                                                                $('#tree').jstree('set_type', "#" + nodeStrId, "hijo");
+//                                                            }
+//                                                            $('#tree').jstree('delete_node', $node);
+                                                        } else {
+                                                            closeLoader();
+                                                            return false;
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        };
+                    }
+                }
+                else if (nodeType.contains('usuario') || nodeType.contains('jefe')) {
+                    items = {
+                        editar : {
+                            label  : "Editar persona",
+                            icon   : "fa fa-pencil text-info",
+                            action : function (obj) {
+                                createEditRowPersona(nodeId, "Editar");
+                            }
+                        },
+                        ver    : {
+                            label  : "Ver Persona",
+                            icon   : "fa fa-laptop text-info",
+                            action : function (obj) {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(controller: 'persona', action:'show_ajax')}",
+                                    data    : {
+                                        id : nodeId
+                                    },
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            title   : "Ver Persona",
+                                            message : msg,
+                                            buttons : {
+                                                ok : {
+                                                    label     : "Aceptar",
+                                                    className : "btn-primary",
+                                                    callback  : function () {
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    if (nodeType.contains('Inactivo')) {
+                        items.activar = {
+                            separator_before : true,
+                            label            : "Activar",
+                            icon             : "fa ${iconActivar} text-success",
+                            action           : function (obj) {
+                                cambiarEstadoRowPersona(nodeId, nodeStrId, true, nodeTramites);
+                            }
+                        }
+                    } else {
+                        items.desactivar = {
+                            separator_before : true,
+                            label            : "Desctivar",
+                            icon             : "fa ${iconDesactivar}",
+                            action           : function (obj) {
+                                cambiarEstadoRowPersona(nodeId, nodeStrId, false, nodeTramites);
+                            }
+                        }
+                    }
+
                 }
 
                 return items;
@@ -247,7 +587,7 @@
                 });
 
                 $("#btnCreate").click(function () {
-                    createEditRow(null, 0, "Crear");
+                    createEditRow(null, "Crear");
                 });
 
                 $('#tree').on("loaded.jstree",function () {
@@ -278,14 +618,32 @@
                         key : "cuentas"
                     },
                     types       : {
-                        root  : {
+                        root            : {
                             icon : "fa fa-folder text-warning"
                         },
-                        padre : {
+                        padreActivo     : {
                             icon : "fa fa-building-o text-info"
                         },
-                        hijo  : {
+                        padreInactivo   : {
+                            icon : "fa fa-building-o text-muted"
+                        },
+                        hijoActivo      : {
                             icon : "fa fa-home text-success"
+                        },
+                        hijoInactivo    : {
+                            icon : "fa fa-home text-muted"
+                        },
+                        usuarioActivo   : {
+                            icon : "fa fa-user text-info"
+                        },
+                        usuarioInactivo : {
+                            icon : "fa fa-user text-muted"
+                        },
+                        jefeActivo      : {
+                            icon : "fa fa-user text-warning"
+                        },
+                        jefeInactivo    : {
+                            icon : "fa fa-user text-muted"
                         }
                     }
                 });

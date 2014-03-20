@@ -28,6 +28,17 @@ if (typeof String.prototype.endsWith != 'function') {
     };
 }
 
+/**
+ * var data = 'hello world';
+ * var input = 'ld';
+ * data.endsWith(input) == true
+ */
+if (typeof String.prototype.contains != 'function') {
+    String.prototype.contains = function (str) {
+        return this.indexOf(str) !== -1;
+    };
+}
+
 //pads left
 String.prototype.lpad = function (padString, length) {
     var str = this;

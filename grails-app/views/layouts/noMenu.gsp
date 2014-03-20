@@ -12,7 +12,8 @@
 
         <!-- Bootstrap core CSS -->
         %{--<link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.slate.css')}" rel="stylesheet">--}%
-        <link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.spacelab.css')}" rel="stylesheet">
+        %{--<link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.spacelab.css')}" rel="stylesheet">--}%
+        <elm:bootstrapCss/>
 
         <!-- FontAwsome y mFizz: las fuentes con dibujitos para los iconos -->
         <link href="${resource(dir: 'font-awesome-4.0.3/css', file: 'font-awesome.min.css')}" rel="stylesheet">
@@ -112,9 +113,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-        <script src="${resource(dir: 'bootstrap-3.0.1/js', file: 'bootstrap.min.js')}"></script>
+    %{--<script src="${resource(dir: 'bootstrap-3.0.1/js', file: 'bootstrap.min.js')}"></script>--}%
+    <elm:bootstrapJs/>
 
-        <!-- funciones de ui (tooltips, maxlength, bootbox, contextmenu, validacion en keydown para los numeros) -->
+    <!-- funciones de ui (tooltips, maxlength, bootbox, contextmenu, validacion en keydown para los numeros) -->
         <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
         <script type="text/javascript">
 

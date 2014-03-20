@@ -79,6 +79,17 @@ class ElementosTagLib {
         out << html
     }
 
+    def bootstrapCss = { attrs ->
+        def html = "<link href=\"${resource(dir: 'bootstrap-3.1.1/css', file: 'bootstrap.css')}\" rel=\"stylesheet\">"
+        html += "<link href=\"${resource(dir: 'bootstrap-3.1.1/css', file: 'bootstrap-theme-spacelab.css')}\" rel=\"stylesheet\">"
+        out << html
+    }
+
+    def bootstrapJs = { attrs ->
+        def html = "<script src=\"${resource(dir: 'bootstrap-3.1.1/js', file: 'bootstrap.min.js')}\"></script>"
+        out << html
+    }
+
     /**
      * marca el texto encontrado en el texto:
      *      se puede usar con o sin body

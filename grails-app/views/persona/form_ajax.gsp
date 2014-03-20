@@ -7,7 +7,7 @@
         <elm:notFound elem="Persona" genero="o"/>
     </g:if>
     <g:else>
-        <g:form class="form-horizontal" name="frmPersona" role="form" action="save" method="POST">
+        <g:form class="form-horizontal" name="frmPersona" role="form" action="save_ajax" method="POST">
             <g:hiddenField name="id" value="${personaInstance?.id}"/>
 
         %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'cedula', 'error')}">--}%
@@ -29,7 +29,7 @@
                     </label>
 
                     <div class="col-md-7">
-                        <g:textField name="nombre" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.nombre}"/>
+                        <g:textField name="nombre" maxlength="31" required="" class="form-control required" value="${personaInstance?.nombre}"/>
                     </div>
                     *
                 </span>
@@ -42,7 +42,7 @@
                     </label>
 
                     <div class="col-md-7">
-                        <g:textField name="apellido" maxlength="31" required="" class="form-control required allCaps" value="${personaInstance?.apellido}"/>
+                        <g:textField name="apellido" maxlength="31" required="" class="form-control required" value="${personaInstance?.apellido}"/>
                     </div>
                     *
                 </span>
@@ -68,7 +68,7 @@
                     </label>
 
                     <div class="col-md-3">
-                        <g:textField name="titulo" maxlength="4" class="form-control allCaps" value="${personaInstance?.titulo}"/>
+                        <g:textField name="titulo" maxlength="4" class="form-control" value="${personaInstance?.titulo}"/>
                     </div>
 
                 </span>
