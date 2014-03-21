@@ -147,6 +147,10 @@
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
                         <label for="cc"><input type="checkbox" name="cc" id="cc"/> Con copia</label>
                     </div>
+
+                    <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divConfidencial">
+                        <label for="confi"><input type="checkbox" name="cc" id="confi"/> Confidencial</label>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -330,6 +334,7 @@
                 var $divOrigen = $("#divOrigen");
                 var $cc = $("#cc");
                 var $tituloCopia = $("#tituloCopia");
+                var $confidencial = $("#divConfidencial")
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
                 $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
