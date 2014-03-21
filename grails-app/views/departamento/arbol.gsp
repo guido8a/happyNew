@@ -37,6 +37,9 @@
                     <g:link controller="inicio" action="parametros" class="btn btn-default">
                         <i class="fa fa-arrow-left"></i> Regresar
                     </g:link>
+                    <g:link controller="departamentoExport" action="crearPdf" class="btn btn-default">
+                        <i class="fa fa-print"></i> Imprimir
+                    </g:link>
                 </div>
             </div>
 
@@ -601,7 +604,9 @@
                         multiple       : false,
                         check_callback : true,
                         themes         : {
-                            variant : "small"
+                            variant : "small",
+                            dots    : true,
+                            stripes : true
                         },
                         data           : {
                             url  : '${createLink(action:"loadTreePart")}',
