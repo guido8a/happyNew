@@ -28,6 +28,7 @@ class Persona {
     String celular
     String foto
     String codigo
+    String connect
     static mapping = {
         table 'prsn'
         cache usage: 'read-write', include: 'non-lazy'
@@ -57,6 +58,7 @@ class Persona {
             celular column: 'prsntfcl'
             foto column: 'prsnfoto'
             codigo column: 'prsncdgo'
+            connect column: 'prsncnec'
         }
     }
     static constraints = {
@@ -81,6 +83,7 @@ class Persona {
         celular(maxSize: 63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
+        connect(nullable: true,blank: true,size: 1..512)
     }
 
     def getEstaActivo() {
@@ -190,6 +193,11 @@ class Persona {
             lista.remove(TipoDocumento.findByCodigo("DEX"))
         }
         return lista
+    }
+
+    def getConnectionString(){
+        // LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','CN=Guido Prueba,OU=GSTI,OU=GADPP,DC=pichincha,DC=local', 'prueba.prueba')
+        return this.connect
     }
 
     String toString() {

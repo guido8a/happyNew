@@ -839,7 +839,9 @@ class PersonaController extends happy.seguridad.Shield {
     } //notFound para ajax
 
     def cargarUsuariosLdap(){
-        def file = new File("C:\\Users\\svt\\Downloads\\users")
+        def realPath = servletContext.getRealPath("/")
+        def pathImages = realPath + "images/"
+        def file = new File(pathImages+"/users")
 
         file.eachLine {
             println "--> "+it
@@ -857,7 +859,7 @@ class PersonaController extends happy.seguridad.Shield {
                 apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
             if(!apellido)
                 apellido=nombre.split(" ")[1]
-            def prsn = Persona.findByNombreAndApellido(nombre,apellido)
+            def prsn = Persona.findByLogin(logn)
             if(!prsn){
                 prsn = new Persona()
                 prsn.nombre=nombre
@@ -865,6 +867,12 @@ class PersonaController extends happy.seguridad.Shield {
                 prsn.mail=mail
                 prsn.login=logn
                 prsn.password="123".encodeAsMD5()
+                if(!prsn.save(flush: true)){
+                    println "error save prns "+prsn.errors
+                }
+            }else{
+                println "update connect"
+                prsn.connect=parts[3]
                 if(!prsn.save(flush: true)){
                     println "error save prns "+prsn.errors
                 }

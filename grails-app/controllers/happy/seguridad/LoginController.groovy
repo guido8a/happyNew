@@ -1,11 +1,26 @@
 package happy.seguridad
 
 import happy.tramites.Tramite
+import org.apache.directory.groovyldap.LDAP
+import org.apache.directory.groovyldap.SearchScope
 
 
 class LoginController {
 
     def mail
+
+    def conecta(){
+        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','CN=Guido Prueba,OU=GSTI,OU=GADPP,DC=pichincha,DC=local','prueba.prueba')
+
+        assert ! ldap.exists('cn=camaras,cn=Users,ou=GADPP,dc=pichincha,dc=local')
+
+        def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
+                println "${results.size} entradas halladas para el nivel UNO desde la base:"
+        for (entry in results) {
+            println entry.dn
+            //println entry.attr
+        }
+    }
 
     def index() {
         redirect(action: 'login')
