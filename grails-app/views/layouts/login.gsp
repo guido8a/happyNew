@@ -60,6 +60,10 @@
         <script src="${resource(dir: 'js/plugins/pines/js', file: 'jquery.pnotify.js')}"></script>
         <link href="${resource(dir: 'js/plugins/pines/css', file: 'jquery.pnotify.default.css')}" rel="stylesheet">
 
+        <!-- los tooltips bonitos -->
+        <script src="${resource(dir: 'js/plugins/jquery.qtip-2.2.0', file: 'jquery.qtip.min.js')}"></script>
+        <link href='${resource(dir: "js/plugins/jquery.qtip-2.2.0", file: "jquery.qtip.min.css")}' rel='stylesheet' type='text/css'>
+
         <!-- context menu para el click derecho -->
         <script src="${resource(dir: 'js/plugins/context/js', file: 'context.js')}"></script>
         <link href="${resource(dir: 'js/plugins/context/css', file: 'context.css')}" rel="stylesheet">
