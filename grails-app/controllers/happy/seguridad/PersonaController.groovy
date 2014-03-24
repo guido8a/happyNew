@@ -5,6 +5,7 @@ import happy.tramites.Departamento
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import org.apache.commons.lang.WordUtils
 import org.fusesource.jansi.Ansi
 
 import static java.awt.RenderingHints.*
@@ -877,6 +878,14 @@ class PersonaController extends happy.seguridad.Shield {
                     println "error save prns "+prsn.errors
                 }
             }
+        }
+    }
+
+    def cambiarNombresUsuarios(){
+        Persona.list().each {p->
+            p.nombre=WordUtils.capitalizeFully(p.nombre)
+            p.apellido=WordUtils.capitalizeFully(p.apellido)
+            p.save(flush: true)
         }
     }
 
