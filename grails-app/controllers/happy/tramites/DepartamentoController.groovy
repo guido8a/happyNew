@@ -106,7 +106,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbolSearch_ajax() {
-        println params
+        //println params
 //        def parts = params.search_string.split("~")
         def search = params.str.trim()
         if (search != "") {
@@ -116,14 +116,14 @@ class DepartamentoController extends happy.seguridad.Shield {
                     ilike("apellido", "%" + search + "%")
                 }
             }
-            println "FIND"
-            println find
+            //println "FIND"
+            //println find
             def departamentos = []
             find.each { pers ->
                 if (pers.departamento && !departamentos.contains(pers.departamento))
                     departamentos.add(pers.departamento)
             }
-            println departamentos
+            //println departamentos
 
             def ids = "["
 
@@ -136,9 +136,9 @@ class DepartamentoController extends happy.seguridad.Shield {
                 ids = ids[0..-2]
             }
             ids += "]"
-            println ">>>>>>"
-            println ids
-            println "<<<<<<<"
+            //println ">>>>>>"
+            //println ids
+            //println "<<<<<<<"
             render ids
         } else {
             render ""
