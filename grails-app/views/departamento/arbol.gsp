@@ -64,6 +64,11 @@
                         </span>
                     </div><!-- /input-group -->
                 </div>
+
+                <div class="btn-group " style="background: #ddd; padding-left: 5px; padding-right: 5px;">
+                    <i class="fa fa-user text-info"></i> Usuario<br/>
+                    <i class="fa fa-user text-warning"></i> Autoridad
+                </div>
             </div>
 
             <div id="loading" class="text-center">
