@@ -215,7 +215,7 @@ class ElementosTagLib {
         if (!attrs.pdf) {
             html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container\">"
             html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
-            html += "                ${tramite.tipoDocumento?.descripcion}"
+            html += "                ${tramite.tipoDocumento?.descripcion} ${attrs.extraTitulo ?: ''}"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
             html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"

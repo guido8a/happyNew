@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.OrigenTramite; happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -91,8 +91,8 @@
                 </g:if>
 
                 <div class="row">
-                    <div class="col-xs-3 negrilla">
-                        De:
+                    <div class="col-xs-3">
+                        <b>De:</b>
                         <input type="text" name="tramite.de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled/>
                     </div>
 
@@ -104,22 +104,33 @@
                     %{--</g:if>--}%
 
 
-                    <div class="col-xs-4 negrilla" id="divPara">
-                        <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label" style="width:300px;" class="form-control label-shared required"/>
+                    <div class="col-xs-4 negrilla hide" id="divPara">
+                        <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
+                                  style="width:300px;" class="form-control label-shared required"/>
+                        <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
+                                  optionValue="nombre" style="width:300px;" class="form-control label-shared required"/>
+                    </div>
+
+                    <div class="col-xs-2 negrilla hide" id="divConfidencial">
+                        <label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>
+                    </div>
+
+                    <div class="col-xs-2 negrilla hide" id="divAnexos">
+                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-3 negrilla">
-                        Tipo de documento:
+                    <div class="col-xs-3">
+                        <b>Tipo de documento:</b>
                         <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
                                     from="${session.usuario.tiposDocumento}"
                                     value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"
                                     optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
                     </div>
 
-                    <div class="col-xs-2 negrilla">
-                        Prioridad:
+                    <div class="col-xs-2 ">
+                        <b>Prioridad:</b>
                         %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
                         <elm:select name="tramite.prioridad.id" id="prioridad" class="many-to-one form-control required" from="${TipoPrioridad.list()}"
                                     value="${tramite.prioridadId ?: 3}" optionKey="id" optionValue="descripcion" optionClass="tiempo"/>
@@ -133,30 +144,26 @@
                     %{--</span>--}%
                     %{--</div>--}%
 
-                    <div class="col-xs-2 negrilla">
-                        Creado el:
+                    <div class="col-xs-2 ">
+                        <b>Creado el:</b>
                         <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
                                value="${tramite.fechaCreacion.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
                     </div>
 
-                    <div class="col-xs-2 negrilla">
-                        Respuesta esperada:
+                    <div class="col-xs-2 ">
+                        <b>Respuesta esperada:</b>
                         <span id="respuesta" class="uneditable-input">FECHA</span>
                     </div>
 
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
                         <label for="cc"><input type="checkbox" name="cc" id="cc"/> Con copia</label>
                     </div>
-
-                    <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divConfidencial">
-                        <label for="confi"><input type="checkbox" name="cc" id="confi"/> Confidencial</label>
-                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-12 negrilla">
+                    <div class="col-xs-12 ">
                         <span class="grupo">
-                            Asunto:
+                            <b>Asunto:</b>
                             <input type="text" name="tramite.asunto" class="form-control required" id="asunto" maxlength="1023"
                                    style="width: 900px;display: inline" value="${tramite.asunto}"/>
                         </span>
@@ -170,61 +177,62 @@
                 <div class="linea"></div>
 
                 <div class="row">
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Tipo de Persona:
+                            <b>Tipo de Persona:</b>
                             <g:select name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="form-control origen required"
                                       from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Cédula/R.U.C.:
+                            <b>Cédula/R.U.C.:</b>
                             <g:textField name="origen.cedula" id="cedulaOrigen" class="form-control required" maxlength="13"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Nombre:
-                            <g:textField name="origen.nombre" class="form-control " maxlength="127"/>
+                            <b>Nombre:</b>
+                            <g:textField name="origen.nombre" id="nombreOrigen" class="form-control required" maxlength="127"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Nombre contacto:
+                            <b>Nombre contacto:</b>
                             <g:textField name="origen.nombreContacto" class="form-control " maxlength="31"/>
                         </span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Apellido contacto:
+                            <b>Apellido contacto:</b>
                             <g:textField name="origen.apellidoContacto" class="form-control " maxlength="31"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Título:
+                            <b>Título:</b>
                             <g:textField name="origen.titulo" class="form-control " maxlength="4"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Cargo:
+                            <b>Cargo:</b>
                             <g:textField name="origen.cargo" class="form-control" maxlength="127"/>
                         </span>
                     </div>
 
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            E-mail:
+                            <b>E-mail:</b>
+
                             <div class="input-group">
                                 <g:textField name="origen.mail" class="form-control" maxlength="63"/>
                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
@@ -234,9 +242,10 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-3 negrilla">
+                    <div class="col-xs-3 ">
                         <span class="grupo">
-                            Teléfono:
+                            <b>Teléfono:</b>
+
                             <div class="input-group">
                                 <g:textField name="origen.telefono" class="form-control " maxlength="63"/>
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
@@ -326,7 +335,7 @@
                 return total;
             }
 
-            function validarTipoDoc($selPara) {
+            function validarTipoDoc($selPara, $selParaExt) {
                 var $tipoDoc = $("#tipoDocumento");
                 var $divPara = $("#divPara");
                 var $divCopia = $("#divCopia");
@@ -334,7 +343,8 @@
                 var $divOrigen = $("#divOrigen");
                 var $cc = $("#cc");
                 var $tituloCopia = $("#tituloCopia");
-                var $confidencial = $("#divConfidencial")
+                var $divConfidencial = $("#divConfidencial");
+                var $divAnexos = $("#divAnexos");
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
                 $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
@@ -346,29 +356,42 @@
                 switch (cod) {
                     case "CIR":
                         $divPara.html("");
+                        $divPara.addClass("hide");
                         $divCopia.removeClass("hide");
                         $divCc.addClass("hide");
                         $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
                         $tituloCopia.text("Circular");
+                        $divConfidencial.addClass("hide");
+                        $divAnexos.addClass("hide");
                         break;
                     case "OFI":
-                        $divPara.html("");
+                        $divPara.html($selParaExt).prepend("Para: ");
+                        $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
+                        $divConfidencial.addClass("hide");
+                        $divAnexos.removeClass("hide");
                         break;
                     case "DEX":
                         $divPara.html($selPara).prepend("Para: ");
+                        $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
                         $divOrigen.removeClass("hide");
+                        $divConfidencial.addClass("hide");
+                        $divAnexos.removeClass("hide");
                         break;
                     default :
                         $divPara.html($selPara).prepend("Para: ");
+                        $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
+                        $divConfidencial.removeClass("hide");
+                        $divAnexos.removeClass("hide");
                 }
                 if (!cod) {
                     $divPara.html("");
+                    $divPara.addClass("hide");
                     $divCopia.addClass("hide");
                     $divCc.addClass("hide");
                 }
@@ -445,6 +468,7 @@
                 var $dir = $("#direccion");
                 var $selPrioridad = $("#prioridad");
                 var $selPara = $("#para").clone(true);
+                var $selParaExt = $("#paraExt").clone(true);
 
                 $selPrioridad.change(function () {
                     validarTiempos();
@@ -472,7 +496,7 @@
                 });
 
                 $("#tipoDocumento").change(function () {
-                    validarTipoDoc($selPara);
+                    validarTipoDoc($selPara, $selParaExt);
                 }).change();
 
                 validarCheck();
@@ -520,6 +544,13 @@
                     },
                     rules          : {
                         cedulaOrigen : {
+                            required : {
+                                depends : function (element) {
+                                    return  $("#tipoDocumento").find("option:selected").hasClass("DEX");
+                                }
+                            }
+                        },
+                        nombreOrigen : {
                             required : {
                                 depends : function (element) {
                                     return  $("#tipoDocumento").find("option:selected").hasClass("DEX");

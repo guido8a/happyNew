@@ -47,8 +47,8 @@
                     <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                     <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
-                    <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.sigla ?: tramite?.tramite?.de?.toString()}</td>
-                    <td title="${tramite.tramite.para?.persona ? tramite.tramite.para?.persona?.toString() : tramite.tramite.para?.departamento?.descripcion}">${tramite.tramite.para?.persona ? tramite.tramite.para?.persona?.sigla : tramite.tramite.para?.departamento?.codigo}</td>
+                    <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}</td>
+                    <td title="${tramite.tramite.para?.persona ? tramite.tramite.para?.persona?.toString() : tramite.tramite.para?.departamento?.descripcion}">${tramite.tramite.para?.persona ? tramite.tramite.para?.persona?.login : tramite.tramite.para?.departamento?.codigo}</td>
                     <td>${tramite.tramite.prioridad.descripcion}</td>
                     <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
                 </tr>

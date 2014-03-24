@@ -93,9 +93,9 @@ class BusquedaExternosController {
             html += "<td>${h.codigo}</td>"
             html += "<td>${h.fechaEnvio ? h.fechaEnvio.format('dd-MM-yyyy HH:mm') : 'no enviado'}</td>"
             html += "<td title='${h.de.departamento.descripcion}'>${h.de.departamento.codigo}</td>"
-            html += "<td title='${h.de.nombre + ' ' + h.de.apellido}'>${h.de.sigla}</td>"
+            html += "<td title='${h.de.nombre + ' ' + h.de.apellido}'>${h.de.login}</td>"
             html += "<td title='${h.para.persona ? h.para.persona.nombre + ' ' + h.para.persona.apellido : h.para.departamento.descripcion}'>" +
-                    "${h.para.persona ? h.para.persona.sigla : h.para.departamento.codigo}</td>"
+                    "${h.para.persona ? h.para.persona.login : h.para.departamento.codigo}</td>"
             html += "<td>${h.prioridad.descripcion}</td>"
             html += "<td>${h.fechaMaximoRespuesta ? h.fechaMaximoRespuesta.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
             html += "<td>${h.para.fechaRecepcion ? h.para.fechaRecepcion.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"

@@ -103,7 +103,7 @@ class DepartamentoExportController {
             }.each { pers ->
                 esp2 = esp + esp
                 if (!padre) {
-                    esp2 = esp + "|" + esp + "--"
+                    esp2 = esp + "" + esp + "\t"
                 }
                 def descP = esp2 + " ${pers.nombre} ${pers.apellido}"
                 if (pers.login) {
@@ -113,7 +113,7 @@ class DepartamentoExportController {
                 document.add(new Paragraph(descP, fontUsu));
             }
             if (Departamento.countByPadre(dpto) > 0) {
-                arbolDpto(document, fontDpto, fontUsu, dpto, esp + "|--")
+                arbolDpto(document, fontDpto, fontUsu, dpto, esp + "\t")
             }
         }
     }

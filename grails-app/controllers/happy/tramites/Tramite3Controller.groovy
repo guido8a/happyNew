@@ -5,11 +5,60 @@ import happy.seguridad.Persona
 
 class Tramite3Controller extends happy.seguridad.Shield {
     def save() {
+
+        /*
+            [
+                tramite:[
+                    padre.id:,
+                    padre:[id:],
+                    id:,
+                    hiddenCC:,
+                    origenTramite.id:1,
+                    origenTramite:[id:1],
+                    tipoDocumento.id:2,
+                    tipoDocumento:[id:2],
+                    prioridad.id:3,
+                    prioridad:[id:3],
+                    asunto:test oficio con anexos
+                ],
+                origen:[
+                    tipoPersona.id:2,
+                    tipoPersona:[id:2],
+                    cedula:,
+                    nombre:,
+                    nombreContacto:,
+                    apellidoContacto:,
+                    titulo:,
+                    cargo:,
+                    mail:,
+                    telefono:
+                ],
+                anexo:on,
+                confi:on,
+                action:save,
+                format:null,
+                controller:tramite3
+            ]
+         */
+
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
+
+        def tipoTramite
+        if (params.confi == "on") {
+            tipoTramite = TipoTramite.findByCodigo("C")
+        } else {
+            tipoTramite = TipoTramite.findByCodigo("C")
+        }
+        paramsTramite.tipoTramite = tipoTramite
+        if (params.anexo == "on") {
+            paramsTramite.anexo = 1
+        } else {
+            paramsTramite.anexo = 0
+        }
 
         paramsTramite.de = persona
         paramsTramite.estadoTramite = estadoTramiteBorrador
@@ -20,25 +69,48 @@ class Tramite3Controller extends happy.seguridad.Shield {
          *      INF-1-DGCP-14       MEM-10-CEV-13
          */
         //el numero del ultimo tramite del anio, por tipo doc y dpto
-        def num = Tramite.withCriteria {
-            eq("anio", paramsTramite.anio)
+//        def num = Tramite.withCriteria {
+//            eq("anio", paramsTramite.anio)
+//            eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
+//            de {
+//                eq("departamento", persona.departamento)
+//            }
+//            projections {
+//                max "numero"
+//            }
+//        }
+//        if (num && num.size() > 0) {
+//            num = num.first()
+//        } else {
+//            num = 0
+//        }
+//        if (!num) {
+//            num = 0
+//        }
+//        num = num + 1
+//        paramsTramite.numero = num
+//        paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
+
+        def num = 1
+        Numero objNum
+        def numero = Numero.withCriteria {
+            eq("departamento", persona.departamento)
             eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
-            de {
-                eq("departamento", persona.departamento)
-            }
-            projections {
-                max "numero"
-            }
+            order("valor", "desc")
         }
-        if (num && num.size() > 0) {
-            num = num.first()
+        if (numero.size() == 0) {
+            objNum = new Numero([
+                    departamento: persona.departamento,
+                    tipoDocumento: TipoDocumento.get(paramsTramite.tipoDocumento.id)
+            ])
         } else {
-            num = 0
+            objNum = numero.first()
+            num = objNum.valor + 1
         }
-        if (!num) {
-            num = 0
+        objNum.valor = num
+        if (!objNum.save(flush: true)) {
+            println "Error al crear Numero: " + objNum.errors
         }
-        num = num + 1
         paramsTramite.numero = num
         paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
 
@@ -108,9 +180,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     println "error origen tramite: " + origen.errors
                 }
             }
-
         }
-        redirect(controller: "tramite", action: "redactar", id: tramite.id)
+        if (params.anexo == "on") {
+            redirect(controller: "tramiteAnexos", action: "anexo", id: tramite.id)
+        } else {
+            redirect(controller: "tramite", action: "redactar", id: tramite.id)
+        }
     }
 
     def verTramite() {
@@ -229,9 +304,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             html += "<td>${h.codigo}</td>"
             html += "<td>${h.fechaEnvio ? h.fechaEnvio.format('dd-MM-yyyy HH:mm') : 'no enviado'}</td>"
             html += "<td title='${h.de.departamento.descripcion}'>${h.de.departamento.codigo}</td>"
-            html += "<td title='${h.de.nombre + ' ' + h.de.apellido}'>${h.de.sigla}</td>"
+            html += "<td title='${h.de.nombre + ' ' + h.de.apellido}'>${h.de.login}</td>"
             html += "<td title='${h.para.persona ? h.para.persona.nombre + ' ' + h.para.persona.apellido : h.para.departamento.descripcion}'>" +
-                    "${h.para.persona ? h.para.persona.sigla : h.para.departamento.codigo}</td>"
+                    "${h.para.persona ? h.para.persona.login : h.para.departamento.codigo}</td>"
             html += "<td>${h.prioridad.descripcion}</td>"
             html += "<td>${h.fechaMaximoRespuesta ? h.fechaMaximoRespuesta.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
             html += "<td>${h.para.fechaRecepcion ? h.para.fechaRecepcion.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
@@ -246,8 +321,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def usu = Persona.get(session.usuario.id)
         def triangulo = PermisoTramite.findByCodigo("E001")
         def bloqueo = false
-        if(session.departamento.estado=="B")
-            bloqueo=true
+        if (session.departamento.estado == "B")
+            bloqueo = true
         def tienePermiso = PermisoUsuario.withCriteria {
             eq("persona", usu)
             eq("permisoTramite", triangulo)
@@ -261,7 +336,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite", action: "bandejaEntrada")
             return
         }
-        return [persona: usu,bloqueo:bloqueo]
+        return [persona: usu, bloqueo: bloqueo]
     }
 
     def tablaBandejaEntradaDpto() {

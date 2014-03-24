@@ -275,13 +275,65 @@ class Tramite2Controller extends happy.seguridad.Shield{
         }
         return [de: de, padre: padre, disponibles: disponibles, tramite: tramite]
     }
-
+/*
+        paramsTramite.deDepartamento = persona.departamento
+        paramsTramite.deDepartamento.id = persona.departamento.id
+ */
     def saveDep() {
+
+        /*
+            [
+                tramite:[
+                    padre.id:,
+                    padre:[id:],
+                    id:,
+                    hiddenCC:,
+                    origenTramite.id:1,
+                    origenTramite:[id:1],
+                    tipoDocumento.id:2,
+                    tipoDocumento:[id:2],
+                    prioridad.id:3,
+                    prioridad:[id:3],
+                    asunto:test oficio con anexos
+                ],
+                origen:[
+                    tipoPersona.id:2,
+                    tipoPersona:[id:2],
+                    cedula:,
+                    nombre:,
+                    nombreContacto:,
+                    apellidoContacto:,
+                    titulo:,
+                    cargo:,
+                    mail:,
+                    telefono:
+                ],
+                anexo:on,
+                confi:on,
+                action:save,
+                format:null,
+                controller:tramite3
+            ]
+         */
+
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
+
+        def tipoTramite
+        if (params.confi == "on") {
+            tipoTramite = TipoTramite.findByCodigo("C")
+        } else {
+            tipoTramite = TipoTramite.findByCodigo("C")
+        }
+        paramsTramite.tipoTramite = tipoTramite
+        if (params.anexo == "on") {
+            paramsTramite.anexo = 1
+        } else {
+            paramsTramite.anexo = 0
+        }
 
         paramsTramite.de = persona
         paramsTramite.deDepartamento = persona.departamento
@@ -294,25 +346,48 @@ class Tramite2Controller extends happy.seguridad.Shield{
          *      INF-1-DGCP-14       MEM-10-CEV-13
          */
         //el numero del ultimo tramite del anio, por tipo doc y dpto
-        def num = Tramite.withCriteria {
-            eq("anio", paramsTramite.anio)
+//        def num = Tramite.withCriteria {
+//            eq("anio", paramsTramite.anio)
+//            eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
+//            de {
+//                eq("departamento", persona.departamento)
+//            }
+//            projections {
+//                max "numero"
+//            }
+//        }
+//        if (num && num.size() > 0) {
+//            num = num.first()
+//        } else {
+//            num = 0
+//        }
+//        if (!num) {
+//            num = 0
+//        }
+//        num = num + 1
+//        paramsTramite.numero = num
+//        paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
+
+        def num = 1
+        Numero objNum
+        def numero = Numero.withCriteria {
+            eq("departamento", persona.departamento)
             eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
-            de {
-                eq("departamento", persona.departamento)
-            }
-            projections {
-                max "numero"
-            }
+            order("valor", "desc")
         }
-        if (num && num.size() > 0) {
-            num = num.first()
+        if (numero.size() == 0) {
+            objNum = new Numero([
+                    departamento: persona.departamento,
+                    tipoDocumento: TipoDocumento.get(paramsTramite.tipoDocumento.id)
+            ])
         } else {
-            num = 0
+            objNum = numero.first()
+            num = objNum.valor + 1
         }
-        if (!num) {
-            num = 0
+        objNum.valor = num
+        if (!objNum.save(flush: true)) {
+            println "Error al crear Numero: " + objNum.errors
         }
-        num = num + 1
         paramsTramite.numero = num
         paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
 
@@ -372,7 +447,9 @@ class Tramite2Controller extends happy.seguridad.Shield{
                     }
                 }
             }
-            if (params.cc == "on") {
+//            if (params.cc == "on") {
+            def tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
+            if (tipoDoc.codigo == "DEX") {
                 paramsOrigen.tramite = tramite
                 paramsOrigen.fecha = paramsTramite.fechaCreacion
                 def origen = new OrigenTramite(paramsOrigen)
@@ -380,9 +457,12 @@ class Tramite2Controller extends happy.seguridad.Shield{
                     println "error origen tramite: " + origen.errors
                 }
             }
-
         }
-        redirect(controller: "tramite", action: "redactar", id: tramite.id)
+        if (params.anexo == "on") {
+            redirect(controller: "tramiteAnexos", action: "anexo", id: tramite.id)
+        } else {
+            redirect(controller: "tramite", action: "redactar", id: tramite.id)
+        }
     }
 
 }

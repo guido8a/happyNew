@@ -21,6 +21,10 @@
             width      : 950px;
             height     : 600px;
         }
+
+        .jstree-search {
+            color : #5F87B2 !important;
+        }
         </style>
 
     </head>
@@ -40,6 +44,25 @@
                     <g:link controller="departamentoExport" action="crearPdf" class="btn btn-default">
                         <i class="fa fa-print"></i> Imprimir
                     </g:link>
+                </div>
+
+                %{--<div class="btn-group">--}%
+                %{--<g:link controller="inicio" action="parametros" class="btn btn-sm btn-primary">--}%
+                %{--<i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre--}%
+                %{--</g:link>--}%
+                %{--<g:link controller="departamentoExport" action="crearPdf" class="btn btn-sm btn-primary">--}%
+                %{--<i class="fa fa-sort-alpha-asc"></i> Ordenar por apellido--}%
+                %{--</g:link>--}%
+                %{--</div>--}%
+
+                <div class="btn-group">
+                    <div class="input-group">
+                        <g:textField name="search" class="form-control"/>
+                        <span class="input-group-btn">
+                            <a href="#" id="btnSearch" class="btn btn-primary" type="button"><i class="fa fa-search"></i>&nbsp;
+                            </a>
+                        </span>
+                    </div><!-- /input-group -->
                 </div>
             </div>
 
@@ -599,7 +622,7 @@
                 }).on("select_node.jstree",function (node, selected, event) {
 //                    $('#tree').jstree('toggle_node', selected.selected[0]);
                 }).jstree({
-                    plugins     : [ "types", "state", "contextmenu", "wholerow" ],
+                    plugins     : [ "types", "state", "contextmenu", "wholerow" , "search"],
                     core        : {
                         multiple       : false,
                         check_callback : true,
@@ -620,7 +643,21 @@
                         items        : createContextMenu
                     },
                     state       : {
-                        key : "cuentas"
+                        key : "departamentos"
+                    },
+                    search      : {
+                        fuzzy : false,
+                        ajax  : {
+                            url     : "${createLink(action:'arbolSearch_ajax')}",
+                            success : function (msg) {
+                                var json = $.parseJSON(msg);
+                                $.each(json, function (i, obj) {
+                                    var id = obj;
+                                    $('#tree').jstree("open_node", id);
+                                });
+                                $('#btnSearch').click();
+                            }
+                        }
                     },
                     types       : {
                         root            : {
@@ -651,6 +688,10 @@
                             icon : "fa fa-user text-muted"
                         }
                     }
+                });
+
+                $('#btnSearch').click(function () {
+                    $('#tree').jstree(true).search($.trim($("#search").val()));
                 });
             });
         </script>

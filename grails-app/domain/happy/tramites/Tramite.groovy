@@ -16,7 +16,7 @@ class Tramite {
     String codigo
     Integer numero
     String asunto
-    String anexo
+    Integer anexo                       //1 indica que hay anexos, 0 que no hay anexos
     String texto
     int ampliacionPlazo = 0
     String externo
@@ -173,7 +173,7 @@ class Tramite {
         if(this.deDepartamento)
             return ["codigo":this.deDepartamento.codigo,"nombre":this.deDepartamento.descripcion]
         else
-            return ["codigo":this.de.sigla,"nombre":this.de.toString()]
+            return ["codigo":this.de.login,"nombre":this.de.toString()]
     }
 
 }

@@ -58,8 +58,26 @@ class PersonaController extends happy.seguridad.Shield {
 
         def f = request.getFile('file')  //archivo = name del input type file
 
-        def okContents = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
+        def okContents = [
+                'image/png': "png",
+                'image/jpeg': "jpeg",
+                'image/jpg': "jpg",
 
+                'application/pdf': 'pdf',
+
+                'application/excel': 'xls',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+
+                'application/mspowerpoint': 'pps',
+                'application/vnd.ms-powerpoint': 'pps',
+                'application/powerpoint': 'ppt',
+                'application/x-mspowerpoint': 'ppt',
+                'application/vnd.openxmlformats-officedocument.presentationml.slideshow': 'ppsx',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+
+                'application/msword': 'doc',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+        ]
         if (f && !f.empty) {
             def fileName = f.getOriginalFilename() //nombre original del archivo
             def ext
@@ -688,7 +706,8 @@ class PersonaController extends happy.seguridad.Shield {
                 notFound_ajax()
                 return
             }
-            if (params.departamento.id != personaInstance.departamentoId) {
+
+            if (params.departamento.id.toString() != personaInstance.departamentoId.toString()) {
                 def rolPara = RolPersonaTramite.findByCodigo('R001');
                 def rolCopia = RolPersonaTramite.findByCodigo('R002');
                 def rolImprimir = RolPersonaTramite.findByCodigo('I005')
@@ -696,7 +715,9 @@ class PersonaController extends happy.seguridad.Shield {
                 def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
                 def cantTramites = tramites.size()
                 if (params.departamento.id != personaInstance.departamentoId)
-                    msgDpto = "<h4 class='text-warning text-shadow'>Está cambiando a la persona de departamento.</h4>" +
+                    msgDpto = "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
+                            "de ${WordUtils.capitalizeFully(personaInstance.departamento.descripcion)} a " +
+                            "${WordUtils.capitalizeFully(Departamento.get(params.departamento.id.toLong()).descripcion)}</h4>" +
                             "<p style='font-size:larger;'>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
                             "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observación de " +
                             "notificación de esta acción.</p>" +
@@ -839,43 +860,43 @@ class PersonaController extends happy.seguridad.Shield {
         render "NO_No se encontró Persona."
     } //notFound para ajax
 
-    def cargarUsuariosLdap(){
+    def cargarUsuariosLdap() {
         def realPath = servletContext.getRealPath("/")
         def pathImages = realPath + "images/"
-        def file = new File(pathImages+"/users")
+        def file = new File(pathImages + "/users")
 
         file.eachLine {
-            println "--> "+it
+            println "--> " + it
             def parts = it.split("&")
             def nombres = parts[0].split(" ")
             def mail = parts[1]
-            def logn=parts[2]
-            def nombre = nombres[0]+" "+nombres[1]
-            def apellido=null
-            if(nombres.size()==3)
+            def logn = parts[2]
+            def nombre = nombres[0] + " " + nombres[1]
+            def apellido = null
+            if (nombres.size() == 3)
                 apellido = nombres[2]
-            if(nombres.size()==4)
-                apellido = nombres[2]+" "+nombres[3]
-            if(nombres.size()==5)
-                apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
-            if(!apellido)
-                apellido=nombre.split(" ")[1]
+            if (nombres.size() == 4)
+                apellido = nombres[2] + " " + nombres[3]
+            if (nombres.size() == 5)
+                apellido = nombres[2] + " " + nombres[3] + " " + nombres[4]
+            if (!apellido)
+                apellido = nombre.split(" ")[1]
             def prsn = Persona.findByLogin(logn)
-            if(!prsn){
+            if (!prsn) {
                 prsn = new Persona()
-                prsn.nombre=nombre
-                prsn.apellido=apellido
-                prsn.mail=mail
-                prsn.login=logn
-                prsn.password="123".encodeAsMD5()
-                if(!prsn.save(flush: true)){
-                    println "error save prns "+prsn.errors
+                prsn.nombre = nombre
+                prsn.apellido = apellido
+                prsn.mail = mail
+                prsn.login = logn
+                prsn.password = "123".encodeAsMD5()
+                if (!prsn.save(flush: true)) {
+                    println "error save prns " + prsn.errors
                 }
-            }else{
+            } else {
                 println "update connect"
-                prsn.connect=parts[3]
-                if(!prsn.save(flush: true)){
-                    println "error save prns "+prsn.errors
+                prsn.connect = parts[3]
+                if (!prsn.save(flush: true)) {
+                    println "error save prns " + prsn.errors
                 }
             }
         }

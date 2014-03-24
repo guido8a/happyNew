@@ -48,18 +48,18 @@
                 </span>
             </div>
 
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'sigla', 'error')} ">
-                <span class="grupo">
-                    <label for="sigla" class="col-md-3 control-label text-info">
-                        Sigla
-                    </label>
+            %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'sigla', 'error')} ">--}%
+                %{--<span class="grupo">--}%
+                    %{--<label for="sigla" class="col-md-3 control-label text-info">--}%
+                        %{--Sigla--}%
+                    %{--</label>--}%
 
-                    <div class="col-md-3">
-                        <g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>
-                    </div>
+                    %{--<div class="col-md-3">--}%
+                        %{--<g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>--}%
+                    %{--</div>--}%
 
-                </span>
-            </div>
+                %{--</span>--}%
+            %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'titulo', 'error')} ">
                 <span class="grupo">
@@ -173,7 +173,7 @@
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaInicio', 'error')} ">
                 <span class="grupo">
                     <label for="login" class="col-md-3 control-label text-info">
-                        Login
+                        Usuario
                     </label>
 
                     <div class="col-md-4">

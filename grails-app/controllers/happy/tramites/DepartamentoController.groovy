@@ -1,6 +1,8 @@
 package happy.tramites
 
+import groovy.json.JsonBuilder
 import happy.seguridad.Persona
+import org.apache.commons.lang.WordUtils
 
 
 class DepartamentoController extends happy.seguridad.Shield {
@@ -103,6 +105,46 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     }
 
+    def arbolSearch_ajax() {
+        println params
+//        def parts = params.search_string.split("~")
+        def search = params.str.trim()
+        if (search != "") {
+            def find = Persona.withCriteria {
+                or {
+                    ilike("nombre", "%" + search + "%")
+                    ilike("apellido", "%" + search + "%")
+                }
+            }
+            println "FIND"
+            println find
+            def departamentos = []
+            find.each { pers ->
+                if (pers.departamento && !departamentos.contains(pers.departamento))
+                    departamentos.add(pers.departamento)
+            }
+            println departamentos
+
+            def ids = "["
+
+            if (find.size() > 0) {
+                ids += "\"#root\","
+                ids += "\"#lidep_11\","
+                departamentos.each { dp ->
+                    ids += "\"#lidep_" + dp.id + "\","
+                }
+                ids = ids[0..-2]
+            }
+            ids += "]"
+            println ">>>>>>"
+            println ids
+            println "<<<<<<<"
+            render ids
+        } else {
+            render ""
+        }
+    }
+
     def arbol() {
 
     }
@@ -141,11 +183,13 @@ class DepartamentoController extends happy.seguridad.Shield {
 
         if (tree == "" && (padre || hijos.size() > 0)) {
             tree += "<ul>"
+            def lbl = ""
 
             hijos.each { hijo ->
                 def tp = ""
                 def data = ""
                 if (hijo instanceof Departamento) {
+                    lbl = hijo.toString()
                     tp = "dep"
                     def hijosH = Departamento.findAllByPadre(hijo, [sort: "descripcion"])
                     rel = (hijosH.size() > 0) ? "padre" : "hijo"
@@ -204,6 +248,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                     data = "data-tramites='${pxtTodos.size()}'"
 
                 } else if (hijo instanceof Persona) {
+                    lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
                     tp = "usu"
                     if (hijo.jefe == 1) {
                         rel = "jefe"
@@ -227,7 +272,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                 }
 
                 tree += "<li id='li${tp}_" + hijo.id + "' class='" + clase + "' ${data} data-jstree='{\"type\":\"${rel}\"}' >"
-                tree += "<a href='#' class='label_arbol'>" + hijo + "</a>"
+                tree += "<a href='#' class='label_arbol'>" + lbl + "</a>"
                 tree += "</li>"
             }
 

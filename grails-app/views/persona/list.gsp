@@ -44,7 +44,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Login</th>
+                    <th>Usuario</th>
                     <g:sortableColumn property="nombre" title="Nombre"/>
                     <g:sortableColumn property="apellido" title="Apellido"/>
                     <g:sortableColumn property="departamento" title="Departamento"/>

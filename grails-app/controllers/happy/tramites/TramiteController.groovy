@@ -596,9 +596,9 @@ class TramiteController extends happy.seguridad.Shield {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def bloqueo = false
-        if(session.departamento.estado=="B")
-            bloqueo=true
-        return [persona: persona,bloqueo:bloqueo]
+        if (session.departamento.estado == "B")
+            bloqueo = true
+        return [persona: persona, bloqueo: bloqueo]
 
     }
 
