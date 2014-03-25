@@ -9,17 +9,20 @@ class LoginController {
 
     def mail
 
-    def conecta(){
-        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','CN=Guido Prueba,OU=GSTI,OU=GADPP,DC=pichincha,DC=local','prueba.prueba')
-
-        assert ! ldap.exists('cn=camaras,cn=Users,ou=GADPP,dc=pichincha,dc=local')
-
-        def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
-                println "${results.size} entradas halladas para el nivel UNO desde la base:"
-        for (entry in results) {
-            println entry.dn
-            //println entry.attr
+    def conecta(user,pass){
+        println "conecta "+user+" pass  "+pass
+        def connect = true
+        try{
+            println "connect    "+user.getConnectionString()
+            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
+            println "connect    "+user.getConnectionString()
+            assert ! ldap.exists('cn=camaras,cn=Users,ou=GADPP,dc=pichincha,dc=local')
+            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
+        }catch(e){
+            println "no se conecto error: "+e
+            connect = false
         }
+        return connect
     }
 
     def index() {
@@ -54,7 +57,7 @@ class LoginController {
         if (session.usuario) {
             render "OK"
         } else {
-            flash.message = "Su sesión ha caducado, por favor ingrese nuevamente."
+            flash.message = "Su sesiÃ³n ha caducado, por favor ingrese nuevamente."
             render "NO"
         }
     }
@@ -64,7 +67,7 @@ class LoginController {
         def personas = Persona.findAllByMail(mail)
         def msg
         if (personas.size() == 0) {
-            flash.message = "No se encontró un usuario con ese email"
+            flash.message = "No se encontrÃ³ un usuario con ese email"
         } else if (personas.size() > 1) {
             flash.message = "Ha ocurrido un error grave (n)"
         } else {
@@ -79,12 +82,12 @@ class LoginController {
             if (persona.save(flush: true)) {
                 sendMail {
                     to mail
-                    subject "Recuperación de contraseña"
-                    body 'Hola ' + persona.login + ", tu nueva contraseña es " + newPass + "."
+                    subject "RecuperaciÃ³n de contraseÃ±a"
+                    body 'Hola ' + persona.login + ", tu nueva contraseÃ±a es " + newPass + "."
                 }
-                msg = "OK*Se ha enviado un email a la dirección " + mail + " con una nueva contraseña."
+                msg = "OK*Se ha enviado un email a la direcciÃ³n " + mail + " con una nueva contraseÃ±a."
             } else {
-                msg = "NO*Ha ocurrido un error al crear la nueva contraseña. Por favor vuelva a intentar."
+                msg = "NO*Ha ocurrido un error al crear la nueva contraseÃ±a. Por favor vuelva a intentar."
             }
         }
         redirect(action: 'login')
@@ -107,7 +110,6 @@ class LoginController {
 //        println "valida "+params
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
-            eq("password", params.pass.encodeAsMD5())
             eq("activo", 1)
         }
         if (user.size() == 0) {
@@ -120,28 +122,54 @@ class LoginController {
             user = user[0]
             session.usuario = user
             session.departamento = user.departamento
-            println "session dep " + session.departamento.id
             def perfiles = Sesn.findAllByUsuario(user)
-//            println "perfiles ? "+perfiles
             if (perfiles.size() == 0) {
                 flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
                 flash.tipo = "error"
                 flash.icon = "icon-warning"
                 session.usuario = null
-            } else if (perfiles.size() == 1) {
-
-                session.perfil = perfiles.first().perfil
-                def cn = "inicio"
-                def an = "index"
-                if (session.cn && session.an) {
-                    cn = session.cn
-                    an = session.an
+            } else{
+                def admin = false
+                perfiles.each {
+                    if(it.perfil.codigo=="ADM"){
+                        admin=true
+                    }
                 }
-                redirect(controller: cn, action: an)
-                return
-            } else {
-                redirect(action: "perfiles")
-                return
+                if(!admin){
+                    if(!conecta(user,params.pass)){
+                        flash.message = "No se pudo validar la información ingresada con el sistema LDAP, contraseña incorrecta o usuario no registrado en el LDAP"
+                        flash.tipo = "error"
+                        flash.icon = "icon-warning"
+                        session.usuario = null
+                        session.departamento = null
+                        redirect(controller: 'login', action: "login")
+                        return
+                    }
+                }else{
+                    if(params.pass.encodeAsMD5()!=user.password){
+                        flash.message = "Contraseña incorrecta"
+                        flash.tipo = "error"
+                        flash.icon = "icon-warning"
+                        session.usuario = null
+                        session.departamento = null
+                        redirect(controller: 'login', action: "login")
+                        return
+                    }
+                }
+                if (perfiles.size() == 1) {
+                    session.perfil = perfiles.first().perfil
+                    def cn = "inicio"
+                    def an = "index"
+                    if (session.cn && session.an) {
+                        cn = session.cn
+                        an = session.an
+                    }
+                    redirect(controller: cn, action: an)
+                    return
+                } else {
+                    redirect(action: "perfiles")
+                    return
+                }
             }
         }
         redirect(controller: 'login', action: "login")

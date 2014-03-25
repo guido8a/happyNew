@@ -19,7 +19,7 @@
 
 <body>
 
-<div style="text-align: center; margin-top: -60px; height: 580px;" class="well">
+<div style="text-align: center; margin-top: -60px; height: ${(flash.message)?'650':'580'}px;" class="well">
     %{--<h1 class="titl" style="font-size: 38px; color: #06a; font-family:'Book Antiqua'; margin-top: -20px;">Nuevo S.A.D.</h1>--}%
     <div class="page-header" style="margin-top: -10px;">
         <h1>S.A.D. Web</h1>

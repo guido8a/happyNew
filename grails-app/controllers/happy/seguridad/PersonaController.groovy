@@ -7,10 +7,11 @@ import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import org.apache.commons.lang.WordUtils
 import org.fusesource.jansi.Ansi
-
 import static java.awt.RenderingHints.*
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
+import org.apache.directory.groovyldap.LDAP
+import org.apache.directory.groovyldap.SearchScope
 
 
 class PersonaController extends happy.seguridad.Shield {
@@ -860,46 +861,57 @@ class PersonaController extends happy.seguridad.Shield {
         render "NO_No se encontró Persona."
     } //notFound para ajax
 
-    def cargarUsuariosLdap() {
-        def realPath = servletContext.getRealPath("/")
-        def pathImages = realPath + "images/"
-        def file = new File(pathImages + "/users")
+    def cargarUsuariosLdap(){
+//        def realPath = servletContext.getRealPath("/")
+//        def pathImages = realPath + "images/"
+//        def file = new File(pathImages+"/users")
 
-        file.eachLine {
-            println "--> " + it
-            def parts = it.split("&")
-            def nombres = parts[0].split(" ")
-            def mail = parts[1]
-            def logn = parts[2]
-            def nombre = nombres[0] + " " + nombres[1]
-            def apellido = null
-            if (nombres.size() == 3)
-                apellido = nombres[2]
-            if (nombres.size() == 4)
-                apellido = nombres[2] + " " + nombres[3]
-            if (nombres.size() == 5)
-                apellido = nombres[2] + " " + nombres[3] + " " + nombres[4]
-            if (!apellido)
-                apellido = nombre.split(" ")[1]
-            def prsn = Persona.findByLogin(logn)
-            if (!prsn) {
-                prsn = new Persona()
-                prsn.nombre = nombre
-                prsn.apellido = apellido
-                prsn.mail = mail
-                prsn.login = logn
-                prsn.password = "123".encodeAsMD5()
-                if (!prsn.save(flush: true)) {
-                    println "error save prns " + prsn.errors
-                }
-            } else {
-                println "update connect"
-                prsn.connect = parts[3]
-                if (!prsn.save(flush: true)) {
-                    println "error save prns " + prsn.errors
+
+        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
+        println "conectado "+ ldap.class
+        println "!!!!!!!-----------------------------"
+        def results = ldap.search('(objectClass=*)', 'ou=GSTI,ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB )
+        def users = []
+        println "${results.size} entradas halladas para el nivel UNO desde la base:"
+        for (entry in results) {
+            if(entry && entry.displayname && !entry.objectclass.contains("computer")){
+                def logn=entry["samaccountname"]
+                def prsn = Persona.findByLogin(logn)
+                if(!prsn){
+                    def parts = entry["cn"].split("&")
+                    def nombres = parts[0].split(" ")
+                    def mail = entry["mail"]
+                    def nombre = nombres[0]+" "+nombres[1]
+                    def apellido=null
+                    if(nombres.size()==3)
+                        apellido = nombres[2]
+                    if(nombres.size()==4)
+                        apellido = nombres[2]+" "+nombres[3]
+                    if(nombres.size()==5)
+                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
+                    if(!apellido)
+                        apellido=nombre.split(" ")[1]
+
+                    prsn = new Persona()
+                    prsn.nombre=nombre
+                    prsn.apellido=apellido
+                    prsn.mail=mail
+                    prsn.login=logn
+                    prsn.password="123".encodeAsMD5()
+                    if(!prsn.save(flush: true)){
+                        println "error save prns "+prsn.errors
+                    }else{
+                        users.add(prsn)
+                        def sesn = new Sesn()
+                        sesn.perfil=Prfl.findByCodigo("USU")
+                        sesn.usuario=prsn
+                        sesn.save(flush: true)
+                    }
                 }
             }
         }
+        return [users:users]
+
     }
 
     def cambiarNombresUsuarios(){
