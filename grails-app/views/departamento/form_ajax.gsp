@@ -32,7 +32,7 @@
                 <div class="col-md-6">
                     <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
                               optionKey="id" optionValue="descripcion"
-                              value="${departamentoInstance?.padre?.id}" class="many-to-one form-control"/>
+                              value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
                 </div>
 
             </span>
@@ -44,9 +44,10 @@
                     Código
                 </label>
 
-                <div class="col-md-6">
+                <div class="col-md-3" style="width: 120px;">
                     <g:if test="${tramites == 0}">
-                        <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps" value="${departamentoInstance?.codigo}"/>
+                        <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps"
+                                     value="${departamentoInstance?.codigo}" style="width: 100px;"/>
                     </g:if>
                     <g:else>
                         <span class="uneditable-input">
@@ -66,7 +67,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps" value="${departamentoInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps"
+                                 value="${departamentoInstance?.descripcion}" style="width: 440px;"/>
                 </div>
                 *
             </span>
@@ -79,7 +81,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="telefono" maxlength="15" class="form-control allCaps" value="${departamentoInstance?.telefono}"/>
+                    <g:textField name="telefono" maxlength="15" class="form-control allCaps" value="${departamentoInstance?.telefono}"
+                                 style="width: 200px;"/>
                 </div>
 
             </span>
@@ -92,7 +95,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="extension" maxlength="7" class="form-control allCaps" value="${departamentoInstance?.extension}"/>
+                    <g:textField name="extension" maxlength="7" class="form-control allCaps"
+                                 value="${departamentoInstance?.extension}" style="width: 100px;"/>
                 </div>
 
             </span>
@@ -105,7 +109,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textArea name="direccion" cols="40" rows="5" maxlength="255" class="form-control allCaps" value="${departamentoInstance?.direccion}"/>
+                    <g:textArea name="direccion" cols="80" rows="3" maxlength="255" class="form-control allCaps"
+                                value="${departamentoInstance?.direccion}" style="width: 440px;"/>
                 </div>
 
             </span>
