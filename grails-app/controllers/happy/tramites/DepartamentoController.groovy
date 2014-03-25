@@ -116,14 +116,14 @@ class DepartamentoController extends happy.seguridad.Shield {
                     ilike("apellido", "%" + search + "%")
                 }
             }
-            //println "FIND"
-            //println find
+//            println "FIND"
+//            println find
             def departamentos = []
             find.each { pers ->
                 if (pers.departamento && !departamentos.contains(pers.departamento))
                     departamentos.add(pers.departamento)
             }
-            //println departamentos
+//            println departamentos
 
             def ids = "["
 
@@ -136,9 +136,9 @@ class DepartamentoController extends happy.seguridad.Shield {
                 ids = ids[0..-2]
             }
             ids += "]"
-            //println ">>>>>>"
-            //println ids
-            //println "<<<<<<<"
+//            println ">>>>>>"
+//            println ids
+//            println "<<<<<<<"
             render ids
         } else {
             render ""
@@ -338,59 +338,60 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def departamentoInstance = new Departamento(params)
+        def pxtTodos = []
         if (params.id) {
             departamentoInstance = Departamento.get(params.id)
             if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
-        }
 
-        //cuenta los tramites de la bandeja de entrada de la oficina
-        def rolPara = RolPersonaTramite.findByCodigo('R001');
-        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+            //cuenta los tramites de la bandeja de entrada de la oficina
+            def rolPara = RolPersonaTramite.findByCodigo('R001');
+            def rolCopia = RolPersonaTramite.findByCodigo('R002');
+            def rolImprimir = RolPersonaTramite.findByCodigo('I005');
 
-        def pxtPara = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamentoInstance)
-            eq("rolPersonaTramite", rolPara)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+            def pxtPara = PersonaDocumentoTramite.withCriteria {
+                eq("departamento", departamentoInstance)
+                eq("rolPersonaTramite", rolPara)
+                isNotNull("fechaEnvio")
+                tramite {
+                    or {
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                    }
                 }
             }
-        }
-        def pxtCopia = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamentoInstance)
-            eq("rolPersonaTramite", rolCopia)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+            def pxtCopia = PersonaDocumentoTramite.withCriteria {
+                eq("departamento", departamentoInstance)
+                eq("rolPersonaTramite", rolCopia)
+                isNotNull("fechaEnvio")
+                tramite {
+                    or {
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                    }
                 }
             }
-        }
-        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamentoInstance)
-            eq("rolPersonaTramite", rolImprimir)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+            def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+                eq("departamento", departamentoInstance)
+                eq("rolPersonaTramite", rolImprimir)
+                isNotNull("fechaEnvio")
+                tramite {
+                    or {
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                        eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                    }
                 }
             }
-        }
 
-        def pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
+            pxtTodos = pxtPara
+            pxtTodos += pxtCopia
+            pxtTodos += pxtImprimir
+        }
 
         return [departamentoInstance: departamentoInstance, tramites: pxtTodos.size()]
     } //form para cargar con ajax en un dialog

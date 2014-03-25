@@ -15,15 +15,26 @@
         <link href="${resource(dir: 'js/plugins/jstree-e22db21/dist/themes/default', file: 'style.min.css')}" rel="stylesheet">
 
         <style type="text/css">
+
+        #list-cuenta {
+            width : 950px;
+        }
+
         #tree {
             background : #DEDEDE;
             overflow-y : auto;
-            width      : 950px;
             height     : 600px;
         }
 
         .jstree-search {
             color : #5F87B2 !important;
+        }
+
+        .leyenda {
+            background    : #ddd;
+            border        : solid 1px #aaa;
+            padding-left  : 5px;
+            padding-right : 5px;
         }
         </style>
 
@@ -65,7 +76,7 @@
                     </div><!-- /input-group -->
                 </div>
 
-                <div class="btn-group " style="background: #ddd; padding-left: 5px; padding-right: 5px;">
+                <div class="btn-group pull-right ui-corner-all leyenda">
                     <i class="fa fa-user text-info"></i> Usuario<br/>
                     <i class="fa fa-user text-warning"></i> Autoridad
                 </div>
@@ -637,8 +648,9 @@
                             stripes : true
                         },
                         data           : {
-                            url  : '${createLink(action:"loadTreePart")}',
-                            data : function (node) {
+                            async : false,
+                            url   : '${createLink(action:"loadTreePart")}',
+                            data  : function (node) {
                                 return { 'id' : node.id };
                             }
                         }
@@ -655,12 +667,13 @@
                         ajax  : {
                             url     : "${createLink(action:'arbolSearch_ajax')}",
                             success : function (msg) {
+//                                console.log("asddfff");
+//                                console.log(msg);
                                 var json = $.parseJSON(msg);
                                 $.each(json, function (i, obj) {
-                                    var id = obj;
-                                    $('#tree').jstree("open_node", id);
+                                    $('#tree').jstree("open_node", obj);
                                 });
-                                $('#btnSearch').click();
+//                    $('#btnSearch').click();
                             }
                         }
                     },
@@ -696,7 +709,36 @@
                 });
 
                 $('#btnSearch').click(function () {
+
+                    %{--$.ajax({--}%
+                    %{--type    : "POST",--}%
+                    %{--url     : " ${createLink(action:'arbolSearch_ajax')}",--}%
+                    %{--data    : {--}%
+                    %{--str : $.trim($("#search").val())--}%
+                    %{--},--}%
+                    %{--success : function (msg) {--}%
+                    %{--var json = $.parseJSON(msg);--}%
+                    %{--$.each(json, function (i, obj) {--}%
+                    %{--var id = obj;--}%
+                    %{--$('#tree').jstree("open_node", id);--}%
+                    %{--});--}%
+                    %{--}--}%
+                    %{--});--}%
+
                     $('#tree').jstree(true).search($.trim($("#search").val()));
+                    %{--/*--}%
+                    %{--url     : "--}%
+                    %{--${createLink(action:'arbolSearch_ajax')}",--}%
+                    %{--success : function (msg) {--}%
+                    %{--var json = $.parseJSON(msg);--}%
+                    %{--$.each(json, function (i, obj) {--}%
+                    %{--var id = obj;--}%
+                    %{--$('#tree').jstree("open_node", id);--}%
+                    %{--});--}%
+                    %{--$('#btnSearch').click();--}%
+                    %{--}--}%
+                    %{--*/--}%
+                    return false;
                 });
             });
         </script>

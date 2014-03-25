@@ -48,18 +48,18 @@
                 </span>
             </div>
 
-            %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'sigla', 'error')} ">--}%
-                %{--<span class="grupo">--}%
-                    %{--<label for="sigla" class="col-md-3 control-label text-info">--}%
-                        %{--Sigla--}%
-                    %{--</label>--}%
+        %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'sigla', 'error')} ">--}%
+        %{--<span class="grupo">--}%
+        %{--<label for="sigla" class="col-md-3 control-label text-info">--}%
+        %{--Sigla--}%
+        %{--</label>--}%
 
-                    %{--<div class="col-md-3">--}%
-                        %{--<g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>--}%
-                    %{--</div>--}%
+        %{--<div class="col-md-3">--}%
+        %{--<g:textField name="sigla" maxlength="4" class="form-control allCaps" value="${personaInstance?.sigla}"/>--}%
+        %{--</div>--}%
 
-                %{--</span>--}%
-            %{--</div>--}%
+        %{--</span>--}%
+        %{--</div>--}%
 
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'titulo', 'error')} ">
                 <span class="grupo">
@@ -266,10 +266,14 @@
                 var nombre = $.trim($("#nombre").val());
                 var apellido = $.trim($("#apellido").val());
                 if (nombre != "" || apellido != "") {
-                    var sigla = (nombre + " " + apellido).acronym();
+//                    var sigla = (nombre + " " + apellido).acronym();
                     var login = nombre.acronym() + "" + apellido.split(" ")[0];
-                    $("#sigla").val(sigla);
-                    $("#login").val(login);
+//                    if ($.trim($("#sigla").val()) == "") {
+//                        $("#sigla").val(sigla);
+//                    }
+                    if ($.trim($("#login").val()) == "") {
+                        $("#login").val(login.toLowerCase());
+                    }
                 }
             });
 
