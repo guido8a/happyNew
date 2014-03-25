@@ -146,14 +146,21 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbol() {
-
+        return [params: params]
     }
 
     def loadTreePart() {
-        render(makeTreeNode(params.id))
+        render(makeTreeNode(params))
     }
 
-    def makeTreeNode(id) {
+    def makeTreeNode(params) {
+        def id = params.id
+        if (!params.sort) {
+            params.sort = "apellido"
+        }
+        if (!params.order) {
+            params.order = "asc"
+        }
         String tree = "", clase = "", rel = ""
         def padre
         def hijos = []
@@ -177,7 +184,7 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (padre) {
                 hijos = []
                 hijos += Departamento.findAllByPadre(padre, [sort: "descripcion"])
-                hijos += Persona.findAllByDepartamento(padre, [sort: "apellido"])
+                hijos += Persona.findAllByDepartamento(padre, [sort: params.sort, order: params.order])
             }
         }
 
@@ -248,7 +255,17 @@ class DepartamentoController extends happy.seguridad.Shield {
                     data = "data-tramites='${pxtTodos.size()}'"
 
                 } else if (hijo instanceof Persona) {
-                    lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
+                    switch (params.sort) {
+                        case 'apellido':
+                            lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
+                            break;
+                        case 'nombre':
+                            lbl = "${WordUtils.capitalizeFully(hijo.nombre)} ${WordUtils.capitalizeFully(hijo.apellido)}"
+                            break;
+                        default:
+                            lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
+                    }
+
                     tp = "usu"
                     if (hijo.jefe == 1) {
                         rel = "jefe"

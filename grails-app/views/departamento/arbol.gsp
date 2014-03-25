@@ -57,20 +57,21 @@
                     </g:link>
                 </div>
 
-                %{--<div class="btn-group">--}%
-                %{--<g:link controller="inicio" action="parametros" class="btn btn-sm btn-primary">--}%
-                %{--<i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre--}%
-                %{--</g:link>--}%
-                %{--<g:link controller="departamentoExport" action="crearPdf" class="btn btn-sm btn-primary">--}%
-                %{--<i class="fa fa-sort-alpha-asc"></i> Ordenar por apellido--}%
-                %{--</g:link>--}%
-                %{--</div>--}%
+                <div class="btn-group" style="margin-top: 4px;">
+                    <g:link action="arbol" params="[sort: 'nombre']" class="btn btn-sm btn-info">
+                        <i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre
+                    </g:link>
+                    <g:link action="arbol" params="[sort: 'apellido']" class="btn btn-sm btn-info">
+                        <i class="fa fa-sort-alpha-asc"></i> Ordenar por apellido
+                    </g:link>
+                </div>
 
-                <div class="btn-group">
+                <div class="btn-group" style="margin-top: 4px;">
                     <div class="input-group">
-                        <g:textField name="search" class="form-control"/>
+                        <g:textField name="search" class="form-control input-sm"/>
                         <span class="input-group-btn">
-                            <a href="#" id="btnSearch" class="btn btn-primary" type="button"><i class="fa fa-search"></i>&nbsp;
+                            <a href="#" id="btnSearch" class="btn btn-sm btn-info" type="button">
+                                <i class="fa fa-search"></i>&nbsp;
                             </a>
                         </span>
                     </div><!-- /input-group -->
@@ -651,7 +652,11 @@
                             async : false,
                             url   : '${createLink(action:"loadTreePart")}',
                             data  : function (node) {
-                                return { 'id' : node.id };
+                                return {
+                                    id    : node.id,
+                                    sort  : "${params.sort?:'apellido'}",
+                                    order : "${params.order?:'asc'}"
+                                };
                             }
                         }
                     },

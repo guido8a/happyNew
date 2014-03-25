@@ -698,7 +698,7 @@ class PersonaController extends happy.seguridad.Shield {
                 params[k] = v.toUpperCase()
             }
         }
-
+        params.mail = params.mail.toString().toLowerCase()
         def personaInstance = new Persona()
         if (params.id) {
             personaInstance = Persona.get(params.id)

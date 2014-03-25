@@ -55,6 +55,10 @@ input.help-block, select.help-block, textarea.help-block {
     text-transform : uppercase;
 }
 
+.noCaps {
+    text-transform : lowercase;
+}
+
 .dropdown-menu {
     z-index : 1050;
 }
