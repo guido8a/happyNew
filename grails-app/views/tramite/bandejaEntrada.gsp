@@ -53,12 +53,15 @@
     }
 
     tr.pendiente {
-        background-color: #FFFFCC! important;
+        /*background-color: #FFFFCC! important;*/
+        background-color: #FC2C04! important;
+        color: #ffffff
     }
 
     tr.retrasado {
-        background-color: #fc2c04! important;
-        color: #ffffff;
+        /*background-color: #fc2c04! important;*/
+        background-color: #F2DEDE! important;
+        /*color: #ffffff;*/
     }
 
 
@@ -103,14 +106,16 @@
         <div>
             <div data-type="pendiente" class="alert alert-otroRojo alertas"  clase="E003">
                 (<span id="numPen"></span>)
-            No recibidos
+            Sin Recepción
+               %{--No recibidos--}%
             </div>
         </div>
 
         <div>
             <div data-type="pendiente" class="alert alert-blanco alertas"  clase="E003">
                 (<span id="numEnv"></span>)
-            Pendientes
+            Por recibir
+                %{--Pendientes--}%
             </div>
         </div>
 
@@ -216,6 +221,32 @@
                 location.href="${g.createLink(action: 'crearTramite')}/"+id;
             }
         };
+
+
+        var ver =     {
+                    text: 'Ver',
+                    icon: "<i class='fa fa-search'></i>",
+                    action: function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
+                        %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+
+                        $.ajax({
+                           type: 'POST',
+                            url: '${createLink(action: 'revisarConfidencial')}/' + id,
+                            success: function (msg){
+                                if(msg == 'ok'){
+                                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
+                                }else if(msg == 'no'){
+//                                    log("No tiene permiso para ver este trámite", 'danger')
+                                    bootbox.alert('No tiene permiso para ver el PDF de este trámite')
+                                }
+                            }
+
+                        });
+                    }
+                };
 
         var seguimiento = {
 
@@ -421,17 +452,21 @@
             {
                 header: 'Acciones'
             },
-            {
-                text: 'Ver',
-                icon: "<i class='fa fa-search'></i>",
-                action: function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
+            %{--{--}%
+                %{--text: 'Ver',--}%
+                %{--icon: "<i class='fa fa-search'></i>",--}%
+                %{--action: function (e) {--}%
+                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                    %{--e.preventDefault();--}%
                     %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
-                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
-                }
-            },
-            contestar,
+                    %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+                %{--}--}%
+            %{--},--}%
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
+            ver,
+            </g:if>
+
+           contestar,
 
             <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeArchivar()}">
             archivar,
@@ -441,9 +476,9 @@
             seguimiento,
             </g:if>
 
-            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
-            anular,
-            </g:if>
+            %{--<g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">--}%
+            %{--anular,--}%
+            %{--</g:if>--}%
 
             {
 
@@ -500,15 +535,20 @@
             {
                 header: 'Acciones'
             },
-            {
-                text: 'Ver',
-                icon: "<i class='fa fa-search'></i>",
-                action: function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
-                }
-            },
+            %{--{--}%
+                %{--text: 'Ver',--}%
+                %{--icon: "<i class='fa fa-search'></i>",--}%
+                %{--action: function (e) {--}%
+                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                    %{--e.preventDefault();--}%
+                    %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+                %{--}--}%
+            %{--},--}%
+
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
+            ver,
+            </g:if>
+
             {
                 text: 'Contestar Documento',
                 icon: "<i class='fa fa-external-link'></i>",
@@ -528,9 +568,9 @@
             seguimiento,
             </g:if>
 
-            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">
-            anular
-            </g:if>
+            %{--<g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">--}%
+            %{--anular--}%
+            %{--</g:if>--}%
 
 
 

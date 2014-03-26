@@ -1073,4 +1073,23 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
+    def revisarConfidencial () {
+//        println("params" + params)
+        def tramite = Tramite.get(params.id)
+        def persona = Persona.get(session.usuario.id)
+        def condifencial = tramite?.tipoTramite?.id
+
+//        println("para:" + tramite.getPara().persona.id)
+//        println("persona:" + persona.id)
+
+        if(condifencial == 1){
+            if(tramite.getPara().persona == persona){
+                render 'ok'
+            }else{
+                render 'no'
+            }
+        }else {
+            render 'ok'
+        }
+    }
 }
