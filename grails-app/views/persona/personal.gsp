@@ -169,7 +169,7 @@
                             <i class="glyphicon glyphicon-plus"></i>
                             <span>Seleccionar imagen</span>
                             <!-- The file input field used as target for the file upload widget -->
-                            <input type="file" multiple="" name="file" id="file">
+                            <input type="file" name="file" id="file">
                         </span>
 
                         <div id="progress" class="progress progress-striped active">

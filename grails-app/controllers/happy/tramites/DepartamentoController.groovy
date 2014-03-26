@@ -183,8 +183,8 @@ class DepartamentoController extends happy.seguridad.Shield {
             padre = Departamento.get(node_id)
             if (padre) {
                 hijos = []
-                hijos += Departamento.findAllByPadre(padre, [sort: "descripcion"])
                 hijos += Persona.findAllByDepartamento(padre, [sort: params.sort, order: params.order])
+                hijos += Departamento.findAllByPadre(padre, [sort: "descripcion"])
             }
         }
 
@@ -196,7 +196,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                 def tp = ""
                 def data = ""
                 if (hijo instanceof Departamento) {
-                    lbl = hijo.toString()
+                    lbl = hijo.descripcion
                     tp = "dep"
                     def hijosH = Departamento.findAllByPadre(hijo, [sort: "descripcion"])
                     rel = (hijosH.size() > 0) ? "padre" : "hijo"
@@ -257,13 +257,13 @@ class DepartamentoController extends happy.seguridad.Shield {
                 } else if (hijo instanceof Persona) {
                     switch (params.sort) {
                         case 'apellido':
-                            lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
+                            lbl = "${hijo.apellido} ${hijo.nombre}"
                             break;
                         case 'nombre':
-                            lbl = "${WordUtils.capitalizeFully(hijo.nombre)} ${WordUtils.capitalizeFully(hijo.apellido)}"
+                            lbl = "${hijo.nombre} ${hijo.apellido}"
                             break;
                         default:
-                            lbl = "${WordUtils.capitalizeFully(hijo.apellido)} ${WordUtils.capitalizeFully(hijo.nombre)}"
+                            lbl = "${hijo.apellido} ${hijo.nombre}"
                     }
 
                     tp = "usu"

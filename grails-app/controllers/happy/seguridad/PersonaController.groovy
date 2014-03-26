@@ -59,26 +59,8 @@ class PersonaController extends happy.seguridad.Shield {
 
         def f = request.getFile('file')  //archivo = name del input type file
 
-        def okContents = [
-                'image/png': "png",
-                'image/jpeg': "jpeg",
-                'image/jpg': "jpg",
+        def okContents = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
 
-                'application/pdf': 'pdf',
-
-                'application/excel': 'xls',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-
-                'application/mspowerpoint': 'pps',
-                'application/vnd.ms-powerpoint': 'pps',
-                'application/powerpoint': 'ppt',
-                'application/x-mspowerpoint': 'ppt',
-                'application/vnd.openxmlformats-officedocument.presentationml.slideshow': 'ppsx',
-                'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
-
-                'application/msword': 'doc',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-        ]
         if (f && !f.empty) {
             def fileName = f.getOriginalFilename() //nombre original del archivo
             def ext
@@ -679,7 +661,7 @@ class PersonaController extends happy.seguridad.Shield {
         params.login = params.login.toString().trim()
         if (params.id) {
             def prsn = Persona.get(params.id)
-            if (prsn.login == params.login) {
+            if (prsn.login.toLowerCase() == params.login.toLowerCase()) {
                 render true
                 return
             } else {
@@ -694,11 +676,11 @@ class PersonaController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def msgDpto = ""
-        params.each { k, v ->
-            if (v != "date.struct" && v instanceof java.lang.String) {
-                params[k] = v.toUpperCase()
-            }
-        }
+//        params.each { k, v ->
+//            if (v != "date.struct" && v instanceof java.lang.String) {
+//                params[k] = v.toUpperCase()
+//            }
+//        }
         params.mail = params.mail.toString().toLowerCase()
         def personaInstance = new Persona()
         if (params.id) {

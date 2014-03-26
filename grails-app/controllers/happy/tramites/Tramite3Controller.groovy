@@ -182,7 +182,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
         }
         if (params.anexo == "on") {
-            redirect(controller: "tramiteAnexos", action: "anexo", id: tramite.id)
+            redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
         } else {
             redirect(controller: "tramite", action: "redactar", id: tramite.id)
         }

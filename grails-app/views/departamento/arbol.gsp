@@ -107,6 +107,8 @@
 
         <script type="text/javascript">
 
+            var index = 0;
+
             var $btnCloseModal = $('<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>');
             var $btnSave = $('<button type="button" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>');
 
@@ -633,10 +635,10 @@
                     createEditRow(null, "Crear");
                 });
 
-                $('#tree').on("loaded.jstree",function () {
+                $('#tree').on("loaded.jstree", function () {
                     $("#loading").hide();
                     $("#tree").removeClass("hide").show();
-                }).on("select_node.jstree",function (node, selected, event) {
+                }).on("select_node.jstree", function (node, selected, event) {
 //                    $('#tree').jstree('toggle_node', selected.selected[0]);
                 }).jstree({
                     plugins     : [ "types", "state", "contextmenu", "wholerow" , "search"],
@@ -668,17 +670,15 @@
                         key : "departamentos"
                     },
                     search      : {
-                        fuzzy : false,
-                        ajax  : {
+                        fuzzy             : false,
+                        show_only_matches : true,
+                        ajax              : {
                             url     : "${createLink(action:'arbolSearch_ajax')}",
                             success : function (msg) {
-//                                console.log("asddfff");
-//                                console.log(msg);
                                 var json = $.parseJSON(msg);
                                 $.each(json, function (i, obj) {
                                     $('#tree').jstree("open_node", obj);
                                 });
-//                    $('#btnSearch').click();
                             }
                         }
                     },
@@ -714,36 +714,14 @@
                 });
 
                 $('#btnSearch').click(function () {
-
-                    %{--$.ajax({--}%
-                    %{--type    : "POST",--}%
-                    %{--url     : " ${createLink(action:'arbolSearch_ajax')}",--}%
-                    %{--data    : {--}%
-                    %{--str : $.trim($("#search").val())--}%
-                    %{--},--}%
-                    %{--success : function (msg) {--}%
-                    %{--var json = $.parseJSON(msg);--}%
-                    %{--$.each(json, function (i, obj) {--}%
-                    %{--var id = obj;--}%
-                    %{--$('#tree').jstree("open_node", id);--}%
-                    %{--});--}%
-                    %{--}--}%
-                    %{--});--}%
-
                     $('#tree').jstree(true).search($.trim($("#search").val()));
-                    %{--/*--}%
-                    %{--url     : "--}%
-                    %{--${createLink(action:'arbolSearch_ajax')}",--}%
-                    %{--success : function (msg) {--}%
-                    %{--var json = $.parseJSON(msg);--}%
-                    %{--$.each(json, function (i, obj) {--}%
-                    %{--var id = obj;--}%
-                    %{--$('#tree').jstree("open_node", id);--}%
-                    %{--});--}%
-                    %{--$('#btnSearch').click();--}%
-                    %{--}--}%
-                    %{--*/--}%
                     return false;
+                });
+                $("#search").keypress(function (ev) {
+                    if (ev.keyCode == 13) {
+                        $('#tree').jstree(true).search($.trim($("#search").val()));
+                        return false;
+                    }
                 });
             });
         </script>
