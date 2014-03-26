@@ -67,6 +67,12 @@
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
+                    <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary">
+                        <i class="fa fa-users"></i> Usuarios LDAP
+                    </g:link>
+                </div>
+
+                <div class="btn-group" style="margin-top: 4px;">
                     <div class="input-group">
                         <g:textField name="search" class="form-control input-sm"/>
                         <span class="input-group-btn">

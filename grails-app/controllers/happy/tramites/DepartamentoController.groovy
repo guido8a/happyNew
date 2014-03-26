@@ -172,7 +172,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                 clase = "hasChildren jstree-closed"
             }
             tree = "<li id='root' class='root ${clase}' data-jstree='{\"type\":\"root\"}' level='0' >" +
-                    "<a href='#' class='label_arbol'>Departamentos</a>" +
+                    "<a href='#' class='label_arbol'>Estructura</a>" +
                     "</li>"
         } else if (id == "root") {
             hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])

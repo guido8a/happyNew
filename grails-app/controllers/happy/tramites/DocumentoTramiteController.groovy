@@ -123,14 +123,20 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     def anexo() {
         def tramite = Tramite.get(params.id)
-        if (tramite.anexo == 1) {
-            return [tramite: tramite]
+        if (tramite) {
+            if (tramite.anexo == 1) {
+                return [tramite: tramite]
+            } else {
+                redirect(controller: 'tramite', action: 'redactar', params: params)
+            }
         } else {
-            redirect(controller: 'tramite', action: 'redactar', params: params)
+            response.sendError(404)
         }
     }
 
     def uploadFile() {
+        println "UPLOAD"
+        println params
         def tramite = Tramite.get(params.id)
         def path = servletContext.getRealPath("/") + "anexos/" + tramite.id + "/"    //web-app/archivos
         new File(path).mkdirs()
@@ -140,30 +146,30 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         def imageContent = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
 
         def okContents = [
-                'image/png': "png",
-                'image/jpeg': "jpeg",
-                'image/jpg': "jpg",
+                'image/png'                                                                : "png",
+                'image/jpeg'                                                               : "jpeg",
+                'image/jpg'                                                                : "jpg",
 
-                'application/pdf': 'pdf',
+                'application/pdf'                                                          : 'pdf',
 
-                'application/excel': 'xls',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+                'application/excel'                                                        : 'xls',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'        : 'xlsx',
 
-                'application/mspowerpoint': 'pps',
-                'application/vnd.ms-powerpoint': 'pps',
-                'application/powerpoint': 'ppt',
-                'application/x-mspowerpoint': 'ppt',
-                'application/vnd.openxmlformats-officedocument.presentationml.slideshow': 'ppsx',
+                'application/mspowerpoint'                                                 : 'pps',
+                'application/vnd.ms-powerpoint'                                            : 'pps',
+                'application/powerpoint'                                                   : 'ppt',
+                'application/x-mspowerpoint'                                               : 'ppt',
+                'application/vnd.openxmlformats-officedocument.presentationml.slideshow'   : 'ppsx',
                 'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
 
-                'application/msword': 'doc',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+                'application/msword'                                                       : 'doc',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'  : 'docx',
 
-                'application/vnd.oasis.opendocument.text': 'odt',
+                'application/vnd.oasis.opendocument.text'                                  : 'odt',
 
-                'application/vnd.oasis.opendocument.presentation': 'odp',
+                'application/vnd.oasis.opendocument.presentation'                          : 'odp',
 
-                'application/vnd.oasis.opendocument.spreadsheet': 'ods'
+                'application/vnd.oasis.opendocument.spreadsheet'                           : 'ods'
         ]
 
         if (f && !f.empty) {
@@ -243,12 +249,12 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 } //si es imagen hace resize para que no exceda 800x800
 
                 def docTramite = new DocumentoTramite([
-                        tramite: tramite,
-                        fecha: new Date(),
-                        resumen: params.resumen,
-                        clave: params.clave,
+                        tramite    : tramite,
+                        fecha      : new Date(),
+                        resumen    : params.resumen,
+                        clave      : params.clave,
                         descripcion: params.descripcion,
-                        path: nombre
+                        path       : nombre
                 ])
                 def data
                 if (docTramite.save(flush: true)) {
@@ -256,9 +262,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                             files: [
                                     [
                                             name: nombre,
-                                            url: resource(dir: 'anexos/' + tramite.id, file: nombre),
+                                            url : resource(dir: 'anexos/' + tramite.id, file: nombre),
                                             size: f.getSize(),
-                                            url: pathFile
+                                            url : pathFile
                                     ]
                             ]
                     ]
@@ -267,8 +273,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                     data = [
                             files: [
                                     [
-                                            name: nombre,
-                                            size: f.getSize(),
+                                            name : nombre,
+                                            size : f.getSize(),
                                             error: "Ha ocurrido un error al guardar: " + renderErrors(bean: docTramite)
                                     ]
                             ]
@@ -285,8 +291,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 def data = [
                         files: [
                                 [
-                                        name: fileName + "." + ext,
-                                        size: f.getSize(),
+                                        name : fileName + "." + ext,
+                                        size : f.getSize(),
                                         error: "Extensión no permitida"
                                 ]
                         ]

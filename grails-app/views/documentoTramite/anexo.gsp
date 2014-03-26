@@ -28,9 +28,7 @@
 
         <link href="${resource(dir: 'js/plugins/jQuery-File-Upload-9.5.6/css', file: 'jquery.fileupload.css')}" rel="stylesheet">
 
-
         <style type="text/css">
-
         .cont {
             margin-top : 10px;
         }
@@ -119,6 +117,7 @@
 //                    maxFileSize      : 11000000, // 1 MB
                     add               : function (e, data) {
                         console.log(data.files);
+                        var totalFiles = data.files.length;
                         //The add callback can be understood as the callback for the file upload request queue. It is invoked as soon as files are added to the fileupload widget
                         data.context = $("#files");
                         $.each(data.files, function (index, file) {
@@ -156,25 +155,14 @@
                                                    "</div>").appendTo($row2);
                                     $form.append($row1).append($row2);
                                     $body.html($divError).append($form).append($progress);
-                                    var $btnSubir = $("<a href='#' class='btn btn-success btnSubir'/>");
+                                    var $btnSubir = $("<a href='#' class='btn btn-success btnSubir start'/>");
                                     $btnSubir.append("<i class='fa fa-upload'></i>");
                                     $btnSubir.append("Subir");
                                     $footer.append($btnSubir);
-                                    $btnSubir.click(function () {
-                                        %{--var formData = $form.serialize();--}%
-                                        %{--data.id = "${tramite.id}";--}%
-                                        %{--$form.addClass("hide");--}%
-                                        %{--$btnSubir.hide();--}%
-                                        %{--$progress.removeClass("hide");--}%
-                                        %{--$progressBar.css({--}%
-                                        %{--width : 0--}%
-                                        %{--});--}%
-                                        %{--$('#file').fileupload({--}%
-                                        %{--formData : formData--}%
-                                        %{--});--}%
-                                        data.submit();
-                                        return false;
-                                    });
+//                                    $btnSubir.click(function () {
+//                                        data.submit();
+//                                        return false;
+//                                    });
                                 } else {
                                     var $alert = $("<div class='alert alert-danger'/>");
                                     $alert.html("<h3 class='text-danger noMarginTop'><i class='fa fa-warning'></i> Alerta</h3>" +
@@ -190,7 +178,7 @@
                                 btnCerrar($panel, $footer, true);
                             }
 
-                            $title.html(file.name);
+                            $title.html("Archivo " + (index + 1) + " de " + totalFiles + ": " + file.name);
                             $heading.append($title);
                             $panel.append($heading);
                             $panel.append($body);
