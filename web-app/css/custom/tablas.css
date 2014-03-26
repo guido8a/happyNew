@@ -23,15 +23,18 @@ th.desc {
 }
 
 th a {
-    color : #ffab19;
+    /*color : #ffab19;*/
+    color : #72cb8e;
 }
 
 th a:hover, th a:focus {
-    color : #ffc766;
+    /*color : #ffc766;*/
+    color : #72cb8e;
 }
 
 tr.trHighlight, tr.trHighlight td, td.trHighlight, .trHighlight {
     color      : #444444;
-    background : #ffc766 !important;
+    /*background : #ffc766 !important;*/
+    background : #72cb8e !important;
 }
 
