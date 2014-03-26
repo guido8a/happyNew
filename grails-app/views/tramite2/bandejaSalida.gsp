@@ -256,6 +256,57 @@
 
         var estado
         var de
+
+        var imprimir = {
+
+            text: 'Permiso Imprimir',
+            icon: "<i class='fa fa-print'></i>",
+            action: function (e){
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                $.ajax ({
+                    type : "POST",
+                    url  : "${createLink(action: 'permisoImprimir')}/" + id,
+                    success :function (msg){
+                        var b = bootbox.dialog({
+                            id: "dlgImprimir",
+                            title : "Permiso de Imprimir",
+                            message : msg,
+                            buttons : {
+                                cancelar : {
+                                    label  : "Cancelar",
+                                    className : 'btn-danger',
+                                    callback :  function () {
+                                    }
+                                },
+                                guardar : {
+                                    id   : 'btnSave',
+                                    label : '<i class="fa fa-save"></i> Aceptar',
+                                    className : "btn-success",
+                                    callback: function () {
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '${createLink(action: 'cambiarPermiso')}/'+ id,
+                                            data :{
+                                                texto: $("#observacion").val()
+                                            },
+                                            success : function (msg) {
+                                                bootbox.alert(msg)
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+
+
+        };
+
+
         context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
@@ -288,7 +339,9 @@
                     location.href="${g.createLink(action: 'redactar',controller: 'tramite')}/"+id
                 }
 
-            }
+            },
+            imprimir
+
             <g:if test="${revisar}">,
             {
                 text: 'Revisar',
@@ -300,6 +353,7 @@
 
             }
             </g:if>
+
         ]);
         context.attach(".E002", [
             {
@@ -349,7 +403,9 @@
                     /*ajax aqui*/
                 }
 
-            }
+            },
+
+            imprimir
         ]);
         context.attach(".E003", [
             {
@@ -365,7 +421,15 @@
 
             }
         ]);
+
+        context.attach(".alerta", [
+            {
+                header: 'Sin Acciones'
+            }
+
+        ]);
         </g:if>
+
         $(".btnBuscar").click(function () {
             $(".buscar").attr("hidden", false)
         });

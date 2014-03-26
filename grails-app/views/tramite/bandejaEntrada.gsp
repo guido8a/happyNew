@@ -427,15 +427,12 @@
                                 }
                             }
                         })
-
-
                     }
-
                 });
             }
-
-
         }
+
+
 
         var archivo
         context.settings({
@@ -571,9 +568,6 @@
             %{--<g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">--}%
             %{--anular--}%
             %{--</g:if>--}%
-
-
-
 
         ]);
         </g:if>

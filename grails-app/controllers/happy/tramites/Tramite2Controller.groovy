@@ -465,4 +465,12 @@ class Tramite2Controller extends happy.seguridad.Shield{
         }
     }
 
+
+    //asignar permiso imprimir
+
+    def permisoImprimir () {
+
+
+    }
+
 }
