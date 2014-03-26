@@ -23,20 +23,21 @@
     %{--</span>--}%
     %{--</div>--}%
 
-        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
-            <span class="grupo">
-                <label for="padre" class="col-md-2 control-label text-info">
-                    Padre
-                </label>
+        <g:if test="${departamentoInstance.padre}">
+            <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
+                <span class="grupo">
+                    <label for="padre" class="col-md-2 control-label text-info">
+                        Padre
+                    </label>
 
-                <div class="col-md-6">
-                    <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
-                              optionKey="id" optionValue="descripcion"
-                              value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
-                </div>
-
-            </span>
-        </div>
+                    <div class="col-md-6">
+                        <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
+                                  optionKey="id" optionValue="descripcion"
+                                  value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
+                    </div>
+                </span>
+            </div>
+        </g:if>
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">

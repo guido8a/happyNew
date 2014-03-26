@@ -53,7 +53,7 @@
                 <i class="glyphicon glyphicon-plus"></i>
                 <span>Seleccionar archivo</span>
                 <!-- The file input field used as target for the file upload widget -->
-                <input type="file" name="file" id="file">
+                <input type="file" multiple="" name="file" id="file">
             </span>
 
             <div id="progress" class="progress progress-striped active hide">
@@ -112,19 +112,19 @@
                     formData               : {
                         id : "${tramite.id}"
                     },
-                    maxNumberOfFiles       : 1,
-                    singleFileUploads      : true,
+                    maxNumberOfFiles       : 10,
+                    singleFileUploads      : false,
                     limitConcurrentUploads : 1,
                     dataType               : 'json',
                     //                    acceptFileTypes  : /(\.|\/)(jpe?g|png|pdf|xlsx?|ppsx?|pptx?|docx?)$/i,
                     //                    maxFileSize      : 11000000, // 1 MB
                     add                    : function (e, data) {
-                        //console.group("ADD");
+                        console.group("ADD");
                         var totalFiles = data.files.length;
                         //The add callback can be understood as the callback for the file upload request queue. It is invoked as soon as files are added to the fileupload widget
                         data.context = $("#files");
                         $.each(data.files, function (index, file) {
-                            //console.log(index, file);
+                            console.log(index, file);
                             var $panel = $("<div class='panel panel-primary'/>");
                             var $heading = $("<div class='panel-heading'/>");
                             var $title = $("<h3 class='panel-title'/>");
@@ -163,14 +163,12 @@
                                     $btnSubir.append("<i class='fa fa-upload'></i>");
                                     $btnSubir.append("Subir");
                                     $footer.append($btnSubir);
-                                    //                                    //console.log(file);
-                                    $btnSubir.click(function () {
-//                                        //console.log($(this));
-                                        if (data && data.submit) {
-                                            data.submit();
-                                        }
-                                        return false;
-                                    });
+                                    //                                    console.log(file);
+//                                    $btnSubir.click(function () {
+//                                        console.log($(this));
+//                                        data.submit();
+//                                        return false;
+//                                    });
                                 } else {
                                     var $alert = $("<div class='alert alert-danger'/>");
                                     $alert.html("<h3 class='text-danger noMarginTop'><i class='fa fa-warning'></i> Alerta</h3>" +
@@ -194,15 +192,15 @@
 
                             data.context.append($panel);
                         });
-                        //console.groupEnd();
+                        console.groupEnd();
                         //                        data.submit();
                     },
                     submit                 : function (e, data) {
                         //Callback for the submit event of each file upload. If this callback returns false, the file upload request is not started.
-                        //console.group("SUBMIT");
+                        console.group("SUBMIT");
                         $.each(data.files, function (index, file) {
                             var $panel = $(data.context.children()[index]);
-                            //console.log(index, $(data.context.children()), $panel);
+                            console.log(index, $(data.context.children()), $panel);
 
                             var resumen = $.trim($panel.find("#resumen").val());
                             var descripcion = $.trim($panel.find("#descripcion").val());
@@ -234,37 +232,37 @@
                                 id          : "${tramite.id}"
                             };
                         });
-                        //console.groupEnd();
+                        console.groupEnd();
                     },
                     //                    processalways    : function (e, data) {
                     //                        //Callback for the end (done or fail) of an individual file processing queue.
-                    //                        //console.log('Processing ' + data.files[data.index].name + ' ended.');
+                    //                        console.log('Processing ' + data.files[data.index].name + ' ended.');
                     //                    },
                     progress               : function (e, data) {
                         //Callback for global upload progress events.
-                        //console.group("PROGRESS");
+                        console.group("PROGRESS");
                         $.each(data.files, function (index, file) {
                             var $panel = $(data.context.children()[index]);
-                            //console.log(index, $(data.context.children()), $panel);
+                            console.log(index, $(data.context.children()), $panel);
                             var $progressBar = $panel.find(".progress-bar");
                             $progressBar.css({
                                 width : parseInt(data.loaded / data.total * 100, 10) + "%"
                             });
                         });
-                        //console.groupEnd();
+                        console.groupEnd();
                     },
                     /* progressall      : function (e, data) {
                      //Callback for global upload progress events.
-                     //console.log("Progress all ", parseInt(data.loaded / data.total * 100, 10));
+                     console.log("Progress all ", parseInt(data.loaded / data.total * 100, 10));
                      },*/
                     done                   : function (e, data) {
                         //Callback for successful upload requests. This callback is the equivalent to the success callback provided by jQuery ajax() and will also be called if the server returns a JSON response with an error property.
                         //                        data.context.text('Upload finished.');
-                        //console.group("DONE");
+                        console.group("DONE");
                         $.each(data.files, function (index, file) {
                             var responseText = $.parseJSON(data.jqXHR.responseText).files[index];
                             var $panel = $(data.context.children()[index]);
-                            //console.log(index, $(data.context.children()), $panel);
+                            console.log(index, $(data.context.children()), $panel);
 
                             if (responseText.error) {
                                 var $alert = $("<div class='alert alert-danger'/>");
@@ -285,21 +283,12 @@
 
                                 btnCerrar($panel, $panel.find(".panel-footer"), false);
                             }
-                            setTimeout(function () {
-                                $panel.hide({
-                                    effect   : "fold",
-                                    duration : 800,
-                                    complete : function () {
-                                        $panel.remove();
-                                    }
-                                })
-                            }, 200);
                         });
-                        //                        //console.group("done");
-                        //                        //console.log(data.result);
-                        //                        //console.log(data.textStatus);
-                        //                        //console.log(data.jqXHR);
-                        //console.groupEnd();
+                        //                        console.group("done");
+                        //                        console.log(data.result);
+                        //                        console.log(data.textStatus);
+                        //                        console.log(data.jqXHR);
+                        console.groupEnd();
                     },
                     fail                   : function (e, data) {
                         //Callback for failed (abort or error) upload requests. This callback is the equivalent to the error callback provided by jQuery ajax() and will not be called if the server returns a JSON response with an error property, as this counts as successful request due to the successful HTTP response
@@ -317,11 +306,11 @@
 
                             btnCerrar($panel, $panel.find(".panel-footer"), true);
                         });
-                        //                        //console.group("fail");
-                        //                        //console.log(data.errorThrown);
-                        //                        //console.log(data.textStatus);
-                        //                        //console.log(data.jqXHR);
-                        //                        //console.groupEnd();
+                        //                        console.group("fail");
+                        //                        console.log(data.errorThrown);
+                        //                        console.log(data.textStatus);
+                        //                        console.log(data.jqXHR);
+                        //                        console.groupEnd();
                     }
                 });
             });
