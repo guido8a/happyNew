@@ -854,12 +854,16 @@ class PersonaController extends happy.seguridad.Shield {
         println "!!!!!!!-----------------------------"
         def results = ldap.search('(objectClass=*)', 'ou=GSTI,ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB )
         def users = []
+        def registrados = Persona.list()
+        def encontrados = []
         println "${results.size} entradas halladas para el nivel UNO desde la base:"
         for (entry in results) {
             if(entry && entry.displayname && !entry.objectclass.contains("computer")){
                 def logn=entry["samaccountname"]
+                println "buscando "+logn
                 def prsn = Persona.findByLogin(logn)
                 if(!prsn){
+                    println "no encontro nuevo usuario"
                     def parts = entry["cn"].split("&")
                     def nombres = parts[0].split(" ")
                     def mail = entry["mail"]
@@ -889,10 +893,15 @@ class PersonaController extends happy.seguridad.Shield {
                         sesn.usuario=prsn
                         sesn.save(flush: true)
                     }
+                }else{
+                    println "encontro"
+                    encontrados.add(prsn)
                 }
             }
         }
-        return [users:users]
+        println "encontrados "+encontrados
+        def noReg = registrados-encontrados
+        return [users:users,noReg:noReg]
 
     }
 
