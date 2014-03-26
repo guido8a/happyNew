@@ -104,11 +104,12 @@
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'telefono', 'error')} ">
                 <span class="grupo">
                     <label for="telefono" class="col-md-3 control-label text-info">
-                        Teléfono
+                        Teléfonos
                     </label>
 
                     <div class="col-md-5">
-                        <g:textField name="telefono" maxlength="63" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>
+                        %{--<g:textField name="telefono" maxlength="63" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>--}%
+                        <g:textField name="telefono" maxlength="63" class="form-control" value="${personaInstance?.telefono}" style="width: 300px;"/>
                     </div>
 
                 </span>
@@ -177,9 +178,9 @@
                     </label>
 
                     <div class="col-md-4">
-                        <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}"/>
+                        <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}" required=""/>
                     </div>
-
+                    *
                 </span>
             </div>
 

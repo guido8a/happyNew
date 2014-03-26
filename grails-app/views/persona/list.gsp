@@ -87,7 +87,7 @@
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
-                        <td><elm:textoBusqueda texto='${personaInstance.departamento.descripcion}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${personaInstance.mail}' search='${params.search}'/></td>
                         <td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>
                     </tr>

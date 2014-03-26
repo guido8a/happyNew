@@ -23,8 +23,11 @@
     }
 
 
+/*
     .css-vertical-text {
-        /*position          : absolute;*/
+        */
+/*position          : absolute;*//*
+
         left: 5px;
         bottom: 5px;
         color: #0088CC;
@@ -41,28 +44,43 @@
         font-family: 'Tulpen One', cursive;
         font-weight: bold;
         font-size: 35px;
-        /*text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
+        */
+/*text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);*//*
 
-        /*text-shadow: 0px 0px 1px #333;*/
+
+        */
+/*text-shadow: 0px 0px 1px #333;*//*
+
     }
+*/
 
+/*
     .tituloChevere {
 
         color: #0088CC;
         border: 0px solid red;
         white-space: nowrap;
         display: block;
-        /*width       : 98%;*/
+        */
+/*width       : 98%;*//*
+
         height: 25px;
         font-family: 'open sans condensed';
         font-weight: bold;
         font-size: 16px;
-        /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
-        /*margin-top  : 10px;*/
+        */
+/*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*//*
+
+        */
+/*margin-top  : 10px;*//*
+
         line-height: 18px;
 
-        /*text-shadow: 0px 0px 1px #333;*/
+        */
+/*text-shadow: 0px 0px 1px #333;*//*
+
     }
+*/
 
     </style>
 
@@ -71,9 +89,9 @@
 <body>
 
 
-<div style="margin-top: 30px;" class="vertical-container">
+<div style="margin-top: 0px;" class="vertical-container">
 
-    <p class="css-vertical-text">Parámetros</p>
+    <p class="css-vertical-text" style="margin-top: -10px;">Buscar</p>
 
     <div class="linea"></div>
 

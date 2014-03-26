@@ -74,7 +74,7 @@
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <div style="margin-top: 30px;" class="vertical-container">
 
-                <p class="css-vertical-text">Tramite</p>
+                <p class="css-vertical-text">Trámite</p>
 
                 <div class="linea"></div>
 

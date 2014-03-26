@@ -83,6 +83,7 @@
             <div class="tab-pane active" id="generales">
                 <div class="left pull-left">
                     <ul class="fa-ul">
+%{--
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="tpdp">
@@ -98,6 +99,7 @@
                                 <p>De este modo se puede por ejemplo, obtener las Gestiones que pertenecen a una Dirección.</p>
                             </div>
                         </li>
+--}%
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="perm">
@@ -156,10 +158,10 @@
                             </span>
 
                             <div class="descripcion hide">
-                                <h4>Estructura Organizacional</h4>
+                                <h4>Estructura Departamental</h4>
 
                                 <p>Distribución organizacional del GADPP.</p>
-                                <p>Conforme a la estructura orgánica.</p>
+                                <p>Conforme a la estructura del orgánico - funcional.</p>
                             </div>
                         </li>
 
