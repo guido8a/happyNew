@@ -48,7 +48,7 @@ class DepartamentoExportController {
 //        println titulo
         Paragraph headersTitulo = new Paragraph();
         headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph("Departamentos y usuarios", titleFont2));
+        headersTitulo.add(new Paragraph("Departamentos y Usuarios", titleFont2));
         headersTitulo.setSpacingAfter(10f)
 
         document.add(headersTitulo)

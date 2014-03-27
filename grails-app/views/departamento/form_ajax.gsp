@@ -110,7 +110,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textArea name="direccion" cols="80" rows="3" maxlength="255" class="form-control allCaps"
+                    <g:textArea name="direccion" cols="80" rows="3" maxlength="255" class="form-control"
                                 value="${departamentoInstance?.direccion}" style="width: 440px;"/>
                 </div>
 

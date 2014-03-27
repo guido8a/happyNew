@@ -414,12 +414,15 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        println params
         if (!params.activo) {
             params.activo = 1
         }
         params.each { k, v ->
             if (v != "date.struct" && v instanceof java.lang.String) {
-                params[k] = v.toUpperCase()
+                if (k != "direccion") {
+                    params[k] = v.toUpperCase()
+                }
             }
         }
         def departamentoInstance = new Departamento()
