@@ -270,7 +270,7 @@
                     success :function (msg){
                         var b = bootbox.dialog({
                             id: "dlgImprimir",
-                            title : "Permiso de Imprimir",
+                            title : "Permiso de impresión para el trámite:  " + codigo,
                             message : msg,
                             buttons : {
                                 cancelar : {
@@ -313,6 +313,7 @@
                 var $tr = $(e.target).parent();
                 $tr.addClass("trHighlight");
                 id = $tr.data("id");
+                codigo = $tr.attr("codigo")
                 estado = $tr.attr("estado");
                 de = $tr.attr("de");
             }

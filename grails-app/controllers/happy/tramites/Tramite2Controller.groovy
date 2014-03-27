@@ -470,7 +470,20 @@ class Tramite2Controller extends happy.seguridad.Shield{
 
     def permisoImprimir () {
 
+        def usuario = session.usuario
 
+        def departamento = Persona.get(usuario.id).departamento
+
+        def personal = Persona.findAllByDepartamento(departamento)
+
+        def personalActivo = []
+
+        personal.each {
+            if(it?.activo == 1){
+                personalActivo += it
+            }
+        }
+        return [personal: personal, activos: personalActivo]
     }
 
 }

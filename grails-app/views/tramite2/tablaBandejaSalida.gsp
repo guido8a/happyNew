@@ -17,7 +17,7 @@
     <tbody>
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
-        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
+        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
             <td title="${tramite.asunto}">${tramite?.codigo}</td>
             <td title="${tramite.de.departamento}">${(tramite.deDepartamento)?tramite.deDepartamento.codigo:tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
