@@ -134,6 +134,181 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         }
     }
 
+
+    def uploadSvt(){
+        println "updaload svt "+params
+        def tramite = Tramite.get(params.id)
+        def path = servletContext.getRealPath("/") + "anexos/" + 32+ "/"    //web-app/archivos
+        new File(path).mkdirs()
+        def f = request.getFile('file')  //archivo = name del input type file
+        def imageContent = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
+        def okContents = [
+                'image/png'                                                                : "png",
+                'image/jpeg'                                                               : "jpeg",
+                'image/jpg'                                                                : "jpg",
+
+                'application/pdf'                                                          : 'pdf',
+
+                'application/excel'                                                        : 'xls',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'        : 'xlsx',
+
+                'application/mspowerpoint'                                                 : 'pps',
+                'application/vnd.ms-powerpoint'                                            : 'pps',
+                'application/powerpoint'                                                   : 'ppt',
+                'application/x-mspowerpoint'                                               : 'ppt',
+                'application/vnd.openxmlformats-officedocument.presentationml.slideshow'   : 'ppsx',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+
+                'application/msword'                                                       : 'doc',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'  : 'docx',
+
+                'application/vnd.oasis.opendocument.text'                                  : 'odt',
+
+                'application/vnd.oasis.opendocument.presentation'                          : 'odp',
+
+                'application/vnd.oasis.opendocument.spreadsheet'                           : 'ods'
+        ]
+
+        if (f && !f.empty) {
+            def fileName = f.getOriginalFilename() //nombre original del archivo
+            def ext
+
+            def parts = fileName.split("\\.")
+            fileName = ""
+            parts.eachWithIndex { obj, i ->
+                if (i < parts.size() - 1) {
+                    fileName += obj
+                }
+            }
+
+            if (okContents.containsKey(f.getContentType())) {
+                ext = okContents[f.getContentType()]
+                fileName = fileName.size() < 40 ? fileName : fileName[0..39]
+                fileName = fileName.tr(/áéíóúñÑÜüÁÉÍÓÚàèìòùÀÈÌÒÙÇç .!¡¿?&#°"'/, "aeiounNUuAEIOUaeiouAEIOUCc_")
+
+                def nombre = fileName + "." + ext
+                def pathFile = path + nombre
+                def fn = fileName
+                def src = new File(pathFile)
+                def i = 1
+                while (src.exists()) {
+                    nombre = fn + "_" + i + "." + ext
+                    pathFile = path + nombre
+                    src = new File(pathFile)
+                    i++
+                }
+                try {
+                    f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
+                    //println pathFile
+                } catch (e) {
+                    println "????????\n" + e + "\n???????????"
+                }
+
+                if (imageContent.containsKey(f.getContentType())) {
+                    /* RESIZE */
+                    def img = ImageIO.read(new File(pathFile))
+
+                    def scale = 0.5
+
+                    def minW = 200
+                    def minH = 200
+
+                    def maxW = minW * 4
+                    def maxH = minH * 4
+
+                    def w = img.width
+                    def h = img.height
+
+                    if (w > maxW || h > maxH) {
+                        int newW = w * scale
+                        int newH = h * scale
+                        int r = 1
+                        if (w > h) {
+                            r = w / maxW
+                            newW = maxW
+                            newH = h / r
+                        } else {
+                            r = h / maxH
+                            newH = maxH
+                            newW = w / r
+                        }
+
+                        new BufferedImage(newW, newH, img.type).with { j ->
+                            createGraphics().with {
+                                setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BICUBIC)
+                                drawImage(img, 0, 0, newW, newH, null)
+                                dispose()
+                            }
+                            ImageIO.write(j, ext, new File(pathFile))
+                        }
+                    }
+                    /* fin resize */
+                } //si es imagen hace resize para que no exceda 800x800
+                println "llego hasta aca"
+                def docTramite = new DocumentoTramite([
+                        tramite    : tramite,
+                        fecha      : new Date(),
+                        resumen    : params.resumen,
+                        clave      : params.clave,
+                        descripcion: params.descripcion,
+                        path       : nombre
+                ])
+                def data
+                println "llego hasta mas aca"
+                if (docTramite.save(flush: true)) {
+                    data = [
+                            files: [
+                                    [
+                                            name: nombre,
+                                            url : resource(dir: 'anexos/' + tramite.id, file: nombre),
+                                            size: f.getSize(),
+                                            url : pathFile
+                                    ]
+                            ]
+                    ]
+                    println "llego hasta mas mas aca"
+                } else {
+                    println "error al guardar: " + docTramite.errors
+                    data = [
+                            files: [
+                                    [
+                                            name : nombre,
+                                            size : f.getSize(),
+                                            error: "Ha ocurrido un error al guardar: " + renderErrors(bean: docTramite)
+                                    ]
+                            ]
+                    ]
+                }
+                println "llego json"
+                def json = new JsonBuilder(data)
+//                    //println json.toPrettyString()
+                render json
+                return
+                println "return ?"
+            } //ok contents
+            else {
+                println "llego else no se acepta"
+//                render "NO_No se acepta esa extensión"
+
+                def data = [
+                        files: [
+                                [
+                                        name : fileName + "." + ext,
+                                        size : f.getSize(),
+                                        error: "Extensión no permitida"
+                                ]
+                        ]
+                ]
+
+                def json = new JsonBuilder(data)
+//                //println json.toPrettyString()
+                render json
+                return
+            }
+        } //f && !f.empty
+
+    }
+
     def uploadFile() {
         println "UPLOAD"
         println params

@@ -11,9 +11,9 @@ ${u.toString()} - ${u.login} - u.mail<br/>
 </g:each>
 <a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>
 <br/>
-Se encontraron ${noReg?.size()} usuarios no regitrados en el LDAP:
+Se encontraron ${noReg?.size()} usuarios no regitrados en el LDAP:<br/>
 <g:each in="${noReg}" var="u">
-    ${u.toString()} - ${u.login} - u.mail<br/>
+    ${u.toString()} - ${u.login} - ${u.mail}<br/>
 </g:each>
 </body>
 </html>
