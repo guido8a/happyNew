@@ -852,7 +852,7 @@ class PersonaController extends happy.seguridad.Shield {
         LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         println "conectado "+ ldap.class
         println "!!!!!!!-----------------------------"
-        def results = ldap.search('(objectClass=*)', 'ou=GSTI,ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB )
+        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB )
         def users = []
         def registrados = Persona.list()
         def encontrados = []
