@@ -866,10 +866,11 @@ class PersonaController extends happy.seguridad.Shield {
                     println "no encontro nuevo usuario"
                     def parts = entry["cn"].split("&")
 //                    def nombres = parts[0].split(" ")
-                    def nombres = entry["givenName"]
+                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
+                    //println nombres+" " + entry["givenname"]
                     def mail = entry["mail"]
-                    def nombre = nombres[0]+" "+nombres[1]
-                    def apellido=entry["sn"]
+                    //def nombre = nombres[0]+" "+nombres[1]
+                    def apellido = WordUtils.capitalizeFully(entry["sn"])
 //                    if(nombres.size()==3)
 //                        apellido = nombres[2]
 //                    if(nombres.size()==4)
@@ -877,14 +878,15 @@ class PersonaController extends happy.seguridad.Shield {
 //                    if(nombres.size()==5)
 //                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
                     if(!apellido)
-                        apellido = "no existe"
+                        apellido = "sin apellido"
 
                     prsn = new Persona()
-                    prsn.nombre=nombre
+                    prsn.nombre=nombres
                     prsn.apellido=apellido
                     prsn.mail=mail
                     prsn.login=logn
                     prsn.password="123".encodeAsMD5()
+                    prsn.departamento = Departamento.get(20)
                     if(!prsn.save(flush: true)){
                         println "error save prns "+prsn.errors
                     }else{
@@ -903,6 +905,7 @@ class PersonaController extends happy.seguridad.Shield {
         println "encontrados "+encontrados
         def noReg = registrados-encontrados
         return [users:users,noReg:noReg]
+
 
     }
 
