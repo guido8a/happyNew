@@ -7,6 +7,12 @@ class DiaLaborable {
     Integer ordinal
     String observaciones
 
+    Integer horaInicio
+    Integer minutoInicio
+
+    Integer horaFin
+    Integer minutoFin
+
     static mapping = {
         table 'ddlb'
         cache usage: 'read-write', include: 'non-lazy'
@@ -19,10 +25,24 @@ class DiaLaborable {
             anio column: "ddlbanio"
             ordinal column: "ddlbordn"
             observaciones column: 'ddlbobsr'
+
+            horaInicio column: 'ddlbhrin'
+            minutoInicio column: 'ddlbmnin'
+            horaFin column: 'ddlbhrfn'
+            minutoFin column: 'ddlbmnfn'
         }
     }
     static constraints = {
         dia(blank: false, nullable: false, maxSize: 3)
         observaciones(blank: true, nullable: true, maxSize: 511)
     }
+
+    def getInicioJornada() {
+        return this.horaInicio.toString().padLeft(2, '0') + ":" + this.minutoInicio.toString().padLeft(2, '0')
+    }
+
+    def getFinJornada() {
+        return this.horaFin.toString().padLeft(2, '0') + ":" + this.minutoFin.toString().padLeft(2, '0')
+    }
+
 }

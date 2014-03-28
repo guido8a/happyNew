@@ -9,6 +9,24 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
     def diasLaborablesService
 
+    def pruebas() {
+        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "28-03-2014 6:00")
+        println "fecha: "
+        println fecha
+        println "2 horas"
+        println diasLaborablesService.fechaMasTiempo(fecha, 2)
+        println "4 horas"
+        println diasLaborablesService.fechaMasTiempo(fecha, 4)
+        println "24 horas"
+        println diasLaborablesService.fechaMasTiempo(fecha, 24)
+        println "1 dia"
+        println diasLaborablesService.fechaMasDia(fecha, 1)
+        println "48 horas"
+        println diasLaborablesService.fechaMasTiempo(fecha, 48)
+        println "72 horas"
+        println diasLaborablesService.fechaMasTiempo(fecha, 72)
+    }
+
     def calculador() {
 
     }
@@ -32,17 +50,63 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def saveCalendario() {
+        def parametros = Parametros.get(1)
+        if (!parametros) {
+            parametros = new Parametros([
+                    horaInicio: 8,
+                    minutoInicio: 30,
+                    horaFin: 16,
+                    minutoFin: 30
+            ])
+            if (!parametros.save(flush: true)) {
+                println "error al guardar params: " + parametros.errors
+            }
+        }
+
         def errores = 0
         params.dia.each { dia ->
+//            println dia
             def parts = dia.split(":")
-            if (parts.size() == 3) {
+//            println parts
+//            println parts.size()
+//            println "********************************************"
+            if (parts.size() == 3 || parts.size() == 7) {
                 def id = parts[0].toLong()
                 def fecha = new Date().parse("dd-MM-yyyy", parts[1])
                 def cont = parts[2].toInteger()
 //                println id + "     " + fecha.format("dd-MM-yyyy") + "    " + cont
                 def diaLaborable = DiaLaborable.get(id)
-                if (diaLaborable.fecha == fecha && cont != diaLaborable.ordinal) {
+                if (diaLaborable.fecha == fecha &&
+                        (cont != diaLaborable.ordinal ||
+                                diaLaborable.horaInicio != parts[3].toInteger() ||
+                                diaLaborable.minutoInicio != parts[4].toInteger() ||
+                                diaLaborable.horaFin != parts[5].toInteger() ||
+                                diaLaborable.minutoFin != parts[6].toInteger())
+                ) {
                     diaLaborable.ordinal = cont
+                    if (parts.size() == 7) {
+                        // si las horas fueron cambiadas, es decir no es parametros.horaInicio o los minutos fueron cambiados
+                        // grabo la hora y minutos de inicio
+                        if (parts[3].toString() != parametros.horaInicio.toString() ||
+                                parts[4].toString() != parametros.minutoInicio.toString()) {
+//                            println "parts[3]=" + parts[3] + "      parts[4]=" + parts[4]
+                            diaLaborable.horaInicio = parts[3].toInteger()
+                            diaLaborable.minutoInicio = parts[4].toInteger()
+                        }
+                        // si las horas fueron cambiadas, es decir no es parametros.horaFin o los minutos fueron cambiados
+                        // grabo la hora y minutos de fin
+                        if (parts[5].toString() != parametros.horaFin.toString() ||
+                                parts[6].toString() != parametros.minutoFin.toString()) {
+//                            println "parts[5]=" + parts[5] + "      parts[6]=" + parts[6]
+                            diaLaborable.horaFin = parts[5].toInteger()
+                            diaLaborable.minutoFin = parts[6].toInteger()
+                        }
+                    } else {
+                        diaLaborable.horaInicio = diaLaborable.horaInicio ?: -1
+                        diaLaborable.minutoInicio = diaLaborable.minutoInicio ?: -1
+                        diaLaborable.horaFin = diaLaborable.horaFin ?: -1
+                        diaLaborable.minutoFin = diaLaborable.minutoFin ?: -1
+                    }
                     if (!diaLaborable.save(flush: true)) {
                         errores++
                         println "error al guardar dia laborable ${id}: " + diaLaborable.errors
@@ -60,6 +124,20 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def calendario() {
+
+        def parametros = Parametros.get(1)
+        if (!parametros) {
+            parametros = new Parametros([
+                    horaInicio: 8,
+                    minutoInicio: 30,
+                    horaFin: 16,
+                    minutoFin: 30
+            ])
+            if (!parametros.save(flush: true)) {
+                println "error al guardar params: " + parametros.errors
+            }
+        }
+
         def anio = new Date().format('yyyy').toInteger()
 
         if (!params.anio) {
@@ -108,7 +186,11 @@ class DiaLaborableController extends happy.seguridad.Shield {
                             fecha: fecha,
                             dia: diasSem[dia],
                             anio: fecha.format("yyyy").toInteger(),
-                            ordinal: ordinal
+                            ordinal: ordinal,
+                            horaInicio: -1,
+                            minutoInicio: -1,
+                            horaFin: -1,
+                            minutoFin: -1
                     ])
                     if (!diaLaborable.save(flush: true)) {
                         println "error al guardar el dia laborable ${fecha.format('dd-MM-yyyy')}: " + diaLaborable.errors

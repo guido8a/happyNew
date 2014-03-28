@@ -54,10 +54,12 @@ class LoginController {
     }
 
     def validarSesion() {
+        println session
+        println session.usuario
         if (session.usuario) {
             render "OK"
         } else {
-            flash.message = "Su sesiÃ³n ha caducado, por favor ingrese nuevamente."
+            flash.message = "Su sesión ha caducado, por favor ingrese nuevamente."
             render "NO"
         }
     }
@@ -67,7 +69,7 @@ class LoginController {
         def personas = Persona.findAllByMail(mail)
         def msg
         if (personas.size() == 0) {
-            flash.message = "No se encontrÃ³ un usuario con ese email"
+            flash.message = "No se encontró un usuario con ese email"
         } else if (personas.size() > 1) {
             flash.message = "Ha ocurrido un error grave (n)"
         } else {
@@ -82,12 +84,12 @@ class LoginController {
             if (persona.save(flush: true)) {
                 sendMail {
                     to mail
-                    subject "RecuperaciÃ³n de contraseÃ±a"
-                    body 'Hola ' + persona.login + ", tu nueva contraseÃ±a es " + newPass + "."
+                    subject "Recuperación de contraseña"
+                    body 'Hola ' + persona.login + ", tu nueva contraseña es " + newPass + "."
                 }
-                msg = "OK*Se ha enviado un email a la direcciÃ³n " + mail + " con una nueva contraseÃ±a."
+                msg = "OK*Se ha enviado un email a la dirección " + mail + " con una nueva contraseña."
             } else {
-                msg = "NO*Ha ocurrido un error al crear la nueva contraseÃ±a. Por favor vuelva a intentar."
+                msg = "NO*Ha ocurrido un error al crear la nueva contraseña. Por favor vuelva a intentar."
             }
         }
         redirect(action: 'login')

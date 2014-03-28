@@ -18,15 +18,15 @@
             <legend>Días laborables entre 2 fechas</legend>
 
             <div class="row">
-                <div class="span1">Fecha 1</div>
+                <div class="col-md-1">Fecha 1</div>
 
-                <div class="span2"><elm:datepicker name="fecha1" class="input-small"/></div>
+                <div class="col-md-2"><elm:datepicker name="fecha1" class=" form-control"/></div>
 
-                <div class="span1">Fecha 2</div>
+                <div class="col-md-1">Fecha 2</div>
 
-                <div class="span2"><elm:datepicker name="fecha2" class="input-small"/></div>
+                <div class="col-md-2"><elm:datepicker name="fecha2" class="form-control"/></div>
 
-                <div class="span1">
+                <div class="col-md-2">
                     <a href="#" id="btnCalcEntre" class="btn btn-primary">Calcular</a>
                 </div>
             </div>
@@ -38,15 +38,15 @@
             <legend>Fecha n días laborables después</legend>
 
             <div class="row">
-                <div class="span1">Fecha</div>
+                <div class="col-md-1">Fecha</div>
 
-                <div class="span2"><elm:datepicker name="fecha" class="input-small"/></div>
+                <div class="col-md-2"><elm:datepicker name="fecha" class="form-control"/></div>
 
-                <div class="span1">Días</div>
+                <div class="col-md-1">Días</div>
 
-                <div class="span2"><g:field type="number" class="input-mini" name="dias"/></div>
+                <div class="col-md-2"><g:field type="number" class="form-control" name="dias"/></div>
 
-                <div class="span1">
+                <div class="col-md-1">
                     <a href="#" id="btnCalcDias" class="btn btn-primary">Calcular</a>
                 </div>
             </div>
