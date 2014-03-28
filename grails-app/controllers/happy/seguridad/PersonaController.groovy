@@ -865,18 +865,19 @@ class PersonaController extends happy.seguridad.Shield {
                 if(!prsn){
                     println "no encontro nuevo usuario"
                     def parts = entry["cn"].split("&")
-                    def nombres = parts[0].split(" ")
+//                    def nombres = parts[0].split(" ")
+                    def nombres = entry["givenName"]
                     def mail = entry["mail"]
                     def nombre = nombres[0]+" "+nombres[1]
-                    def apellido=null
-                    if(nombres.size()==3)
-                        apellido = nombres[2]
-                    if(nombres.size()==4)
-                        apellido = nombres[2]+" "+nombres[3]
-                    if(nombres.size()==5)
-                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
+                    def apellido=entry["sn"]
+//                    if(nombres.size()==3)
+//                        apellido = nombres[2]
+//                    if(nombres.size()==4)
+//                        apellido = nombres[2]+" "+nombres[3]
+//                    if(nombres.size()==5)
+//                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
                     if(!apellido)
-                        apellido=nombre.split(" ")[1]
+                        apellido = "no existe"
 
                     prsn = new Persona()
                     prsn.nombre=nombre
