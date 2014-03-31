@@ -71,7 +71,7 @@ class DiasLaborablesService {
                 setInicioJornada = true
 //                println "\t\tfecha: " + fecha
             }
-            dia = DiaLaborable.findAllByFecha(fecha.clearTime())
+            dia = DiaLaborable.findAllByFecha(fecha.clone().clearTime())
             if (dia.size() == 1) {
                 dia = dia.first()
             } else if (dia.size() == 0) {
@@ -84,11 +84,11 @@ class DiasLaborablesService {
             def ord = dia.ordinal
             if (ord == 0) {
                 if (noLaborables) {
-                    def nuevaFecha = fecha
+                    def nuevaFecha = fecha.clone()
                     while (ord == 0) {
 //                        println "while1"
                         nuevaFecha++
-                        dia = DiaLaborable.findAllByFecha(nuevaFecha.clearTime())
+                        dia = DiaLaborable.findAllByFecha(nuevaFecha.clone().clearTime())
                         if (dia.size() == 1) {
                             dia = dia.first()
                         } else if (dia.size() == 0) {

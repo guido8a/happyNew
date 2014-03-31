@@ -10,21 +10,21 @@ class DiaLaborableController extends happy.seguridad.Shield {
     def diasLaborablesService
 
     def pruebas() {
-        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "28-03-2014 6:00")
+        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "31-03-2014 11:00")
         println "fecha: "
         println fecha
         println "2 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha, 2)
+        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 2)
         println "4 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha, 4)
+        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 4)
         println "24 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha, 24)
+        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 24)
         println "1 dia"
-        println diasLaborablesService.fechaMasDia(fecha, 1)
+        println diasLaborablesService.fechaMasDia(fecha.clone(), 1)
         println "48 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha, 48)
+        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 48)
         println "72 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha, 72)
+        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 72)
     }
 
     def calculador() {
