@@ -114,12 +114,10 @@
 
                     <div class="col-xs-4 negrilla hide" id="divPara">
                         <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
-                                  style="width:300px;" class="form-control label-shared required"/>
+                                  style="width:300px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>
                         <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
                                   optionValue="nombre" style="width:300px;" class="form-control label-shared required"/>
                     </div>
-
-
 
                     %{--<div class="col-xs-2 negrilla hide" id="divConfidencial">--}%
                         %{--<label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>--}%

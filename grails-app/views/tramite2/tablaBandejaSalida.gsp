@@ -17,7 +17,14 @@
     <tbody>
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
-        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
+
+        <g:set var="esImprimir" value="${false}" />
+        <g:if test="${(happy.tramites.PersonaDocumentoTramite.findAllByPersonaAndTramite(session.usuario, tramite).findAll{it.rolPersonaTramite.codigo == 'I005'}).size()>0}">
+            <g:set var="esImprimir" value="${true}" />
+        </g:if>
+
+
+        <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${esImprimir?'imprimir':''} ${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
             <td title="${tramite.asunto}">${tramite?.codigo}</td>
             <td title="${tramite.de.departamento}">${(tramite.deDepartamento)?tramite.deDepartamento.codigo:tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>

@@ -194,6 +194,7 @@
 
 </div>
 
+<elm:select from="${personal}" name="selector" optionKey="id" class="form-control hide" style="width: 300px; margin-left: 130px; margin-top: -30px"/>
 
 
 <script type="text/javascript">
@@ -252,10 +253,14 @@
                 }
             });
 
-        })
+        });
 
         var estado
         var de
+        var selPersonal = '<p id="seleccionar"> </p>';
+        var $sel = $("#selector").clone();
+
+
 
         var imprimir = {
 
@@ -264,14 +269,11 @@
             action: function (e){
                 $("tr.trHighlight").removeClass("trHighlight");
                 e.preventDefault();
-                $.ajax ({
-                    type : "POST",
-                    url  : "${createLink(action: 'permisoImprimir')}/" + id,
-                    success :function (msg){
                         var b = bootbox.dialog({
                             id: "dlgImprimir",
                             title : "Permiso de impresión para el trámite:  " + codigo,
-                            message : msg,
+                            message : "<label style='margin-left: 30px; margin-top: 30px'>Personal:</label>" + selPersonal +
+                                      "<label style='margin-left: 30px; margin-top: 60px'>Observaciones:</label>" + "<textarea style='width: 300px;margin-left: 10px; height: 70px' id='observImp'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label  : "Cancelar",
@@ -287,9 +289,11 @@
 
                                         $.ajax({
                                             type: 'POST',
-                                            url: '${createLink(action: 'cambiarPermiso')}/'+ id,
+                                            url: '${createLink(action: 'permisoImprimir')}/' + id,
                                             data :{
-                                                texto: $("#observacion").val()
+                                                persona: $("#iden").val(),
+                                                observaciones: $("#observImp").val()
+
                                             },
                                             success : function (msg) {
                                                 bootbox.alert(msg)
@@ -298,13 +302,16 @@
                                     }
                                 }
                             }
-                        })
-                    }
-                });
+                        });
+
+                if($sel){
+                    $sel.removeClass('hide');
+                    $sel.attr('id', 'iden');
+                    $("#seleccionar").append($sel);
+                }
             }
-
-
         };
+
 
 
         context.settings({
@@ -427,6 +434,34 @@
             {
                 header: 'Sin Acciones'
             }
+
+        ]);
+
+        context.attach(".imprimir", [
+            {
+                header: 'Acciones'
+            },
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
+                }
+
+            }
+            <g:if test="${revisar}">,
+            {
+                text: 'Revisar',
+                icon: "<i class='fa fa-check'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    location.href="${g.createLink(action: 'revision',controller: 'tramite2')}/"+id
+                }
+
+            }
+            </g:if>
+
 
         ]);
         </g:if>

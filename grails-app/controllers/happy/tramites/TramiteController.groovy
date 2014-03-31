@@ -36,6 +36,7 @@ class TramiteController extends happy.seguridad.Shield {
 //        println("params " + params)
         def padre = null
         def tramite = new Tramite(params)
+        def users = []
         if (params.padre) {
             padre = Tramite.get(params.padre)
         }
@@ -50,6 +51,8 @@ class TramiteController extends happy.seguridad.Shield {
 
         def de = session.usuario
         def disp, disponibles = []
+        def disp2 = []
+        def todos=[]
 
         if (persona.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
@@ -57,9 +60,15 @@ class TramiteController extends happy.seguridad.Shield {
             disp = [persona.departamento]
         }
         disp.each { dep ->
-            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+//            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
             if (dep.id == persona.departamento.id) {
-                def users = Persona.findAllByDepartamento(dep)
+//                def users = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep)
+                usuarios.each {
+                    if(it.id != de.id){
+                        users += it
+                    }
+                }
                 for (int i = users.size() - 1; i > -1; i--) {
                     if (!(users[i].estaActivo && users[i].puedeRecibir)) {
                         users.remove(i)
@@ -68,8 +77,17 @@ class TramiteController extends happy.seguridad.Shield {
                     }
                 }
             }
+
+
         }
-        return [de: de, padre: padre, disponibles: disponibles, tramite: tramite]
+
+        disp.each { dep->
+            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+        }
+
+        todos = disponibles + disp2
+
+        return [de: de, padre: padre, disponibles: todos, tramite: tramite, persona: persona]
     }
 
     def cargaUsuarios() {
@@ -609,9 +627,9 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
         return [tramites: tramites]
     }

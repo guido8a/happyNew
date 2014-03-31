@@ -128,7 +128,20 @@ class Tramite2Controller extends happy.seguridad.Shield{
             if(per)
                 revisar=true
         }
-        return [persona: persona,revisar:revisar,bloqueo:bloqueo]
+
+        def departamento = Persona.get(usuario.id).departamento
+
+        def personal = Persona.findAllByDepartamento(departamento)
+
+       def personalActivo = []
+
+        personal.each {
+            if(it?.activo == 1 && it?.id != usuario.id){
+                personalActivo += it
+            }
+        }
+
+        return [persona: persona,revisar:revisar,bloqueo:bloqueo, personal: personalActivo]
 
     }
 
@@ -137,9 +150,13 @@ class Tramite2Controller extends happy.seguridad.Shield{
         def persona = Persona.get( session.usuario.id)
         def tramites = []
         def estados = EstadoTramite.findAllByCodigoInList(["E001","E002","E003"])
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
         if(persona.jefe==1){
             Persona.findAllByDepartamento(persona.departamento).each {p->
                 def t =  Tramite.findAllByDeAndEstadoTramiteInList(p,estados,[sort:"fechaCreacion",order:"desc"])
+                if(t.size()>0)
+                    tramites+=t
+                t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
                 if(t.size()>0)
                     tramites+=t
             }
@@ -148,9 +165,10 @@ class Tramite2Controller extends happy.seguridad.Shield{
                 tramites+=t
         }else{
             tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
+            def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
+            if(t.size()>0)
+                tramites+=t
         }
-
-
         tramites?.sort{it.fechaCreacion}
         tramites=tramites?.reverse()
         return [persona: persona, tramites: tramites]
@@ -470,20 +488,29 @@ class Tramite2Controller extends happy.seguridad.Shield{
 
     def permisoImprimir () {
 
-        def usuario = session.usuario
+//        println("params" + params)
 
-        def departamento = Persona.get(usuario.id).departamento
+        def persona = Persona.get(params.persona)
+        def tramite = Tramite.get(params.id)
+        def personaDoc = new PersonaDocumentoTramite();
+        def rol = RolPersonaTramite.findByCodigo('I005')
 
-        def personal = Persona.findAllByDepartamento(departamento)
+        personaDoc.tramite = tramite
+        personaDoc.persona = persona
+        personaDoc.observaciones = params.observaciones
+        personaDoc.rolPersonaTramite = rol
+        personaDoc.fechaEnvio = new Date()
 
-        def personalActivo = []
+       if(!personaDoc.save(flush: true)){
 
-        personal.each {
-            if(it?.activo == 1){
-                personalActivo += it
-            }
-        }
-        return [personal: personal, activos: personalActivo]
+           render "Ocurrió un error al otorgar el permiso"
+       }else{
+
+           render "Permiso de impresión otorgado correctamente"
+       }
+
+//        return render
+
     }
 
 }
