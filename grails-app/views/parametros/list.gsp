@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Parámetros</title>
+        <title>Jornada laboral</title>
     </head>
 
     <body>
@@ -40,8 +40,8 @@
             <tbody>
                 <g:each in="${parametrosInstanceList}" status="i" var="parametrosInstance">
                     <tr data-id="${parametrosInstance.id}">
-                        <td>${parametrosInstance.horaInicio}:${parametrosInstance.minutoInicio}</td>
-                        <td>${parametrosInstance.horaFin}:${parametrosInstance.minutoFin}</td>
+                        <td>${parametrosInstance.horaInicio.toString().padLeft(2, '0')}:${parametrosInstance.minutoInicio.toString().padLeft(2, '0')}</td>
+                        <td>${parametrosInstance.horaFin.toString().padLeft(2, '0')}:${parametrosInstance.minutoFin.toString().padLeft(2, '0')}</td>
                     </tr>
                 </g:each>
             </tbody>

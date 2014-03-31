@@ -124,21 +124,21 @@
                     </div>
 
                     %{--<div class="col-xs-2 negrilla hide" id="divConfidencial">--}%
-                        %{--<label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>--}%
+                    %{--<label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>--}%
                     %{--</div>--}%
 
                     %{--<div class="col-xs-2 negrilla hide" id="divAnexos">--}%
-                        %{--<label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>--}%
+                    %{--<label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>--}%
                     %{--</div>--}%
                 </div>
 
                 <div class="row">
                     %{--<div class="col-xs-3">--}%
-                        %{--<b>Tipo de documento:</b>--}%
-                        %{--<elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"--}%
-                                    %{--from="${session.usuario.tiposDocumento}"--}%
-                                    %{--value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"--}%
-                                    %{--optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>--}%
+                    %{--<b>Tipo de documento:</b>--}%
+                    %{--<elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"--}%
+                    %{--from="${session.usuario.tiposDocumento}"--}%
+                    %{--value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"--}%
+                    %{--optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>--}%
                     %{--</div>--}%
 
                     <div class="col-xs-2 ">
@@ -159,7 +159,7 @@
                     <div class="col-xs-2 ">
                         <b>Creado el:</b>
                         <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
-                               value="${tramite.fechaCreacion.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
+                               value="${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}" disabled style="width: 150px"/>
                     </div>
 
                     <div class="col-xs-2 ">
@@ -178,7 +178,6 @@
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
                         <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
                     </div>
-
 
                 </div>
 
@@ -468,22 +467,37 @@
             }
 
             function validarTiempos() {
-                var tiempo = parseInt($("#prioridad").find("option:selected").attr("class"));
-                var fecha = $("#creado").val();
-                fecha = Date.parse(fecha);
-                var limite = fecha.clone();
-                var maxHoy = fecha.clone().set({ hour : 12, minute : 30 });
-                if (tiempo > 4) {
-                    limite.add(tiempo).hours();
-                } else {
-                    var comp = fecha.compareTo(maxHoy); //-1: maxHoy=future, 0: igual, 1: maxHoy=past
-                    if (comp > -1) {
-                        limite.add(tiempo + 15).hours().add(30).minutes();
-                    } else {
-                        limite.add(tiempo).hours();
+                $.ajax({
+                    type    : "POST",
+                    url     : "${createLink(action:'tiempoRespuestaEsperada_ajax')}",
+                    data    : {
+                        fecha     : "${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}",
+                        prioridad : $("#prioridad").val()
+                    },
+                    success : function (msg) {
+                        var parts = msg.split("_")
+                        if (parts[0] == "OK") {
+                            $('#respuesta').text(parts[1]);
+                        }
                     }
-                }
-                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
+                });
+
+//                var tiempo = parseInt($("#prioridad").find("option:selected").attr("class"));
+//                var fecha = $("#creado").val();
+//                fecha = Date.parse(fecha);
+//                var limite = fecha.clone();
+//                var maxHoy = fecha.clone().set({ hour : 12, minute : 30 });
+//                if (tiempo > 4) {
+//                    limite.add(tiempo).hours();
+//                } else {
+//                    var comp = fecha.compareTo(maxHoy); //-1: maxHoy=future, 0: igual, 1: maxHoy=past
+//                    if (comp > -1) {
+//                        limite.add(tiempo + 15).hours().add(30).minutes();
+//                    } else {
+//                        limite.add(tiempo).hours();
+//                    }
+//                }
+//                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
             }
 
             $(function () {

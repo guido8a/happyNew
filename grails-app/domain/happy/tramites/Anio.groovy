@@ -2,6 +2,7 @@ package happy.tramites
 
 class Anio {
     String numero
+    Integer estado          //1-> activo, 0-> no activo
     static mapping = {
         table 'anio'
         cache usage: 'read-write', include: 'non-lazy'
@@ -11,6 +12,7 @@ class Anio {
         columns {
             id column: 'anio__id'
             numero column: 'anionmro'
+            estado column: 'anioetdo'
         }
     }
     static constraints = {

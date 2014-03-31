@@ -58,6 +58,7 @@
             text-align : center;
             display    : inline-block;
             color      : #444;
+            border     : solid 1px #808080;
         }
 
         .nombreMes {
@@ -76,19 +77,30 @@
 
         <g:set var="parametros" value="${Parametros.get(1)}"/>
 
+        <!-- botones -->
+        <div class="btn-toolbar toolbar">
+            <div class="btn-group">
+                <a href="#" class="btn btn-success" id="btnGuardar">
+                    <i class="icon fa fa-check"></i> Guardar
+                </a>
+                <a href="#" class="btn btn-default" id="btnDesactivar">
+                    <i class="icon fa fa-power-off"></i> Desactivar
+                </a>
+            </div>
+        </div>
+
         <h3>
-            Año <g:select style="font-size:large;" name="anio" class="input-small" from="${anio - 5..anio + 5}" value="${params.anio}"/>
-            <a href="#" class="btn btn-primary" id="btnCambiar"><i class="icon fa fa-refresh"></i> Cambiar</a>
-            <a href="#" class="btn btn-success" id="btnGuardar"><i class="icon fa fa-check"></i> Guardar</a>
+            Año ${anioObj.numero}%{--<g:select style="font-size:large;" name="anio" class="input-small" from="${anio - 5..anio + 5}" value="${params.anio}"/>--}%
+            %{--<a href="#" class="btn btn-primary" id="btnCambiar"><i class="icon fa fa-refresh"></i> Cambiar</a>--}%
         </h3>
 
         <div class="well well-sm">
-            Los días marcados con <div class="demo vacacion">1</div> son <b>no laborables</b>.<br/>
-        Haciendo clic sobre el día se cambia de laborable a no laborable y viceversa.
+            Los días marcados con <div class="demo vacacion">&nbsp;</div> son <b>no laborables</b>.<br/>
+            Haciendo clic sobre el día se cambia de laborable a no laborable y viceversa.
             <br/>
             Por defecto, la hora de inicio de la jornada es ${parametros.inicioJornada} y el final es ${parametros.finJornada}.
-            Los días marcados con <div class="demo cambiado">1</div> tienen una hora de inicio o de fin de jornada modificada.
-            Puede cambiar estos valores de manera individual para cada día haciendo click derecho.<br/>
+            Los días marcados con <div class="demo cambiado">&nbsp;</div> tienen una hora de inicio o de fin de jornada modificada.
+        Puede cambiar estos valores de manera individual para cada día haciendo click derecho.<br/>
             <b>Los cambios se guardan haciendo clic en el botón "Guardar".</b>
         </div>
 
@@ -218,6 +230,38 @@
                     });
                     return false;
                 });
+
+                $("#btnDesactivar").click(function () {
+                    bootbox.dialog({
+                        title   : "Alerta",
+                        message : "<i class='fa fa-power-off fa-3x pull-left text-shadow'></i>" +
+                                  "<p>¿Está seguro que desea desactivar el año ${anio}?</p>" +
+                                  "<p>Esta acción no se puede deshacer.</p>" +
+                                  "<ul>" +
+                                  "<li>Se desactivará el año ${anio}, por lo que no se podrán crear nuevos trámites este año</li>" +
+                                  "<li>Se reiniciará la numeración de los trámites</li>" +
+                                  "<li>Se creará el año ${anio+1}</li>" +
+                                  "<li>Se inicializarán los días laborables y se mostrará esta pantalla para su edicón</li>" +
+                                  "</ul>",
+                        buttons : {
+                            cancelar   : {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            },
+                            desactivar : {
+                                label     : "<i class='fa fa-power-off'></i> Desactivar",
+                                className : "btn-default",
+                                callback  : function () {
+                                    openLoader();
+                                    location.href = "${createLink(action: 'desactivar')}/${anioObj.id}";
+                                }
+                            }
+                        }
+                    });
+                });
+
                 var id;
 
                 function submenuHoras(tipo) {

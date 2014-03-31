@@ -32,7 +32,7 @@ class DiasLaborablesService {
         if (!parametros) {
             parametros = new Parametros([
                     horaInicio: 8,
-                    minutoInicio: 30,
+                    minutoInicio: 00,
                     horaFin: 16,
                     minutoFin: 30
             ])

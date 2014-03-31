@@ -3,6 +3,8 @@ package happy.tramites
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
+//import happy.utilitarios.DiasLaborablesService
+
 class Tramite {
     Anio anio
     Tramite padre
@@ -27,6 +29,8 @@ class Tramite {
     Date fechaModificacion              //ultima modificacion realizada
     Date fechaRevision                  //ultima revision realizada --> estado cambiado a revisado
     Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
+
+    def diasLaborablesService
 
     static mapping = {
         table 'trmt'
@@ -80,7 +84,7 @@ class Tramite {
         nota(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'nota'])
         estado(maxSize: 1, blank: true, nullable: true, attributes: [title: 'estado'])
         observaciones(maxSize: 255, blank: true, nullable: true, attributes: [title: 'observaciones'])
-        deDepartamento(blank:true,nullable: true)
+        deDepartamento(blank: true, nullable: true)
         fechaCreacion(blank: true, nullable: true, attributes: [title: 'fechaCreacion'])
         fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
         fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
@@ -122,13 +126,21 @@ class Tramite {
     def getFechaLimite() {
         def limite = this.fechaEnvio
         if (limite) {
-            use(TimeCategory) {
-                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
-                    limite = limite + 2.hours + 15.hours + 30.minutes
-                else
-                    limite = limite + 2.hours
+//            def diaLaborableService
+            def fechaLimite = diasLaborablesService.fechaMasTiempo(limite, 2)
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
+                println fechaLimite[1]
+                return null
             }
-            return limite
+//            use(TimeCategory) {
+//                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
+//                    limite = limite + 2.hours + 15.hours + 30.minutes
+//                else
+//                    limite = limite + 2.hours
+//            }
+//            return limite
         }
         return null
     }
@@ -137,13 +149,20 @@ class Tramite {
         def fechaRecepcion = this.para?.fechaRecepcion
         if (fechaRecepcion) {
             def limite = fechaRecepcion
-            use(TimeCategory) {
-                if (limite.hours > 12 || (limite.hours >= 12 && limite.minutes > 30))
-                    limite = limite + this.prioridad.tiempo.hours + 15.hours + 30.minutes
-                else
-                    limite = limite + this.prioridad.tiempo.hours
+            def fechaLimite = diasLaborablesService.fechaMasTiempo(limite, this.prioridad.tiempo.hours)
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
+                println fechaLimite[1]
+                return null
             }
-            return limite
+//            use(TimeCategory) {
+//                if (limite.hours > 12 || (limite.hours >= 12 && limite.minutes > 30))
+//                    limite = limite + this.prioridad.tiempo.hours + 15.hours + 30.minutes
+//                else
+//                    limite = limite + this.prioridad.tiempo.hours
+//            }
+//            return limite
         }
         return null
     }
@@ -161,19 +180,27 @@ class Tramite {
         if (this.estadoTramite.codigo != "E003") {
             return null
         } else {
-            def limite = this.fechaLimite
-            use(TimeCategory) {
-                limite = limite + 48.hours
+            def limite = this.getFechaLimite()
+            println limite
+            def fechaLimite = diasLaborablesService.fechaMasTiempo(limite, 48)
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
+                println fechaLimite[1]
+                return null
             }
-            return limite
+//            use(TimeCategory) {
+//                limite = limite + 48.hours
+//            }
+//            return limite
         }
     }
 
-    def getDeTexto(){
-        if(this.deDepartamento)
-            return ["codigo":this.deDepartamento.codigo,"nombre":this.deDepartamento.descripcion]
+    def getDeTexto() {
+        if (this.deDepartamento)
+            return ["codigo": this.deDepartamento.codigo, "nombre": this.deDepartamento.descripcion]
         else
-            return ["codigo":this.de.login,"nombre":this.de.toString()]
+            return ["codigo": this.de.login, "nombre": this.de.toString()]
     }
 
 }

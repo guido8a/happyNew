@@ -1,6 +1,9 @@
 package happy.utilitarios
 
 import groovy.json.JsonBuilder
+import happy.tramites.Anio
+import happy.tramites.Numero
+import happy.tramites.Tramite
 import org.springframework.dao.DataIntegrityViolationException
 
 class DiaLaborableController extends happy.seguridad.Shield {
@@ -10,21 +13,27 @@ class DiaLaborableController extends happy.seguridad.Shield {
     def diasLaborablesService
 
     def pruebas() {
-        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "31-03-2014 11:00")
-        println "fecha: "
-        println fecha
-        println "2 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 2)
-        println "4 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 4)
-        println "24 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 24)
-        println "1 dia"
-        println diasLaborablesService.fechaMasDia(fecha.clone(), 1)
-        println "48 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 48)
-        println "72 horas"
-        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 72)
+
+        def tramite = Tramite.get(31)
+        tramite.fechaEnvio = new Date()
+        println tramite.fechaLimite
+        println tramite.fechaBloqueo
+
+//        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "31-03-2014 11:00")
+//        println "fecha: "
+//        println fecha
+//        println "2 horas"
+//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 2)
+//        println "4 horas"
+//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 4)
+//        println "24 horas"
+//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 24)
+//        println "1 dia"
+//        println diasLaborablesService.fechaMasDia(fecha.clone(), 1)
+//        println "48 horas"
+//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 48)
+//        println "72 horas"
+//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 72)
     }
 
     def calculador() {
@@ -92,6 +101,13 @@ class DiaLaborableController extends happy.seguridad.Shield {
 //                            println "parts[3]=" + parts[3] + "      parts[4]=" + parts[4]
                             diaLaborable.horaInicio = parts[3].toInteger()
                             diaLaborable.minutoInicio = parts[4].toInteger()
+                        } else {
+                            if (diaLaborable.horaInicio != -1) {
+                                diaLaborable.horaInicio = -1
+                            }
+                            if (diaLaborable.minutoInicio != -1) {
+                                diaLaborable.minutoInicio = -1
+                            }
                         }
                         // si las horas fueron cambiadas, es decir no es parametros.horaFin o los minutos fueron cambiados
                         // grabo la hora y minutos de fin
@@ -100,6 +116,13 @@ class DiaLaborableController extends happy.seguridad.Shield {
 //                            println "parts[5]=" + parts[5] + "      parts[6]=" + parts[6]
                             diaLaborable.horaFin = parts[5].toInteger()
                             diaLaborable.minutoFin = parts[6].toInteger()
+                        } else {
+                            if (diaLaborable.horaFin != -1) {
+                                diaLaborable.horaFin = -1
+                            }
+                            if (diaLaborable.minutoFin != -1) {
+                                diaLaborable.minutoFin = -1
+                            }
                         }
                     } else {
                         diaLaborable.horaInicio = diaLaborable.horaInicio ?: -1
@@ -123,13 +146,60 @@ class DiaLaborableController extends happy.seguridad.Shield {
         }
     }
 
+    def desactivar() {
+        // ******************************** DESACTIVA EL ANIO **************************************************** //
+        def anio = Anio.get(params.id)
+        def anioRedirect = anio.numero
+        anio.estado = 0
+        if (!anio.save(flush: true)) {
+            println "errores: " + anio.errors
+        } else {
+            // ******************************** CREA EL ANIO SIGUIENTE **************************************************** //
+            def intAnioNext = (anio.numero.toInteger() + 1).toString()
+            anioRedirect = intAnioNext
+            def anioNext = Anio.findAllByNumero(intAnioNext, [sort: "id"])
+            if (anioNext.size() > 1) {
+                println "Hay mas de un registro de año ${intAnioNext}!!!! ${anioNext}"
+                anioNext = anioNext.first()
+            } else if (anioNext.size() == 1) {
+                anioNext = anioNext.first()
+                anioNext.estado = 1
+                if (!anioNext.save(flush: true)) {
+                    println "erores: " + anioNext.errors
+                }
+            } else {
+                anioNext = new Anio([
+                        numero: intAnioNext,
+                        estado: 1
+                ])
+                if (!anioNext.save(flush: true)) {
+                    println "erores: " + anioNext.errors
+                }
+            }
+
+            // ******************************** RESETEA NUMERACIONES **************************************************** //
+            /*todo: preguntar si resetea todo todo todo */
+            Numero.list().each { num ->
+                num.valor = 0
+                if (!num.save(flush: true)) {
+                    println "error: " + num.errors
+                }
+            }
+        }
+        redirect(action: "calendario", params: [anio: anioRedirect])
+    }
+
+    def error() {
+        return [params: params]
+    }
+
     def calendario() {
 
         def parametros = Parametros.get(1)
         if (!parametros) {
             parametros = new Parametros([
                     horaInicio: 8,
-                    minutoInicio: 30,
+                    minutoInicio: 00,
                     horaFin: 16,
                     minutoFin: 30
             ])
@@ -143,13 +213,40 @@ class DiaLaborableController extends happy.seguridad.Shield {
         if (!params.anio) {
             params.anio = anio
         }
+
+        def anioObj = Anio.findAllByNumero(params.anio, [sort: "id"])
+        if (anioObj.size() > 1) {
+            println "Hay mas de un registro de año ${intAnioObj}!!!! ${anioObj}"
+            anioObj = anioObj.first()
+        } else if (anioObj.size() == 1) {
+            anioObj = anioObj.first()
+            if (anioObj.estado == 0) {
+                response.sendError(404)
+            }
+        } else {
+            if (new Date().format("yyyy") == params.anio.toString() || (new Date().format("yyyy").toInteger() - 1 == params.anio.toInteger() && new Date().format("mm") == "12" && (new Date().format("dd").toInteger() >= 26))) {
+                anioObj = new Anio([
+                        numero: params.anio,
+                        estado: 0
+                ])
+                if (!anioObj.save(flush: true)) {
+                    println "ERROR: " + anioObj.errors
+                }
+            } else {
+                response.sendError(404)
+            }
+        }
         def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         def enero01 = new Date().parse("dd-MM-yyyy", "01-01-" + params.anio)
         def diciembre31 = new Date().parse("dd-MM-yyyy", "31-12-" + params.anio)
 
+//        def dias = DiaLaborable.withCriteria {
+//            ge("fecha", enero01)
+//            le("fecha", diciembre31)
+//            order("fecha", "asc")
+//        }
         def dias = DiaLaborable.withCriteria {
-            ge("fecha", enero01)
-            le("fecha", diciembre31)
+            eq("anio", anioObj)
             order("fecha", "asc")
         }
 
@@ -185,7 +282,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
                     def diaLaborable = new DiaLaborable([
                             fecha: fecha,
                             dia: diasSem[dia],
-                            anio: fecha.format("yyyy").toInteger(),
+                            anio: anioObj,
                             ordinal: ordinal,
                             horaInicio: -1,
                             minutoInicio: -1,
@@ -208,7 +305,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
             println "Guardados ${dias.size()} dias"
         }
 
-        return [anio: anio, dias: dias, meses: meses, params: params]
+        return [anio: anio, dias: dias, meses: meses, params: params, anioObj: anioObj]
     }
 
     def index() {

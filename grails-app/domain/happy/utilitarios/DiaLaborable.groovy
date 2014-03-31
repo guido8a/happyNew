@@ -1,11 +1,13 @@
 package happy.utilitarios
 
+import happy.tramites.Anio
+
 class DiaLaborable {
     Date fecha
     String dia              //lun:1, mar:2, mie:3, jue:4, vie:5, sab:6, dom:0
-    Integer anio            //anio de la fecha (para facilitar las busquedas)
+    Anio anio            //anio de la fecha (para facilitar las busquedas)
     Integer ordinal
-    String observaciones
+//    String observaciones
 
     Integer horaInicio
     Integer minutoInicio
@@ -22,9 +24,9 @@ class DiaLaborable {
         columns {
             fecha column: "ddlbfcha"
             dia column: "ddlbddia"
-            anio column: "ddlbanio"
+            anio column: "anio__id"
             ordinal column: "ddlbordn"
-            observaciones column: 'ddlbobsr'
+//            observaciones column: 'ddlbobsr'
 
             horaInicio column: 'ddlbhrin'
             minutoInicio column: 'ddlbmnin'
@@ -34,7 +36,7 @@ class DiaLaborable {
     }
     static constraints = {
         dia(blank: false, nullable: false, maxSize: 3)
-        observaciones(blank: true, nullable: true, maxSize: 511)
+//        observaciones(blank: true, nullable: true, maxSize: 511)
     }
 
     def getInicioJornada() {

@@ -3,7 +3,7 @@ package happy.tramites
 class Numero {
     Departamento departamento
     TipoDocumento tipoDocumento
-    int valor
+    int valor                       //se utiliza este valor+1, es el ultimo valor utilizado: debe iniciar en 0
     static mapping = {
         table 'nmro'
         cache usage: 'read-write', include: 'non-lazy'

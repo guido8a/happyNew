@@ -7,6 +7,8 @@ import happy.seguridad.Persona
 
 class TramiteController extends happy.seguridad.Shield {
 
+    def diasLaborablesService
+
 //    static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
     def index() {
@@ -32,7 +34,38 @@ class TramiteController extends happy.seguridad.Shield {
         }
     }
 
+    def tiempoRespuestaEsperada_ajax() {
+
+        def fecha = new Date().parse("dd-MM-yyyy HH:mm", params.fecha)
+        def prioridad = TipoPrioridad.get(params.prioridad)
+
+        def horas = prioridad.tiempo
+
+        def fechaEsperada = diasLaborablesService.fechaMasTiempo(fecha, horas)
+        if (fechaEsperada[0]) {
+            render "OK_" + fechaEsperada[1].format("dd-MM-yyyy HH:mm")
+        } else {
+            render "NO_" + fechaEsperada[1]
+        }
+    }
+
     def crearTramite() {
+
+        def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
+        if (anio.size() == 0) {
+            flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        } else if (anio.size() > 1) {
+            println "HAY MAS DE 1 ANIO ${new Date().format('yyyy')}!!!!!: ${anio}"
+        }
+
+        if (anio.findAll { it.estado == 1 }.size() == 0) {
+            flash.message = "El año ${new Date().format('yyyy')} no está activado, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
 //        println("params " + params)
         def padre = null
         def tramite = new Tramite(params)
@@ -52,7 +85,7 @@ class TramiteController extends happy.seguridad.Shield {
         def de = session.usuario
         def disp, disponibles = []
         def disp2 = []
-        def todos=[]
+        def todos = []
 
         if (persona.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
@@ -65,7 +98,7 @@ class TramiteController extends happy.seguridad.Shield {
 //                def users = Persona.findAllByDepartamento(dep)
                 def usuarios = Persona.findAllByDepartamento(dep)
                 usuarios.each {
-                    if(it.id != de.id){
+                    if (it.id != de.id) {
                         users += it
                     }
                 }
@@ -81,7 +114,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         }
 
-        disp.each { dep->
+        disp.each { dep ->
             disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
         }
 
@@ -373,6 +406,10 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
+    def errores() {
+        return [params: params]
+    }
+
     def alertaPendientes() {
 
         def usuario = session.usuario
@@ -435,10 +472,16 @@ class TramiteController extends happy.seguridad.Shield {
                 println("fecha envio" + it.fechaEnvio)
                 fechaEnvio = it.fechaEnvio
                 fecha = fechaEnvio.getTime()
-                fechaRoja = new Date(fecha + dosHoras)
+//                fechaRoja = new Date(fecha + dosHoras)
 //                fechaRoja = it?.getFechaLimite
-
-
+                fechaRoja = diasLaborablesService.fechaMasTiempo(fecha, 2)
+                if (fechaRoja[0]) {
+                    fechaRoja = fechaRoja[1]
+                } else {
+                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + fechaRoja[1]
+                    redirect(action: 'errores')
+                    return
+                }
                 if (fechaRoja.before(new Date())) {
                     tramitesPendientesRojos++
                     idRojos.add(it.id)
@@ -571,7 +614,16 @@ class TramiteController extends happy.seguridad.Shield {
 
             fecha = fechaEnvio.getTime()
 
-            nuevaFecha = new Date(fecha + totalPrioridad)
+//            nuevaFecha = new Date(fecha + totalPrioridad)
+
+            nuevaFecha = diasLaborablesService.fechaMasTiempo(fecha, 2)
+            if (nuevaFecha[0]) {
+                nuevaFecha = nuevaFecha[1]
+            } else {
+                flash.message = "Ha ocurrido un error al calcular la fecha límite: " + nuevaFecha[1]
+                redirect(action: 'errores')
+                return
+            }
 
             if (nuevaFecha.before(new Date())) {
 
@@ -1091,7 +1143,7 @@ class TramiteController extends happy.seguridad.Shield {
 
     }
 
-    def revisarConfidencial () {
+    def revisarConfidencial() {
 //        println("params" + params)
         def tramite = Tramite.get(params.id)
         def persona = Persona.get(session.usuario.id)
@@ -1100,13 +1152,13 @@ class TramiteController extends happy.seguridad.Shield {
 //        println("para:" + tramite.getPara().persona.id)
 //        println("persona:" + persona.id)
 
-        if(condifencial == 1){
-            if(tramite.getPara().persona == persona){
+        if (condifencial == 1) {
+            if (tramite.getPara().persona == persona) {
                 render 'ok'
-            }else{
+            } else {
                 render 'no'
             }
-        }else {
+        } else {
             render 'ok'
         }
     }

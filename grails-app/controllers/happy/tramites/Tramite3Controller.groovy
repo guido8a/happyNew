@@ -4,6 +4,9 @@ import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
 class Tramite3Controller extends happy.seguridad.Shield {
+
+    def diasLaborablesService
+
     def save() {
 
         /*
@@ -431,8 +434,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def hoy = new Date()
         def limite = hoy
-        use(TimeCategory) {
-            limite = limite + tramite.prioridad.tiempo.hours
+//        use(TimeCategory) {
+//            limite = limite + tramite.prioridad.tiempo.hours
+//        }
+        limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo.hours)
+        if (limite[0]) {
+            limite = limite[1]
+        } else {
+            flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+            redirect(controller: 'tramite', action: 'errores')
+            return
         }
 
         pxt.fechaRecepcion = hoy
