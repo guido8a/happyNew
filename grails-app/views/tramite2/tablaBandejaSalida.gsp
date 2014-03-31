@@ -3,7 +3,7 @@
 <table class="table table-bordered  table-condensed table-hover">
     <thead>
     <tr>
-        <th class="cabecera">Documento</th>
+              <th class="cabecera">Documento</th>
         <th>De</th>
         <th class="cabecera">Fec. Creación</th>
         <th class="cabecera">Para</th>
@@ -25,7 +25,7 @@
 
 
         <tr  id="${tramite?.id}" data-id="${tramite?.id}" class="${esImprimir?'imprimir':''} ${(limite)?((limite<new Date())?'alerta':tramite.estadoTramite.codigo):tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
-            <td title="${tramite.asunto}">${tramite?.codigo}</td>
+                      <td title="${tramite.asunto}">${tramite?.codigo}</td>
             <td title="${tramite.de.departamento}">${(tramite.deDepartamento)?tramite.deDepartamento.codigo:tramite.de}</td>
             <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
             <g:set var="para" value="${tramite.getPara()}"/>

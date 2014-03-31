@@ -63,7 +63,11 @@
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
             %{--</a>--}%
+               <g:link action="bandejaEntrada" class="btn btn-azul btnRegresar" style="margin-left: 20px;">
+                    <i class="fa fa-list-ul"></i> Bandeja de Entrada
+                </g:link>
             </div>
+
         </div>
 
 

@@ -36,11 +36,23 @@
             margin : auto;
             width  : 16cm;
         }
+            textarea {
+                text-align: justify;
+            }
         </style>
     </head>
 
     <body>
         <div class="hoja">
+
+            <div class="btn-toolbar toolbar">
+                <div class="btn-group">
+                      <g:link action="bandejaEntrada" class="btn btn-azul btnRegresar" style="margin-left: 20px;">
+                        <i class="fa fa-list-ul"></i> Bandeja de Entrada
+                    </g:link>
+                </div>
+            </div>
+
             <elm:headerTramite tramite="${tramite}"/>
 
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
@@ -59,6 +71,7 @@
                         %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%
                         filebrowserWindowWidth  : 950,
                         filebrowserWindowHeight : 500,
+//                        enterMode : CKEDITOR.justifyContent,
                         serverSave              : {
                             saveUrl  : '${createLink(controller:"tramite", action: "saveTramite")}',
                             saveData : {
@@ -81,7 +94,7 @@
                              }*/
                         },
                         toolbar                 : [
-                            [ /*'Source',*/'ServerSave', 'NewPage', 'CreatePdf' , '-', 'Scayt'],
+                            [ /*'Source',*/'ServerSave', /*'NewPage', */'CreatePdf' , '-', 'Scayt'],
                             [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
                             [ 'Find', 'Replace', '-', 'SelectAll' ],
                             [ 'Table', 'HorizontalRule', 'PageBreak'],

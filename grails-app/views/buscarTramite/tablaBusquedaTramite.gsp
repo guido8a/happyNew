@@ -12,13 +12,15 @@
             <thead>
             <tr>
 
-                <th class="cabecera">Documento</th>
-                <th class="cabecera">Fecha Recepción</th>
-                <th class="cabecera">De</th>
-                <th class="cabecera">Creado Por</th>
-                <th class="cabecera">Prioridad</th>
-                <th class="cabecera">Fecha Respuesta</th>
-                <th class="cabecera">Doc. Padre</th>
+                %{--<th class="cabecera">Asunto</th>--}%
+                <th class="alinear">Documento</th>
+                <th class="alinear">Para</th>
+                <th class="alinear">Fecha Recepción</th>
+                <th class="alinear">De</th>
+                <th class="alinear">Creado Por</th>
+                <th class="alinear">Prioridad</th>
+                <th class="alinear">Fecha Respuesta</th>
+                <th class="alinear">Doc. Padre</th>
             </tr>
 
             </thead>
@@ -26,6 +28,16 @@
             <g:each in="${tramites}" var="tramite">
                 <tr>
                     <td>${tramite?.tramite?.codigo}</td>
+                    <g:if test="${tramite?.persona?.nombre}">
+                        <td><b>${tramite?.rolPersonaTramite?.descripcion}:</b> ${tramite?.persona?.nombre} ${tramite?.persona?.apellido}</td>
+                    </g:if>
+                    <g:elseif test="${tramite?.departamento?.descripcion}">
+                        <td><b>${tramite?.rolPersonaTramite?.descripcion}:</b> ${tramite?.departamento?.descripcion}</td>
+                    </g:elseif>
+                    <g:else>
+                        <td></td>
+                    </g:else>
+                    %{--<td>${tramite?.tramite?.asunto}</td>--}%
                     <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                     <td>${tramite?.tramite?.de}</td>
                     <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>

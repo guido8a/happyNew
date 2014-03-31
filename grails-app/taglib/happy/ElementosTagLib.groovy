@@ -219,7 +219,7 @@ class ElementosTagLib {
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
             html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
-            html += "                    No. <span style=\"font-weight: 500\">${tramite.codigo}</span>"
+            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
             html += "                </div>"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\">"
@@ -227,7 +227,7 @@ class ElementosTagLib {
             html += "                    DE"
             html += "                </div>"
             html += "                <div class=\"col-xs-10  col-buen-height\">"
-            html += "                    ${tramite.de.departamento.descripcion}"
+            html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
             html += "                </div>"
             html += "            </div>"
             if (para) {
