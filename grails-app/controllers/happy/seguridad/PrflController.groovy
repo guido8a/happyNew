@@ -24,6 +24,20 @@ class PrflController extends happy.seguridad.Shield {
         }
     }
 
+    def permisos = {  /* permisos apra trámites */
+//       println "recibe de parametros: ${params.id}"
+        def prflInstance = Prfl.get(params.id)
+        if (!prflInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
+            redirect(action: "list")
+        } else {
+            def lstacmbo = lstaModulos(params.id)
+//          println "modulos:----- " + lstacmbo
+            render(view: "permisos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+        }
+    }
+
+
     def verMenu = {
         def prfl = params.prfl.toInteger()
 //    println "verMenu: ---------parametros: ${params}"
@@ -31,10 +45,39 @@ class PrflController extends happy.seguridad.Shield {
         //render(g.generarMenu( perfil: "${prfl}" ))
     }
 
+    def ajaxPermisoTramite = {
+        def prfl = params.prfl.toInteger()
+        def tpac = params.tpac
+        println "---------parametros: ${params}"
+        def resultado = []
+        def i = 0
+        def ids = params.ids
+        if (params.menu?.size() > 0) ids = params.menu
+        if (params.grabar) {
+            //println "a grabar... ${prfl}, ${ids}"
+        }
+        def cn = dbConnectionService.getConnection()
+        def tx = ""
+        // selecciona los permisos consedidos
+        tx = "select perm.perm__id, permdscr, prpf.perm__id perm, permtxto " +
+                "from (perm left join prpf on prpf.perm__id = perm.perm__id and prfl__id = ${prfl}) " +
+                "order by permdscr"
+//        println "ajaxPermisos SQL: ${tx}"
+        cn.eachRow(tx) { d ->
+            resultado[i] = [d.perm__id] + [d.permdscr] + [d.permtxto] + [d.perm]
+            i++
+        }
+        cn.close()
+        println "-------------------------" + resultado
+
+        return [datos: resultado, mdlo__id: ids, tpac__id: tpac]
+    }
+
+
     def ajaxPermisos = {
         def prfl = params.prfl.toInteger()
         def tpac = params.tpac
-//        println "---------parametros: ${params}"
+        //println "---------parametros: ${params}"
         def resultado = []
         def i = 0
         def ids = params.ids

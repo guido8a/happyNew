@@ -73,8 +73,8 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#generales" data-toggle="tab">Generales</a></li>
-            <li><a href="#tramite" data-toggle="tab">Trámites</a></li>
+            <li class="active"><a href="#generales" data-toggle="tab">Parámetros Generales</a></li>
+            %{--<li><a href="#tramite" data-toggle="tab">Trámites</a></li>--}%
         </ul>
 
         <!-- Tab panes -->
@@ -100,6 +100,7 @@
                             </div>
                         </li>
 --}%
+%{--
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="perm">
@@ -116,7 +117,9 @@
                                 <p>Un usuario puede poseer varios permisos conforme a su perfil y cargo.</p>
                             </div>
                         </li>
+--}%
 
+%{--
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="tppr">
@@ -132,7 +135,9 @@
                                 <p>Se aplica a los trámites externos y sirve para determinar el origen o destino de un trámite externo</p>
                             </div>
                         </li>
+--}%
 
+%{--
                         <li>
                             <i class="fa-li ${iconGen}"></i>
                             <span id="anio">
@@ -149,6 +154,7 @@
                                 <p>Al iniciar cada año, la numeración será reiniciada automáticamente</p>
                             </div>
                         </li>
+--}%
 
                         <li>
                             <i class="fa-li ${iconGen}"></i>
@@ -165,17 +171,6 @@
                             </div>
                         </li>
 
-                    </ul>
-
-                </div>
-
-                <div class="generales right pull-right">
-                </div>
-            </div>
-
-            <div class="tab-pane" id="tramite">
-                <div class="left pull-left">
-                    <ul class="fa-ul">
                         <li>
                             <i class="fa-li ${iconTrmt}"></i>
                             <span id="tpdc">
@@ -206,7 +201,39 @@
 
                             </div>
                         </li>
+                        <li>
+                            <i class="fa-li ${iconTrmt}"></i>
+                            <span id="anio">
+                                <g:link controller="diaLaborable" action="calendario">Días Laborables</g:link> para determinar
+                                la secuencia de días que se trabajan y calcular el número de horas laborables requeridos para
+                                responder un trámite
+                            </span>
 
+                            <div class="descripcion hide">
+                                <h4>Días Laborables</h4>
+
+                                <p>Se usa un calendario para determinar los días laborables y festivos.</p>
+                                <p>Esto sirve para fijar la secuencia de días que se trabajan y calcular el número de horas
+                                laborables requeridos para responder un trámite</p>
+
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <div class="generales right pull-right">
+                </div>
+            </div>
+
+%{--
+            <div class="tab-pane" id="tramite">
+                <div class="left pull-left">
+                    <ul class="fa-ul">
+--}%
+
+%{--
                         <li>
                             <i class="fa-li ${iconTrmt}"></i>
                             <span id="tptr">
@@ -225,7 +252,9 @@
                                 ocultos para los otros usuarios.</p>
                             </div>
                         </li>
+--}%
 
+%{--
                         <li>
                             <i class="fa-li ${iconTrmt}"></i>
                             <span id="edtr">
@@ -240,7 +269,9 @@
                                 para por Enviado, Recibido y otros según se trate de un trámite interno o uno externo.</p>
                             </div>
                         </li>
+--}%
 
+%{--
                         <li>
                             <i class="fa-li ${iconTrmt}"></i>
                             <span id="rltr">
@@ -256,7 +287,9 @@
                                 <p>Envía (de), Destinatario (para), concopia (cc), recibe el documento físico, etc.</p>
                             </div>
                         </li>
+--}%
 
+%{--
                     </ul>
 
                 </div>
@@ -264,6 +297,7 @@
                 <div class="tramite right pull-right">
                 </div>
             </div>
+--}%
 
         </div>
 
