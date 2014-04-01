@@ -80,12 +80,6 @@
         <!-- botones -->
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
-                <g:link controller="inicio" action="parametros" class="btn btn-default">
-                    <i class="fa fa-arrow-left"></i> Regresar
-                </g:link>
-            </div>
-
-            <div class="btn-group">
                 <a href="#" class="btn btn-success" id="btnGuardar">
                     <i class="icon fa fa-check"></i> Guardar
                 </a>
@@ -96,7 +90,7 @@
         </div>
 
         <h3>
-            Año ${anio.numero}%{--<g:select style="font-size:large;" name="anio" class="input-small" from="${anio - 5..anio + 5}" value="${params.anio}"/>--}%
+            Año ${anioObj.numero}%{--<g:select style="font-size:large;" name="anio" class="input-small" from="${anio - 5..anio + 5}" value="${params.anio}"/>--}%
             %{--<a href="#" class="btn btn-primary" id="btnCambiar"><i class="icon fa fa-refresh"></i> Cambiar</a>--}%
         </h3>
 
@@ -180,15 +174,15 @@
                         .click(function () {
                             $(this).toggleClass("vacacion");
                         });
-                %{--$("#anio").val("${params.anio}");--}%
-                %{--$("#btnCambiar").click(function () {--}%
-                %{--var anio = $("#anio").val();--}%
-                %{--if ("" + anio != "${params.anio}") {--}%
-                %{--openLoader();--}%
-                %{--location.href = "${createLink(action: 'calendario')}?anio=" + anio;--}%
-                %{--}--}%
-                %{--return false;--}%
-                %{--});--}%
+                $("#anio").val("${params.anio}");
+                $("#btnCambiar").click(function () {
+                    var anio = $("#anio").val();
+                    if ("" + anio != "${params.anio}") {
+                        openLoader();
+                        location.href = "${createLink(action: 'calendario')}?anio=" + anio;
+                    }
+                    return false;
+                });
                 $("#btnGuardar").click(function () {
                     openLoader();
                     var cont = 1;
@@ -241,12 +235,12 @@
                     bootbox.dialog({
                         title   : "Alerta",
                         message : "<i class='fa fa-power-off fa-3x pull-left text-shadow'></i>" +
-                                  "<p>¿Está seguro que desea desactivar el año ${anio.numero}?</p>" +
+                                  "<p>¿Está seguro que desea desactivar el año ${anio}?</p>" +
                                   "<p>Esta acción no se puede deshacer.</p>" +
                                   "<ul>" +
-                                  "<li>Se desactivará el año ${anio.numero}, por lo que no se podrán crear nuevos trámites este año</li>" +
+                                  "<li>Se desactivará el año ${anio}, por lo que no se podrán crear nuevos trámites este año</li>" +
                                   "<li>Se reiniciará la numeración de los trámites</li>" +
-                                  "<li>Se creará el año ${anio.numero.toInteger()+1}</li>" +
+                                  "<li>Se creará el año ${anio+1}</li>" +
                                   "<li>Se inicializarán los días laborables y se mostrará esta pantalla para su edicón</li>" +
                                   "</ul>",
                         buttons : {
@@ -261,7 +255,7 @@
                                 className : "btn-default",
                                 callback  : function () {
                                     openLoader();
-                                    location.href = "${createLink(action: 'desactivar')}/${anio.id}";
+                                    location.href = "${createLink(action: 'desactivar')}/${anioObj.id}";
                                 }
                             }
                         }
@@ -282,7 +276,7 @@
                                 var hora = parseInt($target.text());
                                 $dia.data(tipo + "h", hora);
                                 var $header = $target.parents(".dropdown-context").find(".nav-header");
-                                $header.find("." + tipo + "h").text(hora.toString().lpad('0', 2));
+                                $header.find("." + tipo + "h").text(hora);
                                 if (tipo == "ini") {
                                     if (hora.toString() != "${parametros.horaInicio}") {
                                         if (!$dia.hasClass("cambiado")) {
@@ -319,7 +313,7 @@
                                 var hora = parseInt($target.text());
                                 $dia.data(tipo + "m", hora);
                                 var $header = $target.parents(".dropdown-context").find(".nav-header");
-                                $header.find("." + tipo + "m").text(hora.toString().lpad('0', 2));
+                                $header.find("." + tipo + "m").text(hora);
                                 if (tipo == "ini") {
                                     if (hora.toString() != "${parametros.minutoInicio}") {
                                         if (!$dia.hasClass("cambiado")) {
@@ -352,7 +346,7 @@
                         if ($td.hasClass("vacacion")) {
                             $header.text($td.data("fecha"));
                         } else {
-                            $header.html($td.data("fecha") + " <span class='inih'>" + ($td.data("inih").toString().lpad('0', 2)) + "</span>:<span class='inim'>" + ($td.data("inim").toString().lpad('0', 2)) + "</span> - <span class='finh'>" + ($td.data("finh").toString().lpad('0', 2)) + "</span>:<span class='finm'>" + ($td.data("finm").toString().lpad('0', 2)) + "</span>");
+                            $header.html($td.data("fecha") + " <span class='inih'>" + $td.data("inih") + "</span>:<span class='inim'>" + $td.data("inim") + "</span> - <span class='finh'>" + $td.data("finh") + "</span>:<span class='finm'>" + $td.data("finm") + "</span>");
                         }
                         $(".selected").removeClass("selected");
                         $td.addClass("selected");

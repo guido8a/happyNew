@@ -62,10 +62,10 @@ class DiaLaborableController extends happy.seguridad.Shield {
         def parametros = Parametros.get(1)
         if (!parametros) {
             parametros = new Parametros([
-                    horaInicio: 8,
+                    horaInicio  : 8,
                     minutoInicio: 30,
-                    horaFin: 16,
-                    minutoFin: 30
+                    horaFin     : 16,
+                    minutoFin   : 30
             ])
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
@@ -193,14 +193,173 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def calendario() {
+        def parametros = Parametros.get(1)
+        if (!parametros) {
+            parametros = new Parametros([
+                    horaInicio  : 8,
+                    minutoInicio: 00,
+                    horaFin     : 16,
+                    minutoFin   : 30
+            ])
+            if (!parametros.save(flush: true)) {
+                println "error al guardar params: " + parametros.errors
+            }
+        }
+
+        if (!params.anio) {
+            params.anio = new Date().format('yyyy').toInteger()
+        }
+
+        def anio = Anio.findAllByNumero(params.anio, [sort: "id"])
+        if (anio.size() > 1) {
+            flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
+            redirect(action: "error")
+            return
+        } else if (anio.size() == 0) {
+            flash.message = "No se encontraron registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
+            redirect(action: "error")
+            return
+        }
+        anio = anio.first()
+
+        if (anio.estado == 0) {
+            flash.message = "El año ${params.anio} se emcuentra desactivado. Por favor póngase en contacto con el administrador."
+            redirect(action: "error")
+            return
+        }
+
+        def dias = DiaLaborable.withCriteria {
+            eq("anio", anio)
+            order("fecha", "asc")
+        }
+
+        if (dias.size() < 365) {
+            if (DiaLaborable.count() == 0) {
+                flash.message = "<p>No se encontraron registros de días laborables. Para inicializar el calendario haga click en el botón Inicializar.</p>" +
+                        "<p>" +
+                        g.link(action: "inicializar", class: "btn btn-success") {
+                            "<i class='fa fa-check'></i> Inicializar"
+                        } +
+                        "</p>"
+                redirect(action: "error")
+                return
+            } else {
+                flash.message = "No se encontraron registros para los días laborables del año ${params.anio}. Por favor póngase en contacto con el administrador."
+                redirect(action: "error")
+                return
+            }
+        }
+
+        def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+        return [anio: anio, dias: dias, meses: meses, params: params]
+    }
+
+    def inicializar() {
+        params.anio = params.anio ?: new Date().format("yyyy")
+
+        def anio = Anio.findAllByNumero(params.anio)
+
+        if (anio.size() > 1) {
+            flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
+            redirect(action: "error")
+            return
+        } else if (anio.size() == 1) {
+            anio = anio.first()
+            anio.estado = 1
+        } else {
+            anio = new Anio([
+                    numero: params.anio,
+                    estado: 1
+            ])
+        }
+        if (!anio.save(flush: true)) {
+            flash.message = "Ha ocurrido un error al crear el año ${params.anio}. Por favor póngase en contacto con el administrador.<br/>" + g.renderErrors(bean: anio)
+            redirect(action: "error")
+            return
+        }
+        def parametros = Parametros.get(1)
+        if (!parametros) {
+            parametros = new Parametros([
+                    horaInicio  : 8,
+                    minutoInicio: 00,
+                    horaFin     : 16,
+                    minutoFin   : 30
+            ])
+            if (!parametros.save(flush: true)) {
+                println "error al guardar params: " + parametros.errors
+            }
+        }
+        def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        def enero01 = new Date().parse("dd-MM-yyyy", "01-01-" + params.anio)
+        def diciembre31 = new Date().parse("dd-MM-yyyy", "31-12-" + params.anio)
+
+        def dias = DiaLaborable.withCriteria {
+            eq("anio", anio)
+            order("fecha", "asc")
+        }
+        if (dias.size() < 365) {
+            println "No hay todos los dias para ${params.anio}: hay " + dias.size()
+
+            def fecha = enero01
+            def cont = 1
+            def fds = ["sat", "sun"]
+            def fmt = new java.text.SimpleDateFormat("EEE", new Locale("en"))
+
+            def diasSem = [
+                    "mon": 1,
+                    "tue": 2,
+                    "wed": 3,
+                    "thu": 4,
+                    "fri": 5,
+                    "sat": 6,
+                    "sun": 0,
+            ]
+            def guardados = 0
+            while (fecha <= diciembre31) {
+                def dia = fmt.format(fecha).toLowerCase()
+                def ordinal = 0
+                if (!fds.contains(dia)) {
+                    ordinal = cont
+                    cont++
+                }
+                def diaExiste = DiaLaborable.withCriteria {
+                    eq("fecha", fecha)
+                }
+                if (!diaExiste) {
+                    def diaLaborable = new DiaLaborable([
+                            fecha       : fecha,
+                            dia         : diasSem[dia],
+                            anio        : anio,
+                            ordinal     : ordinal,
+                            horaInicio  : -1,
+                            minutoInicio: -1,
+                            horaFin     : -1,
+                            minutoFin   : -1
+                    ])
+                    if (!diaLaborable.save(flush: true)) {
+                        println "error al guardar el dia laborable ${fecha.format('dd-MM-yyyy')}: " + diaLaborable.errors
+                    } else {
+                        guardados++
+//                    println "guardado: " + fecha.format("dd-MM-yyyy") + "   " + dia + " ordinal:" + ordinal
+                    }
+                }
+                fecha++
+            }
+            println "Guardados ${guardados} dias"
+        }
+        redirect(action: "calendario", params: params)
+    }
+
+    def calendario_old() {
 
         def parametros = Parametros.get(1)
         if (!parametros) {
             parametros = new Parametros([
-                    horaInicio: 8,
+                    horaInicio  : 8,
                     minutoInicio: 00,
-                    horaFin: 16,
-                    minutoFin: 30
+                    horaFin     : 16,
+                    minutoFin   : 30
             ])
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
@@ -279,14 +438,14 @@ class DiaLaborableController extends happy.seguridad.Shield {
                 }
                 if (!diaExiste) {
                     def diaLaborable = new DiaLaborable([
-                            fecha: fecha,
-                            dia: diasSem[dia],
-                            anio: anioObj,
-                            ordinal: ordinal,
-                            horaInicio: -1,
+                            fecha       : fecha,
+                            dia         : diasSem[dia],
+                            anio        : anioObj,
+                            ordinal     : ordinal,
+                            horaInicio  : -1,
                             minutoInicio: -1,
-                            horaFin: -1,
-                            minutoFin: -1
+                            horaFin     : -1,
+                            minutoFin   : -1
                     ])
                     if (!diaLaborable.save(flush: true)) {
                         println "error al guardar el dia laborable ${fecha.format('dd-MM-yyyy')}: " + diaLaborable.errors

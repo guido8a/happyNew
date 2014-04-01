@@ -3,6 +3,8 @@ package happy.tramites
 import groovy.json.JsonBuilder
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+import happy.utilitarios.DiaLaborable
+import happy.utilitarios.DiaLaborableController
 
 
 class TramiteController extends happy.seguridad.Shield {
@@ -50,7 +52,6 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
-
         def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
         if (anio.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
@@ -62,6 +63,13 @@ class TramiteController extends happy.seguridad.Shield {
 
         if (anio.findAll { it.estado == 1 }.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está activado, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
+        def dias = DiaLaborable.countByAnio(anio.first())
+        if (dias < 365) {
+            flash.message = "No se encontraron los registros de días laborables del año ${new Date().format('yyyy')}, no puede crear trámites nuevos. Contáctese con el administrador."
             redirect(action: "errores")
             return
         }
