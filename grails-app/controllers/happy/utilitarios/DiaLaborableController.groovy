@@ -178,7 +178,6 @@ class DiaLaborableController extends happy.seguridad.Shield {
             }
 
             // ******************************** RESETEA NUMERACIONES **************************************************** //
-            /*todo: preguntar si resetea todo todo todo */
             Numero.list().each { num ->
                 num.valor = 0
                 if (!num.save(flush: true)) {
@@ -216,7 +215,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
         def anioObj = Anio.findAllByNumero(params.anio, [sort: "id"])
         if (anioObj.size() > 1) {
-            println "Hay mas de un registro de año ${intAnioObj}!!!! ${anioObj}"
+            println "Hay mas de un registro de año ${params.anio}!!!! ${anioObj}"
             anioObj = anioObj.first()
         } else if (anioObj.size() == 1) {
             anioObj = anioObj.first()

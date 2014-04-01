@@ -516,6 +516,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
+        params.sort = params.sort ?: "apellido"
         def personaInstanceList = getLista(params, false)
         def personaInstanceCount = getLista(params, true).size()
         if (personaInstanceList.size() == 0 && params.offset && params.max) {
@@ -843,26 +844,26 @@ class PersonaController extends happy.seguridad.Shield {
         render "NO_No se encontró Persona."
     } //notFound para ajax
 
-    def cargarUsuariosLdap(){
+    def cargarUsuariosLdap() {
 //        def realPath = servletContext.getRealPath("/")
 //        def pathImages = realPath + "images/"
 //        def file = new File(pathImages+"/users")
 
 
-        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
-        println "conectado "+ ldap.class
+        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
+        println "conectado " + ldap.class
         println "!!!!!!!-----------------------------"
-        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB )
+        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB)
         def users = []
         def registrados = Persona.list()
         def encontrados = []
         println "${results.size} entradas halladas para el nivel UNO desde la base:"
         for (entry in results) {
-            if(entry && entry.displayname && !entry.objectclass.contains("computer")){
-                def logn=entry["samaccountname"]
-                println "buscando "+logn
+            if (entry && entry.displayname && !entry.objectclass.contains("computer")) {
+                def logn = entry["samaccountname"]
+                println "buscando " + logn
                 def prsn = Persona.findByLogin(logn)
-                if(!prsn){
+                if (!prsn) {
                     println "no encontro nuevo usuario"
                     def parts = entry["cn"].split("&")
 //                    def nombres = parts[0].split(" ")
@@ -877,42 +878,42 @@ class PersonaController extends happy.seguridad.Shield {
 //                        apellido = nombres[2]+" "+nombres[3]
 //                    if(nombres.size()==5)
 //                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
-                    if(!apellido)
+                    if (!apellido)
                         apellido = "sin apellido"
 
                     prsn = new Persona()
-                    prsn.nombre=nombres
-                    prsn.apellido=apellido
-                    prsn.mail=mail
-                    prsn.login=logn
-                    prsn.password="123".encodeAsMD5()
+                    prsn.nombre = nombres
+                    prsn.apellido = apellido
+                    prsn.mail = mail
+                    prsn.login = logn
+                    prsn.password = "123".encodeAsMD5()
                     prsn.departamento = Departamento.get(20)
-                    if(!prsn.save(flush: true)){
-                        println "error save prns "+prsn.errors
-                    }else{
+                    if (!prsn.save(flush: true)) {
+                        println "error save prns " + prsn.errors
+                    } else {
                         users.add(prsn)
                         def sesn = new Sesn()
-                        sesn.perfil=Prfl.findByCodigo("USU")
-                        sesn.usuario=prsn
+                        sesn.perfil = Prfl.findByCodigo("USU")
+                        sesn.usuario = prsn
                         sesn.save(flush: true)
                     }
-                }else{
+                } else {
                     println "encontro"
                     encontrados.add(prsn)
                 }
             }
         }
-        println "encontrados "+encontrados
-        def noReg = registrados-encontrados
-        return [users:users,noReg:noReg]
+        println "encontrados " + encontrados
+        def noReg = registrados - encontrados
+        return [users: users, noReg: noReg]
 
 
     }
 
-    def cambiarNombresUsuarios(){
-        Persona.list().each {p->
-            p.nombre=WordUtils.capitalizeFully(p.nombre)
-            p.apellido=WordUtils.capitalizeFully(p.apellido)
+    def cambiarNombresUsuarios() {
+        Persona.list().each { p ->
+            p.nombre = WordUtils.capitalizeFully(p.nombre)
+            p.apellido = WordUtils.capitalizeFully(p.apellido)
             p.save(flush: true)
         }
     }

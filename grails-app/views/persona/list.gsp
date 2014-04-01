@@ -49,7 +49,7 @@
                     <g:sortableColumn property="apellido" title="Apellido"/>
                     <g:sortableColumn property="departamento" title="Departamento"/>
                     <th>E-mail</th>
-                    <th>Autoridad</th>
+                    %{--<th>Autoridad</th>--}%
                 </tr>
             </thead>
             <tbody>
@@ -82,14 +82,14 @@
 
                     <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
                         <td>
-                            <i class="fa fa-${personaInstance.activo == 1 ? 'hdd-o' : 'power-off'} text-${personaInstance.activo == 1 ? 'success' : 'danger'}"></i>
+                            <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
                         </td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${personaInstance.mail}' search='${params.search}'/></td>
-                        <td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>
+                        %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
                     </tr>
                 </g:each>
             </tbody>
