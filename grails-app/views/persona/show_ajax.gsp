@@ -5,6 +5,8 @@
 </g:if>
 <g:else>
 
+
+
     <g:if test="${personaInstance?.departamento}">
         <div class="row">
             <div class="col-md-3 text-info">

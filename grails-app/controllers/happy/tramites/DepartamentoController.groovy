@@ -106,30 +106,53 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbolSearch_ajax() {
-        //println params
+//        println params
 //        def parts = params.search_string.split("~")
         def search = params.str.trim()
         if (search != "") {
-            def find = Persona.withCriteria {
+            def c = Persona.createCriteria()
+            def find = c.list(params) {
                 or {
+                    ilike("cedula", "%" + search + "%")
                     ilike("nombre", "%" + search + "%")
                     ilike("apellido", "%" + search + "%")
+                    ilike("cargo", "%" + search + "%")
+                    ilike("login", "%" + search + "%")
+                    ilike("codigo", "%" + search + "%")
+                    departamento {
+                        or {
+                            ilike("descripcion", "%" + search + "%")
+                        }
+                    }
                 }
             }
 //            println "FIND"
 //            println find
             def departamentos = []
             find.each { pers ->
-                if (pers.departamento && !departamentos.contains(pers.departamento))
+                if (pers.departamento && !departamentos.contains(pers.departamento)) {
                     departamentos.add(pers.departamento)
+                    def dep = pers.departamento
+                    def padre = dep.padre
+//                    println "ANTES: " + departamentos
+                    while (padre) {
+                        dep = padre
+                        padre = dep.padre
+                        if (!departamentos.contains(dep)) {
+                            departamentos.add(dep)
+                        }
+                    }
+//                    println "DESPUES: " + departamentos
+                }
             }
 //            println departamentos
+            departamentos = departamentos.reverse()
 
             def ids = "["
 
             if (find.size() > 0) {
                 ids += "\"#root\","
-                ids += "\"#lidep_11\","
+//                ids += "\"#lidep_11\","
                 departamentos.each { dp ->
                     ids += "\"#lidep_" + dp.id + "\","
                 }
