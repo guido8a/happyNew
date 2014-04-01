@@ -133,12 +133,108 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             response.sendError(404)
         }
     }
+    def cargaDocs(){
+
+        def tramite = Tramite.get(params.id)
+        println "carga docs "+params+ " "+tramite.anexo
+        if (tramite) {
+            if (tramite.anexo == 1) {
+                def docs = DocumentoTramite.findAllByTramite(tramite)
+                println "dosc "+docs
+                def editable=false
+                if(tramite.estadoTramite.codigo=="E001" || tramite.estadoTramite.codigo=="E002"  )
+                    editable=true
+                return [tramite: tramite,docs:docs,editable:true]
+            }
+        }
+    }
+
+
+    def borrarDoc(){
+        if(request.getMethod()=="POST"){
+            def doc = DocumentoTramite.get(params.id)
+            if(doc.tramite.estadoTramite.codigo=="E001" || doc.tramite.estadoTramite.codigo=="E002"  ){
+                def band =true
+                try{
+                    def path = servletContext.getRealPath("/") + "anexos/" + doc.tramite.id+ "/"+doc.path
+                    def file = new File(path)
+                    file.delete()
+                }catch (e){
+                    println "error borrar "+e
+                    band=false
+                }
+                if(band){
+                    doc.delete(flush: true)
+                    render "ok"
+                }else{
+                    render "error_No se pudo eliminar el archivo."
+                }
+            }
+        }else{
+            response.sendError(403)
+        }
+
+    }
+
+    def generateKey(){
+        if(request.getMethod()=="POST"){
+            def doc = DocumentoTramite.get(params.id)
+            session.key = doc?.path.size()+doc.resumen?.encodeAsMD5().substring(0,10)
+            render "ok"
+        }else{
+            response.sendError(403)
+        }
+    }
+
+    def descargarDoc(){
+        def doc = DocumentoTramite.get(params.id)
+        if(session.key == (doc.path.size()+doc.resumen?.encodeAsMD5().substring(0,10))){
+            session.key = null
+            def path = servletContext.getRealPath("/") + "anexos/" + doc.tramite.id+ "/"+doc.path
+            println "path "+doc.path+" "+doc.path.split("\\.")
+            def tipo = doc.path.split("\\.")
+            tipo = tipo[1]
+            println "tipo "+tipo
+            switch (tipo){
+                case "jpeg":
+                case "gif":
+                case "jpg":
+                case "bmp":
+                case "png":
+                    tipo="application/image"
+                    break;
+                case "pdf":
+                    tipo = "application/pdf"
+                    break;
+                case "doc":
+                case "docx":
+                case "odt":
+                    tipo="application/msword"
+                    break;
+                case "xls":
+                case "xlsx":
+                    tipo="application/vnd.ms-excel"
+                    break;
+                default:
+                    tipo ="application/pdf"
+                    break;
+            }
+            def file = new File(path)
+            def b = file.getBytes()
+            response.setContentType(tipo)
+            response.setHeader("Content-disposition", "attachment; filename=" + (doc.path))
+            response.setContentLength(b.length)
+            response.getOutputStream().write(b)
+        }else{
+            response.sendError(403)
+        }
+    }
 
 
     def uploadSvt(){
         println "updaload svt "+params
         def tramite = Tramite.get(params.id)
-        def path = servletContext.getRealPath("/") + "anexos/" + 32+ "/"    //web-app/archivos
+        def path = servletContext.getRealPath("/") + "anexos/" + tramite.id+ "/"    //web-app/archivos
         new File(path).mkdirs()
         def f = request.getFile('file')  //archivo = name del input type file
         def imageContent = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
@@ -244,7 +340,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                     }
                     /* fin resize */
                 } //si es imagen hace resize para que no exceda 800x800
-                println "llego hasta aca"
+//                println "llego hasta aca"
                 def docTramite = new DocumentoTramite([
                         tramite    : tramite,
                         fecha      : new Date(),
@@ -254,7 +350,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                         path       : nombre
                 ])
                 def data
-                println "llego hasta mas aca"
+//                println "llego hasta mas aca"
                 if (docTramite.save(flush: true)) {
                     data = [
                             files: [
@@ -266,7 +362,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                                     ]
                             ]
                     ]
-                    println "llego hasta mas mas aca"
+//                    println "llego hasta mas mas aca"
                 } else {
                     println "error al guardar: " + docTramite.errors
                     data = [
@@ -279,12 +375,12 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                             ]
                     ]
                 }
-                println "llego json"
+//                println "llego json"
                 def json = new JsonBuilder(data)
-//                    //println json.toPrettyString()
+                    //println json.toPrettyString()
                 render json
                 return
-                println "return ?"
+//                println "return ?"
             } //ok contents
             else {
                 println "llego else no se acepta"

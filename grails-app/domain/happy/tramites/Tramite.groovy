@@ -181,12 +181,12 @@ class Tramite {
             return null
         } else {
             def limite = this.getFechaLimite()
-            println limite
+//            println limite
             def fechaLimite = diasLaborablesService.fechaMasTiempo(limite, 48)
             if (fechaLimite[0]) {
                 return fechaLimite[1]
             } else {
-                println fechaLimite[1]
+//                println fechaLimite[1]
                 return null
             }
 //            use(TimeCategory) {

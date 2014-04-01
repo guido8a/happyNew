@@ -37,4 +37,23 @@ class DocumentoTramite {
         descripcion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'descripcion'])
         fechaLectura(blank: true, nullable: true, attributes: [title: 'fechaLectura'])
     }
+    String getResumenCorto(){
+            if(this.resumen){
+                if(this.resumen.size()>110){
+                    def res = ""
+                    def parts = resumen.split(" ")
+                    parts.each {
+                        if(res.size() < 110)
+                        res+=it+" "
+                    }
+                    return res+="..."
+                }else{
+                    return this.resumen
+                }
+
+            }else{
+                return ""
+            }
+    }
+
 }
