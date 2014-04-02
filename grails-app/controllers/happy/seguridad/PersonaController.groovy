@@ -916,6 +916,7 @@ class PersonaController extends happy.seguridad.Shield {
 
 
         def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE )
+        def band = true
         def cont =0
         for (entry in results) {
             println "__==> "+entry["ou"]
@@ -931,6 +932,11 @@ class PersonaController extends happy.seguridad.Shield {
                     def ou2 = e2["ou"]
                     def gn = e2["givenname"]
                     if(gn){
+                        println "E2--> "+e2["givenname"]
+                        if(band){
+                            println "e2::::: "+e2
+                            band=false
+                        }
                         cont++
                     }
                 }
