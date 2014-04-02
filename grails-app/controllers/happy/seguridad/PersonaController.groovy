@@ -966,8 +966,11 @@ class PersonaController extends happy.seguridad.Shield {
                             def padre=null
                             if(datos)
                                 padre = datos[0].split("=")
-                            println "padre "+padre+"   "+datos[0]
+                            println "padre "+padre[1]+"   "+datos[0]
                             padre = Departamento.findByDescripcion(padre[1])
+                            println "padre? "+padre
+                            if(!padre)
+                                padre=n1
                             dep = new Departamento()
                             dep.descripcion=ou2
                             dep.codigo="N.A"
