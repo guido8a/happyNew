@@ -16,7 +16,7 @@ Se ingresaron ${nuevos.size()} usuarios: <br/>
 </g:each>
 <a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>
 <br/>
-Usuarios NO registrados en el LDAP:<br/>
+Usuarios NO registrados en el LDAP: <br/>
 <g:each in="${reg}" var="u">
     <g:if test="${!users.contains(u)}">
         ${u.toString()} - ${u.login} - ${u.mail}<br/>
