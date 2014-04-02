@@ -913,8 +913,10 @@ class PersonaController extends happy.seguridad.Shield {
 //        println "encontrados " + encontrados
 //        def noReg = registrados - encontrados
 //        return [users: users, noReg: noReg]
-
+        def registrados = Persona.list()
         def users = []
+        def nuevos = []
+        def mod =[]
         def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE )
         def band = true
         def cont =0
@@ -974,6 +976,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 dpto=sinDep
                             prsn.departamento = dpto
                             if (!prsn.save(flush: true)) {
+                                nuevos.add(prsn)
                                 println "error save prns " + prsn.errors
                             } else {
 
@@ -984,11 +987,15 @@ class PersonaController extends happy.seguridad.Shield {
                             }
                         } else {
                             println "encontro"
-                            prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
-                            prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
-                            prsn.mail=e2["mail"]
-                            if (!prsn.save(flush: true)) {
-                                println "error save prns " + prsn.errors
+                            if(prsn.nombre!=WordUtils.capitalizeFully(e2["givenname"]) ||  prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail!=e2["mail"] || prsn.connect!=e2["dn"]){
+                                prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
+                                prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
+                                prsn.mail=e2["mail"]
+                                prsn.connect=e2["dn"]
+                                if (!prsn.save(flush: true)) {
+                                    mod.add(prsn)
+                                    println "error save prns " + prsn.errors
+                                }
                             }
                         }
                         users.add(prsn)
@@ -1054,6 +1061,7 @@ class PersonaController extends happy.seguridad.Shield {
                         dpto=sinDep
                     prsn.departamento = dpto
                     if (!prsn.save(flush: true)) {
+                        nuevos.add(prsn)
                         println "error save prns " + prsn.errors
                     } else {
                         users.add(prsn)
@@ -1064,12 +1072,15 @@ class PersonaController extends happy.seguridad.Shield {
                     }
                 } else {
                     println "encontro"
-                    prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
-                    prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
-                    prsn.mail=entry["mail"]
-                    prsn.connect=entry["dn"]
-                    if (!prsn.save(flush: true)) {
-                        println "error save prns " + prsn.errors
+                    if(prsn.nombre!=WordUtils.capitalizeFully(entry["givenname"]) ||  prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail!=entry["mail"] || prsn.connect!=entry["dn"]){
+                        prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
+                        prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
+                        prsn.mail=entry["mail"]
+                        prsn.connect=entry["dn"]
+                        if (!prsn.save(flush: true)) {
+                            mod.add(prsn)
+                            println "error save prns " + prsn.errors
+                        }
                     }
                 }
 
@@ -1083,7 +1094,7 @@ class PersonaController extends happy.seguridad.Shield {
 
         println "hay "+cont+ " usuarios"
 
-        return [users: users, noReg: []]
+        return [users: users, reg:registrados,nuevos:nuevos,mod:mod]
 
     }
 
