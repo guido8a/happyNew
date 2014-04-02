@@ -18,6 +18,7 @@ class TramiteController extends happy.seguridad.Shield {
     } //index
 
     def redactar() {
+
         def tramite = Tramite.get(params.id)
         return [tramite: tramite]
     }

@@ -12,6 +12,7 @@
         <th class="cabecera">Fecha Envio</th>
         <th class="cabecera">Fecha Límite</th>
         <th class="cabecera">Estado</th>
+        <th class="cabecera">Por Enviar</th>
     </tr>
     </thead>
     <tbody>
@@ -35,6 +36,12 @@
             <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
             <td>${limite?limite.format("dd-MM-yyyy HH:mm"):''}</td>
             <td>${tramite?.estadoTramite.descripcion}</td>
+           <g:if test="${tramite?.estadoTramite?.id == 2}">
+               <td><g:checkBox name="porEnviar" style="margin-left: 30px" class="form-control"/></td>
+           </g:if>
+            <g:else>
+                <td></td>
+            </g:else>
         </tr>
     </g:each>
     </tbody>

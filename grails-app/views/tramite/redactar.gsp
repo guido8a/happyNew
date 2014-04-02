@@ -36,9 +36,8 @@
             margin : auto;
             width  : 16cm;
         }
-            textarea {
-                text-align: justify;
-            }
+
+
         </style>
     </head>
 
@@ -53,7 +52,7 @@
                 </div>
             </div>
 
-            <elm:headerTramite tramite="${tramite}"/>
+            <elm:headerTramite2 tramite="${tramite}"/>
 
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
         </div>
@@ -63,6 +62,7 @@
 
                 if (typeof CKEDITOR != "undefined") {
                     $('textarea.editor').ckeditor({
+
                         height                  : 600,
 //                        filebrowserUploadUrl : '/notes/add/ajax/upload-inline-image/index.cfm',
 //                        filebrowserBrowseUrl : '/browser/browse.php',
@@ -71,7 +71,6 @@
                         %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%
                         filebrowserWindowWidth  : 950,
                         filebrowserWindowHeight : 500,
-//                        enterMode : CKEDITOR.justifyContent,
                         serverSave              : {
                             saveUrl  : '${createLink(controller:"tramite", action: "saveTramite")}',
                             saveData : {
@@ -102,8 +101,7 @@
                             '/',
                             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ],
                             [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ],
-
-                            [ 'Font', 'FontSize' , '-', 'TextColor', 'BGColor' ],
+                            [ 'Font', 'FontSize' , '-', 'TextColor', 'BGColor'],
                             ['About' ]
                         ]
                     });

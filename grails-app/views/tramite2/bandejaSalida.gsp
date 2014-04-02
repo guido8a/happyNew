@@ -112,6 +112,10 @@
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
 
+        <g:link action="" class="btn btn-success btnEnviar">
+            <i class="fa fa-pencil"></i> Enviar
+        </g:link>
+
     </div>
 
     <span class="grupo">
@@ -484,6 +488,11 @@
 
 
         });
+
+//        $(".btnEnviar").click(function () {
+//
+//            bootbox.dialog("")
+//        });
 
         cargarBandeja(false);
 

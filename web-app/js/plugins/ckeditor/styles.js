@@ -43,6 +43,7 @@ CKEDITOR.stylesSet.add( 'default', [
 		}
 	},
 
+
 	/* Inline Styles */
 
 	// These are core styles available as toolbar buttons. You may opt enabling

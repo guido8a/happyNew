@@ -43,6 +43,8 @@ class TramiteExportController {
         def pathImages = realPath + "images/"
         def path = pathImages + "redactar/" + usuario.id + "/"
 
+        new File(path).mkdirs()
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
         FontResolver resolver = renderer.getFontResolver();
@@ -100,6 +102,9 @@ class TramiteExportController {
                 ".tramiteHeader {\n" +
                 "   width        : 100%;\n" +
                 "   border-bottom: solid 1px black;\n" +
+                "}\n"+
+                "p{\n" +
+                "   text-align: justify;\n" +
                 "}\n"
         content += "</style>\n"
         content += "</head>\n"

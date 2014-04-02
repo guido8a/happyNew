@@ -16,6 +16,8 @@ body
 	background-color: #fff;
 
 	margin: 20px;
+
+    word-wrap: break-word;
 }
 
 .cke_editable
@@ -121,3 +123,4 @@ figure figcaption
 	text-align: center;
 	display: block; /* For IE8 */
 }
+

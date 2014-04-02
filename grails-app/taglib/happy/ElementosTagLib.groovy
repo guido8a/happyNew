@@ -6,6 +6,7 @@ import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import happy.tramites.Tramite
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.springframework.beans.SimpleTypeConverter
 import org.springframework.context.MessageSourceResolvable
@@ -292,6 +293,180 @@ class ElementosTagLib {
         }
         out << html
     }
+
+
+    def headerTramite2 = { attrs ->
+        def tramite = attrs.tramite
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001')
+        def rolCC = RolPersonaTramite.findByCodigo('R002')
+
+        def para = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolPara)
+        def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
+
+        /////////////////////////////
+
+        def padre = null
+//        def tramite = new Tramite(params)
+        def users = []
+        if (params.padre) {
+            padre = Tramite.get(params.padre)
+        }
+        if (params.id) {
+            tramite = Tramite.get(params.id)
+            padre = tramite.padre
+        } else {
+            tramite.fechaCreacion = new Date()
+        }
+
+        def persona = Persona.get(session.usuario.id)
+
+        def de = session.usuario
+        def disp, disponibles = []
+        def disp2 = []
+        def todos = []
+
+        if (persona.puedeTramitar) {
+            disp = Departamento.list([sort: 'descripcion'])
+        } else {
+            disp = [persona.departamento]
+        }
+        disp.each { dep ->
+//            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.id == persona.departamento.id) {
+//                def users = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep)
+                usuarios.each {
+                    if (it.id != de.id) {
+                        users += it
+                    }
+                }
+                for (int i = users.size() - 1; i > -1; i--) {
+                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                        users.remove(i)
+                    } else {
+                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                    }
+                }
+            }
+
+
+        }
+
+        disp.each { dep ->
+            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+        }
+
+        todos = disponibles + disp2
+
+        //////////////////////////
+
+        def strPara = ""
+        def strPara2 = ""
+
+        para.each { p ->
+            if (p.persona) {
+                if (strPara != "") {
+                    strPara += ", "
+                }
+                strPara += util.nombrePersona(persona: p.persona)
+                strPara2 += p.persona.id
+            }
+            if (p.departamento) {
+                if (strPara != "") {
+                    strPara += ", "
+                }
+                strPara += p.departamento.descripcion
+                strPara2 += (p.departamento.id * -1)
+            }
+        }
+
+//        println("-->" + strPara2)
+
+        def html
+
+        if (!attrs.pdf) {
+            html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container\">"
+            html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
+            html += "                ${tramite.tipoDocumento?.descripcion} ${attrs.extraTitulo ?: ''}"
+            html += "            </div>"
+            html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
+            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
+            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
+            html += "                </div>"
+            html += "            </div>"
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    DE"
+            html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+            html += "                </div>"
+            html += "            </div>"
+            if (para) {
+                html += "                <div class=\"row row-low-margin-top\">"
+                html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                html += "                        PARA"
+                html += "                    </div>"
+                html += ""
+                html += "                    <div class=\"col-xs-10  col-buen-height\">"
+                html+= g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+//                html += strPara
+                html += "                    </div>"
+                html += "                </div>"
+            }
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    FECHA"
+            html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+            html += "                </div>"
+            html += "            </div>"
+            html += ""
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    ASUNTO"
+            html += "                </div>"
+            html += ""
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                   <input type='text' name=\"asunto\" value=\"${tramite.asunto}\" style=\"width: 460px\" class=\"form-control\"/>"
+            html += "                </div>"
+            html += "            </div>"
+            html += "        </div>"
+        } else {
+            html = "<div class=\"titulo-azul titulo-horizontal\">"
+            html += tramite.tipoDocumento?.descripcion
+            html += "</div>"
+            html += "<table class='tramiteHeader'>"
+            html += "<tr>"
+            html += "<td colspan='2'>"
+            html += "<b>No.</b> ${tramite.codigo}"
+            html += "</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>DE</b></td>"
+            html += "<td>${tramite.de.departamento.descripcion}</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>PARA</b></td>"
+            html += "<td>${strPara}</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>FECHA</b></td>"
+            html += "<td>"
+            html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+            html += "</td>"
+            html += "</tr>"
+            html += "<tr>"
+            html += "<td class='negrilla'><b>ASUNTO</b></td>"
+            html += "<td>${tramite.asunto}</td>"
+            html += "</tr>"
+            html += "</table>"
+        }
+        out << html
+    }
+
 
     /**
      * crea un datepicker
