@@ -929,6 +929,7 @@ class PersonaController extends happy.seguridad.Shield {
                 }
                 def dep = Departamento.findByDescripcion(ou)
                 if(!dep){
+                    println "new Dep "+ou
                     dep = new Departamento()
                     dep.descripcion=ou
                     dep.codigo="N.A"
@@ -958,11 +959,13 @@ class PersonaController extends happy.seguridad.Shield {
                     }else{
                         dep = Departamento.findByDescripcion(ou2)
                         if(!dep){
+                            println "new Dep "+ou
                             def datos = e2["dn"].split(",")
                             println "datos  dep "+datos
                             def padre=null
                             if(datos)
                                 padre = datos[0].split("=")
+                            println "padre "+padre+"   "+datos[0]
                             padre = Departamento.findByDescripcion(padre)
                             dep = new Departamento()
                             dep.descripcion=ou
