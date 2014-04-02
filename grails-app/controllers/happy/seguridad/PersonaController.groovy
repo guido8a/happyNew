@@ -914,19 +914,17 @@ class PersonaController extends happy.seguridad.Shield {
 //        def noReg = registrados - encontrados
 //        return [users: users, noReg: noReg]
 
-
+        def users = []
         def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE )
         def band = true
         def cont =0
         def n1= Departamento.get(11)
+        def sinDep = Departamento.get(20)
         for (entry in results) {
             println "__==> "+entry["ou"]
             println "----------------------------"
             def ou = entry["ou"]
             if(ou){
-                if(band){
-                    println "E2--> "+entry
-                }
                 def dep = Departamento.findByDescripcion(ou)
                 if(!dep){
                     println "new Dep "+ou
@@ -948,13 +946,51 @@ class PersonaController extends happy.seguridad.Shield {
                     def ou2 = e2["ou"]
                     def gn = e2["givenname"]
                     if(gn){
+                        def logn = e2["samaccountname"]
+                        println "buscando e2 " + logn
+                        def prsn = Persona.findByLogin(logn)
+                        if (!prsn) {
+                            println "no encontro nuevo usuario"
+                            def nombres = WordUtils.capitalizeFully(e2["givenname"])
+                            def mail = e2["mail"]
+                            def apellido = WordUtils.capitalizeFully(e2["sn"])
+                            if (!apellido)
+                                apellido = "sin apellido"
+                            prsn = new Persona()
+                            prsn.nombre = nombres
+                            prsn.apellido = apellido
+                            prsn.mail = mail
+                            prsn.login = logn
+                            prsn.password = "123".encodeAsMD5()
+                            def datos = e2["dn"].split(",")
+                            println "datos  dep "+datos
+                            def dpto=null
+                            if(datos)
+                                dpto = datos[0].split("=")
+                            println "departamento "+dpto[0]+"   "+datos[0]
+                            dpto = Departamento.findByDescripcion(dpto[1])
+                            if(!dpto)
+                                dpto=sinDep
+                            prsn.departamento = dpto
+                            if (!prsn.save(flush: true)) {
+                                println "error save prns " + prsn.errors
+                            } else {
 
-                        if(band){
-                            println "E2--> "+e2["givenname"]
-                            println "e2::::: "+e2
-                            println "e2----> "+e2["dn"]
-                            band=false
+                                def sesn = new Sesn()
+                                sesn.perfil = Prfl.findByCodigo("USU")
+                                sesn.usuario = prsn
+                                sesn.save(flush: true)
+                            }
+                        } else {
+                            println "encontro"
+                            prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
+                            prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
+                            prsn.mail=e2["mail"]
+                            if (!prsn.save(flush: true)) {
+                                println "error save prns " + prsn.errors
+                            }
                         }
+                        users.add(prsn)
                         cont++
                     }
                     if(ou2 && ou2!="Equipo" && ou2!="EQUIPOS" && ou2!="Equipos"  && ou2!="EQUIPO"){
@@ -986,8 +1022,55 @@ class PersonaController extends happy.seguridad.Shield {
 
                 println "*********************************\n"
             }
-            else{
+            if(entry["givenname"]){
                 println "E1 "+entry["givenname"]
+
+                def logn = entry["samaccountname"]
+                println "buscando " + logn
+                def prsn = Persona.findByLogin(logn)
+                if (!prsn) {
+                    println "no encontro nuevo usuario"
+                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
+                    def mail = entry["mail"]
+                    def apellido = WordUtils.capitalizeFully(entry["sn"])
+                    if (!apellido)
+                        apellido = "sin apellido"
+                    prsn = new Persona()
+                    prsn.nombre = nombres
+                    prsn.apellido = apellido
+                    prsn.mail = mail
+                    prsn.login = logn
+                    prsn.password = "123".encodeAsMD5()
+                    def datos = entry["dn"].split(",")
+                    println "datos  dep "+datos
+                    def dpto=null
+                    if(datos)
+                        dpto = datos[0].split("=")
+                    println "departamento "+dpto[0]+"   "+datos[0]
+                    dpto = Departamento.findByDescripcion(dpto[1])
+                    if(!dpto)
+                        dpto=sinDep
+                    prsn.departamento = dpto
+                    if (!prsn.save(flush: true)) {
+                        println "error save prns " + prsn.errors
+                    } else {
+                        users.add(prsn)
+                        def sesn = new Sesn()
+                        sesn.perfil = Prfl.findByCodigo("USU")
+                        sesn.usuario = prsn
+                        sesn.save(flush: true)
+                    }
+                } else {
+                    println "encontro"
+                    prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
+                    prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
+                    prsn.mail=entry["mail"]
+                    if (!prsn.save(flush: true)) {
+                        println "error save prns " + prsn.errors
+                    }
+                }
+
+                users.add(prsn)
                 cont++
             }
 
@@ -997,7 +1080,7 @@ class PersonaController extends happy.seguridad.Shield {
 
         println "hay "+cont+ " usuarios"
 
-
+        return [users: users, noReg: []]
 
     }
 
