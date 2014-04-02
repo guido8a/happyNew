@@ -280,13 +280,13 @@ class DepartamentoController extends happy.seguridad.Shield {
                 } else if (hijo instanceof Persona) {
                     switch (params.sort) {
                         case 'apellido':
-                            lbl = "${hijo.apellido} ${hijo.nombre}"
+                            lbl = "${hijo.apellido} ${hijo.nombre} (${hijo.login})"
                             break;
                         case 'nombre':
-                            lbl = "${hijo.nombre} ${hijo.apellido}"
+                            lbl = "${hijo.nombre} ${hijo.apellido} (${hijo.login})"
                             break;
                         default:
-                            lbl = "${hijo.apellido} ${hijo.nombre}"
+                            lbl = "${hijo.apellido} ${hijo.nombre} (${hijo.login})"
                     }
 
                     tp = "usu"
