@@ -962,12 +962,13 @@ class PersonaController extends happy.seguridad.Shield {
                             prsn.mail = mail
                             prsn.login = logn
                             prsn.password = "123".encodeAsMD5()
+                            prsn.connect=e2["dn"]
                             def datos = e2["dn"].split(",")
                             println "datos  dep "+datos
                             def dpto=null
                             if(datos)
-                                dpto = datos[0].split("=")
-                            println "departamento "+dpto[0]+"   "+datos[0]
+                                dpto = datos[1].split("=")
+                            println "departamento "+dpto[0]+"   "+datos[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
                             if(!dpto)
                                 dpto=sinDep
@@ -1041,12 +1042,13 @@ class PersonaController extends happy.seguridad.Shield {
                     prsn.mail = mail
                     prsn.login = logn
                     prsn.password = "123".encodeAsMD5()
+                    prsn.connect=entry["dn"]
                     def datos = entry["dn"].split(",")
                     println "datos  dep "+datos
                     def dpto=null
                     if(datos)
-                        dpto = datos[0].split("=")
-                    println "departamento "+dpto[0]+"   "+datos[0]
+                        dpto = datos[1].split("=")
+                    println "departamento "+dpto[1]+"   "+datos[1]
                     dpto = Departamento.findByDescripcion(dpto[1])
                     if(!dpto)
                         dpto=sinDep
@@ -1065,6 +1067,7 @@ class PersonaController extends happy.seguridad.Shield {
                     prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
                     prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
                     prsn.mail=entry["mail"]
+                    prsn.connect=entry["dn"]
                     if (!prsn.save(flush: true)) {
                         println "error save prns " + prsn.errors
                     }
