@@ -936,6 +936,7 @@ class PersonaController extends happy.seguridad.Shield {
                         if(band){
                             println "E2--> "+e2["givenname"]
                             println "e2::::: "+e2
+                            println "e2----> "+e2["dn"]
                             band=false
                         }
                         cont++
