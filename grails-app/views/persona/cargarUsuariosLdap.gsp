@@ -10,7 +10,7 @@ ${mod.size()} Fueron actualizados<br/>
 <g:each in="${mod}" var="u">
     ${u.toString()} - ${u.login} - ${u.mail}<br/>
 </g:each>
-Se ingresaron ${nuevos.size()} usuarios: <br/>
+${nuevos.size()} nuevos usuarios fueron ingresados: <br/>
 <g:each in="${nuevos}" var="u">
     ${u.toString()} - ${u.login} - ${u.mail}<br/>
 </g:each>
