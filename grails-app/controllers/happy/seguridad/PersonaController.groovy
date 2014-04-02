@@ -918,6 +918,7 @@ class PersonaController extends happy.seguridad.Shield {
         def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE )
         def band = true
         def cont =0
+        def n1= Departamento.get(11)
         for (entry in results) {
             println "__==> "+entry["ou"]
             println "----------------------------"
@@ -927,6 +928,16 @@ class PersonaController extends happy.seguridad.Shield {
                     println "E2--> "+entry
                 }
                 def dep = Departamento.findByDescripcion(ou)
+                if(!dep){
+                    dep = new Departamento()
+                    dep.descripcion=ou
+                    dep.codigo="N.A"
+                    dep.activo=1
+                    dep.padre=n1
+                    if(!dep.save(flush: true))
+                        println "errores dep "+dep.errors
+
+                }
                 println "*********************************\n"
                 def searchString =  'ou='+ou+',ou=GADPP,dc=pichincha,dc=local'
                 println "search String "+searchString
@@ -944,6 +955,24 @@ class PersonaController extends happy.seguridad.Shield {
                             band=false
                         }
                         cont++
+                    }else{
+                        dep = Departamento.findByDescripcion(ou2)
+                        if(!dep){
+                            def datos = e2["dn"].split(",")
+                            println "datos  dep "+datos
+                            def padre=null
+                            if(datos)
+                                padre = datos[0].split("=")
+                            padre = Departamento.findByDescripcion(padre)
+                            dep = new Departamento()
+                            dep.descripcion=ou
+                            dep.codigo="N.A"
+                            dep.activo=1
+                            dep.padre=padre
+                            if(!dep.save(flush: true))
+                                println "errores dep "+dep.errors
+
+                        }
                     }
                 }
 
