@@ -52,7 +52,7 @@
                 </label>
                 </div>
             </g:form>
-            <div id="ajx" style="width:820px; padding-left: 20px; "></div>
+            <div id="ajx" style="width:820px; padding-left: 20px;"></div>
 
             <div id="ajx_prfl" style="width:520px;"></div>
 
