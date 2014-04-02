@@ -1,5 +1,7 @@
 package happy.seguridad
 
+import com.sun.xml.internal.bind.v2.TODO
+
 class PrflController extends happy.seguridad.Shield {
 
     def dbConnectionService
@@ -48,7 +50,7 @@ class PrflController extends happy.seguridad.Shield {
     def ajaxPermisoTramite = {
         def prfl = params.prfl.toInteger()
         def tpac = params.tpac
-        println "---------parametros: ${params}"
+//        println "---------parametros: ${params}"
         def resultado = []
         def i = 0
         def ids = params.ids
@@ -68,7 +70,7 @@ class PrflController extends happy.seguridad.Shield {
             i++
         }
         cn.close()
-        println "-------------------------" + resultado
+//        println "-------------------------" + resultado
 
         return [datos: resultado, mdlo__id: ids, tpac__id: tpac]
     }
@@ -237,7 +239,6 @@ class PrflController extends happy.seguridad.Shield {
         if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
         // eliminar los permisos que no estén chequeados
         def cn = dbConnectionService.getConnection()
-        def cn1 = dbConnectionService.getConnection()
         def tx = ""
         tx = "select prms__id from prms, accn where accn.accn__id = prms.accn__id and " +
                 "mdlo__id = ${modulo} and " +
@@ -272,7 +273,7 @@ class PrflController extends happy.seguridad.Shield {
             tx1 = "insert into prms(prfl__id, accn__id) values (${prfl.toInteger()}, ${it})"
             try {
                 cn.execute(tx1)
-                insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
+                //insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
 //          println "insertando.... ${tx1}"
             }
             catch (Exception ex) {
@@ -281,7 +282,94 @@ class PrflController extends happy.seguridad.Shield {
             //resp += "<br>" + tx1
         }
         cn.close()
-        cn1.close()
+        //println "recibido:" + params
+        //render(resp + "<br>Existe:" + exst + "<br>Actual:" + actl + "<br>a insertar: ${actl-exst}")
+        redirect(action: 'ajaxPermisos', params: params)
+    }
+
+
+    def grabar_perm = {
+//        println "parametros grabar: ${params}"
+        def ids = params.ids
+        def modulo = params.menu
+        def prfl = params.prfl
+        def tx1 = ""
+        def exst = []
+        def actl = []
+        def prsn = []
+
+        if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
+        // eliminar los permisos que no estén chequeados
+        def cn = dbConnectionService.getConnection()
+        def tx = ""
+        /* saca los ids de perm para borrar */
+        tx = "select prpf__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
+                "prpf.perm__id not in (select perm__id " +
+                "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
+//
+//        println "grabar SQL: ${tx}"
+        cn.eachRow(tx) { d ->
+            Prpf.get(d.prpf__id).delete()
+        }
+//        println "-------------borrado de permisos----------"
+        /* se debe barrer todos los permisosseñalados y si está chequeado añadir a prpf. */
+        tx = "select prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
+                "prpf.perm__id in (select perm__id " +
+                "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
+//        println "grabar IN SQL: ${tx}"
+        exst = []
+        cn.eachRow(tx) { d ->
+            exst.add(d.perm__id)
+        }
+
+        tx = "select perm__id from perm where perm__id in (${ids})"
+        //println "grabar señalados SQL: ${tx}"
+        actl = []
+        cn.eachRow(tx.toString()) { d ->
+            actl.add(d.perm__id)
+        }
+
+//        println "insercion  Actual: ${actl} y Exst: ${exst}"
+//        println "a insertar:" + actl - exst
+        (actl - exst).each {
+            tx1 = "insert into prpf(prfl__id, perm__id) values (${prfl.toInteger()}, ${it.toInteger()})"
+            try {
+                cn.execute(tx1)
+                //insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
+//                println "insertando.... ${tx1}"
+            }
+            catch (Exception ex) {
+                println ex.getMessage()
+            }
+            //resp += "<br>" + tx1
+        }
+
+
+        /* actualizar PRUS de los usuarios con el perfil actual */
+        //println "-------------borrado de PRUS----------"
+        /* se debe barrer todos los permisos señalados y si está chequeado añadir a prpf. */
+        /*TODO */
+/*
+        tx = "select prsn__id from sesn where prfl__id = ${prfl}"
+        prsn = []
+        cn.eachRow(tx.toString()) { d ->
+            prsn.add(d.prsn__id)
+        }
+        (prsn).each {
+            tx1 = "delete from prus where prsn__id = ${it} and perm__id in ${borrar}"
+            tx2 = "insert into prus(..) select (.. prsn__id, ...) from prpf where prfl__id = ${prfl}"
+            try {
+                cn.execute(tx1)
+                cn.execute(tx2)
+            }
+            catch (Exception ex) {
+                println ex.getMessage()
+            }
+            //resp += "<br>" + tx1
+        }
+*/
+
+        cn.close()
         //println "recibido:" + params
         //render(resp + "<br>Existe:" + exst + "<br>Actual:" + actl + "<br>a insertar: ${actl-exst}")
         redirect(action: 'ajaxPermisos', params: params)

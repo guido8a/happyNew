@@ -47,7 +47,7 @@
                 var data = armarAccn();
                 //alert("armado: " + data);
                 $.ajax({
-                    type    : "POST", url : "../grabar",
+                    type    : "POST", url : "${createLink(controller: 'prfl', action:'grabar')}",
                     data    : "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
                     success : function (msg) {
                         $("#ajx").html(msg)
