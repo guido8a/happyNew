@@ -923,6 +923,10 @@ class PersonaController extends happy.seguridad.Shield {
             println "----------------------------"
             def ou = entry["ou"]
             if(ou){
+                if(band){
+                    println "E2--> "+entry
+                }
+                def dep = Departamento.findByDescripcion(ou)
                 println "*********************************\n"
                 def searchString =  'ou='+ou+',ou=GADPP,dc=pichincha,dc=local'
                 println "search String "+searchString
