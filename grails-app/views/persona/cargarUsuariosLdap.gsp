@@ -6,7 +6,7 @@
 </head>
 <body>
 <b>Se Procesaron ${users.size()} usuarios</b><br/>
-<b>${mod.size()} Fueron actualizados</b><br/>
+<b>${mod.size()} Fueron actualizados: </b><br/>
 <g:each in="${mod}" var="u">
     ${u.toString()} - ${u.login} - ${u.mail}<br/>
 </g:each>
