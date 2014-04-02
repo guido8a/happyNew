@@ -949,7 +949,7 @@ class PersonaController extends happy.seguridad.Shield {
                     def gn = e2["givenname"]
                     if(gn){
                         def logn = e2["samaccountname"]
-                        println "buscando e2 " + logn
+//                        println "buscando e2 " + logn
                         def prsn = Persona.findByLogin(logn)
                         if (!prsn) {
                             println "no encontro nuevo usuario"
@@ -986,7 +986,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 sesn.save(flush: true)
                             }
                         } else {
-                            println "encontro"
+//                            println "encontro"
                             if(prsn.nombre!=WordUtils.capitalizeFully(e2["givenname"]) ||  prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail!=e2["mail"] || prsn.connect!=e2["dn"]){
                                 prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                 prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
@@ -1034,7 +1034,7 @@ class PersonaController extends happy.seguridad.Shield {
                 println "E1 "+entry["givenname"]
 
                 def logn = entry["samaccountname"]
-                println "buscando " + logn
+//                println "buscando " + logn
                 def prsn = Persona.findByLogin(logn)
                 if (!prsn) {
                     println "no encontro nuevo usuario"
@@ -1071,7 +1071,7 @@ class PersonaController extends happy.seguridad.Shield {
                         sesn.save(flush: true)
                     }
                 } else {
-                    println "encontro"
+//                    println "encontro"
                     if(prsn.nombre!=WordUtils.capitalizeFully(entry["givenname"]) ||  prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail!=entry["mail"] || prsn.connect!=entry["dn"]){
                         prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
                         prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
