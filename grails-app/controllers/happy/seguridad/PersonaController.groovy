@@ -957,7 +957,8 @@ class PersonaController extends happy.seguridad.Shield {
                         }
                         cont++
                     }
-                    if(ou2){
+                    if(ou2 && ou2!="Equipo" && ou2!="EQUIPOS"){
+                        println "ou2--> "+ou2
                         dep = Departamento.findByDescripcion(ou2)
                         if(!dep){
                             println "new Dep "+ou2
