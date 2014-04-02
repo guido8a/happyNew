@@ -859,60 +859,95 @@ class PersonaController extends happy.seguridad.Shield {
 
         LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         println "conectado " + ldap.class
-        println "!!!!!!!-----------------------------"
-        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB)
-        def users = []
-        def registrados = Persona.list()
-        def encontrados = []
-        println "${results.size} entradas halladas para el nivel UNO desde la base:"
-        for (entry in results) {
-            if (entry && entry.displayname && !entry.objectclass.contains("computer")) {
-                def logn = entry["samaccountname"]
-                println "buscando " + logn
-                def prsn = Persona.findByLogin(logn)
-                if (!prsn) {
-                    println "no encontro nuevo usuario"
-                    def parts = entry["cn"].split("&")
-//                    def nombres = parts[0].split(" ")
-                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
-                    //println nombres+" " + entry["givenname"]
-                    def mail = entry["mail"]
-                    //def nombre = nombres[0]+" "+nombres[1]
-                    def apellido = WordUtils.capitalizeFully(entry["sn"])
-//                    if(nombres.size()==3)
-//                        apellido = nombres[2]
-//                    if(nombres.size()==4)
-//                        apellido = nombres[2]+" "+nombres[3]
-//                    if(nombres.size()==5)
-//                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
-                    if (!apellido)
-                        apellido = "sin apellido"
+        println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+//        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB)
+//        def users = []
+//        def registrados = Persona.list()
+//        def encontrados = []
+//        println "${results.size} entradas halladas para el nivel UNO desde la base:"
+//        for (entry in results) {
+//            if (entry && entry.displayname && !entry.objectclass.contains("computer")) {
+//                def logn = entry["samaccountname"]
+//                println "buscando " + logn
+//                def prsn = Persona.findByLogin(logn)
+//                if (!prsn) {
+//                    println "no encontro nuevo usuario"
+//                    def parts = entry["cn"].split("&")
+////                    def nombres = parts[0].split(" ")
+//                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
+//                    //println nombres+" " + entry["givenname"]
+//                    def mail = entry["mail"]
+//                    //def nombre = nombres[0]+" "+nombres[1]
+//                    def apellido = WordUtils.capitalizeFully(entry["sn"])
+////                    if(nombres.size()==3)
+////                        apellido = nombres[2]
+////                    if(nombres.size()==4)
+////                        apellido = nombres[2]+" "+nombres[3]
+////                    if(nombres.size()==5)
+////                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
+//                    if (!apellido)
+//                        apellido = "sin apellido"
+//
+//                    prsn = new Persona()
+//                    prsn.nombre = nombres
+//                    prsn.apellido = apellido
+//                    prsn.mail = mail
+//                    prsn.login = logn
+//                    prsn.password = "123".encodeAsMD5()
+//                    prsn.departamento = Departamento.get(20)
+//                    if (!prsn.save(flush: true)) {
+//                        println "error save prns " + prsn.errors
+//                    } else {
+//                        users.add(prsn)
+//                        def sesn = new Sesn()
+//                        sesn.perfil = Prfl.findByCodigo("USU")
+//                        sesn.usuario = prsn
+//                        sesn.save(flush: true)
+//                    }
+//                } else {
+//                    println "encontro"
+//                    encontrados.add(prsn)
+//                }
+//            }
+//        }
+//        println "encontrados " + encontrados
+//        def noReg = registrados - encontrados
+//        return [users: users, noReg: noReg]
 
-                    prsn = new Persona()
-                    prsn.nombre = nombres
-                    prsn.apellido = apellido
-                    prsn.mail = mail
-                    prsn.login = logn
-                    prsn.password = "123".encodeAsMD5()
-                    prsn.departamento = Departamento.get(20)
-                    if (!prsn.save(flush: true)) {
-                        println "error save prns " + prsn.errors
-                    } else {
-                        users.add(prsn)
-                        def sesn = new Sesn()
-                        sesn.perfil = Prfl.findByCodigo("USU")
-                        sesn.usuario = prsn
-                        sesn.save(flush: true)
+
+        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE )
+        def cont =0
+        for (entry in results) {
+            println "__==> "+entry["ou"]
+            println "----------------------------"
+            def ou = entry["ou"]
+            if(ou){
+                println "*********************************\n"
+                def searchString =  'ou='+ou+',ou=GADPP,dc=pichincha,dc=local'
+                println "search String "+searchString
+                def res2 = ldap.search('(objectClass=*)',searchString, SearchScope.SUB )
+                for(e2 in res2){
+                    println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
+                    def ou2 = e2["ou"]
+                    def gn = e2["givenname"]
+                    if(gn){
+                        cont++
                     }
-                } else {
-                    println "encontro"
-                    encontrados.add(prsn)
                 }
+
+                println "*********************************\n"
             }
+            else{
+                println "E1 "+entry["givenname"]
+                cont++
+            }
+
+            println "-------------------------- \n"
         }
-        println "encontrados " + encontrados
-        def noReg = registrados - encontrados
-        return [users: users, noReg: noReg]
+        println "--------------------"
+
+        println "hay "+cont+ " usuarios"
+
 
 
     }
