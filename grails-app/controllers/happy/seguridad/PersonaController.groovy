@@ -166,9 +166,9 @@ class PersonaController extends happy.seguridad.Shield {
                                 files: [
                                         [
                                                 name: nombre,
-                                                url: resource(dir: 'images/perfiles/', file: nombre),
+                                                url : resource(dir: 'images/perfiles/', file: nombre),
                                                 size: f.getSize(),
-                                                url: pathFile
+                                                url : pathFile
                                         ]
                                 ]
                         ]
@@ -181,8 +181,8 @@ class PersonaController extends happy.seguridad.Shield {
                         def data = [
                                 files: [
                                         [
-                                                name: nombre,
-                                                size: f.getSize(),
+                                                name : nombre,
+                                                size : f.getSize(),
                                                 error: "Ha ocurrido un error al guardar"
                                         ]
                                 ]
@@ -198,9 +198,9 @@ class PersonaController extends happy.seguridad.Shield {
                             files: [
                                     [
                                             name: nombre,
-                                            url: resource(dir: 'images/perfiles/', file: nombre),
+                                            url : resource(dir: 'images/perfiles/', file: nombre),
                                             size: f.getSize(),
-                                            url: pathFile
+                                            url : pathFile
                                     ]
                             ]
                     ]
@@ -215,8 +215,8 @@ class PersonaController extends happy.seguridad.Shield {
                 def data = [
                         files: [
                                 [
-                                        name: fileName + "." + ext,
-                                        size: f.getSize(),
+                                        name : fileName + "." + ext,
+                                        size : f.getSize(),
                                         error: "Extensión no permitida"
                                 ]
                         ]
@@ -533,7 +533,14 @@ class PersonaController extends happy.seguridad.Shield {
                 notFound_ajax()
                 return
             }
-            return [personaInstance: personaInstance]
+            def w = 0, h = 0
+            if (personaInstance.foto) {
+                def path = servletContext.getRealPath("/") + "images/perfiles/" //web-app/archivos
+                def img = ImageIO.read(new File(path + personaInstance.foto));
+                w = img.getWidth()
+                h = img.getHeight()
+            }
+            return [personaInstance: personaInstance, w: w, h: h]
         } else {
             notFound_ajax()
         }
@@ -759,7 +766,7 @@ class PersonaController extends happy.seguridad.Shield {
                 def perfilUsuario = Prfl.findByCodigo("USU")
                 def sesion = new Sesn([
                         usuario: personaInstance,
-                        perfil: perfilUsuario
+                        perfil : perfilUsuario
                 ])
                 if (!sesion.save(flush: true)) {
                     println "error asignando el perfil usuario"
