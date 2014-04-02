@@ -364,10 +364,18 @@
                     }
                 };
                 var config = {
-                    text   : 'Configuración',
+                    text   : 'Perfiles',
                     icon   : "<i class='fa fa-gears'></i>",
                     action : function (e) {
                         location.href = "${createLink(action: 'config')}/" + id;
+                    }
+
+                };
+                var ausentismo = {
+                    text   : 'Ausentismo',
+                    icon   : "<i class='fa fa-gears'></i>",
+                    action : function (e) {
+                        location.href = "${createLink(action: 'ausentismo')}/" + id;
                     }
 
                 };
@@ -407,6 +415,7 @@
                     editar,
                     {divider : true},
                     config,
+                    ausentismo,
                     {divider : true},
                     desactivar
                 ]);
@@ -419,6 +428,7 @@
                     editar,
                     {divider : true},
                     config,
+                    ausentismo,
                     {divider : true},
                     desactivar,
                     eliminar

@@ -350,6 +350,13 @@ class PersonaController extends happy.seguridad.Shield {
         return [permisos: permisos]
     }
 
+    def ausentismo() {
+        def usu = Persona.get(params.id)
+//        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id
+//        def permisosUsu = PermisoUsuario.findAllByPersona(usu).permisoTramite.id
+        return [usuario: usu/*, perfilesUsu: perfilesUsu, permisosUsu: permisosUsu*/]
+    }
+
     def config() {
         def usu = Persona.get(params.id)
         def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id
