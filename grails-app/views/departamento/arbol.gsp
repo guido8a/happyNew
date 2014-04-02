@@ -52,9 +52,6 @@
                     <g:link controller="inicio" action="parametros" class="btn btn-default">
                         <i class="fa fa-arrow-left"></i> Regresar
                     </g:link>
-                    <g:link controller="departamentoExport" action="crearPdf" class="btn btn-default">
-                        <i class="fa fa-print"></i> Imprimir
-                    </g:link>
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
@@ -438,8 +435,40 @@
 
                 var nodeTramites = $node.data("tramites");
 
-                if (nodeType.contains('padre') || nodeType.contains('hijo')) {
+                if (nodeType == "root") {
                     var items = {
+                        crear    : {
+                            label  : "Nuevo departamento hijo",
+                            icon   : "fa fa-plus-circle text-success",
+                            action : function (obj) {
+                                createEditRow(nodeId, "Crear");
+                            }
+                        },
+                        imprimir : {
+                            label   : "Imprimir",
+                            icon    : "fa fa-print",
+                            action  : false,
+                            submenu : {
+                                si : {
+                                    label  : "Con usuarios",
+                                    icon   : "fa fa-users text-info",
+                                    action : function () {
+                                        location.href = "${createLink(controller: 'departamentoExport', action: 'crearPdf')}/-1?usu=true&sort=${params.sort}";
+                                    }
+                                },
+                                no : {
+                                    label  : "Solo departamentos",
+                                    icon   : "fa fa-home text-info",
+                                    action : function () {
+                                        location.href = "${createLink(controller: 'departamentoExport', action: 'crearPdf')}/-1?usu=false&sort=${params.sort}";
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+                else if (nodeType.contains('padre') || nodeType.contains('hijo')) {
+                    items = {
                         crear        : {
                             label  : "Nuevo departamento hijo",
                             icon   : "fa fa-plus-circle text-success",
@@ -567,6 +596,32 @@
                             }
                         };
                     }
+
+                    items.imprimir = {
+                        label   : "Imprimir",
+                        icon    : "fa fa-print",
+                        action  : false,
+                        submenu : {
+                            si : {
+                                label  : "Con usuarios",
+                                icon   : "fa fa-users text-info",
+                                action : function () {
+                                    location.href = "${createLink(controller: 'departamentoExport', action: 'crearPdf')}/" + nodeId + "?usu=true&sort=${params.sort}";
+                                }
+                            },
+                            no : {
+                                label  : "Solo departamentos",
+                                icon   : "fa fa-home text-info",
+                                action : function () {
+                                    location.href = "${createLink(controller: 'departamentoExport', action: 'crearPdf')}/" + nodeId + "?usu=false&sort=${params.sort}";
+                                }
+                            }
+                        }
+                    };
+                    if (nodeType.contains('hijo')) {
+                        delete items.imprimir.submenu.no
+                    }
+
                 }
                 else if (nodeType.contains('usuario') || nodeType.contains('jefe')) {
                     items = {
@@ -604,7 +659,7 @@
                                 });
                             }
                         }
-                    }
+                    };
 
                     if (nodeType.contains('Inactivo')) {
                         items.activar = {

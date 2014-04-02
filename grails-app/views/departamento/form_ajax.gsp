@@ -23,7 +23,7 @@
     %{--</span>--}%
     %{--</div>--}%
 
-        <g:if test="${departamentoInstance.padre}">
+        %{--<g:if test="${departamentoInstance.padre}">--}%
             <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
                 <span class="grupo">
                     <label for="padre" class="col-md-2 control-label text-info">
@@ -32,12 +32,12 @@
 
                     <div class="col-md-6">
                         <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
-                                  optionKey="id" optionValue="descripcion"
+                                  optionKey="id" optionValue="descripcion" noSelection="['': '']"
                                   value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
                     </div>
                 </span>
             </div>
-        </g:if>
+        %{--</g:if>--}%
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
