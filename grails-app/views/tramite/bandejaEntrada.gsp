@@ -237,7 +237,7 @@
                             url: '${createLink(action: 'revisarConfidencial')}/' + id,
                             success: function (msg){
                                 if(msg == 'ok'){
-                                    location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
+                                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
                                 }else if(msg == 'no'){
 //                                    log("No tiene permiso para ver este trámite", 'danger')
                                     bootbox.alert('No tiene permiso para ver el PDF de este trámite')

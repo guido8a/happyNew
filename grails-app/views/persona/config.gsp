@@ -49,6 +49,7 @@
         .col-md-1.xs {
             width : 45px;
         }
+
         .fecha {
             width : 160px;
         }
@@ -77,7 +78,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapsePerfiles">--}%
-                            Perfiles <small>Asignar uno o más perfiles al usuario</small>
+                        Perfiles <small>Asignar uno o más perfiles al usuario</small>
                         %{--</a>--}%
                     </h4>
                 </div>
@@ -95,7 +96,7 @@
                                         %{--<input class="chkPerfil" type="checkbox" name="perfil" value="${perfil.id}" ${perfilesUsu.contains(perfil.id) ? "checked" : ""}/>--}%
                                         <i data-id="${perfil.id}"
                                            class="fa-li fa ${perfilesUsu.contains(perfil.id) ? "fa-check-square" : "fa-square-o"}"></i>
-                                        <span>${perfil.nombre}</span>
+                                        <span>${perfil.nombre} ${perfil.observaciones ? '(' + perfil.observaciones + ')' : ''}</span>
                                     </li>
                                 </g:each>
                             </ul>
@@ -108,140 +109,140 @@
             </div>
 
             %{--<div class="panel panel-default">--}%
-                %{--<div class="panel-heading">--}%
-                    %{--<h4 class="panel-title">--}%
-                        %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapsePermisos">--}%
-                            %{--Permisos <small>Asignar permisos de edición de documentos</small>--}%
-                        %{--</a>--}%
-                    %{--</h4>--}%
-                %{--</div>--}%
+            %{--<div class="panel-heading">--}%
+            %{--<h4 class="panel-title">--}%
+            %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapsePermisos">--}%
+            %{--Permisos <small>Asignar permisos de edición de documentos</small>--}%
+            %{--</a>--}%
+            %{--</h4>--}%
+            %{--</div>--}%
 
-                %{--<div id="collapsePermisos" class="panel-collapse collapse">--}%
-                    %{--<div class="panel-body">--}%
-                        %{--<h4>Agregar permiso</h4>--}%
+            %{--<div id="collapsePermisos" class="panel-collapse collapse">--}%
+            %{--<div class="panel-body">--}%
+            %{--<h4>Agregar permiso</h4>--}%
 
-                        %{--<p>--}%
-                            %{--Se agregará un permiso para utilización de trámites del sistema entre las fechas seleccionadas (inclusive).--}%
-                        %{--</p>--}%
-                        %{--<g:form class="form-horizontal" name="frmPermisos" role="form" action="savePermisos_ajax" method="POST">--}%
-                            %{--<div class="form-group required">--}%
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="permisoTramite.id" class="col-md-1 control-label text-info">--}%
-                                        %{--Permiso--}%
-                                    %{--</label>--}%
+            %{--<p>--}%
+            %{--Se agregará un permiso para utilización de trámites del sistema entre las fechas seleccionadas (inclusive).--}%
+            %{--</p>--}%
+            %{--<g:form class="form-horizontal" name="frmPermisos" role="form" action="savePermisos_ajax" method="POST">--}%
+            %{--<div class="form-group required">--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="permisoTramite.id" class="col-md-1 control-label text-info">--}%
+            %{--Permiso--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2" style="margin-left: -20px;">--}%
-                                        %{--<g:select name="permisoTramite.id" class="form-control"--}%
-                                                  %{--from="${happy.tramites.PermisoTramite.list([sort: 'descripcion'])}"--}%
-                                                  %{--optionKey="id" optionValue="descripcion"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="fechaInicio" class="col-md-1 xs control-label text-info">--}%
-                                        %{--Desde--}%
-                                    %{--</label>--}%
+            %{--<div class="col-md-2" style="margin-left: -20px;">--}%
+            %{--<g:select name="permisoTramite.id" class="form-control"--}%
+            %{--from="${happy.tramites.PermisoTramite.list([sort: 'descripcion'])}"--}%
+            %{--optionKey="id" optionValue="descripcion"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="fechaInicio" class="col-md-1 xs control-label text-info">--}%
+            %{--Desde--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2 fecha">--}%
-                                        %{--<elm:datepicker name="fechaInicio" title="desde"--}%
-                                                        %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"--}%
-                                                        %{--onChangeDate="validarFechasPermiso"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-2 fecha">--}%
+            %{--<elm:datepicker name="fechaInicio" title="desde"--}%
+            %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"--}%
+            %{--onChangeDate="validarFechasPermiso"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="fechaFin" class="col-md-1 xs control-label text-info" style="margin-left: -20px;">--}%
-                                        %{--Hasta--}%
-                                    %{--</label>--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="fechaFin" class="col-md-1 xs control-label text-info" style="margin-left: -20px;">--}%
+            %{--Hasta--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2 fecha">--}%
-                                        %{--<elm:datepicker name="fechaFin" title="hasta" class="datepicker form-control"--}%
-                                                        %{--daysOfWeekDisabled="0,6"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-2 fecha">--}%
+            %{--<elm:datepicker name="fechaFin" title="hasta" class="datepicker form-control"--}%
+            %{--daysOfWeekDisabled="0,6"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="accsObservaciones" class="col-md-1 xs control-label text-info">--}%
-                                        %{--Obsr.--}%
-                                    %{--</label>--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="accsObservaciones" class="col-md-1 xs control-label text-info">--}%
+            %{--Obsr.--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2" style="width: 240px;">--}%
-                                        %{--<g:textField class=" form-control" name="observaciones" style="width:100%;"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-2" style="width: 240px;">--}%
+            %{--<g:textField class=" form-control" name="observaciones" style="width:100%;"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<div class="col-md-1 text-center" style="margin-left: -20px;">--}%
-                                    %{--<a href="#" class="btn btn-success" id="btnPermisos">--}%
-                                        %{--<i class="fa fa-plus"></i> Agregar--}%
-                                    %{--</a>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-                        %{--</g:form>--}%
-                        %{--<div id="divPermisos"></div>--}%
-                    %{--</div>--}%
-                %{--</div>--}%
+            %{--<div class="col-md-1 text-center" style="margin-left: -20px;">--}%
+            %{--<a href="#" class="btn btn-success" id="btnPermisos">--}%
+            %{--<i class="fa fa-plus"></i> Agregar--}%
+            %{--</a>--}%
+            %{--</div>--}%
+            %{--</div>--}%
+            %{--</g:form>--}%
+            %{--<div id="divPermisos"></div>--}%
+            %{--</div>--}%
+            %{--</div>--}%
             %{--</div>--}%
 
             %{--<div class="panel panel-default">--}%
-                %{--<div class="panel-heading">--}%
-                    %{--<h4 class="panel-title">--}%
-                        %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">--}%
-                            %{--Ausentismo <small>Restringir temporalmente el acceso al sistema</small>--}%
-                        %{--</a>--}%
-                    %{--</h4>--}%
-                %{--</div>--}%
+            %{--<div class="panel-heading">--}%
+            %{--<h4 class="panel-title">--}%
+            %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">--}%
+            %{--Ausentismo <small>Restringir temporalmente el acceso al sistema</small>--}%
+            %{--</a>--}%
+            %{--</h4>--}%
+            %{--</div>--}%
 
-                %{--<div id="collapseAcceso" class="panel-collapse collapse">--}%
-                    %{--<div class="panel-body">--}%
-                        %{--<h4>Agregar restricción</h4>--}%
+            %{--<div id="collapseAcceso" class="panel-collapse collapse">--}%
+            %{--<div class="panel-body">--}%
+            %{--<h4>Agregar restricción</h4>--}%
 
-                        %{--<p>--}%
-                            %{--Se agregará una restricción de acceso al sistema entre las fechas seleccionadas (inclusive).--}%
-                        %{--</p>--}%
-                        %{--<g:form class="form-horizontal" name="frmAccesos" role="form" action="saveAccesos_ajax" method="POST">--}%
-                            %{--<div class="form-group required">--}%
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="accsFechaInicial" class="col-md-1 xs control-label text-info">--}%
-                                        %{--Desde--}%
-                                    %{--</label>--}%
+            %{--<p>--}%
+            %{--Se agregará una restricción de acceso al sistema entre las fechas seleccionadas (inclusive).--}%
+            %{--</p>--}%
+            %{--<g:form class="form-horizontal" name="frmAccesos" role="form" action="saveAccesos_ajax" method="POST">--}%
+            %{--<div class="form-group required">--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="accsFechaInicial" class="col-md-1 xs control-label text-info">--}%
+            %{--Desde--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2">--}%
-                                        %{--<elm:datepicker name="accsFechaInicial" title="desde"--}%
-                                                        %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"--}%
-                                                        %{--onChangeDate="validarFechasAcceso"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-2">--}%
+            %{--<elm:datepicker name="accsFechaInicial" title="desde"--}%
+            %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"--}%
+            %{--onChangeDate="validarFechasAcceso"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="accsFechaFinal" class="col-md-1 xs control-label text-info">--}%
-                                        %{--Hasta--}%
-                                    %{--</label>--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="accsFechaFinal" class="col-md-1 xs control-label text-info">--}%
+            %{--Hasta--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-2">--}%
-                                        %{--<elm:datepicker name="accsFechaFinal" title="hasta"--}%
-                                                        %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-2">--}%
+            %{--<elm:datepicker name="accsFechaFinal" title="hasta"--}%
+            %{--class="datepicker form-control required" daysOfWeekDisabled="0,6"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<span class="grupo">--}%
-                                    %{--<label for="accsObservaciones" class="col-md-1 xs control-label text-info">--}%
-                                        %{--Obs.--}%
-                                    %{--</label>--}%
+            %{--<span class="grupo">--}%
+            %{--<label for="accsObservaciones" class="col-md-1 xs control-label text-info">--}%
+            %{--Obs.--}%
+            %{--</label>--}%
 
-                                    %{--<div class="col-md-4">--}%
-                                        %{--<g:textField class=" form-control" name="accsObservaciones" style="width:100%;"/>--}%
-                                    %{--</div>--}%
-                                %{--</span>--}%
+            %{--<div class="col-md-4">--}%
+            %{--<g:textField class=" form-control" name="accsObservaciones" style="width:100%;"/>--}%
+            %{--</div>--}%
+            %{--</span>--}%
 
-                                %{--<div class="col-md-2 text-center">--}%
-                                    %{--<a href="#" class="btn btn-success" id="btnAccesos">--}%
-                                        %{--<i class="fa fa-plus"></i> Agregar--}%
-                                    %{--</a>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-                        %{--</g:form>--}%
-                        %{--<div id="divAccesos"></div>--}%
-                    %{--</div>--}%
-                %{--</div>--}%
+            %{--<div class="col-md-2 text-center">--}%
+            %{--<a href="#" class="btn btn-success" id="btnAccesos">--}%
+            %{--<i class="fa fa-plus"></i> Agregar--}%
+            %{--</a>--}%
+            %{--</div>--}%
+            %{--</div>--}%
+            %{--</g:form>--}%
+            %{--<div id="divAccesos"></div>--}%
+            %{--</div>--}%
+            %{--</div>--}%
             %{--</div>--}%
 
         </div>

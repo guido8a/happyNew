@@ -219,9 +219,15 @@ class ElementosTagLib {
             html += "                ${tramite.tipoDocumento?.descripcion} ${attrs.extraTitulo ?: ''}"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
-            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
-            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    No."
             html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                    ${tramite.codigo}"
+            html += "                </div>"
+//            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
+//            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
+//            html += "                </div>"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
@@ -391,9 +397,15 @@ class ElementosTagLib {
             html += "                ${tramite.tipoDocumento?.descripcion} ${attrs.extraTitulo ?: ''}"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
-            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
-            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    No."
             html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            html += "                    ${tramite.codigo}"
+            html += "                </div>"
+//            html += "                <div class=\"col-xs-4 negrilla\" style=\"padding-left: 0px;margin-top: 2px\">"
+//            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
+//            html += "                </div>"
             html += "            </div>"
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
@@ -410,7 +422,7 @@ class ElementosTagLib {
                 html += "                    </div>"
                 html += ""
                 html += "                    <div class=\"col-xs-10  col-buen-height\">"
-                html+= g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+                html += g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
 //                html += strPara
                 html += "                    </div>"
                 html += "                </div>"
@@ -430,7 +442,7 @@ class ElementosTagLib {
             html += "                </div>"
             html += ""
             html += "                <div class=\"col-xs-10  col-buen-height\">"
-            html += "                   <input type='text' name=\"asunto\" value=\"${tramite.asunto}\" style=\"width: 460px\" class=\"form-control\"/>"
+            html += "                   <input type='text' name=\"asunto\" id=\"asunto\" value=\"${tramite.asunto}\" style=\"width: 460px\" class=\"form-control\"/>"
             html += "                </div>"
             html += "            </div>"
             html += "        </div>"
@@ -466,7 +478,6 @@ class ElementosTagLib {
         }
         out << html
     }
-
 
     /**
      * crea un datepicker

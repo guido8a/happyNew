@@ -18,7 +18,7 @@ CKEDITOR.editorConfig = function (config) {
     config.enterMode = CKEDITOR.ENTER_BR;
     config.shiftEnterMode = CKEDITOR.ENTER_P;
 
-    config.extraPlugins = 'timestamp,serverSave,createPdf';
+//    config.extraPlugins = 'timestamp,serverSave,createPdf';
 
     config.scayt_autoStartup = true;
     config.scayt_sLang = 'es_ES';

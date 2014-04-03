@@ -97,29 +97,61 @@
 }
 
 .btn-azul {
-    background  : #0088CC;
-    color       : white;
-    font-weight : bold;
+    /*background  : #0088CC;*/
+    /*color       : white;*/
+    /*font-weight : bold;*/
+    background-color       : hsl(201, 100%, 35%) !important;
+    background-repeat      : repeat-x;
+    filter                 : progid:DXImageTransform.Microsoft.gradient(startColorstr="#19aeff", endColorstr="#0074b2");
+    background-image       : -khtml-gradient(linear, left top, left bottom, from(#19aeff), to(#0074b2));
+    background-image       : -moz-linear-gradient(top, #19aeff, #0074b2);
+    background-image       : -ms-linear-gradient(top, #19aeff, #0074b2);
+    background-image       : -webkit-gradient(linear, left top, left bottom, color-stop(0%, #19aeff), color-stop(100%, #0074b2));
+    background-image       : -webkit-linear-gradient(top, #19aeff, #0074b2);
+    background-image       : -o-linear-gradient(top, #19aeff, #0074b2);
+    background-image       : linear-gradient(#19aeff, #0074b2);
+    border-color           : #0074b2 #0074b2 hsl(201, 100%, 30%);
+    color                  : #fff !important;
+    text-shadow            : 0 -1px 0 rgba(0, 0, 0, 0.33);
+    -webkit-font-smoothing : antialiased;
 }
 
-a.btn-azul:hover {
-    background  : #327BbA;
-    color       : #ffffff;
-    border      : 1px solid #327BbA;
-    text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);
+.btn-azul:hover {
+    background-position : 0 -5px;
+    color               : #333333;
+    text-decoration     : none;
 }
+
+.btn-azul.btn-lg:hover {
+    background-position : 0 -10px;
+}
+
+.btn-azul.btn-sm:hover {
+    background-position : 0 -5px;
+}
+
+.btn-azul.btn-xs:hover {
+    background-position : 0 -3px;
+}
+
+/*a.btn-azul:hover {*/
+/*background  : #327BbA;*/
+/*color       : #ffffff;*/
+/*border      : 1px solid #327BbA;*/
+/*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
+/*}*/
 .modalTabelGray {
-    position:absolute;
-    width:100%;
-    height:100%;
-    background-color:#000000;
-    filter:alpha(opacity=60);
-    opacity:0.6;
-    -moz-opacity:0.6;
-    z-index:1060;
-    margin-top: -70px;
-    display: none;
-    text-align:center;
-    vertical-align:middle;
+    position         : absolute;
+    width            : 100%;
+    height           : 100%;
+    background-color : #000000;
+    filter           : alpha(opacity=60);
+    opacity          : 0.6;
+    -moz-opacity     : 0.6;
+    z-index          : 1060;
+    margin-top       : -70px;
+    display          : none;
+    text-align       : center;
+    vertical-align   : middle;
 }
 

@@ -4,6 +4,7 @@ class TipoPrioridad {
     String codigo
     String descripcion
     int tiempo
+    int maximoRezagados
     static mapping = {
         table 'tppd'
         cache usage: 'read-write', include: 'non-lazy'
@@ -15,6 +16,7 @@ class TipoPrioridad {
             codigo column: 'tppdcdgo'
             descripcion column: 'tppddscr'
             tiempo column: 'tppdtmpo'
+            maximoRezagados column: 'tppdmxrz'
         }
     }
     static constraints = {
