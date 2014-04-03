@@ -294,16 +294,19 @@ class PrflController extends happy.seguridad.Shield {
         def modulo = params.menu
         def prfl = params.prfl
         def tx1 = ""
+        def tx2 = ""
+        def error = ""
         def exst = []
         def actl = []
         def prsn = []
+        def fcha = new Date().format('yyyy-MM-dd')
 
         if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
         // eliminar los permisos que no estén chequeados
         def cn = dbConnectionService.getConnection()
         def tx = ""
         /* saca los ids de perm para borrar */
-        tx = "select prpf__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
+        tx = "select prpf__id, prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
                 "prpf.perm__id not in (select perm__id " +
                 "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
 //
@@ -345,34 +348,43 @@ class PrflController extends happy.seguridad.Shield {
         }
 
 
-        /* actualizar PRUS de los usuarios con el perfil actual */
-        //println "-------------borrado de PRUS----------"
-        /* se debe barrer todos los permisos señalados y si está chequeado añadir a prpf. */
+        /* actualiza PRUS de los usuarios con el perfil actual */
+        /* para cada persona, pone fecha de fin a los permisos que no son parte delperfil y añade los que no tenga*/
         /*TODO */
-/*
         tx = "select prsn__id from sesn where prfl__id = ${prfl}"
         prsn = []
         cn.eachRow(tx.toString()) { d ->
             prsn.add(d.prsn__id)
         }
-        (prsn).each {
-            tx1 = "delete from prus where prsn__id = ${it} and perm__id in ${borrar}"
-            tx2 = "insert into prus(..) select (.. prsn__id, ...) from prpf where prfl__id = ${prfl}"
+//        println "inicia actuliación de prpf de las personas: $prsn"
+        prsn.each {
+            tx1 = "update prus set prusfcfn = '${fcha}' where prsn__id = ${it} and perm__id not in (select perm__id " +
+                    "from prpf where prfl__id = ${prfl})"
+            tx2 = "insert into prus(prsn__id, perm__id, prusfcin, prsnasgn) select ${it}, perm__id, '${fcha}', " +
+                    "${session.usuario.id} from prpf where prfl__id = ${prfl} and perm__id not in " +
+                    "(select perm__id from prus where prsn__id = ${it});"
+//            println "-- update: $tx1"
+//            println "-- insert: $tx2"
             try {
-                cn.execute(tx1)
-                cn.execute(tx2)
+                cn.execute(tx1.toString())  /* pone fecha fin a los que ya no sonparte del perfil */
+                cn.execute(tx2.toString())  /* añade permisos nuevos */
             }
             catch (Exception ex) {
                 println ex.getMessage()
+                error += ex.getMessage()
             }
             //resp += "<br>" + tx1
         }
-*/
 
         cn.close()
-        //println "recibido:" + params
-        //render(resp + "<br>Existe:" + exst + "<br>Actual:" + actl + "<br>a insertar: ${actl-exst}")
-        redirect(action: 'ajaxPermisos', params: params)
+        println "errores:" + error.size() + ".."
+
+        if (error.size() > 1)
+            render("NO_Errores:\n ${error}")
+        else
+            render("OK_Proceso realizado con éxito")
+
+//        redirect(action: 'ajaxPermisos', params: params)
     }
 
     //---------------------------------

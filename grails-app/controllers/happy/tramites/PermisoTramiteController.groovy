@@ -10,7 +10,7 @@ class PermisoTramiteController extends happy.seguridad.Shield {
     } //index
 
     def getLista(params, all) {
-        params=params.clone()
+        params = params.clone()
         if (all) {
             params.remove("offset")
             params.remove("max")
@@ -33,8 +33,8 @@ class PermisoTramiteController extends happy.seguridad.Shield {
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def permisoTramiteInstanceList = getLista(params, false)
-        def permisoTramiteInstanceCount = getLista(params, true).size()//PermisoTramite.count()
-        if (permisoTramiteInstanceList.size() == 0 && params.offset && params.max) {
+        def permisoTramiteInstanceCount = getLista(params, true).size()
+        if(permisoTramiteInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         permisoTramiteInstanceList = getLista(params, false)
@@ -42,9 +42,9 @@ class PermisoTramiteController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def permisoTramiteInstance = PermisoTramite.get(params.id)
-            if (!permisoTramiteInstance) {
+            if(!permisoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -56,9 +56,9 @@ class PermisoTramiteController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def permisoTramiteInstance = new PermisoTramite(params)
-        if (params.id) {
+        if(params.id) {
             permisoTramiteInstance = PermisoTramite.get(params.id)
-            if (!permisoTramiteInstance) {
+            if(!permisoTramiteInstance) {
                 notFound_ajax()
                 return
             }
@@ -67,21 +67,16 @@ class PermisoTramiteController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
-        params.each { k, v ->
-            if (v != "date.struct" && v instanceof java.lang.String) {
-                params[k] = v.toUpperCase()
-            }
-        }
         def permisoTramiteInstance = new PermisoTramite()
-        if (params.id) {
+        if(params.id) {
             permisoTramiteInstance = PermisoTramite.get(params.id)
-            if (!permisoTramiteInstance) {
+            if(!permisoTramiteInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         permisoTramiteInstance.properties = params
-        if (!permisoTramiteInstance.save(flush: true)) {
+        if(!permisoTramiteInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} PermisoTramite."
             msg += renderErrors(bean: permisoTramiteInstance)
             render msg
@@ -91,11 +86,11 @@ class PermisoTramiteController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def permisoTramiteInstance = PermisoTramite.get(params.id)
-            if (permisoTramiteInstance) {
+            if(permisoTramiteInstance) {
                 try {
-                    permisoTramiteInstance.delete(flush: true)
+                    permisoTramiteInstance.delete(flush:true)
                     render "OK_Eliminación de PermisoTramite exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar PermisoTramite."

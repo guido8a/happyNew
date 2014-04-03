@@ -9,7 +9,7 @@
     <g:if test="${permisoTramiteInstance?.codigo}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Código
+                Codigo
             </div>
             
             <div class="col-md-3">
@@ -22,11 +22,24 @@
     <g:if test="${permisoTramiteInstance?.descripcion}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Descripción
+                Descripcion
             </div>
             
             <div class="col-md-3">
                 <g:fieldValue bean="${permisoTramiteInstance}" field="descripcion"/>
+            </div>
+            
+        </div>
+    </g:if>
+    
+    <g:if test="${permisoTramiteInstance?.texto}">
+        <div class="row">
+            <div class="col-md-2 text-info">
+                Texto
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${permisoTramiteInstance}" field="texto"/>
             </div>
             
         </div>

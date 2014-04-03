@@ -40,16 +40,19 @@
 
     $("#aceptaAJX").click(function () {
 
-        bootbox.confirm("Fijar los permisos sobre trámites..<br/>¿Está usted Seguro?", function (res) {
+        bootbox.confirm("Este proceso actualizará los permisos de trámites de todos los usuarios que poseen el perfil: <h4>" +
+                $('#perfil').find("option:selected").text() +"</h4><br/>¿Está usted Seguro?", function (res) {
             if (res) {
                 var data = armarAccn();
-                alert("armado: " + data);
+//                alert("armado: " + data);
                 $.ajax({
                     type    : "POST",
                     url : '${createLink(controller: 'prfl', action:'grabar_perm')}',   // "../grabar",
                     data    : "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
                     success : function (msg) {
-                        $("#ajx").html(msg)
+//                        $("#ajx").html(msg)
+                        var parts = msg.split("_");
+                        log(parts[1], parts[0] == "NO" ? "error" : "success");
                     }
                 });
             }

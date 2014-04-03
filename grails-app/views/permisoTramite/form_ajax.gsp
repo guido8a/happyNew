@@ -11,10 +11,11 @@
         <div class="form-group ${hasErrors(bean: permisoTramiteInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
-                    Código
+                    Codigo
                 </label>
-                <div class="col-md-2">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${permisoTramiteInstance?.codigo}"/>
+                <div class="col-md-3">
+                    <g:textField name="codigo" maxlength="4" required="" class="allCaps form-control required"
+                                 value="${permisoTramiteInstance?.codigo}" style="width:80px"/>
                 </div>
                  *
             </span>
@@ -23,10 +24,23 @@
         <div class="form-group ${hasErrors(bean: permisoTramiteInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripción
+                    Descripcion
                 </label>
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps" value="${permisoTramiteInstance?.descripcion}"/>
+                    <g:textField name="descripcion" maxlength="63" required="" class="allCaps form-control required" value="${permisoTramiteInstance?.descripcion}"/>
+                </div>
+                 *
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: permisoTramiteInstance, field: 'texto', 'error')} required">
+            <span class="grupo">
+                <label for="texto" class="col-md-2 control-label text-info">
+                    Texto
+                </label>
+                <div class="col-md-6">
+                    <g:textArea name="texto" cols="80" rows="5" maxlength="255" required="" class="form-control required"
+                                value="${permisoTramiteInstance?.texto}" style="width:440px"/>
                 </div>
                  *
             </span>
