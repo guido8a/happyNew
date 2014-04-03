@@ -22,7 +22,7 @@
     }
     .fileContainer{
         width: 100%;
-        height: 290px;
+        /*height: 290px;*/
         border: 2px solid #327BBA;
         padding: 15px;
         margin-top:10px;
@@ -147,7 +147,8 @@
         else
             next++
         var ar = file.files[next-1]
-//        console.log("ar",ar,file,file.files,next)
+//        console.log("ar",ar,file,next)
+//        console.log(file.files[0])
         var div = $('<div class="fileContainer ui-corner-all d-'+next+'">')
         var row1 = $("<div class='row resumen'>")
         var row2 = $("<div class='row claves'>")
@@ -296,13 +297,12 @@
         $("#file").change(function(){
             reset();
             archivos = $(this)[0].files
-            for(arch in archivos){
-                if(arch!="length" && arch!="item"){
-                    createContainer()
-                    boundBotones()
-                }
-
+            var length =archivos.length
+            for( i =0;i<length;i++){
+                createContainer()
             }
+            boundBotones()
+
 
         });
     });
