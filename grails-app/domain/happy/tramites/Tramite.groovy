@@ -31,6 +31,7 @@ class Tramite {
     Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
 
     def diasLaborablesService
+    Integer guia
 
     static mapping = {
         table 'trmt'
@@ -63,6 +64,7 @@ class Tramite {
             fechaRevision column: 'trmtfcrv'
             fechaEnvio column: 'trmtfcen'
             deDepartamento column: 'dpto__de'
+            guia column: 'trmtguia'
         }
     }
     static constraints = {
@@ -89,6 +91,7 @@ class Tramite {
         fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
         fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
+        guia(blank: true, nullable: true, attributes: [title: 'guia'])
 
     }
 

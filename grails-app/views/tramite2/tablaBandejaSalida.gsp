@@ -16,8 +16,10 @@
     </tr>
     </thead>
     <tbody>
+
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+
 
         <g:set var="esImprimir" value="${false}" />
         <g:if test="${(happy.tramites.PersonaDocumentoTramite.findAllByPersonaAndTramite(session.usuario, tramite).findAll{it.rolPersonaTramite.codigo == 'I005'}).size()>0}">
@@ -37,7 +39,7 @@
             <td>${limite?limite.format("dd-MM-yyyy HH:mm"):''}</td>
             <td>${tramite?.estadoTramite.descripcion}</td>
            <g:if test="${tramite?.estadoTramite?.id == 2}">
-               <td><g:checkBox name="porEnviar" style="margin-left: 30px" class="form-control"/></td>
+               <td><g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control" checked="false"/></td>
            </g:if>
             <g:else>
                 <td></td>

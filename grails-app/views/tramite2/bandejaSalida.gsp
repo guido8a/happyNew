@@ -112,8 +112,8 @@
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
 
-        <g:link action="" class="btn btn-success btnEnviar">
-            <i class="fa fa-pencil"></i> Enviar
+        <g:link action="" class="btn btn-info btnEnviar">
+            <i class="fa fa-pencil"></i> Enviar varios
         </g:link>
 
     </div>
@@ -489,10 +489,43 @@
 
         });
 
-//        $(".btnEnviar").click(function () {
-//
-//            bootbox.dialog("")
-//        });
+        $(".btnEnviar").click(function () {
+
+            console.log("zzzz:" + $("#conteo").val())
+
+            if($("#porEnviar").prop('checked') == false){
+//            if($("#porEnviar").is(':checked') == false){
+               log("No se ha seleccionado ningun trámite", 'error');
+            }
+            else if($("#porEnviar").prop('checked') == true){
+
+                console.log("-->" + $("#porEnviar").attr('tramite'));
+
+                var b = bootbox.dialog({
+                    id: "dlgGuia",
+                    title: 'Impresión de la guía de envio de trámites',
+                    message: 'Desea imprimir la guía de envio para los trámites seleccionados?',
+                    buttons: {
+                        no: {
+                            label: 'No Imprimir',
+                            callback: function () {
+
+                            }
+                        },
+                        si: {
+                            label: '<i class="fa fa-print"></i> Imprimir',
+                            callback: function () {
+
+                            }
+                        }
+                    }
+                });
+            }
+
+
+
+            return false;
+        });
 
         cargarBandeja(false);
 
