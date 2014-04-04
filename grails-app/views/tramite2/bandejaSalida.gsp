@@ -115,7 +115,7 @@
         </g:link>
 
         <g:link action="" class="btn btn-info btnEnviar">
-            <i class="fa fa-pencil"></i> Enviar varios
+            <i class="fa fa-pencil"></i> Enviar
         </g:link>
 
     </div>
@@ -320,6 +320,8 @@
 
 
 
+        var archivo
+
         context.settings({
             onShow: function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
@@ -329,6 +331,7 @@
                 codigo = $tr.attr("codigo")
                 estado = $tr.attr("estado");
                 de = $tr.attr("de");
+                archivo = $tr.attr("codigo")
             }
         });
         <g:if test="${!bloqueo}">
@@ -341,8 +344,11 @@
                 icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
+                    %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
+
                 }
+
 
             },
             {
@@ -378,7 +384,9 @@
                 icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
+                    %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
+
                 }
 
             },
@@ -493,42 +501,28 @@
 
         $(".btnEnviar").click(function () {
 
+            var trId = []
 
-            var tbody = $("#tabla_salida");
-//            console.log(">>>>>" + tbody)
-
-            var trId = " "
-
-            tbody.children("tr").each(function () {
-                console.log("entro" + $(this).attr("id"))
-                console.log("entro2" + $(this).children("td").children().get(1));
-//                if(($(this).children("td").children().get(9).checked) == true){
-                if(($(this).children("td").children().get(1))){
-                    if(trId.size() > 0){
-
-//                        trId += "," + $(this).attr("id");
-//                        trId.add($(this).attr("id"));
+            $(".combo").each(function () {
+                if($(this).prop('checked') == false){
+                }else {
+//                    console.log(trId.length)
+                    if(trId.length > 0){
+                        trId += "," + $(this).attr('tramite')
                     }else{
-                        trId += $(this).attr("id")
+                        trId += $(this).attr('tramite')
                     }
-
-                }else{
-                    console.log("afuera")
                 }
-
-
-
             });
 
-            console.log("-->" + trId)
+//            console.log("--->" + trId)
 
-            if($("#porEnviar").prop('checked') == false){
-//            if($("#porEnviar").is(':checked') == false){
-               log("No se ha seleccionado ningun trámite", 'error');
-            }
-            else if($("#porEnviar").prop('checked') == true){
+            if(trId == ''){
 
-//                console.log("-->" + $("#porEnviar").attr('tramite'));
+                log("No se ha seleccionado ningun trámite", 'error');
+
+            }else {
+
 
                 var b = bootbox.dialog({
                     id: "dlgGuia",
@@ -549,10 +543,8 @@
                         }
                     }
                 });
+
             }
-
-
-
             return false;
         });
 

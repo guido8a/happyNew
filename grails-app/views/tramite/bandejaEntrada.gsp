@@ -79,6 +79,14 @@
                style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
                 persona?.departamento?.descripcion}</label>
     </span>
+   <div class="btn-group">
+
+       <g:link action="crearTramite" class="btn btn-default btnCrearTramite">
+           <i class="fa fa-edit"></i> Crear Trámite
+       </g:link>
+
+   </div>
+
 </div>
 
 <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
@@ -593,6 +601,7 @@
             closeLoader();
             return false;
         });
+
 
         cargarBandeja();
 

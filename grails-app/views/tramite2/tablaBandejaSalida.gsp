@@ -3,7 +3,7 @@
 <table class="table table-bordered  table-condensed table-hover">
     <thead>
     <tr>
-              <th class="cabecera">Documento</th>
+        <th class="cabecera">Documento</th>
         <th>De</th>
         <th class="cabecera">Fec. Creación</th>
         <th class="cabecera">Para</th>
@@ -12,7 +12,7 @@
         <th class="cabecera">Fecha Envio</th>
         <th class="cabecera">Fecha Límite</th>
         <th class="cabecera">Estado</th>
-        <th class="cabecera">Por Enviar</th>
+        <th class="cabecera">Enviar</th>
     </tr>
     </thead>
     <tbody id="tabla_salida">
@@ -39,10 +39,10 @@
             <td>${limite?limite.format("dd-MM-yyyy HH:mm"):''}</td>
             <td>${tramite?.estadoTramite.descripcion}</td>
            <g:if test="${tramite?.estadoTramite?.id == 2}">
-               <td><g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control" checked="false"/></td>
+               <td id="${tramite?.id}" class="ck"><g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/></td>
            </g:if>
             <g:else>
-                <td></td>
+                <td id="${tramite.id}" class="ck"></td>
             </g:else>
         </tr>
     </g:each>
