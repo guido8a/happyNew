@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.PermisoUsuario; happy.seguridad.Sesn; happy.tramites.PersonaDocumentoTramite; happy.tramites.Tramite; happy.tramites.ObservacionTramite; happy.seguridad.Accs; happy.seguridad.Persona" %>
+<%@ page import="happy.seguridad.Prfl; happy.tramites.RolPersonaTramite; happy.tramites.PermisoUsuario; happy.seguridad.Sesn; happy.tramites.PersonaDocumentoTramite; happy.tramites.Tramite; happy.tramites.ObservacionTramite; happy.seguridad.Accs; happy.seguridad.Persona" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,6 +9,10 @@
         .table {
             font-size     : 12px;
             margin-bottom : 0 !important;
+        }
+
+        .perfiles option:first-child {
+            font-weight : normal !important;
         }
         </style>
     </head>
@@ -44,11 +48,14 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Usuario</th>
-                    <g:sortableColumn property="nombre" title="Nombre"/>
-                    <g:sortableColumn property="apellido" title="Apellido"/>
-                    <g:sortableColumn property="departamento" title="Departamento"/>
-                    <th>E-mail</th>
+                    <g:sortableColumn property="login" title="Usuario" params="${params}"/>
+                    <g:sortableColumn property="nombre" title="Nombre" params="${params}"/>
+                    <g:sortableColumn property="apellido" title="Apellido" params="${params}"/>
+                    <g:sortableColumn property="departamento" title="Departamento" params="${params}"/>
+                    <th style="width: 220px;">
+                        <g:select name="perfil" from="${Prfl.list([sort: 'nombre'])}" optionKey="id" optionValue="nombre"
+                                  class="form-control input-sm perfiles" noSelection="['': 'Todos los perfiles']" value="${params.perfil}"/>
+                    </th>
                     %{--<th>Autoridad</th>--}%
                 </tr>
             </thead>
@@ -88,7 +95,12 @@
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
-                        <td><elm:textoBusqueda texto='${personaInstance.mail}' search='${params.search}'/></td>
+                        <td>${Sesn.withCriteria {
+                            eq("usuario", personaInstance)
+                            perfil {
+                                order("nombre")
+                            }
+                        }.perfil.nombre.join(", ")}</td>
                         %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
                     </tr>
                 </g:each>
@@ -309,6 +321,27 @@
             } //createEdit
 
             $(function () {
+
+                $("#perfil").change(function () {
+                    openLoader();
+                    var params = "${params}";
+                    var id = $(this).val();
+                    var strParams = "";
+                    params = str_replace('[', '', params);
+                    params = str_replace(']', '', params);
+                    params = str_replace(':', '=', params);
+                    params = params.split(",");
+                    for (var i = 0; i < params.length; i++) {
+                        params[i] = $.trim(params[i]);
+                        if (params[i].startsWith("perfil")) {
+                            params[i] = "perfil=" + id;
+                        }
+                        if (!params[i].startsWith("action") && !params[i].startsWith("controller") && !params[i].startsWith("format") && !params[i].startsWith("offset")) {
+                            strParams += params[i] + "&"
+                        }
+                    }
+                    location.href = "${createLink(action: 'list')}?" + strParams
+                });
 
                 $(".btnCrear").click(function () {
                     createEditRow(null, "persona");

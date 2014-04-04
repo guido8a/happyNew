@@ -29,6 +29,9 @@ class Persona {
     String foto
     String codigo
     String connect
+
+    static hasMany = [perfiles: Sesn]
+
     static mapping = {
         table 'prsn'
         cache usage: 'read-write', include: 'non-lazy'
@@ -83,7 +86,7 @@ class Persona {
         celular(maxSize: 63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
-        connect(nullable: true,blank: true,size: 1..512)
+        connect(nullable: true, blank: true, size: 1..512)
     }
 
     def getEstaActivo() {
@@ -195,7 +198,7 @@ class Persona {
         return lista
     }
 
-    def getConnectionString(){
+    def getConnectionString() {
         // LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','CN=Guido Prueba,OU=GSTI,OU=GADPP,DC=pichincha,DC=local', 'prueba.prueba')
         return this.connect
     }
@@ -203,6 +206,4 @@ class Persona {
     String toString() {
         return "${WordUtils.capitalizeFully(this.nombre)} ${WordUtils.capitalizeFully(this.apellido)}"
     }
-
-
 }
