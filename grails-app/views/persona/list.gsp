@@ -47,7 +47,7 @@
         <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
-                    <th></th>
+                    <th style="width:10px;"></th>
                     <g:sortableColumn property="login" title="Usuario" params="${params}"/>
                     <g:sortableColumn property="nombre" title="Nombre" params="${params}"/>
                     <g:sortableColumn property="apellido" title="Apellido" params="${params}"/>
