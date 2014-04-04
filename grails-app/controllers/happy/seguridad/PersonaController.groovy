@@ -2,6 +2,7 @@ package happy.seguridad
 
 import groovy.json.JsonBuilder
 import happy.tramites.Departamento
+import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
@@ -515,10 +516,66 @@ class PersonaController extends happy.seguridad.Shield {
         }
 
         if (errores == "") {
-            render "OK_Cambios efectuados exitosamente"
+            def permisosDebeTener = []
+            /* actualiza PRUS */
+            Sesn.findAllByUsuario(usu).each {
+                def prpf = Prpf.findAllByPerfil(it.perfil)
+                permisosDebeTener += prpf.permiso
+            }
+            permisosDebeTener = permisosDebeTener.unique()
+
+            def permisosTiene= PermisoUsuario.findAllByPersona(usu)
+
+            def permisosAgregar = permisosDebeTener.clone()
+            def permisosTerminar = []
+
+            permisosTiene.each{ actual ->
+                if (!permisosDebeTener.contains(actual.permisoTramite)) {
+                    permisosTerminar.add(actual)
+                    permisosAgregar.remove(actual.permisoTramite)
+                }
+                if (permisosDebeTener.contains(actual.permisoTramite) && (actual.fechaFin == null)){
+                    permisosAgregar.remove(actual.permisoTramite)
+                }
+            }
+
+            permisosTerminar.each {
+                it.fechaFin = new Date()
+                if (!it.save(flush: true)) {
+                    println it.errors
+                    errores += "<li>No se pudo terminar permiso ${it.permisoTramite.descripcion}</li>"
+                }
+            }
+
+            permisosAgregar.each {
+                def prus = new PermisoUsuario([
+                    persona: usu,
+                    permisoTramite: it,
+                    fechaInicio: new Date(),
+                    asignadoPor: session.usuario
+                ])
+                if (!prus.save(flush:true)) {
+                    println prus.errors
+                    errores += "<li>No se pudo asignar permiso ${prus.permisoTramite.descripcion}</li>"
+                }
+            }
+
+//            println "debetener: " + permisosDebeTener
+//            println "tiene:" + permisosTiene.permisoTramite
+//            println "agregar" + permisosAgregar
+//            println "terminar" + permisosTerminar.permisoTramite
+
+            if (errores == ""){
+                render "OK_Cambios efectuados exitosamente"
+            } else {
+                render "<ul>" + errores + "</ul>"
+            }
+
         } else {
             render "<ul>" + errores + "</ul>"
         }
+
+
     }
 
     def list() {
