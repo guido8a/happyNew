@@ -299,22 +299,31 @@ class PrflController extends happy.seguridad.Shield {
         def exst = []
         def actl = []
         def prsn = []
+        def borra = ""
         def fcha = new Date().format('yyyy-MM-dd')
 
         if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
         // eliminar los permisos que no estén chequeados
         def cn = dbConnectionService.getConnection()
+        def cn1 = dbConnectionService.getConnection()
         def tx = ""
-        /* saca los ids de perm para borrar */
+
+        /* inicia borrado de permisos que se eliminan del perfil: saca los ids de perm para borrar */
         tx = "select prpf__id, prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
                 "prpf.perm__id not in (select perm__id " +
                 "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
 //
 //        println "grabar SQL: ${tx}"
+        borra = "("
         cn.eachRow(tx) { d ->
+            if (borra == "(") borra += d.perm__id else borra += "," + d.perm__id
             Prpf.get(d.prpf__id).delete()
         }
-//        println "-------------borrado de permisos----------"
+        borra += ")"
+        println borra
+
+//        println "-------------fin de borrado de permisos----------"
+
         /* se debe barrer todos los permisosseñalados y si está chequeado añadir a prpf. */
         tx = "select prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
                 "prpf.perm__id in (select perm__id " +
@@ -356,17 +365,28 @@ class PrflController extends happy.seguridad.Shield {
         cn.eachRow(tx.toString()) { d ->
             prsn.add(d.prsn__id)
         }
+
 //        println "inicia actuliación de prpf de las personas: $prsn"
         prsn.each {
-            tx1 = "update prus set prusfcfn = '${fcha}' where prsn__id = ${it} and perm__id not in (select perm__id " +
-                    "from prpf where prfl__id = ${prfl})"
+            if (borra != "()") {
+                /* verifica el permiso borrado no se halñle en los otros perfiles que tiene el usuario */
+                tx = "select distinct perm__id from prpf where perm__id in ${borra} and perm__id not in (" +
+                        "select perm__id from prpf, sesn where sesn.prsn__id = ${it} and sesn.prfl__id = prpf.prfl__id and " +
+                        "sesn.prfl__id <> ${prfl})"
+                prsn = []
+                cn.eachRow(tx.toString()) { d ->
+                    /* pone fecha de fin a los permisos que se eliminan del perfil */
+                    cn1.execute("update prus set prusfcfn = '${fcha}', prsnmdfc = ${session.usuario.id} " +
+                            "where prsn__id = ${it} and perm__id = ${d.perm__id}".toString())
+                }
+
+            }
+
             tx2 = "insert into prus(prsn__id, perm__id, prusfcin, prsnasgn) select ${it}, perm__id, '${fcha}', " +
                     "${session.usuario.id} from prpf where prfl__id = ${prfl} and perm__id not in " +
-                    "(select perm__id from prus where prsn__id = ${it});"
-//            println "-- update: $tx1"
-//            println "-- insert: $tx2"
+                    "(select perm__id from prus where prsn__id = ${it} and prusfcfn is null);"
+            println "-- update: $tx2"
             try {
-                cn.execute(tx1.toString())  /* pone fecha fin a los que ya no sonparte del perfil */
                 cn.execute(tx2.toString())  /* añade permisos nuevos */
             }
             catch (Exception ex) {
@@ -376,7 +396,9 @@ class PrflController extends happy.seguridad.Shield {
             //resp += "<br>" + tx1
         }
 
+
         cn.close()
+        cn1.close()
         println "errores:" + error.size() + ".."
 
         if (error.size() > 1)

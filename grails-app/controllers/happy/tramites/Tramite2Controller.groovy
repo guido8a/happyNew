@@ -81,15 +81,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tienePermiso = PermisoUsuario.withCriteria {
             eq("persona", persona)
             eq("permisoTramite", triangulo)
-            lt("fechaInicio", new Date())
+            le("fechaInicio", new Date())
             or {
-                gt("fechaFin", new Date())
+                ge("fechaFin", new Date())
                 isNull("fechaFin")
             }
         }
         println "tiene " + tienePermiso + " jefe " + persona.jefe
         if (tienePermiso.size() == 0 && persona.jefe != 1) {
-            redirect(controller: "tramite", action: "bandejaEntrada")
+            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
+            flash.tipo="error"
+
+            redirect(controller: "tramite2", action: "bandejaSalida")
             return
         }
         if (persona.jefe == 1)

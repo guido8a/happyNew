@@ -33,24 +33,27 @@ class TramiteExportController {
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
 
-//        if (params.editorTramite) {
-        tramite.texto = params.editorTramite
-        tramite.asunto = params.asunto
-        tramite.fechaModificacion = new Date()
-        if (tramite.save(flush: true)) {
-            def para = tramite.para
-            if (params.para.toLong() > 0) {
-                para.persona = Persona.get(params.para.toLong())
-            } else {
-                para.departamento = Departamento.get(params.para.toLong() * -1)
-            }
-            if (para.save(flush: true)) {
+        if (params.editorTramite) {
+            tramite.texto = params.editorTramite
+            tramite.asunto = params.asunto
+            tramite.fechaModificacion = new Date()
+            if (tramite.save(flush: true)) {
+                def para = tramite.para
+                if(params.para) {
+                    if (params.para.toLong() > 0) {
+                        para.persona = Persona.get(params.para.toLong())
+                    } else {
+                        para.departamento = Departamento.get(params.para.toLong() * -1)
+                    }
+                    if (para.save(flush: true)) {
 //                println "OK_Trámite guardado exitosamente"
+                    } else {
+                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                    }
+                }
             } else {
-                println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
             }
-        } else {
-            println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
         }
 
         tramite.refresh()
