@@ -15,7 +15,7 @@
         <th class="cabecera">Por Enviar</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tabla_salida">
 
     <g:each in="${tramites}" var="tramite">
         <g:set var="limite" value="${tramite.getFechaLimite()}"/>
@@ -49,3 +49,27 @@
     </tbody>
 </table>
 
+%{--<script type="text/javascript">--}%
+
+    %{--$(function () {--}%
+
+        %{--var tbody = $("#tabla_salida");--}%
+        %{--var trId = []--}%
+
+        %{--tbody.children("tr").each(function () {--}%
+            %{--console.log("entro" + $(this).attr("id"))--}%
+            %{--console.log("entro2" + $(this).children("td").children().get(1))--}%
+%{--//                if(($(this).children("td").children().get(9).checked) == true){--}%
+%{--//                     trId += $(this).attr("id")--}%
+%{--//                }else{--}%
+%{--//                    console.log("afuera")--}%
+%{--//                }--}%
+
+
+
+        %{--});--}%
+
+
+    %{--})--}%
+
+%{--</script>--}%

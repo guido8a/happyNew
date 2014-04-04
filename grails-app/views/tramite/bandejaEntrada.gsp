@@ -81,6 +81,9 @@
     </span>
 </div>
 
+<elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
+
+
 <div class="btn-toolbar toolbar">
     <div class="btn-group">
 

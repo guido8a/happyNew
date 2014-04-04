@@ -491,7 +491,34 @@
 
         $(".btnEnviar").click(function () {
 
-            console.log("zzzz:" + $("#conteo").val())
+
+            var tbody = $("#tabla_salida");
+//            console.log(">>>>>" + tbody)
+
+            var trId = " "
+
+            tbody.children("tr").each(function () {
+                console.log("entro" + $(this).attr("id"))
+                console.log("entro2" + $(this).children("td").children().get(1));
+//                if(($(this).children("td").children().get(9).checked) == true){
+                if(($(this).children("td").children().get(1))){
+                    if(trId.size() > 0){
+
+//                        trId += "," + $(this).attr("id");
+//                        trId.add($(this).attr("id"));
+                    }else{
+                        trId += $(this).attr("id")
+                    }
+
+                }else{
+                    console.log("afuera")
+                }
+
+
+
+            });
+
+            console.log("-->" + trId)
 
             if($("#porEnviar").prop('checked') == false){
 //            if($("#porEnviar").is(':checked') == false){
@@ -499,7 +526,7 @@
             }
             else if($("#porEnviar").prop('checked') == true){
 
-                console.log("-->" + $("#porEnviar").attr('tramite'));
+//                console.log("-->" + $("#porEnviar").attr('tramite'));
 
                 var b = bootbox.dialog({
                     id: "dlgGuia",

@@ -324,18 +324,22 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def usu = Persona.get(session.usuario.id)
         def triangulo = PermisoTramite.findByCodigo("E001")
         def bloqueo = false
-        if (session.departamento.estado == "B")
+        if (session.departamento.estado == "B") {
             bloqueo = true
+        }
         def tienePermiso = PermisoUsuario.withCriteria {
             eq("persona", usu)
             eq("permisoTramite", triangulo)
-            lt("fechaInicio", new Date())
+            le("fechaInicio", new Date())
             or {
-                gt("fechaFin", new Date())
+                ge("fechaFin", new Date())
                 isNull("fechaFin")
             }
         }
+
         if (tienePermiso.size() == 0) {
+            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de entrada del departamento. Ha sido redireccionado a su bandeja de entrada personal."
+            flash.tipo="error"
             redirect(controller: "tramite", action: "bandejaEntrada")
             return
         }
@@ -348,7 +352,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+//        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
 
         def pxtPara = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
@@ -374,22 +378,22 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
         }
-        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamento)
-            eq("rolPersonaTramite", rolImprimir)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                }
-            }
-        }
+//        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+//            eq("departamento", departamento)
+//            eq("rolPersonaTramite", rolImprimir)
+//            isNotNull("fechaEnvio")
+//            tramite {
+//                or {
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                }
+//            }
+//        }
 
         def pxtTodos = pxtPara
         pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
+//        pxtTodos += pxtImprimir
         return [persona: persona, tramites: pxtTodos]
     }
 
