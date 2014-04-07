@@ -79,7 +79,7 @@
                style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
                 persona?.departamento?.descripcion}</label>
     </span>
-   <div class="btn-group">
+   <div class="btn-group" style="margin-left: 30px">
 
        <g:link action="crearTramite" class="btn btn-default btnCrearTramite">
            <i class="fa fa-edit"></i> Crear Trámite
@@ -147,7 +147,7 @@
 
         <div>
             <div class="col-md-2">
-                <label># Memorando</label>
+                <label>Documento</label>
                 <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
             </div>
 
@@ -582,6 +582,86 @@
 
         ]);
         </g:if>
+
+
+        context.attach('.E003', [
+            {
+                header: 'Acciones'
+            },
+
+
+            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
+            ver,
+            </g:if>
+
+            {
+
+                text: 'Recibir Documento',
+                icon: "<i class='fa fa-check-square-o'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: "${createLink(action: 'recibir')}/" + id,
+                        success: function (msg){
+                            var b = bootbox.dialog({
+                                id: "dlgRecibido",
+                                title: "Trámite a ser recibido",
+                                message: msg,
+                                buttons : {
+                                    cancelar : {
+                                        label :  '<i class="fa fa-times"></i> Cancelar',
+                                        className : 'btn-danger',
+                                        callback: function () {
+                                        }
+                                    },
+                                    recibir : {
+                                        id : 'btnRecibir',
+                                        label: '<i class="fa fa-thumbs-o-up"></i> Recibir',
+                                        className: 'btn-success',
+                                        callback: function () {
+                                            $.ajax ({
+                                                type: 'POST',
+                                                url: '${createLink(action: 'guardarRecibir')}/' + id,
+                                                success: function (msg) {
+                                                    openLoader();
+                                                    cargarAlertaRecibidos();
+                                                    cargarAlertaPendientes();
+                                                    cargarAlertaRetrasados();
+                                                    cargarBandeja();
+                                                    closeLoader();
+                                                    bootbox.alert(msg)
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    });
+                }
+            }
+           ]);
+
+        context.attach(".E004", [
+            {
+                header: 'Acciones'
+            },
+            {
+                text: 'Ver',
+                icon: "<i class='fa fa-search'></i>",
+                action: function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
+
+                }
+
+
+            }
+        ]);
+
 
 
         $(".btnBuscar").click(function () {

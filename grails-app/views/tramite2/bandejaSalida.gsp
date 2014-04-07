@@ -155,14 +155,14 @@
 </div>
 
 
-<div class="buscar" hidden="hidden">
+<div class="buscar" hidden="hidden" style="margin-bottom: 20px">
 
     <fieldset>
         <legend>Búsqueda</legend>
 
         <div>
             <div class="col-md-2">
-                <label># Memorando</label>
+                <label>Documento</label>
                 <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
             </div>
 
@@ -320,6 +320,7 @@
 
 
 
+
         var archivo
 
         context.settings({
@@ -390,42 +391,42 @@
                 }
 
             },
-            {
-                text: 'Enviar',
-                icon: "<i class='fa fa-pencil'></i>",
-                action: function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
+            %{--{--}%
+                %{--text: 'Enviar',--}%
+                %{--icon: "<i class='fa fa-pencil'></i>",--}%
+                %{--action: function (e) {--}%
+                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
 
-                    bootbox.confirm("Esta seguro?",function(result){
-                        if(result){
-                            openLoader()
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
-                                data    : "id="+id,
-                                success : function (msg) {
-                                    closeLoader()
-                                    if(msg=="ok"){
-                                        bootbox.alert("Documento enviado.")
-                                        cargarBandeja(false)
-                                        location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"
-                                    }else{
-                                        var mensaje = msg.split("_")
-                                        mensaje = mensaje[1]
-                                        bootbox.alert(mensaje)
-                                    }
-                                }
-                            });
-                        }
+                    %{--bootbox.confirm("Esta seguro?",function(result){--}%
+                        %{--if(result){--}%
+                            %{--openLoader()--}%
+                            %{--$.ajax({--}%
+                                %{--type    : "POST",--}%
+                                %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
+                                %{--data    : "id="+id,--}%
+                                %{--success : function (msg) {--}%
+                                    %{--closeLoader()--}%
+                                    %{--if(msg=="ok"){--}%
+                                        %{--bootbox.alert("Documento enviado.")--}%
+                                        %{--cargarBandeja(false)--}%
+                                        %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"--}%
+                                    %{--}else{--}%
+                                        %{--var mensaje = msg.split("_")--}%
+                                        %{--mensaje = mensaje[1]--}%
+                                        %{--bootbox.alert(mensaje)--}%
+                                    %{--}--}%
+                                %{--}--}%
+                            %{--});--}%
+                        %{--}--}%
 
-                    })
+                    %{--})--}%
 
 
 
-                    /*ajax aqui*/
-                }
+                    %{--/*ajax aqui*/--}%
+                %{--}--}%
 
-            },
+            %{--},--}%
 
             imprimir
         ]);
@@ -438,11 +439,16 @@
                 icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
+                    %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
+
                 }
+
 
             }
         ]);
+
+
 
         context.attach(".alerta", [
             {
@@ -460,8 +466,11 @@
                 icon: "<i class='fa fa-search'></i>",
                 action: function (e) {
                     $("tr.trHighlight").removeClass("trHighlight");
-                    location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id
+                    %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    window.open("${resource(dir:'tramites')}/"+archivo+".pdf");
+
                 }
+
 
             }
             <g:if test="${revisar}">,
@@ -502,16 +511,12 @@
         $(".btnEnviar").click(function () {
 
             var trId = []
+            var ids =[]
 
             $(".combo").each(function () {
                 if($(this).prop('checked') == false){
                 }else {
-//                    console.log(trId.length)
-                    if(trId.length > 0){
-                        trId += "," + $(this).attr('tramite')
-                    }else{
-                        trId += $(this).attr('tramite')
-                    }
+                        trId.push($(this).attr('tramite'))
                 }
             });
 
@@ -533,11 +538,90 @@
                             label: 'No Imprimir',
                             callback: function () {
 
-                            }
+
+                   for(var i=0; i<trId.length;i++) {
+
+//                       console.log(trId[i]);
+
+                       var id = trId[i]
+
+                       $.ajax({
+                           type    : "POST",
+                           url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
+                           data    : "id="+trId[i],
+                           success : function (msg) {
+                               closeLoader()
+                               if(msg=="ok"){
+//                                   bootbox.alert("Documento enviado.")
+                                   cargarBandeja(false)
+                                   $.ajax({
+                                       type : 'POST',
+                                       url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
+                                       data : {
+                                           id: id,
+                                           enviar: 1,
+                                           type  : 'download'
+                                       },
+                                       success: function (msg) {
+
+                                       }
+
+                                   });
+                                   %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+ id +"?enviar=1&type=download"--}%
+                               }else{
+                                   var mensaje = msg.split("_")
+                                   mensaje = mensaje[1]
+                                   bootbox.alert(mensaje)
+                               }
+                           }
+                       });
+
+                   }
+
+                     bootbox.alert("Trámites Enviados")
+
+                       }
                         },
                         si: {
                             label: '<i class="fa fa-print"></i> Imprimir',
                             callback: function () {
+
+                                for(var i=0; i<trId.length;i++) {
+
+//                       console.log(trId[i]);
+
+                                    var id = trId[i]
+
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
+                                        data    : "id="+trId[i],
+                                        success : function (msg) {
+                                            closeLoader()
+                                            if(msg=="ok"){
+                                                cargarBandeja(false)
+                                                $.ajax({
+                                                    type : 'POST',
+                                                    url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
+                                                    data : {
+                                                        id: id,
+                                                        enviar: 1,
+                                                        type  : 'download'
+                                                    },
+                                                    success: function (msg) {
+
+                                                    }
+                                                });
+                                            }else{
+                                                var mensaje = msg.split("_")
+                                                mensaje = mensaje[1]
+                                                bootbox.alert(mensaje)
+                                            }
+                                        }
+                                    });
+                                }
+
+                                bootbox.alert("Trámites Enviados")
 
                             }
                         }
