@@ -47,7 +47,54 @@
         <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
-                    <th style="width:10px;"></th>
+                    %{--<th style="width:10px;"></th>--}%
+                    <th style="width: 60px;" class="text-center">
+                        <!-- Single button -->
+                        <div class="btn-group text-left">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <g:if test="${params.estado}">
+                                    <g:if test="${params.estado == 'jefe'}">
+                                        <i class="fa fa-user text-warning"></i>
+                                    </g:if>
+                                    <g:if test="${params.estado == 'usuario'}">
+                                        <i class="fa fa-user text-info"></i>
+                                    </g:if>
+                                    <g:if test="${params.estado == 'inactivo'}">
+                                        <i class="fa fa-user text-muted"></i>
+                                    </g:if>
+                                </g:if>
+                                <g:else>
+                                    Estado
+                                </g:else>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" class="a" data-tipo="">
+                                        Todos
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" class="a" data-tipo="inactivo">
+                                        <i class="fa fa-user text-muted"></i> Inactivo
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" class="a" data-tipo="usuario">
+                                        <i class="fa fa-user text-info"></i> Activo
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="a" data-tipo="jefe">
+                                        <i class="fa fa-user text-warning"></i> Autoridad
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </th>
                     <g:sortableColumn property="login" title="Usuario" params="${params}"/>
                     <g:sortableColumn property="nombre" title="Nombre" params="${params}"/>
                     <g:sortableColumn property="apellido" title="Apellido" params="${params}"/>
@@ -88,7 +135,7 @@
                     <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
                     <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
-                        <td>
+                        <td class="text-center">
                             <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
                         </td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
@@ -224,53 +271,137 @@
                     textBtn = "Activar";
                     textLoader = "Activando";
                     url = "${createLink(action:'activar_ajax')}";
+                    bootbox.dialog({
+                        title   : "Alerta",
+                        message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                        buttons : {
+                            cancelar : {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            },
+                            eliminar : {
+                                label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                className : "btn-" + clase,
+                                callback  : function () {
+                                    openLoader(textLoader);
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : url,
+                                        data    : {
+                                            id : itemId
+                                        },
+                                        success : function (msg) {
+                                            var parts = msg.split("_");
+                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                            if (parts[0] == "OK") {
+                                                location.reload(true);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
                 } else {
+
                     clase = "danger";
                     icon = "${iconDesactivar}";
-                    textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>"
-                    if (tramites > 0) {
-                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
-                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
-                    } else {
-                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
-                    }
+                    %{--textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>"--}%
+                    %{--if (tramites > 0) {--}%
+                    %{--textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +--}%
+                    %{--"redireccionados de su bandeja de entrada personal.</p>" +--}%
+                    %{--"<div id='divCombo'></div>";--}%
+                    %{--} else {--}%
+                    %{--textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"--}%
+                    %{--}--}%
                     textBtn = "Desactivar";
                     textLoader = "Desactivando";
                     url = "${createLink(action:'desactivar_ajax')}";
-                }
-                bootbox.dialog({
-                    title   : "Alerta",
-                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
-                    buttons : {
-                        cancelar : {
-                            label     : "Cancelar",
-                            className : "btn-primary",
-                            callback  : function () {
+
+                    if (tramites == 0) {
+                        textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>"
+                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
+                        bootbox.dialog({
+                            title   : "Alerta",
+                            message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                            buttons : {
+                                cancelar : {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                },
+                                eliminar : {
+                                    label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                    className : "btn-" + clase,
+                                    callback  : function () {
+                                        openLoader(textLoader);
+                                        $.ajax({
+                                            type    : "POST",
+                                            url     : url,
+                                            data    : {
+                                                id : itemId
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                if (parts[0] == "OK") {
+                                                    location.reload(true);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
                             }
-                        },
-                        eliminar : {
-                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
-                            className : "btn-" + clase,
-                            callback  : function () {
-                                openLoader(textLoader);
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : url,
-                                    data    : {
-                                        id : itemId
-                                    },
-                                    success : function (msg) {
-                                        var parts = msg.split("_");
-                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                        if (parts[0] == "OK") {
-                                            location.reload(true);
+                        });
+                    } else {
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(action:'verDesactivar_ajax')}",
+                            data    : {
+                                id       : itemId,
+                                tramites : tramites
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        eliminar : {
+                                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                            className : "btn-" + clase,
+                                            callback  : function () {
+                                                openLoader(textLoader);
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : url,
+                                                    data    : {
+                                                        id : itemId
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            location.reload(true);
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 });
                             }
-                        }
+                        });
                     }
-                });
+                }
             }
             function createEditRow(id, tipo) {
                 var title = id ? "Editar " : "Crear ";
@@ -335,6 +466,27 @@
                         params[i] = $.trim(params[i]);
                         if (params[i].startsWith("perfil")) {
                             params[i] = "perfil=" + id;
+                        }
+                        if (!params[i].startsWith("action") && !params[i].startsWith("controller") && !params[i].startsWith("format") && !params[i].startsWith("offset")) {
+                            strParams += params[i] + "&"
+                        }
+                    }
+                    location.href = "${createLink(action: 'list')}?" + strParams
+                });
+
+                $(".a").click(function () {
+                    var tipo = $(this).data("tipo");
+                    openLoader();
+                    var params = "${params}";
+                    var strParams = "";
+                    params = str_replace('[', '', params);
+                    params = str_replace(']', '', params);
+                    params = str_replace(':', '=', params);
+                    params = params.split(",");
+                    for (var i = 0; i < params.length; i++) {
+                        params[i] = $.trim(params[i]);
+                        if (params[i].startsWith("estado")) {
+                            params[i] = "estado=" + tipo;
                         }
                         if (!params[i].startsWith("action") && !params[i].startsWith("controller") && !params[i].startsWith("format") && !params[i].startsWith("offset")) {
                             strParams += params[i] + "&"

@@ -24,6 +24,7 @@ class PersonaController extends happy.seguridad.Shield {
     } //index
 
     def getLista(params, all) {
+//        println "***" + params
         def prms = params.clone()
 
         if (prms.sort == "perfil") {
@@ -57,6 +58,17 @@ class PersonaController extends happy.seguridad.Shield {
                             eq("perfil", Prfl.get(params.perfil.toLong()))
                         }
                     }
+                    if (params.estado) {
+                        if (params.estado == "jefe") {
+                            eq("jefe", 1)
+                        }
+                        if (params.estado == "usuario") {
+                            eq("activo", 1)
+                        }
+                        if (params.estado == "inactivo") {
+                            eq("activo", 0)
+                        }
+                    }
                 }
             }
         } else {
@@ -66,6 +78,19 @@ class PersonaController extends happy.seguridad.Shield {
                 if (params.perfil) {
                     perfiles {
                         eq("perfil", Prfl.get(params.perfil.toLong()))
+                    }
+                }
+                if (params.estado) {
+                    if (params.estado == "jefe") {
+                        eq("jefe", 1)
+                        eq("activo", 1)
+                    }
+                    if (params.estado == "usuario") {
+                        eq("activo", 1)
+                        eq("jefe", 0)
+                    }
+                    if (params.estado == "inactivo") {
+                        eq("activo", 0)
                     }
                 }
             }
@@ -544,17 +569,17 @@ class PersonaController extends happy.seguridad.Shield {
             }
             permisosDebeTener = permisosDebeTener.unique()
 
-            def permisosTiene= PermisoUsuario.findAllByPersona(usu)
+            def permisosTiene = PermisoUsuario.findAllByPersona(usu)
 
             def permisosAgregar = permisosDebeTener.clone()
             def permisosTerminar = []
 
-            permisosTiene.each{ actual ->
+            permisosTiene.each { actual ->
                 if (!permisosDebeTener.contains(actual.permisoTramite)) {
                     permisosTerminar.add(actual)
                     permisosAgregar.remove(actual.permisoTramite)
                 }
-                if (permisosDebeTener.contains(actual.permisoTramite) && (actual.fechaFin == null)){
+                if (permisosDebeTener.contains(actual.permisoTramite) && (actual.fechaFin == null)) {
                     permisosAgregar.remove(actual.permisoTramite)
                 }
             }
@@ -569,12 +594,12 @@ class PersonaController extends happy.seguridad.Shield {
 
             permisosAgregar.each {
                 def prus = new PermisoUsuario([
-                    persona: usu,
-                    permisoTramite: it,
-                    fechaInicio: new Date(),
-                    asignadoPor: session.usuario
+                        persona       : usu,
+                        permisoTramite: it,
+                        fechaInicio   : new Date(),
+                        asignadoPor   : session.usuario
                 ])
-                if (!prus.save(flush:true)) {
+                if (!prus.save(flush: true)) {
                     println prus.errors
                     errores += "<li>No se pudo asignar permiso ${prus.permisoTramite.descripcion}</li>"
                 }
@@ -585,7 +610,7 @@ class PersonaController extends happy.seguridad.Shield {
 //            println "agregar" + permisosAgregar
 //            println "terminar" + permisosTerminar.permisoTramite
 
-            if (errores == ""){
+            if (errores == "") {
                 render "OK_Cambios efectuados exitosamente"
             } else {
                 render "<ul>" + errores + "</ul>"
@@ -594,14 +619,18 @@ class PersonaController extends happy.seguridad.Shield {
         } else {
             render "<ul>" + errores + "</ul>"
         }
+    }
 
-
+    def verDesactivar_ajax() {
+        def persona = Persona.get(params.id)
+        return [persona: persona, tramites: params.tramites]
     }
 
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
         params.sort = params.sort ?: "apellido"
         params.perfil = params.perfil ?: ''
+        params.estado = params.estado ?: ''
         def personaInstanceList = getLista(params, false)
         def personaInstanceCount = getLista(params, true).size()
         if (personaInstanceList.size() == 0 && params.offset && params.max) {
