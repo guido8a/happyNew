@@ -384,7 +384,8 @@
                                                     type    : "POST",
                                                     url     : url,
                                                     data    : {
-                                                        id : itemId
+                                                        id    : itemId,
+                                                        quien : $("#cmbRedirect").val()
                                                     },
                                                     success : function (msg) {
                                                         var parts = msg.split("_");

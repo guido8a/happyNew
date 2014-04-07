@@ -30,13 +30,25 @@ class Shield {
             return false
 //            return true
         } else {
-            session.departamento = Departamento.get(session.departamento.id).refresh()
-            return true
-
+            def usu = Persona.get(session.usuario.id)
+            if (usu.estaActivo) {
+                session.departamento = Departamento.get(session.departamento.id).refresh()
+                return true
+            } else {
+                session.usuario = null
+                session.perfil = null
+                session.permisos = null
+                session.menu = null
+                session.an = null
+                session.cn = null
+                session.invalidate()
+                redirect(controller: 'login', action: 'login')
+                session.finalize()
+                return false
+            }
         }
         /*************************************************************************** */
     }
-
 
 
     boolean isAllowed() {
@@ -50,8 +62,6 @@ class Shield {
 //        return true
         return true
     }
-
-
 
 
 }

@@ -300,53 +300,130 @@
                     textBtn = "Activar";
                     textLoader = "Activando";
                     url = "${createLink(controller: 'persona', action:'activar_ajax')}";
+                    bootbox.dialog({
+                        title   : "Alerta",
+                        message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                        buttons : {
+                            cancelar : {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            },
+                            eliminar : {
+                                label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                className : "btn-" + clase,
+                                callback  : function () {
+                                    openLoader(textLoader);
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : url,
+                                        data    : {
+                                            id : itemId
+                                        },
+                                        success : function (msg) {
+                                            var parts = msg.split("_");
+                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                            if (parts[0] == "OK") {
+                                                location.reload(true);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
                 } else {
                     clase = "danger";
                     icon = "${iconDesactivar}";
                     textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
                     if (tramites > 0) {
-                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
-                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
+//                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
+//                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'persona', action:'verDesactivar_ajax')}",
+                            data    : {
+                                id       : itemId,
+                                tramites : tramites
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        eliminar : {
+                                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                            className : "btn-" + clase,
+                                            callback  : function () {
+                                                openLoader(textLoader);
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : url,
+                                                    data    : {
+                                                        id    : itemId,
+                                                        quien : $("#cmbRedirect").val()
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            location.reload(true);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     } else {
                         textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
+                        bootbox.dialog({
+                            title   : "Alerta",
+                            message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                            buttons : {
+                                cancelar : {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                },
+                                eliminar : {
+                                    label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                    className : "btn-" + clase,
+                                    callback  : function () {
+                                        openLoader(textLoader);
+                                        $.ajax({
+                                            type    : "POST",
+                                            url     : url,
+                                            data    : {
+                                                id : itemId
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                if (parts[0] == "OK") {
+                                                    location.reload(true);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
                     }
                     textBtn = "Desactivar";
                     textLoader = "Desactivando";
                     url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
                 }
-                bootbox.dialog({
-                    title   : "Alerta",
-                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
-                    buttons : {
-                        cancelar : {
-                            label     : "Cancelar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        },
-                        eliminar : {
-                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
-                            className : "btn-" + clase,
-                            callback  : function () {
-                                openLoader(textLoader);
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : url,
-                                    data    : {
-                                        id : itemId
-                                    },
-                                    success : function (msg) {
-                                        var parts = msg.split("_");
-                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                        if (parts[0] == "OK") {
-                                            location.reload(true);
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
             } //cambiar estado row persona
 
             function cambiarEstadoRow(itemId, strId, activar, tramites) {

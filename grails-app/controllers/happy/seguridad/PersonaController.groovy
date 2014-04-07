@@ -702,8 +702,12 @@ class PersonaController extends happy.seguridad.Shield {
                 if (pr.rolPersonaTramite.codigo == "I005") {
                     pr.delete(flush: true)
                 } else {
-                    pr.persona = null
-                    pr.departamento = dpto
+                    if (params.quien == "-") {
+                        pr.persona = null
+                        pr.departamento = dpto
+                    } else {
+                        pr.persona = Persona.get(params.quien)
+                    }
                     def tramite = pr.tramite
                     tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
                     if (tramite.save(flush: true)) {
