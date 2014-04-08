@@ -401,6 +401,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
 
         def tramite = Tramite.get(params.id)
+println tramite
+println tramite?.para
+println tramite?.para?.departamento
         def para = tramite.para.departamento
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -441,7 +444,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        use(TimeCategory) {
 //            limite = limite + tramite.prioridad.tiempo.hours
 //        }
-        limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo.hours)
+        limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
         if (limite[0]) {
             limite = limite[1]
         } else {
