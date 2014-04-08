@@ -68,11 +68,15 @@
     <body>
         <div class="form-group">
             <div class="alert alert-info">
-                Configuración personal de los datos del usuario: <strong>${usuario.nombre} ${usuario.apellido}</strong>
+                Datos del usuario: <strong>${usuario.nombre} ${usuario.apellido}</strong>
             </div>
         </div>
 
+    %{--${session.perfil}--}%
+
         <div class="panel-group" id="accordion">
+
+        <g:if test="${session.perfil?.toString().trim() == 'ADMINISTRADOR'}">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -137,6 +141,7 @@
                     </div>
                 </div>
             </div>
+        </g:if>
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -185,17 +190,17 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">
-                            Cambiar restricciones al sistema
+                            Ausentismo: permisos y vacaciones
                         </a>
                     </h4>
                 </div>
 
                 <div id="collapseAcceso" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <h4>Agregar restricción</h4>
+                        <h4>Agregar ausentismo</h4>
 
                         <p>
-                            Se agregará una restricción de acceso al sistema entre las fechas seleccionadas (inclusive).
+                            El usuario se hallará ausente entre las fechas seleccionadas (inclusive).
                         </p>
                         <g:form class="form-horizontal" name="frmAccesos" role="form" action="saveAccesos_ajax" method="POST">
                             <div class="form-group required">
