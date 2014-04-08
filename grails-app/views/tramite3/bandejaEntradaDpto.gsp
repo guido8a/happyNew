@@ -84,6 +84,14 @@
         <label class="well well-sm"
                style="text-align: center; float: left">Departamento: ${persona?.departamento?.descripcion}</label>
     </span>
+
+    <div class="btn-group" style="margin-left: 30px">
+
+        <g:link controller="tramite2" action="crearTramiteDep" class="btn btn-default btnCrearTramite">
+            <i class="fa fa-edit"></i> Crear Trámite
+        </g:link>
+
+    </div>
 </div>
 
 <div class="btn-toolbar toolbar">
@@ -113,9 +121,9 @@
         <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span> Doc. Retrasados
     </div>
 
-    <div data-type="jefe" class="alert alert-azul alertas">
-        <span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe
-    </div>
+    %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
+        %{--<span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe--}%
+    %{--</div>--}%
 </div>
 
 <div class="buscar" hidden="hidden" style="margin-bottom: 20px;">
@@ -124,7 +132,7 @@
 
         <div>
             <div class="col-md-2">
-                <label># Memorando</label>
+                <label>Documento</label>
                 <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
             </div>
 

@@ -37,7 +37,14 @@
             <td>${tramite?.prioridad.descripcion}</td>
             <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
             <td>${limite?limite.format("dd-MM-yyyy HH:mm"):''}</td>
-            <td>${tramite?.estadoTramite.descripcion}</td>
+            <td>
+                ${tramite?.estadoTramite.descripcion}
+                <g:if test="${tramite.nota && tramite.nota!=''}">
+                    <g:link controller="tramite" action="redactar" id="${tramite.id}" title="Con notas de revisión">
+                        <i class="fa fa-pencil"></i>
+                    </g:link>
+                </g:if>
+            </td>
            <g:if test="${tramite?.estadoTramite?.id == 2}">
                <td id="${tramite?.id}" class="ck"><g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/></td>
            </g:if>
