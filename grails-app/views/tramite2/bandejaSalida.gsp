@@ -275,40 +275,40 @@
             action: function (e){
                 $("tr.trHighlight").removeClass("trHighlight");
                 e.preventDefault();
-                        var b = bootbox.dialog({
-                            id: "dlgImprimir",
-                            title : "Permiso de impresión para el trámite:  " + codigo,
-                            message : "<label style='margin-left: 30px; margin-top: 30px'>Personal:</label>" + selPersonal +
-                                      "<label style='margin-left: 30px; margin-top: 60px'>Observaciones:</label>" + "<textarea style='width: 300px;margin-left: 10px; height: 70px' id='observImp'></textarea>",
-                            buttons : {
-                                cancelar : {
-                                    label  : "Cancelar",
-                                    className : 'btn-danger',
-                                    callback :  function () {
-                                    }
-                                },
-                                guardar : {
-                                    id   : 'btnSave',
-                                    label : '<i class="fa fa-save"></i> Aceptar',
-                                    className : "btn-success",
-                                    callback: function () {
-
-                                        $.ajax({
-                                            type: 'POST',
-                                            url: '${createLink(action: 'permisoImprimir')}/' + id,
-                                            data :{
-                                                persona: $("#iden").val(),
-                                                observaciones: $("#observImp").val()
-
-                                            },
-                                            success : function (msg) {
-                                                bootbox.alert(msg)
-                                            }
-                                        });
-                                    }
-                                }
+                var b = bootbox.dialog({
+                    id: "dlgImprimir",
+                    title : "Permiso de impresión para el trámite:  " + codigo,
+                    message : "<label style='margin-left: 30px; margin-top: 30px'>Personal:</label>" + selPersonal +
+                            "<label style='margin-left: 30px; margin-top: 60px'>Observaciones:</label>" + "<textarea style='width: 300px;margin-left: 10px; height: 70px' id='observImp'></textarea>",
+                    buttons : {
+                        cancelar : {
+                            label  : "Cancelar",
+                            className : 'btn-danger',
+                            callback :  function () {
                             }
-                        });
+                        },
+                        guardar : {
+                            id   : 'btnSave',
+                            label : '<i class="fa fa-save"></i> Aceptar',
+                            className : "btn-success",
+                            callback: function () {
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '${createLink(action: 'permisoImprimir')}/' + id,
+                                    data :{
+                                        persona: $("#iden").val(),
+                                        observaciones: $("#observImp").val()
+
+                                    },
+                                    success : function (msg) {
+                                        bootbox.alert(msg)
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
 
                 if($sel){
                     $sel.removeClass('hide');
@@ -392,39 +392,39 @@
 
             },
             %{--{--}%
-                %{--text: 'Enviar',--}%
-                %{--icon: "<i class='fa fa-pencil'></i>",--}%
-                %{--action: function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+            %{--text: 'Enviar',--}%
+            %{--icon: "<i class='fa fa-pencil'></i>",--}%
+            %{--action: function (e) {--}%
+            %{--$("tr.trHighlight").removeClass("trHighlight");--}%
 
-                    %{--bootbox.confirm("Esta seguro?",function(result){--}%
-                        %{--if(result){--}%
-                            %{--openLoader()--}%
-                            %{--$.ajax({--}%
-                                %{--type    : "POST",--}%
-                                %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
-                                %{--data    : "id="+id,--}%
-                                %{--success : function (msg) {--}%
-                                    %{--closeLoader()--}%
-                                    %{--if(msg=="ok"){--}%
-                                        %{--bootbox.alert("Documento enviado.")--}%
-                                        %{--cargarBandeja(false)--}%
-                                        %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"--}%
-                                    %{--}else{--}%
-                                        %{--var mensaje = msg.split("_")--}%
-                                        %{--mensaje = mensaje[1]--}%
-                                        %{--bootbox.alert(mensaje)--}%
-                                    %{--}--}%
-                                %{--}--}%
-                            %{--});--}%
-                        %{--}--}%
+            %{--bootbox.confirm("Esta seguro?",function(result){--}%
+            %{--if(result){--}%
+            %{--openLoader()--}%
+            %{--$.ajax({--}%
+            %{--type    : "POST",--}%
+            %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
+            %{--data    : "id="+id,--}%
+            %{--success : function (msg) {--}%
+            %{--closeLoader()--}%
+            %{--if(msg=="ok"){--}%
+            %{--bootbox.alert("Documento enviado.")--}%
+            %{--cargarBandeja(false)--}%
+            %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"--}%
+            %{--}else{--}%
+            %{--var mensaje = msg.split("_")--}%
+            %{--mensaje = mensaje[1]--}%
+            %{--bootbox.alert(mensaje)--}%
+            %{--}--}%
+            %{--}--}%
+            %{--});--}%
+            %{--}--}%
 
-                    %{--})--}%
+            %{--})--}%
 
 
 
-                    %{--/*ajax aqui*/--}%
-                %{--}--}%
+            %{--/*ajax aqui*/--}%
+            %{--}--}%
 
             %{--},--}%
 
@@ -510,13 +510,13 @@
 
         $(".btnEnviar").click(function () {
 
-            var trId = []
-            var ids =[]
+            var trId = [];
 
             $(".combo").each(function () {
                 if($(this).prop('checked') == false){
                 }else {
-                        trId.push($(this).attr('tramite'))
+                    trId.push($(this).attr('tramite'));
+//                    console.log("-->>" , $(this))
                 }
             });
 
@@ -528,7 +528,7 @@
 
             }else {
 
-
+                var id
                 var b = bootbox.dialog({
                     id: "dlgGuia",
                     title: 'Impresión de la guía de envio de trámites',
@@ -537,60 +537,8 @@
                         no: {
                             label: 'No Imprimir',
                             callback: function () {
-
-
-                   for(var i=0; i<trId.length;i++) {
-
-//                       console.log(trId[i]);
-
-                       var id = trId[i]
-
-                       $.ajax({
-                           type    : "POST",
-                           url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
-                           data    : "id="+trId[i],
-                           success : function (msg) {
-                               closeLoader()
-                               if(msg=="ok"){
-//                                   bootbox.alert("Documento enviado.")
-                                   cargarBandeja(false)
-                                   $.ajax({
-                                       type : 'POST',
-                                       url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
-                                       data : {
-                                           id: id,
-                                           enviar: 1,
-                                           type  : 'download'
-                                       },
-                                       success: function (msg) {
-
-                                       }
-
-                                   });
-                                   %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+ id +"?enviar=1&type=download"--}%
-                               }else{
-                                   var mensaje = msg.split("_")
-                                   mensaje = mensaje[1]
-                                   bootbox.alert(mensaje)
-                               }
-                           }
-                       });
-
-                   }
-
-                     bootbox.alert("Trámites Enviados")
-
-                       }
-                        },
-                        si: {
-                            label: '<i class="fa fa-print"></i> Imprimir',
-                            callback: function () {
-
                                 for(var i=0; i<trId.length;i++) {
-
-//                       console.log(trId[i]);
-
-                                    var id = trId[i]
+                                    id = trId[i];
 
                                     $.ajax({
                                         type    : "POST",
@@ -612,6 +560,7 @@
 
                                                     }
                                                 });
+                                                %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+ id +"?enviar=1&type=download"--}%
                                             }else{
                                                 var mensaje = msg.split("_")
                                                 mensaje = mensaje[1]
@@ -619,9 +568,61 @@
                                             }
                                         }
                                     });
+
+                                }
+                                bootbox.alert("Trámites Enviados")
+                            }
+                        },
+                        si: {
+                            label: '<i class="fa fa-print"></i> Imprimir',
+                            callback: function () {
+
+                                for(var i=0; i<trId.length;i++) {
+
+//                       console.log(trId[i]);
+
+                                       id = trId[i]
+
+                                    %{--$.ajax({--}%
+                                        %{--type    : "POST",--}%
+                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
+                                        %{--data    : "id="+trId[i],--}%
+                                        %{--success : function (msg) {--}%
+                                            %{--console.log(msg);--}%
+                                            %{--closeLoader()--}%
+                                            %{--if(msg=="ok"){--}%
+                                                %{--cargarBandeja(false)--}%
+                                                %{--$.ajax({--}%
+                                                    %{--type : 'POST',--}%
+                                                    %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
+                                                    %{--data : {--}%
+                                                        %{--id: id,--}%
+                                                        %{--enviar: '1',--}%
+                                                        %{--type  : 'download'--}%
+                                                    %{--},--}%
+                                                    %{--success: function (msg) {--}%
+
+                                                    %{--}--}%
+                                                %{--});--}%
+                                            %{--}else{--}%
+                                                %{--var mensaje = msg.split("_")--}%
+                                                %{--mensaje = mensaje[1]--}%
+                                                %{--bootbox.alert(mensaje)--}%
+                                            %{--}--}%
+                                        %{--},--}%
+                                        %{--error: function(jqxhr, status, error) {--}%
+                                            %{--console.log("WTF",jqxhr, status, error);--}%
+
+                                        %{--},--}%
+                                        %{--complete: function() {--}%
+                                            %{--console.log("complete")--}%
+                                        %{--}--}%
+                                    %{--});--}%
                                 }
 
                                 bootbox.alert("Trámites Enviados")
+                                location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}'
+
 
                             }
                         }

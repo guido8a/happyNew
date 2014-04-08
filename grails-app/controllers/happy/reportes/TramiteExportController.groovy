@@ -1,5 +1,15 @@
 package happy.reportes
 
+import com.lowagie.text.Element
+import com.lowagie.text.Font
+import com.lowagie.text.HeaderFooter
+import com.lowagie.text.PageSize
+import com.lowagie.text.Paragraph
+import com.lowagie.text.Phrase
+import com.lowagie.text.Rectangle
+import com.lowagie.text.pdf.PdfPCell
+import com.lowagie.text.pdf.PdfPTable
+import com.lowagie.text.pdf.PdfWriter
 import happy.seguridad.Persona
 import happy.tramites.Departamento
 import happy.tramites.Tramite
@@ -17,7 +27,7 @@ import org.xhtmlrenderer.extend.FontResolver
 
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
-
+import java.awt.Color
 import java.io.*;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.w3c.dom.Document;
@@ -27,8 +37,8 @@ class TramiteExportController {
 //    def reportesPdfService
 
     def crearPdf() {
-//        println "crear pdf"
-//        println params
+        println "crear pdf"
+        println params
 
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
@@ -309,4 +319,143 @@ class TramiteExportController {
 //        response.setContentLength(b.length)
 //        response.getOutputStream().write(b)
 //    }
+
+    def imprimirGuia () {
+
+        println("params:" + params)
+
+        def cantidadTramites = params.ids
+
+
+        def baos = new ByteArrayOutputStream()
+        def name = "guia_tramites_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
+        Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
+        Font times10bold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font times8bold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+        Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+        def prmsHeaderHoja = [border: Color.WHITE]
+        times8boldWhite.setColor(Color.WHITE)
+        times10boldWhite.setColor(Color.WHITE)
+        def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
+                times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
+
+        com.lowagie.text.Document document
+        document = new com.lowagie.text.Document(PageSize.A4);
+        def pdfw = PdfWriter.getInstance(document, baos);
+        HeaderFooter footer1 = new HeaderFooter(new Phrase('', times8normal), true);
+        footer1.setBorder(Rectangle.NO_BORDER);
+        footer1.setAlignment(Element.ALIGN_CENTER);
+        document.setFooter(footer1);
+        document.open();
+
+        Paragraph headers = new Paragraph();
+//        addEmptyLine(headers, 1);
+        headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph("Guía de Envio de Trámites", times18bold));
+//        addEmptyLine(headers, 1);
+        headers.add(new Paragraph(params.departamento, times12bold));
+        headers.add(new Paragraph("Fecha: " + new Date().format("dd-MM-yyyy"), times12bold));
+
+
+        PdfPTable tablaTramites = new PdfPTable(4);
+        tablaTramites.setWidthPercentage(100);
+        tablaTramites.setWidths(arregloEnteros([15, 30, 20, 25]))
+
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+
+        addCellTabla(tablaTramites, new Paragraph("Documento", times10bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph("Para", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph("Recibe", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph("Firma", times8bold), prmsHeaderHoja)
+
+        cantidadTramites.split(',').each{
+
+            println(it)
+
+            addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("2", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("3", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("4", times8bold), prmsHeaderHoja)
+
+        }
+
+
+        document.add(headers);
+        document.add(tablaTramites)
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+
+    }
+
+
+    static arregloEnteros(array) {
+        int[] ia = new int[array.size()]
+        array.eachWithIndex { it, i ->
+            ia[i] = it.toInteger()
+        }
+
+        return ia
+    }
+
+
+    def addCellTabla(table, paragraph, params) {
+        PdfPCell cell = new PdfPCell(paragraph);
+//        println "params "+params
+        cell.setBorderColor(Color.BLACK);
+
+        if (params.border) {
+            if (!params.bordeBot)
+                if (!params.bordeTop)
+                    cell.setBorderColor(params.border);
+        }
+        if (params.bg) {
+            cell.setBackgroundColor(params.bg);
+        }
+        if (params.colspan) {
+            cell.setColspan(params.colspan);
+        }
+        if (params.align) {
+            cell.setHorizontalAlignment(params.align);
+        }
+        if (params.valign) {
+            cell.setVerticalAlignment(params.valign);
+        }
+        if (params.w) {
+            cell.setBorderWidth(params.w);
+        }
+        if (params.bordeTop) {
+            cell.setBorderWidthTop(1)
+            cell.setBorderWidthLeft(0)
+            cell.setBorderWidthRight(0)
+            cell.setBorderWidthBottom(0)
+            cell.setPaddingTop(7);
+
+        }
+        if (params.bordeBot) {
+            cell.setBorderWidthBottom(1)
+            cell.setBorderWidthLeft(0)
+            cell.setBorderWidthRight(0)
+            cell.setPaddingBottom(7)
+
+            if (!params.bordeTop) {
+                cell.setBorderWidthTop(0)
+            }
+        }
+        table.addCell(cell);
+    }
+
+
+
 }

@@ -181,9 +181,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //alertas
 
     def enviar() {
-//        println "method "+request.getMethod()
+        println "method "+request.getMethod()
+        println "PARAMS "+params
         /*todo sin validacion alguna... que envie no mas cualquiera*/
         if (request.getMethod() == "POST") {
+            println "\t1"
             def msg = ""
             def tramite = Tramite.get(params.id)
             def envio = new Date()
@@ -192,6 +194,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 t.fechaEnvio = envio
                 t.save(flush: true)
             }
+            println "\t2"
             def pdt = new PersonaDocumentoTramite()
             pdt.tramite = tramite
             pdt.persona = session.usuario
@@ -201,13 +204,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
             pdt.save(flush: true)
             tramite.fechaEnvio = envio
             tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
-            if (tramite.save(flush: true))
+            if (tramite.save(flush: true)) {
+                println "\t3"
                 render "ok"
-
+            } else {
+                println "\t4"
+                println tramite.errors
+                render "no: "+renderErrors(bean:tramite)
+            }
         } else {
-            response.sendError(403)
+            println "\t5"
+//            response.sendError(403)
+            render "403"
         }
-
+        println "\t6"
+        render "nadad"
     }
 
 
@@ -515,5 +526,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        return render
 
     }
+
+
 
 }
