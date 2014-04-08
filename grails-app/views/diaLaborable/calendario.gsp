@@ -75,7 +75,7 @@
 
     <body>
 
-        <g:set var="parametros" value="${Parametros.get(1)}"/>
+        <g:set var="parametros" value="${Parametros.list().first()}"/>
 
         <!-- botones -->
         <div class="btn-toolbar toolbar">

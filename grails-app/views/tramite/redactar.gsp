@@ -49,6 +49,9 @@
                     <g:link action="bandejaEntrada" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
                         <i class="fa fa-list-ul"></i> Bandeja de Entrada
                     </g:link>
+                    <g:link controller="tramite2" action="bandejaSalida" class="btn btn-sm btn-azul btnRegresar">
+                        <i class="fa fa-list-ul"></i> Bandeja de Salida
+                    </g:link>
                 </div>
 
                 <div class="btn-group">

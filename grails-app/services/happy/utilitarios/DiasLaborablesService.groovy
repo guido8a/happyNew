@@ -28,17 +28,19 @@ class DiasLaborablesService {
 //        println "params.minutos " + minutos
 //        println "params.noLaborables " + noLaborables
 //        println "****"
-        def parametros = Parametros.get(1)
-        if (!parametros) {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
             parametros = new Parametros([
-                    horaInicio: 8,
+                    horaInicio  : 8,
                     minutoInicio: 00,
-                    horaFin: 16,
-                    minutoFin: 30
+                    horaFin     : 16,
+                    minutoFin   : 30
             ])
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
             }
+        } else {
+            parametros = parametros.first()
         }
         def mensaje = ""
         def dia = DiaLaborable.findAllByFecha(fecha.clone().clearTime())

@@ -36,15 +36,19 @@ class TramiteController extends happy.seguridad.Shield {
 
         if (tramite.save(flush: true)) {
             def para = tramite.para
-            if (params.para.toLong() > 0) {
-                para.persona = Persona.get(params.para.toLong())
+            if (params.para) {
+                if (params.para.toLong() > 0) {
+                    para.persona = Persona.get(params.para.toLong())
+                } else {
+                    para.departamento = Departamento.get(params.para.toLong() * -1)
+                }
+                if (para.save(flush: true)) {
+                    render "OK_Trámite guardado exitosamente"
+                } else {
+                    render "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                }
             } else {
-                para.departamento = Departamento.get(params.para.toLong() * -1)
-            }
-            if (para.save(flush: true)) {
                 render "OK_Trámite guardado exitosamente"
-            } else {
-                render "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
             }
         } else {
             render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)

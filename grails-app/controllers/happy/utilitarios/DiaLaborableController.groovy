@@ -59,17 +59,19 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def saveCalendario() {
-        def parametros = Parametros.get(1)
-        if (!parametros) {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
             parametros = new Parametros([
                     horaInicio  : 8,
-                    minutoInicio: 30,
+                    minutoInicio: 00,
                     horaFin     : 16,
                     minutoFin   : 30
             ])
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
             }
+        } else {
+            parametros = parametros.first()
         }
 
         def errores = 0
@@ -193,8 +195,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def calendario() {
-        def parametros = Parametros.get(1)
-        if (!parametros) {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
             parametros = new Parametros([
                     horaInicio  : 8,
                     minutoInicio: 00,
@@ -204,6 +206,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
             }
+        } else {
+            parametros = parametros.first()
         }
 
         if (!params.anio) {
@@ -278,8 +282,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
             redirect(action: "error")
             return
         }
-        def parametros = Parametros.get(1)
-        if (!parametros) {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
             parametros = new Parametros([
                     horaInicio  : 8,
                     minutoInicio: 00,
@@ -289,6 +293,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
             }
+        } else {
+            parametros = parametros.first()
         }
         def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         def enero01 = new Date().parse("dd-MM-yyyy", "01-01-" + params.anio)
@@ -353,8 +359,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
     def calendario_old() {
 
-        def parametros = Parametros.get(1)
-        if (!parametros) {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
             parametros = new Parametros([
                     horaInicio  : 8,
                     minutoInicio: 00,
@@ -364,6 +370,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
             if (!parametros.save(flush: true)) {
                 println "error al guardar params: " + parametros.errors
             }
+        } else {
+            parametros = parametros.first()
         }
 
         def anio = new Date().format('yyyy').toInteger()

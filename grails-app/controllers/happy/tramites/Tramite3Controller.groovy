@@ -103,7 +103,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
         if (numero.size() == 0) {
             objNum = new Numero([
-                    departamento: persona.departamento,
+                    departamento : persona.departamento,
                     tipoDocumento: TipoDocumento.get(paramsTramite.tipoDocumento.id)
             ])
         } else {
@@ -141,7 +141,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (paramsTramite.para) {
                 def para = paramsTramite.para.toInteger()
                 def paraDocumentoTramite = new PersonaDocumentoTramite([
-                        tramite: tramite,
+                        tramite          : tramite,
                         rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
                 ])
                 if (para > 0) {
@@ -158,7 +158,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (paramsTramite.hiddenCC.toString().size() > 0) {
                 (paramsTramite.hiddenCC.split("_")).each { cc ->
                     def ccDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite: tramite,
+                            tramite          : tramite,
                             rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
                     ])
                     if (cc.toInteger() > 0) {
@@ -339,7 +339,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         if (tienePermiso.size() == 0) {
             flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de entrada del departamento. Ha sido redireccionado a su bandeja de entrada personal."
-            flash.tipo="error"
+            flash.tipo = "error"
             redirect(controller: "tramite", action: "bandejaEntrada")
             return
         }
@@ -401,10 +401,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
 
         def tramite = Tramite.get(params.id)
-println tramite
-println tramite?.para
-println tramite?.para?.departamento
-        def para = tramite.para.departamento
+        def para = tramite.para?.departamento
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCC = RolPersonaTramite.findByCodigo("R002")
@@ -435,7 +432,7 @@ println tramite?.para?.departamento
             pxt = pxt.first()
         }
 
-        if (persona.departamentoId == para.id) {
+        if (para && persona.departamentoId == para.id) {
             tramite.estadoTramite = estado
         }
 
@@ -458,10 +455,10 @@ println tramite?.para?.departamento
 
         if (pxt.save(flush: true) && tramite.save(flush: true)) {
             def pdt = new PersonaDocumentoTramite([
-                    tramite: tramite,
-                    persona: persona,
-                    rolPersonaTramite: RolPersonaTramite.findByCodigo("E003"),
-                    fechaRecepcion: hoy,
+                    tramite             : tramite,
+                    persona             : persona,
+                    rolPersonaTramite   : RolPersonaTramite.findByCodigo("E003"),
+                    fechaRecepcion      : hoy,
                     fechaLimiteRespuesta: limite
             ])
             if (pdt.save(flush: true)) {
