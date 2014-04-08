@@ -81,7 +81,12 @@ class TramiteExportController {
         resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
 
         def text = tramite.texto
-        text = util.clean(str: text)
+//        text = util.clean(str: text)
+        text=text.decodeHTML()
+
+//        println "html:" + tramite.texto.decodeHTML()
+//        println "\n\n" + text
+
         text = text.replaceAll(~"\\?\\_debugResources=y\\&n=[0-9]*", "")
         text = text.replaceAll(message(code: 'pathImages'), pathImages)
 
