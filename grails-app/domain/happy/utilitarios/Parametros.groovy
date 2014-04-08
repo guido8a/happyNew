@@ -8,6 +8,9 @@ class Parametros {
     Integer horaFin
     Integer minutoFin
 
+    String ipLDAP
+    String ouPrincipal
+
     static mapping = {
         table 'prmt'
         cache usage: 'read-write', include: 'non-lazy'
@@ -19,10 +22,17 @@ class Parametros {
             minutoInicio column: 'prmtmnin'
             horaFin column: 'prmthrfn'
             minutoFin column: 'prmtmnfn'
+            ipLDAP column: 'prmtldap'
+            ouPrincipal column: 'prmt__ou'
         }
     }
     static constraints = {
-
+        horaInicio(blank: false, nullable: false, attributes: [title: 'Hora de inicio de la jornada'])
+        minutoInicio(blank: false, nullable: false, attributes: [title: 'Minuto de inicio de la jornada'])
+        horaFin(blank: false, nullable: false, attributes: [title: 'Hora de finalización de la jornada'])
+        minutoFin(blank: false, nullable: false, attributes: [title: 'Minuto de finalización de la jornada'])
+        ipLDAP(blank: false, nullable: false, attributes: [title: 'dirección IP del servidor LDAP'])
+        ouPrincipal(blank: false, nullable: false, attributes: [title: 'Unidad organizacional principal: LDAP'])
     }
 
     def getInicioJornada() {

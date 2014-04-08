@@ -35,7 +35,7 @@ class ParametrosController extends happy.seguridad.Shield {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def parametrosInstanceList = getLista(params, false)
         def parametrosInstanceCount = getLista(params, true).size()
-        if (parametrosInstanceList.size() == 0 && params.offset && params.max) {
+        if(parametrosInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
         }
         parametrosInstanceList = getLista(params, false)
@@ -43,9 +43,9 @@ class ParametrosController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
-        if (params.id) {
+        if(params.id) {
             def parametrosInstance = Parametros.get(params.id)
-            if (!parametrosInstance) {
+            if(!parametrosInstance) {
                 notFound_ajax()
                 return
             }
@@ -57,9 +57,9 @@ class ParametrosController extends happy.seguridad.Shield {
 
     def form_ajax() {
         def parametrosInstance = new Parametros(params)
-        if (params.id) {
+        if(params.id) {
             parametrosInstance = Parametros.get(params.id)
-            if (!parametrosInstance) {
+            if(!parametrosInstance) {
                 notFound_ajax()
                 return
             }
@@ -69,15 +69,15 @@ class ParametrosController extends happy.seguridad.Shield {
 
     def save_ajax() {
         def parametrosInstance = new Parametros()
-        if (params.id) {
+        if(params.id) {
             parametrosInstance = Parametros.get(params.id)
-            if (!parametrosInstance) {
+            if(!parametrosInstance) {
                 notFound_ajax()
                 return
             }
         } //update
         parametrosInstance.properties = params
-        if (!parametrosInstance.save(flush: true)) {
+        if(!parametrosInstance.save(flush:true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Parametros."
             msg += renderErrors(bean: parametrosInstance)
             render msg
@@ -87,11 +87,11 @@ class ParametrosController extends happy.seguridad.Shield {
     } //save para grabar desde ajax
 
     def delete_ajax() {
-        if (params.id) {
+        if(params.id) {
             def parametrosInstance = Parametros.get(params.id)
-            if (parametrosInstance) {
+            if(parametrosInstance) {
                 try {
-                    parametrosInstance.delete(flush: true)
+                    parametrosInstance.delete(flush:true)
                     render "OK_Eliminación de Parametros exitosa."
                 } catch (e) {
                     render "NO_No se pudo eliminar Parametros."

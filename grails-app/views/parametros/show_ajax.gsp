@@ -6,19 +6,6 @@
 </g:if>
 <g:else>
 
-    <g:if test="${parametrosInstance?.horaFin}">
-        <div class="row">
-            <div class="col-md-2 text-info">
-                Hora Fin
-            </div>
-            
-            <div class="col-md-3">
-                <g:fieldValue bean="${parametrosInstance}" field="horaFin"/>
-            </div>
-            
-        </div>
-    </g:if>
-    
     <g:if test="${parametrosInstance?.horaInicio}">
         <div class="row">
             <div class="col-md-2 text-info">
@@ -27,6 +14,32 @@
             
             <div class="col-md-3">
                 <g:fieldValue bean="${parametrosInstance}" field="horaInicio"/>
+            </div>
+            
+        </div>
+    </g:if>
+    
+    <g:if test="${parametrosInstance?.minutoInicio}">
+        <div class="row">
+            <div class="col-md-2 text-info">
+                Minuto Inicio
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="minutoInicio"/>
+            </div>
+            
+        </div>
+    </g:if>
+    
+    <g:if test="${parametrosInstance?.horaFin}">
+        <div class="row">
+            <div class="col-md-2 text-info">
+                Hora Fin
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="horaFin"/>
             </div>
             
         </div>
@@ -45,14 +58,27 @@
         </div>
     </g:if>
     
-    <g:if test="${parametrosInstance?.minutoInicio}">
+    <g:if test="${parametrosInstance?.ipLDAP}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Minuto Inicio
+                Ip LDAP
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${parametrosInstance}" field="minutoInicio"/>
+                <g:fieldValue bean="${parametrosInstance}" field="ipLDAP"/>
+            </div>
+            
+        </div>
+    </g:if>
+    
+    <g:if test="${parametrosInstance?.ouPrincipal}">
+        <div class="row">
+            <div class="col-md-2 text-info">
+                Ou Principal
+            </div>
+            
+            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="ouPrincipal"/>
             </div>
             
         </div>

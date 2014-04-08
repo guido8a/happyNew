@@ -90,7 +90,7 @@
                     <i class="icon fa fa-check"></i> Guardar
                 </a>
                 <a href="#" class="btn btn-default" id="btnDesactivar">
-                    <i class="icon fa fa-power-off"></i> Desactivar
+                    <i class="icon fa fa-power-off"></i> Cerrar el año de proceso
                 </a>
             </div>
         </div>
@@ -241,13 +241,13 @@
                     bootbox.dialog({
                         title   : "Alerta",
                         message : "<i class='fa fa-power-off fa-3x pull-left text-shadow'></i>" +
-                                  "<p>¿Está seguro que desea desactivar el año ${anio.numero}?</p>" +
-                                  "<p>Esta acción no se puede deshacer.</p>" +
+                                  "<p>¿Está seguro que desea cerrar el año de proceso: ${anio.numero}?</p>" +
+                                  "<p>Esta acción no se puede deshacer y consiste de:</p>" +
                                   "<ul>" +
-                                  "<li>Se desactivará el año ${anio.numero}, por lo que no se podrán crear nuevos trámites este año</li>" +
-                                  "<li>Se reiniciará la numeración de los trámites</li>" +
-                                  "<li>Se creará el año ${anio.numero.toInteger()+1}</li>" +
-                                  "<li>Se inicializarán los días laborables y se mostrará esta pantalla para su edicón</li>" +
+                                  "<li>Cerrar el año de proceso ${anio.numero}, por lo que no se podrá crear nuevos trámites este año</li>" +
+                                  "<li>Reiniciar la numeración de los trámites</li>" +
+                                  "<li>Crear el nuevo año ${anio.numero.toInteger()+1}</li>" +
+                                  "<li>Inicializar el calendario laborable y definir los días festivos y el horario de trabajo</li>" +
                                   "</ul>",
                         buttons : {
                             cancelar   : {

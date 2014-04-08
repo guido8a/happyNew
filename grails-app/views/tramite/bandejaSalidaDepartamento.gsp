@@ -221,7 +221,7 @@
 
         <div>
             <div class="col-md-2">
-                <label># Memorando</label>
+                <label># de Documento</label>
                 <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
             </div>
 

@@ -15,7 +15,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="codigo" class="form-control allCaps" value="${prflInstance?.codigo}"/>
+                    <g:textField name="codigo" class="form-control allCaps" value="${prflInstance?.codigo}" style="width:120px"
+                    maxlength="4"/>
                 </div>
 
             </span>
@@ -28,7 +29,7 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="descripcion" class="form-control allCaps" value="${prflInstance?.descripcion}"/>
+                    <g:textField name="descripcion" class="form-control allCaps" value="${prflInstance?.descripcion}" style="width: 360px;"/>
                 </div>
 
             </span>
@@ -53,17 +54,17 @@
                     Observaciones
                 </label>
 
-                <div class="col-md-6">
-                    <g:textField name="observaciones" class="form-control allCaps" value="${prflInstance?.observaciones}"/>
-                </div>
-
+                <div class="col-md-6" style="width: 380px;">
+                    <g:textField name="observaciones" class="form-control allCaps" value="${prflInstance?.observaciones}" style="width: 360px;"/>
+                </div> *
             </span>
         </div>
 
+%{--
         <div class="form-group ${hasErrors(bean: prflInstance, field: 'padre', 'error')}">
             <span class="grupo">
                 <label for="padre" class="col-md-3 control-label text-info">
-                    Padre
+                    Copiar de perfil
                 </label>
 
                 <div class="col-md-6">
@@ -72,6 +73,7 @@
                 </div>
             </span>
         </div>
+--}%
 
     %{--<div class="form-group ${hasErrors(bean: prflInstance, field: 'perfiles', 'error')} ">--}%
     %{--<span class="grupo">--}%

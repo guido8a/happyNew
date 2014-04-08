@@ -1,47 +1,64 @@
+
 <%@ page import="happy.utilitarios.Parametros" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Jornada laboral</title>
+        <title>Lista de Parametros</title>
     </head>
-
     <body>
 
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-        <!-- botones -->
+    <!-- botones -->
         %{--<div class="btn-toolbar toolbar">--}%
-        %{--<div class="btn-group">--}%
-        %{--<g:link action="form" class="btn btn-default btnCrear">--}%
-        %{--<i class="fa fa-file-o"></i> Crear--}%
-        %{--</g:link>--}%
-        %{--</div>--}%
-
-        %{--<div class="btn-group pull-right col-md-3">--}%
-        %{--<div class="input-group">--}%
-        %{--<input type="text" class="form-control" placeholder="Buscar" value="${params.search}">--}%
-        %{--<span class="input-group-btn">--}%
-        %{--<g:link action="list" class="btn btn-default btn-search" type="button">--}%
-        %{--<i class="fa fa-search"></i>&nbsp;--}%
-        %{--</g:link>--}%
-        %{--</span>--}%
-        %{--</div><!-- /input-group -->--}%
-        %{--</div>--}%
+            %{--<div class="btn-group">--}%
+                %{--<g:link action="form" class="btn btn-default btnCrear">--}%
+                    %{--<i class="fa fa-file-o"></i> Crear--}%
+                %{--</g:link>--}%
+            %{--</div>--}%
+            %{--<div class="btn-group pull-right col-md-3">--}%
+                %{--<div class="input-group">--}%
+                    %{--<input type="text" class="form-control" placeholder="Buscar" value="${params.search}">--}%
+                    %{--<span class="input-group-btn">--}%
+                        %{--<g:link action="list" class="btn btn-default btn-search" type="button">--}%
+                            %{--<i class="fa fa-search"></i>&nbsp;--}%
+                        %{--</g:link>--}%
+                    %{--</span>--}%
+                %{--</div><!-- /input-group -->--}%
+            %{--</div>--}%
         %{--</div>--}%
 
         <table class="table table-condensed table-bordered table-striped">
             <thead>
                 <tr>
-                    <g:sortableColumn property="horaInicio" title="Hora de Inicio de la jornada"/>
-                    <g:sortableColumn property="horaFin" title="Hora de Fin de la jornada"/>
+                    
+                    <g:sortableColumn property="horaInicio" title="Hora Inicio" />
+                    
+                    %{--<g:sortableColumn property="minutoInicio" title="Minuto Inicio" />--}%
+                    
+                    <g:sortableColumn property="horaFin" title="Hora Fin" />
+                    
+                    %{--<g:sortableColumn property="minutoFin" title="Minuto Fin" />--}%
+                    
+                    <g:sortableColumn property="ipLDAP" title="Ip LDAP" />
+                    
+                    <g:sortableColumn property="ouPrincipal" title="Ou Principal" />
+                    
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${parametrosInstanceList}" status="i" var="parametrosInstance">
                     <tr data-id="${parametrosInstance.id}">
-                        <td>${parametrosInstance.horaInicio.toString().padLeft(2, '0')}:${parametrosInstance.minutoInicio.toString().padLeft(2, '0')}</td>
-                        <td>${parametrosInstance.horaFin.toString().padLeft(2, '0')}:${parametrosInstance.minutoFin.toString().padLeft(2, '0')}</td>
+                        
+                        <td>${parametrosInstance.horaInicio.toString().padLeft(2,'0')}:${parametrosInstance.minutoInicio.toString().padLeft(2,'0')}</td>
+                        
+                        <td>${parametrosInstance.horaFin.toString().padLeft(2,'0')}:${parametrosInstance.minutoFin.toString().padLeft(2,'0')}</td>
+                        
+                        <td>${fieldValue(bean: parametrosInstance, field: "ipLDAP")}</td>
+                        
+                        <td>${fieldValue(bean: parametrosInstance, field: "ouPrincipal")}</td>
+                        
                     </tr>
                 </g:each>
             </tbody>
@@ -55,25 +72,25 @@
                 var $form = $("#frmParametros");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
                 if ($form.valid()) {
-                    $btn.replaceWith(spinner);
+                $btn.replaceWith(spinner);
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(action:'save_ajax')}',
                         data    : $form.serialize(),
-                        success : function (msg) {
-                            var parts = msg.split("_");
-                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                            if (parts[0] == "OK") {
-                                location.reload(true);
-                            } else {
-                                spinner.replaceWith($btn);
-                                return false;
-                            }
+                            success : function (msg) {
+                        var parts = msg.split("_");
+                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                        if (parts[0] == "OK") {
+                            location.reload(true);
+                        } else {
+                            spinner.replaceWith($btn);
+                            return false;
                         }
-                    });
-                } else {
-                    return false;
-                } //else
+                    }
+                });
+            } else {
+                return false;
+            } //else
             }
             function deleteRow(itemId) {
                 bootbox.dialog({
@@ -111,7 +128,7 @@
             }
             function createEditRow(id) {
                 var title = id ? "Editar" : "Crear";
-                var data = id ? { id : id } : {};
+                var data = id ? { id: id } : {};
                 $.ajax({
                     type    : "POST",
                     url     : "${createLink(action:'form_ajax')}",
@@ -147,7 +164,7 @@
 
             $(function () {
 
-                $(".btnCrear").click(function () {
+                $(".btnCrear").click(function() {
                     createEditRow();
                     return false;
                 });
