@@ -22,14 +22,26 @@ class UtilitariosTagLib {
                 "&Uacute;": "Ú",
                 "&Ntilde;": "Ñ",
 
-                "&nbsp;": " ",
+                "&nbsp;"  : " ",
 
-                "&lt;": "<",
-                "&gt;": ">",
+                "&lt;"    : "<",
+                "&gt;"    : ">",
 
-                "&amp;": "&",
+                "&amp;"   : "&",
 
-                "&quot;": '"'
+                "&quot;"  : '"',
+
+                "&lsquo;" : '‘',
+                "&rsquo;" : '’',
+                "&ldquo;" : '“',
+                "&rdquo;" : '”',
+
+                "&lsaquo;": '‹',
+                "&rsaquo;": '›',
+                "&laquo;" : '«',
+                "&raquo;" : '»',
+
+                "&permil;": '‰'
         ]
         def str = attrs.str
 
