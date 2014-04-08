@@ -105,7 +105,7 @@ class DepartamentoExportController {
             order("descripcion", "asc")
         }
         if (padre && conUsuarios) {
-            println "AQUI " + padre
+//            println "AQUI " + padre
             Persona.withCriteria {
 //                eq("activo", 1)
                 eq("departamento", padre)
@@ -119,22 +119,38 @@ class DepartamentoExportController {
                 if (!padre) {
                     esp2 = esp + "" + esp + "    "
                 }
-                def descP
-                if (sort == "nombre") {
-                    descP = esp2 + " ${pers.jefe == 1 ? '*' : ''} ${pers.nombre} ${pers.apellido}"
-                } else {
-                    descP = esp2 + " ${pers.jefe == 1 ? '*' : ''} ${pers.apellido} ${pers.nombre}"
-                }
-                if (pers.login) {
-                    descP += " (${pers.login})"
-                }
+                def descP = esp2
                 if (pers.activo == 0) {
                     fontUsu.setColor(Color.GRAY);
-                    descP += "  - usuario inactivo"
+                    descP += " Inactivo - "
                 } else {
                     fontUsu.setColor(Color.BLACK);
                 }
-                descP = WordUtils.capitalizeFully(descP)
+                if (sort == "nombre") {
+                    descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.nombre} ${pers.apellido}")
+                } else {
+                    descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.apellido} ${pers.nombre}")
+                }
+                if (pers.login || pers.telefono || pers.mail) {
+                    descP += " ("
+                    if (pers.login) {
+                        descP += ("usuario: ${pers.login}").toLowerCase()
+                    }
+                    if (pers.telefono) {
+                        if (descP != " (") {
+                            descP += ", "
+                        }
+                        descP += "teléfono: ${pers.telefono}"
+                    }
+                    if (pers.mail) {
+                        if (descP != " (") {
+                            descP += ", "
+                        }
+                        descP += ("e-mail: ${pers.mail}").toLowerCase()
+                    }
+                    descP += ")"
+                }
+//                descP = WordUtils.capitalizeFully(descP)
                 document.add(new Paragraph(descP, fontUsu));
             }
         }
