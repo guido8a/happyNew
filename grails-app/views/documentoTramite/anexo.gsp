@@ -62,7 +62,7 @@
         animation: progress-bar-stripes-svt 2s linear infinite;
     }
     @-webkit-keyframes progress-bar-stripes-svt {
-        /*el x del from tiene que ser multiplo del x del background size, mientas mas grande mas rapida es la animacion*/
+        /*el x del from tiene que ser multiplo del x del background size...... mientas mas grande mas rapida es la animacion*/
         from {
             background-position: 120px 0;
         }
@@ -92,7 +92,11 @@
     <span>Seleccionar archivos</span>
     <input type="file" name="file" id="file" class="file" multiple>
 </span>
-
+<span class="btn btn-success fileinput-button" id="adj-tramites" style="position: relative;height: 40px;margin-top: 10px">
+    <i class="glyphicon glyphicon-plus"></i>
+    <i class="fa fa-folder-open-o"></i>
+    <span>Adjuntar Trámites</span>
+</span>
 <span class="btn btn-default fileinput-button" id="reset-files" style="position: relative;height: 40px;margin-top: 10px">
     <i class="glyphicon glyphicon-refresh"></i>
     <span>Resetear</span>
@@ -106,6 +110,25 @@
 <div  id="anexos" >
 
 </div>
+
+<div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Adjuntar Trámites</h4>
+            </div>
+            <div class="modal-body" id="dialog-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <a href="#" id="adj-tramite" class="btn btn-primary">Adjuntar seleccionados</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 
 
 
@@ -272,20 +295,54 @@
     }
     function cargaDocs(){
         $("#anexos").html("")
-        openLoader("Cargando")
+//        openLoader("Cargando")
         $.ajax({type: "POST", url: "${g.createLink(controller: 'documentoTramite',action:'cargaDocs')}",
             data: "id=${tramite.id}",
             async:false,
             success: function (msg) {
                 $("#anexos").html(msg)
-                closeLoader()
+//                closeLoader()
             }
         });
     }
     $(function () {
-//        for( i = 1;i<6;i++){
-//            setInterval("$('.progress-svt').width($('.progress-svt').width()+i*20)",i*1000)
-//        }
+        $("#adj-tramites").click(function(){
+            openLoader()
+            $.ajax({type: "POST", url: "${g.createLink(controller: 'documentoTramite',action:'cargaTramites')}",
+                data: "",
+                async:false,
+                success: function (msg) {
+                    $("#dialog-body").html(msg)
+                    $("#dialog").modal("show")
+                    closeLoader()
+                }
+            });
+        });
+
+        $("#adj-tramite").click(function(){
+            var data ="ids="
+            $(".chk").each(function(){
+                if($(this).prop("checked")==true){
+                    data+=$(this).attr("iden")+";"
+                }
+            });
+            if(data=="ids="){
+                bootbox.alert("Seleccione al menos un tramite para adjuntar")
+            }else{
+                openLoader()
+                data+="&tramite=${tramite.id}"
+                $.ajax({type: "POST", url: "${g.createLink(controller: 'documentoTramite',action:'adjuntarTramites')}",
+                    data: data,
+                    async:false,
+                    success: function (msg) {
+                        cargaDocs()
+                        $("#dialog").modal("hide")
+                        closeLoader()
+                    }
+                });
+            }
+        })
+
         cargaDocs();
         $("#reset-files").click(function(){
             reset()

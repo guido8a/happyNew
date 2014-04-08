@@ -1,6 +1,7 @@
 package happy.tramites
 
 import groovy.json.JsonBuilder
+import happy.seguridad.Persona
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -580,5 +581,33 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         println params
         render "OK"
     }
+
+    def cargaTramites(){
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+        return [tramites:tramites]
+    }
+
+    def adjuntarTramites(){
+        println "adj tramite "+params
+        def tramite = Tramite.get(params.tramite)
+        def parts = params.ids.split(";")
+        println "parts "+parts
+        parts.each {
+            if(it && it!=""){
+                def doc = new DocumentoTramite()
+                doc.tramite=tramite
+                doc.anexo=Tramite.get(it)
+                doc.fecha= new Date()
+                if(!doc.save(flush: true)){
+                    println "error save "+doc.errors
+                }
+            }
+        }
+        render "ok"
+        return
+    }
+
 
 }

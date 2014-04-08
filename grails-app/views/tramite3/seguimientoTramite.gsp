@@ -80,10 +80,10 @@
                 </div>
 
                 <div class="col-xs-11 text-primary" style="padding-left: 0">
-                    ${tramite.para.persona ? tramite.para.persona.nombre + " " + tramite.para.persona.apellido : tramite.para.departamento.descripcion}
-                    <g:if test="${tramite.para.fechaRecepcion}">
+                    ${tramite.para?.persona ? tramite.para?.persona?.nombre + " " + tramite.para?.persona?.apellido : tramite.para?.departamento?.descripcion}
+                    <g:if test="${tramite.para?.fechaRecepcion}">
                         <span class="text-success">
-                            (recibido el ${tramite.para.fechaRecepcion.format("dd-MM-yyyy HH:mm")})
+                            (recibido el ${tramite.para?.fechaRecepcion.format("dd-MM-yyyy HH:mm")})
                         </span>
                     </g:if>
                     <g:else>
@@ -123,8 +123,8 @@
 
             <g:if test="${tramite.observaciones}">
                 <div class="row">
-                    <div class="col-xs-1 negrilla">
-                        Observaciones:
+                    <div class="col-xs-1 negrilla" title="Observaciones">
+                        Obs.:
                     </div>
 
                     <div class="col-xs-11 text-primary" style="padding: 0">
