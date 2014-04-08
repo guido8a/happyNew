@@ -37,11 +37,47 @@
             width  : 19cm;
         }
 
+        .nota {
+            position   : absolute;
+            left       : 15px;
+            top        : 200px;
+            padding    : 10px;
+            background : #EFEFD1;
+            border     : solid 1px #867722;
+            width      : 235px;
+            max-height : 345px;
+            /*overflow   : auto;*/
+            z-index    : 1;
+        }
 
+        .nota p {
+            overflow   : auto;
+            max-height : 325px;
+        }
+
+        .nota:after {
+            position : absolute;
+            top      : -10px;
+            left     : 40%;
+            content  : url("${resource(dir:'images',file:'pin.png')}");
+            z-index  : 2;
+            display  : block;
+            width    : 16px;
+            height   : 16px;
+        }
         </style>
     </head>
 
     <body>
+
+        <g:if test="${tramite.nota && tramite.nota.trim() != ''}">
+            <div class="nota ui-corner-all">
+                <p>
+                    ${tramite.nota}
+                </p>
+            </div>
+        </g:if>
+
         <div class="hoja">
 
             <div class="btn-toolbar toolbar">
