@@ -103,6 +103,14 @@
                     %{--</div>--}%
                     %{--</g:if>--}%
 
+                    <div class="col-xs-3" style="margin-top: -15px">
+                        <b>Tipo de documento:</b>
+                        <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
+                                    from="${session.usuario.tiposDocumento}"
+                                    value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"
+                                    optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
+                    </div>
+
 
                     <div class="col-xs-4 negrilla hide" id="divPara">
                         <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
@@ -111,24 +119,10 @@
                                   optionValue="nombre" style="width:300px;" class="form-control label-shared required"/>
                     </div>
 
-                    <div class="col-xs-2 negrilla hide" id="divConfidencial">
-                        <label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>
-                    </div>
 
-                    <div class="col-xs-2 negrilla hide" id="divAnexos">
-                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
-                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-3">
-                        <b>Tipo de documento:</b>
-                        <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                    from="${session.usuario.tiposDocumento}"
-                                    value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"
-                                    optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
-                    </div>
-
                     <div class="col-xs-2 ">
                         <b>Prioridad:</b>
                         %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
@@ -158,6 +152,14 @@
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
                         <label for="cc"><input type="checkbox" name="cc" id="cc"/> Con copia</label>
                     </div>
+                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px">
+                        <label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>
+                    </div>
+
+                    <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px">
+                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
+                    </div>
+
                 </div>
 
                 <div class="row">

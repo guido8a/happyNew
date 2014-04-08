@@ -2,6 +2,12 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+import org.w3c.dom.Document
+import org.xhtmlrenderer.extend.FontResolver
+import org.xhtmlrenderer.pdf.ITextRenderer
+
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 class Tramite2Controller extends happy.seguridad.Shield {
 
@@ -206,7 +212,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
             if (tramite.save(flush: true)) {
                 println "\t3"
-                render "ok"
+                //CREAR PDF
+
+//             redirect(controller: 'tramiteExport', action: 'crearPdf', params: params)
+
+                //
+//                render "ok"
             } else {
                 println "\t4"
                 println tramite.errors
@@ -286,16 +297,42 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def de = session.usuario
         def disp, disponibles = []
+        def disp2 = []
+        def todos = []
+        def users = []
 
         if (persona.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
         } else {
             disp = [persona.departamento]
         }
+
+        //original
+//        disp.each { dep ->
+//            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+//            if (dep.id == persona.departamentoId) {
+//                def users = Persona.findAllByDepartamento(dep)
+//                for (int i = users.size() - 1; i > -1; i--) {
+//                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+//                        users.remove(i)
+//                    } else {
+//                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+//                    }
+//                }
+//            }
+//        }
+
+        //modificado
         disp.each { dep ->
-            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
             if (dep.id == persona.departamentoId) {
-                def users = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep)
+                usuarios.each {
+                    if (it.id != de.id) {
+                        users += it
+                    }
+
+                }
+
                 for (int i = users.size() - 1; i > -1; i--) {
                     if (!(users[i].estaActivo && users[i].puedeRecibir)) {
                         users.remove(i)
@@ -305,7 +342,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
-        return [de: de, padre: padre, disponibles: disponibles, tramite: tramite]
+
+        disp.each { dep ->
+            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+        }
+
+        todos = disponibles + disp2
+
+
+
+
+        return [de: de, padre: padre, disponibles: todos, tramite: tramite]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento

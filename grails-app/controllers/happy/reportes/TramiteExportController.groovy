@@ -173,7 +173,9 @@ class TramiteExportController {
         }
 
         if (params.type == "download") {
+            println("entro!!!!!")
             render "OK*" + tramite.codigo + ".pdf"
+            return
         } else {
             response.setContentType("application/pdf")
             response.setHeader("Content-disposition", "attachment; filename=" + (params.filename ?: tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
@@ -322,7 +324,7 @@ class TramiteExportController {
 
     def imprimirGuia () {
 
-        println("params:" + params)
+//        println("params:" + params)
 
         def cantidadTramites = params.ids
 
@@ -337,6 +339,7 @@ class TramiteExportController {
         Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         def prmsHeaderHoja = [border: Color.WHITE]
+        def prmsHeaderHoja1 = [border: Color.WHITE,  bordeTop: "1", bordeBot: "1"]
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
@@ -362,29 +365,30 @@ class TramiteExportController {
 
         PdfPTable tablaTramites = new PdfPTable(4);
         tablaTramites.setWidthPercentage(100);
-        tablaTramites.setWidths(arregloEnteros([15, 30, 20, 25]))
+        tablaTramites.setWidths(arregloEnteros([30, 25, 15, 15]))
 
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
-        addCellTabla(tablaTramites, new Paragraph("Documento", times10bold), prmsHeaderHoja)
-        addCellTabla(tablaTramites, new Paragraph("Para", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaTramites, new Paragraph("Recibe", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaTramites, new Paragraph("Firma", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph("DOCUMENTO", times10bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("PARA", times8bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("RECIBE", times8bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("FIRMA", times8bold), prmsHeaderHoja1)
+
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
         cantidadTramites.split(',').each{
-
-            println(it)
-
+//            println(it)
             addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
-            addCellTabla(tablaTramites, new Paragraph("2", times8bold), prmsHeaderHoja)
-            addCellTabla(tablaTramites, new Paragraph("3", times8bold), prmsHeaderHoja)
-            addCellTabla(tablaTramites, new Paragraph("4", times8bold), prmsHeaderHoja)
-
+            addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
         }
-
 
         document.add(headers);
         document.add(tablaTramites)
@@ -395,8 +399,6 @@ class TramiteExportController {
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
-
-
     }
 
 

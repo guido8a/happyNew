@@ -581,43 +581,69 @@
 
 //                       console.log(trId[i]);
 
-                                       id = trId[i]
+                                    id = trId[i]
 
-                                    %{--$.ajax({--}%
-                                        %{--type    : "POST",--}%
-                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
-                                        %{--data    : "id="+trId[i],--}%
-                                        %{--success : function (msg) {--}%
-                                            %{--console.log(msg);--}%
-                                            %{--closeLoader()--}%
+                                    $.ajax({
+                                        type    : "POST",
+                                        async   : false,
+                                        url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
+//                                        data    : "id="+trId[i],
+                                        data: {
+                                            id: id,
+                                            enviar: '1',
+                                            type  : 'download'
+
+                                        },
+                                        success : function (msg) {
+                                            console.log(msg);
+                                            closeLoader();
                                             %{--if(msg=="ok"){--}%
-                                                %{--cargarBandeja(false)--}%
-                                                %{--$.ajax({--}%
-                                                    %{--type : 'POST',--}%
-                                                    %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
-                                                    %{--data : {--}%
-                                                        %{--id: id,--}%
-                                                        %{--enviar: '1',--}%
-                                                        %{--type  : 'download'--}%
-                                                    %{--},--}%
-                                                    %{--success: function (msg) {--}%
+                                            %{--cargarBandeja(false)--}%
+                                            %{--$.ajax({--}%
+                                            %{--type : 'POST',--}%
+                                            %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
+                                            %{--data : {--}%
+                                            %{--id: id,--}%
+                                            %{--enviar: '1',--}%
+                                            %{--type  : 'download'--}%
+                                            %{--},--}%
+                                            %{--success: function (msg) {--}%
 
-                                                    %{--}--}%
-                                                %{--});--}%
-                                            %{--}else{--}%
-                                                %{--var mensaje = msg.split("_")--}%
-                                                %{--mensaje = mensaje[1]--}%
-                                                %{--bootbox.alert(mensaje)--}%
                                             %{--}--}%
-                                        %{--},--}%
-                                        %{--error: function(jqxhr, status, error) {--}%
-                                            %{--console.log("WTF",jqxhr, status, error);--}%
+                                            %{--});--}%
+                                            %{--}else{--}%
+                                            %{--var mensaje = msg.split("_")--}%
+                                            %{--mensaje = mensaje[1]--}%
+                                            %{--bootbox.alert(mensaje)--}%
+                                            %{--}--}%
+                                        },
+                                        error: function(jqxhr, status, error) {
+                                            console.log("WTF",jqxhr, status, error);
 
-                                        %{--},--}%
-                                        %{--complete: function() {--}%
-                                            %{--console.log("complete")--}%
-                                        %{--}--}%
-                                    %{--});--}%
+                                        },
+                                        complete: function() {
+                                            console.log("complete")
+                                        }
+                                    });
+
+                                    $.ajax({
+                                        type : 'POST',
+                                        async: false,
+                                        url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
+                                        data : {
+                                            id: id,
+                                            enviar: '1',
+                                            type  : 'download'
+                                        },
+                                        success: function (msg) {
+
+                                        },
+
+                                        error: function(jqxhr, status, error) {
+                                            console.log("WTF",jqxhr, status, error);
+
+                                        }
+                                    });
                                 }
 
                                 bootbox.alert("Trámites Enviados")
@@ -647,18 +673,18 @@
 
         $(".btnBusqueda").click(function () {
 
-            var interval = loading("bandeja")
+//            var interval = loading("bandeja")
 
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();
-            var fecha = $("#fechaBusqueda").val();
+            var fecha = $("#fechaBusqueda_input").val();
 
             var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
             $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
                 data: datos,
                 success: function (msg) {
-                    clearInterval(interval)
+//                    clearInterval(interval)
                     $("#bandeja").html(msg);
                 }
 

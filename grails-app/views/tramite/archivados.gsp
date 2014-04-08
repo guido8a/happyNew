@@ -151,9 +151,17 @@
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
 
-        <g:link action="bandejaEntrada" class="btn btn-danger btnRegresar">
-            <i class="fa fa-hand-o-left"></i> Regresar
-        </g:link>
+        <g:if test="${si == 'si'}">
+            <g:link action="bandejaEntradaDpto" class="btn btn-danger btnRegresar" controller="tramite3">
+                <i class="fa fa-hand-o-left"></i> Regresar
+            </g:link>
+        </g:if>
+        <g:else>
+            <g:link action="bandejaEntrada" class="btn btn-danger btnRegresar">
+                <i class="fa fa-hand-o-left"></i> Regresar
+            </g:link>
+
+        </g:else>
 
 
     </div>

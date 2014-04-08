@@ -854,7 +854,7 @@ class TramiteController extends happy.seguridad.Shield {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
 
-        return [persona: persona]
+        return [persona: persona, si: params.dpto]
 
 
     }

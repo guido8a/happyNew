@@ -97,9 +97,12 @@
 <div class="btn-toolbar toolbar">
     <div class="btn-group">
         <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-        <g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">
+        %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
+            %{--<i class="fa fa-folder"></i> Archivados--}%
+        %{--</g:link>--}%
+        <a href="#" class="btn btn-primary btnArchivados">
             <i class="fa fa-folder"></i> Archivados
-        </g:link>
+        </a>
         <a href="#" class="btn btn-success btnActualizar">
             <i class="fa fa-refresh"></i> Actualizar
         </a>
@@ -484,6 +487,11 @@
         }, 1000 * 60 * 5);
         log('Tabla de trámites y alertas actualizadas!', "success");
         return false;
+    });
+
+    $(".btnArchivados").click(function () {
+
+        location.href = '${createLink(controller: 'tramite', action: 'archivados')}?dpto=' + 'si';
     });
 
     function loading(div) {
