@@ -100,10 +100,10 @@ class LoginController {
         def cn = "inicio"
         def an = "index"
         if (usu) {
-            if (session.cn && session.an) {
-                cn = session.cn
-                an = session.an
-            }
+//            if (session.cn && session.an) {
+//                cn = session.cn
+//                an = session.an
+//            }
             redirect(controller: cn, action: an)
         }
     }
@@ -162,10 +162,10 @@ class LoginController {
                     session.perfil = perfiles.first().perfil
                     def cn = "inicio"
                     def an = "index"
-                    if (session.cn && session.an) {
-                        cn = session.cn
-                        an = session.an
-                    }
+//                    if (session.cn && session.an) {
+//                        cn = session.cn
+//                        an = session.an
+//                    }
                     redirect(controller: cn, action: an)
                     return
                 } else {
@@ -188,15 +188,15 @@ class LoginController {
         def perf = sesn.perfil
         if (perf) {
             session.perfil = perf
-            if (session.an && session.cn) {
-                if (session.an.toString().contains("ajax")) {
-                    redirect(controller: "inicio", action: "index")
-                } else {
-                    redirect(controller: session.cn, action: session.an, params: session.pr)
-                }
-            } else {
+//            if (session.an && session.cn) {
+//                if (session.an.toString().contains("ajax")) {
+//                    redirect(controller: "inicio", action: "index")
+//                } else {
+//                    redirect(controller: session.cn, action: session.an, params: session.pr)
+//                }
+//            } else {
                 redirect(controller: "inicio", action: "index")
-            }
+//            }
         } else {
             redirect(action: "login")
         }

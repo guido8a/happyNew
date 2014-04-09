@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+import happy.utilitarios.DiaLaborable
 import org.w3c.dom.Document
 import org.xhtmlrenderer.extend.FontResolver
 import org.xhtmlrenderer.pdf.ITextRenderer
@@ -96,7 +97,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         println "tiene " + tienePermiso + " jefe " + persona.jefe
         if (tienePermiso.size() == 0 && persona.jefe != 1) {
             flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
-            flash.tipo="error"
+            flash.tipo = "error"
 
             redirect(controller: "tramite2", action: "bandejaSalida")
             return
@@ -187,8 +188,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //alertas
 
     def enviar() {
-        println "method "+request.getMethod()
-        println "PARAMS "+params
+        println "method " + request.getMethod()
+        println "PARAMS " + params
         /*todo sin validacion alguna... que envie no mas cualquiera*/
         if (request.getMethod() == "POST") {
             println "\t1"
@@ -221,7 +222,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             } else {
                 println "\t4"
                 println tramite.errors
-                render "no: "+renderErrors(bean:tramite)
+                render "no: " + renderErrors(bean: tramite)
             }
         } else {
             println "\t5"
@@ -280,11 +281,42 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
+        def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
+        if (anio.size() == 0) {
+            flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        } else if (anio.size() > 1) {
+            println "HAY MAS DE 1 ANIO ${new Date().format('yyyy')}!!!!!: ${anio}"
+        }
+
+        if (anio.findAll { it.estado == 1 }.size() == 0) {
+            flash.message = "El año ${new Date().format('yyyy')} no está activado, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
+        def dias = DiaLaborable.countByAnio(anio.first())
+        if (dias < 365) {
+            flash.message = "No se encontraron los registros de días laborables del año ${new Date().format('yyyy')}, no puede crear trámites nuevos. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
 //        println("params " + params)
         def padre = null
+        def principal = null
         def tramite = new Tramite(params)
         if (params.padre) {
             padre = Tramite.get(params.padre)
+            principal = padre
+            while (true) {
+                if (!principal.padre) {
+                    break
+                } else {
+                    principal = principal.padre
+                }
+            }
         }
         if (params.id) {
             tramite = Tramite.get(params.id)
@@ -349,10 +381,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         todos = disponibles + disp2
 
-
-
-
-        return [de: de, padre: padre, disponibles: todos, tramite: tramite]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento
@@ -457,7 +486,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         if (numero.size() == 0) {
             objNum = new Numero([
-                    departamento: persona.departamento,
+                    departamento : persona.departamento,
                     tipoDocumento: TipoDocumento.get(paramsTramite.tipoDocumento.id)
             ])
         } else {
@@ -495,7 +524,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (paramsTramite.para) {
                 def para = paramsTramite.para.toInteger()
                 def paraDocumentoTramite = new PersonaDocumentoTramite([
-                        tramite: tramite,
+                        tramite          : tramite,
                         rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
                 ])
                 if (para > 0) {
@@ -512,7 +541,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (paramsTramite.hiddenCC.toString().size() > 0) {
                 (paramsTramite.hiddenCC.split("_")).each { cc ->
                     def ccDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite: tramite,
+                            tramite          : tramite,
                             rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
                     ])
                     if (cc.toInteger() > 0) {
@@ -573,7 +602,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        return render
 
     }
-
 
 
 }

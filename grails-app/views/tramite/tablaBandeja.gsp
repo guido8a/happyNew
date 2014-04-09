@@ -1,8 +1,8 @@
+<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
 <table class="table table-bordered table-condensed table-hover">
     <thead>
     <tr>
-
         <th class="cabecera">Documento</th>
         <th class="cabecera">Fecha Envío</th>
         <th class="cabecera">Fecha Recepción</th>
@@ -18,7 +18,7 @@
     <g:each in="${tramites}" var="tramite">
         <g:set var="now" value="${new java.util.Date()}"/>
         <tr data-id="${tramite?.tramite?.id}" class=" ${(tramite.fechaRecepcion)?((tramite.tramite.fechaMaximoRespuesta<now)?'retrasado':'E004'):((tramite.tramite.fechaLimite<now)?'pendiente':'E003')}  " codigo="${tramite.tramite.codigo}">
-            <td>${tramite?.tramite?.codigo}</td>
+            <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
             <td>${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
             <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>

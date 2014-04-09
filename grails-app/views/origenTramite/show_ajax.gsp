@@ -8,12 +8,12 @@
 
     <g:if test="${origenTramiteInstance?.tipoPersona}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Tipo Persona
             </div>
             
-            <div class="col-md-3">
-                ${origenTramiteInstance?.tipoPersona?.encodeAsHTML()}
+            <div class="col-md-4">
+                ${origenTramiteInstance?.tipoPersona?.descripcion}
             </div>
             
         </div>
@@ -21,11 +21,11 @@
     
     <g:if test="${origenTramiteInstance?.cedula}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Cedula
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="cedula"/>
             </div>
             
@@ -34,11 +34,11 @@
     
     <g:if test="${origenTramiteInstance?.fecha}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Fecha
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:formatDate date="${origenTramiteInstance?.fecha}" format="dd-MM-yyyy" />
             </div>
             
@@ -47,11 +47,11 @@
     
     <g:if test="${origenTramiteInstance?.nombre}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Nombre
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="nombre"/>
             </div>
             
@@ -60,11 +60,11 @@
     
     <g:if test="${origenTramiteInstance?.nombreContacto}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Nombre Contacto
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="nombreContacto"/>
             </div>
             
@@ -73,11 +73,11 @@
     
     <g:if test="${origenTramiteInstance?.apellidoContacto}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Apellido Contacto
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="apellidoContacto"/>
             </div>
             
@@ -86,11 +86,11 @@
     
     <g:if test="${origenTramiteInstance?.titulo}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Titulo
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="titulo"/>
             </div>
             
@@ -99,11 +99,11 @@
     
     <g:if test="${origenTramiteInstance?.cargo}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Cargo
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="cargo"/>
             </div>
             
@@ -112,11 +112,11 @@
     
     <g:if test="${origenTramiteInstance?.mail}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Mail
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="mail"/>
             </div>
             
@@ -125,11 +125,11 @@
     
     <g:if test="${origenTramiteInstance?.telefono}">
         <div class="row">
-            <div class="col-md-2 text-info">
+            <div class="col-md-3 text-info">
                 Telefono
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <g:fieldValue bean="${origenTramiteInstance}" field="telefono"/>
             </div>
             

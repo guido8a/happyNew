@@ -96,9 +96,18 @@ class TramiteController extends happy.seguridad.Shield {
 //        println("params " + params)
         def padre = null
         def tramite = new Tramite(params)
+        def principal = null
         def users = []
         if (params.padre) {
             padre = Tramite.get(params.padre)
+            principal = padre
+            while (true) {
+                if (!principal.padre) {
+                    break
+                } else {
+                    principal = principal.padre
+                }
+            }
         }
         if (params.id) {
             tramite = Tramite.get(params.id)
@@ -147,7 +156,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         todos = disponibles + disp2
 
-        return [de: de, padre: padre, disponibles: todos, tramite: tramite, persona: persona]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona]
     }
 
     def cargaUsuarios() {

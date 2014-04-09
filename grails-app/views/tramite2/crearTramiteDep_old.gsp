@@ -48,13 +48,6 @@
         .vertical-container {
             padding-bottom : 10px;;
         }
-
-        .texto {
-            max-height : 80px;
-            overflow   : auto;
-            background : #EFE4D1;
-            padding    : 3px;
-        }
         </style>
     </head>
 
@@ -70,94 +63,37 @@
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
             %{--</a>--}%
-            %{--<g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">--}%
-            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-            %{--</g:link>--}%
-                <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">
-                    <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                </g:link>
             </div>
-
         </div>
 
 
-    %{--<g:form class="frmTramite" controller="tramite3" action="save">--}%
         <g:form class="frmTramite" action="saveDep">
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value=""/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
-            <g:if test="${padre}">
-                <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
-
-                    <p class="css-vertical-text">T. principal</p>
-
-                    <div class="linea"></div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Asunto:</div>
-
-                        <div class="col-md-11">${principal.asunto}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Texto:</div>
-
-                        <div class="col-md-11 texto">
-                            <util:renderHTML html="${principal.texto}"/>
-                        </div>
-                    </div>
-                </div>
-                <g:if test="${padre != principal}">
-                    <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
-
-                        <p class="css-vertical-text">T. padre</p>
-
-                        <div class="linea"></div>
-
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Asunto:</div>
-
-                            <div class="col-md-11">${padre.asunto}</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Texto:</div>
-
-                            <div class="col-md-11 texto">
-                                <util:renderHTML html="${padre.texto}"/>
-                            </div>
-                        </div>
-                    </div>
-                </g:if>
-            </g:if>
-
             <div style="margin-top: 30px;" class="vertical-container">
 
-                <p class="css-vertical-text">Trámite</p>
+                <p class="css-vertical-text">Tramite</p>
 
                 <div class="linea"></div>
 
-                %{--<g:if test="${padre}">--}%
-                %{--<div class="alert alert-info">--}%
-                %{--<p>--}%
-                %{--<b>Trámite principal:</b>--}%
-                %{--${padre.codigo} - ${padre.asunto}--}%
-                %{--<g:link controller="tramite3" action="seguimientoTramite" id="${padre.id}" params="[prev: 'crearTramite']" class="alert-link pull-right">--}%
-                %{--Seguimiento del trámite--}%
-                %{--</g:link>--}%
-                %{--</p>--}%
-                %{--</div>--}%
-                %{--</g:if>--}%
+                <g:if test="${padre}">
+                    <div class="alert alert-info">
+                        <p>
+                            <b>Trámite principal:</b>
+                            ${padre.codigo} - ${padre.asunto}
+                            <g:link controller="tramite3" action="seguimientoTramite" id="${padre.id}" params="[prev: 'crearTramite']" class="alert-link pull-right">
+                                Seguimiento del trámite
+                            </g:link>
+                        </p>
+                    </div>
+                </g:if>
 
                 <div class="row">
                     <div class="col-xs-3">
                         <b>De:</b>
-
-                        <div class="uneditable-input label-shared" id="de"
-                             title="${de.departamento?.descripcion}">
-                            ${de.nombre} ${de.apellido}
-                        </div>
+                        <input type="text" name="tramite.de" class="form-control required label-shared" id="de" maxlength="30" value="${de.nombre}" title="${de.nombre}" disabled/>
                     </div>
 
                     %{--<g:if test="${padre}">--}%
@@ -178,34 +114,15 @@
 
                     <div class="col-xs-4 negrilla hide" id="divPara">
                         <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
-                                  style="width:310px;" class="form-control label-shared required"/>
+                                  style="width:300px;" class="form-control label-shared required"/>
                         <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
-                                  optionValue="nombre" style="width:310px;" class="form-control label-shared required"/>
+                                  optionValue="nombre" style="width:300px;" class="form-control label-shared required"/>
                     </div>
 
-                    <div class="col-xs-1 negrilla hide" id="divBotonInfo">
-                        <a href="#" id="btnInfoPara" class="btn btn-sm btn-info" style="margin-top: 7px;">
-                            <i class="fa fa-search"></i>
-                        </a>
-                    </div>
-                    %{--<div class="col-xs-2 negrilla hide" id="divConfidencial">--}%
-                    %{--<label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>--}%
-                    %{--</div>--}%
 
-                    %{--<div class="col-xs-2 negrilla hide" id="divAnexos">--}%
-                    %{--<label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>--}%
-                    %{--</div>--}%
                 </div>
 
                 <div class="row">
-                    %{--<div class="col-xs-3">--}%
-                    %{--<b>Tipo de documento:</b>--}%
-                    %{--<elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"--}%
-                    %{--from="${session.usuario.tiposDocumento}"--}%
-                    %{--value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"--}%
-                    %{--optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>--}%
-                    %{--</div>--}%
-
                     <div class="col-xs-2 ">
                         <b>Prioridad:</b>
                         %{--<g:select name="tramite.prioridad.id" class="many-to-one form-control required" from="${happy.tramites.TipoPrioridad.list(['sort': 'tiempo', order: 'desc'])}" value="" optionKey="id" optionValue="descripcion"></g:select>--}%
@@ -224,7 +141,7 @@
                     <div class="col-xs-2 ">
                         <b>Creado el:</b>
                         <input type="text" name="tramite.fecha" class="form-control required label-shared" id="creado" maxlength="30"
-                               value="${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}" disabled style="width: 150px"/>
+                               value="${tramite.fechaCreacion.format('dd-MM-yyyy  HH:mm')}" disabled style="width: 150px"/>
                     </div>
 
                     <div class="col-xs-2 ">
@@ -235,12 +152,11 @@
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
                         <label for="cc"><input type="checkbox" name="cc" id="cc"/> Con copia</label>
                     </div>
-
-                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">
+                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px">
                         <label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>
                     </div>
 
-                    <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
+                    <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px">
                         <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
                     </div>
 
@@ -431,7 +347,6 @@
                 var $tituloCopia = $("#tituloCopia");
                 var $divConfidencial = $("#divConfidencial");
                 var $divAnexos = $("#divAnexos");
-                var $divBotonInfo = $("#divBotonInfo");
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
                 $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
@@ -444,7 +359,6 @@
                     case "CIR":
                         $divPara.html("");
                         $divPara.addClass("hide");
-                        $divBotonInfo.addClass("hide");
                         $divCopia.removeClass("hide");
                         $divCc.addClass("hide");
                         $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
@@ -453,8 +367,7 @@
                         $divAnexos.addClass("hide");
                         break;
                     case "OFI":
-                        $divPara.html($selParaExt).prepend("Para:");
-                        $divBotonInfo.removeClass("hide");
+                        $divPara.html($selParaExt).prepend("Para: ");
                         $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
@@ -463,7 +376,6 @@
                         break;
                     case "DEX":
                         $divPara.html($selPara).prepend("Para: ");
-                        $divBotonInfo.removeClass("hide");
                         $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
@@ -473,7 +385,6 @@
                         break;
                     default :
                         $divPara.html($selPara).prepend("Para: ");
-                        $divBotonInfo.removeClass("hide");
                         $divPara.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
@@ -485,7 +396,6 @@
                     $divPara.addClass("hide");
                     $divCopia.addClass("hide");
                     $divCc.addClass("hide");
-                    $divBotonInfo.addClass("hide");
                 }
             }
 
@@ -538,37 +448,22 @@
             }
 
             function validarTiempos() {
-                $.ajax({
-                    type    : "POST",
-                    url     : "${createLink(controller: 'tramite', action:'tiempoRespuestaEsperada_ajax')}",
-                    data    : {
-                        fecha     : "${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}",
-                        prioridad : $("#prioridad").val()
-                    },
-                    success : function (msg) {
-                        var parts = msg.split("_")
-                        if (parts[0] == "OK") {
-                            $('#respuesta').text(parts[1]);
-                        }
+                var tiempo = parseInt($("#prioridad").find("option:selected").attr("class"));
+                var fecha = $("#creado").val();
+                fecha = Date.parse(fecha);
+                var limite = fecha.clone();
+                var maxHoy = fecha.clone().set({ hour : 12, minute : 30 });
+                if (tiempo > 4) {
+                    limite.add(tiempo).hours();
+                } else {
+                    var comp = fecha.compareTo(maxHoy); //-1: maxHoy=future, 0: igual, 1: maxHoy=past
+                    if (comp > -1) {
+                        limite.add(tiempo + 15).hours().add(30).minutes();
+                    } else {
+                        limite.add(tiempo).hours();
                     }
-                });
-
-//                var tiempo = parseInt($("#prioridad").find("option:selected").attr("class"));
-//                var fecha = $("#creado").val();
-//                fecha = Date.parse(fecha);
-//                var limite = fecha.clone();
-//                var maxHoy = fecha.clone().set({ hour : 12, minute : 30 });
-//                if (tiempo > 4) {
-//                    limite.add(tiempo).hours();
-//                } else {
-//                    var comp = fecha.compareTo(maxHoy); //-1: maxHoy=future, 0: igual, 1: maxHoy=past
-//                    if (comp > -1) {
-//                        limite.add(tiempo + 15).hours().add(30).minutes();
-//                    } else {
-//                        limite.add(tiempo).hours();
-//                    }
-//                }
-//                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
+                }
+                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
             }
 
             $(function () {
@@ -576,48 +471,6 @@
                 var $selPrioridad = $("#prioridad");
                 var $selPara = $("#para").clone(true);
                 var $selParaExt = $("#paraExt").clone(true);
-
-                $("#btnInfoPara").click(function () {
-                    var para = $("#para").val();
-                    var paraExt = $("#paraExt").val();
-                    var id;
-                    var url = "";
-                    if (para) {
-                        if (parseInt(para) > 0) {
-                            url = "${createLink(controller: 'persona', action: 'show_ajax')}";
-                            id = para;
-                        } else {
-                            url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
-                            id = parseInt(para) * -1;
-                        }
-                    }
-                    if (paraExt) {
-                        url = "${createLink(controller: 'origenTramite', action: 'show_ajax')}";
-                        id = paraExt;
-                    }
-                    $.ajax({
-                        type    : "POST",
-                        url     : url,
-                        data    : {
-                            id : id
-                        },
-                        success : function (msg) {
-                            bootbox.dialog({
-                                title   : "Información",
-                                message : msg,
-                                buttons : {
-                                    aceptar : {
-                                        label     : "Aceptar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    return false;
-                });
 
                 $selPrioridad.change(function () {
                     validarTiempos();
