@@ -98,7 +98,7 @@
     <div class="btn-group">
         <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
         %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
-            %{--<i class="fa fa-folder"></i> Archivados--}%
+        %{--<i class="fa fa-folder"></i> Archivados--}%
         %{--</g:link>--}%
         <a href="#" class="btn btn-primary btnArchivados">
             <i class="fa fa-folder"></i> Archivados
@@ -125,7 +125,7 @@
     </div>
 
     %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
-        %{--<span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe--}%
+    %{--<span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe--}%
     %{--</div>--}%
 </div>
 
@@ -160,7 +160,22 @@
     </fieldset>
 </div>
 
+<div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Detalles</h4>
+            </div>
+            <div class="modal-body" id="dialog-body" style="padding: 15px">
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 %{--//bandeja--}%
 
 <div>
@@ -204,7 +219,26 @@
                 codigo = $tr.data("codigo");
             }
         });
+        var detalles = {
+            text   : 'Detalles',
+            icon   : "<i class='fa fa-search'></i>",
+            action : function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                $.ajax({
+                    type    : 'POST',
+                    url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                    data    : {
+                        id    : id
+                    },
+                    success : function (msg) {
+                        $("#dialog-body").html(msg)
+                    }
+                });
+                $("#dialog").modal("show")
 
+            }
+        };
         var contestar = {
             text   : 'Contestar trámite',
             icon   : "<i class='fa fa-external-link'></i>",
@@ -287,6 +321,7 @@
             {
                 header : 'Acciones'
             },
+            detalles,
             {
                 text   : 'Recibir Documento',
                 icon   : "<i class='fa fa-check-square-o'></i>",
@@ -335,6 +370,7 @@
             {
                 header : 'Acciones'
             },
+            detalles,
             {
                 text   : 'Enviar a jefe',
                 icon   : "<i class='fa fa-eye'></i>",
@@ -389,7 +425,8 @@
         ]);
 
         context.attach(".jefe", [
-            contestar
+            contestar,
+            detalles,
             <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
             ,
             archivar
@@ -494,27 +531,15 @@
         location.href = '${createLink(controller: 'tramite', action: 'archivados')}?dpto=' + 'si';
     });
 
-    function loading(div) {
-        var y = 0;
-        $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-        var interval = setInterval(function () {
-            if (y == 30) {
-                $("#detalle").html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-                y = 0
-            }
-            $("#loading").append(".");
-            y++
-        }, 500);
-        return interval
-    }
+
 
     function cargarBandeja() {
-        var interval = loading("bandeja");
+        openLoader()
         $.ajax({type : "POST", url : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
             success  : function (msg) {
                 resetTimer();
-                clearInterval(interval);
                 $("#bandeja").html(msg);
+                closeLoader()
                 $(".counter").each(function () {
                     var clase = $(this).data("class");
                     var cant = $("tr." + clase).size();

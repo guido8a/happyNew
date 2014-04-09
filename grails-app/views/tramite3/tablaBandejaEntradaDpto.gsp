@@ -23,7 +23,7 @@
                 <g:if test="${tramite.fechaRecepcion}">
                     <g:set var="type" value="recibido"/>
                     <g:set var="clase" value="info"/>
-                    <g:if test="${tramite.tramite.fechaMaximoRespuesta > new Date()}">
+                    <g:if test="${tramite.tramite.fechaMaximoRespuesta < ahora}">
                         <g:set var="type" value="retrasado"/>
                         <g:set var="clase" value="danger"/>
                     </g:if>
@@ -31,7 +31,7 @@
                 <g:else>
                     <g:set var="type" value="pendiente"/>
                     <g:set var="clase" value=""/>
-                    <g:if test="${tramite.tramite.fechaLimite > new Date()}">
+                    <g:if test="${tramite.tramite.fechaLimite < ahora}">
                         <g:set var="type" value="noRecibido"/>
                         <g:set var="clase" value="alert-otroRojo"/>
                     </g:if>

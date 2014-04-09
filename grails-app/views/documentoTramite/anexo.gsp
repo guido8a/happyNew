@@ -86,7 +86,9 @@
 <body>
 <elm:headerTramite tramite="${tramite}" extraTitulo="- Cargar anexos"/>
 
-
+<g:link controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul" style="margin-top: 8px">
+    Redactar
+</g:link>
 <span class="btn btn-success fileinput-button" style="position: relative;height: 40px;margin-top: 10px">
     <i class="glyphicon glyphicon-plus"></i>
     <span>Seleccionar archivos</span>
@@ -101,6 +103,7 @@
     <i class="glyphicon glyphicon-refresh"></i>
     <span>Resetear</span>
 </span>
+
 
 <div style="margin-top:15px;margin-bottom: 20px" class="vertical-container" id="files">
     <p class="css-vertical-text" id="titulo-arch" style="display: none">Archivos</p>

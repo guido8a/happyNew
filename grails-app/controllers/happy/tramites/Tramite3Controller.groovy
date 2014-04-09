@@ -346,6 +346,24 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [persona: usu, bloqueo: bloqueo]
     }
 
+
+    def detalles(){
+        def tramite = Tramite.get(params.id)
+        def principal = null
+        if(tramite.padre){
+            principal = tramite.padre
+            while (true){
+                if(!principal.padre)
+                    break
+                else
+                    principal= principal.padre
+
+            }
+        }
+        return [tramite:tramite,principal:principal]
+    }
+
+
     def tablaBandejaEntradaDpto() {
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
@@ -393,8 +411,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def pxtTodos = pxtPara
         pxtTodos += pxtCopia
+        pxtTodos.sort{it.fechaEnvio}
+        pxtTodos=pxtTodos.reverse()
+        def ahora =  new Date()
 //        pxtTodos += pxtImprimir
-        return [persona: persona, tramites: pxtTodos]
+        return [persona: persona, tramites: pxtTodos, ahora:ahora]
     }
 
     def recibirTramite() {
