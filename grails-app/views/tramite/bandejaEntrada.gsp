@@ -229,7 +229,7 @@
                 $("tr.trHighlight").removeClass("trHighlight");
                 e.preventDefault();
 
-                location.href="${g.createLink(action: 'crearTramite')}/"+id;
+                location.href="${g.createLink(action: 'crearTramite')}/?padre="+id;
             }
         };
 
