@@ -5,7 +5,7 @@
   Time: 12:39 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Prfl; happy.seguridad.Sesn" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -72,76 +72,79 @@
             </div>
         </div>
 
-    %{--${session.perfil}--}%
+        %{--${session.perfil}--}%
 
         <div class="panel-group" id="accordion">
 
-        <g:if test="${session.perfil?.toString().trim() == 'ADMINISTRADOR'}">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapsePass">
-                            Cambiar contraseña
-                        </a>
-                    </h4>
-                </div>
+            <g:set var="abierto" value="${false}"/>
 
-                <div id="collapsePass" class="panel-collapse collapse  ${params.tipo == 'foto' ? '' : 'in'}">
-                    <div class="panel-body">
-                        <g:form class="form-horizontal" name="frmPass" role="form" action="savePass_ajax" method="POST">
-                            <div class="form-group required">
-                            %{--<div class="form-group required">--}%
-                                %{--<span class="grupo">--}%
-                                <span class="form-grup col-md-3">
-                                    <label for="accsFechaInicial" class="control-label text-info">
-                                        Contraseña actual
-                                    </label>
+            <g:if test="${Sesn.findAllByUsuarioAndPerfil(session.usuario, Prfl.findByCodigo('ADM')) != 0}">
+                <g:set var="abierto" value="${true}"/>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapsePass">
+                                Cambiar contraseña
+                            </a>
+                        </h4>
+                    </div>
 
-                                    %{--<div class="col-md-2">--}%
+                    <div id="collapsePass" class="panel-collapse collapse  ${params.tipo == 'foto' ? '' : 'in'}">
+                        <div class="panel-body">
+                            <g:form class="form-horizontal" name="frmPass" role="form" action="savePass_ajax" method="POST">
+                                <div class="form-group required">
+                                    %{--<div class="form-group required">--}%
+                                    %{--<span class="grupo">--}%
+                                    <span class="form-grup col-md-3">
+                                        <label for="accsFechaInicial" class="control-label text-info">
+                                            Contraseña actual
+                                        </label>
+
+                                        %{--<div class="col-md-2">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password_actual" class="form-control required"/>
                                             <span class="input-group-addon"><i class="fa fa-unlock"></i></span>
                                         </div>
+                                        %{--</div>--}%
+                                    </span>
                                     %{--</div>--}%
-                                </span>
-                            %{--</div>--}%
 
-                                <span class="form-grup col-md-3">
-                                    <label for="accsFechaInicial" class="control-label text-info">
-                                        Nueva contraseña
-                                    </label>
+                                    <span class="form-grup col-md-3">
+                                        <label for="accsFechaInicial" class="control-label text-info">
+                                            Nueva contraseña
+                                        </label>
 
-                                    %{--<div class="col-md-3">--}%
+                                        %{--<div class="col-md-3">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password" class="form-control required"/>
                                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                         </div>
-                                    %{--</div>--}%
-                                </span>
-                                <span class="form-grup col-md-3">
-                                    <label for="accsFechaInicial" class="control-label text-info">
-                                        Confirme la contraseña
-                                    </label>
+                                        %{--</div>--}%
+                                    </span>
+                                    <span class="form-grup col-md-3">
+                                        <label for="accsFechaInicial" class="control-label text-info">
+                                            Confirme la contraseña
+                                        </label>
 
-                                    %{--<div class="col-md-3">--}%
+                                        %{--<div class="col-md-3">--}%
                                         <div class="input-group">
                                             <g:passwordField name="password_again" class="form-control required" equalTo="#password"/>
                                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                         </div>
-                                    %{--</div>--}%
-                                </span>
+                                        %{--</div>--}%
+                                    </span>
 
-                                <div class="col-md-2" style="margin-top: 20px;">
-                                    <a href="#" class="btn btn-success" id="btnPass">
-                                        <i class="fa fa-save"></i> Guardar
-                                    </a>
+                                    <div class="col-md-2" style="margin-top: 20px;">
+                                        <a href="#" class="btn btn-success" id="btnPass">
+                                            <i class="fa fa-save"></i> Guardar
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </g:form>
+                            </g:form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </g:if>
+            </g:if>
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -152,8 +155,15 @@
                     </h4>
                 </div>
 
-                <div id="collapseFoto" class="panel-collapse collapse ${params.tipo == 'foto' ? 'in' : ''} ">
+                <div id="collapseFoto" class="panel-collapse collapse ${params.tipo == 'foto' || !abierto ? 'in' : ''} ">
                     <div class="panel-body">
+                        <div class="btn btn-success fileinput-button" style="margin-bottom: 10px;">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>Seleccionar imagen</span>
+                            <!-- The file input field used as target for the file upload widget -->
+                            <input type="file" name="file" id="file">
+                        </div>
+
                         <div class="alert alert-warning" style="float: right; width: 600px;">
                             <i class="fa fa-warning fa-3x pull-left"></i>
                             Si la foto subida es muy grande, se mostrará un área de selección para recortar la imagen al formato requerido.
@@ -169,13 +179,6 @@
                                 No ha subido ninguna fotografía
                             </div>
                         </g:else>
-
-                        <span class="btn btn-success fileinput-button">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            <span>Seleccionar imagen</span>
-                            <!-- The file input field used as target for the file upload widget -->
-                            <input type="file" name="file" id="file">
-                        </span>
 
                         <div id="progress" class="progress progress-striped active">
                             <div class="progress-bar progress-bar-success"></div>
@@ -283,7 +286,7 @@
                     maxNumberOfFiles : 1,
                     acceptFileTypes  : /(\.|\/)(jpe?g|png)$/i,
                     maxFileSize      : 1000000 // 1 MB
-                }).on('fileuploadadd',function (e, data) {
+                }).on('fileuploadadd', function (e, data) {
 //                    console.log("fileuploadadd");
                     openLoader("Cargando");
                     data.context = $('<div/>').appendTo('#files');
@@ -296,7 +299,7 @@
                         }
                         node.appendTo(data.context);
                     });
-                }).on('fileuploadprocessalways',function (e, data) {
+                }).on('fileuploadprocessalways', function (e, data) {
 //                    console.log("fileuploadprocessalways");
                     var index = data.index,
                             file = data.files[index],
@@ -316,14 +319,14 @@
                                 .text('Upload')
                                 .prop('disabled', !!data.files.error);
                     }
-                }).on('fileuploadprogressall',function (e, data) {
+                }).on('fileuploadprogressall', function (e, data) {
 //                    console.log("fileuploadprogressall");
                     var progress = parseInt(data.loaded / data.total * 100, 10);
                     $('#progress .progress-bar').css(
                             'width',
-                            progress + '%'
+                                    progress + '%'
                     );
-                }).on('fileuploaddone',function (e, data) {
+                }).on('fileuploaddone', function (e, data) {
 //                    closeLoader();
                     setTimeout(function () {
                         location.href = "${createLink(action: 'personal', params:[tipo:'foto'])}";

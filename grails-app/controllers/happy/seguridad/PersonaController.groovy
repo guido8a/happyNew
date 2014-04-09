@@ -155,8 +155,8 @@ class PersonaController extends happy.seguridad.Shield {
 
                 def scale = 0.5
 
-                def minW = 200
-                def minH = 300
+                def minW = 300 * 0.7
+                def minH = 400 * 0.7
 
                 def maxW = minW * 3
                 def maxH = minH * 3
@@ -164,31 +164,47 @@ class PersonaController extends happy.seguridad.Shield {
                 def w = img.width
                 def h = img.height
 
+                println "minW=" + minW + "   minH=" + minH
+                println "maxW=" + maxW + "   maxH=" + maxH
+                println "w=" + w + "   h=" + h
+
                 if (w > maxW || h > maxH || w < minW || h < minH) {
-                    int newW = w * scale
-                    int newH = h * scale
-                    int r = 1
+                    def newW = w * scale
+                    def newH = h * scale
+                    def r = 1
                     if (w > h) {
                         if (w > maxW) {
                             r = w / maxW
                             newW = maxW
+                            println "w>maxW:    r=" + r + "   newW=" + newW
                         }
                         if (w < minW) {
                             r = minW / w
                             newW = minW
+                            println "w<minW:    r=" + r + "   newW=" + newW
                         }
                         newH = h / r
+                        println "newH=" + newH
                     } else {
                         if (h > maxH) {
                             r = h / maxH
                             newH = maxH
+                            println "h>maxH:    r=" + r + "   newH=" + newH
                         }
                         if (h < minH) {
                             r = minH / h
                             newH = minH
+                            println "h<minxH:    r=" + r + "   newH=" + newH
                         }
                         newW = w / r
+                        println "newW=" + newW
                     }
+                    println newW + "   " + newH
+
+                    newW = Math.round(newW.toDouble()).toInteger()
+                    newH = Math.round(newH.toDouble()).toInteger()
+
+                    println newW + "   " + newH
 
                     new BufferedImage(newW, newH, img.type).with { j ->
                         createGraphics().with {
@@ -205,6 +221,11 @@ class PersonaController extends happy.seguridad.Shield {
                 /* fin resize */
 
                 if (!usuario.foto || usuario.foto != nombre) {
+                    def fotoOld = usuario.foto
+                    if (fotoOld) {
+                        def file = new File(path + fotoOld)
+                        file.delete()
+                    }
                     usuario.foto = nombre
                     if (usuario.save(flush: true)) {
                         //println "OK"
@@ -308,11 +329,8 @@ class PersonaController extends happy.seguridad.Shield {
 
 //                def json = new JsonBuilder(data)
 //                //println json.toPrettyString()
-
             }
-
         }
-
         render "OK"
     }
 
@@ -329,8 +347,8 @@ class PersonaController extends happy.seguridad.Shield {
         def oldW = img.getWidth()
         def oldH = img.getHeight()
 
-        int newW = 200
-        int newH = 300
+        int newW = 300 * 0.7
+        int newH = 400 * 0.7
         int newX = params.x.toInteger()
         int newY = params.y.toInteger()
         def rx = newW / (params.w.toDouble())
