@@ -49,7 +49,7 @@
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'ipLDAP', 'error')} required">
             <span class="grupo">
                 <label for="ipLDAP" class="col-md-2 control-label text-info">
-                    Ip LDAP
+                    IP:Puerto LDAP
                 </label>
                 <div class="col-md-6">
                     <g:textField name="ipLDAP" required="" class="form-control required" value="${parametrosInstance?.ipLDAP}" maxlength="20"/>
@@ -61,7 +61,7 @@
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'ouPrincipal', 'error')} required">
             <span class="grupo">
                 <label for="ouPrincipal" class="col-md-2 control-label text-info">
-                    Ou Principal
+                    OU Principal
                 </label>
                 <div class="col-md-6">
                     <g:textField name="ouPrincipal" required="" class="form-control required" value="${parametrosInstance?.ouPrincipal}"/>

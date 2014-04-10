@@ -24,7 +24,20 @@ class PersonaController extends happy.seguridad.Shield {
     } //index
 
     def getLista(params, all) {
-//        println "***" + params
+//        String llega = params.search
+//        println llega
+//        println "iso***" + llega.getBytes('ISO-8859-1')
+//        println "utf-8***" + llega.getBytes('UTF-8')
+        if (params.search) {
+            def tx = params.search.toList()
+//            println tx
+            tx.size().times(){
+                if (tx[it].toString().getBytes('UTF-8').size() > 1){
+                    println "posibe carácter especial: ${tx[it]} es en utf-8:" + tx[it].toString().getBytes('UTF-8')
+                    if (tx[it].toString().getBytes('UTF-8')[1] == -123) println "llega texto en ISO-8859-1"
+                }
+            }
+        }
         def prms = params.clone()
 
         if (prms.sort == "perfil") {

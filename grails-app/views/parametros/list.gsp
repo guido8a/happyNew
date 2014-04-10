@@ -51,9 +51,9 @@
                     
                     %{--<g:sortableColumn property="minutoFin" title="Minuto Fin" />--}%
                     
-                    <g:sortableColumn property="ipLDAP" title="Ip LDAP" />
+                    <g:sortableColumn property="ipLDAP" title="IP:Puerto LDAP" />
                     
-                    <g:sortableColumn property="ouPrincipal" title="Ou Principal" />
+                    <g:sortableColumn property="ouPrincipal" title="OU Principal" />
                     
                 </tr>
             </thead>
