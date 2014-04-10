@@ -31,7 +31,7 @@
                     </label>
 
                     <div class="col-md-6">
-                        <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id)}"
+                        <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id, [sort: 'descripcion'])}"
                                   optionKey="id" optionValue="descripcion" noSelection="['': '']"
                                   value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
                     </div>
