@@ -131,13 +131,11 @@
 
 <body>
 
-<div class="row" style="margin-top: 0px">
+<div class="row" style="margin-top: 0px; margin-left: 4px">
     <span class="grupo">
         <label class="well well-sm"
-               style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
+               style="text-align: center; float: left">Usuario: ${(persona?.titulo ?: '') + " " + persona?.nombre + " " + persona?.apellido + " - " +
                persona?.departamento?.descripcion}</label>
-
-
     </span>
 </div>
 

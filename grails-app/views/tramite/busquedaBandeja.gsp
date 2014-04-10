@@ -12,40 +12,43 @@
             <thead>
             <tr>
 
+            <tr>
                 <th class="cabecera">Documento</th>
+                <th class="cabecera">Fecha Envío</th>
                 <th class="cabecera">Fecha Recepción</th>
                 <th class="cabecera">De</th>
-                <th class="cabecera">Creado Por</th>
+                <th class="cabecera">Para</th>
                 <th class="cabecera">Prioridad</th>
                 <th class="cabecera">Fecha Respuesta</th>
-                <th class="cabecera">Doc. Padre</th>
+                <th class="cabecera">Rol</th>
+            </tr>
             </tr>
 
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
 
-                <g:set var="type" value=""/>
+                %{--<g:set var="type" value=""/>--}%
 
 
-                <g:if test="${idTramitesRecibidos?.contains(tramite.tramite.id)}">
-                    <g:set var="type" value="recibido"/>
-                </g:if>
-                <g:if test="${tramite?.tramite?.estadoTramite?.codigo == 'EX03'}">
-                    <g:set var="type" value="pendiente"/>
-                </g:if>
-                <g:if test="${idTramitesRetrasados?.contains(tramite.tramite.id)}">
-                    <g:set var="type" value="retrasado"/>
-                </g:if>
+                %{--<g:if test="${idTramitesRecibidos?.contains(tramite.tramite.id)}">--}%
+                    %{--<g:set var="type" value="recibido"/>--}%
+                %{--</g:if>--}%
+                %{--<g:if test="${tramite?.tramite?.estadoTramite?.codigo == 'EX03'}">--}%
+                    %{--<g:set var="type" value="pendiente"/>--}%
+                %{--</g:if>--}%
+                %{--<g:if test="${idTramitesRetrasados?.contains(tramite.tramite.id)}">--}%
+                    %{--<g:set var="type" value="retrasado"/>--}%
+                %{--</g:if>--}%
 
-                <g:if test="${idRojos?.contains(tramite?.tramite?.id)}">
-                    <g:set var="type" value="pendiente pendienteRojo"/>
-                </g:if>
+                %{--<g:if test="${idRojos?.contains(tramite?.tramite?.id)}">--}%
+                    %{--<g:set var="type" value="pendiente pendienteRojo"/>--}%
+                %{--</g:if>--}%
 
+                %{--<g:each in="${pxtTramites}" var="pxt">--}%
                 <g:each in="${pxtTramites}" var="pxt">
-                    <g:if test="${tramite?.tramite?.id == pxt?.tramite?.id}">
-
-                        <tr data-id="${tramite?.tramite?.id}" class="${type} ${tramite?.tramite?.getEstadoBandeja(session.usuario)}">
+                    <g:if test="${tramite?.id == pxt?.id}">
+                        <tr data-id="${tramite?.id}" class="${type} ${tramite?.tramite?.getEstadoBandeja(session.usuario)}">
                             <td>${tramite?.tramite?.codigo}</td>
                             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.tramite?.de}</td>
@@ -53,6 +56,7 @@
                             <td>${tramite?.tramite?.prioridad?.descripcion}</td>
                             <td>${tramite?.fechaLimiteRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.tramite?.padre?.codigo}</td>
+                            <td></td>
 
                         </tr>
 

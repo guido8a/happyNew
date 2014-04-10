@@ -796,35 +796,32 @@ class TramiteController extends happy.seguridad.Shield {
 
     def busquedaBandeja() {
 
-        def idTramitesRetrasados = alertaRetrasados().idTramites
-        def idTramitesRecibidos = alertRecibidos().idTramites
-        def idRojos = alertaPendientes().idRojos
-
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-//        def estadoEnviado = EstadoTramite.findByCodigo('E003')
+        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+
+
 
         def pxtTodos = []
-        def pxtTramites = []
+        def pxtTramites = tramites
 
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
+//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+//        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
 
+//
+//        pxtTodos = pxtPara
+//        pxtTodos += pxtCopia
+//        pxtTodos += pxtImprimir
 
-        pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
-
-        pxtTodos.each {
-            if (it?.tramite?.estadoTramite?.codigo == 'E003' || it?.tramite?.estadoTramite?.codigo == 'E004') {
-                pxtTramites += it
-            }
-        }
+//        pxtTodos.each {
+//            if (it?.tramite?.estadoTramite?.codigo == 'E003' || it?.tramite?.estadoTramite?.codigo == 'E004') {
+//                pxtTramites += it
+//            }
+//        }
 
 
         if (params.fecha) {
@@ -852,7 +849,12 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
 
-        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+
+//        println("--->" + res)
+//        println("DDDD:" + pxtTramites)
+
+//        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+        return [tramites: res, pxtTramites: pxtTramites]
 
     }
 

@@ -106,9 +106,10 @@
         <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
 
 
-        <g:link action="" class="btn btn-primary btnTramites">
-            <i class="fa fa-gears"></i> Trámites
-        </g:link>
+        %{--<g:link action="" class="btn btn-primary btnTramites">--}%
+            %{--<i class="fa fa-gears"></i> Trámites--}%
+        %{--</g:link>--}%
+
 
         <g:link action="" class="btn btn-success btnActualizar">
             <i class="fa fa-refresh"></i> Actualizar
@@ -719,8 +720,6 @@
 
         $(".btnBusqueda").click(function () {
 
-//            var interval = loading("bandeja")
-
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();
             var fecha = $("#fechaBusqueda_input").val();
@@ -730,7 +729,6 @@
             $.ajax({ type: "POST", url: "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
                 data: datos,
                 success: function (msg) {
-//                    clearInterval(interval)
                     $("#bandeja").html(msg);
                 }
 
