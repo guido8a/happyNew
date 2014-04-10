@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Configurar usuario</title>
+        <title>Ausentismo</title>
 
         <style type="text/css">
         .perfil .fa-li, .perfil span, .permiso .fa-li, .permiso span {
@@ -66,7 +66,7 @@
                 <g:link class="btn btn-default col-md-1" controller="persona" action="list"><i class="fa fa-arrow-left"></i> Regresar</g:link>
                 <span class="col-md-11" style="text-align: center">
                     <div class="panel panel-default" style="margin-left: 30px;">
-                        <div class="panel-heading">Configuración de los datos del usuario: <strong>${usuario.nombre} ${usuario.apellido}</strong>
+                        <div class="panel-heading">Ausentismo: permisos y vacaciones de: <strong>${usuario.nombre} ${usuario.apellido}</strong>
                         </div>
                     </div>
                 </span>
@@ -186,17 +186,17 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         %{--<a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">--}%
-                        Ausentismo <small>Restringir temporalmente el acceso al sistema</small>
+                        Ausentismo <small>Permisos, vacaciones, etc.</small>
                         %{--</a>--}%
                     </h4>
                 </div>
 
                 <div id="collapseAcceso" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        <h4>Agregar restricción</h4>
+                        <h4>Agregar ausentismo</h4>
 
                         <p>
-                            Se agregará una restricción de acceso al sistema entre las fechas seleccionadas (inclusive).
+                            El usuario se hallará ausente entre las fechas seleccionadas (inclusive).
                         </p>
                         <g:form class="form-horizontal" name="frmAccesos" role="form" action="saveAccesos_ajax" method="POST">
                             <div class="form-group required">

@@ -8,6 +8,16 @@
     </head>
     <body>
 
+    <div class="btn-toolbar toolbar">
+        <div class="btn-group">
+            <g:link controller="inicio" action="parametros" class="btn btn-default">
+                <i class="fa fa-arrow-left"></i> Regresar
+            </g:link>
+        </div>
+    </div>
+
+    <h3> Parámetros del Sistema</h3>
+
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
     <!-- botones -->

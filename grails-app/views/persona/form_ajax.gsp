@@ -22,6 +22,19 @@
         %{--</span>--}%
         %{--</div>--}%
 
+            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaInicio', 'error')} ">
+                <span class="grupo">
+                    <label for="login" class="col-md-3 control-label text-info">
+                        Usuario
+                    </label>
+
+                    <div class="col-md-4">
+                        <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}" required=""/>
+                    </div>
+                    *
+                </span>
+            </div>
+
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'nombre', 'error')} required">
                 <span class="grupo">
                     <label for="nombre" class="col-md-3 control-label text-info">
@@ -171,18 +184,6 @@
                 </span>
             </div>
             <!------------------------------------------------------------------------------------------------------------------------------->
-            <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaInicio', 'error')} ">
-                <span class="grupo">
-                    <label for="login" class="col-md-3 control-label text-info">
-                        Usuario
-                    </label>
-
-                    <div class="col-md-4">
-                        <g:textField name="login" maxlength="15" class="form-control" value="${personaInstance?.login}" required=""/>
-                    </div>
-                    *
-                </span>
-            </div>
 
         %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'activo', 'error')} required">--}%
         %{--<span class="grupo">--}%

@@ -219,6 +219,25 @@
                             </div>
                         </li>
 
+                        <li>
+                            <i class="fa-li ${iconTrmt}"></i>
+                            <span id="prmt">
+                                <g:link controller="parametros" action="list">Parámetros del sistema</g:link> sirve para
+                                fijar las horas de la jornada de trabajo por defecto y las direcciones de conexión para la
+                                autenticación de los usuarios
+                            </span>
+
+                            <div class="descripcion hide">
+                                <h4>Parámetros del Sistema</h4>
+
+                                <p>Fija las horas de la jornada de trabajo por defecto.</p>
+                                <p>Ingreso de las direcciones de conexión del servidor LDAP para la
+                                autenticación de los usuarios</p>
+                                <p>Registro de la Unidad organizacional principal del LDAP</p>
+
+                            </div>
+                        </li>
+
                     </ul>
 
                 </div>
