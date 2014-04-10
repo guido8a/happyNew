@@ -108,11 +108,13 @@
 
     <span class="grupo">
         <div>
-            <div data-type="recibido" class="alert alert-info alertas"  clase="E004">
-                (<span id="numRec"></span>)
-            Recibidos
+            <div data-type="pendiente" class="alert alert-blanco alertas"  clase="E003">
+                (<span id="numEnv"></span>)
+            Por recibir
+            %{--Pendientes--}%
             </div>
         </div>
+
 
         <div>
             <div data-type="pendiente" class="alert alert-otroRojo alertas"  clase="E003">
@@ -123,10 +125,9 @@
         </div>
 
         <div>
-            <div data-type="pendiente" class="alert alert-blanco alertas"  clase="E003">
-                (<span id="numEnv"></span>)
-            Por recibir
-            %{--Pendientes--}%
+            <div data-type="recibido" class="alert alert-info alertas"  clase="E004">
+                (<span id="numRec"></span>)
+            Recibidos
             </div>
         </div>
 

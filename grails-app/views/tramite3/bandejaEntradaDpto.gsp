@@ -109,7 +109,7 @@
     </div>
 
     <div data-type="pendiente" class="alert alert-blanco alertas">
-        <span id="spanPendientes" class="counter" data-class="pendiente">(0)</span> Doc. Pendientes
+        <span id="spanPendientes" class="counter" data-class="pendiente">(0)</span> Por recibir
     </div>
 
     <div data-type="noRecibido" class="alert alert-otroRojo alertas">
