@@ -41,7 +41,7 @@ th, td {
     <!-- modulo:${mdlo__id} -->
     <g:if test="${mdlo__id == '0'}">
         Enviar al módulo:
-        <g:select optionKey="id" from="${happy.seguridad.Modulo.list()}" name="modulo" value="${modulo?.id}"></g:select>
+        <g:select optionKey="id" from="${happy.seguridad.Modulo.list([sort: 'orden'])}" name="modulo" value="${modulo?.id}"></g:select>
         <input id="mueveAJX" type="button" class="btn btn-info grabaPrms" value="Agregar al Módulo">
     </g:if>
     <g:else>
