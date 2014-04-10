@@ -217,7 +217,8 @@
                 cargarAlertaNoRecibidos();
                 cargarBorrador();
                 if(band){
-                    bootbox.alert("Datos actualizados")
+//                    bootbox.alert("Datos actualizados")
+                    log('Datos actualizados', 'success')
                 }
             }
         });
@@ -511,18 +512,23 @@
         $(".btnEnviar").click(function () {
 
             var trId = [];
+            var strIds = "";
 
             $(".combo").each(function () {
                 if($(this).prop('checked') == false){
                 }else {
                     trId.push($(this).attr('tramite'));
+                    if(strIds != "") {
+                        strIds+=",";
+                    }
+                    strIds+= $(this).attr('tramite');
 //                    console.log("-->>" , $(this))
                 }
             });
 
 //            console.log("--->" + trId)
 
-            if(trId == ''){
+            if(strIds == ''){
 
                 log("No se ha seleccionado ningun trámite", 'error');
 
@@ -537,119 +543,159 @@
                         no: {
                             label: 'No Imprimir',
                             callback: function () {
-                                for(var i=0; i<trId.length;i++) {
-                                    id = trId[i];
 
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
-                                        data    : "id="+trId[i],
-                                        success : function (msg) {
-                                            closeLoader()
-                                            if(msg=="ok"){
-                                                cargarBandeja(false)
-                                                $.ajax({
-                                                    type : 'POST',
-                                                    url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
-                                                    data : {
-                                                        id: id,
-                                                        enviar: 1,
-                                                        type  : 'download'
-                                                    },
-                                                    success: function (msg) {
+                                //original
+                                %{--for(var i=0; i<trId.length;i++) {--}%
+                                    %{--id = trId[i]--}%
+                                    %{--$.ajax({--}%
+                                        %{--type    : "POST",--}%
+                                        %{--async   : false,--}%
+                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
+%{--//                                        data    : "id="+trId[i],--}%
+                                        %{--data: {--}%
+                                            %{--id: id,--}%
+                                            %{--enviar: '1',--}%
+                                            %{--type  : 'download'--}%
 
-                                                    }
-                                                });
-                                                %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+ id +"?enviar=1&type=download"--}%
-                                            }else{
-                                                var mensaje = msg.split("_")
-                                                mensaje = mensaje[1]
-                                                bootbox.alert(mensaje)
-                                            }
+                                        %{--},--}%
+                                        %{--success : function (msg) {--}%
+                                            %{--console.log(msg);--}%
+                                            %{--closeLoader();--}%
+                                        %{--},--}%
+                                        %{--error: function(jqxhr, status, error) {--}%
+                                            %{--console.log("WTF",jqxhr, status, error);--}%
+
+                                        %{--},--}%
+                                        %{--complete: function() {--}%
+                                            %{--console.log("complete")--}%
+                                        %{--}--}%
+                                    %{--});--}%
+
+                                    %{--$.ajax({--}%
+                                        %{--type : 'POST',--}%
+                                        %{--async: false,--}%
+                                        %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
+                                        %{--data : {--}%
+                                            %{--id: id,--}%
+                                            %{--enviar: '1',--}%
+                                            %{--type  : 'download'--}%
+                                        %{--},--}%
+                                        %{--success: function (msg) {--}%
+
+                                        %{--},--}%
+
+                                        %{--error: function(jqxhr, status, error) {--}%
+                                            %{--console.log("WTF",jqxhr, status, error);--}%
+
+                                        %{--}--}%
+                                    %{--});--}%
+                                %{--}--}%
+
+                                //modificado
+
+
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
+                                    data: {
+                                        ids: strIds,
+                                        enviar: '1',
+                                        type  : 'download'
+
+                                    },
+                                    success : function (msg) {
+                                        closeLoader()
+                                        console.log(msg)
+                                        if(msg == 'ok'){
+//                                            bootbox.alert("Trámites Enviados")
+                                            cargarBandeja(true);
+                                            log('Trámites Enviados', 'success')
+                                        }else {
+                                            log('Ocurrio un error al enviar los trámites seleccionados!', 'error')
                                         }
-                                    });
+                                    }
+                                });
 
-                                }
-                                bootbox.alert("Trámites Enviados")
+
+
+
                             }
                         },
                         si: {
                             label: '<i class="fa fa-print"></i> Imprimir',
                             callback: function () {
-
-                                for(var i=0; i<trId.length;i++) {
-
-//                       console.log(trId[i]);
-
-                                    id = trId[i]
-
-                                    $.ajax({
-                                        type    : "POST",
-                                        async   : false,
-                                        url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",
-//                                        data    : "id="+trId[i],
-                                        data: {
-                                            id: id,
-                                            enviar: '1',
-                                            type  : 'download'
-
-                                        },
-                                        success : function (msg) {
-                                            console.log(msg);
-                                            closeLoader();
-                                            %{--if(msg=="ok"){--}%
-                                            %{--cargarBandeja(false)--}%
-                                            %{--$.ajax({--}%
-                                            %{--type : 'POST',--}%
-                                            %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
-                                            %{--data : {--}%
+                                %{--for(var i=0; i<trId.length;i++) {--}%
+                                    %{--id = trId[i]--}%
+                                    %{--$.ajax({--}%
+                                        %{--type    : "POST",--}%
+                                        %{--async   : false,--}%
+                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
+%{--//                                        data    : "id="+trId[i],--}%
+                                        %{--data: {--}%
                                             %{--id: id,--}%
                                             %{--enviar: '1',--}%
                                             %{--type  : 'download'--}%
-                                            %{--},--}%
-                                            %{--success: function (msg) {--}%
 
-                                            %{--}--}%
-                                            %{--});--}%
-                                            %{--}else{--}%
-                                            %{--var mensaje = msg.split("_")--}%
-                                            %{--mensaje = mensaje[1]--}%
-                                            %{--bootbox.alert(mensaje)--}%
-                                            %{--}--}%
-                                        },
-                                        error: function(jqxhr, status, error) {
-                                            console.log("WTF",jqxhr, status, error);
+                                        %{--},--}%
+                                        %{--success : function (msg) {--}%
+                                            %{--console.log(msg);--}%
+                                            %{--closeLoader();--}%
+                                        %{--},--}%
+                                        %{--error: function(jqxhr, status, error) {--}%
+                                            %{--console.log("WTF",jqxhr, status, error);--}%
 
-                                        },
-                                        complete: function() {
-                                            console.log("complete")
+                                        %{--},--}%
+                                        %{--complete: function() {--}%
+                                            %{--console.log("complete")--}%
+                                        %{--}--}%
+                                    %{--});--}%
+
+                                    %{--$.ajax({--}%
+                                        %{--type : 'POST',--}%
+                                        %{--async: false,--}%
+                                        %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
+                                        %{--data : {--}%
+                                            %{--id: id,--}%
+                                            %{--enviar: '1',--}%
+                                            %{--type  : 'download'--}%
+                                        %{--},--}%
+                                        %{--success: function (msg) {--}%
+
+                                        %{--},--}%
+
+                                        %{--error: function(jqxhr, status, error) {--}%
+                                            %{--console.log("WTF",jqxhr, status, error);--}%
+
+                                        %{--}--}%
+                                    %{--});--}%
+                                %{--}--}%
+
+
+
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
+                                    data: {
+                                        ids: trId,
+                                        enviar: '1',
+                                        type  : 'download'
+
+                                    },
+                                    success : function (msg) {
+                                        closeLoader();
+                                        console.log(msg);
+                                        if(msg == 'ok'){
+                                            cargarBandeja(true);
+                                            log('Trámites Enviados', 'success');
+                                            openLoader();
+                                            location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                            closeLoader();
+
+                                        }else {
+                                            log('Ocurrio un error al enviar los trámites seleccionados!', 'error')
                                         }
-                                    });
-
-                                    $.ajax({
-                                        type : 'POST',
-                                        async: false,
-                                        url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',
-                                        data : {
-                                            id: id,
-                                            enviar: '1',
-                                            type  : 'download'
-                                        },
-                                        success: function (msg) {
-
-                                        },
-
-                                        error: function(jqxhr, status, error) {
-                                            console.log("WTF",jqxhr, status, error);
-
-                                        }
-                                    });
-                                }
-
-                                bootbox.alert("Trámites Enviados")
-                                location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}'
-
-
+                                    }
+                                });
                             }
                         }
                     }

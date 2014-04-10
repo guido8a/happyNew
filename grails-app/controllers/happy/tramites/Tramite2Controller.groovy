@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 class Tramite2Controller extends happy.seguridad.Shield {
 
     def diasLaborablesService
+    def enviarService
 
     def verTramite() {
         /*comentar esto*/
@@ -185,14 +186,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
         return [persona: persona, tramites: tramites]
     }
 
-    //alertas
 
     def enviar() {
         println "method " + request.getMethod()
         println "PARAMS " + params
         /*todo sin validacion alguna... que envie no mas cualquiera*/
         if (request.getMethod() == "POST") {
-            println "\t1"
             def msg = ""
             def tramite = Tramite.get(params.id)
             def envio = new Date()
@@ -201,7 +200,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 t.fechaEnvio = envio
                 t.save(flush: true)
             }
-            println "\t2"
             def pdt = new PersonaDocumentoTramite()
             pdt.tramite = tramite
             pdt.persona = session.usuario
@@ -212,7 +210,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.fechaEnvio = envio
             tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
             if (tramite.save(flush: true)) {
-                println "\t3"
                 //CREAR PDF
 
 //             redirect(controller: 'tramiteExport', action: 'crearPdf', params: params)
@@ -220,17 +217,71 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 //
 //                render "ok"
             } else {
-                println "\t4"
                 println tramite.errors
                 render "no: " + renderErrors(bean: tramite)
             }
         } else {
-            println "\t5"
 //            response.sendError(403)
             render "403"
         }
-        println "\t6"
-        render "nadad"
+    }
+
+    //enviar varios
+
+    def enviarVarios() {
+//        println "method "+request.getMethod()
+//        println "PARAMS "+params
+        def usuario = Persona.get(session.usuario.id)
+
+        if (request.getMethod() == "POST") {
+            def msg = ""
+            def error=""
+            def tramite
+            def tramites = []
+            def ids = params.ids
+//            println("--->>>" + ids)
+//            println(ids.class)
+            ids = ids.split(',')
+//            println ids
+//            render "no"
+//            return
+//            if(ids instanceof java.lang.String){
+//                ids = [ids]
+//            }
+            ids.each {d->
+//                println('\t'  + d)
+                def envio = new Date();
+                tramite = Tramite.get(d)
+                PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
+                    t.fechaEnvio = envio
+                    t.save(flush: true)
+                }
+                def pdt = new PersonaDocumentoTramite()
+                pdt.tramite = tramite
+                pdt.persona = session.usuario
+                pdt.departamento = session.departamento
+                pdt.fechaEnvio = envio
+                pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+                pdt.save(flush: true)
+                tramite.fechaEnvio = envio
+                tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
+                if (tramite.save(flush: true)) {
+                    def realPath = servletContext.getRealPath("/")
+                    def mensaje = message(code: 'pathImages');
+                    enviarService.crearPdf(tramite,usuario,"1",'download',params.editorTramite,params.asunto,realPath,mensaje);
+                } else {
+                    println tramite.errors
+                    error+= renderErrors(bean:tramite)
+                }
+            }
+            if(error=="") {
+                render "ok"
+            } else {
+                render "no_"+error
+            }
+        } else {
+            render "403"
+        }
     }
 
 
@@ -435,7 +486,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (params.confi == "on") {
             tipoTramite = TipoTramite.findByCodigo("C")
         } else {
-            tipoTramite = TipoTramite.findByCodigo("C")
+            tipoTramite = TipoTramite.findByCodigo("N")
         }
         paramsTramite.tipoTramite = tipoTramite
         if (params.anexo == "on") {
