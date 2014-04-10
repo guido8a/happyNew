@@ -54,7 +54,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (params.confi == "on") {
             tipoTramite = TipoTramite.findByCodigo("C")
         } else {
-            tipoTramite = TipoTramite.findByCodigo("C")
+            tipoTramite = TipoTramite.findByCodigo("N")
         }
         paramsTramite.tipoTramite = tipoTramite
         if (params.anexo == "on") {

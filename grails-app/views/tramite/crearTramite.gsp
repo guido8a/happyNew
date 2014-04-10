@@ -73,6 +73,11 @@
                 <g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">
                     <i class="fa fa-list-ul"></i> Bandeja de Entrada
                 </g:link>
+                <g:if test="${padre}">
+                    <g:link action="bandejaEntrada" class="btn btn-default btnRegresar">
+                        <i class="fa fa-times"></i> Cancelar
+                    </g:link>
+                </g:if>
             %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">--}%
             %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
             %{--</g:link>--}%

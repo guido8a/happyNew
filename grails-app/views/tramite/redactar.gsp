@@ -50,7 +50,7 @@
             z-index    : 1;
         }
 
-        .nota p {
+        .nota .contenido {
             overflow   : auto;
             max-height : 325px;
         }
@@ -65,6 +65,24 @@
             width    : 16px;
             height   : 16px;
         }
+
+        .padre {
+            background   : #BCCCDC;
+            border-color : #2C5E8F;
+            width        : 290px;
+        }
+
+        .nota.padre .contenido {
+            max-height : 285px;
+        }
+
+        .padre h4 {
+            font-size     : 16px;
+            margin-top    : 0;
+            margin-bottom : 5px;
+            height        : 40px;
+            overflow      : auto;
+        }
         </style>
     </head>
 
@@ -72,9 +90,18 @@
 
         <g:if test="${tramite.nota && tramite.nota.trim() != ''}">
             <div class="nota ui-corner-all">
-                <p>
+                <div class="contenido">
                     ${tramite.nota}
-                </p>
+                </div>
+            </div>
+        </g:if>
+        <g:if test="${tramite.padre}">
+            <div class="nota padre ui-corner-all">
+                <h4 class="text-info">${tramite.padre.asunto}</h4>
+
+                <div class="contenido">
+                    <util:renderHTML html="${tramite.padre.texto}"/>
+                </div>
             </div>
         </g:if>
 
@@ -82,12 +109,22 @@
 
             <div class="btn-toolbar toolbar">
                 <div class="btn-group">
-                    <g:link action="bandejaEntrada" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
-                        <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                    </g:link>
-                    <g:link controller="tramite2" action="bandejaSalida" class="btn btn-sm btn-azul btnRegresar">
-                        <i class="fa fa-list-ul"></i> Bandeja de Salida
-                    </g:link>
+                    <g:if test="${tramite.deDepartamento}">
+                        <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
+                            <i class="fa fa-list-ul"></i> Bandeja de Entrada
+                        </g:link>
+                        <g:link controller="tramite2" action="bandejaSalidaDep" class="btn btn-sm btn-azul btnRegresar">
+                            <i class="fa fa-list-ul"></i> Bandeja de Salida
+                        </g:link>
+                    </g:if>
+                    <g:else>
+                        <g:link action="bandejaEntrada" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
+                            <i class="fa fa-list-ul"></i> Bandeja de Entrada
+                        </g:link>
+                        <g:link controller="tramite2" action="bandejaSalida" class="btn btn-sm btn-azul btnRegresar">
+                            <i class="fa fa-list-ul"></i> Bandeja de Salida
+                        </g:link>
+                    </g:else>
                 </div>
 
                 <div class="btn-group">
@@ -106,6 +143,48 @@
         </div>
         <script>
             $(function () {
+
+                $("#btnInfoPara").click(function () {
+                    var para = $("#para").val();
+                    var paraExt = $("#paraExt").val();
+                    var id;
+                    var url = "";
+                    if (para) {
+                        if (parseInt(para) > 0) {
+                            url = "${createLink(controller: 'persona', action: 'show_ajax')}";
+                            id = para;
+                        } else {
+                            url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
+                            id = parseInt(para) * -1;
+                        }
+                    }
+                    if (paraExt) {
+                        url = "${createLink(controller: 'origenTramite', action: 'show_ajax')}";
+                        id = paraExt;
+                    }
+                    $.ajax({
+                        type    : "POST",
+                        url     : url,
+                        data    : {
+                            id : id
+                        },
+                        success : function (msg) {
+                            bootbox.dialog({
+                                title   : "Información",
+                                message : msg,
+                                buttons : {
+                                    aceptar : {
+                                        label     : "Aceptar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    return false;
+                });
 
                 $(".btnSave").click(function () {
                     $.ajax({

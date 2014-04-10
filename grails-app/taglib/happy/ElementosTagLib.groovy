@@ -2,6 +2,7 @@ package happy
 
 import happy.seguridad.Persona
 import happy.tramites.Departamento
+import happy.tramites.OrigenTramite
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
@@ -417,17 +418,42 @@ class ElementosTagLib {
             html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
             html += "                </div>"
             html += "            </div>"
-            if (para) {
+            if (tramite.tipoDocumento.codigo == "OFI") {
                 html += "                <div class=\"row row-low-margin-top\">"
                 html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
                 html += "                        PARA"
                 html += "                    </div>"
                 html += ""
-                html += "                    <div class=\"col-xs-10  col-buen-height\">"
-                html += g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+                html += "                    <div class=\"col-xs-8  col-buen-height\">"
+                html += g.select(name: 'paraExt', optionKey: 'id', optionValue: 'nombre', from: OrigenTramite.list([sort: 'nombre']), class: 'form-control', value: strPara2)
 //                html += strPara
-                html += "                    </div>"
-                html += "                </div>"
+                        html += "                    </div>"
+                        html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                        html += "                       <a href='#' class='btn btn-sm btn-info' id='btnInfoPara' style='margin-top: 7px;'>" +
+                                "                           <i class=\"fa fa-search\"></i>" +
+                                "                       </a>"
+                        html += "                    </div>"
+
+                        html += "                </div>"
+            } else {
+                if (para) {
+                    html += "                <div class=\"row row-low-margin-top\">"
+                    html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                    html += "                        PARA"
+                    html += "                    </div>"
+                    html += ""
+                    html += "                    <div class=\"col-xs-8  col-buen-height\">"
+                    html += g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+//                html += strPara
+                    html += "                    </div>"
+                    html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                    html += "                       <a href='#' class='btn btn-sm btn-info' id='btnInfoPara' style='margin-top: 7px;'>" +
+                            "                           <i class=\"fa fa-search\"></i>" +
+                            "                       </a>"
+                    html += "                    </div>"
+
+                    html += "                </div>"
+                }
             }
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
