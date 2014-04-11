@@ -180,6 +180,15 @@ class Tramite {
         }
     }
 
+    def getNoRecibido() {
+        def prtr = PersonaDocumentoTramite.findAllByTramiteAndFechaRecepcionIsNotNull(this)
+        if (prtr.size() > 0) {
+            return true //al menos una persona y recibio
+        } else {
+            return false //enviado pero nadie ha recibido aun
+        }
+    }
+
     def getFechaBloqueo() {
         if (this.estadoTramite.codigo != "E003") {
             return null

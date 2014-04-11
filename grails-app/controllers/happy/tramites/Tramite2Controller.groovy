@@ -125,6 +125,34 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def bandejaSalida() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        if (session.departamento.estado == "B") {
+            bloqueo = true
+        }
+//        println "bloqueo " + bloqueo
+        if (persona.jefe == 1)
+            revisar = true
+        else {
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(persona, PermisoTramite.findByCodigo("P005"))
+            if (per) {
+                revisar = true
+            }
+        }
+        def departamento = Persona.get(usuario.id).departamento
+        def personal = Persona.findAllByDepartamento(departamento)
+        def personalActivo = []
+        personal.each {
+            if (it?.estaActivo && it?.id != usuario.id) {
+                personalActivo += it
+            }
+        }
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo]
+    }
+
+    def bandejaSalida_old() {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -158,6 +186,35 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def tablaBandejaSalida() {
+//        println "carga bandeja"
+        def persona = Persona.get(session.usuario.id)
+        def tramites = []
+        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+        if (persona.jefe == 1) {
+            Persona.findAllByDepartamento(persona.departamento).each { p ->
+                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
+                if (t.size() > 0)
+                    tramites += t
+                t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
+                if (t.size() > 0)
+                    tramites += t
+            }
+            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+            if (t.size() > 0)
+                tramites += t
+        } else {
+            tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona, estados, [sort: "fechaCreacion", order: "desc"])
+            def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
+            if (t.size() > 0)
+                tramites += t
+        }
+        tramites?.sort { it.fechaCreacion }
+        tramites = tramites?.reverse()
+        return [persona: persona, tramites: tramites]
+    }
+
+    def tablaBandejaSalida_old() {
 //        println "carga bandeja"
         def persona = Persona.get(session.usuario.id)
         def tramites = []
@@ -235,7 +292,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (request.getMethod() == "POST") {
             def msg = ""
-            def error=""
+            def error = ""
             def tramite
             def tramites = []
             def ids = params.ids
@@ -248,7 +305,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            if(ids instanceof java.lang.String){
 //                ids = [ids]
 //            }
-            ids.each {d->
+            ids.each { d ->
 //                println('\t'  + d)
                 def envio = new Date();
                 tramite = Tramite.get(d)
@@ -268,16 +325,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (tramite.save(flush: true)) {
                     def realPath = servletContext.getRealPath("/")
                     def mensaje = message(code: 'pathImages');
-                    enviarService.crearPdf(tramite,usuario,"1",'download',params.editorTramite,params.asunto,realPath,mensaje);
+                    enviarService.crearPdf(tramite, usuario, "1", 'download', params.editorTramite, params.asunto, realPath, mensaje);
                 } else {
                     println tramite.errors
-                    error+= renderErrors(bean:tramite)
+                    error += renderErrors(bean: tramite)
                 }
             }
-            if(error=="") {
+            if (error == "") {
                 render "ok"
             } else {
-                render "no_"+error
+                render "no_" + error
             }
         } else {
             render "403"
