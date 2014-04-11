@@ -316,6 +316,67 @@
                     }
                 };
 
+                var ver = {
+                    text   : 'Ver',
+                    icon   : "<i class='fa fa-search'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                        window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
+                    }
+                };
+
+                var editar = {
+                    text   : 'Editar',
+                    icon   : "<i class='fa fa-pencil'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        location.href = "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
+                    }
+                };
+
+                var desenviar = {
+                    text   : 'Desenviar',
+                    icon   : "<i class='fa fa-magic text-danger'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        bootbox.dialog({
+                            title   : "Alerta",
+                            message : "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i><p>" +
+                                      "¿Está seguro que desea desenviar el trámite seleccionado?<br/>Esta acción no se puede deshacer.</p>",
+                            buttons : {
+                                cancelar  : {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                },
+                                desenviar : {
+                                    label     : "<i class='fa fa-magic'></i> Desenviar",
+                                    className : "btn-danger",
+                                    callback  : function () {
+                                        openLoader("Eliminando");
+                                        %{--$.ajax({--}%
+                                        %{--type    : "POST",--}%
+                                        %{--url     : '${createLink(action:'delete_ajax')}',--}%
+                                        %{--data    : {--}%
+                                        %{--id : itemId--}%
+                                        %{--},--}%
+                                        %{--success : function (msg) {--}%
+                                        %{--var parts = msg.split("_");--}%
+                                        %{--log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)--}%
+                                        %{--if (parts[0] == "OK") {--}%
+                                        %{--location.reload(true);--}%
+                                        %{--}--}%
+                                        %{--}--}%
+                                        %{--});--}%
+                                    }
+                                }
+                            }
+                        });
+                    }
+                };
+
                 var archivo;
 
                 context.settings({
@@ -335,140 +396,38 @@
                     {
                         header : 'Acciones'
                     },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-                        }
-                    },
-                    {
-                        text   : 'Editar',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            location.href = "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
-                        }
-                    },
+                    ver,
+                    editar,
                     imprimir
-                    <g:if test="${revisar}">,
-                    {
-                        text   : 'Revisar',
-                        icon   : "<i class='fa fa-check'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            location.href = "${g.createLink(action: 'revision',controller: 'tramite2')}/" + id
-                        }
-                    }
-                    </g:if>
                 ]);
-                %{--context.attach(".E002", [--}%
-                %{--{--}%
-                %{--header : 'Acciones'--}%
-                %{--},--}%
-                %{--{--}%
-                %{--text   : 'Ver',--}%
-                %{--icon   : "<i class='fa fa-search'></i>",--}%
-                %{--action : function (e) {--}%
-                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                %{--window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");--}%
-
-                %{--}--}%
-
-                %{--},--}%
-                %{--{--}%
-                %{--text: 'Enviar',--}%
-                %{--icon: "<i class='fa fa-pencil'></i>",--}%
-                %{--action: function (e) {--}%
-                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-
-                %{--bootbox.confirm("Esta seguro?",function(result){--}%
-                %{--if(result){--}%
-                %{--openLoader()--}%
-                %{--$.ajax({--}%
-                %{--type    : "POST",--}%
-                %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
-                %{--data    : "id="+id,--}%
-                %{--success : function (msg) {--}%
-                %{--closeLoader()--}%
-                %{--if(msg=="ok"){--}%
-                %{--bootbox.alert("Documento enviado.")--}%
-                %{--cargarBandeja(false)--}%
-                %{--location.href="${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}/"+id+"?enviar=1"--}%
-                %{--}else{--}%
-                %{--var mensaje = msg.split("_")--}%
-                %{--mensaje = mensaje[1]--}%
-                %{--bootbox.alert(mensaje)--}%
-                %{--}--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--})--}%
-                %{--/*ajax aqui*/--}%
-                %{--}--}%
-                %{--},--}%
-                %{--imprimir--}%
-                %{--]);--}%
                 context.attach(".E003", [
                     {
                         header : 'Acciones'
                     },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-                        }
-                    }
+                    ver
                 ]);
 
                 context.attach(".alerta", [
-//                    {
-//                        header : 'Sin Acciones'
-//                    }
                     {
                         header : 'Acciones'
                     },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-                        }
-                    }
+                    ver
                 ]);
 
                 context.attach(".imprimir", [
                     {
                         header : 'Acciones'
                     },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-                        }
-                    }
-                    %{--<g:if test="${revisar}">,--}%
-                    %{--{--}%
-                    %{--text   : 'Revisar',--}%
-                    %{--icon   : "<i class='fa fa-check'></i>",--}%
-                    %{--action : function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                    %{--location.href = "${g.createLink(action: 'revision',controller: 'tramite2')}/" + id--}%
-                    %{--}--}%
+                    ver
+                ]);
 
-                    %{--}--}%
-                    %{--</g:if>--}%
+                context.attach(".desenviar", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    desenviar
                 ]);
                 </g:if>
 
@@ -489,10 +448,8 @@
                 });
 
                 $(".btnEnviar").click(function () {
-
                     var trId = [];
                     var strIds = "";
-
                     $(".combo").each(function () {
                         if ($(this).prop('checked') == false) {
                         } else {
@@ -501,12 +458,8 @@
                                 strIds += ",";
                             }
                             strIds += $(this).attr('tramite');
-//                    console.log("-->>" , $(this))
                         }
                     });
-
-//            console.log("--->" + trId)
-
                     if (strIds == '') {
                         log("No se ha seleccionado ningun trámite", 'error');
                     } else {
@@ -516,73 +469,33 @@
                             title   : 'Impresión de la guía de envio de trámites',
                             message : 'Desea imprimir la guía de envio para los trámites seleccionados?',
                             buttons : {
-                                no : {
+                                cancelar : {
+                                    label : 'Cancelar'
+                                },
+                                no       : {
                                     label    : 'No Imprimir',
                                     callback : function () {
-                                        doEnviar(false);
-                                        %{--$.ajax({--}%
-                                        %{--type    : "POST",--}%
-                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",--}%
-                                        %{--data    : {--}%
-                                        %{--ids    : strIds,--}%
-                                        %{--enviar : '1',--}%
-                                        %{--type   : 'download'--}%
-                                        %{--},--}%
-                                        %{--success : function (msg) {--}%
-                                        %{--closeLoader();--}%
-                                        %{--//                                                console.log(msg);--}%
-                                        %{--if (msg == 'ok') {--}%
-                                        %{--//                                            bootbox.alert("Trámites Enviados")--}%
-                                        %{--cargarBandeja(true);--}%
-                                        %{--log('Trámites Enviados', 'success');--}%
-                                        %{--} else {--}%
-                                        %{--log('Ocurrió un error al enviar los trámites seleccionados!', 'error');--}%
-                                        %{--}--}%
-                                        %{--}--}%
-                                        %{--});--}%
+                                        doEnviar(false, strIds);
                                     }
                                 },
-                                si : {
+                                si       : {
                                     label    : '<i class="fa fa-print"></i> Imprimir',
                                     callback : function () {
-                                        doEnviar(true);
-                                        %{--$.ajax({--}%
-                                        %{--type    : "POST",--}%
-                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",--}%
-                                        %{--data    : {--}%
-                                        %{--ids    : trId,--}%
-                                        %{--enviar : '1',--}%
-                                        %{--type   : 'download'--}%
-                                        %{--},--}%
-                                        %{--success : function (msg) {--}%
-                                        %{--closeLoader();--}%
-                                        %{--//                                                console.log(msg);--}%
-                                        %{--if (msg == 'ok') {--}%
-                                        %{--cargarBandeja(true);--}%
-                                        %{--log('Trámites Enviados', 'success');--}%
-                                        %{--openLoader();--}%
-                                        %{--location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';--}%
-                                        %{--closeLoader();--}%
-                                        %{--} else {--}%
-                                        %{--log('Ocurrió un error al enviar los trámites seleccionados!', 'error');--}%
-                                        %{--}--}%
-                                        %{--}--}%
-                                        %{--});--}%
+                                        doEnviar(true, strIds);
                                     }
                                 }
                             }
                         });
-
                     }
                     return false;
                 });
 
-                function doEnviar(imprimir) {
+                function doEnviar(imprimir, strIds) {
                     $.ajax({
                         type    : "POST",
                         url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
                         data    : {
-                            ids    : trId,
+                            ids    : strIds,
                             enviar : '1',
                             type   : 'download'
                         },

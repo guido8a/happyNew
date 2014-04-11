@@ -29,8 +29,13 @@
 
 
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
-                class="${esImprimir ? 'imprimir' : ''} ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}" estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
-                <td title="${tramite.asunto}">${tramite?.codigo}</td>
+                class="${esImprimir ? 'imprimir' : ''}
+                ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
+                ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' : ''}"
+                estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}">
+                <td title="${tramite.asunto}">
+                    ${tramite?.codigo}
+                </td>
                 <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
                 <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                 <g:set var="para" value="${tramite.getPara()}"/>
@@ -49,42 +54,12 @@
                         </span>
                     </g:if>
                 </td>
-                %{--<g:if test="${tramite?.estadoTramite?.id == 2}">--}%
                 <td id="${tramite?.id}" class="ck">
                     <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
                         <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/>
                     </g:if>
                 </td>
-                %{--</g:if>--}%
-                %{--<g:else>--}%
-                %{--<td id="${tramite.id}" class="ck"></td>--}%
-                %{--</g:else>--}%
             </tr>
         </g:each>
     </tbody>
 </table>
-
-%{--<script type="text/javascript">--}%
-
-%{--$(function () {--}%
-
-%{--var tbody = $("#tabla_salida");--}%
-%{--var trId = []--}%
-
-%{--tbody.children("tr").each(function () {--}%
-%{--console.log("entro" + $(this).attr("id"))--}%
-%{--console.log("entro2" + $(this).children("td").children().get(1))--}%
-%{--//                if(($(this).children("td").children().get(9).checked) == true){--}%
-%{--//                     trId += $(this).attr("id")--}%
-%{--//                }else{--}%
-%{--//                    console.log("afuera")--}%
-%{--//                }--}%
-
-
-
-%{--});--}%
-
-
-%{--})--}%
-
-%{--</script>--}%

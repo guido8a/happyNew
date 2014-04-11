@@ -183,9 +183,9 @@ class Tramite {
     def getNoRecibido() {
         def prtr = PersonaDocumentoTramite.findAllByTramiteAndFechaRecepcionIsNotNull(this)
         if (prtr.size() > 0) {
-            return true //al menos una persona y recibio
+            return false //al menos una persona y recibio
         } else {
-            return false //enviado pero nadie ha recibido aun
+            return true //enviado pero nadie ha recibido aun
         }
     }
 
