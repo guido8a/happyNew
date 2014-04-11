@@ -125,6 +125,37 @@ class Tramite2Controller extends happy.seguridad.Shield {
         return [persona: persona, tramites: tramites]
     }
 
+    def desenviar_ajax() {
+        def tramite = Tramite.get(params.id)
+        def porEnviar = EstadoTramite.findByCodigo("E001")
+
+        tramite.observaciones = (tramite.observaciones ?: '') + " Trámite desenviado por el usuario ${session.usuario.login} " +
+                "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
+        tramite.estadoTramite = porEnviar
+        tramite.fechaEnvio = null
+
+        if (tramite.save(flush: true)) {
+            def personas = PersonaDocumentoTramite.findAllByTramite(tramite)
+            def errores = ""
+            personas.each {
+                if (it.rolPersonaTramite.codigo != 'E004') {
+                    it.fechaEnvio = null
+                    if (!it.save(flush: true)) {
+                        errores += "<li>" + renderErrors(bean: it) + "</li>"
+                    }
+                } //no es el que envia
+            } //persona doc tramite . each
+            if (errores == "") {
+                render "OK_Trámite desenviado correctamente"
+            } else {
+                render "NO_Ha ocurrido un error al desenviar el trámite: " + errores
+            }
+        } else {
+            render "NO_Ha ocurrido un error al desenviar el trámite: " + renderErrors(bean: tramite)
+        }
+    }
+
     def bandejaSalida() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -288,7 +319,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def enviarVarios() {
 //        println "method "+request.getMethod()
-        println "PARAMS "+params
+        println "PARAMS " + params
         def usuario = Persona.get(session.usuario.id)
 
         if (request.getMethod() == "POST") {
@@ -312,21 +343,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
                     t.fechaEnvio = envio
-                    if(t.save(flush: true)){
-                        if(tramite.prioridad.codigo=="URG"){
+                    if (t.save(flush: true)) {
+                        if (tramite.prioridad.codigo == "URG") {
                             def alerta = new Alerta()
-                            alerta.mensaje="${session.departamento.codigo}:${session.usuario} te ha enviado un trámite urgente."
-                            if(t.persona){
-                                alerta.controlador="tramite"
+                            alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite urgente."
+                            if (t.persona) {
+                                alerta.controlador = "tramite"
                                 alerta.accion = "bandejaEntrada"
-                                alerta.persona=t.persona
-                            }else{
-                                alerta.departamento =  t.departamento
-                                alerta.accion="bandejaEntradaDpto"
-                                alerta.controlador="tramite3"
+                                alerta.persona = t.persona
+                            } else {
+                                alerta.departamento = t.departamento
+                                alerta.accion = "bandejaEntradaDpto"
+                                alerta.controlador = "tramite3"
                             }
-                            if(!alerta.save(flush: true)){
-                                println "error save alerta "+alerta.errors
+                            if (!alerta.save(flush: true)) {
+                                println "error save alerta " + alerta.errors
                             }
                         }
                     }

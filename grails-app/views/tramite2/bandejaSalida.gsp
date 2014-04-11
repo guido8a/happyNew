@@ -355,21 +355,21 @@
                                     label     : "<i class='fa fa-magic'></i> Desenviar",
                                     className : "btn-danger",
                                     callback  : function () {
-                                        openLoader("Eliminando");
-                                        %{--$.ajax({--}%
-                                        %{--type    : "POST",--}%
-                                        %{--url     : '${createLink(action:'delete_ajax')}',--}%
-                                        %{--data    : {--}%
-                                        %{--id : itemId--}%
-                                        %{--},--}%
-                                        %{--success : function (msg) {--}%
-                                        %{--var parts = msg.split("_");--}%
-                                        %{--log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)--}%
-                                        %{--if (parts[0] == "OK") {--}%
-                                        %{--location.reload(true);--}%
-                                        %{--}--}%
-                                        %{--}--}%
-                                        %{--});--}%
+                                        openLoader("Desenviando");
+                                        $.ajax({
+                                            type    : "POST",
+                                            url     : '${createLink(action:'desenviar_ajax')}',
+                                            data    : {
+                                                id : id
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                if (parts[0] == "OK") {
+                                                    location.reload(true);
+                                                }
+                                            }
+                                        });
                                     }
                                 }
                             }
