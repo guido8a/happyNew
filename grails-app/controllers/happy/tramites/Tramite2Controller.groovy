@@ -1,6 +1,7 @@
 package happy.tramites
 
 import groovy.time.TimeCategory
+import happy.alertas.Alerta
 import happy.seguridad.Persona
 import happy.utilitarios.DiaLaborable
 import org.w3c.dom.Document
@@ -287,7 +288,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def enviarVarios() {
 //        println "method "+request.getMethod()
-//        println "PARAMS "+params
+        println "PARAMS "+params
         def usuario = Persona.get(session.usuario.id)
 
         if (request.getMethod() == "POST") {
@@ -311,7 +312,24 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
                     t.fechaEnvio = envio
-                    t.save(flush: true)
+                    if(t.save(flush: true)){
+                        if(tramite.prioridad.codigo=="URG"){
+                            def alerta = new Alerta()
+                            alerta.mensaje="${session.departamento.codigo}:${session.usuario} te ha enviado un trámite urgente."
+                            if(t.persona){
+                                alerta.controlador="tramite"
+                                alerta.accion = "bandejaEntrada"
+                                alerta.persona=t.persona
+                            }else{
+                                alerta.departamento =  t.departamento
+                                alerta.accion="bandejaEntradaDpto"
+                                alerta.controlador="tramite3"
+                            }
+                            if(!alerta.save(flush: true)){
+                                println "error save alerta "+alerta.errors
+                            }
+                        }
+                    }
                 }
                 def pdt = new PersonaDocumentoTramite()
                 pdt.tramite = tramite
