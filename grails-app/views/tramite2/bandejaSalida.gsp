@@ -508,11 +508,8 @@
 //            console.log("--->" + trId)
 
                     if (strIds == '') {
-
                         log("No se ha seleccionado ningun trámite", 'error');
-
                     } else {
-
                         var id;
                         var b = bootbox.dialog({
                             id      : "dlgGuia",
@@ -522,152 +519,55 @@
                                 no : {
                                     label    : 'No Imprimir',
                                     callback : function () {
-
-                                        //original
-                                        %{--for(var i=0; i<trId.length;i++) {--}%
-                                        %{--id = trId[i]--}%
+                                        doEnviar(false);
                                         %{--$.ajax({--}%
                                         %{--type    : "POST",--}%
-                                        %{--async   : false,--}%
-                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
-                                        %{--//                                        data    : "id="+trId[i],--}%
-                                        %{--data: {--}%
-                                        %{--id: id,--}%
-                                        %{--enviar: '1',--}%
-                                        %{--type  : 'download'--}%
-
+                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",--}%
+                                        %{--data    : {--}%
+                                        %{--ids    : strIds,--}%
+                                        %{--enviar : '1',--}%
+                                        %{--type   : 'download'--}%
                                         %{--},--}%
                                         %{--success : function (msg) {--}%
-                                        %{--console.log(msg);--}%
                                         %{--closeLoader();--}%
-                                        %{--},--}%
-                                        %{--error: function(jqxhr, status, error) {--}%
-                                        %{--console.log("WTF",jqxhr, status, error);--}%
-
-                                        %{--},--}%
-                                        %{--complete: function() {--}%
-                                        %{--console.log("complete")--}%
+                                        %{--//                                                console.log(msg);--}%
+                                        %{--if (msg == 'ok') {--}%
+                                        %{--//                                            bootbox.alert("Trámites Enviados")--}%
+                                        %{--cargarBandeja(true);--}%
+                                        %{--log('Trámites Enviados', 'success');--}%
+                                        %{--} else {--}%
+                                        %{--log('Ocurrió un error al enviar los trámites seleccionados!', 'error');--}%
+                                        %{--}--}%
                                         %{--}--}%
                                         %{--});--}%
-
-                                        %{--$.ajax({--}%
-                                        %{--type : 'POST',--}%
-                                        %{--async: false,--}%
-                                        %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
-                                        %{--data : {--}%
-                                        %{--id: id,--}%
-                                        %{--enviar: '1',--}%
-                                        %{--type  : 'download'--}%
-                                        %{--},--}%
-                                        %{--success: function (msg) {--}%
-
-                                        %{--},--}%
-
-                                        %{--error: function(jqxhr, status, error) {--}%
-                                        %{--console.log("WTF",jqxhr, status, error);--}%
-
-                                        %{--}--}%
-                                        %{--});--}%
-                                        %{--}--}%
-
-                                        //modificado
-
-                                        $.ajax({
-                                            type    : "POST",
-                                            url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
-                                            data    : {
-                                                ids    : strIds,
-                                                enviar : '1',
-                                                type   : 'download'
-
-                                            },
-                                            success : function (msg) {
-                                                closeLoader();
-                                                console.log(msg);
-                                                if (msg == 'ok') {
-//                                            bootbox.alert("Trámites Enviados")
-                                                    cargarBandeja(true);
-                                                    log('Trámites Enviados', 'success')
-                                                } else {
-                                                    log('Ocurrio un error al enviar los trámites seleccionados!', 'error')
-                                                }
-                                            }
-                                        });
                                     }
                                 },
                                 si : {
                                     label    : '<i class="fa fa-print"></i> Imprimir',
                                     callback : function () {
-                                        %{--for(var i=0; i<trId.length;i++) {--}%
-                                        %{--id = trId[i]--}%
+                                        doEnviar(true);
                                         %{--$.ajax({--}%
                                         %{--type    : "POST",--}%
-                                        %{--async   : false,--}%
-                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviar')}",--}%
-                                        %{--//                                        data    : "id="+trId[i],--}%
-                                        %{--data: {--}%
-                                        %{--id: id,--}%
-                                        %{--enviar: '1',--}%
-                                        %{--type  : 'download'--}%
-
+                                        %{--url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",--}%
+                                        %{--data    : {--}%
+                                        %{--ids    : trId,--}%
+                                        %{--enviar : '1',--}%
+                                        %{--type   : 'download'--}%
                                         %{--},--}%
                                         %{--success : function (msg) {--}%
-                                        %{--console.log(msg);--}%
                                         %{--closeLoader();--}%
-                                        %{--},--}%
-                                        %{--error: function(jqxhr, status, error) {--}%
-                                        %{--console.log("WTF",jqxhr, status, error);--}%
-
-                                        %{--},--}%
-                                        %{--complete: function() {--}%
-                                        %{--console.log("complete")--}%
+                                        %{--//                                                console.log(msg);--}%
+                                        %{--if (msg == 'ok') {--}%
+                                        %{--cargarBandeja(true);--}%
+                                        %{--log('Trámites Enviados', 'success');--}%
+                                        %{--openLoader();--}%
+                                        %{--location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';--}%
+                                        %{--closeLoader();--}%
+                                        %{--} else {--}%
+                                        %{--log('Ocurrió un error al enviar los trámites seleccionados!', 'error');--}%
+                                        %{--}--}%
                                         %{--}--}%
                                         %{--});--}%
-
-                                        %{--$.ajax({--}%
-                                        %{--type : 'POST',--}%
-                                        %{--async: false,--}%
-                                        %{--url  : '${g.createLink(controller: 'tramiteExport',action: 'crearPdf')}',--}%
-                                        %{--data : {--}%
-                                        %{--id: id,--}%
-                                        %{--enviar: '1',--}%
-                                        %{--type  : 'download'--}%
-                                        %{--},--}%
-                                        %{--success: function (msg) {--}%
-
-                                        %{--},--}%
-
-                                        %{--error: function(jqxhr, status, error) {--}%
-                                        %{--console.log("WTF",jqxhr, status, error);--}%
-
-                                        %{--}--}%
-                                        %{--});--}%
-                                        %{--}--}%
-
-                                        $.ajax({
-                                            type    : "POST",
-                                            url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
-                                            data    : {
-                                                ids    : trId,
-                                                enviar : '1',
-                                                type   : 'download'
-
-                                            },
-                                            success : function (msg) {
-                                                closeLoader();
-                                                console.log(msg);
-                                                if (msg == 'ok') {
-                                                    cargarBandeja(true);
-                                                    log('Trámites Enviados', 'success');
-                                                    openLoader();
-                                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';
-                                                    closeLoader();
-
-                                                } else {
-                                                    log('Ocurrio un error al enviar los trámites seleccionados!', 'error')
-                                                }
-                                            }
-                                        });
                                     }
                                 }
                             }
@@ -677,29 +577,51 @@
                     return false;
                 });
 
+                function doEnviar(imprimir) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
+                        data    : {
+                            ids    : trId,
+                            enviar : '1',
+                            type   : 'download'
+                        },
+                        success : function (msg) {
+                            closeLoader();
+//                                                console.log(msg);
+                            if (msg == 'ok') {
+                                cargarBandeja(true);
+                                log('Trámites Enviados', 'success');
+                                if (imprimir) {
+                                    openLoader();
+                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    closeLoader();
+                                }
+                            } else {
+                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                            }
+                        }
+                    });
+                }
+
                 cargarBandeja(false);
 
                 setInterval(function () {
-                    openLoader()
+                    openLoader();
                     cargarBandeja(false);
-                    closeLoader()
-
+                    closeLoader();
                 }, 300000);
 
                 $(".btnBusqueda").click(function () {
-
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();
-
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-
                     $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
                         data      : datos,
                         success   : function (msg) {
                             $("#bandeja").html(msg);
                         }
-
                     });
                 });
             });

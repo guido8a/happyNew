@@ -49,12 +49,16 @@
                         </span>
                     </g:if>
                 </td>
-                <g:if test="${tramite?.estadoTramite?.id == 2}">
-                    <td id="${tramite?.id}" class="ck"><g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/></td>
-                </g:if>
-                <g:else>
-                    <td id="${tramite.id}" class="ck"></td>
-                </g:else>
+                %{--<g:if test="${tramite?.estadoTramite?.id == 2}">--}%
+                <td id="${tramite?.id}" class="ck">
+                    <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
+                        <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/>
+                    </g:if>
+                </td>
+                %{--</g:if>--}%
+                %{--<g:else>--}%
+                %{--<td id="${tramite.id}" class="ck"></td>--}%
+                %{--</g:else>--}%
             </tr>
         </g:each>
     </tbody>
