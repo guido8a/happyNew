@@ -1,5 +1,7 @@
 package happy.tramites
 
+import happy.seguridad.Persona
+
 class Departamento {
     TipoDepartamento tipoDepartamento
     Departamento padre
@@ -43,5 +45,18 @@ class Departamento {
 
     String toString() {
         return "${this.descripcion}"
+    }
+
+    def getTriangulos() {
+        def triangulos = []
+        Persona.findAllByDepartamento(this).each { pr ->
+            def prm = PermisoUsuario.findAllByPersonaAndPermisoTramite(pr, PermisoTramite.findByCodigo("E001")).findAll {
+                it.estaActivo
+            }
+            if (prm.size() > 0) {
+                triangulos.add(pr)
+            }
+        }
+        return triangulos
     }
 }

@@ -388,7 +388,7 @@
                         codigo = $tr.attr("codigo");
                         estado = $tr.attr("estado");
                         de = $tr.attr("de");
-                        archivo = $tr.attr("codigo");
+                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                     }
                 });
                 <g:if test="${!bloqueo}">

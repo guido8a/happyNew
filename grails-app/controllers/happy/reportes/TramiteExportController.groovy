@@ -36,152 +36,18 @@ class TramiteExportController {
 
 //    def reportesPdfService
 
+    def enviarService
+
     def crearPdf() {
         println "crear pdf"
         println params
 
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
-
-        if (params.editorTramite) {
-            tramite.texto = params.editorTramite
-            tramite.asunto = params.asunto
-            tramite.fechaModificacion = new Date()
-            if (tramite.save(flush: true)) {
-                def para = tramite.para
-                if(params.para) {
-                    if (params.para.toLong() > 0) {
-                        para.persona = Persona.get(params.para.toLong())
-                    } else {
-                        para.departamento = Departamento.get(params.para.toLong() * -1)
-                    }
-                    if (para.save(flush: true)) {
-//                println "OK_Trámite guardado exitosamente"
-                    } else {
-                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
-                    }
-                }
-            } else {
-                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
-            }
-        }
-
-        tramite.refresh()
-
         def realPath = servletContext.getRealPath("/")
-        def pathImages = realPath + "images/"
-        def path = pathImages + "redactar/" + usuario.id + "/"
+        def mensaje = message(code: 'pathImages').toString()
 
-        new File(path).mkdirs()
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ITextRenderer renderer = new ITextRenderer();
-        FontResolver resolver = renderer.getFontResolver();
-
-        renderer.getFontResolver().addFont(realPath + "fontsPdf/comic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Bold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-BoldItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBoldItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Italic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Light.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-LightItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Regular.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Semibold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
-
-        def text = tramite.texto
-//        text = util.clean(str: text)
-        text=text.decodeHTML()
-
-//        println "html:" + tramite.texto.decodeHTML()
-//        println "\n\n" + text
-
-        text = text.replaceAll(~"\\?\\_debugResources=y\\&n=[0-9]*", "")
-        text = text.replaceAll(message(code: 'pathImages'), pathImages)
-
-        def content = "<!DOCTYPE HTML>\n<html>\n"
-        content += "<head>\n"
-        content += "<link href=\"${realPath + 'font/open/stylesheet.css'}\" rel=\"stylesheet\"/>"
-        content += "<style language='text/css'>\n"
-        content += "  @page {\n" +
-                "            size   : 21cm 29.7cm;  /*width height */\n" +
-                "            margin : 4.5cm 2.5cm 2.5cm 3cm;\n" +
-                "        }\n" +
-                ".hoja {\n" +
-//                "            background  : #123456;\n" +
-//                "            width       : 15.5cm; /*21-2.5-3*/\n" +
-                "            font-family : arial;\n" +
-                "            font-size   : 12pt;\n" +
-                "        }\n" +
-                ".titulo-horizontal {\n" +
-                "    padding-bottom : 15px;\n" +
-                "    border-bottom  : 1px solid #000000;\n" +
-                "    text-align     : center;\n" +
-                "    width          : 105%;\n" +
-                "}\n" +
-                ".titulo-azul {\n" +
-//                "    color       : #0088CC;\n" +
-//                "    border      : 0px solid red;\n" +
-                "    white-space : nowrap;\n" +
-                "    display     : block;\n" +
-                "    width       : 98%;\n" +
-                "    height      : 30px;\n" +
-                "    font-family : 'open sans condensed';\n" +
-                "    font-weight : bold;\n" +
-                "    font-size   : 25px;\n" +
-                "    margin-top  : 10px;\n" +
-                "    line-height : 20px;\n" +
-                "}\n" +
-                ".tramiteHeader {\n" +
-                "   width        : 100%;\n" +
-                "   border-bottom: solid 1px black;\n" +
-                "}\n" +
-                "p{\n" +
-                "   text-align: justify;\n" +
-                "}\n"
-        content += "</style>\n"
-        content += "</head>\n"
-        content += "<body>\n"
-        content += "<div class='hoja'>\n"
-        content += elm.headerTramite(tramite: tramite, pdf: true)
-        content += text
-        content += "</div>\n"
-        content += "</body>\n"
-        content += "</html>"
-
-        def file = new File(path + tramite.tipoDocumento.descripcion + "_" + tramite.codigo + "_source_" + (new Date().format("yyyyMMdd_HH:mm:ss")) + ".html")
-        file.write(content)
-
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = builder.parse(file);
-        renderer.setDocument(doc, null);
-        renderer.layout();
-        renderer.createPDF(baos);
-        byte[] b = baos.toByteArray();
-
-        file.delete()
-
-        if (params.enviar == "1") {
-            def pathPdf = realPath + "tramites/"
-            new File(pathPdf).mkdirs()
-            def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
-            OutputStream os = new FileOutputStream(fileSave);
-            renderer.layout();
-            renderer.createPDF(os);
-            os.close();
-        }
-
-        if (params.type == "download") {
-            println("entro!!!!!")
-            render "OK*" + tramite.codigo + ".pdf"
-            return
-        } else {
-            response.setContentType("application/pdf")
-            response.setHeader("Content-disposition", "attachment; filename=" + (params.filename ?: tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
-            response.setContentLength(b.length)
-            response.getOutputStream().write(b)
-        }
+        render enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), params.editorTramite.toString(), params.asunto, realPath.toString(), mensaje)
     }
 
     def verPdf() {
@@ -322,7 +188,7 @@ class TramiteExportController {
 //        response.getOutputStream().write(b)
 //    }
 
-    def imprimirGuia () {
+    def imprimirGuia() {
 
 //        println("params:" + params)
 
@@ -339,11 +205,11 @@ class TramiteExportController {
         Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         def prmsHeaderHoja = [border: Color.WHITE]
-        def prmsHeaderHoja1 = [border: Color.WHITE,  bordeTop: "1", bordeBot: "1"]
+        def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
-        def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
-                times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
+        def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
+                     times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
 
         com.lowagie.text.Document document
         document = new com.lowagie.text.Document(PageSize.A4);
@@ -382,7 +248,7 @@ class TramiteExportController {
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
-        cantidadTramites.split(',').each{
+        cantidadTramites.split(',').each {
 //            println(it)
             addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
@@ -457,7 +323,6 @@ class TramiteExportController {
         }
         table.addCell(cell);
     }
-
 
 
 }

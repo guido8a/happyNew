@@ -21,13 +21,26 @@
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
                 ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' : ''}"
+                codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                 estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
                 <td title="${tramite.asunto}">${tramite?.codigo}</td>
                 <td title="${tramite.deTexto.codigo}">${tramite.deTexto.codigo}</td>
                 <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                 <g:set var="para" value="${tramite.getPara()}"/>
                 <td>${para?.departamento?.codigo}</td>
-                <td>${para?.persona}</td>
+                <td>
+                    <g:if test="${tramite.origenTramite}">
+                        ${tramite.origenTramite?.nombre}
+                    </g:if>
+                    <g:else>
+                        <g:if test="${para.persona}">
+                            ${para?.persona}
+                        </g:if>
+                        <g:else>
+                            ${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}
+                        </g:else>
+                    </g:else>
+                </td>
                 <td>${tramite?.prioridad.descripcion}</td>
                 <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                 <td>${limite ? limite.format("dd-MM-yyyy HH:mm") : ''}</td>

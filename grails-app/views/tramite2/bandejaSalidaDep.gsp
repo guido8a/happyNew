@@ -239,7 +239,7 @@
                         codigo = $tr.attr("codigo");
                         estado = $tr.attr("estado");
                         de = $tr.attr("de");
-                        archivo = $tr.attr("codigo");
+                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                     }
                 });
                 <g:if test="${!bloqueo}">
@@ -251,15 +251,6 @@
                         $("tr.trHighlight").removeClass("trHighlight");
                         %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
                         window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-                    }
-                };
-
-                var seguimiento = {
-                    text   : 'Seguimiento',
-                    icon   : "<i class='fa fa-code-fork'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        location.href = "${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/" + id
                     }
                 };
                 var editar = {

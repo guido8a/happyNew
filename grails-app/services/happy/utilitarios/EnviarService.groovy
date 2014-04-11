@@ -40,7 +40,7 @@ import happy.ElementosTagLib
 
 class EnviarService {
 
-     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje) {
+    def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje) {
         println "crear pdf"
 
         if (editorTramite) {
@@ -49,7 +49,7 @@ class EnviarService {
             tramite.fechaModificacion = new Date()
             if (tramite.save(flush: true)) {
                 def para = tramite.para
-                if(tramite.getPara().persona.id) {
+                if (tramite.getPara().persona.id) {
                     if (tramite.getPara().persona.id.toLong() > 0) {
                         para.persona = Persona.get(tramite.getPara().persona.id.toLong())
                     } else {
@@ -95,7 +95,7 @@ class EnviarService {
 
         def text = tramite.texto
 //        text = util.clean(str: text)
-        text=text.decodeHTML()
+        text = text.decodeHTML()
 
 //        println "html:" + tramite.texto.decodeHTML()
 //        println "\n\n" + text
@@ -167,9 +167,14 @@ class EnviarService {
 
         file.delete()
 
+        def dpto = ""
         if (enviar == "1") {
 //            println("entro enviar")
             def pathPdf = realPath + "tramites/"
+            if (tramite.de.departamento && tramite.de.departamento.codigo && tramite.de.departamento.codigo != "") {
+                dpto = tramite.de.departamento.codigo
+                pathPdf += dpto + "/"
+            }
             new File(pathPdf).mkdirs()
             def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
 //            println("filesave" + fileSave)
@@ -182,16 +187,15 @@ class EnviarService {
         if (type == "download") {
             println("entro!!!!!")
 //            render "OK*" + tramite.codigo + ".pdf"
-            return "ok"
+            return "OK*" + dpto + "/" + tramite.codigo + ".pdf"
         } else {
 //            response.setContentType("application/pdf")
 //            response.setHeader("Content-disposition", "attachment; filename=" + (tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
 //            response.setContentLength(b.length)
 //            response.getOutputStream().write(b)
-            return "no"
+            return "NO"
         }
     }
-
 
 
 }

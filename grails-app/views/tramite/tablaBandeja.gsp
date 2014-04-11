@@ -17,7 +17,8 @@
     <tbody>
     <g:each in="${tramites}" var="tramite">
         <g:set var="now" value="${new java.util.Date()}"/>
-        <tr data-id="${tramite?.tramite?.id}" class=" ${(tramite.fechaRecepcion)?((tramite.tramite.fechaMaximoRespuesta<now)?'retrasado':'E004'):((tramite.tramite.fechaLimite<now)?'pendiente':'E003')}  " codigo="${tramite.tramite.codigo}">
+        <tr data-id="${tramite?.tramite?.id}" class=" ${(tramite.fechaRecepcion)?((tramite.tramite.fechaMaximoRespuesta<now)?'retrasado':'E004'):((tramite.tramite.fechaLimite<now)?'pendiente':'E003')}  "
+            codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
             <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
             <td>${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
