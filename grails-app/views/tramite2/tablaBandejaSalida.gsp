@@ -27,7 +27,6 @@
                 <g:set var="esImprimir" value="${true}"/>
             </g:if>
 
-
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
                 ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
@@ -54,7 +53,7 @@
                         </span>
                     </g:if>
                 </td>
-                <td id="${tramite?.id}" class="ck">
+                <td id="${tramite?.id}" class="ck text-center">
                     <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
                         <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/>
                     </g:if>

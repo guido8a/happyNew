@@ -115,7 +115,55 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     }
 
+    def bandejaSalidaDep_old() {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        def triangulo = PermisoTramite.findByCodigo("E001")
+//        if(session.departamento.estado=="B")
+//            bloqueo=true
+//        println "bloqueo "+bloqueo
+        def tienePermiso = PermisoUsuario.withCriteria {
+            eq("persona", persona)
+            eq("permisoTramite", triangulo)
+            le("fechaInicio", new Date())
+            or {
+                ge("fechaFin", new Date())
+                isNull("fechaFin")
+            }
+        }
+        println "tiene " + tienePermiso + " jefe " + persona.jefe
+        if (tienePermiso.size() == 0 && persona.jefe != 1) {
+            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
+            flash.tipo = "error"
+
+            redirect(controller: "tramite2", action: "bandejaSalida")
+            return
+        }
+        if (persona.jefe == 1)
+            revisar = true
+        else {
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(persona, PermisoTramite.findByCodigo("P005"))
+            if (per)
+                revisar = true
+        }
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo]
+
+    }
+
     def tablaBandejaSalidaDep() {
+//        println "carga bandeja"
+        def persona = Persona.get(session.usuario.id)
+        def tramites = []
+        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
+        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+
+        return [persona: persona, tramites: tramites]
+    }
+
+    def tablaBandejaSalidaDep_old() {
 //        println "carga bandeja"
         def persona = Persona.get(session.usuario.id)
         def tramites = []

@@ -213,7 +213,7 @@
                         cargarAlertas();
                         if (band) {
 //                    bootbox.alert("Datos actualizados")
-                            log('Datos actualizados', 'success')
+                            log('Datos actualizados', 'success');
                         }
                     }
                 });
@@ -245,16 +245,16 @@
             $(function () {
 
                 <g:if test="${bloqueo}">
-                $("#bloqueo-salida").show()
+                $("#bloqueo-salida").show();
                 </g:if>
 
                 $(".alertas").click(function () {
 
-                    var clase = $(this).attr("clase")
+                    var clase = $(this).attr("clase");
                     $("tr").each(function () {
                         if ($(this).hasClass(clase)) {
                             if ($(this).hasClass("trHighlight"))
-                                $(this).removeClass("trHighlight")
+                                $(this).removeClass("trHighlight");
                             else
                                 $(this).addClass("trHighlight")
                         } else {
@@ -385,10 +385,10 @@
                         var $tr = $(e.target).parent();
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
-                        codigo = $tr.attr("codigo")
+                        codigo = $tr.attr("codigo");
                         estado = $tr.attr("estado");
                         de = $tr.attr("de");
-                        archivo = $tr.attr("codigo")
+                        archivo = $tr.attr("codigo");
                     }
                 });
                 <g:if test="${!bloqueo}">
@@ -444,7 +444,6 @@
                     cargarBandeja(true);
                     closeLoader();
                     return false;
-
                 });
 
                 $(".btnEnviar").click(function () {
@@ -529,10 +528,12 @@
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
-                        data      : datos,
-                        success   : function (msg) {
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
+                        data    : datos,
+                        success : function (msg) {
                             $("#bandeja").html(msg);
                         }
                     });
