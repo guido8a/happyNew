@@ -20,18 +20,19 @@ class DbConnectionService {
         Sql sql = new Sql(dataSource)
         return sql
     }
-    def getConnectionOferentes(){
-        Sql sql = new Sql(dataSource_oferentes)
-        return sql
-    }
 
     def ejecutarProcedure(nombre, parametros,condiciones) {
-
         def sql = " select " + nombre + "(" + parametros + ")"+condiciones
 //        println "ejecutar Procedure " + sql
         def template = new JdbcTemplate(dataSource)
         def result = template.queryForMap(sql)
 //        println "result " + result
+        return result
+    }
+
+    def ejecutar (sql) {
+        def template = new JdbcTemplate(dataSource)
+        def result = template.queryForMap(sql)
         return result
     }
 
