@@ -236,7 +236,7 @@
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
                         codigo = $tr.data("codigo");
-                        archivo = $tr.attr("departamento")+"/"+$tr.attr("codigo")
+                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                     }
                 });
 
@@ -290,28 +290,29 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        var b = bootbox.dialog({
-                            id      : "dlgContestar",
-                            title   : "Contestar trámite",
-                            message : "¿Está seguro de querer contestar el trámite <b>" + codigo + "</b>?",
-                            buttons : {
-                                cancelar : {
-                                    label     : '<i class="fa fa-times"></i> Cancelar',
-                                    className : 'btn-danger',
-                                    callback  : function () {
-                                    }
-                                },
-                                recibir  : {
-                                    id        : 'btnEnviar',
-                                    label     : '<i class="fa fa-thumbs-o-up"></i> Contestar',
-                                    className : 'btn-success',
-                                    callback  : function () {
-                                        openLoader();
-                                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
-                                    }
-                                }
-                            }
-                        })
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
+                        %{--var b = bootbox.dialog({--}%
+                        %{--id      : "dlgContestar",--}%
+                        %{--title   : "Contestar trámite",--}%
+                        %{--message : "¿Está seguro de querer contestar el trámite <b>" + codigo + "</b>?",--}%
+                        %{--buttons : {--}%
+                        %{--cancelar : {--}%
+                        %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                        %{--className : 'btn-danger',--}%
+                        %{--callback  : function () {--}%
+                        %{--}--}%
+                        %{--},--}%
+                        %{--recibir  : {--}%
+                        %{--id        : 'btnEnviar',--}%
+                        %{--label     : '<i class="fa fa-thumbs-o-up"></i> Contestar',--}%
+                        %{--className : 'btn-success',--}%
+                        %{--callback  : function () {--}%
+                        %{--openLoader();--}%
+                        %{--location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;--}%
+                        %{--}--}%
+                        %{--}--}%
+                        %{--}--}%
+                        %{--})--}%
                     }
                 };
                 var archivar = {

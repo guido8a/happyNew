@@ -190,7 +190,7 @@ class TramiteExportController {
 
     def imprimirGuia() {
 
-//        println("params:" + params)
+        println("imprimir guia:" + params)
 
         def cantidadTramites = params.ids
 

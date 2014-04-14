@@ -49,7 +49,7 @@ class EnviarService {
             tramite.fechaModificacion = new Date()
             if (tramite.save(flush: true)) {
                 def para = tramite.para
-                if (tramite.getPara().persona.id) {
+                if (tramite.getPara().persona?.id) {
                     if (tramite.getPara().persona.id.toLong() > 0) {
                         para.persona = Persona.get(tramite.getPara().persona.id.toLong())
                     } else {

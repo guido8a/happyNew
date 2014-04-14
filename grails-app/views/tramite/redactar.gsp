@@ -213,6 +213,7 @@
                         type          : "download",
                         enviar        : 1
                     };
+                    openLoader("Generando PDF");
                     $.ajax({
                         type    : "POST",
                         url     : url,
@@ -220,6 +221,7 @@
                         success : function (msg) {
                             var parts = msg.split("*");
                             if (parts[0] == "OK") {
+                                closeLoader();
                                 window.open("${resource(dir:'tramites')}/" + parts[1]);
                             }
                         }

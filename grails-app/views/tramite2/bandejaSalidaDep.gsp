@@ -418,7 +418,7 @@
                                 log('Trámites Enviados', 'success');
                                 if (imprimir) {
                                     openLoader();
-                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
                                     closeLoader();
                                 }
                             } else {

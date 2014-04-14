@@ -203,3 +203,8 @@ input.help-block, select.help-block, textarea.help-block {
 a.text-info:hover {
     color : #dedede;
 }
+
+input[type='checkbox'] {
+    width  : auto !important;
+    height : auto !important;
+}

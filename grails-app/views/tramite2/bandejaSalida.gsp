@@ -471,8 +471,8 @@
                         var id;
                         var b = bootbox.dialog({
                             id      : "dlgGuia",
-                            title   : 'Impresión de la guía de envio de trámites',
-                            message : 'Desea imprimir la guía de envio para los trámites seleccionados?',
+                            title   : 'Impresión de la guía de envío de trámites',
+                            message : 'Desea imprimir la guía de envío para los trámites seleccionados?',
                             buttons : {
                                 cancelar : {
                                     label : 'Cancelar'
@@ -512,7 +512,7 @@
                                 log('Trámites Enviados', 'success');
                                 if (imprimir) {
                                     openLoader();
-                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + trId + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
                                     closeLoader();
                                 }
                             } else {
