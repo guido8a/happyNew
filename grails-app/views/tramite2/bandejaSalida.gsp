@@ -143,7 +143,7 @@
             <div id="alertaNoRecibidos">
                 <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
                     (<span id="numNoRec"></span>)
-                No recibidos
+                Sin Recepción
                 </div>
             </div>
         </div>
@@ -399,6 +399,12 @@
                     ver,
                     editar,
                     imprimir
+                ]);
+                context.attach(".E002", [
+                    {
+                        header : 'Sin Acciones'
+                    }
+
                 ]);
                 context.attach(".E003", [
                     {
