@@ -44,12 +44,14 @@
                         ${tramite.origenTramite?.nombre}
                     </g:if>
                     <g:else>
-                        <g:if test="${para.persona}">
-                            ${para?.persona}
+                        <g:if test="${para}">
+                            <g:if test="${para.persona}">
+                                ${para?.persona}
+                            </g:if>
+                            <g:else>
+                                ${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}
+                            </g:else>
                         </g:if>
-                        <g:else>
-                            ${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}
-                        </g:else>
                     </g:else>
                 </td>
                 <td>${tramite?.prioridad.descripcion}</td>
