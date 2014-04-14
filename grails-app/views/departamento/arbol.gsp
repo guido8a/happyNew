@@ -337,6 +337,8 @@
                     clase = "danger";
                     icon = "${iconDesactivar}";
                     textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
+                    textBtn = "Desactivar";
+                    textLoader = "Desactivando";
                     if (tramites > 0) {
 //                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
 //                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
@@ -385,7 +387,11 @@
                             }
                         });
                     } else {
-                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>"
+                        textBtn = "Desactivar";
+                        textLoader = "Desactivando";
+
+                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>";
+
                         bootbox.dialog({
                             title   : "Alerta",
                             message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
@@ -420,8 +426,6 @@
                             }
                         });
                     }
-                    textBtn = "Desactivar";
-                    textLoader = "Desactivando";
                     url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
                 }
             } //cambiar estado row persona
