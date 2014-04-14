@@ -2,6 +2,7 @@ package happy.alertas
 
 import happy.seguridad.Persona
 import happy.tramites.Departamento
+import happy.tramites.Tramite
 
 class Alerta {
 
@@ -13,6 +14,7 @@ class Alerta {
     String controlador
     Date fechaCreacion =  new Date()
     Date fechaRecibido
+    Tramite tramite
 
     static mapping = {
         table 'alrt'
@@ -29,6 +31,7 @@ class Alerta {
             controlador column: 'altrcntl'
             fechaCreacion column: 'altrfccr'
             fechaRecibido column: 'altrfcrc'
+            tramite column: 'trmt__id'
         }
     }
 
@@ -41,7 +44,7 @@ class Alerta {
         controlador(size: 1..30,nullable: true,blank: true)
         fechaRecibido(nullable: true,blank:true)
         fechaCreacion(nullable: false,blank:false)
-
+        tramite(nullable: true,blank:true)
 
     }
 

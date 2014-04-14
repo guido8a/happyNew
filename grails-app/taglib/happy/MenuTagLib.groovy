@@ -1,5 +1,7 @@
 package happy
 
+import happy.alertas.Alerta
+
 class MenuTagLib {
     static namespace = "mn"
 
@@ -54,7 +56,11 @@ class MenuTagLib {
             strItems += '</ul>'
             strItems += '</li>'
         }
-
+        def alertas ="("
+        def count=Alerta.countByPersonaAndFechaRecibidoIsNull(usuario)
+//        println "count "+count
+        alertas += count
+        alertas+=")"
         def html = ""
         html += '<nav class="navbar navbar-fixed-top navbar-inverse hidden-print ">'
         html += '<div class="container" style="min-width: 1000px !important;">'
@@ -76,7 +82,7 @@ class MenuTagLib {
 
         html += '<p  class="navbar-text navbar-right" id="countdown">20</p>'
         html += '<ul class="nav navbar-nav navbar-right">'
-        html += '<li><a href="' + g.createLink(controller: 'alertas', action: 'list') + '"><i class="fa fa-exclamation-triangle"></i> Alertas</a></li>'
+        html += '<li><a href="' + g.createLink(controller: 'alertas', action: 'list') + '" '+((count>0)?' style="color:#FFAB19" class="annoying"':"")+'><i class="fa fa-exclamation-triangle"></i> Alertas '+alertas+'</a></li>'
 
 //        html += '<li><a href="' + g.createLink(controller: 'login', action: 'logout') + '"><i class="fa fa-power-off"></i> Salir</a></li>'
 

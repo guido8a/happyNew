@@ -553,9 +553,6 @@
                                                         url     : '${createLink(action: 'guardarRecibir')}/' + id,
                                                         success : function (msg) {
                                                             openLoader();
-                                                            cargarAlertaRecibidos();
-                                                            cargarAlertaPendientes();
-                                                            cargarAlertaRetrasados();
                                                             cargarBandeja();
                                                             closeLoader();
                                                             bootbox.alert(msg)

@@ -188,6 +188,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def errores = ""
             personas.each {
                 if (it.rolPersonaTramite.codigo != 'E004') {
+                    def alerta
+                    if(it.persona)
+                        alerta = Alerta.findByPersonaAndTramite(it.persona,it.tramite)
+                    else
+                        alerta = Alerta.findByDepartamentoAndTramite(it.departamento,it.tramite)
+                    if(alerta){
+                        alerta.mensaje+=" - Tramite cambiado de estado"
+                        alerta.fechaRecibido=new Date()
+                        alerta.save(flush: true)
+                    }
                     it.fechaEnvio = null
                     if (!it.save(flush: true)) {
                         errores += "<li>" + renderErrors(bean: it) + "</li>"
@@ -417,6 +427,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 alerta.accion = "bandejaEntradaDpto"
                                 alerta.controlador = "tramite3"
                             }
+                            alerta.datos=t.id
+                            alerta.tramite=t.tramite
                             if (!alerta.save(flush: true)) {
                                 println "error save alerta " + alerta.errors
                             }

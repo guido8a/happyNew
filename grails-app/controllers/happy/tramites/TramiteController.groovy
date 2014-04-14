@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.json.JsonBuilder
 import groovy.time.TimeCategory
+import happy.alertas.Alerta
 import happy.seguridad.Persona
 import happy.utilitarios.DiaLaborable
 import happy.utilitarios.DiaLaborableController
@@ -784,6 +785,18 @@ class TramiteController extends happy.seguridad.Shield {
 
         tramite.save(flush: true)
         pxt.save(flush: true)
+        def alerta
+        if(pxt.persona)
+            alerta = Alerta.findByPersonaAndTramite(pxt.persona,pxt.tramite)
+        else
+            alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento,pxt.tramite)
+        if(alerta){
+            if(!alerta.fechaRecibido){
+                alerta.mensaje+=" - Recibido"
+                alerta.fechaRecibido=new Date()
+                alerta.save(flush: true)
+            }
+        }
 
         if (!tramite.save(flush: true)) {
             render "Ocurrió un error al recibir"
