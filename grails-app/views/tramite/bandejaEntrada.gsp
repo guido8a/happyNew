@@ -489,6 +489,7 @@
                         archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                     }
                 });
+
                 <g:if test="${!bloqueo}">
                 context.attach('.pendiente', [
                     {
@@ -570,6 +571,7 @@
                     }
                 ]);
                 </g:if>
+
                 <g:if test="${!bloqueo}">
                 context.attach('.retrasado', [
                     {

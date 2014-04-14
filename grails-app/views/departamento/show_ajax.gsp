@@ -6,32 +6,6 @@
 </g:if>
 <g:else>
 
-    <g:if test="${departamentoInstance?.tipoDepartamento}">
-        <div class="row">
-            <div class="col-md-3 text-info">
-                Tipo Departamento
-            </div>
-
-            <div class="col-md-9">
-                ${departamentoInstance?.tipoDepartamento?.descripcion}
-            </div>
-
-        </div>
-    </g:if>
-
-    <g:if test="${departamentoInstance?.padre}">
-        <div class="row">
-            <div class="col-md-3 text-info">
-                Padre
-            </div>
-
-            <div class="col-md-9">
-                ${departamentoInstance?.padre?.encodeAsHTML()}
-            </div>
-
-        </div>
-    </g:if>
-
     <g:if test="${departamentoInstance?.codigo}">
         <div class="row">
             <div class="col-md-3 text-info">
@@ -57,6 +31,35 @@
 
         </div>
     </g:if>
+
+%{--
+    <g:if test="${departamentoInstance?.tipoDepartamento}">
+        <div class="row">
+            <div class="col-md-3 text-info">
+                Tipo Departamento
+            </div>
+
+            <div class="col-md-9">
+                ${departamentoInstance?.tipoDepartamento?.descripcion}
+            </div>
+
+        </div>
+    </g:if>
+--}%
+
+    <g:if test="${departamentoInstance?.padre}">
+        <div class="row">
+            <div class="col-md-3 text-info">
+                Dirección/Secretaría:
+            </div>
+
+            <div class="col-md-9">
+                ${departamentoInstance?.padre?.encodeAsHTML()}
+            </div>
+
+        </div>
+    </g:if>
+
 
     <g:if test="${departamentoInstance?.telefono}">
         <div class="row">

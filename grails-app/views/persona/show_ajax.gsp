@@ -26,18 +26,21 @@
 
                 </div>
             </g:if>
-            <g:if test="${personaInstance?.titulo}">
+
+            <g:if test="${personaInstance?.login}">
                 <div class="row">
                     <div class="col-md-${width} text-info">
-                        Título
+                        Usuario
                     </div>
 
                     <div class="col-md-7">
-                        <g:fieldValue bean="${personaInstance}" field="titulo"/>
+                        <g:fieldValue bean="${personaInstance}" field="login"/>
                     </div>
 
                 </div>
             </g:if>
+
+
 
             <g:if test="${personaInstance?.nombre}">
                 <div class="row">
@@ -91,20 +94,9 @@
                 </div>
             </g:if>
 
-            <g:if test="${personaInstance?.login}">
-                <div class="row">
-                    <div class="col-md-${width} text-info">
-                        Usuario
-                    </div>
-
-                    <div class="col-md-7">
-                        <g:fieldValue bean="${personaInstance}" field="login"/>
-                    </div>
-
-                </div>
-            </g:if>
 
         %{--<g:if test="${personaInstance?.jefe}">--}%
+%{--
             <div class="row">
                 <div class="col-md-${width} text-info">
                     Autoridad
@@ -115,9 +107,11 @@
                 </div>
 
             </div>
+--}%
             %{--</g:if>--}%
 
             %{--<g:if test="${personaInstance?.activo}">--}%
+%{--
             <div class="row">
                 <div class="col-md-${width} text-info">
                     Activo
@@ -128,7 +122,22 @@
                 </div>
 
             </div>
+--}%
             %{--</g:if>--}%
+
+            <g:if test="${personaInstance?.titulo}">
+                <div class="row">
+                    <div class="col-md-${width} text-info">
+                        Título
+                    </div>
+
+                    <div class="col-md-7">
+                        <g:fieldValue bean="${personaInstance}" field="titulo"/>
+                    </div>
+
+                </div>
+            </g:if>
+
         </div>
     </div>
 
