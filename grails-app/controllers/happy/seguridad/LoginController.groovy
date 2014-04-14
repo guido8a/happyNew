@@ -1,5 +1,6 @@
 package happy.seguridad
 
+import happy.alertas.Alerta
 import happy.tramites.Tramite
 import org.apache.directory.groovyldap.LDAP
 import org.apache.directory.groovyldap.SearchScope
@@ -162,11 +163,12 @@ class LoginController {
                     session.perfil = perfiles.first().perfil
                     def cn = "inicio"
                     def an = "index"
-//                    if (session.cn && session.an) {
-//                        cn = session.cn
-//                        an = session.an
-//                    }
-                    redirect(controller: cn, action: an)
+                    def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+                    if(count>0)
+                        redirect(controller: 'alertas',action: 'list')
+                    else
+                        redirect(controller: "inicio", action: "index")
+//                    redirect(controller: cn, action: an)
                     return
                 } else {
                     redirect(action: "perfiles")
@@ -195,6 +197,10 @@ class LoginController {
 //                    redirect(controller: session.cn, action: session.an, params: session.pr)
 //                }
 //            } else {
+            def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+            if(count>0)
+                redirect(controller: 'alertas',action: 'list')
+            else
                 redirect(controller: "inicio", action: "index")
 //            }
         } else {
