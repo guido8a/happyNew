@@ -420,7 +420,7 @@
                     detalles,
                     ver,
                     {
-                        text   : 'Enviar a jefe',
+                        text   : 'Añadir observaciones al trámite',
                         icon   : "<i class='fa fa-eye'></i>",
                         action : function (e) {
                             $("tr.trHighlight").removeClass("trHighlight");
