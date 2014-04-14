@@ -19,7 +19,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 
 //        def tramite1 = Tramite.get(50)
 
-//        println("params" + params)
+        println("params" + params)
 
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 00:00:00")
@@ -39,13 +39,13 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                 lt('fechaEnvio', params.fechaFin)
             }
 
-            if(params.fechaRecepcion){
-                gt('fechaRecepcion', params.fechaIniR)
-                lt('fechaRecepcion', params.fechaFinR)
-
-
-
-            }
+//            if(params.fechaRecepcion){
+//                gt('fechaRecepcion', params.fechaIniR)
+//                lt('fechaRecepcion', params.fechaFinR)
+//
+//
+//
+//            }
 
             tramite {
                 if (params.asunto) {
@@ -54,19 +54,34 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
+                if(params.fechaRecepcion){
+                    gt('fechaCreacion', params.fechaIniR)
+                    lt('fechaCreacion', params.fechaFinR)
+                }
+
             }
         }
 
-        def idTramite
+        def filtro = []
+        def unicos = []
+        def tramitesFiltrados = []
 
         res.each {
-            idTramite = it.tramite
+            filtro += it.tramite
         }
 
+        filtro.unique().each {
+//            unicos += it
+            tramitesFiltrados += resTramites(it);
+        }
 
-        def filtro = resTramites(idTramite);
+//        println("ids" + res)
+//        println("filtro:" + unicos)
+//        println("filtro:" + tramitesFiltrados)
 
-        return [tramites: res, resTramites: filtro]
+
+//        return [tramites: res, resTramites: filtro]
+        return [tramites: tramitesFiltrados]
 
     }
 
@@ -75,27 +90,31 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         def sql = ""
 
         def result = []
+        def idsUnicos = []
 
         def cn = dbConnectionService.getConnection();
 
         sql = "select * from tramites(" + tramite.id + ") "
-//        def res1 = cn.rows(sql.toString())
-//        def res1 = cn.eachRow(sql.toString()){
-//
-//            println(it)
-//        }
 
         cn.eachRow(sql) { r ->
+//            println(">>>>>" + r)
             result.add(r.toRowResult())
         }
-//        cn.eachRow(sql.toString()) { r ->
-//           println(r)
-//        }
-//        cn.close()
 
-//        println("res: " + res1)
+//        println("res: " + result)
+
 
         return result
+
+    }
+
+    def busquedaEnviados () {
+
+
+    }
+
+    def tablaBusquedaEnviados () {
+
 
     }
 

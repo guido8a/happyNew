@@ -1,6 +1,13 @@
 <%--
   Created by IntelliJ IDEA.
   User: gato
+  Date: 14/04/14
+  Time: 03:40 PM
+--%>
+
+<%--
+  Created by IntelliJ IDEA.
+  User: gato
   Date: 14/03/14
   Time: 11:18 AM
 --%>
@@ -9,12 +16,12 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <title>Búsqueda de Trámites</title>
+    <title>Búsqueda de Trámites Enviados</title>
 
 
     <style type="text/css">
 
-     .container-celdas {
+    .container-celdas {
         width: 1070px;
         height: 310px;
         float: left;
@@ -22,10 +29,10 @@
         overflow-y: auto;
     }
 
-       .alinear {
+    .alinear {
 
-           text-align: center !important;
-        }
+        text-align: center !important;
+    }
 
     </style>
 
@@ -52,13 +59,13 @@
         </div>
 
         <div class="col-md-2" style="margin-left: 150px">
-            <label>Fecha Creación</label>
+            <label>Fecha Desde</label>
             <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
         </div>
 
 
         <div class="col-md-2" style="margin-left: 15px">
-            <label>Fecha Envio</label>
+            <label>Fecha Hasta</label>
             <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
         </div>
 
@@ -142,7 +149,7 @@
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
+        $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
             data: datos,
             success: function (msg) {
                 clearInterval(interval)
@@ -185,7 +192,7 @@
 
     $(".btnBorrar").click(function () {
 
-       $("#memorando").val("");
+        $("#memorando").val("");
         $("#asunto").val("");
         $("#fechaRecepcion_input").val('');
         $("#fechaBusqueda_input").val('')

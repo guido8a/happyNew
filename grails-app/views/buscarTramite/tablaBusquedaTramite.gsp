@@ -15,35 +15,50 @@
                 %{--<th class="cabecera">Asunto</th>--}%
                 <th class="alinear">Documento</th>
                 <th class="alinear">Para</th>
-                <th class="alinear">Fecha Recepción</th>
-                <th class="alinear">De</th>
-                <th class="alinear">Creado Por</th>
+                <th class="alinear">Envia</th>
+                <th class="alinear">Asunto</th>
                 <th class="alinear">Prioridad</th>
-                <th class="alinear">Fecha Respuesta</th>
-                <th class="alinear">Doc. Padre</th>
+                <th class="alinear">De</th>
+                <th class="alinear">Fecha Creación</th>
+                <th class="alinear">Fecha Envio</th>
             </tr>
 
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
-                <tr>
-                    <td>${tramite?.tramite?.codigo}</td>
-                    <g:if test="${tramite?.persona?.nombre}">
-                        <td><b>${tramite?.rolPersonaTramite?.descripcion}:</b> ${tramite?.persona?.nombre} ${tramite?.persona?.apellido}</td>
+                <tr id="${tramite?.trmt__id}" data-id="${tramite.trmt__id}">
+                   <td>${tramite?.trmtcdgo}</td>
+                    <g:if test="${tramite.pr_prsn}">
+                        <td>${tramite.pr_prsn}</td>
                     </g:if>
-                    <g:elseif test="${tramite?.departamento?.descripcion}">
-                        <td><b>${tramite?.rolPersonaTramite?.descripcion}:</b> ${tramite?.departamento?.descripcion}</td>
+                    <g:elseif test="${tramite?.pr_dpto}">
+                        <td>${tramite?.pr_dpto}</td>
                     </g:elseif>
                     <g:else>
                         <td></td>
                     </g:else>
-                    %{--<td>${tramite?.tramite?.asunto}</td>--}%
-                    <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
-                    <td>${tramite?.tramite?.de}</td>
-                    <td>${tramite?.tramite?.de?.departamento?.descripcion}</td>
-                    <td>${tramite?.tramite?.prioridad?.descripcion}</td>
-                    <td>${tramite?.fechaLimiteRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
-                    <td>${tramite?.tramite?.padre?.codigo}</td>
+                    <td>${tramite?.en_prsn}</td>
+                    <td>${tramite?.trmtasnt}</td>
+                    <td>${tramite?.tppddscr}</td>
+                    <g:if test="${tramite?.de_prsn}">
+                        <td>${tramite?.de_prsn}</td>
+                    </g:if>
+                    <g:elseif test="${tramite?.de_dpto}">
+                        <td>${tramite?.de_dpto}</td>
+                    </g:elseif>
+                    <g:else>
+                        <td></td>
+                    </g:else>
+                   <td>${tramite?.fc_trmt.format('dd-MM-yyyy HH:mm')}</td>
+                    <g:if test="${tramite?.fc_envi}">
+                        <td>${tramite?.fc_envi.format('dd-MM-yyyy HH:mm')}</td>
+                    </g:if>
+                    <g:else>
+                        <td></td>
+                    </g:else>
+
+
+                    %{--<td>${tramite?.fechaLimiteRespuesta?.format('dd-MM-yyyy HH:mm')}</td>--}%
 
                 </tr>
             </g:each>
