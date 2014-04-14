@@ -74,8 +74,10 @@
         <div class="row" style="margin-top: 0px; margin-left: 1px">
             <span class="grupo">
                 <label class="well well-sm"
-                       style="text-align: center; float: left">Usuario: ${persona?.titulo + " " + persona?.nombre + " " + persona?.apellido + " - " +
-                        persona?.departamento?.descripcion}</label>
+                       style="text-align: center; float: left">
+                    Usuario: ${persona?.titulo ?: '' + " " + persona?.nombre + " " + persona?.apellido + " - " +
+                            persona?.departamento?.descripcion}
+                </label>
             </span>
 
             <div class="btn-group" style="margin-left: 30px">
