@@ -41,7 +41,7 @@ import happy.ElementosTagLib
 class EnviarService {
 
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje) {
-        println "crear pdf"
+//        println "crear pdf"
 
         if (editorTramite) {
             tramite.texto = editorTramite
@@ -93,7 +93,7 @@ class EnviarService {
         resolver.addFont(realPath + "fontsPdf/OpenSans-Semibold.ttf", true);
         resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
 
-        def text = tramite.texto
+        def text = (tramite?.texto ?: '')
 //        text = util.clean(str: text)
         text = text.decodeHTML()
 

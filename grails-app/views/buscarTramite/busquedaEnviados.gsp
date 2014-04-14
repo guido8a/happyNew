@@ -76,7 +76,7 @@
                     class="fa fa-check-square-o"></i> Buscar</a>
 
             <a href="#" name="borrar" class="btn btn-primary btnBorrar"><i
-                    class="fa fa-eraser"></i> Borrar</a>
+                    class="fa fa-eraser"></i> Limpiar</a>
 
         </div>
 

@@ -282,7 +282,11 @@ class ElementosTagLib {
             html += "</tr>"
             html += "<tr>"
             html += "<td class='negrilla'><b>DE</b></td>"
-            html += "<td>${tramite.de.departamento.descripcion}</td>"
+            if(tramite?.de?.nombre){
+                html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
+            }else{
+                html += "<td>${tramite.de.departamento.descripcion}</td>"
+            }
             html += "</tr>"
             html += "<tr>"
             html += "<td class='negrilla'><b>PARA</b></td>"
@@ -296,7 +300,7 @@ class ElementosTagLib {
             html += "</tr>"
             html += "<tr>"
             html += "<td class='negrilla'><b>ASUNTO</b></td>"
-            html += "<td>${tramite.asunto}</td>"
+            html += "<td>${tramite.asunto ?: ''}</td>"
             html += "</tr>"
             html += "</table>"
         }
