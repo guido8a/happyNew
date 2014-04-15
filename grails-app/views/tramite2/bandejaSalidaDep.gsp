@@ -263,14 +263,14 @@
                 };
 
                 var desenviar = {
-                    text   : 'Desenviar',
+                    text   : 'Quitar el enviado',
                     icon   : "<i class='fa fa-magic text-danger'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         bootbox.dialog({
                             title   : "Alerta",
                             message : "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i><p>" +
-                                      "¿Está seguro que desea desenviar el trámite seleccionado?<br/>Esta acción no se puede deshacer.</p>",
+                                      "¿Está seguro que desea quitar el enviado del trámite seleccionado?<br/>Esta acción no se puede deshacer.</p>",
                             buttons : {
                                 cancelar  : {
                                     label     : "Cancelar",
