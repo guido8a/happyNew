@@ -100,7 +100,7 @@
             <span class="grupo">
                 <label class="well well-sm" style="text-align: center; float: left">
                     Usuario:
-                    ${persona?.titulo ?: '' + " " + persona?.nombre + " " + persona?.apellido + " - " + persona?.departamento?.descripcion}
+                    ${(persona?.titulo ?: '') + " " + persona?.nombre + " " + persona?.apellido + " - " + persona?.departamento?.descripcion}
                 </label>
             </span>
         </div>
