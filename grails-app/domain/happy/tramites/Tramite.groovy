@@ -195,7 +195,7 @@ class Tramite {
         } else {
             def limite = this.getFechaLimite()
 //            println limite
-            def fechaLimite = diasLaborablesService.fechaMasDia(limite, 2)
+            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 1)
             if (fechaLimite[0]) {
                 return fechaLimite[1]
             } else {

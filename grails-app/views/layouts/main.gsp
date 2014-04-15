@@ -112,7 +112,7 @@
 </div>
 <mn:menu title="${g.layoutTitle(default: 'Happy')}"/>
 <g:if test="${session.departamento.estado == 'B'}">
-    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger ">
+    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="z-index: 200001">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
             Alerta de bloqueo
@@ -122,13 +122,13 @@
         </div>
 
         <div class="texto-bloqueo">
-            La bandeja de salida del departamento ${session.departamento} está bloqueada temporalmente debido a trámites rezagados.
+            Varias funciones del departamento ${session.departamento} están bloqueadas temporalmente debido a trámites no recibidos.
         </div>
-        <a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites rezagados</a>
+        <a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
     </div>
 </g:if>
-<g:if test="${session.departamento.estado == 'W'}">
-    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="width: 240px">
+<g:if test="${session.departamento.estado == 'W'}" >
+    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="width: 240px" style="z-index: 200001">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
             Alerta de trámites no recibidos

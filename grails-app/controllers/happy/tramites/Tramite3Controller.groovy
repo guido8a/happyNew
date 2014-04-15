@@ -325,9 +325,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def usu = Persona.get(session.usuario.id)
         def triangulo = PermisoTramite.findByCodigo("E001")
         def bloqueo = false
-        if (session.departamento.estado == "B") {
-            bloqueo = true
-        }
+//        if (session.departamento.estado == "B") {
+//            bloqueo = true
+//        }
         def tienePermiso = PermisoUsuario.withCriteria {
             eq("persona", usu)
             eq("permisoTramite", triangulo)
