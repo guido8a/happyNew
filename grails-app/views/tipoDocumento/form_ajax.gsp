@@ -14,7 +14,15 @@
                     Código
                 </label>
                 <div class="col-md-2">
+                    <g:if test = "${!tipoDocumentoInstance?.codigo}">
                     <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoDocumentoInstance?.codigo}"/>
+                </g:if>
+                <g:else>
+                     <span class="uneditable-input">
+                         ${tipoDocumentoInstance?.codigo}
+                          <g:hiddenField name="codigo" value="${tipoDocumentoInstance?.codigo}"/>
+                     </span>
+                </g:else>
                 </div>
                  *
             </span>

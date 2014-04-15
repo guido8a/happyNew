@@ -114,9 +114,12 @@ class TipoDocumentoController extends happy.seguridad.Shield {
 
 
     def validarCodigo_ajax() {
+        println params
         params.codigo = params.codigo.toString().trim()
+        def tipo = TipoDocumento.findAllByCodigo(params.codigo.toUpperCase())
+/*
         if (params.id) {
-            def tipo = TipoDocumento.get(params.id)
+            def tipo = TipoDocumento.findAllByCodigo(params.codigo.toUpperCase())
             if (tipo.codigo == params.codigo) {
                 render true
                 return
@@ -125,9 +128,10 @@ class TipoDocumentoController extends happy.seguridad.Shield {
                 return
             }
         } else {
-            render TipoDocumento.countByCodigo(params.codigo) == 0
+*/
+            render tipo.size() == 0
             return
-        }
+//        }
     }//validador unique
 
 }
