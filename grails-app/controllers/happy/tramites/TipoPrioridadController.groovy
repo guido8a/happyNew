@@ -115,4 +115,14 @@ class TipoPrioridadController extends happy.seguridad.Shield {
         render "NO_No se encontró TipoPrioridad."
     } //notFound para ajax
 
+    def validarCodigo_ajax(){
+        params.codigo = params.codigo.toString().trim()
+        def tipo = TipoPrioridad.findAllByCodigo(params.codigo.toUpperCase())
+
+        render tipo.size() == 0
+        return
+
+
+    }
+
 }
