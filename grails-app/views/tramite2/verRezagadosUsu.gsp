@@ -99,7 +99,7 @@
 <div class="row" style="margin-top: 0px; margin-left: 1px">
     <span class="grupo">
         <label class="well well-sm"
-               style="text-align: center; float: left">Departamento: ${session.departamento}</label>
+               style="text-align: center; float: left">Usuario: ${session.usuario}</label>
 
     </span>
 </div>
@@ -141,7 +141,7 @@
         <g:each in="${tramites}" var="pdt">
             <g:set var="limite" value="${pdt.tramite.getFechaLimite()}"/>
             <tr  class="${(limite)?((limite<new Date())?'alerta':pdt.tramite.estadoTramite.codigo):pdt.tramite.estadoTramite.codigo}">
-                <td>${pdt.tramite.id}-${pdt.tramite?.codigo}</td>
+                <td>${pdt.tramite?.codigo}</td>
                 <td>${pdt.tramite.de}</td>
                 <td >${pdt.departamento}</td>
                 <td>${pdt.persona}</td>

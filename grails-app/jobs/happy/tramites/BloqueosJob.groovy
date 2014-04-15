@@ -1,10 +1,11 @@
 package happy.tramites
 
+import happy.seguridad.Persona
 
 
 class BloqueosJob {
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60*5
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60
     }
 
     def execute() {
@@ -13,20 +14,37 @@ class BloqueosJob {
         def ahora = new Date()
         println "bloqueo bandeja salida "+ahora
         def bloquear = []
+        def bloquearUsu = []
         def warning = []
+        def warningUsu = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if(fechaBloqueo && fechaBloqueo<ahora){
-//                println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
+                if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
+                    //                println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
 //                println "add bloquear "+pdt.tramite.de.departamento.codigo
-                bloquear.add(pdt.tramite.de.departamento)
-                if(pdt.departamento)
-                    warning.add(pdt.departamento)
+                    if(pdt.tramite.deDepartamento){
+                        if(!warning.id.contains(pdt.tramite.deDepartamento.id))
+                            warning.add(pdt.tramite.deDepartamento)
+                    }else{
+                        if(!warningUsu.id.contains(pdt.tramite.de.id))
+                            warningUsu.add(pdt.tramite.de)
+                    }
+
+                    if(pdt.persona){
+                        if(!bloquearUsu.id.contains(pdt.persona.id))
+                            bloquearUsu.add(pdt.persona)
+                    }else{
+                        if(!bloquear.id.contains(pdt.departamento.id))
+                            bloquear.add(pdt.departamento)
+                    }
+                }
+
             }
         }
         Departamento.list().each {dep->
             if(bloquear.id.contains(dep.id)){
-                println "bloqueando "+dep
+//                println "bloqueando dep "+dep
                 dep.estado="B"
                 if(!dep.save(flush: true))
                     println "errores save dep "+dep.errors
@@ -44,6 +62,21 @@ class BloqueosJob {
 
             }
         }
+        Persona.findAllByEstadoInList(["B","W"]).each {
+            it.estado=""
+            it.save()
+        }
+        bloquearUsu.each {
+//            println "bloqueando usu "+it
+            it.estado="B"
+            it.save()
+        }
+        warningUsu.each {
+            it.estado="B"
+            it.save()
+        }
+
+
         println "fin bloqueo bandeja salida "+new Date()
     }
 }

@@ -111,12 +111,12 @@
     <div class="loading-footer">Espere por favor</div>
 </div>
 <mn:menu title="${g.layoutTitle(default: 'Happy')}"/>
-<g:if test="${session.departamento.estado == 'B'}">
+<g:if test="${session.departamento.estado == 'B' && session.triangulo}">
     <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="z-index: 200001">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
             Alerta de bloqueo
-            <a href="#" id="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
+            <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                 <i class="fa fa-times"></i>
             </a>
         </div>
@@ -127,18 +127,49 @@
         <a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
     </div>
 </g:if>
-<g:if test="${session.departamento.estado == 'W'}" >
+<g:if test="${session.departamento.estado == 'W' && session.triangulo}" >
     <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="width: 240px" style="z-index: 200001">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
             Alerta de trámites no recibidos
-            <a href="#" id="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
+            <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                 <i class="fa fa-times"></i>
             </a>
         </div>
 
         <div class="texto-bloqueo">
             El departamento ${session.departamento} tiene trámites por recibir que sobrepasan el tiempo máximo.
+        </div>
+    </div>
+</g:if>
+<g:if test="${session.usuario.estado=='B'}">
+    <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="z-index: 200001">
+        <div class="titulo-bloqueo">
+            <i class="fa fa-exclamation-circle"></i>
+            Alerta de bloqueo
+            <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+
+        <div class="texto-bloqueo">
+            Varias funciones del usuario ${session.usuario} están bloqueadas temporalmente debido a trámites no recibidos.
+        </div>
+        <a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
+    </div>
+</g:if>
+<g:if test="${session.usuario.estado == 'W' }" >
+    <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="width: 240px" style="z-index: 200001">
+        <div class="titulo-bloqueo">
+            <i class="fa fa-exclamation-circle"></i>
+            Alerta de trámites no recibidos
+            <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+
+        <div class="texto-bloqueo">
+            El usuario ${session.usuario} tiene trámites por recibir que sobrepasan el tiempo máximo.
         </div>
     </div>
 </g:if>
@@ -232,7 +263,7 @@
         });
 
         $(".bloqueo").draggable()
-        $("#cerrar-bloqueo").click(function () {
+        $(".cerrar-bloqueo").click(function () {
             $(this).parent().parent().hide("explode")
         })
     });

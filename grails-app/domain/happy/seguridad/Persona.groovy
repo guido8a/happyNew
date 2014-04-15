@@ -29,7 +29,7 @@ class Persona {
     String foto
     String codigo
     String connect
-
+    String estado
     static hasMany = [perfiles: Sesn]
 
     static mapping = {
@@ -62,6 +62,7 @@ class Persona {
             foto column: 'prsnfoto'
             codigo column: 'prsncdgo'
             connect column: 'prsncnec'
+            estado column: 'prsnetdo'
         }
     }
     static constraints = {
@@ -87,6 +88,7 @@ class Persona {
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(maxSize: 15, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
         connect(nullable: true, blank: true, size: 1..512)
+        estado(nullable: true, blank: true, size: 1..1)
     }
 
     def getEstaActivo() {
@@ -201,6 +203,18 @@ class Persona {
     def getConnectionString() {
         // LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389','CN=Guido Prueba,OU=GSTI,OU=GADPP,DC=pichincha,DC=local', 'prueba.prueba')
         return this.connect
+    }
+
+    def esTriangulo(){
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+        }
+        println "es triangulo "+perm
+        if(perm)
+            return true
+        else
+            return false
     }
 
     String toString() {

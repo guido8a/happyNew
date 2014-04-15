@@ -125,6 +125,7 @@ class LoginController {
             user = user[0]
             session.usuario = user
             session.departamento = user.departamento
+            session.triangulo = user.esTriangulo()
             def perfiles = Sesn.findAllByUsuario(user)
             if (perfiles.size() == 0) {
                 flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."

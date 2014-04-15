@@ -496,17 +496,35 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramites = []
 //        def ahora = new Date().plus(2)
         def ahora = new Date()
-        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each { pdt ->
-            if (pdt.tramite.de.departamento.id == dep.id)
-                println "pdt --> " + pdt.id + " tramite " + pdt.tramite.id + " - ${pdt.tramite.de.departamento.descripcion} " + pdt.fechaEnvio + "  " + pdt.departamento + "   " + pdt.persona
-            println "fecha bloqueo " + pdt.tramite.fechaBloqueo
+        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite  where fechaEnvio is not null and fechaRecepcion is null and departamento=${dep.id} and persona is null and rolPersonaTramite not in (4,5) order by fechaEnvio ").each { pdt ->
+
+//            println "fecha bloqueo " + pdt.tramite.fechaBloqueo+"  id "+pdt.id
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if (fechaBloqueo && fechaBloqueo < ahora) {
-                println "add tramites " + pdt
+                if(!tramites.tramite.id.contains(pdt.tramite.id)){
+                    println "add tramites " + pdt
+                    tramites.add(pdt)
+                }
+            }
+
+
+        }
+        return [tramites: tramites]
+    }
+    def verRezagadosUsu() {
+        def tramites = []
+//        def ahora = new Date().plus(2)
+        def ahora = new Date()
+        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite  where fechaEnvio is not null and fechaRecepcion is null and persona=${session.usuario.id} and rolPersonaTramite not in (4,5)  order by fechaEnvio").each {pdt->
+//            println "fecha bloqueo " + pdt.tramite.fechaBloqueo
+            println "pdt "+pdt.id+"  bloq "+pdt.tramite.fechaBloqueo
+            def fechaBloqueo = pdt.tramite.fechaBloqueo
+            if (fechaBloqueo && fechaBloqueo < ahora) {
+                println "add tramites pdt "+pdt.id
                 tramites.add(pdt)
             }
         }
-        [tramites: tramites]
+        return  [tramites: tramites]
     }
 
 
