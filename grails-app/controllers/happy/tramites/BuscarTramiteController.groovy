@@ -61,6 +61,9 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                 }
 
             }
+
+
+
         }
 
         def filtro = []
@@ -142,6 +145,8 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                     eq('de',pers)
                     inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
                 }
+
+                order("estadoTramite",'desc')
             }
 
             return [persona: pers, tramites: res]

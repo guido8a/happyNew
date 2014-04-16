@@ -167,8 +167,6 @@ class EnviarService {
         renderer.createPDF(baos);
         byte[] b = baos.toByteArray();
 
-        PdfStamper stamp = new PdfAStamper(renderer,)
-
         file.delete()
 
         def dpto = ""
