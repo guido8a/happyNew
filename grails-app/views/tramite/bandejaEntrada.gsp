@@ -520,10 +520,6 @@
                     seguimiento,
                     </g:if>
 
-                    %{--<g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">--}%
-                    %{--anular,--}%
-                    %{--</g:if>--}%
-
                     {
 
                         text   : 'Recibir Documento',
@@ -555,10 +551,17 @@
                                                         type    : 'POST',
                                                         url     : '${createLink(action: 'guardarRecibir')}/' + id,
                                                         success : function (msg) {
+                                                            var parts = msg.split('_')
                                                             openLoader();
                                                             cargarBandeja();
                                                             closeLoader();
-                                                            bootbox.alert(msg)
+                                                            if(parts[0] == 'No'){
+                                                                log(parts[1], "error");
+
+                                                            }else{
+                                                                log(parts[1], "success")
+                                                            }
+//                                                            bootbox.alert(msg)
                                                         }
                                                     });
                                                 }
@@ -651,7 +654,7 @@
                                             },
                                             recibir  : {
                                                 id        : 'btnRecibir',
-                                                label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
+                                                label     : '<i class="fa fa-thumbs-o-up"></i> Recibir1',
                                                 className : 'btn-success',
                                                 callback  : function () {
                                                     $.ajax({

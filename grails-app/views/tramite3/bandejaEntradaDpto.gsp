@@ -235,7 +235,7 @@
                         var $tr = $(e.target).parent();
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
-                        codigo = $tr.data("codigo");
+                        codigo = $tr.attr("codigo");
                         archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                     }
                 });

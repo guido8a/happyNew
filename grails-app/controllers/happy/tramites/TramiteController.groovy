@@ -156,9 +156,9 @@ class TramiteController extends happy.seguridad.Shield {
 
         todos = disponibles + disp2
         def bloqueo = false
-        if (session.departamento.estado == "B") {
-            bloqueo = true
-        }
+//        if (session.departamento.estado == "B") {
+//            bloqueo = true
+//        }
 
         return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona,bloqueo: bloqueo]
     }
@@ -825,9 +825,9 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         if (!tramite.save(flush: true)) {
-            render "Ocurrió un error al recibir"
+            render "No_Ocurrió un error al recibir"
         } else {
-            render "Trámite recibido correctamente"
+            render "Ok_Trámite recibido correctamente"
         }
 
 

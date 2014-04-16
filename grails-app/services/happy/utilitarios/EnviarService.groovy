@@ -1,5 +1,7 @@
 package happy.utilitarios
 
+import com.itextpdf.text.pdf.PdfAStamper
+import com.itextpdf.text.pdf.PdfStamper
 import grails.transaction.Transactional
 import happy.seguridad.Persona
 import happy.tramites.Departamento
@@ -164,6 +166,8 @@ class EnviarService {
         renderer.layout();
         renderer.createPDF(baos);
         byte[] b = baos.toByteArray();
+
+        PdfStamper stamp = new PdfAStamper(renderer,)
 
         file.delete()
 
