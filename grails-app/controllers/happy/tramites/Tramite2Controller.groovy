@@ -415,24 +415,24 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
                     t.fechaEnvio = envio
                     if (t.save(flush: true)) {
-
-                        def alerta = new Alerta()
-                        alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
-                        if (t.persona) {
-                            alerta.controlador = "tramite"
-                            alerta.accion = "bandejaEntrada"
-                            alerta.persona = t.persona
-                        } else {
-                            alerta.departamento = t.departamento
-                            alerta.accion = "bandejaEntradaDpto"
-                            alerta.controlador = "tramite3"
+                        if(t.rolPersonaTramite?.codigo=="R001" || t.rolPersonaTramite?.codigo=="R002"){
+                            def alerta = new Alerta()
+                            alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                            if (t.persona) {
+                                alerta.controlador = "tramite"
+                                alerta.accion = "bandejaEntrada"
+                                alerta.persona = t.persona
+                            } else {
+                                alerta.departamento = t.departamento
+                                alerta.accion = "bandejaEntradaDpto"
+                                alerta.controlador = "tramite3"
+                            }
+                            alerta.datos=t.id
+                            alerta.tramite=t.tramite
+                            if (!alerta.save(flush: true)) {
+                                println "error save alerta " + alerta.errors
+                            }
                         }
-                        alerta.datos=t.id
-                        alerta.tramite=t.tramite
-                        if (!alerta.save(flush: true)) {
-                            println "error save alerta " + alerta.errors
-                        }
-
                     }
                 }
                 def pdt = new PersonaDocumentoTramite()
