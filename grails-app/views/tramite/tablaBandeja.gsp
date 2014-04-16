@@ -7,9 +7,10 @@
             <th class="cabecera">Fecha Envío</th>
             <th class="cabecera">Fecha Recepción</th>
             <th class="cabecera">De</th>
+            <th class="cabecera">Creado por</th>
             <th class="cabecera">Para</th>
             <th class="cabecera">Prioridad</th>
-            <th class="cabecera">Fecha Respuesta</th>
+            <th class="cabecera">Fecha Límite</th>
             <th class="cabecera">Rol</th>
         </tr>
 
@@ -17,13 +18,36 @@
     <tbody>
         <g:each in="${tramites}" var="tramite">
             <g:set var="now" value="${new java.util.Date()}"/>
+
+            <g:set var="clase" value=""/>
+            <g:if test="${tramite.fechaRecepcion}">
+                <g:if test="${tramite.fechaLimiteRespuesta < now}">
+                    <g:set var="clase" value="retrasado"/>
+                    <g:if test="${happy.tramites.Tramite.countByPadre(tramite.tramite) > 0}">
+                        <g:set var="clase" value="recibido"/>
+                    </g:if>
+                </g:if>
+                <g:else>
+                    <g:set var="clase" value="recibido"/>
+                </g:else>
+            </g:if>
+            <g:else>
+                <g:if test="${tramite.tramite.fechaLimite < now}">
+                    <g:set var="clase" value="sinRecepcion"/>
+                </g:if>
+                <g:else>
+                    <g:set var="clase" value="porRecibir"/>
+                </g:else>
+            </g:else>
+
             <tr data-id="${tramite?.tramite?.id}"
-                class=" ${(tramite.fechaRecepcion) ? ((tramite.tramite.fechaMaximoRespuesta < now) ? 'retrasado' : 'E004') : ((tramite.tramite.fechaLimite < now) ? 'pendiente' : 'E003')}  "
+                class="${clase}"
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
                 <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
-                <td>${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+                <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                 <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                 <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
+                <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}</td>
                 <g:if test="${tramite?.persona}">
                     <td>${tramite?.persona}</td>
                 </g:if>
@@ -31,7 +55,7 @@
                     <td title="${tramite?.departamento?.descripcion}">${tramite?.departamento?.codigo}</td>
                 </g:else>
                 <td>${tramite?.tramite?.prioridad?.descripcion}%{-- - ${tramite.tramite.estadoTramite.descripcion}--}%</td>
-                <td>${tramite?.tramite?.fechaMaximoRespuesta?.format('dd-MM-yyyy HH:mm')}</td>
+                <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
                 <td>${tramite?.rolPersonaTramite?.descripcion}</td>
             </tr>
         </g:each>

@@ -64,16 +64,24 @@
             background-color : #FFBD4C;
         }
 
-        tr.recibido, tr.recibido td {
-            background-color : #D9EDF7;
+        tr.recibido {
+            background-color : #D9EDF7 ! important;
         }
 
-        tr.retrasado, tr.retrasado td {
-            background-color : #F2DEDE;
+        tr.porRecibir {
+            background-color : transparent;
         }
 
-        tr.pendiente, tr.pendiente td {
-            /*background-color : #FFFFCC;*/
+        tr.sinRecepcion {
+            /*background-color: #FFFFCC! important;*/
+            background-color : #FC2C04 ! important;
+            color            : #ffffff
+        }
+
+        tr.retrasado {
+            /*background-color: #fc2c04! important;*/
+            background-color : #F2DEDE ! important;
+            /*color: #ffffff;*/
         }
         </style>
     </head>
@@ -109,19 +117,23 @@
             </div>
 
             <div data-type="pendiente" class="alert alert-blanco alertas">
-                <span id="spanPendientes" class="counter" data-class="pendiente">(0)</span> Por recibir
+                <span id="spanPendientes" class="counter" data-class="porRecibir">(0)</span>
+                Por recibir
             </div>
 
             <div data-type="noRecibido" class="alert alert-otroRojo alertas">
-                <span id="spanNoRecibidos" class="counter" data-class="noRecibido">(0)</span> Doc. No Recibidos
+                <span id="spanNoRecibidos" class="counter" data-class="sinRecepcion">(0)</span>
+                Sin Recepción
             </div>
 
             <div data-type="recibido" class="alert alert-info alertas">
-                <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span> Doc. Recibidos
+                <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span>
+                Recibidos
             </div>
 
             <div data-type="retrasado" class="alert alert-danger alertas">
-                <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span> Doc. Retrasados
+                <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span>
+                Retrasados
             </div>
 
             %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
@@ -191,12 +203,12 @@
             var intervalBandeja;
 
             function cargarBandeja() {
-                openLoader()
+                openLoader();
                 $.ajax({type : "POST", url : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
                     success  : function (msg) {
                         resetTimer();
                         $("#bandeja").html(msg);
-                        closeLoader()
+                        closeLoader();
                         $(".counter").each(function () {
                             var clase = $(this).data("class");
                             var cant = $("tr." + clase).size();
@@ -240,6 +252,16 @@
                     }
                 });
 
+                var contestar = {
+                    text   : 'Contestar Documento',
+                    icon   : "<i class='fa fa-external-link'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
+                    }
+                };
+
                 var ver = {
                     text   : 'Ver',
                     icon   : "<i class='fa fa-search'></i>",
@@ -264,6 +286,68 @@
                         });
                     }
                 };
+
+                var recibir = {
+                    text   : 'Recibir Documento',
+                    icon   : "<i class='fa fa-check-square-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : 'POST',
+                            url     : "${createLink(action: 'recibir')}/" + id,
+                            success : function (msg) {
+                                var b = bootbox.dialog({
+                                    id      : "dlgRecibido",
+                                    title   : "Trámite a ser recibido",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        recibir  : {
+                                            id        : 'btnRecibir',
+                                            label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
+                                            className : 'btn-success',
+                                            callback  : function () {
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(action: 'guardarRecibir')}/' + id,
+                                                    success : function (msg) {
+                                                        var parts = msg.split('_')
+                                                        openLoader();
+                                                        cargarBandeja();
+                                                        closeLoader();
+                                                        if (parts[0] == 'No') {
+                                                            log(parts[1], "error");
+
+                                                        } else {
+                                                            log(parts[1], "success")
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    }
+                };
+
+                var seguimiento = {
+                    text   : 'Seguimiento Trámite',
+                    icon   : "<i class='fa fa-sitemap'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id;
+                    }
+                };
+
                 var detalles = {
                     text   : 'Detalles',
                     icon   : "<i class='fa fa-search'></i>",
@@ -284,37 +368,7 @@
 
                     }
                 };
-                var contestar = {
-                    text   : 'Contestar trámite',
-                    icon   : "<i class='fa fa-external-link'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
-                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
-                        %{--var b = bootbox.dialog({--}%
-                        %{--id      : "dlgContestar",--}%
-                        %{--title   : "Contestar trámite",--}%
-                        %{--message : "¿Está seguro de querer contestar el trámite <b>" + codigo + "</b>?",--}%
-                        %{--buttons : {--}%
-                        %{--cancelar : {--}%
-                        %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
-                        %{--className : 'btn-danger',--}%
-                        %{--callback  : function () {--}%
-                        %{--}--}%
-                        %{--},--}%
-                        %{--recibir  : {--}%
-                        %{--id        : 'btnEnviar',--}%
-                        %{--label     : '<i class="fa fa-thumbs-o-up"></i> Contestar',--}%
-                        %{--className : 'btn-success',--}%
-                        %{--callback  : function () {--}%
-                        %{--openLoader();--}%
-                        %{--location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;--}%
-                        %{--}--}%
-                        %{--}--}%
-                        %{--}--}%
-                        %{--})--}%
-                    }
-                };
+
                 var archivar = {
                     text   : 'Archivar trámite',
                     icon   : "<i class='fa fa-folder-open-o'></i>",
@@ -363,54 +417,63 @@
                     }
                 };
 
-                context.attach(".pendiente,.noRecibido", [
+                var observaciones = {
+                    text   : 'Añadir observaciones al trámite',
+                    icon   : "<i class='fa fa-eye'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        var b = bootbox.dialog({
+                            id      : "dlgJefe",
+                            title   : "Añadir observaciones al trámite",
+                            message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
+                                      "Escriba las observaciones: " +
+                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                            buttons : {
+                                cancelar : {
+                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback  : function () {
+                                    }
+                                },
+                                recibir  : {
+                                    id        : 'btnEnviar',
+                                    label     : '<i class="fa fa-thumbs-o-up"></i> Guardar',
+                                    className : 'btn-success',
+                                    callback  : function () {
+                                        var obs = $("#txaObsJefe").val();
+                                        openLoader();
+                                        $.ajax({
+                                            type    : 'POST',
+                                            url     : '${createLink(action: 'enviarTramiteJefe')}',
+                                            data    : {
+                                                id  : id,
+                                                obs : obs
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                cargarBandeja();
+                                                closeLoader();
+                                                log(parts[1], parts[0] == "NO" ? "error" : "success");
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        })
+                    }
+                };
+
+                context.attach(".porRecibir,.sinRecepcion", [
                     {
                         header : 'Acciones'
                     },
                     detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
                     ver,
-                    {
-                        text   : 'Recibir Documento',
-                        icon   : "<i class='fa fa-check-square-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            var b = bootbox.dialog({
-                                id      : "dlgRecibido",
-                                title   : "Recibir trámite",
-                                message : "¿Está seguro de querer recibir el trámite <b>" + codigo + "</b>?",
-                                buttons : {
-                                    cancelar : {
-                                        label     : '<i class="fa fa-times"></i> Cancelar',
-                                        className : 'btn-danger',
-                                        callback  : function () {
-                                        }
-                                    },
-                                    recibir  : {
-                                        id        : 'btnRecibir',
-                                        label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
-                                        className : 'btn-success',
-                                        callback  : function () {
-                                            openLoader();
-                                            $.ajax({
-                                                type    : 'POST',
-                                                url     : '${createLink(action: 'recibirTramite')}',
-                                                data    : {
-                                                    id : id
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("_");
-                                                    cargarBandeja();
-                                                    closeLoader();
-                                                    log(parts[1], parts[0] == "NO" ? "error" : "success");
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    seguimiento,
+                    </g:if>
+                    recibir
                 ]);
 
                 context.attach(".recibido,.retrasado", [
@@ -418,53 +481,11 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
                     ver,
-                    {
-                        text   : 'Añadir observaciones al trámite',
-                        icon   : "<i class='fa fa-eye'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            var b = bootbox.dialog({
-                                id      : "dlgJefe",
-                                title   : "Enviar trámite a jefe",
-                                message : "¿Está seguro de querer enviar el trámite <b>" + codigo + "</b> al jefe?</br><br/>" +
-                                          "Escriba las observaciones: " +
-                                          "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
-                                buttons : {
-                                    cancelar : {
-                                        label     : '<i class="fa fa-times"></i> Cancelar',
-                                        className : 'btn-danger',
-                                        callback  : function () {
-                                        }
-                                    },
-                                    recibir  : {
-                                        id        : 'btnEnviar',
-                                        label     : '<i class="fa fa-thumbs-o-up"></i> Enviar',
-                                        className : 'btn-success',
-                                        callback  : function () {
-                                            var obs = $("#txaObsJefe").val();
-                                            openLoader();
-                                            $.ajax({
-                                                type    : 'POST',
-                                                url     : '${createLink(action: 'enviarTramiteJefe')}',
-                                                data    : {
-                                                    id  : id,
-                                                    obs : obs
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("_");
-                                                    cargarBandeja();
-                                                    closeLoader();
-                                                    log(parts[1], parts[0] == "NO" ? "error" : "success");
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    },
+                    seguimiento,
+                    </g:if>
+                    observaciones,
                     contestar
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     ,

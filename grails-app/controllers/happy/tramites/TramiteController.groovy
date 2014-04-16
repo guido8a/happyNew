@@ -160,7 +160,7 @@ class TramiteController extends happy.seguridad.Shield {
 //            bloqueo = true
 //        }
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona,bloqueo: bloqueo]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo]
     }
 
     def cargaUsuarios() {
@@ -714,18 +714,14 @@ class TramiteController extends happy.seguridad.Shield {
 
 
     def tablaBandeja() {
-
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 //        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-
         def enviado = EstadoTramite.findByCodigo("E003")
-//        def recibido = EstadoTramite.findByCodigo("E004")
-
+        def recibido = EstadoTramite.findByCodigo("E004")
 //        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
-
         /*
         from PersonaDocumentoTramite as p
         inner join fetch p.tramite as tramites
@@ -741,10 +737,10 @@ class TramiteController extends happy.seguridad.Shield {
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
             tramite {
-                inList("estadoTramite", [enviado])
+                inList("estadoTramite", [enviado, recibido])
             }
+            order("fechaEnvio", "desc")
         }
-
         return [tramites: tramites]
     }
 
@@ -798,28 +794,34 @@ class TramiteController extends happy.seguridad.Shield {
 
 
         def tramite = Tramite.get(params.id)
-        def para = tramite.getPara().persona
+        def para = tramite.getPara()?.persona
 
-        def estado = EstadoTramite.get(4)
+//        def estadoRecibido = EstadoTramite.get(4)
+        def estadoRecibido = EstadoTramite.findByCodigo("E004") //recibido
         def pxt = PersonaDocumentoTramite.findByTramiteAndPersona(tramite, persona)
 
-        if (persona.id == para.id) {
-            tramite.estadoTramite = estado
+        if (persona.id == para?.id) {
+            tramite.estadoTramite = estadoRecibido
         }
 
         pxt.fechaRecepcion = new Date()
+        def fecha = pxt.fechaRecepcion
+        use(TimeCategory) {
+            fecha = fecha + (tramite.prioridad.tiempo).hours
+        }
+        pxt.fechaLimiteRespuesta = fecha
 
         tramite.save(flush: true)
         pxt.save(flush: true)
         def alerta
-        if(pxt.persona)
-            alerta = Alerta.findByPersonaAndTramite(pxt.persona,pxt.tramite)
+        if (pxt.persona)
+            alerta = Alerta.findByPersonaAndTramite(pxt.persona, pxt.tramite)
         else
-            alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento,pxt.tramite)
-        if(alerta){
-            if(!alerta.fechaRecibido){
-                alerta.mensaje+=" - Recibido"
-                alerta.fechaRecibido=new Date()
+            alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento, pxt.tramite)
+        if (alerta) {
+            if (!alerta.fechaRecibido) {
+                alerta.mensaje += " - Recibido"
+                alerta.fechaRecibido = new Date()
                 alerta.save(flush: true)
             }
         }

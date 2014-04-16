@@ -5,7 +5,7 @@
   Time: 11:31 AM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -34,6 +34,11 @@
             /*margin-top: -5px;*/
         }
 
+        .cabecera {
+            text-align : center;
+            font-size  : 13px !important;
+        }
+
         .container-celdas {
             width      : 1070px;
             height     : 310px;
@@ -46,15 +51,15 @@
             background-color : #FFBD4C;
         }
 
-        tr.E004, tr.recibidoColor td {
+        tr.recibido {
             background-color : #D9EDF7 ! important;
         }
 
-        tr.E003, tr.retrasadoColor td {
+        tr.porRecibir {
             background-color : transparent;
         }
 
-        tr.pendiente {
+        tr.sinRecepcion {
             /*background-color: #FFFFCC! important;*/
             background-color : #FC2C04 ! important;
             color            : #ffffff
@@ -107,38 +112,36 @@
 
             </div>
 
-            <span class="grupo">
-                <div>
-                    <div data-type="pendiente" class="alert alert-blanco alertas" clase="E003">
-                        (<span id="numEnv"></span>)
-                    Por recibir
-                    %{--Pendientes--}%
-                    </div>
+            <div>
+                <div data-type="pendiente" class="alert alert-blanco alertas" clase="porRecibir">
+                    (<span id="numEnv"></span>)
+                Por recibir
+                %{--Pendientes--}%
                 </div>
+            </div>
 
 
-                <div>
-                    <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="E003">
-                        (<span id="numPen"></span>)
-                    Sin Recepción
-                    %{--No recibidos--}%
-                    </div>
+            <div>
+                <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
+                    (<span id="numPen"></span>)
+                Sin Recepción
+                %{--No recibidos--}%
                 </div>
+            </div>
 
-                <div>
-                    <div data-type="recibido" class="alert alert-info alertas" clase="E004">
-                        (<span id="numRec"></span>)
-                    Recibidos
-                    </div>
+            <div>
+                <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
+                    (<span id="numRec"></span>)
+                Recibidos
                 </div>
+            </div>
 
-                <div>
-                    <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
-                        (<span id="numRet"></span>)
-                    Retrasados
-                    </div>
+            <div>
+                <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
+                    (<span id="numRet"></span>)
+                Retrasados
                 </div>
-            </span>
+            </div>
         </div>
 
 
@@ -209,37 +212,31 @@
         <script type="text/javascript">
 
             function cargarBandeja(band) {
-                var datos = ""
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
-                    data     : datos,
-                    async    : false,
-                    success  : function (msg) {
+                var datos = "";
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
+                    data    : datos,
+                    async   : false,
+                    success : function (msg) {
                         $("#bandeja").html(msg);
-                        cargarAlertaPendientes()
-                        cargarAlertaRetrasados()
-                        cargarEnviados()
-                        cargarAlertaRecibidos()
+                        cargarAlertas();
                         if (band)
                             log("Datos actualizados", success)
                     }
                 });
             }
-            function cargarAlertaPendientes() {
-                $("#numPen").html($(".pendiente").size())
-            }
-            function cargarAlertaRetrasados() {
-                $("#numRet").html($(".retrasado").size())
-            }
-            function cargarEnviados() {
-                $("#numEnv").html($(".E003").size())
-            }
-            function cargarAlertaRecibidos() {
-                $("#numRec").html($(".E004").size())
+
+            function cargarAlertas() {
+                $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
+                $("#numRet").html($(".retrasado").size()); //retrasado
+                $("#numEnv").html($(".porRecibir").size()); //porRecibir
+                $("#numRec").html($(".recibido").size()); //recibido
             }
 
             $(function () {
                 <g:if test="${bloqueo}">
-                $("#bloqueo-salida").show()
+                $("#bloqueo-salida").show();
                 </g:if>
 
                 var contestar = {
@@ -248,7 +245,6 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-
                         location.href = "${g.createLink(action: 'crearTramite')}/?padre=" + id;
                     }
                 };
@@ -278,17 +274,65 @@
                     }
                 };
 
-                var seguimiento = {
+                var recibir = {
+                    text   : 'Recibir Documento',
+                    icon   : "<i class='fa fa-check-square-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : 'POST',
+                            url     : "${createLink(action: 'recibir')}/" + id,
+                            success : function (msg) {
+                                var b = bootbox.dialog({
+                                    id      : "dlgRecibido",
+                                    title   : "Trámite a ser recibido",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        recibir  : {
+                                            id        : 'btnRecibir',
+                                            label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
+                                            className : 'btn-success',
+                                            callback  : function () {
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(action: 'guardarRecibir')}/' + id,
+                                                    success : function (msg) {
+                                                        var parts = msg.split('_')
+                                                        openLoader();
+                                                        cargarBandeja();
+                                                        closeLoader();
+                                                        if (parts[0] == 'No') {
+                                                            log(parts[1], "error");
 
+                                                        } else {
+                                                            log(parts[1], "success")
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    }
+                };
+
+                var seguimiento = {
                     text   : 'Seguimiento Trámite',
                     icon   : "<i class='fa fa-sitemap'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-
                         location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id;
                     }
-
                 };
 
                 var detalles = {
@@ -308,7 +352,6 @@
                             }
                         });
                         $("#dialog").modal("show")
-
                     }
                 };
 
@@ -417,11 +460,9 @@
                             }
                         });
                     }
-                }
+                };
 
                 var anular = {
-
-
                     text   : 'Anular Trámite',
                     icon   : "<i class='fa fa-flash'></i>",
                     action : function (e) {
@@ -477,9 +518,9 @@
                             }
                         });
                     }
-                }
+                };
 
-                var archivo
+                var archivo;
                 context.settings({
                     onShow : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
@@ -490,217 +531,33 @@
                     }
                 });
 
-                <g:if test="${!bloqueo}">
-                context.attach('.pendiente', [
+                context.attach('.porRecibir, .sinRecepcion', [
                     {
                         header : 'Acciones'
                     },
-                    %{--{--}%
-                    %{--text: 'Ver',--}%
-                    %{--icon: "<i class='fa fa-search'></i>",--}%
-                    %{--action: function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                    %{--e.preventDefault();--}%
-                    %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
-                    %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
-                    %{--}--}%
-                    %{--},--}%
                     detalles,
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
                     ver,
+                    seguimiento,
                     </g:if>
-
+                    recibir
+                ]);
+                context.attach('.recibido, .retrasado', [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
+                    ver,
+                    seguimiento,
+                    </g:if>
                     contestar,
-
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeArchivar()}">
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     archivar,
                     </g:if>
-
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
-                    seguimiento,
-                    </g:if>
-
-                    {
-
-                        text   : 'Recibir Documento',
-                        icon   : "<i class='fa fa-check-square-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : 'POST',
-                                url     : "${createLink(action: 'recibir')}/" + id,
-                                success : function (msg) {
-                                    var b = bootbox.dialog({
-                                        id      : "dlgRecibido",
-                                        title   : "Trámite a ser recibido",
-                                        message : msg,
-                                        buttons : {
-                                            cancelar : {
-                                                label     : '<i class="fa fa-times"></i> Cancelar',
-                                                className : 'btn-danger',
-                                                callback  : function () {
-                                                }
-                                            },
-                                            recibir  : {
-                                                id        : 'btnRecibir',
-                                                label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
-                                                className : 'btn-success',
-                                                callback  : function () {
-                                                    $.ajax({
-                                                        type    : 'POST',
-                                                        url     : '${createLink(action: 'guardarRecibir')}/' + id,
-                                                        success : function (msg) {
-                                                            var parts = msg.split('_')
-                                                            openLoader();
-                                                            cargarBandeja();
-                                                            closeLoader();
-                                                            if(parts[0] == 'No'){
-                                                                log(parts[1], "error");
-
-                                                            }else{
-                                                                log(parts[1], "success")
-                                                            }
-//                                                            bootbox.alert(msg)
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    })
-                                }
-                            });
-                        }
-                    }
-                ]);
-                </g:if>
-
-                <g:if test="${!bloqueo}">
-                context.attach('.retrasado', [
-                    {
-                        header : 'Acciones'
-                    },
-                    %{--{--}%
-                    %{--text: 'Ver',--}%
-                    %{--icon: "<i class='fa fa-search'></i>",--}%
-                    %{--action: function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                    %{--e.preventDefault();--}%
-                    %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
-                    %{--}--}%
-                    %{--},--}%
-                    detalles,
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
-                    ver,
-                    </g:if>
-
-                    {
-                        text   : 'Contestar Documento',
-                        icon   : "<i class='fa fa-external-link'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-
-                            location.href = "${g.createLink(action: 'crearTramite')}?padre=" + id;
-                        }
-                    },
-
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeArchivar()}">
-                    archivar,
-                    </g:if>
-
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
-                    seguimiento,
-                    </g:if>
-
-                    %{--<g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAnular()}">--}%
-                    %{--anular--}%
-                    %{--</g:if>--}%
-
-                ]);
-                </g:if>
-
-                context.attach('.E003', [
-                    {
-                        header : 'Acciones'
-                    },
-
-                    detalles,
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeVer()}">
-                    ver,
-                    </g:if>
-
-                    {
-
-                        text   : 'Recibir Documento',
-                        icon   : "<i class='fa fa-check-square-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : 'POST',
-                                url     : "${createLink(action: 'recibir')}/" + id,
-                                success : function (msg) {
-                                    var b = bootbox.dialog({
-                                        id      : "dlgRecibido",
-                                        title   : "Trámite a ser recibido",
-                                        message : msg,
-                                        buttons : {
-                                            cancelar : {
-                                                label     : '<i class="fa fa-times"></i> Cancelar',
-                                                className : 'btn-danger',
-                                                callback  : function () {
-                                                }
-                                            },
-                                            recibir  : {
-                                                id        : 'btnRecibir',
-                                                label     : '<i class="fa fa-thumbs-o-up"></i> Recibir1',
-                                                className : 'btn-success',
-                                                callback  : function () {
-                                                    $.ajax({
-                                                        type    : 'POST',
-                                                        url     : '${createLink(action: 'guardarRecibir')}/' + id,
-                                                        success : function (msg) {
-                                                            openLoader();
-                                                            cargarAlertaRecibidos();
-                                                            cargarAlertaPendientes();
-                                                            cargarAlertaRetrasados();
-                                                            cargarBandeja();
-                                                            closeLoader();
-                                                            bootbox.alert(msg)
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    })
-                                }
-                            });
-                        }
-                    }
-                ]);
-
-                context.attach(".E004", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
-                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
-
-                        }
-
-
-                    }
                 ]);
 
                 $(".btnBuscar").click(function () {
-                    console.log()
                     $(".buscar").attr("hidden", false);
                 });
 
@@ -722,13 +579,13 @@
                 setInterval(function () {
 
                     openLoader();
-                    cargarBandeja(false)
+                    cargarBandeja(false);
                     closeLoader();
 
                 }, 300000);
 
                 $(".alertas").click(function () {
-                    var clase = $(this).attr("clase")
+                    var clase = $(this).attr("clase");
                     $("tr").each(function () {
                         if ($(this).hasClass(clase)) {
                             if ($(this).hasClass("trHighlight"))
@@ -740,7 +597,7 @@
                         }
                     });
 
-                })
+                });
 
                 $(".btnBusqueda").click(function () {
                     var memorando = $("#memorando").val();
@@ -754,11 +611,7 @@
                             $("#bandeja").html(msg);
 
                         }
-
-
-
                     });
-
                 });
             });
 
