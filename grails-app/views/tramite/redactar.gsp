@@ -45,7 +45,7 @@
             background : #EFEFD1;
             border     : solid 1px #867722;
             width      : 235px;
-            max-height : 345px;
+            /*max-height : 345px;*/
             /*overflow   : auto;*/
             z-index    : 1;
         }
@@ -82,6 +82,7 @@
             margin-bottom : 5px;
             height        : 40px;
             overflow      : auto;
+            cursor        : move;
         }
         </style>
     </head>
@@ -96,11 +97,13 @@
             </div>
         </g:if>
         <g:if test="${tramite.padre}">
-            <div class="nota padre ui-corner-all">
+            <div class="nota padre ui-corner-all" id="divInfo">
                 <h4 class="text-info">${tramite.padre.asunto}</h4>
 
-                <div class="contenido">
-                    <util:renderHTML html="${tramite.padre.texto}"/>
+                <div class="contenido" id="divInfoContenido">
+                    <g:each in="${0..15}" var="i">
+                        <util:renderHTML html="${tramite.padre.texto}"/>
+                    </g:each>
                 </div>
             </div>
         </g:if>
@@ -143,6 +146,51 @@
         </div>
         <script>
             $(function () {
+//                var $also = $("#divInfoContenido");
+//                var $div = $("#divInfo");
+//                console.log($also.width(), $div.width(), $also.height(), $div.height(), "dw=" + ($div.width() - $also.width()), "dh=" + ($div.height() - $also.height()));
+
+                $("#divInfo").resizable({
+                    maxWidth  : 450,
+                    maxHeight : 560,
+                    minWidth  : 290,
+                    minHeight : 100,
+                    resize    : function (event, ui) {
+                        var $div = ui.element;
+                        var $also = ui.element.find("#divInfoContenido");
+                        var divH = ui.size.height;
+                        var divW = ui.size.width;
+
+                        var nw = divW - 20;
+                        var nh = divH - 60;
+
+                        $also.css({
+                            width     : nw,
+                            height    : nh,
+                            maxHeight : nh
+                        });
+                    }/*,
+                     stop    : function (event, ui) {
+                     var $div = ui.element;
+                     var $also = ui.element.find("#divInfoContenido");
+
+                     var masW = ui.size.width - ui.originalSize.width;
+                     var masH = ui.size.height - ui.originalSize.height;
+
+                     var alsoW = $also.width();
+                     var alsoH = $also.height();
+
+                     var newW = alsoW + masW;
+                     var newH = alsoH + masH;
+
+                     $also.width(newW);
+                     $also.height(newH);
+
+                     console.log(masW + "+" + alsoW + "=" + newW, masH + "+" + alsoH + "=" + newH);
+                     }*/
+                }).draggable({
+                    handle : ".text-info"
+                });
 
                 $("#btnInfoPara").click(function () {
                     var para = $("#para").val();
