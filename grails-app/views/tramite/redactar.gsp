@@ -38,16 +38,20 @@
         }
 
         .nota {
-            position   : absolute;
-            left       : 15px;
-            top        : 200px;
-            padding    : 10px;
-            background : #EFEFD1;
-            border     : solid 1px #867722;
-            width      : 235px;
+            position           : absolute;
+            left               : 15px;
+            top                : 200px;
+            padding            : 10px;
+            background         : #EFEFD1;
+            border             : solid 1px #867722;
+            width              : 235px;
             /*max-height : 345px;*/
             /*overflow   : auto;*/
-            z-index    : 1;
+            z-index            : 1;
+
+            -webkit-box-shadow : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+            -moz-box-shadow    : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+            box-shadow         : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
         }
 
         .nota .contenido {
