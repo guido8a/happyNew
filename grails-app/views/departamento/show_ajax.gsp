@@ -104,12 +104,12 @@
 
         <div class="row">
             <div class="col-md-3 text-info">
-                Personas
+                Recepción Dep.
             </div>
 
             <g:each in="${personal}" var="persona">
                 <div class="col-md-9">
-                    <g:fieldValue bean="${persona}" field="nombre"/>
+                    <g:fieldValue bean="${persona}" field="nombre"/> <g:fieldValue bean="${persona}" field="apellido"/>
                 </div>
             </g:each>
 
