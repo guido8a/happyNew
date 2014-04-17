@@ -151,12 +151,12 @@ class TramiteController extends happy.seguridad.Shield {
                     }
                 }
             }
-
-
         }
 
         disp.each { dep ->
-            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.triangulos.size() > 0) {
+                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            }
         }
 
         todos = disponibles + disp2

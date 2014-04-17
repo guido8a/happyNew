@@ -189,13 +189,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
             personas.each {
                 if (it.rolPersonaTramite.codigo != 'E004') {
                     def alerta
-                    if(it.persona)
-                        alerta = Alerta.findByPersonaAndTramite(it.persona,it.tramite)
+                    if (it.persona)
+                        alerta = Alerta.findByPersonaAndTramite(it.persona, it.tramite)
                     else
-                        alerta = Alerta.findByDepartamentoAndTramite(it.departamento,it.tramite)
-                    if(alerta){
-                        alerta.mensaje+=" - Tramite cambiado de estado"
-                        alerta.fechaRecibido=new Date()
+                        alerta = Alerta.findByDepartamentoAndTramite(it.departamento, it.tramite)
+                    if (alerta) {
+                        alerta.mensaje += " - Tramite cambiado de estado"
+                        alerta.fechaRecibido = new Date()
                         alerta.save(flush: true)
                     }
                     it.fechaEnvio = null
@@ -415,7 +415,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
                     t.fechaEnvio = envio
                     if (t.save(flush: true)) {
-                        if(t.rolPersonaTramite?.codigo=="R001" || t.rolPersonaTramite?.codigo=="R002"){
+                        if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
                             def alerta = new Alerta()
                             alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
                             if (t.persona) {
@@ -427,8 +427,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 alerta.accion = "bandejaEntradaDpto"
                                 alerta.controlador = "tramite3"
                             }
-                            alerta.datos=t.id
-                            alerta.tramite=t.tramite
+                            alerta.datos = t.id
+                            alerta.tramite = t.tramite
                             if (!alerta.save(flush: true)) {
                                 println "error save alerta " + alerta.errors
                             }
@@ -501,7 +501,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            println "fecha bloqueo " + pdt.tramite.fechaBloqueo+"  id "+pdt.id
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if (fechaBloqueo && fechaBloqueo < ahora) {
-                if(!tramites.tramite.id.contains(pdt.tramite.id)){
+                if (!tramites.tramite.id.contains(pdt.tramite.id)) {
                     println "add tramites " + pdt
                     tramites.add(pdt)
                 }
@@ -511,20 +511,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         return [tramites: tramites]
     }
+
     def verRezagadosUsu() {
         def tramites = []
 //        def ahora = new Date().plus(2)
         def ahora = new Date()
-        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite  where fechaEnvio is not null and fechaRecepcion is null and persona=${session.usuario.id} and rolPersonaTramite not in (4,5)  order by fechaEnvio").each {pdt->
+        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite  where fechaEnvio is not null and fechaRecepcion is null and persona=${session.usuario.id} and rolPersonaTramite not in (4,5)  order by fechaEnvio").each { pdt ->
 //            println "fecha bloqueo " + pdt.tramite.fechaBloqueo
-            println "pdt "+pdt.id+"  bloq "+pdt.tramite.fechaBloqueo
+            println "pdt " + pdt.id + "  bloq " + pdt.tramite.fechaBloqueo
             def fechaBloqueo = pdt.tramite.fechaBloqueo
             if (fechaBloqueo && fechaBloqueo < ahora) {
-                println "add tramites pdt "+pdt.id
+                println "add tramites pdt " + pdt.id
                 tramites.add(pdt)
             }
         }
-        return  [tramites: tramites]
+        return [tramites: tramites]
     }
 
 
@@ -624,7 +625,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         disp.each { dep ->
-            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.triangulos.size() > 0) {
+                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            }
         }
 
         todos = disponibles + disp2
@@ -634,7 +637,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,bloqueo: bloqueo]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento
