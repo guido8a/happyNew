@@ -99,5 +99,22 @@
             
         </div>
     </g:if>
+
+    <g:if test="${personal}">
+
+        <div class="row">
+            <div class="col-md-3 text-info">
+                Personas
+            </div>
+
+            <g:each in="${personal}" var="persona">
+                <div class="col-md-9">
+                    <g:fieldValue bean="${persona}" field="nombre"/>
+                </div>
+            </g:each>
+
+
+        </div>
+    </g:if>
     
 </g:else>

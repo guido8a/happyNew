@@ -12,7 +12,6 @@
         <table class="table table-bordered table-condensed table-hover">
             <thead>
             <tr>
-
                 <th class="alinear">Documento</th>
                 <th class="alinear">Para</th>
                 <th class="alinear">Asunto</th>

@@ -156,8 +156,8 @@
     %{--</g:if>--}%
 
     <div class="row">
-        <div class="col-xs-3">
-            <b>De:</b>
+        <div class="col-xs-4">
+            <b style="margin-right: 5px">De:</b>
 
             <div class="uneditable-input label-shared" id="de"
                  title="${de.departamento?.descripcion}">
@@ -172,7 +172,7 @@
         %{--</div>--}%
         %{--</g:if>--}%
 
-        <div class="col-xs-3" style="margin-top: -15px">
+        <div class="col-xs-3" style="margin-top: -25px">
             <b>Tipo de documento:</b>
             <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
                         from="${session.usuario.tiposDocumento}"
@@ -181,7 +181,7 @@
         </div>
 
 
-        <div class="col-xs-4 negrilla hide" id="divPara">
+        <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
             <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
                       style="width:310px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>
             <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"

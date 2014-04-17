@@ -80,9 +80,10 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         }
 
 //        println("ids" + res)
-//        println("filtro:" + unicos)
-//        println("filtro:" + tramitesFiltrados)
+//        println("filtro:" + filtro)
+//        println("filtrados:" + tramitesFiltrados)
 
+        tramitesFiltrados.sort{it.trmtcdgo}
 
 //        return [tramites: res, resTramites: filtro]
         return [tramites: tramitesFiltrados]
@@ -147,6 +148,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                 }
 
                 order("estadoTramite",'desc')
+                order('codigo','desc')
             }
 
             return [persona: pers, tramites: res]

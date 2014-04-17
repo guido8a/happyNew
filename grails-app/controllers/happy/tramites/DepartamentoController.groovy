@@ -364,16 +364,24 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //list
 
     def show_ajax() {
+
+        def personal = []
+
         if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
+            personal = Persona.findAllByDepartamentoAndCodigo(departamentoInstance,'E001')
+            println("personal" + personal)
             if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
-            return [departamentoInstance: departamentoInstance]
+            return [departamentoInstance: departamentoInstance, personal: personal]
         } else {
             notFound_ajax()
         }
+
+
+
     } //show para cargar con ajax en un dialog
 
     def form_ajax() {
