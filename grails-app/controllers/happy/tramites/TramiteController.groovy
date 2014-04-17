@@ -732,16 +732,25 @@ class TramiteController extends happy.seguridad.Shield {
         order by p.fechaEnvio desc
         */
 
+        params.domain = params.domain ?: "persDoc"
+        params.sort = params.sort ?: "fechaEnvio"
+        params.order = params.order ?: "desc"
+
         def tramites = PersonaDocumentoTramite.withCriteria {
             eq("persona", persona)
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
             tramite {
                 inList("estadoTramite", [enviado, recibido])
+                if (params.domain == "tramite") {
+                    order(params.sort, params.order)
+                }
             }
-            order("fechaEnvio", "desc")
+            if (params.domain == "persDoc") {
+                order(params.sort, params.order)
+            }
         }
-        return [tramites: tramites]
+        return [tramites: tramites, params: params]
     }
 
     //alertas

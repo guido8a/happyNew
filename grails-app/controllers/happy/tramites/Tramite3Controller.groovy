@@ -348,24 +348,29 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
 
-    def detalles(){
+    def detalles() {
         def tramite = Tramite.get(params.id)
         def principal = null
-        if(tramite.padre){
+        if (tramite.padre) {
             principal = tramite.padre
-            while (true){
-                if(!principal.padre)
+            while (true) {
+                if (!principal.padre)
                     break
                 else
-                    principal= principal.padre
+                    principal = principal.padre
 
             }
         }
-        return [tramite:tramite,principal:principal]
+        return [tramite: tramite, principal: principal]
     }
 
 
     def tablaBandejaEntradaDpto() {
+
+        params.domain = params.domain ?: "persDoc"
+        params.sort = params.sort ?: "fechaEnvio"
+        params.order = params.order ?: "desc"
+
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 
@@ -412,11 +417,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def pxtTodos = pxtPara
         pxtTodos += pxtCopia
-        pxtTodos.sort{it.fechaEnvio}
-        pxtTodos=pxtTodos.reverse()
-        def ahora =  new Date()
+        if (params.domain == "persDoc") {
+            pxtTodos.sort { it[params.sort] }
+        } else if (params.domain == "tramite") {
+            pxtTodos.sort { it.tramite[params.sort] }
+        }
+        if (params.order == "desc") {
+            pxtTodos = pxtTodos.reverse()
+        }
+        def ahora = new Date()
 //        pxtTodos += pxtImprimir
-        return [persona: persona, tramites: pxtTodos, ahora:ahora]
+        return [persona: persona, tramites: pxtTodos, ahora: ahora, params: params]
     }
 
     def recibirTramite() {

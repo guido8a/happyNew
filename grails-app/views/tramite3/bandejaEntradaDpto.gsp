@@ -47,6 +47,10 @@
             overflow-y : auto;
         }
 
+        .cabecera.sortable {
+            cursor : pointer;
+        }
+
         .tituloChevere {
             color       : #0088CC;
             border      : 0 solid red;
@@ -202,13 +206,24 @@
 
             var intervalBandeja;
 
-            function cargarBandeja() {
-                openLoader();
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
-                    success  : function (msg) {
+            function cargarBandeja(band, datos) {
+                if (!datos) {
+                    datos = {};
+                }
+                if (band) {
+                    openLoader();
+                }
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
+                    data    : datos,
+                    success : function (msg) {
                         resetTimer();
                         $("#bandeja").html(msg);
-                        closeLoader();
+                        if (band) {
+                            closeLoader();
+                            log("Datos actualizados", "success");
+                        }
                         $(".counter").each(function () {
                             var clase = $(this).data("class");
                             var cant = $("tr." + clase).size();

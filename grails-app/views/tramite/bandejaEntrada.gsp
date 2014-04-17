@@ -39,6 +39,10 @@
             font-size  : 13px !important;
         }
 
+        .cabecera.sortable {
+            cursor : pointer;
+        }
+
         .container-celdas {
             width      : 1070px;
             height     : 310px;
@@ -211,8 +215,13 @@
 
         <script type="text/javascript">
 
-            function cargarBandeja(band) {
-                var datos = "";
+            function cargarBandeja(band, datos) {
+                if (!datos) {
+                    datos = {};
+                }
+                if (band) {
+                    openLoader();
+                }
                 $.ajax({
                     type    : "POST",
                     url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
@@ -221,8 +230,10 @@
                     success : function (msg) {
                         $("#bandeja").html(msg);
                         cargarAlertas();
-                        if (band)
-                            log("Datos actualizados", success)
+                        if (band) {
+                            closeLoader();
+                            log("Datos actualizados", "success");
+                        }
                     }
                 });
             }
@@ -568,9 +579,9 @@
                 });
 
                 $(".btnActualizar").click(function () {
-                    openLoader();
+//                    openLoader();
                     cargarBandeja(false);
-                    closeLoader();
+//                    closeLoader();
                     return false;
                 });
 
