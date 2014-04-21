@@ -352,10 +352,10 @@
                                     }
                                 },
                                 desenviar : {
-                                    label     : "<i class='fa fa-magic'></i> Desenviar",
+                                    label     : "<i class='fa fa-magic'></i> Quitar enviado",
                                     className : "btn-danger",
                                     callback  : function () {
-                                        openLoader("Desenviando");
+                                        openLoader("Quitando enviado");
                                         $.ajax({
                                             type    : "POST",
                                             url     : '${createLink(action:'desenviar_ajax')}',
