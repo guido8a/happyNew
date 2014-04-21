@@ -444,6 +444,19 @@ class DepartamentoController extends happy.seguridad.Shield {
         return [departamentoInstance: departamentoInstance, tramites: pxtTodos.size()]
     } //form para cargar con ajax en un dialog
 
+    def tipoDoc_ajax() {
+        println params
+        def dpto = Departamento.get(params.id)
+        def permisos = TipoDocumentoDepartamento.findAllByDepartamento(dpto).tipo.id
+
+        return [departamentoInstance: dpto, permisos: permisos]
+    } //form para cargar con ajax en un dialog
+
+    def savetipoDoc_ajax() {
+        println params
+        render "OK_${params.id ? 'Actualización' : 'Creación'} de Departamento exitosa."
+    }
+
     def save_ajax() {
         println params
         if (!params.activo) {

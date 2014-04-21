@@ -251,6 +251,49 @@
                 }); //ajax
             } //createEdit
 
+
+            function createEditTipo(id, tipo) {
+                var data = tipo == "Crear" ? { padre : id} : {id : id};
+                $.ajax({
+                    type    : "POST",
+                    url     : "${createLink(action:'tipoDoc_ajax')}",
+                    data    : data,
+                    success : function (msg) {
+                        var b = bootbox.dialog({
+                            id      : "dlgCreateEdit",
+//                            class   : "long",
+                            title   : tipo + " Departamento",
+                            message : msg,
+
+                            buttons : {
+                                cancelar : {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                },
+                                guardar  : {
+                                    id        : "btnSave",
+                                    label     : "<i class='fa fa-save'></i> Guardar",
+                                    className : "btn-success",
+                                    callback  : function () {
+                                        return submitForm();
+                                    } //callback
+                                } //guardar
+                            } //buttons
+                        }); //dialog
+                        setTimeout(function () {
+                            var $input = b.find(".form-control").not(".datepicker").first();
+                            var val = $input.val();
+                            $input.focus();
+                            $input.val("");
+                            $input.val(val);
+                        }, 500);
+                    } //success
+                }); //ajax
+            } //createEditTipoDocumento
+
+
             function createEditRowPersona(id, tipo) {
                 var data = tipo == "Crear" ? { 'departamento.id' : id} : {id : id};
                 $.ajax({
@@ -562,6 +605,13 @@
                             icon   : "fa fa-pencil text-info",
                             action : function (obj) {
                                 createEditRow(nodeId, "Editar");
+                            }
+                        },
+                        tpDocumento : {
+                            label  : "Fijar tipo de documentos",
+                            icon   : "fa fa-pencil text-info",
+                            action : function (obj) {
+                                createEditTipo(nodeId, "Tipo de Documentos por");
                             }
                         },
                         ver          : {
