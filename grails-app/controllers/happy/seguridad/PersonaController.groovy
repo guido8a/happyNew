@@ -1009,59 +1009,7 @@ class PersonaController extends happy.seguridad.Shield {
         LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         println "conectado " + ldap.class
         println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-//        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.SUB)
-//        def users = []
-//        def registrados = Persona.list()
-//        def encontrados = []
-//        println "${results.size} entradas halladas para el nivel UNO desde la base:"
-//        for (entry in results) {
-//            if (entry && entry.displayname && !entry.objectclass.contains("computer")) {
-//                def logn = entry["samaccountname"]
-//                println "buscando " + logn
-//                def prsn = Persona.findByLogin(logn)
-//                if (!prsn) {
-//                    println "no encontro nuevo usuario"
-//                    def parts = entry["cn"].split("&")
-////                    def nombres = parts[0].split(" ")
-//                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
-//                    //println nombres+" " + entry["givenname"]
-//                    def mail = entry["mail"]
-//                    //def nombre = nombres[0]+" "+nombres[1]
-//                    def apellido = WordUtils.capitalizeFully(entry["sn"])
-////                    if(nombres.size()==3)
-////                        apellido = nombres[2]
-////                    if(nombres.size()==4)
-////                        apellido = nombres[2]+" "+nombres[3]
-////                    if(nombres.size()==5)
-////                        apellido = nombres[2]+" "+nombres[3]+" "+nombres[4]
-//                    if (!apellido)
-//                        apellido = "sin apellido"
-//
-//                    prsn = new Persona()
-//                    prsn.nombre = nombres
-//                    prsn.apellido = apellido
-//                    prsn.mail = mail
-//                    prsn.login = logn
-//                    prsn.password = "123".encodeAsMD5()
-//                    prsn.departamento = Departamento.get(20)
-//                    if (!prsn.save(flush: true)) {
-//                        println "error save prns " + prsn.errors
-//                    } else {
-//                        users.add(prsn)
-//                        def sesn = new Sesn()
-//                        sesn.perfil = Prfl.findByCodigo("USU")
-//                        sesn.usuario = prsn
-//                        sesn.save(flush: true)
-//                    }
-//                } else {
-//                    println "encontro"
-//                    encontrados.add(prsn)
-//                }
-//            }
-//        }
-//        println "encontrados " + encontrados
-//        def noReg = registrados - encontrados
-//        return [users: users, noReg: noReg]
+
         def registrados = Persona.list()
         def users = []
         def nuevos = []
@@ -1167,7 +1115,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 padre = n1
                             dep = new Departamento()
                             dep.descripcion = ou2
-                            dep.codigo = "N.A"
+                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
                             dep.activo = 1
                             dep.padre = padre
                             if (!dep.save(flush: true))
