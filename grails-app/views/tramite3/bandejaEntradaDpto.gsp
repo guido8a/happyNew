@@ -109,9 +109,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-                %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
-                %{--<i class="fa fa-folder"></i> Archivados--}%
-                %{--</g:link>--}%
+
                 <a href="#" class="btn btn-primary btnArchivados">
                     <i class="fa fa-folder"></i> Archivados
                 </a>
@@ -330,7 +328,8 @@
                                             callback  : function () {
                                                 $.ajax({
                                                     type    : 'POST',
-                                                    url     : '${createLink(action: 'guardarRecibir')}/' + id,
+                                                    %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                                                    url     : '${createLink(action: 'recibirTramite')}/' + id,
                                                     success : function (msg) {
                                                         var parts = msg.split('_')
                                                         openLoader();
@@ -485,7 +484,7 @@
                     },
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-                    ver,
+//                    ver,
                     seguimiento,
                     </g:if>
                     recibir
@@ -497,7 +496,7 @@
                     },
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-                    ver,
+//                    ver,
                     seguimiento,
                     </g:if>
                     observaciones,
@@ -514,9 +513,8 @@
                     },
                     contestar,
                     detalles,
-                    ver
+//                    ver,
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
-                    ,
                     archivar
                     </g:if>
                 ]);
@@ -543,6 +541,27 @@
             });
 
 
+            $(".btnSalir").click(function () {
+                $(".buscar").attr("hidden", true);
+                cargarBandeja();
+
+            });
+
+
+            $(".btnBusqueda").click(function () {
+                var memorando = $("#memorando").val();
+                var asunto = $("#asunto").val();
+                var fecha = $("#fechaBusqueda_input").val();
+                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+
+                $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                    data      : datos,
+                    success   : function (msg) {
+                        $("#bandeja").html(msg);
+
+                    }
+                });
+            });
 
 
         </script>

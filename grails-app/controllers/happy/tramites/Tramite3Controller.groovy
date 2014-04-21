@@ -426,8 +426,20 @@ class Tramite3Controller extends happy.seguridad.Shield {
             pxtTodos = pxtTodos.reverse()
         }
         def ahora = new Date()
-//        pxtTodos += pxtImprimir
+
+//        println("tramites:" + pxtTodos)
+//        println("domain:" + params.domain)
+
         return [persona: persona, tramites: pxtTodos, ahora: ahora, params: params]
+    }
+
+
+    def recibir() {
+
+        def tramite = Tramite.get(params.id)
+        return [tramite: tramite]
+
+
     }
 
     def recibirTramite() {
@@ -525,4 +537,91 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def errores() {
         return [params: params]
     }
+
+
+
+    def busquedaBandeja() {
+
+        params.domain = params.domain ?: "persDoc"
+        params.sort = params.sort ?: "fechaEnvio"
+        params.order = params.order ?: "desc"
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def departamento = persona?.departamento
+
+        def pxtPara = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolPara)
+            isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
+        }
+        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolCopia)
+            isNotNull("fechaEnvio")
+            tramite {
+                or {
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                }
+            }
+        }
+
+
+        def pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+        def pxtTramites = pxtTodos
+
+        if (params.domain == "persDoc") {
+            pxtTramites.sort { it[params.sort] }
+        } else if (params.domain == "tramite") {
+            pxtTramites.sort { it.tramite[params.sort] }
+        }
+        if (params.order == "desc") {
+            pxtTramites = pxtTramites.reverse()
+        }
+
+
+        //busqueda
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        }
+
+        def res = PersonaDocumentoTramite.withCriteria {
+
+            if (params.fecha) {
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
+            }
+
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+            }
+        }
+
+//        println("--->" + res)
+//        println("DDDD:" + pxtTramites)
+//        println("dominio2:" + params.domain)
+
+//        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
+        return [tramites: res, pxtTramites: pxtTramites]
+
+    }
+
 }
