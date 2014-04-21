@@ -28,9 +28,16 @@
     <body>
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
-                <g:link action="bandejaEntrada" controller="tramite" class="btn btn-primary">
-                    <i class="fa fa-list"></i> Bandeja de entrada
-                </g:link>
+                <g:if test="${params.pers == '1'}">
+                    <g:link action="bandejaEntrada" controller="tramite" class="btn btn-primary">
+                        <i class="fa fa-list"></i> Bandeja de entrada
+                    </g:link>
+                </g:if>
+                <g:else>
+                    <g:link action="bandejaEntradaDpto" controller="tramite3" class="btn btn-primary">
+                        <i class="fa fa-list"></i> Bandeja de entrada
+                    </g:link>
+                </g:else>
                 <g:link action="bandejaSalida" controller="tramite2" class="btn btn-primary">
                     <i class="fa fa-list"></i> Bandeja de salida
                 </g:link>
@@ -53,6 +60,16 @@
             <div class="linea"></div>
 
             <h3>${tramite.tipoDocumento?.descripcion} ${tramite.codigo} (prioridad: ${tramite.prioridad?.descripcion})</h3>
+
+            <div class="row">
+                <div class="col-xs-1 negrilla">
+                    Asunto:
+                </div>
+
+                <div class="col-xs-11 text-primary" style="padding: 0">
+                    ${tramite.asunto}
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-xs-1 negrilla">
@@ -94,8 +111,8 @@
                 </div>
             </div>
 
-            <div class="row">
-                <g:if test="${tramite.copias.size() > 0}">
+            <g:if test="${tramite.copias.size() > 0}">
+                <div class="row">
                     <div class="col-xs-1  negrilla">
                         CC:
                     </div>
@@ -118,8 +135,8 @@
                             </g:if>
                         </g:each>
                     </div>
-                </g:if>
-            </div>
+                </div>
+            </g:if>
 
             <g:if test="${tramite.observaciones}">
                 <div class="row">
@@ -132,16 +149,6 @@
                     </div>
                 </div>
             </g:if>
-
-            <div class="row">
-                <div class="col-xs-1 negrilla">
-                    Asunto:
-                </div>
-
-                <div class="col-xs-11 text-primary" style="padding: 0">
-                    ${tramite.asunto}
-                </div>
-            </div>
         </div>
 
         <div style="margin-top: 0;" class="vertical-container">

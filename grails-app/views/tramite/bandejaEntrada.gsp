@@ -342,7 +342,7 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id;
+                        location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id + "&pers=1";
                     }
                 };
 
@@ -548,7 +548,7 @@
                     },
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-                    ver,
+//                    ver,
                     seguimiento,
                     </g:if>
                     recibir
@@ -559,7 +559,7 @@
                     },
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-                    ver,
+//                    ver,
                     seguimiento,
                     </g:if>
                     contestar,
