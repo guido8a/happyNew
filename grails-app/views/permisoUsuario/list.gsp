@@ -163,7 +163,7 @@
                 context.settings({
                     onShow : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parent();
+                        var $tr = $(e.target).parents("tr");
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
                     }

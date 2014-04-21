@@ -182,7 +182,7 @@
                 context.settings({
                     onShow : function (e) {
                         $("tr.success").removeClass("success");
-                        var $tr = $(e.target).parent();
+                        var $tr = $(e.target).parents("tr");
                         $tr.addClass("success");
                         id = $tr.data("id");
                     }
