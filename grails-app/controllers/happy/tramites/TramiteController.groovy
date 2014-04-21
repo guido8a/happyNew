@@ -923,30 +923,23 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-//        def estadoEnviado = EstadoTramite.findByCodigo('E003')
 
         def pxtTodos = []
         def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
-
 
         pxtTodos = pxtPara
         pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
 
         pxtTodos.each {
-            if (it?.tramite?.estadoTramite?.codigo == 'E005') {
+            println("-->" + it?.tramite?.deDepartamento?.id)
+            if (it?.tramite?.estadoTramite?.codigo == 'E005' && it?.tramite?.deDepartamento?.id == null) {
                 pxtTramites.add(it)
             }
         }
-
-
-
 
         return [tramites: pxtTramites]
 

@@ -442,9 +442,10 @@
                 });
 
                 $(".btnSalir").click(function () {
-                    $(".buscar").attr("hidden", true)
-                });
+                    $(".buscar").attr("hidden", true);
+                    cargarBandeja();
 
+                });
                 $(".btnActualizar").click(function () {
                     openLoader();
                     cargarBandeja(true);

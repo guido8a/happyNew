@@ -21,16 +21,43 @@
                 <th class="cabecera sortable ${params.sort == 'prioridad' ? (params.order) : ''}" data-domain="tramite" data-sort="prioridad" data-order="${params.order}">Prioridad</th>
                 <th class="cabecera sortable ${params.sort == 'fechaLimiteRespuesta' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaLimiteRespuesta" data-order="${params.order}">Fecha Límite</th>
                 <th class="cabecera sortable ${params.sort == 'rolPersonaTramite' ? (params.order) : ''}" data-domain="persDoc" data-sort="rolPersonaTramite" data-order="${params.order}">Rol</th>
-
             </tr>
             </tr>
 
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
+
+                <g:set var="now" value="${new java.util.Date()}"/>
+
+                <g:set var="clase" value=""/>
+                <g:if test="${tramite.fechaRecepcion}">
+                    <g:if test="${tramite.fechaLimiteRespuesta < now}">
+                        <g:set var="clase" value="retrasado"/>
+                        <g:if test="${happy.tramites.Tramite.countByPadre(tramite.tramite) > 0}">
+                            <g:set var="clase" value="recibido"/>
+                        </g:if>
+                    </g:if>
+                    <g:else>
+                        <g:set var="clase" value="recibido"/>
+                    </g:else>
+                </g:if>
+                <g:else>
+                    <g:if test="${tramite.tramite.fechaLimite < now}">
+                        <g:set var="clase" value="sinRecepcion"/>
+                    </g:if>
+                    <g:else>
+                        <g:set var="clase" value="porRecibir"/>
+                    </g:else>
+                </g:else>
+
+
                <g:each in="${pxtTramites}" var="pxt">
                     <g:if test="${tramite?.id == pxt?.id}">
-                        <tr data-id="${tramite?.id}" class="${type} ${tramite?.tramite?.getEstadoBandeja(session.usuario)}">
+                        <tr data-id="${tramite?.tramite?.id}"
+                            class="${clase}"
+                            codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
+
                             <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
                             <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
