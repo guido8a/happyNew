@@ -4,6 +4,7 @@ import happy.tramites.Departamento
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.TipoDocumento
+import happy.tramites.TipoDocumentoDepartamento
 import org.apache.commons.lang.WordUtils
 
 class Persona {
@@ -193,7 +194,9 @@ class Persona {
     }
 
     def getTiposDocumento() {
-        def lista = TipoDocumento.list(['sort': 'descripcion'])
+//        def lista = TipoDocumento.list(['sort': 'descripcion'])
+        def lista =  TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(this.departamento, 1).tipo
+        lista.sort { it.descripcion }
         if (!this.puedeExternos) {
             lista.remove(TipoDocumento.findByCodigo("DEX"))
         }
@@ -205,16 +208,24 @@ class Persona {
         return this.connect
     }
 
-    def esTriangulo(){
+    def esTriangulo() {
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)
             eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+            le("fechaInicio", new Date())
+            or {
+                ge("fechaFin", new Date())
+                isNull("fechaFin")
+            }
         }
-        println "es triangulo "+perm
-        if(perm)
+        if (perm.size() > 0)
             return true
         else
             return false
+    }
+
+    def getEsTriangulo() {
+        return this.esTriangulo()
     }
 
     String toString() {

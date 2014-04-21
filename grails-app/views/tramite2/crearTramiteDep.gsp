@@ -174,10 +174,8 @@
 
                     <div class="col-xs-3" style="margin-top: -25px">
                         <b>Tipo de documento:</b>
-                        <elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                    from="${session.usuario.tiposDocumento}"
-                                    value="${tramite.tipoDocumentoId}" optionKey="id" optionValue="descripcion"
-                                    optionClass="codigo" noSelection="['': 'Seleccione el tipo de documento']"/>
+                        <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
+                                          value="${tramite.tipoDocumentoId}"/>
                     </div>
 
 

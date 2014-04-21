@@ -251,6 +251,17 @@
                 }); //ajax
             } //createEdit
 
+            function doSaveTipoDoc(data) {
+                $.ajax({
+                    type    : "POST",
+                    url     : "${createLink(action:'saveTipoDoc_ajax')}",
+                    data    : data,
+                    success : function (msg) {
+                        var parts = msg.split("_")
+                        log(parts[1], parts[0] == "OK" ? "success" : "error");
+                    }
+                });
+            }
 
             function createEditTipo(id, tipo) {
                 var data = tipo == "Crear" ? { padre : id} : {id : id};
@@ -277,7 +288,24 @@
                                     label     : "<i class='fa fa-save'></i> Guardar",
                                     className : "btn-success",
                                     callback  : function () {
-                                        return submitForm();
+                                        var data = "id=" + id;
+                                        var band = false;
+                                        $(".tipoDoc .fa-li").each(function () {
+                                            var ico = $(this);
+                                            if (ico.hasClass("fa-check-square")) {
+                                                data += "&tipoDoc=" + ico.data("id");
+                                                band = true;
+                                            }
+                                        });
+                                        if (!band) {
+                                            bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>No ha seleccionado ningún tipoDoc. El usuario no podrá ingresar al sistema. ¿Desea continuar?.</p>", function (result) {
+                                                if (result) {
+                                                    doSaveTipoDoc(data);
+                                                }
+                                            })
+                                        } else {
+                                            doSaveTipoDoc(data);
+                                        }
                                     } //callback
                                 } //guardar
                             } //buttons
@@ -292,7 +320,6 @@
                     } //success
                 }); //ajax
             } //createEditTipoDocumento
-
 
             function createEditRowPersona(id, tipo) {
                 var data = tipo == "Crear" ? { 'departamento.id' : id} : {id : id};
@@ -607,9 +634,9 @@
                                 createEditRow(nodeId, "Editar");
                             }
                         },
-                        tpDocumento : {
+                        tpDocumento  : {
                             label  : "Fijar tipo de documentos",
-                            icon   : "fa fa-pencil text-info",
+                            icon   : "fa fa-files-o text-info",
                             action : function (obj) {
                                 createEditTipo(nodeId, "Tipo de Documentos por");
                             }
@@ -802,12 +829,14 @@
                             }
                         }
                     } else {
-                        items.desactivar = {
-                            separator_before : true,
-                            label            : "Desctivar",
-                            icon             : "fa ${iconDesactivar}",
-                            action           : function (obj) {
-                                cambiarEstadoRowPersona(nodeId, nodeStrId, false, nodeTramites);
+                        if (!node.data.triangulos || node.data.triangulos > 1) {
+                            items.desactivar = {
+                                separator_before : true,
+                                label            : "Desctivar",
+                                icon             : "fa ${iconDesactivar}",
+                                action           : function (obj) {
+                                    cambiarEstadoRowPersona(nodeId, nodeStrId, false, nodeTramites);
+                                }
                             }
                         }
                     }
@@ -875,32 +904,44 @@
                         }
                     },
                     types       : {
-                        root            : {
+                        root                     : {
                             icon : "fa fa-folder text-warning"
                         },
-                        padreActivo     : {
+                        padreActivo              : {
                             icon : "fa fa-building-o text-info"
                         },
-                        padreInactivo   : {
+                        padreInactivo            : {
                             icon : "fa fa-building-o text-muted"
                         },
-                        hijoActivo      : {
+                        hijoActivo               : {
                             icon : "fa fa-home text-success"
                         },
-                        hijoInactivo    : {
+                        hijoInactivo             : {
                             icon : "fa fa-home text-muted"
                         },
-                        usuarioActivo   : {
+                        usuarioActivo            : {
                             icon : "fa fa-user text-info"
                         },
-                        usuarioInactivo : {
+                        usuarioInactivo          : {
                             icon : "fa fa-user text-muted"
                         },
-                        jefeActivo      : {
+                        jefeActivo               : {
                             icon : "fa fa-user text-warning"
                         },
-                        jefeInactivo    : {
+                        jefeInactivo             : {
                             icon : "fa fa-user text-muted"
+                        },
+                        usuarioTrianguloActivo   : {
+                            icon : "fa fa-download text-info"
+                        },
+                        usuarioTrianguloInactivo : {
+                            icon : "fa fa-download text-muted"
+                        },
+                        jefeTrianguloActivo      : {
+                            icon : "fa fa-cloud-download text-warning"
+                        },
+                        jefeTrianguloInactivo    : {
+                            icon : "fa fa-cloud-download text-muted"
                         }
                     }
                 });

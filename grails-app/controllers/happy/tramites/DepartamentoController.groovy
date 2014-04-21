@@ -220,6 +220,9 @@ class DepartamentoController extends happy.seguridad.Shield {
                 def data = ""
                 if (hijo instanceof Departamento) {
                     lbl = hijo.descripcion
+                    if (hijo.codigo) {
+                        lbl += " (${hijo.codigo})"
+                    }
                     tp = "dep"
                     def hijosH = Departamento.findAllByPadre(hijo, [sort: "descripcion"])
                     rel = (hijosH.size() > 0) ? "padre" : "hijo"
@@ -280,13 +283,13 @@ class DepartamentoController extends happy.seguridad.Shield {
                 } else if (hijo instanceof Persona) {
                     switch (params.sort) {
                         case 'apellido':
-                            lbl = "${hijo.apellido} ${hijo.nombre} ${hijo.login?'('+hijo.login+')':''}"
+                            lbl = "${hijo.apellido} ${hijo.nombre} ${hijo.login ? '(' + hijo.login + ')' : ''}"
                             break;
                         case 'nombre':
-                            lbl = "${hijo.nombre} ${hijo.apellido} ${hijo.login?'('+hijo.login+')':''}"
+                            lbl = "${hijo.nombre} ${hijo.apellido} ${hijo.login ? '(' + hijo.login + ')' : ''}"
                             break;
                         default:
-                            lbl = "${hijo.apellido} ${hijo.nombre} ${hijo.login?'('+hijo.login+')':''}"
+                            lbl = "${hijo.apellido} ${hijo.nombre} ${hijo.login ? '(' + hijo.login + ')' : ''}"
                     }
 
                     tp = "usu"
@@ -296,7 +299,6 @@ class DepartamentoController extends happy.seguridad.Shield {
                         rel = "usuario"
                     }
                     clase = "usuario"
-
                     def rolPara = RolPersonaTramite.findByCodigo('R001');
                     def rolCopia = RolPersonaTramite.findByCodigo('R002');
                     def rolImprimir = RolPersonaTramite.findByCodigo('I005')
@@ -304,6 +306,18 @@ class DepartamentoController extends happy.seguridad.Shield {
                     def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
                     data = "data-tramites='${tramites.size()}'"
+
+                    if (hijo.esTriangulo) {
+                        rel += "Triangulo"
+                        println "++++++++++++++++++++++++++++"
+                        println hijo
+                        println hijo.departamento
+                        println hijo.departamento.triangulos
+                        println hijo.departamento.triangulos.size()
+                        println "++++++++++++++++++++++++++++"
+                        data += "data-triangulos=" + (hijo.departamento.triangulos.size())
+                    }
+
                 }
                 if (hijo.activo == 1) {
                     rel += "Activo"
@@ -381,7 +395,6 @@ class DepartamentoController extends happy.seguridad.Shield {
         }
 
 
-
     } //show para cargar con ajax en un dialog
 
     def form_ajax() {
@@ -447,14 +460,98 @@ class DepartamentoController extends happy.seguridad.Shield {
     def tipoDoc_ajax() {
         println params
         def dpto = Departamento.get(params.id)
-        def permisos = TipoDocumentoDepartamento.findAllByDepartamento(dpto).tipo.id
+        def permisos = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(dpto, 1).tipo.id
 
         return [departamentoInstance: dpto, permisos: permisos]
     } //form para cargar con ajax en un dialog
 
-    def savetipoDoc_ajax() {
-        println params
-        render "OK_${params.id ? 'Actualización' : 'Creación'} de Departamento exitosa."
+    def saveTipoDoc_ajax() {
+//        println "***" + params
+        def dep = Departamento.get(params.id)
+        def tiene = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(dep, 1).tipo
+        def nuevos = []
+
+        def quitar = []
+        def agregar = []
+
+        (params.tipoDoc).each { id ->
+            nuevos += TipoDocumento.get(id)
+        }
+
+        nuevos.each { nuevo ->
+            if (!tiene.contains(nuevo)) {
+                agregar += nuevo
+            }
+        }
+
+        tiene.each { old ->
+            if (!nuevos.contains(old)) {
+                quitar += old
+            }
+        }
+
+//        println "dep: " + dep
+//        println "tiene: " + tiene
+//        println "nuevos: " + nuevos
+//        println "agregar: " + agregar
+//        println "quitar: " + quitar
+
+        agregar.each { tp ->
+            def old = TipoDocumentoDepartamento.findAllByDepartamentoAndTipo(dep, tp)
+            def tipo
+            if (old.size() == 0) {
+                tipo = new TipoDocumentoDepartamento([
+                        departamento: dep,
+                        tipo        : tp,
+                        estado      : 1
+                ])
+                if (!tipo.save(flush: true)) {
+                    println "Error al guardar tipoDocumentoDepartamento: " + renderErrors(bean: tipo)
+                }
+            } else if (old.size() == 1) {
+                tipo = old.first()
+                tipo.estado = 1
+                if (!tipo.save(flush: true)) {
+                    println "Error al guardar tipoDocumentoDepartamento: " + renderErrors(bean: tipo)
+                }
+            } else {
+                println "Mas de un tipoDocumentoDepartamento para ${dep.descripcion} ${tp.descripcion}: ${old}"
+                old.eachWithIndex { o, i ->
+                    if (i == 0) {
+                        o.estado = 1
+                    } else {
+                        o.estado = 0
+                    }
+                    if (!o.save(flush: true)) {
+                        println "Error al guardar tipoDocumentoDepartamento: " + renderErrors(bean: o)
+                    }
+                }
+            }
+        }
+
+        quitar.each { tp ->
+            def old = TipoDocumentoDepartamento.findAllByDepartamentoAndTipo(dep, tp)
+            def tipo
+            if (old.size() == 0) {
+                println "no hay tipoDocumentoDepartamento para ${dep.descripcion} ${tp.descripcion}"
+            } else if (old.size() == 1) {
+                tipo = old.first()
+                tipo.estado = 0
+                if (!tipo.save(flush: true)) {
+                    println "Error al guardar tipoDocumentoDepartamento: " + renderErrors(bean: tipo)
+                }
+            } else {
+                println "Mas de un tipoDocumentoDepartamento para ${dep.descripcion} ${tp.descripcion}: ${old}"
+                old.eachWithIndex { o, i ->
+                    o.estado = 0
+                    if (!o.save(flush: true)) {
+                        println "Error al guardar tipoDocumentoDepartamento: " + renderErrors(bean: o)
+                    }
+                }
+            }
+        }
+
+        render "OK_Actualización de tipos de documento exitosa."
     }
 
     def save_ajax() {
