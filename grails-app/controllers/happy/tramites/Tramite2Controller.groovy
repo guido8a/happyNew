@@ -446,8 +446,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
                 if (tramite.save(flush: true)) {
                     def realPath = servletContext.getRealPath("/")
-                    def mensaje = message(code: 'pathImages');
-                    enviarService.crearPdf(tramite, usuario, "1", 'download', params.editorTramite, params.asunto, realPath, mensaje);
+                    def mensaje = message(code: 'pathImages').toString();
+                    enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
                 } else {
                     println tramite.errors
                     error += renderErrors(bean: tramite)

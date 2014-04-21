@@ -85,7 +85,6 @@
 
         </div>
 
-
         <g:form class="frmTramite" controller="tramite3" action="save">
         %{--<g:form class="frmTramite" action="saveDep">--}%
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
@@ -182,8 +181,10 @@
 
 
                     <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
-                        <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
-                                  style="width:310px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>
+                        <elm:comboPara name="tramite.para" id="para" style="width:310px;" value="${persona?.departamento?.id * -1}"
+                                       class="form-control label-shared required"/>
+                        %{--<g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"--}%
+                        %{--style="width:310px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>--}%
                         <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
                                   optionValue="nombre" style="width:310px;" class="form-control label-shared required"/>
                     </div>

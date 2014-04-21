@@ -137,55 +137,54 @@ class ElementosTagLib {
 
     /**
      * muestra un combobox con las personas que pueden recibir un tramite
-     * si el usuario tiene permiso TRAMITAR (P006) muestra un combo direccion y un combo persona, sino solamente persona
      */
     def comboPara = { attrs ->
         def html
         def persona = Persona.get(session.usuario.id)
+        def disp, disponibles = []
+        def disp2 = []
+        def todos = []
+        def users = []
+
         if (persona.puedeTramitar) {
-            //si tiene permiso TRAMITAR activo
-            html = '<div class="row negrilla">' +
-                    'Dirección' +
-                    elm.select(name: 'direc', id: 'direccion', class: 'form-control', from: Departamento.list([sort: 'descripcion']),
-                            optionKey: "id", optionValue: "descripcion", optionClass: "codigo", noSelection: ["": "Seleccione la dirección"]) +
-                    '</div>'
-        }//si tiene permiso TRAMITAR activo
-        else {
-            //no tiene permiso TRAMITAR activo
-            html = '<div class="row negrilla">' +
-                    'Dirección' +
-                    elm.select(name: 'direc', id: 'direccion', class: 'form-control', from: [persona.departamento],
-                            optionKey: "id", optionValue: "descripcion", optionClass: "codigo", noSelection: ["": "Seleccione la dirección"]) +
-                    '</div>'
-        }//no tiene permiso TRAMITAR activo
+            disp = Departamento.list([sort: 'descripcion'])
+        } else {
+            disp = [persona.departamento]
+        }
+        disp.each { dep ->
+            if (dep.id == persona.departamento.id) {
+                def usuarios = Persona.findAllByDepartamento(dep)
+                usuarios.each {
+                    if (it.id != persona.id) {
+                        users += it
+                    }
+                }
+                for (int i = users.size() - 1; i > -1; i--) {
+                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                        users.remove(i)
+                    } else {
+                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                    }
+                }
+            }
+        }
 
-        html += '<div class="row negrilla" id="div_usuarios"></div>'
+        disp.each { dep ->
+            if (dep.triangulos.size() > 0) {
+                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            }
+        }
 
-        def js = "<script type='text/javascript'>" +
-                "function loadPersonas() {" +
-                "   var dir = \$('#direccion').val();" +
-                "   if(dir!='' && dir==${persona.departamento?.id}) {" +
-                '       $.ajax({' +
-                '           type   : "POST",' +
-                '           url    : "' + createLink(controller: "tramite", action: "cargaUsuarios") + '",' +
-                '           data   : {' +
-                '               dir: dir' +
-                '           },' +
-                '           success: function(msg){' +
-                '               $("#div_usuarios").html(msg);' +
-                '           }' +
-                '       });' +
-                "   } else {" +
-                "        \$(\"#div_usuarios\").html('');" +
-                "   }" +
-                "}" +
-                "loadPersonas();" +
-                "\$('#direccion').val('').change(function() {" +
-                "   loadPersonas();" +
-                "});" +
-                "</script>"
+        todos = disponibles + disp2
 
-        out << html + js
+        if (!attrs.id) {
+            attrs.id = attrs.name
+        }
+
+        html = g.select(name: attrs.name, id: attrs.id, from: todos, optionKey: "id", optionValue: "label",
+                style: attrs.style, "class": attrs.class, value: attrs.value)
+
+        out << html
     }
 
     def headerTramite = { attrs ->
@@ -282,9 +281,9 @@ class ElementosTagLib {
             html += "</tr>"
             html += "<tr>"
             html += "<td class='negrilla'><b>DE</b></td>"
-            if(tramite?.de?.nombre){
+            if (tramite?.de?.nombre) {
                 html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
-            }else{
+            } else {
                 html += "<td>${tramite.de.departamento.descripcion}</td>"
             }
             html += "</tr>"
@@ -431,14 +430,14 @@ class ElementosTagLib {
                 html += "                    <div class=\"col-xs-8  col-buen-height\">"
                 html += g.select(name: 'paraExt', optionKey: 'id', optionValue: 'nombre', from: OrigenTramite.list([sort: 'nombre']), class: 'form-control', value: strPara2)
 //                html += strPara
-                        html += "                    </div>"
-                        html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-                        html += "                       <a href='#' class='btn btn-sm btn-info' id='btnInfoPara' style='margin-top: 7px;'>" +
-                                "                           <i class=\"fa fa-search\"></i>" +
-                                "                       </a>"
-                        html += "                    </div>"
+                html += "                    </div>"
+                html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+                html += "                       <a href='#' class='btn btn-sm btn-info' id='btnInfoPara' style='margin-top: 7px;'>" +
+                        "                           <i class=\"fa fa-search\"></i>" +
+                        "                       </a>"
+                html += "                    </div>"
 
-                        html += "                </div>"
+                html += "                </div>"
             } else {
                 if (para) {
                     html += "                <div class=\"row row-low-margin-top\">"
@@ -447,7 +446,8 @@ class ElementosTagLib {
                     html += "                    </div>"
                     html += ""
                     html += "                    <div class=\"col-xs-8  col-buen-height\">"
-                    html += g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+//                    html += g.select(name: 'para', optionKey: 'id', optionValue: 'label', from: todos, class: 'form-control', value: strPara2)
+                    html += elm.comboPara(name: "para", value: strPara2, "class": "form-control")
 //                html += strPara
                     html += "                    </div>"
                     html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"

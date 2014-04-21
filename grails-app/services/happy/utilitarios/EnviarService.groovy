@@ -42,38 +42,17 @@ import happy.ElementosTagLib
 
 class EnviarService {
 
-    def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje) {
-//        println "crear pdf"
-
-        if (editorTramite) {
-            tramite.texto = editorTramite
-            tramite.asunto = asunto
-            tramite.fechaModificacion = new Date()
-            if (tramite.save(flush: true)) {
-                def para = tramite.para
-                if (tramite.getPara().persona?.id) {
-                    if (tramite.getPara().persona.id.toLong() > 0) {
-                        para.persona = Persona.get(tramite.getPara().persona.id.toLong())
-                    } else {
-                        para.departamento = Departamento.get(tramite.getPara().persona.id.toLong() * -1)
-                    }
-                    if (para.save(flush: true)) {
-//                println "OK_Trámite guardado exitosamente"
-                    } else {
-//                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
-                        println "NO_Ha ocurrido un error al guardar el destinatario: "
-                    }
-                }
-            } else {
-//                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
-                println "NO_Ha ocurrido un error al guardar el trámite: "
-            }
-        }
-
+    /**
+     *  tramite         : el tramite del cual se va a crear el pdf
+     *  usuario         : el session.usuario
+     *  enviar          : mandar "1": guarda el pdf en el servidor
+     *  type            : mandar "download": retorna return "OK*" + dpto + "/" + tramite.codigo + ".pdf", sino retorna "NO"
+     *  realPath        : mandar servletContext.getRealPath("/")
+     *  mensaje         : mandar message(code: 'pathImages').toString()
+     */
+    def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
         tramite.refresh()
 
-//        def realPath = servletContext.getRealPath("/")
-//        def realPath = servletContext.getRealPath("/")
         def pathImages = realPath + "images/"
         def path = pathImages + "redactar/" + usuario.id + "/"
 

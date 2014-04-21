@@ -11,6 +11,7 @@ import happy.utilitarios.DiaLaborableController
 class TramiteController extends happy.seguridad.Shield {
 
     def diasLaborablesService
+    def enviarService
 
 //    static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
@@ -41,12 +42,16 @@ class TramiteController extends happy.seguridad.Shield {
 
         if (tramite.save(flush: true)) {
             def para = tramite.para
+
+//            crearPdf(tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje)
+
             if (params.para) {
                 if (params.para.toLong() > 0) {
                     para.persona = Persona.get(params.para.toLong())
                 } else {
                     para.departamento = Departamento.get(params.para.toLong() * -1)
                 }
+                enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
                 if (para.save(flush: true)) {
                     render "OK_Trámite guardado exitosamente"
                 } else {
