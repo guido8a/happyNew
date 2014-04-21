@@ -1006,7 +1006,7 @@ class PersonaController extends happy.seguridad.Shield {
 //        def file = new File(pathImages+"/users")
 
 
-        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,ou=GSTI,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
+        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         println "conectado " + ldap.class
         println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
 
@@ -1037,7 +1037,7 @@ class PersonaController extends happy.seguridad.Shield {
 
                 }
                 println "*********************************\n"
-                def searchString = 'ou=' + ou + ',ou=GADPP,dc=pichincha,dc=local'
+                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
                 println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
