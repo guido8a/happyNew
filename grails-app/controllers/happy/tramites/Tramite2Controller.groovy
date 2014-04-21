@@ -530,6 +530,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
+
+        if(Persona.get(session.usuario.id).tiposDocumento.size()==0) {
+            flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
         def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
         if (anio.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
