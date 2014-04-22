@@ -1175,7 +1175,10 @@ class PersonaController extends happy.seguridad.Shield {
                     if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != entry["mail"] || prsn.connect != entry["dn"]) {
                         if(entry["sn"] && entry["sn"]!=""){
                             prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
+                            def apel = prsn.apellido
                             prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
+                            if(!prsn.apellido)
+                                prsn.apellido=apel
                             prsn.mail = entry["mail"]
                             prsn.connect = entry["dn"]
                             if (!prsn.save(flush: true)) {
