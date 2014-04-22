@@ -35,9 +35,9 @@ class Departamento {
     static constraints = {
         tipoDepartamento(blank: true, nullable: true, attributes: [title: 'TipoDepartamento'])
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
-        codigo(maxSize: 6, unique: false, blank: false, attributes: [title: 'codigo'])
+        codigo(size: 1..15, unique: false, blank: false, attributes: [title: 'codigo'])
         descripcion(maxSize: 63, blank: false, attributes: [title: 'descripcion'])
-        telefono(maxSize: 15, blank: true, nullable: true, attributes: [title: 'telefono'])
+        telefono(size:1..62, blank: true, nullable: true, attributes: [title: 'telefono'])
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
         estado(blank: true, nullable: true, size: 1..1)
