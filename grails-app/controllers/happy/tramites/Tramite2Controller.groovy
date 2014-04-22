@@ -818,7 +818,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(action: "crearTramite")
             return
         } else {
-
+            if(tramite.padre){
+                tramite.padre.estado="C"
+                tramite.padre.save(flush: true)
+            }
             /*
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
