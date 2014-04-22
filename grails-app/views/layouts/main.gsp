@@ -128,10 +128,10 @@
     </div>
 </g:if>
 <g:if test="${session.departamento.estado == 'W' && session.triangulo}" >
-    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="width: 240px" style="z-index: 200001">
+    <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-warning " style="width: 240px" style="z-index: 200001">
         <div class="titulo-bloqueo">
             <i class="fa fa-exclamation-circle"></i>
-            Alerta de trámites no recibidos
+            Aviso: Trámites no recibidos
             <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                 <i class="fa fa-times"></i>
             </a>
