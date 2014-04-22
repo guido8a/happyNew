@@ -168,6 +168,25 @@
 
         <script type="text/javascript">
 
+
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
+                        data    : datos,
+                        success : function (msg) {
+                            $("#bandeja").html(msg);
+                        }
+
+                    });
+                }
+            });
+
             function cargarBandeja(band) {
                 $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 $.ajax({

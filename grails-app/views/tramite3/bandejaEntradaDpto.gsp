@@ -202,6 +202,24 @@
 
         <script type="text/javascript">
 
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda_input").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+
+                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                        data      : datos,
+                        success   : function (msg) {
+                            $("#bandeja").html(msg);
+
+                        }
+                    });
+                }
+            });
+
+
             var intervalBandeja;
 
             function cargarBandeja(band, datos) {
