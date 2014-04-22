@@ -85,7 +85,7 @@ class Tramite {
         externo(maxSize: 1, blank: true, nullable: true, attributes: [title: 'externo'])
         nota(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'nota'])
         estado(maxSize: 1, blank: true, nullable: true, attributes: [title: 'estado'])
-        observaciones(maxSize: 255, blank: true, nullable: true, attributes: [title: 'observaciones'])
+        observaciones(blank: true, nullable: true, attributes: [title: 'observaciones'])
         deDepartamento(blank: true, nullable: true)
         fechaCreacion(blank: true, nullable: true, attributes: [title: 'fechaCreacion'])
         fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])

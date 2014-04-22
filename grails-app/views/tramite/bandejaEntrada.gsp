@@ -157,7 +157,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"  />
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
                     </div>
 
                     <div class="col-md-2">
@@ -173,7 +173,7 @@
 
                     <div style="padding-top: 25px">
                         <a href="#" name="busqueda" class="btn btn-success btnBusqueda"><i
-                                class="fa fa-check-square-o" ></i> Buscar</a>
+                                class="fa fa-check-square-o"></i> Buscar</a>
 
                         <a href="#" name="salir" class="btn btn-danger btnSalir"><i class="fa fa-times"></i> Cerrar</a>
                     </div>
@@ -233,8 +233,7 @@
                 }
             });
 
-
-              function cargarBandeja(band, datos) {
+            function cargarBandeja(band, datos) {
                 if (!datos) {
                     datos = {};
                 }
@@ -310,49 +309,51 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
+                        %{--$.ajax({--}%
+                        %{--type    : 'POST',--}%
+                        %{--url     : "${createLink(action: 'recibir')}/" + id,--}%
+                        %{--success : function (msg) {--}%
+                        %{--var b = bootbox.dialog({--}%
+                        %{--id      : "dlgRecibido",--}%
+                        %{--title   : "Trámite a ser recibido",--}%
+                        %{--message : msg,--}%
+                        %{--buttons : {--}%
+                        %{--cancelar : {--}%
+                        %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                        %{--className : 'btn-danger',--}%
+                        %{--callback  : function () {--}%
+                        %{--}--}%
+                        %{--},--}%
+                        %{--recibir  : {--}%
+                        %{--id        : 'btnRecibir',--}%
+                        %{--label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',--}%
+                        %{--className : 'btn-success',--}%
+                        %{--callback  : function () {--}%
                         $.ajax({
                             type    : 'POST',
-                            url     : "${createLink(action: 'recibir')}/" + id,
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id,
                             success : function (msg) {
-                                var b = bootbox.dialog({
-                                    id      : "dlgRecibido",
-                                    title   : "Trámite a ser recibido",
-                                    message : msg,
-                                    buttons : {
-                                        cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
-                                            callback  : function () {
-                                            }
-                                        },
-                                        recibir  : {
-                                            id        : 'btnRecibir',
-                                            label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
-                                            className : 'btn-success',
-                                            callback  : function () {
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    url     : '${createLink(action: 'guardarRecibir')}/' + id,
-                                                    success : function (msg) {
-                                                        var parts = msg.split('_')
-                                                        openLoader();
-                                                        cargarBandeja();
-                                                        closeLoader();
-                                                        if (parts[0] == 'No') {
-                                                            log(parts[1], "error");
-
-                                                        } else {
-                                                            log(parts[1], "success")
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                })
+                                var parts = msg.split('_')
+                                openLoader();
+                                cargarBandeja();
+                                closeLoader();
+                                if (parts[0] == 'NO') {
+                                    log(parts[1], "error");
+                                } else if (parts[0] == "OK") {
+                                    log(parts[1], "success")
+                                } else if (parts[0] == "ERROR") {
+                                    bootbox.alert(parts[1]);
+                                }
                             }
-                        });
-                    }
+                        }); //ajax
+//                                            }
+//                                        }
+//                                    }
+//                                })
+//                            }
+//                        });
+                    } //action
                 };
 
                 var seguimiento = {

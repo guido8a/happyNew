@@ -815,9 +815,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def guardarRecibir() {
-
         def persona = session.usuario
-
 
         def tramite = Tramite.get(params.id)
         def para = tramite.getPara()?.persona
@@ -830,12 +828,28 @@ class TramiteController extends happy.seguridad.Shield {
             tramite.estadoTramite = estadoRecibido
         }
 
-        pxt.fechaRecepcion = new Date()
-        def fecha = pxt.fechaRecepcion
-        use(TimeCategory) {
-            fecha = fecha + (tramite.prioridad.tiempo).hours
+//        pxt.fechaRecepcion = new Date()
+//        def fecha = pxt.fechaRecepcion
+//        use(TimeCategory) {
+//            fecha = fecha + (tramite.prioridad.tiempo).hours
+//        }
+//        pxt.fechaLimiteRespuesta = fecha
+        def hoy = new Date()
+        def limite = hoy
+//        use(TimeCategory) {
+//            limite = limite + tramite.prioridad.tiempo.hours
+//        }
+        limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
+        if (limite[0]) {
+            limite = limite[1]
+        } else {
+            flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+            redirect(controller: 'tramite', action: 'errores')
+            return
         }
-        pxt.fechaLimiteRespuesta = fecha
+
+        pxt.fechaRecepcion = hoy
+        pxt.fechaLimiteRespuesta = limite
 
         tramite.save(flush: true)
         pxt.save(flush: true)

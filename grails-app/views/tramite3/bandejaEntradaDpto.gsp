@@ -219,7 +219,6 @@
                 }
             });
 
-
             var intervalBandeja;
 
             function cargarBandeja(band, datos) {
@@ -324,49 +323,50 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
+                        %{--$.ajax({--}%
+                        %{--type    : 'POST',--}%
+                        %{--url     : "${createLink(action: 'recibir')}/" + id,--}%
+                        %{--success : function (msg) {--}%
+//                        var b = bootbox.dialog({
+//                            id      : "dlgRecibido",
+//                            title   : "Trámite a ser recibido",
+//                            message : msg,
+//                            buttons : {
+//                                cancelar : {
+//                                    label     : '<i class="fa fa-times"></i> Cancelar',
+//                                    className : 'btn-danger',
+//                                    callback  : function () {
+//                                    }
+//                                },
+//                                recibir  : {
+//                                    id        : 'btnRecibir',
+//                                    label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
+//                                    className : 'btn-success',
+//                                    callback  : function () {
                         $.ajax({
                             type    : 'POST',
-                            url     : "${createLink(action: 'recibir')}/" + id,
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            url     : '${createLink(action: 'recibirTramite')}/' + id,
                             success : function (msg) {
-                                var b = bootbox.dialog({
-                                    id      : "dlgRecibido",
-                                    title   : "Trámite a ser recibido",
-                                    message : msg,
-                                    buttons : {
-                                        cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
-                                            callback  : function () {
-                                            }
-                                        },
-                                        recibir  : {
-                                            id        : 'btnRecibir',
-                                            label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',
-                                            className : 'btn-success',
-                                            callback  : function () {
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                                                    url     : '${createLink(action: 'recibirTramite')}/' + id,
-                                                    success : function (msg) {
-                                                        var parts = msg.split('_')
-                                                        openLoader();
-                                                        cargarBandeja();
-                                                        closeLoader();
-                                                        if (parts[0] == 'No') {
-                                                            log(parts[1], "error");
-
-                                                        } else {
-                                                            log(parts[1], "success")
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                })
+                                var parts = msg.split('_')
+                                openLoader();
+                                cargarBandeja();
+                                closeLoader();
+                                if (parts[0] == 'NO') {
+                                    log(parts[1], "error");
+                                } else if (parts[0] == "OK") {
+                                    log(parts[1], "success")
+                                } else if (parts[0] == "ERROR") {
+                                    bootbox.alert(parts[1]);
+                                }
                             }
                         });
+//                                    }
+//                                }
+//                            }
+//                        })
+//                            }//
+//                        });
                     }
                 };
 
@@ -558,13 +558,11 @@
                 cargarBandeja();
             });
 
-
             $(".btnSalir").click(function () {
                 $(".buscar").attr("hidden", true);
                 cargarBandeja();
 
             });
-
 
             $(".btnBusqueda").click(function () {
                 var memorando = $("#memorando").val();
