@@ -550,14 +550,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def obs = params.obs
 
-        tramite.observaciones = obs
-        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
+        def persona = Persona.get(session.usuario.id)
+
+        tramite.observaciones = (tramite.observaciones ? tramite.observaciones + "; " : "") + persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
+//        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
 
         if (tramite.save(flush: true)) {
-            render "OK_Trámite enviado al jefe"
+            render "OK_Observaciones agregadas exitosamente"
         } else {
             println tramite.errors
-            render "NO_Ha ocurrido un error al enviar el trámite al jefe"
+            render "NO_Ha ocurrido un error al agregar las observaciones: " + renderErrors(bean: tramite)
         }
     }
 
