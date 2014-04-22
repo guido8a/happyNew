@@ -7,6 +7,7 @@ import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import happy.tramites.TipoDocumentoDepartamento
 import happy.tramites.Tramite
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.springframework.beans.SimpleTypeConverter
@@ -133,6 +134,27 @@ class ElementosTagLib {
         }
 
         out << texto
+    }
+
+    /**
+     * muestra un combobox con los tipos de documento que puede enviar la persona
+     */
+    def comboTipoDoc = { attrs ->
+        def persona = Persona.get(session.usuario.id)
+        def depar = persona.departamento
+
+//        def tipos = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(depar, 1).tipo
+//        tipos.sort { it.descripcion }
+        def tipos = persona.tiposDocumento
+
+        if (!attrs.id) {
+            attrs.id = attrs.name
+        }
+
+        def html = elm.select(id: attrs.id, name: attrs.name, "class": attrs.class,
+                from: tipos, value: attrs.value, optionKey: "id", optionValue: "descripcion",
+                optionClass: "codigo", noSelection: ['': 'Seleccione el tipo de documento'])
+        out << html
     }
 
     /**

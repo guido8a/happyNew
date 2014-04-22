@@ -685,6 +685,9 @@ class PersonaController extends happy.seguridad.Shield {
                 w = img.getWidth()
                 h = img.getHeight()
             }
+//            println params
+//            println personaInstance
+//            println personaInstance.esTriangulo
             return [personaInstance: personaInstance, w: w, h: h]
         } else {
             notFound_ajax()

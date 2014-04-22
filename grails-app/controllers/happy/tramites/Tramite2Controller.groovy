@@ -467,26 +467,65 @@ class Tramite2Controller extends happy.seguridad.Shield {
     def busquedaBandejaSalida() {
 
 
+        def persona = Persona.get(session.usuario.id)
+        def tramites = []
+        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+        if (persona.jefe == 1) {
+            Persona.findAllByDepartamento(persona.departamento).each { p ->
+                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
+                if (t.size() > 0)
+                    tramites += t
+                t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
+                if (t.size() > 0)
+                    tramites += t
+            }
+            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+            if (t.size() > 0)
+                tramites += t
+        } else {
+            tramites = Tramite.withCriteria {
+                eq("de", persona)
+                isNull("deDepartamento")
+                inList("estadoTramite", estados)
+                order("fechaCreacion", "desc")
+            }
+            def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
+            if (t.size() > 0)
+                tramites += t
+        }
+        tramites?.sort { it.fechaCreacion }
+        tramites = tramites?.reverse()
+
+
+//busqueda
+
         if (params.fecha) {
-            params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
-        def res = Tramite.withCriteria {
+        def res = PersonaDocumentoTramite.withCriteria {
 
             if (params.fecha) {
-                eq('fechaIngreso', params.fecha)
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
             }
-            if (params.asunto) {
-                ilike('asunto', '%' + params.asunto + '%')
-            }
-            if (params.memorando) {
 
-                ilike('numero', '%' + params.memorando + '%')
-
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
             }
         }
 
-        return [tramites: res]
+//        println("-->" + tramites)
+//        println("DD" + res.tramite.id.unique())
+
+        return [tramites: res.tramite.unique(), pxtTramites: tramites]
 
 
     }
@@ -530,6 +569,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
+
+        if(Persona.get(session.usuario.id).tiposDocumento.size()==0) {
+            flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
         def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
         if (anio.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
@@ -856,6 +902,46 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 //        return render
+
+    }
+
+
+    def busquedaBandejaSalidaDep () {
+
+        def persona = Persona.get(session.usuario.id)
+        def tramites = []
+        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+
+//busqueda
+
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        }
+
+        def res = PersonaDocumentoTramite.withCriteria {
+
+            if (params.fecha) {
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
+            }
+
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+            }
+        }
+
+//        println("-->" + tramites)
+//        println("DD" + res.tramite.id.unique())
+
+        return [tramites: res.tramite.unique(), pxtTramites: tramites]
+
 
     }
 

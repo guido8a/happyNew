@@ -16,7 +16,6 @@
         </tr>
     </thead>
     <tbody id="tabla_salida">
-
         <g:each in="${tramites}" var="tramite">
             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
 

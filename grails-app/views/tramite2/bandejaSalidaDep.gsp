@@ -129,7 +129,7 @@
             </div>
         </div>
 
-        <div class="buscar" hidden="hidden">
+        <div class="buscar" hidden="hidden" style="margin-bottom: 20px">
             <fieldset>
                 <legend>Búsqueda</legend>
 
@@ -349,6 +349,7 @@
 
                 $(".btnSalir").click(function () {
                     $(".buscar").attr("hidden", true)
+                    cargarBandeja();
                 });
 
                 $(".btnActualizar").click(function () {
@@ -437,7 +438,6 @@
                 }, 300000);
 
                 $(".btnBusqueda").click(function () {
-                    var interval = loading("bandeja");
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda").val();
@@ -447,7 +447,6 @@
                         url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
                         data    : datos,
                         success : function (msg) {
-                            clearInterval(interval);
                             $("#bandeja").html(msg);
                         }
 

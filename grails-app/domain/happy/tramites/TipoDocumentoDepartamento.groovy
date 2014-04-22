@@ -3,7 +3,7 @@ package happy.tramites
 class TipoDocumentoDepartamento {
     Departamento departamento
     TipoDocumento tipo
-    String estado
+    Integer estado
     static mapping = {
         table 'tddp'
         cache usage: 'read-write', include: 'non-lazy'

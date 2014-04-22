@@ -81,6 +81,13 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
+
+        if(Persona.get(session.usuario.id).tiposDocumento.size()==0) {
+            flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
+            redirect(action: "errores")
+            return
+        }
+
         def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
         if (anio.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
@@ -916,30 +923,23 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-//        def estadoEnviado = EstadoTramite.findByCodigo('E003')
 
         def pxtTodos = []
         def pxtTramites = []
 
         def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
         def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
-
 
         pxtTodos = pxtPara
         pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
 
         pxtTodos.each {
-            if (it?.tramite?.estadoTramite?.codigo == 'E005') {
+            println("-->" + it?.tramite?.deDepartamento?.id)
+            if (it?.tramite?.estadoTramite?.codigo == 'E005' && it?.tramite?.deDepartamento?.id == null) {
                 pxtTramites.add(it)
             }
         }
-
-
-
 
         return [tramites: pxtTramites]
 

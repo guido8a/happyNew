@@ -627,4 +627,49 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     }
 
+    def archivadosDpto () {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+
+        return [persona: persona, si: params.dpto]
+
+
+    }
+
+    def tablaArchivadosDep () {
+
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+
+
+
+        def pxtTodos = []
+        def pxtTramites = []
+
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
+
+        pxtTodos = pxtPara
+        pxtTodos += pxtCopia
+
+        pxtTodos.each {
+//            println("-->" + it?.tramite?.deDepartamento?.id)
+            if (it?.tramite?.estadoTramite?.codigo == 'E005' && it?.tramite?.deDepartamento?.id != null) {
+//                println("entro!!!")
+                pxtTramites.add(it)
+            }
+        }
+
+//        println("px" + pxtTramites)
+
+
+        return [tramites: pxtTramites]
+
+
+
+    }
+
 }
