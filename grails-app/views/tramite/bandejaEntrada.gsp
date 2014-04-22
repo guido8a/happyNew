@@ -157,7 +157,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control"  />
                     </div>
 
                     <div class="col-md-2">
@@ -173,7 +173,7 @@
 
                     <div style="padding-top: 25px">
                         <a href="#" name="busqueda" class="btn btn-success btnBusqueda"><i
-                                class="fa fa-check-square-o"></i> Buscar</a>
+                                class="fa fa-check-square-o" ></i> Buscar</a>
 
                         <a href="#" name="salir" class="btn btn-danger btnSalir"><i class="fa fa-times"></i> Cerrar</a>
                     </div>
@@ -215,7 +215,26 @@
 
         <script type="text/javascript">
 
-            function cargarBandeja(band, datos) {
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+//                    submitForm($(".btnBusqueda"));
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda_input").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+
+                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
+                        data      : datos,
+                        success   : function (msg) {
+                            $("#bandeja").html(msg);
+
+                        }
+                    });
+                }
+            });
+
+
+              function cargarBandeja(band, datos) {
                 if (!datos) {
                     datos = {};
                 }
@@ -342,7 +361,7 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id + "&pers=1";
+                        location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id + "?pers=1";
                     }
                 };
 
