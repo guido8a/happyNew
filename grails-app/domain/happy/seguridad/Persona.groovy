@@ -83,11 +83,11 @@ class Persona {
         activo(blank: false, attributes: [title: 'activo'])
         autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
-        telefono(maxSize: 63, blank: true, nullable: true, attributes: [title: 'telefono'])
+        telefono(size:1.. 63, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
         celular(maxSize: 63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
-        codigo(maxSize: 50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
+        codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
         connect(nullable: true, blank: true, size: 1..512)
         estado(nullable: true, blank: true, size: 1..1)
     }
