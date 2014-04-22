@@ -78,7 +78,7 @@ class Persona {
         titulo(maxSize: 4, blank: true, nullable: true, attributes: [title: 'titulo'])
         cargo(maxSize: 127, blank: true, nullable: true, attributes: [title: 'cargo'])
         mail(maxSize: 63, unique: true, blank: true, nullable: true, attributes: [title: 'mail'])
-        login(maxSize: 20, unique: true, blank: true, nullable: true, attributes: [title: 'login'])
+        login(size: 1..30, unique: true, blank: true, nullable: true, attributes: [title: 'login'])
         password(maxSize: 63, blank: true, nullable: true, attributes: [title: 'password'])
         activo(blank: false, attributes: [title: 'activo'])
         autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
