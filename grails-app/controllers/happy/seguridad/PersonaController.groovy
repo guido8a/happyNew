@@ -1017,7 +1017,7 @@ class PersonaController extends happy.seguridad.Shield {
         def users = []
         def nuevos = []
         def mod = []
-        def results = ldap.search('(objectClass=*)', 'ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE)
+        def results = ldap.search('(objectClass=*)', 'ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE)
         def band = true
         def cont = 0
         def n1 = Departamento.get(11)
