@@ -1096,8 +1096,9 @@ class PersonaController extends happy.seguridad.Shield {
                                     prsn.apellido="N.A."
                                 println "update "+prsn.apellido
                                 if (!prsn.save(flush: true)) {
-                                    mod.add(prsn)
                                     println "error save prns " + prsn.errors
+                                }else{
+                                    mod.add(prsn)
                                 }
                             }
                         }
@@ -1185,8 +1186,10 @@ class PersonaController extends happy.seguridad.Shield {
                             prsn.connect = entry["dn"]
                             println "update "+prsn.apellido
                             if (!prsn.save(flush: true)) {
-                                mod.add(prsn)
+
                                 println "error save prns " + prsn.errors
+                            }else{
+                                mod.add(prsn)
                             }
                         }
 
