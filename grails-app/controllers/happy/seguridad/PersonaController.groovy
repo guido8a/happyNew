@@ -1092,6 +1092,9 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
                                 prsn.mail = e2["mail"]
                                 prsn.connect = e2["dn"]
+                                if(!prsn.apellido)
+                                    prsn.apellido="N.A."
+                                println "update "+prsn.apellido
                                 if (!prsn.save(flush: true)) {
                                     mod.add(prsn)
                                     println "error save prns " + prsn.errors
