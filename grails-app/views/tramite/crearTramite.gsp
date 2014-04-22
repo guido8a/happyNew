@@ -676,6 +676,7 @@
                 });
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {
+//                    console.log($(".frmTramite").valid())
                     if ($(".frmTramite").valid()) {
                         var cc = "";
                         $("#ulSeleccionados li").each(function () {

@@ -47,7 +47,7 @@
                     <td>${tramite?.de?.departamento?.descripcion}</td>
                     <td></td>
                     <td></td>
-                    <td>${tramite?.estado}</td>
+                    <td>${tramite?.estadoTramite?.descripcion}</td>
                     <td>?</td>
                     <td>${tramite?.padre}</td>
 

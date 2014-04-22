@@ -105,9 +105,9 @@
                 <h4 class="text-info">${tramite.padre.asunto}</h4>
 
                 <div class="contenido" id="divInfoContenido">
-                    <g:each in="${0..15}" var="i">
+                    %{--<g:each in="${0..15}" var="i">--}%
                         <util:renderHTML html="${tramite.padre.texto}"/>
-                    </g:each>
+                    %{--</g:each>--}%
                 </div>
             </div>
         </g:if>
