@@ -1173,14 +1173,17 @@ class PersonaController extends happy.seguridad.Shield {
                 } else {
 //                    println "encontro"
                     if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != entry["mail"] || prsn.connect != entry["dn"]) {
-                        prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
-                        prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
-                        prsn.mail = entry["mail"]
-                        prsn.connect = entry["dn"]
-                        if (!prsn.save(flush: true)) {
-                            mod.add(prsn)
-                            println "error save prns " + prsn.errors
+                        if(entry["sn"] && entry["sn"]!=""){
+                            prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
+                            prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
+                            prsn.mail = entry["mail"]
+                            prsn.connect = entry["dn"]
+                            if (!prsn.save(flush: true)) {
+                                mod.add(prsn)
+                                println "error save prns " + prsn.errors
+                            }
                         }
+
                     }
                 }
 
