@@ -111,17 +111,17 @@
                             <div class="col-md-11">${principal?.deDepartamento} - ${principal?.de}</div>
                         </g:if>
                         <g:else>
-                            <div class="col-md-11">${principal?.de?.departamento}</div>
+                            <div class="col-md-11">${principal?.de}</div>
                         </g:else>
                     </div>
 
                     <div class="row">
                         <div class="col-md-1 negrilla">Para:</div>
-                        <g:if test="${principal?.para?.persona}">
-                            <div class="col-md-11">${principal?.para?.persona?.departamento}</div>
+                        <g:if test="${principal?.para?.departamento}">
+                            <div class="col-md-11">${principal?.para?.departamento}</div>
                         </g:if>
                         <g:else>
-                            <div class="col-md-11">${principal?.para?.departamento?.descripcion}</div>
+                            <div class="col-md-11">${principal?.para?.persona}</div>
                         </g:else>
                     </div>
 
