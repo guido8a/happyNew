@@ -39,8 +39,8 @@ class TramiteExportController {
     def enviarService
 
     def crearPdf() {
-        println "crear pdf"
-        println params
+//        println "crear pdf"
+//        println params
 
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)

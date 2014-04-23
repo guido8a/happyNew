@@ -51,6 +51,7 @@ class EnviarService {
      *  mensaje         : mandar message(code: 'pathImages').toString()
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
+        println "CREAR PDF"
         tramite.refresh()
 
         def pathImages = realPath + "images/"
@@ -75,8 +76,15 @@ class EnviarService {
         resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
 
         def text = (tramite?.texto ?: '')
+        println "--------------------------------------------------------------"
+        println text
+        text = text.replaceAll("&lt;", "*lt*")
+        text = text.replaceAll("&gt;", "*gt*")
+        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
         text = text.decodeHTML()
+        text = text.replaceAll("\\*lt\\*", "&lt;")
+        text = text.replaceAll("\\*gt\\*", "&gt;")
 
 //        println "html:" + tramite.texto.decodeHTML()
 //        println "\n\n" + text
@@ -84,6 +92,8 @@ class EnviarService {
         text = text.replaceAll(~"\\?\\_debugResources=y\\&n=[0-9]*", "")
 //        text = text.replaceAll(message(code: 'pathImages'), pathImages)
         text = text.replaceAll(mensaje, pathImages)
+        println text
+        println "--------------------------------------------------------------"
 
         def content = "<!DOCTYPE HTML>\n<html>\n"
         content += "<head>\n"

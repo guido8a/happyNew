@@ -140,24 +140,24 @@ class TramiteImagenesController extends happy.seguridad.Shield {
     }
 
     def browser() {
-        println params
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
+        def folderUsuario = "images/redactar/" + usuario.id
+        def path = servletContext.getRealPath("/") + folderUsuario + "/"
 
         def files = []
 
         def dir = new File(path)
         dir.eachFileRecurse(FileType.FILES) { file ->
             def img = ImageIO.read(file)
-            files.add([
-                    dir: "images/redactar/" + usuario.id,
-                    file: file.name,
-                    w: img.getWidth(),
-                    h: img.getHeight()
-            ])
+            if (img) {
+                files.add([
+                        dir : folderUsuario,
+                        file: file.name,
+                        w   : img?.getWidth(),
+                        h   : img?.getHeight()
+                ])
+            }
         }
-//        println files
-//        println params
         return [files: files, funcNum: params.CKEditorFuncNum]
     }
 

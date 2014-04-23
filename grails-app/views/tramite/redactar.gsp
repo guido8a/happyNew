@@ -239,6 +239,7 @@
                 });
 
                 $(".btnSave").click(function () {
+                    openLoader("Guardando");
                     $.ajax({
                         type    : "POST",
                         url     : '${createLink(controller:"tramite", action: "saveTramite")}',
@@ -249,6 +250,7 @@
                             asunto        : $("#asunto").val()
                         },
                         success : function (msg) {
+                            closeLoader();
                             var parts = msg.split("_");
                             log(parts[1], parts[0] == "NO" ? "error" : "success");
                         }
@@ -256,6 +258,7 @@
                     return false;
                 });
                 $(".btnPrint").click(function () {
+                    openLoader("Generando PDF");
                     var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
                     var data = {
                         id            : "${tramite.id}",
@@ -265,7 +268,6 @@
                         type          : "download",
                         enviar        : 1
                     };
-                    openLoader("Generando PDF");
                     $.ajax({
                         type    : "POST",
                         url     : url,

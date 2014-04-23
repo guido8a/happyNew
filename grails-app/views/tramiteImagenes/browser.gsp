@@ -13,32 +13,48 @@
     </head>
 
     <body>
+        <a href="#" id="btnClose" class="btn btn-info" style="margin-bottom: 15px;">Cerrar ventana</a>
+        <g:if test="${files.size() > 0}">
+            <div class="row">
+                <g:each in="${files}" var="file" status="i">
+                    <div class="col-sm-3 ${i}">
+                        <div class="thumbnail">
+                            <a href="#" class="btn btn-danger btn-xs btn-delete pull-right" title="Eliminar" data-file="${file.file}" data-i="${i}" style="margin-bottom: 5px">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                            <img src="${resource(dir: file.dir, file: file.file)}"/>
 
-        <div class="row">
-            <g:each in="${files}" var="file" status="i">
-                <div class="col-sm-3 ${i}">
-                    <div class="thumbnail">
-                        <a href="#" class="btn btn-danger btn-xs btn-delete pull-right" title="Eliminar" data-file="${file.file}" data-i="${i}" style="margin-bottom: 5px">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                        <img src="${resource(dir: file.dir, file: file.file)}"/>
+                            <div class="caption">
+                                <p>${file.file}</p>
 
-                        <div class="caption">
-                            <p>${file.file}</p>
-
-                            <div class="text-center">
-                                <a href="#" class="btn btn-success btn-sm btn-add">
-                                    <i class="fa fa-check"></i> Seleccionar
-                                </a>
+                                <div class="text-center">
+                                    <a href="#" class="btn btn-success btn-sm btn-add">
+                                        <i class="fa fa-check"></i> Seleccionar
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </g:each>
-        </div>
+                </g:each>
+            </div>
+        </g:if>
+        <g:else>
+            <div class="alert alert-info">
+
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-picture-o fa-stack-1x text-muted"></i>
+                    <i class="fa fa-folder-o fa-stack-2x text-muted"></i>
+                </span>
+
+                No tiene imágenes cargadas en el servidor.
+            </div>
+        </g:else>
 
         <script type="text/javascript">
             $(function () {
+                $("#btnClose").click(function () {
+                    window.close();
+                });
                 var effects = ["blind", "bounce", "clip", "drop", "explode", "fold", "highlight", "puff", "pulsate", "scale", "shake", "size", "slide"];
                 $(".btn-add").click(function () {
                     window.opener.CKEDITOR.tools.callFunction(${funcNum}, $(this).parents(".thumbnail").children("img").attr("src"));
@@ -88,6 +104,16 @@
                                                         duration : 1000,
                                                         complete : function () {
                                                             $("." + i).remove();
+                                                            if ($(".col-sm-3").length == 0) {
+                                                                var alert = '<div class="alert alert-info">';
+                                                                alert += '<span class="fa-stack fa-lg">';
+                                                                alert += '<i class="fa fa-picture-o fa-stack-1x text-muted"></i>';
+                                                                alert += '<i class="fa fa-folder-o fa-stack-2x text-muted"></i>';
+                                                                alert += '</span>';
+                                                                alert += 'No tiene imágenes cargadas en el servidor.';
+                                                                alert += '</div>';
+                                                                $(".row").html(alert);
+                                                            }
                                                         }
                                                     });
                                                 }, 400);
