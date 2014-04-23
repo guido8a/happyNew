@@ -74,6 +74,7 @@
         %{--</span>--}%
         %{--</div>--}%
 
+%{--
             <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'titulo', 'error')} ">
                 <span class="grupo">
                     <label for="titulo" class="col-md-3 control-label text-info">
@@ -86,6 +87,7 @@
 
                 </span>
             </div>
+--}%
 
         %{--<div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'fechaNacimiento', 'error')} ">--}%
         %{--<span class="grupo">--}%

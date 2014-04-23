@@ -125,6 +125,7 @@
 --}%
             %{--</g:if>--}%
 
+%{--
             <g:if test="${personaInstance?.titulo}">
                 <div class="row">
                     <div class="col-md-${width} text-info">
@@ -137,6 +138,7 @@
 
                 </div>
             </g:if>
+--}%
 
         </div>
     </div>
