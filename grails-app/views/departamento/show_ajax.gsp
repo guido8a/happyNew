@@ -1,8 +1,7 @@
-
 <%@ page import="happy.tramites.Departamento" %>
 
 <g:if test="${!departamentoInstance}">
-    <elm:notFound elem="Departamento" genero="o" />
+    <elm:notFound elem="Departamento" genero="o"/>
 </g:if>
 <g:else>
 
@@ -50,7 +49,7 @@
     <g:if test="${departamentoInstance?.padre}">
         <div class="row">
             <div class="col-md-3 text-info">
-                Dirección/Secretaría:
+                Dirección/Secretaría
             </div>
 
             <div class="col-md-9">
@@ -92,11 +91,11 @@
             <div class="col-md-3 text-info">
                 Dirección
             </div>
-            
+
             <div class="col-md-9">
                 <g:fieldValue bean="${departamentoInstance}" field="direccion"/>
             </div>
-            
+
         </div>
     </g:if>
 
@@ -104,7 +103,7 @@
 
         <div class="row">
             <div class="col-md-3 text-info">
-                Recepción Dep.
+                Recepción
             </div>
 
             <g:each in="${personal}" var="persona">
@@ -113,8 +112,7 @@
                 </div>
             </g:each>
 
-
         </div>
     </g:if>
-    
+
 </g:else>

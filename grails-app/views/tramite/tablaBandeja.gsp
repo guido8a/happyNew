@@ -42,7 +42,11 @@
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
-                <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
+                <td title="${tramite?.tramite?.asunto}">
+                    ${tramite?.tramite?.codigo}
+                    %{--<br/>--}%
+                    %{--${happy.tramites.Tramite.countByPadre(tramite.tramite)}--}%
+                </td>
                 <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                 <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                 <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>

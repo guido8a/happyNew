@@ -188,10 +188,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
         }
-        if (params.anexo == "on") {
-            redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
+
+        if (tramite.tipoDocumento.codigo == "SUM") {
+            redirect(controller: "tramite2", action: "bandejaSalida", id: tramite.id)
         } else {
-            redirect(controller: "tramite", action: "redactar", id: tramite.id)
+            if (params.anexo == "on") {
+                redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
+            } else {
+//            redirect(controller: "tramite", action: "redactar", id: tramite.id)
+                redirect(controller: "tramite", action: "redactar", id: tramite.id)
+            }
         }
     }
 
@@ -434,7 +440,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println("tramites:" + pxtTodos)
 //        println("domain:" + params.domain)
 
-        return [persona: persona, tramites: pxtTodos, ahora: ahora, params: params]
+        def tramitesSinHijos = []
+
+        pxtTodos.each { tr ->
+            if (Tramite.countByPadre(tr.tramite) == 0) {
+                tramitesSinHijos += tr
+            }
+        }
+
+        return [persona: persona, tramites: tramitesSinHijos, ahora: ahora, params: params]
     }
 
 //    def recibir() {
@@ -449,7 +463,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def porEnviar = EstadoTramite.findByCodigo("E001")
         def enviado = EstadoTramite.findByCodigo("E003")
         if (tramite.estadoTramite != enviado) {
-            render "ERROR_El trámite ha sido quitado el enviado. No puede recibirlo."
+            render "ERROR_Se ha cancelado el envío.<br/>Este trámite no puede ser gestionado."
             return
         }
 

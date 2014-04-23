@@ -102,11 +102,11 @@
         </g:if>
         <g:if test="${tramite.padre}">
             <div class="nota padre ui-corner-all" id="divInfo">
-                <h4 class="text-info">${tramite.padre.asunto}</h4>
+                <h4 class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
 
                 <div class="contenido" id="divInfoContenido">
                     %{--<g:each in="${0..15}" var="i">--}%
-                        <util:renderHTML html="${tramite.padre.texto}"/>
+                    <util:renderHTML html="${tramite.padre.texto}"/>
                     %{--</g:each>--}%
                 </div>
             </div>

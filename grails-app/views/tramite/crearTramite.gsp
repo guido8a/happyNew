@@ -255,8 +255,8 @@
 
                     <div class="col-xs-3" style="margin-top: -25px">
                         <b>Tipo de documento:</b>
-                    <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                      value="${tramite.tipoDocumentoId}"/>
+                        <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
+                                          value="${tramite.tipoDocumentoId}"/>
                     </div>
 
 
@@ -556,6 +556,15 @@
                         $divOrigen.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.removeClass("hide");
+                        break;
+                    case "SUM":
+                        $divPara.html($selPara).prepend("Para: ");
+                        $divPara.removeClass("hide");
+                        $divBotonInfo.removeClass("hide");
+                        $divCopia.addClass("hide");
+                        $divCc.addClass("hide");
+                        $divConfidencial.addClass("hide");
+                        $divAnexos.addClass("hide");
                         break;
                     default :
                         $divPara.html($selPara).prepend("Para: ");

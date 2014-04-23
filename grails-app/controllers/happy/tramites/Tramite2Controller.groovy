@@ -177,7 +177,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
 
-        tramite.observaciones = (tramite.observaciones ?: '') + " Trámite desenviado por el usuario ${session.usuario.login} " +
+        tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
                 "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
                 "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
         tramite.estadoTramite = porEnviar
@@ -205,12 +205,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } //no es el que envia
             } //persona doc tramite . each
             if (errores == "") {
-                render "OK_Trámite desenviado correctamente"
+                render "OK_Envío del trámite cancelado correctamente"
             } else {
-                render "NO_Ha ocurrido un error al desenviar el trámite: " + errores
+                render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
             }
         } else {
-            render "NO_Ha ocurrido un error al desenviar el trámite: " + renderErrors(bean: tramite)
+            render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + renderErrors(bean: tramite)
         }
     }
 
@@ -497,7 +497,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
 
-
 //busqueda
 
         if (params.fecha) {
@@ -570,7 +569,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def crearTramiteDep() {
 
-        if(Persona.get(session.usuario.id).tiposDocumento.size()==0) {
+        if (Persona.get(session.usuario.id).tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
             return
@@ -587,7 +586,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (anio.findAll { it.estado == 1 }.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está activado, no puede crear trámites nuevos. Contáctese con el administrador."
-            redirect(controller: 'tramite',action: "errores")
+            redirect(controller: 'tramite', action: "errores")
             return
         }
 
@@ -818,8 +817,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(action: "crearTramite")
             return
         } else {
-            if(tramite.padre){
-                tramite.padre.estado="C"
+            if (tramite.padre) {
+                tramite.padre.estado = "C"
                 tramite.padre.save(flush: true)
             }
             /*
@@ -872,10 +871,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
-        if (params.anexo == "on") {
-            redirect(controller: "tramiteAnexos", action: "anexo", id: tramite.id)
+        if (tramite.tipoDocumento.codigo == "SUM") {
+            redirect(controller: "tramite2", action: "bandejaSalidaDep", id: tramite.id)
         } else {
-            redirect(controller: "tramite", action: "redactar", id: tramite.id)
+            if (params.anexo == "on") {
+                redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
+            } else {
+                redirect(controller: "tramite", action: "redactar", id: tramite.id)
+            }
         }
     }
 
@@ -909,7 +912,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
 
-    def busquedaBandejaSalidaDep () {
+    def busquedaBandejaSalidaDep() {
 
         def persona = Persona.get(session.usuario.id)
         def tramites = []
