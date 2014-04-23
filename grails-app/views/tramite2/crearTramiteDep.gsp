@@ -95,14 +95,46 @@
             <g:if test="${padre}">
                 <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
 
-                    <p class="css-vertical-text">T. principal</p>
+                    <p class="css-vertical-text">D. principal</p>
 
                     <div class="linea"></div>
+
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Documento:</div>
+
+                        <div class="col-md-11">${principal.codigo}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-1 negrilla">De:</div>
+                        <g:if test="${principal?.deDepartamento}">
+                            <div class="col-md-11">${principal?.deDepartamento} - ${principal?.de}</div>
+                        </g:if>
+                        <g:else>
+                            <div class="col-md-11">${principal?.de?.departamento}</div>
+                        </g:else>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Para:</div>
+                        <g:if test="${principal?.para?.persona}">
+                            <div class="col-md-11">${principal?.para?.persona?.departamento}</div>
+                        </g:if>
+                        <g:else>
+                            <div class="col-md-11">${principal?.para?.departamento?.descripcion}</div>
+                        </g:else>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-1 negrilla">Asunto:</div>
 
                         <div class="col-md-11">${principal.asunto}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Fecha:</div>
+
+                        <div class="col-md-11">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
                     </div>
 
                     <div class="row">
@@ -112,6 +144,12 @@
                             <util:renderHTML html="${principal.texto}"/>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Obs:</div>
+
+                        <div class="col-md-11">${principal.observaciones}</div>
+                    </div>
                 </div>
                 <g:if test="${padre != principal}">
                     <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
@@ -119,6 +157,33 @@
                         <p class="css-vertical-text">T. padre</p>
 
                         <div class="linea"></div>
+
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Documento:</div>
+
+                            <div class="col-md-11">${padre?.codigo}</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1 negrilla">De:</div>
+                            <g:if test="${padre?.deDepartamento}">
+                                <div class="col-md-11">${padre?.deDepartamento} - ${padre?.de}</div>
+                            </g:if>
+                            <g:else>
+                                <div class="col-md-11">${padre.de}</div>
+                            </g:else>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Para:</div>
+                            <g:if test="${padre?.para?.persona}">
+                                <div class="col-md-11">${padre?.para?.persona}</div>
+                            </g:if>
+                            <g:else>
+                                <div class="col-md-11">${padre?.para?.departamento?.descripcion}</div>
+                            </g:else>
+
+                        </div>
 
                         <div class="row">
                             <div class="col-md-1 negrilla">Asunto:</div>

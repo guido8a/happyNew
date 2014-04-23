@@ -572,14 +572,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if(Persona.get(session.usuario.id).tiposDocumento.size()==0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
-            redirect(action: "errores")
+            redirect(controller: 'tramite', action: "errores")
             return
         }
 
         def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
         if (anio.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
-            redirect(action: "errores")
+            redirect(controller: 'tramite', action: "errores")
             return
         } else if (anio.size() > 1) {
             println "HAY MAS DE 1 ANIO ${new Date().format('yyyy')}!!!!!: ${anio}"
@@ -587,14 +587,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (anio.findAll { it.estado == 1 }.size() == 0) {
             flash.message = "El año ${new Date().format('yyyy')} no está activado, no puede crear trámites nuevos. Contáctese con el administrador."
-            redirect(action: "errores")
+            redirect(controller: 'tramite',action: "errores")
             return
         }
 
         def dias = DiaLaborable.countByAnio(anio.first())
         if (dias < 365) {
             flash.message = "No se encontraron los registros de días laborables del año ${new Date().format('yyyy')}, no puede crear trámites nuevos. Contáctese con el administrador."
-            redirect(action: "errores")
+            redirect(controller: 'tramite', action: "errores")
             return
         }
 
