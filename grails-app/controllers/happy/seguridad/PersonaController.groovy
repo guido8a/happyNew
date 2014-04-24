@@ -1036,7 +1036,7 @@ class PersonaController extends happy.seguridad.Shield {
                     println "new Dep " + ou
                     dep = new Departamento()
                     dep.descripcion = ou
-                    dep.codigo = "N.A"
+                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
                     dep.activo = 1
                     dep.padre = n1
                     if (!dep.save(flush: true))
@@ -1081,10 +1081,10 @@ class PersonaController extends happy.seguridad.Shield {
                                 dpto = sinDep
                             prsn.departamento = dpto
                             if (!prsn.save(flush: true)) {
-                                nuevos.add(prsn)
+
                                 println "error save prns " + prsn.errors
                             } else {
-
+                                nuevos.add(prsn)
                                 def sesn = new Sesn()
                                 sesn.perfil = Prfl.findByCodigo("USU")
                                 sesn.usuario = prsn
@@ -1096,7 +1096,10 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                 prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
                                 prsn.mail = e2["mail"]
-                                prsn.connect = e2["dn"]
+                                if(prsn.connect != e2["dn"]){
+                                    prsn.connect = e2["dn"]
+                                    prsn.activo=0
+                                }
                                 if(!prsn.apellido)
                                     prsn.apellido="N.A."
                                 println "update "+prsn.apellido
@@ -1170,9 +1173,10 @@ class PersonaController extends happy.seguridad.Shield {
                         dpto = sinDep
                     prsn.departamento = dpto
                     if (!prsn.save(flush: true)) {
-                        nuevos.add(prsn)
+
                         println "error save prns " + prsn.errors
                     } else {
+                        nuevos.add(prsn)
                         users.add(prsn)
                         def sesn = new Sesn()
                         sesn.perfil = Prfl.findByCodigo("USU")
@@ -1188,7 +1192,10 @@ class PersonaController extends happy.seguridad.Shield {
                             if(!prsn.apellido)
                                 prsn.apellido="N.A."
                             prsn.mail = entry["mail"]
-                            prsn.connect = entry["dn"]
+                            if(prsn.connect != entry["dn"]){
+                                prsn.connect = entry["dn"]
+                                prsn.activo=0
+                            }
                             println "update "+prsn.apellido
                             if (!prsn.save(flush: true)) {
 
