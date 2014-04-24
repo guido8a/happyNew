@@ -69,7 +69,7 @@
                         <i class="fa fa-users"></i> Usuarios LDAP
                     </g:link>
 --}%
-                    <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm">Cargar/Actualizar LDAP</a>
+                    <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP</a>
 
                 </div>
 
@@ -966,7 +966,7 @@
                         if (result) {
                             openLoader();
                             $.ajax({
-                                type    : "POST", url : "${createLink(action:'"cargarUsuariosLdap')}",
+                                type    : "POST", url : "${createLink(controller:'persona', action:'"cargarUsuariosLdap')}",
                                 success : function (msg) {
                                     closeLoader();
                                     bootbox.alert(msg);
