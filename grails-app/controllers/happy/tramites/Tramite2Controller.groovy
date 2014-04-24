@@ -158,7 +158,27 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
-        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+//        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+
+        def trams = Tramite.withCriteria {
+            eq("deDepartamento", persona.departamento)
+            inList("estado", estados)
+            order("fechaCreacion", "desc")
+        }
+
+        def para = RolPersonaTramite.findByCodigo("R001")
+        def cc = RolPersonaTramite.findByCodigo("R002")
+
+        trams.each { tr ->
+            def pxd = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                inList("rolPersonaTramite", [para, cc])
+                isNull("fechaRecepcion")
+            }
+            if (pxd.size() > 0) {
+                tramites += tr
+            }
+        }
 
         return [persona: persona, tramites: tramites]
     }

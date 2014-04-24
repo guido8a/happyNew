@@ -144,6 +144,8 @@ class TramiteImagenesController extends happy.seguridad.Shield {
         def folderUsuario = "images/redactar/" + usuario.id
         def path = servletContext.getRealPath("/") + folderUsuario + "/"
 
+        new File(path).mkdirs()
+
         def files = []
 
         def dir = new File(path)
