@@ -10,9 +10,10 @@ import org.apache.directory.groovyldap.SearchScope
 class LoginController {
 
     def mail
-    def prmt = Parametros.findAll()[0]
 
     def conecta(user,pass){
+
+        def prmt = Parametros.findAll()[0]
         println "conecta "+user+" pass  "+pass
         def connect = true
         try{
