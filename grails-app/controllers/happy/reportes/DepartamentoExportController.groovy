@@ -19,12 +19,20 @@ class DepartamentoExportController {
 
     def reportesPdfService
 
+    def reporteSinUsuarios() {
+        redirect(action: "crearPdf", params: [usu: false])
+    }
+
+    def reporteConUsuarios() {
+        redirect(action: "crearPdf", params: [usu: true])
+    }
+
     def crearPdf() {
 
         params.sort = params.sort ?: "apellido"
 
-        def conUsuarios = params.usu == "true"
-        def departamentoInicial = params.id.toLong() > -1 ? Departamento.get(params.id.toLong()) : null
+        def conUsuarios = params.usu ? (params.usu == "true") : "true"
+        def departamentoInicial = params.id?.toLong() > -1 ? Departamento.get(params.id.toLong()) : null
 
         def strTitulo
         if (conUsuarios) {
