@@ -93,7 +93,7 @@
         %{--</g:if>--}%
 
         %{--<g:if test="${prms.contains('registroObra')}">--}%
-            <a href= "${createLink(controller:'obra', action: 'registroObra')}" style="text-decoration: none">
+            <a href= "${createLink(controller:'tramite3', action: 'bandejaEntradaDpto')}" style="text-decoration: none">
         %{--</g:if>--}%
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
@@ -109,7 +109,7 @@
         %{--</g:if>--}%
 
         %{--<g:if test="${prms.contains('registrarPac')}">--}%
-            <a href= "${createLink(controller:'pac', action: 'registrarPac')}" style="text-decoration: none">
+            <a href= "${createLink(controller:'busquedaExternos', action: 'seguimientoExternos')}" style="text-decoration: none">
         %{--</g:if>--}%
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
@@ -125,7 +125,7 @@
         %{--</g:if>--}%
 
         %{--<g:if test="${prms.contains('verContrato')}">--}%
-            <a href= "${createLink(controller:'contrato', action: 'verContrato')}" style="text-decoration: none">
+            <a href= "${createLink(controller:'tramite3', action: 'archivadosDpto')}" style="text-decoration: none">
         %{--</g:if>--}%
         <div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">

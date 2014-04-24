@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <title>Cargar/Actualizar usuarios del LDAP</title>
+    <title>Cargar/Actualizar usuarios desde el LDAP</title>
 </head>
 <body>
 <h1>Cargar/Actualizar usuarios del LDAP</h1>
