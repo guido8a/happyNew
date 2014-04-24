@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    %{--<meta name="layout" content="main">--}%
-    <title>Cargar usuarios del LDAP</title>
+    <meta name="layout" content="main">
+    <title>Cargar/Actualizar usuarios del LDAP</title>
 </head>
 <body>
+<h1>Cargar/Actualizar usuarios del LDAP</h1>
 <b>Se Procesaron ${users.size()} usuarios</b><br/>
 <b>${mod.size()} Fueron actualizados: </b><br/>
 <g:each in="${mod}" var="u">
@@ -21,6 +22,6 @@
         ${u.toString()} - ${u.login} - ${u.mail}<br/>
     </g:if>
 </g:each>
-%{--<a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>--}%
+<a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>
 </body>
 </html>
