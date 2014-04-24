@@ -79,7 +79,7 @@
                 </g:link>
             %{--</g:if>--}%
             %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">--}%
-            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+            %{--<i class="f a fa-list-ul"></i> Bandeja de Entrada--}%
             %{--</g:link>--}%
             </div>
 
