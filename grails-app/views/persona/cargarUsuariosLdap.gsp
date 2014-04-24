@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="main">
+    %{--<meta name="layout" content="main">--}%
     <title>Cargar usuarios del LDAP</title>
 </head>
 <body>
@@ -21,6 +21,6 @@
         ${u.toString()} - ${u.login} - ${u.mail}<br/>
     </g:if>
 </g:each>
-<a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>
+%{--<a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>--}%
 </body>
 </html>

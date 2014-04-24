@@ -969,7 +969,7 @@
                                 type    : "POST", url : "${createLink(controller:'persona', action:'cargarUsuariosLdap')}",
                                 success : function (msg) {
                                     closeLoader();
-                                    bootbox.alert(msg);
+                                    location.reload(true);
                                 }
                             });
                         }
