@@ -10,6 +10,13 @@ class Parametros {
 
     String ipLDAP
     String ouPrincipal
+    String textoCn
+    String passAdm
+
+
+    String imagenes
+
+
 
     static mapping = {
         table 'prmt'
@@ -24,6 +31,9 @@ class Parametros {
             minutoFin column: 'prmtmnfn'
             ipLDAP column: 'prmtldap'
             ouPrincipal column: 'prmt__ou'
+            textoCn column: 'prmt__cn'
+            passAdm column: 'prmtpass'
+            imagenes column: 'prmtimgn'
         }
     }
     static constraints = {
@@ -33,6 +43,10 @@ class Parametros {
         minutoFin(blank: false, nullable: false, attributes: [title: 'Minuto de finalización de la jornada'])
         ipLDAP(blank: false, nullable: false, attributes: [title: 'dirección IP del servidor LDAP'])
         ouPrincipal(blank: false, nullable: false, attributes: [title: 'Unidad organizacional principal: LDAP'])
+        textoCn(blank: false, nullable: false, attributes: [title: 'conexión en el LDAP cn'])
+        passAdm(blank: false, nullable: false, attributes: [title: 'contraseña de administracion LDAP'])
+
+        imagenes(blank: false, nullable: false, attributes: [title: 'path de las imagenes para los pdfs'])
     }
 
     def getInicioJornada() {
