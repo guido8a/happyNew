@@ -2,6 +2,7 @@ package happy.seguridad
 
 import happy.alertas.Alerta
 import happy.tramites.Tramite
+import happy.utilitarios.Parametros
 import org.apache.directory.groovyldap.LDAP
 import org.apache.directory.groovyldap.SearchScope
 
@@ -9,16 +10,18 @@ import org.apache.directory.groovyldap.SearchScope
 class LoginController {
 
     def mail
+    def prmt = Parametros.findAll()[0]
 
     def conecta(user,pass){
         println "conecta "+user+" pass  "+pass
         def connect = true
         try{
             println "connect    "+user.getConnectionString()
-            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
-            println "connect    "+user.getConnectionString()
-            assert ! ldap.exists('cn=camaras,cn=Users,ou=GADPP,dc=pichincha,dc=local')
-            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
+//            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
+            LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP,"${user.getConnectionString()}","${pass}")
+            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
+//            assert ! ldap.exists('cn=camaras,cn=Users,ou=GADPP,dc=pichincha,dc=local')
+//            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
         }catch(e){
             println "no se conecto error: "+e
             connect = false

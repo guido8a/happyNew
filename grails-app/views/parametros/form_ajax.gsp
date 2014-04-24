@@ -13,24 +13,15 @@
                 <label for="horaInicio" class="col-md-2 control-label text-info">
                     Hora Inicio
                 </label>
-
                 <div class="col-md-4">
                     <g:select name="horaInicio" from="${0..23}" value="${parametrosInstance.horaInicio ?: 8}"
                               optionValue="${{ it.toString().padLeft(2, '0') }}"/>
                     <g:select name="minutoInicio" from="${0..59}" value="${parametrosInstance.minutoInicio ?: 30}"
                               optionValue="${{ it.toString().padLeft(2, '0') }}"/>
                 </div>
-
-                %{--<div class="col-md-2">--}%
-                %{--<g:field name="horaInicio" type="number" value="${parametrosInstance.horaInicio}" class="digits form-control required" required=""/>--}%
-                %{--</div>--}%
-
-                %{--<div class="col-md-2">--}%
-                %{--<g:field name="minutoInicio" type="number" value="${parametrosInstance.minutoInicio}" class="digits form-control required" required=""/>--}%
-                %{--</div>--}%
-                %{--*--}%
             </span>
         </div>
+        
 
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'horaFin', 'error')} required">
             <span class="grupo">
@@ -45,31 +36,70 @@
                 </div>
             </span>
         </div>
+        
 
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'ipLDAP', 'error')} required">
             <span class="grupo">
                 <label for="ipLDAP" class="col-md-2 control-label text-info">
-                    IP:Puerto LDAP
+                    Ip LDAP
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-6" style="width: 200px">
                     <g:textField name="ipLDAP" required="" class="form-control required" value="${parametrosInstance?.ipLDAP}" maxlength="20"/>
                 </div>
                  *
             </span>
         </div>
-
+        
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'ouPrincipal', 'error')} required">
             <span class="grupo">
                 <label for="ouPrincipal" class="col-md-2 control-label text-info">
                     OU Principal
                 </label>
-                <div class="col-md-6">
-                    <g:textField name="ouPrincipal" required="" class="form-control required" value="${parametrosInstance?.ouPrincipal}"/>
+                <div class="col-md-9">
+                    <g:textField name="ouPrincipal" required="" class="form-control required" value="${parametrosInstance?.ouPrincipal}" maxlength="63" />
                 </div>
                  *
             </span>
         </div>
-
+        
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'textoCn', 'error')} required">
+            <span class="grupo">
+                <label for="textoCn" class="col-md-2 control-label text-info">
+                    CN
+                </label>
+                <div class="col-md-7">
+                    <g:textArea name="textoCn" required="" class="form-control required" value="${parametrosInstance?.textoCn}"
+                                style="resize:none; width: 460px; height: 100px; font-family: 'Courier New', Courier, monospace; font-size: 12px;
+                                font-weight: bold; " maxlength="511"/>
+                </div>
+                 *
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'passAdm', 'error')} required">
+            <span class="grupo">
+                <label for="passAdm" class="col-md-2 control-label text-info">
+                    Clave Administrador
+                </label>
+                <div class="col-md-6">
+                    <g:textField name="passAdm" required="" class="form-control required" value="${parametrosInstance?.passAdm}" maxlength="31"/>
+                </div>
+                 *
+            </span>
+        </div>
+        
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'imagenes', 'error')} required">
+            <span class="grupo">
+                <label for="imagenes" class="col-md-2 control-label text-info">
+                    Ruta de Imágenes
+                </label>
+                <div class="col-md-6">
+                    <g:textField name="imagenes" required="" class="form-control required" value="${parametrosInstance?.imagenes}" style="width:400px;" maxlength="255"/>
+                </div>
+                 *
+            </span>
+        </div>
+        
     </g:form>
 
     <script type="text/javascript">

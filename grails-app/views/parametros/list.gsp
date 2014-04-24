@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de Parametros</title>
+        <title>Lista de Parámetros</title>
     </head>
     <body>
 
@@ -18,26 +18,7 @@
 
     <h3> Parámetros del Sistema</h3>
 
-        <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
-
-    <!-- botones -->
-        %{--<div class="btn-toolbar toolbar">--}%
-            %{--<div class="btn-group">--}%
-                %{--<g:link action="form" class="btn btn-default btnCrear">--}%
-                    %{--<i class="fa fa-file-o"></i> Crear--}%
-                %{--</g:link>--}%
-            %{--</div>--}%
-            %{--<div class="btn-group pull-right col-md-3">--}%
-                %{--<div class="input-group">--}%
-                    %{--<input type="text" class="form-control" placeholder="Buscar" value="${params.search}">--}%
-                    %{--<span class="input-group-btn">--}%
-                        %{--<g:link action="list" class="btn btn-default btn-search" type="button">--}%
-                            %{--<i class="fa fa-search"></i>&nbsp;--}%
-                        %{--</g:link>--}%
-                    %{--</span>--}%
-                %{--</div><!-- /input-group -->--}%
-            %{--</div>--}%
-        %{--</div>--}%
+    <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <table class="table table-condensed table-bordered table-striped">
             <thead>
@@ -51,23 +32,27 @@
                     
                     %{--<g:sortableColumn property="minutoFin" title="Minuto Fin" />--}%
                     
-                    <g:sortableColumn property="ipLDAP" title="IP:Puerto LDAP" />
+                    <g:sortableColumn property="ipLDAP" title="IP y puerto LDAP" />
                     
-                    <g:sortableColumn property="ouPrincipal" title="OU Principal" />
+                    <g:sortableColumn property="ouPrincipal" title="Imágenes" />
                     
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${parametrosInstanceList}" status="i" var="parametrosInstance">
                     <tr data-id="${parametrosInstance.id}">
-                        
+
                         <td>${parametrosInstance.horaInicio.toString().padLeft(2,'0')}:${parametrosInstance.minutoInicio.toString().padLeft(2,'0')}</td>
                         
+                        %{--<td>${fieldValue(bean: parametrosInstance, field: "minutoInicio")}</td>--}%
+
                         <td>${parametrosInstance.horaFin.toString().padLeft(2,'0')}:${parametrosInstance.minutoFin.toString().padLeft(2,'0')}</td>
+                        
+                        %{--<td>${fieldValue(bean: parametrosInstance, field: "minutoFin")}</td>--}%
                         
                         <td>${fieldValue(bean: parametrosInstance, field: "ipLDAP")}</td>
                         
-                        <td>${fieldValue(bean: parametrosInstance, field: "ouPrincipal")}</td>
+                        <td>${fieldValue(bean: parametrosInstance, field: "imagenes")}</td>
                         
                     </tr>
                 </g:each>
@@ -105,7 +90,7 @@
             function deleteRow(itemId) {
                 bootbox.dialog({
                     title   : "Alerta",
-                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Parametros seleccionado? Esta acción no se puede deshacer.</p>",
+                    message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>¿Está seguro que desea eliminar el Parámetro seleccionado? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -182,7 +167,7 @@
                 context.settings({
                     onShow : function (e) {
                         $("tr.success").removeClass("success");
-                        var $tr = $(e.target).parents("tr");
+                        var $tr = $(e.target).parent();
                         $tr.addClass("success");
                         id = $tr.data("id");
                     }

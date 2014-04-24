@@ -6,6 +6,7 @@ import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import happy.utilitarios.Parametros
 import org.apache.commons.lang.WordUtils
 import org.fusesource.jansi.Ansi
 import static java.awt.RenderingHints.*
@@ -1007,9 +1008,11 @@ class PersonaController extends happy.seguridad.Shield {
 //        def realPath = servletContext.getRealPath("/")
 //        def pathImages = realPath + "images/"
 //        def file = new File(pathImages+"/users")
+        def prmt = Parametros.findAll()[0]
 
 
-        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
+//        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
+        LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, prmt.textoCn, prmt.passAdm)
         println "conectado " + ldap.class
         println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
 
@@ -1017,7 +1020,8 @@ class PersonaController extends happy.seguridad.Shield {
         def users = []
         def nuevos = []
         def mod = []
-        def results = ldap.search('(objectClass=*)', 'ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE)
+//        def results = ldap.search('(objectClass=*)', 'ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE)
+        def results = ldap.search('(objectClass=*)', prmt.ouPrincipal, SearchScope.ONE)
         def band = true
         def cont = 0
         def n1 = Departamento.get(11)
@@ -1040,7 +1044,8 @@ class PersonaController extends happy.seguridad.Shield {
 
                 }
                 println "*********************************\n"
-                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
+//                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
+                def searchString = 'ou=' + ou + prmt.ouPrincipal
                 println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
