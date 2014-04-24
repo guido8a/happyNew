@@ -216,4 +216,27 @@ class Tramite {
             return ["codigo": this.de.login, "nombre": this.de.toString()]
     }
 
+    def personaPuedeLeer(Persona persona) {
+        def tienePermiso = persona.puedeVer
+        def departamento = persona.departamento
+        if (!tienePermiso) {
+            return false
+        }
+        if (this.tipoTramite.codigo == 'N') {
+            return true
+        } else {
+            if (this.para.persona == persona || this.copias.contains(persona)) {
+                return true
+            }
+            if (this.para.departamento) {
+                return false
+            }
+        }
+        return false
+    }
+
+    def departamentoPuedeLeer(Departamento departamento) {
+        return this.tipoTramite.codigo == 'N'
+    }
+
 }
