@@ -55,11 +55,11 @@
 
 
         <div style="margin-top: 30px;padding-bottom: 10px" class="vertical-container">
-            <p class="css-vertical-text">Trámite principal</p>
+            <p class="css-vertical-text">Doc. Principal</p>
 
             <div class="linea"></div>
 
-            <h3>${tramite.tipoDocumento?.descripcion} ${tramite.codigo} (prioridad: ${tramite.prioridad?.descripcion})</h3>
+            <div class="row"><div class="col-xs-3 negrilla">${tramite.codigo} </div></div>
 
             <div class="row">
                 <div class="col-xs-1 negrilla">

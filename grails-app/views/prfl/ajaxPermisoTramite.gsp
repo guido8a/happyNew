@@ -3,7 +3,7 @@
     <input type="hidden" id="mdlo__id" value="${mdlo__id}">
     <input type="hidden" id="tpac__id" value="${mdlo__id}">
     <g:if test="${datos?.size() > 0}">
-        <div class="ui-corner-all" style="height: 380px; overflow:auto; margin-bottom: 5px; margin-left: -20px; background-color: #efeff8;
+        <div class="ui-corner-all" style="height: 430px; overflow:auto; margin-bottom: 5px; margin-left: -20px; background-color: #efeff8;
         border-style: solid; border-color: #AAA; border-width: 1px; ">
             <table border="0" cellpadding="0" width="800px">
                 <thead style="color: #101010; background-color: #69b0d3">
