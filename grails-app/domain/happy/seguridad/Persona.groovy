@@ -83,9 +83,9 @@ class Persona {
         activo(blank: false, attributes: [title: 'activo'])
         autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
-        telefono(size:1.. 63, blank: true, nullable: true, attributes: [title: 'telefono'])
+        telefono(size: 1..63, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
-        celular(size:1.. 63, blank: true, nullable: true, attributes: [title: 'celular'])
+        celular(size: 1..63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
         codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
         connect(nullable: true, blank: true, size: 1..512)
@@ -105,13 +105,19 @@ class Persona {
     }
 
     def getPuedeRecibir() {
-        def permiso = PermisoTramite.findByCodigo("P010")
-        def perms = null
-        perms = PermisoUsuario.findByPersonaAndPermisoTramite(this, permiso)
-        if (perms) {
-            return true
+//        def permiso = PermisoTramite.findByCodigo("P010")
+//        def perms = null
+//        perms = PermisoUsuario.findByPersonaAndPermisoTramite(this, permiso)
+//        if (perms) {
+//            return true
+//        }
+//        return false
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P010"))
         }
-        return false
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
     }
 
     def getPuedeTramitar() {
@@ -195,7 +201,7 @@ class Persona {
 
     def getTiposDocumento() {
 //        def lista = TipoDocumento.list(['sort': 'descripcion'])
-        def lista =  TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(this.departamento, 1).tipo
+        def lista = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(this.departamento, 1).tipo
         lista.sort { it.descripcion }
         if (!this.puedeExternos) {
             lista.remove(TipoDocumento.findByCodigo("DEX"))
@@ -212,16 +218,9 @@ class Persona {
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)
             eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
-            le("fechaInicio", new Date())
-            or {
-                ge("fechaFin", new Date())
-                isNull("fechaFin")
-            }
         }
-        if (perm.size() > 0)
-            return true
-        else
-            return false
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
     }
 
     def getEsTriangulo() {

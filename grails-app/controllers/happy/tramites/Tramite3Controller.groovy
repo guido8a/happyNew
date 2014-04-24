@@ -469,6 +469,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def paraDpto = tramite.para?.departamento
         def paraPrsn = tramite.para?.persona
+        def esCircular = false
+        if (!paraPrsn && !paraDpto) {
+            esCircular = true
+        }
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCC = RolPersonaTramite.findByCodigo("R002")
@@ -477,10 +481,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
         def pxt = PersonaDocumentoTramite.withCriteria {
             eq("tramite", tramite)
-            if (paraDpto) {
-                eq("departamento", persona.departamento)
-            } else if (paraPrsn) {
-                eq("persona", persona)
+            if (!esCircular) {
+                if (paraDpto) {
+                    eq("departamento", persona.departamento)
+                } else if (paraPrsn) {
+                    eq("persona", persona)
+                }
+            } else {
+                or {
+                    eq("departamento", persona.departamento)
+                    eq("persona", persona)
+                }
             }
             or {
                 eq("rolPersonaTramite", rolPara)
@@ -488,6 +499,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 eq("rolPersonaTramite", rolImprimir)
             }
         }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
+
+//        println "tramite: " + tramite
+//        println "paraDpto: " + paraDpto
+//        println "paraPrsn: " + paraPrsn
+//        println "rolPara: " + rolPara
+//        println "rolCC: " + rolCC
+//        println "rolImprimir: " + rolImprimir
+//        println "PDT: " + pxt
 
         if (pxt.size() > 1) {
             flash.message = "ERROR"
