@@ -1,3 +1,4 @@
+<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
 <table class="table table-bordered  table-condensed table-hover">
@@ -38,7 +39,28 @@
                 <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                 <g:set var="para" value="${tramite.getPara()}"/>
                 <td>${para?.departamento?.codigo}</td>
-                <td>
+                <g:set var="infoExtra" value=""/>
+                <g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">
+                    <g:if test="${infoExtra != ''}">
+                        <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
+                    </g:if>
+                    <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
+                    <g:if test="${pdt.departamento}">
+                        <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
+                    </g:if>
+                    <g:else>
+                        <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
+                    </g:else>
+                    <g:if test="${pdt.fechaEnvio}">
+                        <g:if test="${pdt.fechaRecepcion}">
+                            <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
+                        </g:if>
+                        <g:else>
+                            <g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>
+                        </g:else>
+                    </g:if>
+                </g:each>
+                <td title="${infoExtra}">
                     <g:if test="${tramite.origenTramite}">
                         ${tramite.origenTramite?.nombre}
                     </g:if>

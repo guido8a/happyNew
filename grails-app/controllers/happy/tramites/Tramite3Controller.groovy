@@ -462,7 +462,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
         def enviado = EstadoTramite.findByCodigo("E003")
-        if (tramite.estadoTramite != enviado) {
+        def recibido = EstadoTramite.findByCodigo("E004")
+        //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
+        if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
             render "ERROR_Se ha cancelado el envío.<br/>Este trámite no puede ser gestionado."
             return
         }

@@ -157,17 +157,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "carga bandeja"
         def persona = Persona.get(session.usuario.id)
         def tramites = []
-        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+//        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+
+        def porEnviar = EstadoTramite.findByCodigo("E001")
+        def revisado = EstadoTramite.findByCodigo("E002")
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+
+        def para = RolPersonaTramite.findByCodigo("R001")
+        def cc = RolPersonaTramite.findByCodigo("R002")
 //        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
 
         def trams = Tramite.withCriteria {
             eq("deDepartamento", persona.departamento)
-            inList("estado", estados)
+            inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
             order("fechaCreacion", "desc")
         }
-
-        def para = RolPersonaTramite.findByCodigo("R001")
-        def cc = RolPersonaTramite.findByCodigo("R002")
 
         trams.each { tr ->
             def pxd = PersonaDocumentoTramite.withCriteria {
@@ -297,10 +302,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def tablaBandejaSalida() {
 //        println "carga bandeja"
+
+        def porEnviar = EstadoTramite.findByCodigo("E001")
+        def revisado = EstadoTramite.findByCodigo("E002")
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+
+        def para = RolPersonaTramite.findByCodigo("R001")
+        def cc = RolPersonaTramite.findByCodigo("R002")
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
         def persona = Persona.get(session.usuario.id)
         def tramites = []
-        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+        def estados = [porEnviar, revisado, enviado, recibido]
         if (persona.jefe == 1) {
             Persona.findAllByDepartamento(persona.departamento).each { p ->
                 def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
@@ -334,7 +349,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
-        return [persona: persona, tramites: tramites]
+
+        def trams = []
+
+        tramites.each { tr ->
+            def pxd = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                inList("rolPersonaTramite", [para, cc])
+                isNull("fechaRecepcion")
+            }
+            if (pxd.size() > 0) {
+                trams += tr
+            }
+        }
+
+        return [persona: persona, tramites: trams]
     }
 
     def tablaBandejaSalida_old() {

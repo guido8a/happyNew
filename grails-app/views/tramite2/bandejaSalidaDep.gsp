@@ -166,6 +166,25 @@
             <div id="bandeja"></div>
         </div>
 
+        <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Detalles</h4>
+                    </div>
+
+                    <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
         <script type="text/javascript">
 
 
@@ -272,6 +291,26 @@
                         window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
                     }
                 };
+
+                var detalles = {
+                    text   : 'Detalles',
+                    icon   : "<i class='fa fa-search'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                $("#dialog-body").html(msg)
+                            }
+                        });
+                        $("#dialog").modal("show")
+                    }
+                };
                 var editar = {
                     text   : 'Editar',
                     icon   : "<i class='fa fa-pencil'></i>",
@@ -345,19 +384,29 @@
                     {
                         header : 'Acciones'
                     },
-                    ver
+                    ver,
+                    detalles
+                ]);
+                context.attach(".E004", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles
                 ]);
                 context.attach(".alerta", [
                     {
                         header : 'Acciones'
                     },
-                    ver
+                    ver,
+                    detalles
                 ]);
                 context.attach(".desenviar", [
                     {
                         header : 'Acciones'
                     },
                     ver,
+                    detalles,
                     editar,
                     desenviar
                 ]);
