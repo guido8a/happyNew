@@ -1045,7 +1045,7 @@ class PersonaController extends happy.seguridad.Shield {
                 }
                 println "*********************************\n"
 //                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
-                def searchString = 'ou=' + ou + prmt.ouPrincipal
+                def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
                 println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
