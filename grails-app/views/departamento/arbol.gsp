@@ -966,7 +966,7 @@
                         if (result) {
                             openLoader();
                             $.ajax({
-                                type    : "POST", url : "${createLink(controller:'persona', action:'"cargarUsuariosLdap')}",
+                                type    : "POST", url : "${createLink(controller:'persona', action:'cargarUsuariosLdap')}",
                                 success : function (msg) {
                                     closeLoader();
                                     bootbox.alert(msg);
