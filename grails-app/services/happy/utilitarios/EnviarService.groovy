@@ -52,6 +52,18 @@ class EnviarService {
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
         println "CREAR PDF"
+
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
+            println "NO HAY PARAMETROS!!!!!!"
+            mensaje = "/happy/images/"
+        } else if (parametros.size() > 1) {
+            println "HAY ${parametros.size()} REGISTROS DE PARAMETROS!!!!"
+            mensaje = parametros.first().imagenes
+        } else {
+            mensaje = parametros.first().imagenes
+        }
+
         tramite.refresh()
 
         def pathImages = realPath + "images/"
