@@ -1026,6 +1026,7 @@ class PersonaController extends happy.seguridad.Shield {
         def cont = 0
         def n1 = Departamento.get(11)
         def sinDep = Departamento.get(20)
+        def secuencia = 1
         for (entry in results) {
             println "__==> " + entry["ou"]
             println "----------------------------"
@@ -1036,7 +1037,8 @@ class PersonaController extends happy.seguridad.Shield {
                     println "new Dep " + ou
                     dep = new Departamento()
                     dep.descripcion = ou
-                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
+//                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
+                    dep.codigo = "NA-" + secuencia++
                     dep.activo = 1
                     dep.padre = n1
                     if (!dep.save(flush: true))
@@ -1130,7 +1132,8 @@ class PersonaController extends happy.seguridad.Shield {
                                 padre = n1
                             dep = new Departamento()
                             dep.descripcion = ou2
-                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
+//                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
+                            dep.codigo = "NA-" + secuencia++
                             dep.activo = 1
                             dep.padre = padre
                             if (!dep.save(flush: true))

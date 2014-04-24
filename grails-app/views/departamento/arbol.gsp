@@ -64,9 +64,13 @@
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
-                    <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary">
+%{--
+                    <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
                         <i class="fa fa-users"></i> Usuarios LDAP
                     </g:link>
+--}%
+                    <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm">Cargar/Actualizar LDAP</a>
+
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
@@ -955,6 +959,21 @@
                         $('#tree').jstree(true).search($.trim($("#search").val()));
                         return false;
                     }
+                });
+
+                $("#cargaPrsn").click(function () {
+                    bootbox.confirm("Cargar/Actualizar personal y Departamentos desde el servidor LDAP?", function (result) {
+                        if (result) {
+                            openLoader();
+                            $.ajax({
+                                type    : "POST", url : "${createLink(action:'"cargarUsuariosLdap')}",
+                                success : function (msg) {
+                                    closeLoader();
+                                    bootbox.alert(msg);
+                                }
+                            });
+                        }
+                    });
                 });
             });
         </script>
