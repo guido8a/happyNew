@@ -36,7 +36,7 @@ class Departamento {
         tipoDepartamento(blank: true, nullable: true, attributes: [title: 'TipoDepartamento'])
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         codigo(size: 1..15, unique: false, blank: false, attributes: [title: 'codigo'])
-        descripcion(size: 1..512, blank: false, attributes: [title: 'descripcion'])
+        descripcion(size: 1..511, blank: false, attributes: [title: 'descripcion'])
         telefono(size:1..62, blank: true, nullable: true, attributes: [title: 'telefono'])
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
