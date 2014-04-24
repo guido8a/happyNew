@@ -965,13 +965,7 @@
                     bootbox.confirm("Cargar/Actualizar personal y Departamentos desde el servidor LDAP?", function (result) {
                         if (result) {
                             openLoader();
-                            $.ajax({
-                                type    : "POST", url : "${createLink(controller:'persona', action:'cargarUsuariosLdap')}",
-                                success : function (msg) {
-                                    closeLoader();
-                                    location.reload(true);
-                                }
-                            });
+                            location.href = "${createLink(controller:'persona', action:'cargarUsuariosLdap')}"
                         }
                     });
                 });
