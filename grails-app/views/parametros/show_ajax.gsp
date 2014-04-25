@@ -13,19 +13,7 @@
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${parametrosInstance}" field="horaInicio"/>
-            </div>
-            
-        </div>
-    </g:if>
-    
-    <g:if test="${parametrosInstance?.minutoInicio}">
-        <div class="row">
-            <div class="col-md-2 text-info">
-                Minuto Inicio
-            </div>
-            
-            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="horaInicio"/> :
                 <g:fieldValue bean="${parametrosInstance}" field="minutoInicio"/>
             </div>
             
@@ -39,29 +27,17 @@
             </div>
             
             <div class="col-md-3">
-                <g:fieldValue bean="${parametrosInstance}" field="horaFin"/>
-            </div>
-            
-        </div>
-    </g:if>
-    
-    <g:if test="${parametrosInstance?.minutoFin}">
-        <div class="row">
-            <div class="col-md-2 text-info">
-                Minuto Fin
-            </div>
-            
-            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="horaFin"/> :
                 <g:fieldValue bean="${parametrosInstance}" field="minutoFin"/>
             </div>
             
         </div>
     </g:if>
-    
+
     <g:if test="${parametrosInstance?.ipLDAP}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Ip LDAP
+                IP LDAP y puerto:
             </div>
             
             <div class="col-md-3">
@@ -74,7 +50,7 @@
     <g:if test="${parametrosInstance?.ouPrincipal}">
         <div class="row">
             <div class="col-md-2 text-info">
-                Ou Principal
+                OU Principal
             </div>
             
             <div class="col-md-3">
@@ -90,8 +66,9 @@
                 Texto Cn
             </div>
             
-            <div class="col-md-3">
-                <g:fieldValue bean="${parametrosInstance}" field="textoCn"/>
+            <div class="col-md-3" style="font-family: 'Courier New', Courier, monospace; font-size: 12px;">
+                %{--<g:fieldValue bean="${parametrosInstance}" field="textoCn"/>--}%
+                ${parametrosInstance.textoCn}
             </div>
             
         </div>

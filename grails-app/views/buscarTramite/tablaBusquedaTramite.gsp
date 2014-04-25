@@ -49,9 +49,9 @@
                     <g:else>
                         <td></td>
                     </g:else>
-                   <td>${tramite?.fc_trmt.format('dd-MM-yyyy HH:mm')}</td>
+                   <td>${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
                     <g:if test="${tramite?.fc_envi}">
-                        <td>${tramite?.fc_envi.format('dd-MM-yyyy HH:mm')}</td>
+                        <td>${tramite?.fc_envi?.format('dd-MM-yyyy HH:mm')}</td>
                     </g:if>
                     <g:else>
                         <td></td>
