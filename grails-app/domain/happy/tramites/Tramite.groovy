@@ -219,16 +219,19 @@ class Tramite {
     def personaPuedeLeer(Persona persona) {
         def tienePermiso = persona.puedeVer
         def departamento = persona.departamento
+        if (this.de == persona) {
+            return true
+        }
         if (!tienePermiso) {
             return false
         }
         if (this.tipoTramite.codigo == 'N') {
             return true
         } else {
-            if (this.para.persona == persona || this.copias.contains(persona)) {
+            if (this.para?.persona == persona || this.copias.contains(persona)) {
                 return true
             }
-            if (this.para.departamento) {
+            if (this.para?.departamento) {
                 return false
             }
         }

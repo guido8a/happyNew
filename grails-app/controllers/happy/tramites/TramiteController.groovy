@@ -112,6 +112,7 @@ class TramiteController extends happy.seguridad.Shield {
 
 //        println("params " + params)
         def padre = null
+        def cc = ""
         def tramite = new Tramite(params)
         def principal = null
         def users = []
@@ -129,6 +130,16 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
+            (tramite.copias).each { c ->
+                if (cc != '') {
+                    cc += "_"
+                }
+                if (c.departamento) {
+                    cc += ("-" + c.departamentoId)
+                } else {
+                    cc += c.personaId
+                }
+            }
         } else {
             tramite.fechaCreacion = new Date()
         }
@@ -159,25 +170,40 @@ class TramiteController extends happy.seguridad.Shield {
                     if (!(users[i].estaActivo && users[i].puedeRecibir)) {
                         users.remove(i)
                     } else {
-                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                        if (params.id) {
+                            if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
+                                disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                            }
+                        } else {
+                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                        }
                     }
                 }
             }
         }
 
         disp.each { dep ->
-            if (dep.triangulos.size() > 0) {
-                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (params.id) {
+                if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
+                    if (dep.triangulos.size() > 0) {
+                        disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                    }
+                }
+            } else {
+                if (dep.triangulos.size() > 0) {
+                    disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                }
             }
         }
 
         todos = disponibles + disp2
+
         def bloqueo = false
 //        if (session.departamento.estado == "B") {
 //            bloqueo = true
 //        }
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc]
     }
 
     def cargaUsuarios() {
@@ -308,15 +334,15 @@ class TramiteController extends happy.seguridad.Shield {
 //        redirect(action: "redactarTramite", id: tramite.id)
 //    }
 
-    def redactarTramite() {
-        def tramite = Tramite.get(params.id)
-        if (tramite.de.id.toInteger() != session.usuario.id.toInteger()) {
-            response.sendError(403)
-            return
-        } else {
-            [tramite: tramite]
-        }
-    }
+//    def redactarTramite() {
+//        def tramite = Tramite.get(params.id)
+//        if (tramite.de.id.toInteger() != session.usuario.id.toInteger()) {
+//            response.sendError(403)
+//            return
+//        } else {
+//            [tramite: tramite]
+//        }
+//    }
 
 //    def randomDep() {
 //        return

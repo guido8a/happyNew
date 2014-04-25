@@ -151,9 +151,21 @@ class ElementosTagLib {
             attrs.id = attrs.name
         }
 
-        def html = elm.select(id: attrs.id, name: attrs.name, "class": attrs.class,
-                from: tipos, value: attrs.value, optionKey: "id", optionValue: "descripcion",
-                optionClass: "codigo", noSelection: ['': 'Seleccione el tipo de documento'])
+        def params = [id         : attrs.id,
+                      name       : attrs.name,
+                      "class"    : attrs.class,
+                      from       : tipos,
+                      value      : attrs.value,
+                      optionKey  : "id",
+                      optionValue: "descripcion",
+                      optionClass: "codigo",
+                      noSelection: ['': 'Seleccione el tipo de documento']]
+
+        if (attrs.tramite?.id) {
+            params.disabled = true
+        }
+
+        def html = elm.select(params)
         out << html
     }
 

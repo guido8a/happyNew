@@ -1,5 +1,8 @@
 package happy.tramites
 
+import grails.converters.JSON
+import groovy.json.JsonBuilder
+
 
 class OrigenTramiteController extends happy.seguridad.Shield {
 
@@ -8,6 +11,18 @@ class OrigenTramiteController extends happy.seguridad.Shield {
     def index() {
         redirect(action: "list", params: params)
     } //index
+
+    def getDatosByCedula_ajax() {
+        def origen = OrigenTramite.findAllByCedula(params.cedula)
+        if (origen.size() == 0) {
+            render "NO"
+        } else if (origen.size() == 1) {
+            render origen.first() as JSON
+        } else {
+            println "AAAAA HAY VARIOS ORIGEN CON CEDULA ${params.cedula}: ${origen}"
+            render origen.first() as JSON
+        }
+    }
 
     def getLista(params, all) {
         params = params.clone()

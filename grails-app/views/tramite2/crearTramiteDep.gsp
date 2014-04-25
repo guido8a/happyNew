@@ -3,7 +3,14 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Creación de trámites o documentos principales</title>
+        <title>
+            <g:if test="${tramite.id}">
+                Modificar datos del trámite
+            </g:if>
+            <g:else>
+                Creación de trámites o documentos principales
+            </g:else>
+        </title>
         <style>
 
         option.selected {
@@ -65,7 +72,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="redactar" class="btn btn-azul btnSave">
-                    <i class="fa fa-save"></i> ${(tramite.id) ? "Guardar " : "Guardar y empezar a redactar"}
+                    <i class="fa fa-save"></i> Guardar y empezar a redactar
                 </g:link>
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
@@ -76,6 +83,11 @@
                 <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">
                     <i class="fa fa-list-ul"></i> Bandeja de Entrada
                 </g:link>
+                <g:if test="${tramite.padre || tramite.id}">
+                    <a href="#" class="btn btn-azul" id="btnDetalles">
+                        <i class="fa fa-search"></i> Detalles
+                    </a>
+                </g:if>
             %{--<g:if test="${padre}">--}%
                 <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-default btnRegresar">
                     <i class="fa fa-times"></i> Cancelar
@@ -90,12 +102,12 @@
         <g:form class="frmTramite" action="saveDep">
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
-            <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value=""/>
+            <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre}">
                 <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
 
-                    <p class="css-vertical-text">D. principal</p>
+                    <p class="css-vertical-text">D. Principal</p>
 
                     <div class="linea"></div>
 
@@ -154,7 +166,7 @@
                 <g:if test="${padre != principal}">
                     <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
 
-                        <p class="css-vertical-text">T. padre</p>
+                        <p class="css-vertical-text">Contesta a</p>
 
                         <div class="linea"></div>
 
@@ -192,11 +204,23 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-md-1 negrilla">Fecha:</div>
+
+                            <div class="col-md-11">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-1 negrilla">Texto:</div>
 
                             <div class="col-md-11 texto">
                                 <util:renderHTML html="${padre.texto}"/>
                             </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Obs:</div>
+
+                            <div class="col-md-11">${padre.observaciones}</div>
                         </div>
                     </div>
                 </g:if>
@@ -222,11 +246,9 @@
 
                 <div class="row">
                     <div class="col-xs-4">
-                        <b>De:</b>
+                        <b style="margin-right: 5px">De:</b>
 
-                        <div class="uneditable-input label-shared" id="de"
-                             title="${de.departamento?.descripcion}">
-                            %{--${de.nombre} ${de.apellido}--}%
+                        <div class="uneditable-input label-shared" id="de" title="${de.departamento?.descripcion}">
                             ${de.departamento?.codigo}
                         </div>
                     </div>
@@ -241,13 +263,15 @@
                     <div class="col-xs-3" style="margin-top: -25px">
                         <b>Tipo de documento:</b>
                         <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                          value="${tramite.tipoDocumentoId}"/>
+                                          value="${tramite.tipoDocumentoId}" tramite="${tramite}"/>
                     </div>
 
 
-                    <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px;">
-                        <g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"
-                                  style="width:310px;" class="form-control label-shared required"/>
+                    <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
+                        <elm:comboPara name="tramite.para" id="para" style="width:310px;" value="${session.usuario?.departamento?.id * -1}"
+                                       class="form-control label-shared required"/>
+                        %{--<g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"--}%
+                        %{--style="width:310px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>--}%
                         <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
                                   optionValue="nombre" style="width:310px;" class="form-control label-shared required"/>
                     </div>
@@ -302,15 +326,21 @@
                     </div>
 
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
-                        <label for="cc"><input type="checkbox" name="cc" id="cc"/> Con copia</label>
+                        <label for="cc"><input type="checkbox" name="cc" id="cc" ${cc != '' ? 'checked' : ''}/>
+                            Con copia
+                        </label>
                     </div>
 
                     <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">
-                        <label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>
+                        <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
+                            Confidencial
+                        </label>
                     </div>
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
-                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>
+                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo" ${tramite.anexo == 1 ? 'checked' : ''}/>
+                            Con anexos
+                        </label>
                     </div>
 
                 </div>
@@ -331,33 +361,38 @@
 
                 <div class="linea"></div>
 
+                <g:set var="origen" value="${tramite.origenTramite}"/>
+
                 <div class="row">
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Tipo de Persona:</b>
-                            <g:select name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="form-control origen required"
-                                      from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}"/>
+                            <g:select id="tipoPersonaOrigen" name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="origenTram form-control origen required"
+                                      from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}" value="${origen?.tipoPersonaId}"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Cédula/R.U.C.:</b>
-                            <g:textField name="origen.cedula" id="cedulaOrigen" class="form-control required" maxlength="13"/>
+                            <g:textField name="origen.cedula" id="cedulaOrigen" class="origenTram form-control required" maxlength="13"
+                                         value="${origen?.cedula}"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Nombre:</b>
-                            <g:textField name="origen.nombre" id="nombreOrigen" class="form-control required" maxlength="127"/>
+                            <g:textField name="origen.nombre" id="nombreOrigen" class="origenTram form-control required" maxlength="127"
+                                         value="${origen?.nombre}"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Nombre contacto:</b>
-                            <g:textField name="origen.nombreContacto" class="form-control " maxlength="31"/>
+                            <g:textField id="nombreContactoOrigen" name="origen.nombreContacto" class="origenTram form-control " maxlength="31"
+                                         value="${origen?.nombreContacto}"/>
                         </span>
                     </div>
                 </div>
@@ -366,21 +401,24 @@
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Apellido contacto:</b>
-                            <g:textField name="origen.apellidoContacto" class="form-control " maxlength="31"/>
+                            <g:textField id="apellidoContactoOrigen" name="origen.apellidoContacto" class="origenTram form-control " maxlength="31"
+                                         value="${origen?.apellidoContacto}"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Título:</b>
-                            <g:textField name="origen.titulo" class="form-control " maxlength="4"/>
+                            <g:textField id="tituloOrigen" name="origen.titulo" class="origenTram form-control " maxlength="4"
+                                         value="${origen?.titulo}"/>
                         </span>
                     </div>
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Cargo:</b>
-                            <g:textField name="origen.cargo" class="form-control" maxlength="127"/>
+                            <g:textField id="cargoOrigen" name="origen.cargo" class="origenTram form-control" maxlength="127"
+                                         value="${origen?.cargo}"/>
                         </span>
                     </div>
 
@@ -389,7 +427,8 @@
                             <b>E-mail:</b>
 
                             <div class="input-group">
-                                <g:textField name="origen.mail" class="form-control" maxlength="63"/>
+                                <g:textField id="mailOrigen" name="origen.mail" class="origenTram form-control" maxlength="63"
+                                             value="${origen?.mail}"/>
                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
                             </div>
                         </span>
@@ -402,7 +441,8 @@
                             <b>Teléfono:</b>
 
                             <div class="input-group">
-                                <g:textField name="origen.telefono" class="form-control " maxlength="63"/>
+                                <g:textField id="telefonoOrigen" name="origen.telefono" class="origenTram form-control " maxlength="63"
+                                             value="${origen?.telefono}"/>
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                             </div>
                         </span>
@@ -461,23 +501,43 @@
                 </legend>
 
                 <ul id="ulSeleccionados" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
-                    %{--<g:each in="${cc}" var="disp">--}%
-                    %{--<g:if test="${disp.persona}">--}%
-                    %{--<li data-id="${disp.persona.id}">--}%
-                    %{--<i class="fa fa-li fa-user"></i> ${disp.persona.toString()}--}%
-                    %{--</li>--}%
-                    %{--</g:if>--}%
-                    %{--<g:else>--}%
-                    %{--<li data-id="-${disp.departamento.id}">--}%
-                    %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
-                    %{--</li>--}%
-                    %{--</g:else>--}%
-                    %{--</g:each>--}%
+                    <g:if test="${tramite.id}">
+                        <g:each in="${tramite.copias}" var="disp">
+                            <g:if test="${disp.persona}">
+                                <li data-id="${disp.persona.id}">
+                                    <i class="fa fa-li fa-user"></i> ${disp.persona.toString()}
+                                </li>
+                            </g:if>
+                            <g:else>
+                                <li data-id="-${disp.departamento.id}">
+                                    <i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}
+                                </li>
+                            </g:else>
+                        </g:each>
+                    </g:if>
                 </ul>
             </fieldset>
 
         </div>
 
+        <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Detalles</h4>
+                    </div>
+
+                    <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
         <script type="text/javascript">
 
             function destinatarioExiste(tipo, id) {
@@ -503,7 +563,7 @@
                 var $divBotonInfo = $("#divBotonInfo");
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
-                $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
+//                $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
                 <g:if test="${tramite.id && tramite.copias.size() == 0}">
                 $cc.prop('checked', false);
                 </g:if>
@@ -563,12 +623,14 @@
                     $divPara.addClass("hide");
                     $divCopia.addClass("hide");
                     $divCc.addClass("hide");
+                    $divConfidencial.addClass("hide");
+                    $divAnexos.addClass("hide");
                     $divBotonInfo.addClass("hide");
                 }
             }
 
             function validarCheck() {
-                var checked = $("#cc").is(":checked");
+                var checked = $("#cc").is(":checked") && $("#cc").is(":visible");
                 if (checked) {
                     $("#divCopia").removeClass("hide");
                 } else {
@@ -722,6 +784,21 @@
                     }
                 });
 
+                $("#btnDetalles").click(function () {
+                    $.ajax({
+                        type    : 'POST',
+                        url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                        data    : {
+                            id : "${tramite.id?:tramite.padreId}"
+                        },
+                        success : function (msg) {
+                            $("#dialog-body").html(msg)
+                        }
+                    });
+                    $("#dialog").modal("show")
+                    return false;
+                });
+
                 $("#cc").click(function () {
                     validarCheck();
                 });
@@ -729,6 +806,30 @@
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc($selPara, $selParaExt);
                 }).change();
+
+                $("#cedulaOrigen").blur(function () {
+                    var ci = $.trim($(this).val());
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${createLink(controller: 'origenTramite', action:'getDatosByCedula_ajax')}",
+                        data    : {
+                            cedula : ci
+                        },
+                        success : function (msg) {
+                            if (msg == "NO") {
+                                $(".origenTram").not("#cedulaOrigen").val("");
+                            } else {
+                                $.each(msg, function (key, val) {
+                                    if (key != "tipoPersona") {
+                                        $("#" + key + "Origen").val(val);
+                                    } else {
+                                        $("#tipoPersonaOrigen").val(val.id);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
 
                 validarCheck();
 

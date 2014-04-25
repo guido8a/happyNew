@@ -132,6 +132,16 @@
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:else>
+                    <g:if test="${tramite.deDepartamento}">
+                        <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class="btn btn-sm btn-azul btnRegresar">
+                            <i class="fa fa-pencil"></i> Editar
+                        </g:link>
+                    </g:if>
+                    <g:else>
+                        <g:link action="crearTramite" id="${tramite.id}" class="btn btn-sm btn-azul btnRegresar">
+                            <i class="fa fa-pencil"></i> Editar
+                        </g:link>
+                    </g:else>
                 </div>
 
                 <div class="btn-group">

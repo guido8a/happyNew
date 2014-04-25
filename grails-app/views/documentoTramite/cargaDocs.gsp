@@ -4,7 +4,7 @@
         <p class="css-vertical-text">Anexos</p>
         <div class="linea"></div>
         <g:each in="${docs}" var="anexo">
-            <g:if test="${anexo.tramite}">
+            <g:if test="${anexo.anexo}">
                 <div class="fileContainer ui-corner-all">
                     <div class='row' style='margin-top: 0px'>
                         <div class='titulo-archivo col-md-11'>
