@@ -161,12 +161,18 @@ class ElementosTagLib {
      * muestra un combobox con las personas que pueden recibir un tramite
      */
     def comboPara = { attrs ->
+
         def html
         def persona = Persona.get(session.usuario.id)
         def disp, disponibles = []
         def disp2 = []
         def todos = []
         def users = []
+        def tamano
+        def contador = 0
+
+        def arreglo = []
+        def arreglo2 = []
 
         if (persona.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
@@ -175,19 +181,26 @@ class ElementosTagLib {
         }
         disp.each { dep ->
             if (dep.id == persona.departamento.id) {
-                def usuarios = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
                 usuarios.each {
                     if (it.id != persona.id) {
                         users += it
                     }
                 }
+//                println("usuarios:" + users)
+
                 for (int i = users.size() - 1; i > -1; i--) {
+//                    println("uuu" + users[i])
                     if (!(users[i].estaActivo && users[i].puedeRecibir)) {
                         users.remove(i)
                     } else {
                         disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+
                     }
                 }
+
+                disponibles = disponibles.reverse()
+
             }
         }
 
@@ -198,6 +211,8 @@ class ElementosTagLib {
         }
 
         todos = disponibles + disp2
+//        todos = arreglo + disp2
+
 
         if (!attrs.id) {
             attrs.id = attrs.name

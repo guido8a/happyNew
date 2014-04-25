@@ -26,10 +26,10 @@
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
-                <tr id="${tramite?.trmt__id}" data-id="${tramite.trmt__id}">
+                <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}">
                    <td>${tramite?.trmtcdgo}</td>
-                    <g:if test="${tramite.pr_prsn}">
-                        <td>${tramite.pr_prsn}</td>
+                    <g:if test="${tramite?.pr_prsn}">
+                        <td>${tramite?.pr_prsn}</td>
                     </g:if>
                     <g:elseif test="${tramite?.pr_dpto}">
                         <td>${tramite?.pr_dpto}</td>

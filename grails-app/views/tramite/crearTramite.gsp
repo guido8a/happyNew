@@ -238,12 +238,21 @@
 
                 <div class="row">
                     <div class="col-xs-4">
+                        <g:set var="nombre" value="${de.nombre + " " + de.apellido}"/>
                         <b style="margin-right: 5px">De:</b>
+                        <g:if test="${nombre.size() <= 36}">
+                            <div class="uneditable-input label-shared" id="de"
+                                 title="${de.departamento?.descripcion}">
+                                ${de.nombre} ${de.apellido}
+                            </div>
+                        </g:if>
+                        <g:else>
+                            <div class="uneditable-input label-shared" id="de"
+                                 title="${de.departamento?.descripcion}">
+                                ${nombre.substring(0,33) + "..."}
+                            </div>
+                        </g:else>
 
-                        <div class="uneditable-input label-shared" id="de"
-                             title="${de.departamento?.descripcion}">
-                            ${de.nombre} ${de.apellido}
-                        </div>
                     </div>
 
                     %{--<g:if test="${padre}">--}%

@@ -349,8 +349,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
 
         if (tienePermiso.size() == 0) {
-            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de entrada del departamento. Ha sido redireccionado a su bandeja de entrada personal."
-            flash.tipo = "error"
+//            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de entrada del departamento. Ha sido redireccionado a su bandeja de entrada personal."
+//            flash.tipo = "error"
             redirect(controller: "tramite", action: "bandejaEntrada")
             return
         }

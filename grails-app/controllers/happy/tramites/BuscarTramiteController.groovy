@@ -102,7 +102,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         sql = "select * from tramites(" + tramite.id + ") "
 
         cn.eachRow(sql) { r ->
-//            println(">>>>>" + r)
+            println(">>>>>" + r)
             result.add(r.toRowResult())
         }
 

@@ -503,7 +503,7 @@
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
-                    seguimiento,
+//                    seguimiento,
                     </g:if>
                     recibir
                 ]);
@@ -515,7 +515,7 @@
                     detalles,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
-                    seguimiento,
+//                    seguimiento,
                     </g:if>
                     observaciones,
                     contestar

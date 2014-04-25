@@ -226,7 +226,8 @@
 
                         <div class="uneditable-input label-shared" id="de"
                              title="${de.departamento?.descripcion}">
-                            ${de.nombre} ${de.apellido}
+                            %{--${de.nombre} ${de.apellido}--}%
+                            ${de.departamento?.codigo}
                         </div>
                     </div>
 

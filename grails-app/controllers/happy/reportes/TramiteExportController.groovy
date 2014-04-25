@@ -252,6 +252,7 @@ class TramiteExportController {
 //        addEmptyLine(headers, 1);
         headers.add(new Paragraph(params.departamento, times12bold));
         headers.add(new Paragraph("Fecha: " + new Date().format("dd-MM-yyyy"), times12bold));
+        headers.add(new Paragraph("", times12bold));
 
 
         PdfPTable tablaTramites = new PdfPTable(4);
@@ -276,7 +277,11 @@ class TramiteExportController {
         cantidadTramites.split(',').each {
 //            println(it)
             addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
-            addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
+            if(Tramite.get(it).getPara()?.persona?.nombre){
+                addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
+            }else{
+                addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).getPara()?.departamento?.descripcion ?: '', times8bold), prmsHeaderHoja)
+            }
             addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
         }
