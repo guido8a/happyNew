@@ -699,7 +699,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         //modificado
         disp.each { dep ->
-            if (dep.id == persona.departamentoId) {
+            if (dep.id == persona.departamento?.id) {
                 def usuarios = Persona.findAllByDepartamento(dep)
                 usuarios.each {
                     if (it.id != de.id) {

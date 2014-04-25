@@ -360,18 +360,23 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     def detalles() {
         def tramite = Tramite.get(params.id)
+        def tramites = []
         def principal = null
+        tramites.add(tramite)
         if (tramite.padre) {
             principal = tramite.padre
             while (true) {
+                tramites.add(principal)
                 if (!principal.padre)
                     break
-                else
+                else{
                     principal = principal.padre
+                }
 
             }
         }
-        return [tramite: tramite, principal: principal]
+        tramites=tramites.reverse()
+        return [tramite: tramite, principal: principal,tramites: tramites]
     }
 
 
