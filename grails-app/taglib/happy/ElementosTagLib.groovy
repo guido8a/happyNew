@@ -210,6 +210,7 @@ class ElementosTagLib {
             }
         }
 
+
         todos = disponibles + disp2
 //        todos = arreglo + disp2
 
