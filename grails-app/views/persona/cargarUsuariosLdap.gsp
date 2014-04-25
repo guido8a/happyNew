@@ -22,6 +22,24 @@
         ${u.toString()} - ${u.login} - ${u.mail}<br/>
     </g:if>
 </g:each>
+<g:if test="${noNombre.size()>0}">
+<b>Usuarios sin el campo nombre en el LDAP:</b><br/>
+    <g:each in="${noNombre}" var="u">
+        ${u.nombre}<br/>
+    </g:each>
+</g:if>
+<g:if test="${noApellido.size()>0}">
+    <b>Usuarios sin el campo apellido en el LDAP:</b><br/>
+    <g:each in="${noApellido}" var="u">
+        ${u.nombre}<br/>
+    </g:each>
+</g:if>
+<g:if test="${noMail.size()>0}">
+    <b>Usuarios sin el campo mail en el LDAP:</b><br/>
+    <g:each in="${noMail}" var="u">
+        ${u.nombre}<br/>
+    </g:each>
+</g:if>
 <a href="${g.createLink(controller: 'departamento',action: 'arbol')}" class="btn btn-azul">Administrar</a>
 </body>
 </html>

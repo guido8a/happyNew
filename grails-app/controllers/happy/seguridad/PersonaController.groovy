@@ -1027,6 +1027,9 @@ class PersonaController extends happy.seguridad.Shield {
         def n1 = Departamento.get(11)
         def sinDep = Departamento.get(20)
         def secuencia = 1
+        def noNombre = []
+        def noApellido = []
+        def noMail = []
         for (entry in results) {
             println "__==> " + entry["ou"]
             println "----------------------------"
@@ -1063,8 +1066,17 @@ class PersonaController extends happy.seguridad.Shield {
                             def nombres = WordUtils.capitalizeFully(e2["givenname"])
                             def mail = e2["mail"]
                             def apellido = WordUtils.capitalizeFully(e2["sn"])
-                            if (!apellido)
-                                apellido = "sin apellido"
+                            if (!apellido){
+//                                apellido = "sin apellido"
+                                noApellido.add(["nombre":logn])
+                            }
+                            if (!nombres){
+                                noNombre.add(["nombre":logn])
+                            }
+                            if (!mail || mail==""){
+                                noMail.add(["nombre":logn])
+                            }
+
                             prsn = new Persona()
                             prsn.nombre = nombres
                             prsn.apellido = apellido
@@ -1100,6 +1112,16 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.mail = e2["mail"]
                                 if(prsn.connect != e2["dn"]){
                                     prsn.connect = e2["dn"]
+                                    prsn.activo=0
+                                }
+                                def datos = e2["dn"].split(",")
+                                def dpto = null
+                                if (datos)
+                                    dpto = datos[1].split("=")
+//                                println "departamento " + dpto[0] + "   " + datos[1]
+                                dpto = Departamento.findByDescripcion(dpto[1])
+                                if(prsn.departamento != dpto){
+                                    prsn.departamento = dpto
                                     prsn.activo=0
                                 }
                                 if(!prsn.apellido)
@@ -1199,6 +1221,16 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.connect = entry["dn"]
                                 prsn.activo=0
                             }
+                            def datos = entry["dn"].split(",")
+                            def dpto = null
+                            if (datos)
+                                dpto = datos[1].split("=")
+//                                println "departamento " + dpto[0] + "   " + datos[1]
+                            dpto = Departamento.findByDescripcion(dpto[1])
+                            if(prsn.departamento != dpto){
+                                prsn.departamento = dpto
+                                prsn.activo=0
+                            }
                             println "update "+prsn.apellido
                             if (!prsn.save(flush: true)) {
 
@@ -1221,7 +1253,7 @@ class PersonaController extends happy.seguridad.Shield {
 
         println "hay " + cont + " usuarios"
 
-        return [users: users, reg: registrados, nuevos: nuevos, mod: mod]
+        return [users: users, reg: registrados, nuevos: nuevos, mod: mod,noNombre:noNombre,noMail:noMail,noApellido:noApellido]
 
     }
 
