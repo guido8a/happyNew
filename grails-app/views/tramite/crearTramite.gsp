@@ -110,45 +110,40 @@
 
                     <div class="linea"></div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Documento:</div>
+                    <div class="row col2">
 
-                        <div class="col-md-11">${principal.codigo}</div>
+                           <div class="col-md-2 negrilla">Documento:</div>
+
+                           <div class="col-md-8">${principal.codigo}</div>
+
+                           <div class="col-md-1 negrilla">Fecha:</div>
+
+                           <div class="col-md-5">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">De:</div>
+                    <div class="row col2">
+                        <div class="col-md-2 negrilla">De:</div>
                         <g:if test="${principal?.deDepartamento}">
-                            <div class="col-md-11">${principal?.deDepartamento}</div>
+                            <div class="col-md-8">${principal?.deDepartamento}</div>
                         </g:if>
                         <g:else>
-                            <div class="col-md-11">${principal?.de}</div>
-                        </g:else>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Para:</div>
-                        <g:if test="${principal?.para?.persona}">
-                            <div class="col-md-11">${principal?.para?.persona}</div>
-                        </g:if>
-                        <g:else>
-                            <div class="col-md-11">${principal?.para?.departamento?.descripcion}</div>
+                            <div class="col-md-8">${principal?.de}</div>
                         </g:else>
 
+                            <div class="col-md-2 negrilla">Para:</div>
+                            <g:if test="${principal?.para?.persona}">
+                                <div class="col-md-8">${principal?.para?.persona}</div>
+                            </g:if>
+                            <g:else>
+                                <div class="col-md-8">${principal?.para?.departamento?.descripcion}</div>
+                            </g:else>
                     </div>
-
-
                     <div class="row">
                         <div class="col-md-1 negrilla">Asunto:</div>
 
                         <div class="col-md-11">${principal.asunto}</div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Fecha:</div>
 
-                        <div class="col-md-11">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
-                    </div>
 
                     <div class="row">
                         <div class="col-md-1 negrilla">Texto:</div>
