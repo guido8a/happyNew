@@ -154,7 +154,7 @@
                 </div>
             </div>
 
-            <elm:headerTramite2 tramite="${tramite}"/>
+            <elm:headerTramite tramite="${tramite}"/>
 
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
         </div>
