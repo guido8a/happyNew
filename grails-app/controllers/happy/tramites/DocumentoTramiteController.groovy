@@ -134,6 +134,17 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             response.sendError(404)
         }
     }
+
+    def verAnexos(){
+        def tramite = Tramite.get(params.id)
+        if (tramite) {
+
+            return [tramite: tramite]
+
+        } else {
+            response.sendError(404)
+        }
+    }
     def cargaDocs(){
 
         def tramite = Tramite.get(params.id)
@@ -145,7 +156,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 def editable=false
                 if(tramite.estadoTramite.codigo=="E001" || tramite.estadoTramite.codigo=="E002"  )
                     editable=true
-                return [tramite: tramite,docs:docs,editable:true]
+                if(params.ver)
+                    editable=false
+                return [tramite: tramite,docs:docs,editable:editable]
             }
         }
     }
@@ -378,7 +391,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 }
 //                println "llego json"
                 def json = new JsonBuilder(data)
-                    //println json.toPrettyString()
+                //println json.toPrettyString()
                 render json
                 return
 //                println "return ?"

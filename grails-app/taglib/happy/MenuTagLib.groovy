@@ -58,6 +58,9 @@ class MenuTagLib {
         }
         def alertas ="("
         def count=Alerta.countByPersonaAndFechaRecibidoIsNull(usuario)
+        if(usuario.esTriangulo()){
+            count+=Alerta.countByDepartamentoAndFechaRecibidoIsNull(usuario.departamento)
+        }
 //        println "count "+count
         alertas += count
         alertas+=")"

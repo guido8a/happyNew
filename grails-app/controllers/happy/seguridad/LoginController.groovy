@@ -171,8 +171,20 @@ class LoginController {
                     def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
                     if(count>0)
                         redirect(controller: 'alertas',action: 'list')
-                    else
-                        redirect(controller: "inicio", action: "index")
+                    else{
+                        println "count = 0 "+session.usuario.esTriangulo()
+                        if(session.usuario.esTriangulo()){
+                            count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+                            println "count "+count
+                            if(count>0)
+                                redirect(controller: 'alertas',action: 'list')
+                            else
+                                redirect(controller: "inicio", action: "index")
+                        }else{
+                            redirect(controller: "inicio", action: "index")
+                        }
+
+                    }
 //                    redirect(controller: cn, action: an)
                     return
                 } else {
@@ -205,8 +217,20 @@ class LoginController {
             def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
             if(count>0)
                 redirect(controller: 'alertas',action: 'list')
-            else
-                redirect(controller: "inicio", action: "index")
+            else{
+                println "count = 0 "+session.usuario.esTriangulo()
+                if(session.usuario.esTriangulo()){
+                    count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+                    println "count "+count
+                    if(count>0)
+                        redirect(controller: 'alertas',action: 'list')
+                    else
+                        redirect(controller: "inicio", action: "index")
+                }else{
+                    redirect(controller: "inicio", action: "index")
+                }
+
+            }
 //            }
         } else {
             redirect(action: "login")

@@ -102,11 +102,11 @@
             <span>Seleccionar archivos</span>
             <input type="file" name="file" id="file" class="file" multiple>
         </span>
-        <span class="btn btn-success fileinput-button" id="adj-tramites" style="position: relative;height: 40px;margin-top: 10px">
-            <i class="glyphicon glyphicon-plus"></i>
-            <i class="fa fa-folder-open-o"></i>
-            <span>Adjuntar Trámites</span>
-        </span>
+        %{--<span class="btn btn-success fileinput-button" id="adj-tramites" style="position: relative;height: 40px;margin-top: 10px">--}%
+            %{--<i class="glyphicon glyphicon-plus"></i>--}%
+            %{--<i class="fa fa-folder-open-o"></i>--}%
+            %{--<span>Adjuntar Trámites</span>--}%
+        %{--</span>--}%
         <span class="btn btn-default fileinput-button" id="reset-files" style="position: relative;height: 40px;margin-top: 10px">
             <i class="glyphicon glyphicon-refresh"></i>
             <span>Resetear</span>

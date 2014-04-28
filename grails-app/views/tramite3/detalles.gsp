@@ -29,7 +29,7 @@
                     <div class="col-xs-8">${t.asunto}</div>
                 </div>
 
-                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id)) && t.texto !=''}">
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Texto:</div>
 
@@ -73,7 +73,7 @@
                     <div class="col-xs-8">${t.asunto}</div>
                 </div>
 
-                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id) ) && t.texto !=''}">
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Texto:</div>
 

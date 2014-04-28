@@ -219,7 +219,12 @@ class Tramite {
     def personaPuedeLeer(Persona persona) {
         def tienePermiso = persona.puedeVer
         def departamento = persona.departamento
+        if(this.tipoTramite.codigo=="C")
+            return false
         if (this.de == persona) {
+            return true
+        }
+        if (this.deDepartamento == persona.departamento && persona.esTriangulo()) {
             return true
         }
         if (!tienePermiso) {
@@ -232,7 +237,10 @@ class Tramite {
                 return true
             }
             if (this.para?.departamento) {
-                return false
+                if(persona.departamento==this.para?.departamento && persona.esTriangulo())
+                    return true
+                else
+                    return false
             }
         }
         return false
