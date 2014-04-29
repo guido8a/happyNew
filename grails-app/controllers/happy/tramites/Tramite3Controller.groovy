@@ -500,7 +500,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "rolPara: " + rolPara
 //        println "rolCC: " + rolCC
 //        println "rolImprimir: " + rolImprimir
-//        println "PDT: " + pxt
+
 
         if (pxt.size() > 1) {
             flash.message = "ERROR"

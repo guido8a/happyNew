@@ -496,6 +496,14 @@
                     }
                 };
 
+                var anexos = {
+                    text   : 'Anexos',
+                    icon   : "<i class='fa fa-paperclip'></i>",
+                    action : function (e) {
+                        location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                    }
+                };
+
                 context.attach(".porRecibir,.sinRecepcion", [
                     {
                         header : 'Acciones'
@@ -536,6 +544,43 @@
                     archivar
                     </g:if>
                 ]);
+
+
+                context.attach(".conAnexo.jefe", [
+                    {
+                        header : 'Acciones'
+                    },
+                    contestar,
+                    detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    archivar,
+                    </g:if>
+                    anexos
+                ]);
+
+                context.attach(".conAnexo.recibido, .conAnexo.retrasado", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    observaciones,
+                    contestar,
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    archivar,
+                    </g:if>
+                    anexos
+                ]);
+
+                context.attach(".conAnexo.porRecibir, .conAnexo.sinRecepcion", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                     recibir,
+                     anexos
+                ]);
+
+
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)
                 });

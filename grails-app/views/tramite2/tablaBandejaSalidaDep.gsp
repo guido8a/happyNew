@@ -19,6 +19,14 @@
     <tbody>
         <g:each in="${tramites}" var="tramite">
             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+              <g:set var="clase" value=""/>
+            <g:if test="${tramite?.tipoDocumento?.codigo == 'sum'}">
+                <g:set var="clase" value="${}"
+            </g:if>
+            <g:else>
+                <g
+            </g:else>
+
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
                 ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' : ''}"

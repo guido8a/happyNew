@@ -40,6 +40,8 @@
             %{--</g:if>--}%
             %{--</g:else>--}%
 
+
+
                 <g:if test="${tramite.fechaRecepcion}">
                     <g:if test="${tramite.fechaLimiteRespuesta < now}">
                         <g:set var="clase" value="retrasado"/>
@@ -58,6 +60,14 @@
                     <g:else>
                         <g:set var="clase" value="porRecibir"/>
                     </g:else>
+                </g:else>
+
+
+                <g:if test="${tramite?.tramite?.anexo == 1 }">
+                    <g:set var="clase" value="${clase + ' conAnexo'}"/>
+                </g:if>
+                <g:else>
+                    <g:set var="clase" value="${clase + ' sinAnexo'}"/>
                 </g:else>
 
             %{--<g:if test="${tramite.tramite.estadoTramite.codigo == 'E007'}">--}%

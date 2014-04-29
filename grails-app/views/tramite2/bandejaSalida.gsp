@@ -500,7 +500,7 @@
                     },
                     ver,
                     detalles,
-                    editar,
+//                    editar,
                     desenviar
                 ]);
                 </g:if>

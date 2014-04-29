@@ -16,9 +16,12 @@
     </thead>
     <tbody>
         <g:each in="${tramites}" var="tramite">
+
             <g:set var="now" value="${new java.util.Date()}"/>
 
             <g:set var="clase" value=""/>
+
+
             <g:if test="${tramite.fechaRecepcion}">
                 <g:if test="${tramite.fechaLimiteRespuesta < now}">
                     <g:set var="clase" value="retrasado"/>
@@ -39,9 +42,17 @@
                 </g:else>
             </g:else>
 
+            <g:if test="${tramite?.tramite?.anexo == 1 }">
+                <g:set var="clase" value="${clase + ' conAnexo'}"/>
+            </g:if>
+            <g:else>
+                <g:set var="clase" value="${clase + ' sinAnexo'}"/>
+            </g:else>
+
+
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"
-                codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
+                codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" anexo="${anexo}">
                 <td title="${tramite?.tramite?.asunto}">
                     ${tramite?.tramite?.codigo}
                     %{--<br/>--}%

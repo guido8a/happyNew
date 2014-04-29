@@ -215,6 +215,8 @@
 
         <script type="text/javascript">
 
+        var valAnexo
+
             $("input").keyup(function (ev) {
                 if (ev.keyCode == 13) {
 //                    submitForm($(".btnBusqueda"));
@@ -386,6 +388,15 @@
                     }
                 };
 
+                var anexos = {
+                    text   : 'Anexos',
+                    icon   : "<i class='fa fa-paperclip'></i>",
+                    action : function (e) {
+                       location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                    }
+                };
+
+
                 var archivar = {
                     text   : 'Archivar Documentos',
                     icon   : "<i class='fa fa-folder-open-o'></i>",
@@ -552,6 +563,7 @@
                 };
 
                 var archivo;
+//                var valAnexo;
                 context.settings({
                     onShow : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
@@ -559,7 +571,8 @@
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
                         archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
-                    }
+                        valAnexo = $tr.attr("anexo");
+                                 }
                 });
 
                 context.attach('.porRecibir, .sinRecepcion', [
@@ -572,6 +585,7 @@
 //                    seguimiento,
                     </g:if>
                     recibir
+
                 ]);
                 context.attach('.recibido, .retrasado', [
                     {
@@ -584,9 +598,41 @@
                     </g:if>
                     contestar,
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    archivar
+                    </g:if>
+
+                ]);
+                context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion',  [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
+//                    ver,
+//                    seguimiento,
+                    </g:if>
+                    recibir,
+                    anexos
+                ]);
+
+                context.attach('.conAnexo.recibido, .conAnexo.retrasado', [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
+//                    ver,
+//                    seguimiento,
+                    </g:if>
+                    contestar,
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     archivar,
                     </g:if>
+                        anexos
+
                 ]);
+
+
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false);
