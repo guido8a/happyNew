@@ -59,6 +59,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     def borrarDoc(){
         if(request.getMethod()=="POST"){
+
+
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
             if(!departamento)
