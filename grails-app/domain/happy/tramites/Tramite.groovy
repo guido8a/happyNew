@@ -11,6 +11,7 @@ class Tramite {
     TipoDocumento tipoDocumento
     Persona de
     Departamento deDepartamento
+    String paraExterno
     TipoPrioridad prioridad
     EstadoTramite estadoTramite
     TipoTramite tipoTramite
@@ -45,6 +46,7 @@ class Tramite {
             padre column: 'trmtpdre'
             tipoDocumento column: 'tpdc__id'
             de column: 'prsn__de'
+            paraExterno column: 'trmtprex'
             prioridad column: 'tppd__id'
             estadoTramite column: 'edtr__id'
             tipoTramite column: 'tptr__id'
@@ -71,6 +73,7 @@ class Tramite {
         anio(blank: true, nullable: true, attributes: [title: 'anio'])
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         tipoDocumento(blank: true, nullable: true, attributes: [title: 'tipoDocumento'])
+        paraExterno(blank: true, nullable: true, attributes: [title: 'paraExterno'])
         de(blank: true, nullable: true, attributes: [title: 'de'])
         prioridad(blank: false, nullable: false, attributes: [title: 'tipoPersona'])
         estadoTramite(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
@@ -219,7 +222,7 @@ class Tramite {
     def personaPuedeLeer(Persona persona) {
         def tienePermiso = persona.puedeVer
         def departamento = persona.departamento
-        if(this.tipoTramite.codigo=="C")
+        if (this.tipoTramite.codigo == "C")
             return false
         if (this.de == persona) {
             return true
@@ -233,15 +236,16 @@ class Tramite {
         if (this.tipoTramite.codigo == 'N') {
             return true
         } else {
-            if (this.para?.persona == persona || this.copias.contains(persona)) {
-                return true
-            }
-            if (this.para?.departamento) {
-                if(persona.departamento==this.para?.departamento && persona.esTriangulo())
-                    return true
-                else
-                    return false
-            }
+            return false
+//            if (this.para?.persona == persona || this.copias.contains(persona)) {
+//                return true
+//            }
+//            if (this.para?.departamento) {
+//                if(persona.departamento==this.para?.departamento && persona.esTriangulo())
+//                    return true
+//                else
+//                    return false
+//            }
         }
         return false
     }

@@ -7,6 +7,7 @@ import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import happy.tramites.TipoDocumento
 import happy.tramites.TipoDocumentoDepartamento
 import happy.tramites.Tramite
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
@@ -151,6 +152,14 @@ class ElementosTagLib {
             attrs.id = attrs.name
         }
 
+        if (!attrs.tramite || !attrs.tramite.padre) {
+            tipos.remove(TipoDocumento.findByCodigo("SUM"))
+        }
+
+        if (attrs.tipo && (attrs.tipo.toLowerCase() == "pers" || attrs.tipo.toLowerCase() == "personal")) {
+            tipos.remove(TipoDocumento.findByCodigo("DEX"))
+        }
+
         def params = [id         : attrs.id,
                       name       : attrs.name,
                       "class"    : attrs.class,
@@ -173,10 +182,13 @@ class ElementosTagLib {
      * muestra un combobox con las personas que pueden recibir un tramite
      */
     def comboPara = { attrs ->
-
+//        println "ATTRS= " + attrs
         def html
         def persona = Persona.get(session.usuario.id)
         def disp, disponibles = []
+        def depar = ["depar", "departamento", "dpto", "ofi", "oficina"]
+        def esDepartamento = (attrs.tipo && (depar.contains(attrs.tipo.toLowerCase())))
+//        println "esDepartamento: " + esDepartamento
         def disp2 = []
         def todos = []
         def users = []
@@ -186,47 +198,45 @@ class ElementosTagLib {
         def arreglo = []
         def arreglo2 = []
 
-        if (persona.puedeTramitar) {
-            disp = Departamento.list([sort: 'descripcion'])
+        if (attrs.tipoDoc.codigo == "DEX") {
+            if (esDepartamento) {
+                todos = [[id: persona.departamento.id * -1, label: persona.departamento.descripcion, obj: persona.departamento]]
+            }
         } else {
-            disp = [persona.departamento]
-        }
-        disp.each { dep ->
-            if (dep.id == persona.departamento.id) {
-                def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
-                usuarios.each {
-                    if (it.id != persona.id) {
-                        users += it
+            if (persona.puedeTramitar) {
+                disp = Departamento.list([sort: 'descripcion'])
+            } else {
+                disp = [persona.departamento]
+            }
+            disp.each { dep ->
+                if (dep.id == persona.departamento.id) {
+                    def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
+                    usuarios.each {
+                        if (it.id != persona.id && it.estaActivo && it.puedeRecibir) {
+//                            users += it
+                            disponibles.add([id: it.id, label: it.toString(), obj: it])
+                        }
+                    }
+//                    for (int i = users.size() - 1; i > -1; i--) {
+//                        if (users[i].estaActivo && users[i].puedeRecibir) {
+//                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+//                        } else {
+//                            users.remove(i)
+//                        }
+//                    }
+                    disponibles = disponibles.reverse()
+                }
+            }
+
+            disp.each { dep ->
+                if (dep.triangulos.size() > 0) {
+                    if (dep.id.toLong() != persona.departamento.id.toLong() || (dep.id.toLong() == persona.departamento.id.toLong() && !esDepartamento)) {
+                        disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
                     }
                 }
-//                println("usuarios:" + users)
-
-                for (int i = users.size() - 1; i > -1; i--) {
-//                    println("uuu" + users[i])
-                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
-                        users.remove(i)
-                    } else {
-                        disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
-
-                    }
-                }
-
-                disponibles = disponibles.reverse()
-
             }
+            todos = disponibles + disp2
         }
-
-        disp.each { dep ->
-            if (dep.triangulos.size() > 0) {
-                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
-            }
-        }
-
-
-        todos = disponibles + disp2
-//        todos = arreglo + disp2
-
-
         if (!attrs.id) {
             attrs.id = attrs.name
         }
@@ -261,6 +271,9 @@ class ElementosTagLib {
                 strPara += p.departamento.descripcion
             }
         }
+        if (tramite.paraExterno) {
+            strPara = tramite.paraExterno
+        }
         def html
 
         if (!attrs.pdf) {
@@ -287,7 +300,7 @@ class ElementosTagLib {
             html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
             html += "                </div>"
             html += "            </div>"
-            if (para) {
+            if (para || tramite.paraExterno) {
                 html += "                <div class=\"row row-low-margin-top\">"
                 html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
                 html += "                        PARA"

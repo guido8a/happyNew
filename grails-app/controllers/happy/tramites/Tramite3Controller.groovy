@@ -29,6 +29,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
             paramsTramite.anexo = 0
         }
 
+        if (params.paraExt) {
+            paramsTramite.paraExterno = params.paraExt
+        } else {
+            paramsTramite.paraExterno = null
+        }
+
         paramsTramite.de = persona
         paramsTramite.estadoTramite = estadoTramiteBorrador
         if (paramsTramite.id) {
@@ -63,6 +69,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def error = false
         if (paramsTramite.id) {
             tramite = Tramite.get(paramsTramite.id)
+            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
+                tramite.tipoTramite = TipoTramite.findByCodigo("C")
+            }
         } else {
             tramite = new Tramite()
         }
@@ -72,7 +81,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
             flash.message = "Ha ocurrido un error al grabar el tramite, por favor, verifique la información ingresada"
-            redirect(action: "crearTramite")
+            redirect(controller: 'tramite', action: "crearTramite", id: tramite.id)
             return
         } else {
             if (tramite.padre) {
@@ -84,16 +93,35 @@ class Tramite3Controller extends happy.seguridad.Shield {
              *          si es positivo es una persona
              */
             if (paramsTramite.para) {
+                def rolPara = RolPersonaTramite.findByCodigo('R001')
                 def para = paramsTramite.para.toInteger()
-                def paraDocumentoTramite = new PersonaDocumentoTramite([
-                        tramite          : tramite,
-                        rolPersonaTramite: RolPersonaTramite.findByCodigo('R001')
-                ])
+                def paraDocumentoTramite = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", tramite)
+                    eq("rolPersonaTramite", rolPara)
+                }
+                if (paraDocumentoTramite.size() == 0) {
+                    paraDocumentoTramite = new PersonaDocumentoTramite([
+                            tramite          : tramite,
+                            rolPersonaTramite: rolPara
+                    ])
+                } else if (paraDocumentoTramite.size() == 1) {
+                    paraDocumentoTramite = paraDocumentoTramite.first()
+                } else {
+                    paraDocumentoTramite.each {
+                        it.delete(flush: true)
+                    }
+                    paraDocumentoTramite = new PersonaDocumentoTramite([
+                            tramite          : tramite,
+                            rolPersonaTramite: rolPara
+                    ])
+                }
                 if (para > 0) {
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
+                    paraDocumentoTramite.departamento = null
                 } else {
                     //departamento
+                    paraDocumentoTramite.persona = null
                     paraDocumentoTramite.departamento = Departamento.get(para * -1)
                 }
                 if (!paraDocumentoTramite.save(flush: true)) {

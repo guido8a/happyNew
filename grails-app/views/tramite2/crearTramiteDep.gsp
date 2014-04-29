@@ -111,29 +111,31 @@
 
                     <div class="linea"></div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Documento:</div>
+                    <div class="row col2">
+                        <div class="col-md-2 negrilla">Documento:</div>
 
-                        <div class="col-md-11">${principal.codigo}</div>
+                        <div class="col-md-8">${principal.codigo}</div>
+
+                        <div class="col-md-1 negrilla">Fecha:</div>
+
+                        <div class="col-md-5">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">De:</div>
+                    <div class="row col2">
+                        <div class="col-md-2 negrilla">De:</div>
                         <g:if test="${principal?.deDepartamento}">
-                            <div class="col-md-11">${principal?.deDepartamento} - ${principal?.de}</div>
+                            <div class="col-md-8">${principal?.deDepartamento} - ${principal?.de}</div>
                         </g:if>
                         <g:else>
-                            <div class="col-md-11">${principal?.de}</div>
+                            <div class="col-md-8">${principal?.de}</div>
                         </g:else>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Para:</div>
+                        <div class="col-md-2 negrilla">Para:</div>
                         <g:if test="${principal?.para?.departamento}">
-                            <div class="col-md-11">${principal?.para?.departamento}</div>
+                            <div class="col-md-8">${principal?.para?.departamento}</div>
                         </g:if>
                         <g:else>
-                            <div class="col-md-11">${principal?.para?.persona}</div>
+                            <div class="col-md-8">${principal?.para?.persona}</div>
                         </g:else>
                     </div>
 
@@ -143,25 +145,23 @@
                         <div class="col-md-11">${principal.asunto}</div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Fecha:</div>
+                    <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim() != ''}">
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Texto:</div>
 
-                        <div class="col-md-11">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Texto:</div>
-
-                        <div class="col-md-11 texto">
-                            <util:renderHTML html="${principal.texto}"/>
+                            <div class="col-md-11 texto">
+                                <util:renderHTML html="${principal.texto}"/>
+                            </div>
                         </div>
-                    </div>
+                    </g:if>
 
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Obs:</div>
+                    <g:if test="${principal.observaciones && principal.observaciones?.trim() != ''}">
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Obs:</div>
 
-                        <div class="col-md-11">${principal.observaciones}</div>
-                    </div>
+                            <div class="col-md-11">${principal.observaciones}</div>
+                        </div>
+                    </g:if>
                 </div>
                 <g:if test="${padre != principal}">
                     <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
@@ -170,29 +170,31 @@
 
                         <div class="linea"></div>
 
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Documento:</div>
+                        <div class="row col2">
+                            <div class="col-md-2 negrilla">Documento:</div>
 
-                            <div class="col-md-11">${padre?.codigo}</div>
+                            <div class="col-md-8">${padre?.codigo}</div>
+
+                            <div class="col-md-1 negrilla">Fecha:</div>
+
+                            <div class="col-md-5">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-1 negrilla">De:</div>
+                        <div class="row col2">
+                            <div class="col-md-2 negrilla">De:</div>
                             <g:if test="${padre?.deDepartamento}">
-                                <div class="col-md-11">${padre?.deDepartamento} - ${padre?.de}</div>
+                                <div class="col-md-8">${padre?.deDepartamento} - ${padre?.de}</div>
                             </g:if>
                             <g:else>
-                                <div class="col-md-11">${padre.de}</div>
+                                <div class="col-md-8">${padre.de}</div>
                             </g:else>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Para:</div>
+                            <div class="col-md-2 negrilla">Para:</div>
                             <g:if test="${padre?.para?.persona}">
-                                <div class="col-md-11">${padre?.para?.persona}</div>
+                                <div class="col-md-8">${padre?.para?.persona}</div>
                             </g:if>
                             <g:else>
-                                <div class="col-md-11">${padre?.para?.departamento?.descripcion}</div>
+                                <div class="col-md-8">${padre?.para?.departamento?.descripcion}</div>
                             </g:else>
 
                         </div>
@@ -203,25 +205,23 @@
                             <div class="col-md-11">${padre.asunto}</div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Fecha:</div>
+                        <g:if test="${padre.personaPuedeLeer(session.usuario) && padre.texto?.trim() != ''}">
+                            <div class="row">
+                                <div class="col-md-1 negrilla">Texto:</div>
 
-                            <div class="col-md-11">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Texto:</div>
-
-                            <div class="col-md-11 texto">
-                                <util:renderHTML html="${padre.texto}"/>
+                                <div class="col-md-11 texto">
+                                    <util:renderHTML html="${padre.texto}"/>
+                                </div>
                             </div>
-                        </div>
+                        </g:if>
 
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Obs:</div>
+                        <g:if test="${padre.observaciones && padre.observaciones?.trim() != ''}">
+                            <div class="row">
+                                <div class="col-md-1 negrilla">Obs:</div>
 
-                            <div class="col-md-11">${padre.observaciones}</div>
-                        </div>
+                                <div class="col-md-11">${padre.observaciones}</div>
+                            </div>
+                        </g:if>
                     </div>
                 </g:if>
             </g:if>
@@ -268,19 +268,19 @@
 
 
                     <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
-                        <elm:comboPara name="tramite.para" id="para" style="width:310px;" value="${session.usuario?.departamento?.id * -1}"
-                                       class="form-control label-shared required"/>
+                        %{--<elm:comboPara name="tramite.para" id="para" style="width:310px;" value="${session.usuario?.departamento?.id * -1}"--}%
+                        %{--class="form-control label-shared required"/>--}%
                         %{--<g:select name="tramite.para" id="para" from="${disponibles}" optionKey="id" optionValue="label"--}%
                         %{--style="width:310px;" class="form-control label-shared required" value="${persona?.departamento?.id * -1}"/>--}%
-                        <g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"
-                                  optionValue="nombre" style="width:310px;" class="form-control label-shared required"/>
+                        %{--<g:select name="tramite.origenTramite.id" id="paraExt" from="${OrigenTramite.list([sort: 'nombre'])}" optionKey="id"--}%
+                        %{--optionValue="nombre" style="width:310px;" class="form-control label-shared required"/>--}%
                     </div>
 
-                    <div class="col-xs-1 negrilla hide" id="divBotonInfo">
-                        <a href="#" id="btnInfoPara" class="btn btn-sm btn-info">
-                            <i class="fa fa-search"></i>
-                        </a>
-                    </div>
+                    %{--<div class="col-xs-1 negrilla hide" id="divBotonInfo">--}%
+                    %{--<a href="#" id="btnInfoPara" class="btn btn-sm btn-info">--}%
+                    %{--<i class="fa fa-search"></i>--}%
+                    %{--</a>--}%
+                    %{--</div>--}%
                     %{--<div class="col-xs-2 negrilla hide" id="divConfidencial">--}%
                     %{--<label for="confi"><input type="checkbox" name="confi" id="confi"/> Confidencial</label>--}%
                     %{--</div>--}%
@@ -331,11 +331,13 @@
                         </label>
                     </div>
 
-                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">
-                        <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
-                            Confidencial
-                        </label>
-                    </div>
+                    <g:if test="${!tramite.padre}">
+                        <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">
+                            <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
+                                Confidencial
+                            </label>
+                        </div>
+                    </g:if>
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
                         <label for="anexo"><input type="checkbox" name="anexo" id="anexo" ${tramite.anexo == 1 ? 'checked' : ''}/>
@@ -550,7 +552,7 @@
                 return total;
             }
 
-            function validarTipoDoc($selPara, $selParaExt) {
+            function validarTipoDoc() {
                 var $tipoDoc = $("#tipoDocumento");
                 var $divPara = $("#divPara");
                 var $divCopia = $("#divCopia");
@@ -569,11 +571,27 @@
                 </g:if>
                 $tituloCopia.text("Con copia");
                 $divOrigen.addClass("hide");
+
+                $divPara.html(spinner);
+                $divBotonInfo.remove();
+                $.ajax({
+                    type    : "POST",
+                    url     : "${createLink(controller:'tramite', action:'getPara_ajax')}",
+                    data    : {
+                        tramite : "${tramite.id}",
+                        tipo    : 'departamento',
+                        doc     : $tipoDoc.val()
+                    },
+                    success : function (msg) {
+                        $divPara.replaceWith(msg);
+                    }
+                });
+
                 switch (cod) {
                     case "CIR":
-                        $divPara.html("");
-                        $divPara.addClass("hide");
-                        $divBotonInfo.addClass("hide");
+//                        $divPara.html("");
+//                        $divPara.addClass("hide");
+//                        $divBotonInfo.addClass("hide");
                         $divCopia.removeClass("hide");
                         $divCc.addClass("hide");
                         $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
@@ -582,50 +600,50 @@
                         $divAnexos.addClass("hide");
                         break;
                     case "OFI":
-                        $divPara.html($selParaExt).prepend("Para:");
-                        $divBotonInfo.removeClass("hide");
-                        $divPara.removeClass("hide");
+//                        $divPara.html($selParaExt).prepend("Para:");
+//                        $divPara.removeClass("hide");
+//                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.removeClass("hide");
                         break;
                     case "DEX":
-                        $divPara.html($selPara).prepend("Para: ");
-                        $divBotonInfo.removeClass("hide");
-                        $divPara.removeClass("hide");
+//                        $divPara.html($selPara).prepend("Para: ");
+//                        $divPara.removeClass("hide");
+//                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
-                        $divCc.removeClass("hide");
+                        $divCc.addClass("hide");
                         $divOrigen.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.removeClass("hide");
                         break;
                     case "SUM":
-                        $divPara.html($selPara).prepend("Para: ");
-                        $divPara.removeClass("hide");
-                        $divBotonInfo.removeClass("hide");
-                        $divCopia.addClass("hide");
-                        $divCc.addClass("hide");
+//                        $divPara.html($selPara).prepend("Para: ");
+//                        $divPara.removeClass("hide");
+//                        $divBotonInfo.removeClass("hide");
+                        $divCopia.removeClass("hide");
+                        $divCc.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.addClass("hide");
                         break;
                     default :
-                        $divPara.html($selPara).prepend("Para: ");
-                        $divBotonInfo.removeClass("hide");
-                        $divPara.removeClass("hide");
+//                        $divPara.html($selPara).prepend("Para: ");
+//                        $divPara.removeClass("hide");
+//                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
                 }
                 if (!cod) {
-                    $divPara.html("");
-                    $divPara.addClass("hide");
+//                    $divPara.html("");
+//                    $divPara.addClass("hide");
+//                    $divBotonInfo.addClass("hide");
                     $divCopia.addClass("hide");
                     $divCc.addClass("hide");
                     $divConfidencial.addClass("hide");
                     $divAnexos.addClass("hide");
-                    $divBotonInfo.addClass("hide");
                 }
             }
 
@@ -711,6 +729,16 @@
 //                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
             }
 
+            function moveSelected($from, $to, muevePara) {
+                var para = $("#para").val();
+                $from.find("li.selected").removeClass("selected").each(function () {
+                    var id = $(this).data("id");
+                    if ((id == para && muevePara) || id != para) {
+                        $(this).appendTo($to);
+                    }
+                });
+            }
+
             $(function () {
 
                 <g:if test="${bloqueo}">
@@ -718,8 +746,8 @@
                 </g:if>
                 var $dir = $("#direccion");
                 var $selPrioridad = $("#prioridad");
-                var $selPara = $("#para").clone(true);
-                var $selParaExt = $("#paraExt").clone(true);
+//                var $selPara = $("#para").clone(true);
+//                var $selParaExt = $("#paraExt").clone(true);
 
                 $("#btnInfoPara").click(function () {
                     var para = $("#para").val();
@@ -804,7 +832,7 @@
                 });
 
                 $("#tipoDocumento").change(function () {
-                    validarTipoDoc($selPara, $selParaExt);
+                    validarTipoDoc();
                 }).change();
 
                 $("#cedulaOrigen").blur(function () {
@@ -837,16 +865,20 @@
                     $(this).toggleClass("selected");
                 });
                 $("#btnAddAll").click(function () {
-                    $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
+                    var $ul = $("#ulDisponibles");
+                    $ul.find("li").addClass("selected");
+                    moveSelected($ul, $("#ulSeleccionados"), false);
                 });
                 $("#btnAddSelected").click(function () {
-                    $("#ulDisponibles li.selected").removeClass("selected").appendTo($("#ulSeleccionados"));
+                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false);
                 });
                 $("#btnRemoveSelected").click(function () {
-                    $("#ulSeleccionados li.selected").removeClass("selected").appendTo($("#ulDisponibles"));
+                    moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), true);
                 });
                 $("#btnRemoveAll").click(function () {
-                    $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
+                    var $ul = $("#ulSeleccionados");
+                    $ul.find("li").addClass("selected");
+                    moveSelected($ul, $("#ulDisponibles"), true);
                 });
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {

@@ -94,18 +94,32 @@
     <body>
         <elm:headerTramite tramite="${tramite}" extraTitulo="- Cargar anexos"/>
 
-        <g:link controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul" style="margin-top: 8px">
+        <g:if test="${tramite.deDepartamento}">
+            <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class=" btn-editar btn  btn-azul btnRegresar" title="Editar encabezado">
+                Editar encabezado
+            </g:link>
+        </g:if>
+        <g:else>
+            <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="crearTramite" id="${tramite.id}" class="  btn-editar btn btn-azul btnRegresar" title="Editar encabezado">
+                Editar encabezado
+            </g:link>
+        </g:else>
+
+        <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul">
             Redactar
         </g:link>
+        %{--<g:link controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul" style="margin-top: 8px">--}%
+        %{--Editar encabezado--}%
+        %{--</g:link>--}%
         <span class="btn btn-success fileinput-button" style="position: relative;height: 40px;margin-top: 10px">
             <i class="glyphicon glyphicon-plus"></i>
             <span>Seleccionar archivos</span>
             <input type="file" name="file" id="file" class="file" multiple>
         </span>
         %{--<span class="btn btn-success fileinput-button" id="adj-tramites" style="position: relative;height: 40px;margin-top: 10px">--}%
-            %{--<i class="glyphicon glyphicon-plus"></i>--}%
-            %{--<i class="fa fa-folder-open-o"></i>--}%
-            %{--<span>Adjuntar Trámites</span>--}%
+        %{--<i class="glyphicon glyphicon-plus"></i>--}%
+        %{--<i class="fa fa-folder-open-o"></i>--}%
+        %{--<span>Adjuntar Trámites</span>--}%
         %{--</span>--}%
         <span class="btn btn-default fileinput-button" id="reset-files" style="position: relative;height: 40px;margin-top: 10px">
             <i class="glyphicon glyphicon-refresh"></i>

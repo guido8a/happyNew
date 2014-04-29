@@ -80,6 +80,88 @@ class TramiteController extends happy.seguridad.Shield {
         }
     }
 
+    def getPara_ajax() {
+        Tramite tramite = null
+        if (params.tramite) {
+            tramite = Tramite.get(params.tramite)
+        }
+        def html
+        def tipoDoc = TipoDocumento.get(params.doc)
+        switch (tipoDoc.codigo) {
+            case "CIR":
+                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
+                html += "</div>"
+                break;
+            case "OFI":
+                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                html += g.textField(name: "paraExt",
+                        class: "form-control label-shared required",
+                        value: tramite?.paraExterno,
+                        style: "width:310px;")
+                html += "</div>"
+                break;
+            default: //DEX SUM MEM PLA
+                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                html += elm.comboPara(name: "tramite.para",
+                        id: "para",
+                        value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
+                        style: "width:310px;",
+                        class: "form-control label-shared required",
+                        tipoDoc: tipoDoc,
+                        tipo: params.tipo)
+                html += "</div>"
+                html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\">\n" +
+                        "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
+                        "                    <i class=\"fa fa-search\"></i>\n" +
+                        "                    </a>\n" +
+                        "                    </div>"
+                html += "<script type='text/javascript'>"
+                html += " \$(\"#btnInfoPara\").click(function () {\n" +
+                        "                    var para = \$(\"#para\").val();\n" +
+                        "                    var paraExt = \$(\"#paraExt\").val();\n" +
+                        "                    var id;\n" +
+                        "                    var url = \"\";\n" +
+                        "                    if (para) {\n" +
+                        "                        if (parseInt(para) > 0) {\n" +
+                        "                            url = \"${createLink(controller: 'persona', action: 'show_ajax')}\";\n" +
+                        "                            id = para;\n" +
+                        "                        } else {\n" +
+                        "                            url = \"${createLink(controller: 'departamento', action: 'show_ajax')}\";\n" +
+                        "                            id = parseInt(para) * -1;\n" +
+                        "                        }\n" +
+                        "                    }\n" +
+                        "                    if (paraExt) {\n" +
+                        "                        url = \"${createLink(controller: 'origenTramite', action: 'show_ajax')}\";\n" +
+                        "                        id = paraExt;\n" +
+                        "                    }\n" +
+                        "                    \$.ajax({\n" +
+                        "                        type    : \"POST\",\n" +
+                        "                        url     : url,\n" +
+                        "                        data    : {\n" +
+                        "                            id : id\n" +
+                        "                        },\n" +
+                        "                        success : function (msg) {\n" +
+                        "                            bootbox.dialog({\n" +
+                        "                                title   : \"Información\",\n" +
+                        "                                message : msg,\n" +
+                        "                                buttons : {\n" +
+                        "                                    aceptar : {\n" +
+                        "                                        label     : \"Aceptar\",\n" +
+                        "                                        className : \"btn-primary\",\n" +
+                        "                                        callback  : function () {\n" +
+                        "                                        }\n" +
+                        "                                    }\n" +
+                        "                                }\n" +
+                        "                            });\n" +
+                        "                        }\n" +
+                        "                    });\n" +
+                        "                    return false;\n" +
+                        "                });"
+                html += "</script>"
+        }
+        render html
+    }
+
     def crearTramite() {
 
         if (Persona.get(session.usuario.id).tiposDocumento.size() == 0) {
@@ -130,6 +212,16 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
+            principal = padre
+            if (principal) {
+                while (true) {
+                    if (!principal.padre) {
+                        break
+                    } else {
+                        principal = principal.padre
+                    }
+                }
+            }
             (tramite.copias).each { c ->
                 if (cc != '') {
                     cc += "_"
