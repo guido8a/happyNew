@@ -27,10 +27,17 @@
                 <g:set var="esImprimir" value="${true}"/>
             </g:if>
 
+            <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
+                <g:set var="clase" value="${'sumilla'}"/>
+            </g:if>
+            <g:else>
+                <g:set var="clase" value="${'sinSumilla'}"/>
+            </g:else>
+
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
-                ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
-                ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' : ''}"
+                ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
+                ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
                 estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}">
                 <td title="${tramite.asunto}">
                     ${tramite?.codigo}

@@ -503,6 +503,33 @@
 //                    editar,
                     desenviar
                 ]);
+
+
+
+
+                context.attach(".E001.sumilla", [
+                    {
+                        header : 'Sin Acciones'
+                    }
+                ]);
+                context.attach(".E003.desenviar.sumilla", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    desenviar
+                ]);
+                context.attach(".alerta.desenviar.sumilla", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    desenviar
+                ]);
+
+
+
+
                 </g:if>
 
                 $(".btnBuscar").click(function () {

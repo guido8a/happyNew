@@ -20,16 +20,16 @@
         <g:each in="${tramites}" var="tramite">
             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
               <g:set var="clase" value=""/>
-            <g:if test="${tramite?.tipoDocumento?.codigo == 'sum'}">
-                <g:set var="clase" value="${}"
+            <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
+                <g:set var="clase" value="${'sumilla'}"/>
             </g:if>
             <g:else>
-                <g
+                <g:set var="clase" value="${'sinSumilla'}"/>
             </g:else>
 
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
-                class="${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
-                ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' : ''}"
+                class="${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
+                ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
                 codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                 estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}">
                 <td title="${tramite.asunto}">${tramite?.codigo}</td>
