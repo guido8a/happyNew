@@ -386,7 +386,7 @@
                     text   : 'Cadena del trámite',
                     icon   : "<i class='fa fa-sitemap'></i>",
                     action : function (e) {
-                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsp"
                     }
                 };
 

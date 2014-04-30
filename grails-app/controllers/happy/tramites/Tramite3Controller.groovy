@@ -781,7 +781,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             case "bep":
                 url = createLink(controller: "tramite", action: "bandejaEntrada")
                 break;
-            case "bad":
+            case "bed":
                 url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
                 break;
             case "bsp":
