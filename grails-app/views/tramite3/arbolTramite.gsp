@@ -28,19 +28,51 @@
             <util:renderHTML html="${html}"/>
         </div>
 
+        <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Detalles</h4>
+                    </div>
+
+                    <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
         <script type="text/javascript">
             function createContextMenu(node) {
 //                var nodeStrId = node.id;
-                var $node = $("#" + nodeStrId);
                 var nodeId = node.id;
+                var $node = $("#" + nodeId);
 
-                var nodeHasChildren = $node.hasClass("hasChildren");
-                var nodeOcupado = $node.hasClass("ocupado");
-
-                var nodeTramites = $node.data("tramites");
-
-                console.log(nodeId);
-
+                var items = {
+                    detalles : {
+                        label  : "Detalles",
+                        icon   : "fa fa-search",
+                        action : function () {
+                            $.ajax({
+                                type    : 'POST',
+                                url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                                data    : {
+                                    id : nodeId
+                                },
+                                success : function (msg) {
+                                    $("#dialog-body").html(msg)
+                                }
+                            });
+                            $("#dialog").modal("show")
+                        }
+                    }
+                };
+                return items
             }
 
             $(function () {
@@ -64,7 +96,7 @@
                     },
                     types       : {
                         padre : {
-                            icon : "fa fa-copy text-info"
+                            icon : "fa fa-files-o text-info"
                         },
                         hijo  : {
                             icon : "fa fa-file-o text-info"
