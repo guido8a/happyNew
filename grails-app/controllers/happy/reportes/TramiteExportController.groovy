@@ -49,7 +49,7 @@ class TramiteExportController {
 
         if (params.editorTramite) {
             tramite.texto = params.editorTramite
-            tramite.asunto = params.asunto
+//            tramite.asunto = params.asunto
             tramite.fechaModificacion = new Date()
             if (tramite.save(flush: true)) {
                 def para = tramite.para

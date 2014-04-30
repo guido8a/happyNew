@@ -29,6 +29,84 @@ class TramiteController extends happy.seguridad.Shield {
         }
     }
 
+    def saveDEX() {
+        def tramite = Tramite.get(params.id)
+        tramite.texto = params.editorTramite
+        tramite.fechaModificacion = new Date()
+
+        def ok = true
+        def msg = ""
+
+        if (tramite.save(flush: true)) {
+            def para = tramite.para
+
+            if (params.para) {
+                if (params.para.toLong() > 0) {
+                    para.persona = Persona.get(params.para.toLong())
+                } else {
+                    para.departamento = Departamento.get(params.para.toLong() * -1)
+                }
+                enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+                if (para.save(flush: true)) {
+                    ok = true
+                } else {
+                    ok = false
+                    msg = "<li>Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para) + "</li>"
+                }
+            } else {
+                ok = true
+            }
+        } else {
+            ok = false
+            msg = "<li>Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite) + "</li>"
+        }
+        if (ok) {
+            //aqui envia y recibe automaticamente el tramite
+            def ahora = new Date();
+            def rolEnvia = RolPersonaTramite.findByCodigo("E004")
+            def rolRecibe = RolPersonaTramite.findByCodigo("E003")
+
+            def estadoEnviado = EstadoTramite.findByCodigo('E003')
+            def estadoRecibido = EstadoTramite.findByCodigo('E004')
+
+            def pdt = new PersonaDocumentoTramite()
+            pdt.tramite = tramite
+            pdt.persona = session.usuario
+            pdt.departamento = session.departamento
+            pdt.fechaEnvio = ahora
+            pdt.rolPersonaTramite = rolEnvia
+            if (!pdt.save(flush: true)) {
+                println pdt.errors
+            }
+
+            def pdt2 = new PersonaDocumentoTramite()
+            pdt2.tramite = tramite
+            pdt2.persona = session.usuario
+            pdt2.departamento = session.departamento
+            pdt2.fechaEnvio = ahora
+            pdt2.fechaRecepcion = ahora
+            pdt2.rolPersonaTramite = rolRecibe
+            if (!pdt2.save(flush: true)) {
+                println pdt2.errors
+            }
+            tramite.fechaEnvio = ahora
+            tramite.estadoTramite = estadoRecibido
+            if (tramite.save(flush: true)) {
+                def realPath = servletContext.getRealPath("/")
+                def mensaje = message(code: 'pathImages').toString();
+                enviarService.crearPdf(tramite, session.usuario, "1", 'download', realPath, mensaje);
+            } else {
+                println tramite.errors
+                msg += "<li>" + renderErrors(bean: tramite) + "<li>"
+            }
+        }
+        if (msg == "") {
+            render "OK*" + createLink(controller: 'tramite3', action: "bandejaEntradaDpto")
+        } else {
+            render "NO*<ul>" + msg + "</ul>"
+        }
+    }
+
     def saveTramite() {
 //        println "save tramite"
 //        println params
@@ -37,7 +115,7 @@ class TramiteController extends happy.seguridad.Shield {
          */
         def tramite = Tramite.get(params.id)
         tramite.texto = params.editorTramite
-        tramite.asunto = params.asunto
+//        tramite.asunto = params.asunto
         tramite.fechaModificacion = new Date()
 
         if (tramite.save(flush: true)) {
@@ -87,77 +165,82 @@ class TramiteController extends happy.seguridad.Shield {
         }
         def html
         def tipoDoc = TipoDocumento.get(params.doc)
-        switch (tipoDoc.codigo) {
-            case "CIR":
-                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
-                html += "</div>"
-                break;
-            case "OFI":
-                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
-                html += g.textField(name: "paraExt",
-                        class: "form-control label-shared required",
-                        value: tramite?.paraExterno,
-                        style: "width:310px;")
-                html += "</div>"
-                break;
-            default: //DEX SUM MEM PLA
-                html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
-                html += elm.comboPara(name: "tramite.para",
-                        id: "para",
-                        value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
-                        style: "width:310px;",
-                        class: "form-control label-shared required",
-                        tipoDoc: tipoDoc,
-                        tipo: params.tipo)
-                html += "</div>"
-                html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\">\n" +
-                        "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
-                        "                    <i class=\"fa fa-search\"></i>\n" +
-                        "                    </a>\n" +
-                        "                    </div>"
-                html += "<script type='text/javascript'>"
-                html += " \$(\"#btnInfoPara\").click(function () {\n" +
-                        "                    var para = \$(\"#para\").val();\n" +
-                        "                    var paraExt = \$(\"#paraExt\").val();\n" +
-                        "                    var id;\n" +
-                        "                    var url = \"\";\n" +
-                        "                    if (para) {\n" +
-                        "                        if (parseInt(para) > 0) {\n" +
-                        "                            url = \"${createLink(controller: 'persona', action: 'show_ajax')}\";\n" +
-                        "                            id = para;\n" +
-                        "                        } else {\n" +
-                        "                            url = \"${createLink(controller: 'departamento', action: 'show_ajax')}\";\n" +
-                        "                            id = parseInt(para) * -1;\n" +
-                        "                        }\n" +
-                        "                    }\n" +
-                        "                    if (paraExt) {\n" +
-                        "                        url = \"${createLink(controller: 'origenTramite', action: 'show_ajax')}\";\n" +
-                        "                        id = paraExt;\n" +
-                        "                    }\n" +
-                        "                    \$.ajax({\n" +
-                        "                        type    : \"POST\",\n" +
-                        "                        url     : url,\n" +
-                        "                        data    : {\n" +
-                        "                            id : id\n" +
-                        "                        },\n" +
-                        "                        success : function (msg) {\n" +
-                        "                            bootbox.dialog({\n" +
-                        "                                title   : \"Información\",\n" +
-                        "                                message : msg,\n" +
-                        "                                buttons : {\n" +
-                        "                                    aceptar : {\n" +
-                        "                                        label     : \"Aceptar\",\n" +
-                        "                                        className : \"btn-primary\",\n" +
-                        "                                        callback  : function () {\n" +
-                        "                                        }\n" +
-                        "                                    }\n" +
-                        "                                }\n" +
-                        "                            });\n" +
-                        "                        }\n" +
-                        "                    });\n" +
-                        "                    return false;\n" +
-                        "                });"
-                html += "</script>"
+        if (!tipoDoc) {
+            html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
+            html += "</div>"
+        } else {
+            switch (tipoDoc.codigo) {
+                case "CIR":
+                    html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
+                    html += "</div>"
+                    break;
+                case "OFI":
+                    html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                    html += g.textField(name: "paraExt",
+                            class: "form-control label-shared required",
+                            value: tramite?.paraExterno,
+                            style: "width:310px;")
+                    html += "</div>"
+                    break;
+                default: //DEX SUM MEM PLA
+                    html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                    html += elm.comboPara(name: "tramite.para",
+                            id: "para",
+                            value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
+                            style: "width:310px;",
+                            class: "form-control label-shared required",
+                            tipoDoc: tipoDoc,
+                            tipo: params.tipo)
+                    html += "</div>"
+                    html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\">\n" +
+                            "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
+                            "                    <i class=\"fa fa-search\"></i>\n" +
+                            "                    </a>\n" +
+                            "                    </div>"
+                    html += "<script type='text/javascript'>"
+                    html += " \$(\"#btnInfoPara\").click(function () {\n" +
+                            "                    var para = \$(\"#para\").val();\n" +
+                            "                    var paraExt = \$(\"#paraExt\").val();\n" +
+                            "                    var id;\n" +
+                            "                    var url = \"\";\n" +
+                            "                    if (para) {\n" +
+                            "                        if (parseInt(para) > 0) {\n" +
+                            "                            url = \"${createLink(controller: 'persona', action: 'show_ajax')}\";\n" +
+                            "                            id = para;\n" +
+                            "                        } else {\n" +
+                            "                            url = \"${createLink(controller: 'departamento', action: 'show_ajax')}\";\n" +
+                            "                            id = parseInt(para) * -1;\n" +
+                            "                        }\n" +
+                            "                    }\n" +
+                            "                    if (paraExt) {\n" +
+                            "                        url = \"${createLink(controller: 'origenTramite', action: 'show_ajax')}\";\n" +
+                            "                        id = paraExt;\n" +
+                            "                    }\n" +
+                            "                    \$.ajax({\n" +
+                            "                        type    : \"POST\",\n" +
+                            "                        url     : url,\n" +
+                            "                        data    : {\n" +
+                            "                            id : id\n" +
+                            "                        },\n" +
+                            "                        success : function (msg) {\n" +
+                            "                            bootbox.dialog({\n" +
+                            "                                title   : \"Información\",\n" +
+                            "                                message : msg,\n" +
+                            "                                buttons : {\n" +
+                            "                                    aceptar : {\n" +
+                            "                                        label     : \"Aceptar\",\n" +
+                            "                                        className : \"btn-primary\",\n" +
+                            "                                        callback  : function () {\n" +
+                            "                                        }\n" +
+                            "                                    }\n" +
+                            "                                }\n" +
+                            "                            });\n" +
+                            "                        }\n" +
+                            "                    });\n" +
+                            "                    return false;\n" +
+                            "                });"
+                    html += "</script>"
+            }
         }
         render html
     }

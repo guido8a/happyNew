@@ -352,9 +352,9 @@
                     </div>
 
                     %{--<div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">--}%
-                        %{--<label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>--}%
-                            %{--Confidencial--}%
-                        %{--</label>--}%
+                    %{--<label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>--}%
+                    %{--Confidencial--}%
+                    %{--</label>--}%
                     %{--</div>--}%
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
@@ -384,27 +384,39 @@
                 <g:set var="origen" value="${tramite.origenTramite}"/>
 
                 <div class="row">
+
                     <div class="col-xs-3 ">
                         <span class="grupo">
-                            <b>Tipo de Persona:</b>
-                            <g:select id="tipoPersonaOrigen" name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="origenTram form-control origen required"
-                                      from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}" value="${origen?.tipoPersonaId}"/>
+                            <b>Institución/Remitente:</b>
+                            <g:textField name="origen.nombre" id="nombreOrigen" class="origenTram form-control required" maxlength="127"
+                                         value="${origen?.nombre}"/>
                         </span>
                     </div>
+
+                    <div class="col-xs-3 ">
+                        <span class="grupo">
+                            <b>Teléfono:</b>
+
+                            <div class="input-group">
+                                <g:textField id="telefonoOrigen" name="origen.telefono" class="origenTram form-control " maxlength="63"
+                                             value="${origen?.telefono}"/>
+                                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                            </div>
+                        </span>
+                    </div>
+                    %{--<div class="col-xs-3 ">--}%
+                    %{--<span class="grupo">--}%
+                    %{--<b>Tipo de Persona:</b>--}%
+                    %{--<g:select id="tipoPersonaOrigen" name="origen.tipoPersona.id" optionKey="id" optionValue="descripcion" class="origenTram form-control origen required"--}%
+                    %{--from="${happy.tramites.TipoPersona.list([sort: 'descripcion'])}" value="${origen?.tipoPersonaId}"/>--}%
+                    %{--</span>--}%
+                    %{--</div>--}%
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Cédula/R.U.C.:</b>
                             <g:textField name="origen.cedula" id="cedulaOrigen" class="origenTram form-control required" maxlength="13"
                                          value="${origen?.cedula}"/>
-                        </span>
-                    </div>
-
-                    <div class="col-xs-3 ">
-                        <span class="grupo">
-                            <b>Nombre:</b>
-                            <g:textField name="origen.nombre" id="nombreOrigen" class="origenTram form-control required" maxlength="127"
-                                         value="${origen?.nombre}"/>
                         </span>
                     </div>
 
@@ -426,48 +438,37 @@
                         </span>
                     </div>
 
-                    <div class="col-xs-3 ">
-                        <span class="grupo">
-                            <b>Título:</b>
-                            <g:textField id="tituloOrigen" name="origen.titulo" class="origenTram form-control " maxlength="4"
-                                         value="${origen?.titulo}"/>
-                        </span>
-                    </div>
+                    %{--<div class="col-xs-3 ">--}%
+                    %{--<span class="grupo">--}%
+                    %{--<b>Título:</b>--}%
+                    %{--<g:textField id="tituloOrigen" name="origen.titulo" class="origenTram form-control " maxlength="4"--}%
+                    %{--value="${origen?.titulo}"/>--}%
+                    %{--</span>--}%
+                    %{--</div>--}%
 
-                    <div class="col-xs-3 ">
-                        <span class="grupo">
-                            <b>Cargo:</b>
-                            <g:textField id="cargoOrigen" name="origen.cargo" class="origenTram form-control" maxlength="127"
-                                         value="${origen?.cargo}"/>
-                        </span>
-                    </div>
+                    %{--<div class="col-xs-3 ">--}%
+                    %{--<span class="grupo">--}%
+                    %{--<b>Cargo:</b>--}%
+                    %{--<g:textField id="cargoOrigen" name="origen.cargo" class="origenTram form-control" maxlength="127"--}%
+                    %{--value="${origen?.cargo}"/>--}%
+                    %{--</span>--}%
+                    %{--</div>--}%
 
-                    <div class="col-xs-3 ">
-                        <span class="grupo">
-                            <b>E-mail:</b>
+                    %{--<div class="col-xs-3 ">--}%
+                    %{--<span class="grupo">--}%
+                    %{--<b>E-mail:</b>--}%
 
-                            <div class="input-group">
-                                <g:textField id="mailOrigen" name="origen.mail" class="origenTram form-control" maxlength="63"
-                                             value="${origen?.mail}"/>
-                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                            </div>
-                        </span>
-                    </div>
+                    %{--<div class="input-group">--}%
+                    %{--<g:textField id="mailOrigen" name="origen.mail" class="origenTram form-control" maxlength="63"--}%
+                    %{--value="${origen?.mail}"/>--}%
+                    %{--<span class="input-group-addon"><i class="fa fa-envelope"></i></span>--}%
+                    %{--</div>--}%
+                    %{--</span>--}%
+                    %{--</div>--}%
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-3 ">
-                        <span class="grupo">
-                            <b>Teléfono:</b>
-
-                            <div class="input-group">
-                                <g:textField id="telefonoOrigen" name="origen.telefono" class="origenTram form-control " maxlength="63"
-                                             value="${origen?.telefono}"/>
-                                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                            </div>
-                        </span>
-                    </div>
-                </div>
+                %{--<div class="row">--}%
+                %{--</div>--}%
 
             </div>
         </g:form>
@@ -581,6 +582,7 @@
                 var $divConfidencial = $("#divConfidencial");
                 var $divAnexos = $("#divAnexos");
                 var $divBotonInfo = $("#divBotonInfo");
+                var $chkAnexos = $("#anexo");
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
 //                $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
@@ -604,6 +606,7 @@
                         $divPara.replaceWith(msg);
                     }
                 });
+                $chkAnexos.prop("checked", false);
 
                 switch (cod) {
                     case "CIR":
@@ -635,6 +638,7 @@
                         $divOrigen.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.removeClass("hide");
+                        $chkAnexos.prop("checked", true);
                         break;
                     case "SUM":
 //                        $divPara.html($selPara).prepend("Para: ");
@@ -784,6 +788,13 @@
                     }
                     if (id == "") {
                         $div.html("");
+                    }
+                });
+
+                $("#anexo").click(function () {
+                    var tipoDoc = $("#tipoDocumento").find("option:checked").attr("class");
+                    if (tipoDoc == "DEX") {
+                        $(this).prop("checked", true);
                     }
                 });
 

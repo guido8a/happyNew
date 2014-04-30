@@ -14,6 +14,14 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
+    def validarAnexosDEX() {
+        def tramite = Tramite.get(params.id)
+        if (tramite.tipoDocumento.codigo == "DEX") {
+            render DocumentoTramite.countByTramite(tramite) > 0
+        } else {
+            render true
+        }
+    }
 
     def anexo() {
         def tramite = Tramite.get(params.id)
@@ -28,7 +36,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         }
     }
 
-    def verAnexos(){
+    def verAnexos() {
         def tramite = Tramite.get(params.id)
         if (tramite) {
 
@@ -38,85 +46,86 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             response.sendError(404)
         }
     }
-    def cargaDocs(){
+
+    def cargaDocs() {
 
         def tramite = Tramite.get(params.id)
-        println "carga docs "+params+ " "+tramite.anexo
+        println "carga docs " + params + " " + tramite.anexo
         if (tramite) {
             if (tramite.anexo == 1) {
                 def docs = DocumentoTramite.findAllByTramite(tramite)
-                println "dosc "+docs
-                def editable=false
-                if(tramite.estadoTramite.codigo=="E001" || tramite.estadoTramite.codigo=="E002"  )
-                    editable=true
-                if(params.ver)
-                    editable=false
-                return [tramite: tramite,docs:docs,editable:editable]
+                println "dosc " + docs
+                def editable = false
+                if (tramite.estadoTramite.codigo == "E001" || tramite.estadoTramite.codigo == "E002")
+                    editable = true
+                if (params.ver)
+                    editable = false
+                return [tramite: tramite, docs: docs, editable: editable]
             }
         }
     }
 
 
-    def borrarDoc(){
-        if(request.getMethod()=="POST"){
+    def borrarDoc() {
+        if (request.getMethod() == "POST") {
 
 
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
-            if(!departamento)
-                departamento=doc.tramite.de.departamento
-            if(doc.tramite.estadoTramite.codigo=="E001" || doc.tramite.estadoTramite.codigo=="E002"  ){
-                def band =true
-                try{
-                    def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo+ "/"+doc.path
+            if (!departamento)
+                departamento = doc.tramite.de.departamento
+            if (doc.tramite.estadoTramite.codigo == "E001" || doc.tramite.estadoTramite.codigo == "E002") {
+                def band = true
+                try {
+                    def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
                     def file = new File(path)
                     file.delete()
-                }catch (e){
-                    println "error borrar "+e
-                    band=false
+                } catch (e) {
+                    println "error borrar " + e
+                    band = false
                 }
-                if(band){
+                if (band) {
                     doc.delete(flush: true)
                     render "ok"
-                }else{
+                } else {
                     render "error_No se pudo eliminar el archivo."
                 }
             }
-        }else{
+        } else {
             response.sendError(403)
         }
 
     }
 
-    def generateKey(){
-        if(request.getMethod()=="POST"){
+    def generateKey() {
+        if (request.getMethod() == "POST") {
             def doc = DocumentoTramite.get(params.id)
-            session.key = doc?.path.size()+doc.resumen?.encodeAsMD5().substring(0,10)
+            session.key = doc?.path.size() + doc.resumen?.encodeAsMD5().substring(0, 10)
             render "ok"
-        }else{
+        } else {
             response.sendError(403)
         }
     }
 
-    def descargarDoc(){
+    def descargarDoc() {
         def doc = DocumentoTramite.get(params.id)
         def departamento = doc.tramite.deDepartamento
-        if(!departamento)
-            departamento=doc.tramite.de.departamento
-        if(session.key == (doc.path.size()+doc.resumen?.encodeAsMD5().substring(0,10))){
+        if (!departamento)
+            departamento = doc.tramite.de.departamento
+        if (session.key == (doc.path.size() + doc.resumen?.encodeAsMD5().substring(0, 10))) {
             session.key = null
-            def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo+ "/"+doc.path
-            println "path "+doc.path+" "+doc.path.split("\\.")
+            def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
+            println "path " + doc.path + " " + doc.path.split("\\.")
             def tipo = doc.path.split("\\.")
             tipo = tipo[1]
-            println "tipo "+tipo
-            switch (tipo){
+            println "tipo " + tipo
+            switch (tipo) {
                 case "jpeg":
                 case "gif":
                 case "jpg":
                 case "bmp":
                 case "png":
-                    tipo="application/image"
+                    tipo = "application/image"
                     break;
                 case "pdf":
                     tipo = "application/pdf"
@@ -124,14 +133,14 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 case "doc":
                 case "docx":
                 case "odt":
-                    tipo="application/msword"
+                    tipo = "application/msword"
                     break;
                 case "xls":
                 case "xlsx":
-                    tipo="application/vnd.ms-excel"
+                    tipo = "application/vnd.ms-excel"
                     break;
                 default:
-                    tipo ="application/pdf"
+                    tipo = "application/pdf"
                     break;
             }
             def file = new File(path)
@@ -140,16 +149,17 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             response.setHeader("Content-disposition", "attachment; filename=" + (doc.path))
             response.setContentLength(b.length)
             response.getOutputStream().write(b)
-        }else{
+        } else {
             response.sendError(403)
         }
     }
 
 
-    def uploadSvt(){
-        println "updaload svt "+params
+    def uploadSvt() {
+        println "updaload svt " + params
         def tramite = Tramite.get(params.id)
-        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/" + tramite.codigo+ "/"    //web-app/archivos
+        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/" + tramite.codigo + "/"
+        //web-app/archivos
         new File(path).mkdirs()
         def f = request.getFile('file')  //archivo = name del input type file
         def imageContent = ['image/png': "png", 'image/jpeg': "jpeg", 'image/jpg': "jpg"]
@@ -496,26 +506,26 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         render "OK"
     }
 
-    def cargaTramites(){
+    def cargaTramites() {
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
-        return [tramites:tramites]
+        return [tramites: tramites]
     }
 
-    def adjuntarTramites(){
-        println "adj tramite "+params
+    def adjuntarTramites() {
+        println "adj tramite " + params
         def tramite = Tramite.get(params.tramite)
         def parts = params.ids.split(";")
-        println "parts "+parts
+        println "parts " + parts
         parts.each {
-            if(it && it!=""){
+            if (it && it != "") {
                 def doc = new DocumentoTramite()
-                doc.tramite=tramite
-                doc.anexo=Tramite.get(it)
-                doc.fecha= new Date()
-                if(!doc.save(flush: true)){
-                    println "error save "+doc.errors
+                doc.tramite = tramite
+                doc.anexo = Tramite.get(it)
+                doc.fecha = new Date()
+                if (!doc.save(flush: true)) {
+                    println "error save " + doc.errors
                 }
             }
         }

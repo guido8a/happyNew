@@ -105,7 +105,7 @@
             </g:link>
         </g:else>
 
-        <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul">
+        <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-redactar btn-azul">
             Redactar
         </g:link>
         %{--<g:link controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul" style="margin-top: 8px">--}%
@@ -189,58 +189,58 @@
 
                 var file = document.getElementById("file");
 
-                var next = $("#files").find(".fileContainer").size()
+                var next = $("#files").find(".fileContainer").size();
                 if (isNaN(next))
-                    next = 1
+                    next = 1;
                 else
-                    next++
-                var ar = file.files[next - 1]
+                    next++;
+                var ar = file.files[next - 1];
 //        console.log("ar",ar,file,next)
 //        console.log(file.files[0])
-                var div = $('<div class="fileContainer ui-corner-all d-' + next + '">')
-                var row1 = $("<div class='row resumen'>")
-                var row2 = $("<div class='row claves'>")
-                var row3 = $("<div class='row botones'  style='text-align: right'>")
-                var row4 = $("<div class='row'>")
-                row1.append(" <div class='col-md-1 etiqueta'>Resumen</div>")
-                row1.append("<div class='col-md-5'><textarea class='form-control  " + next + "' required id='resumen' name='resumen' cols='5' rows='5'></textarea> </div>")
-                row1.append("<div class='col-md-1 etiqueta'>Descripción</div>")
-                row1.append("<div class='col-md-5'><textarea class='form-control " + next + "' required id='descripcion' name='descripcion' cols='5' rows='5'></textarea></div>")
-                row2.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>")
-                row2.append(" <div class='col-md-11'><input type='text' class='form-control " + next + "' id='clave' name='clave'/></div>")
-                row3.append(" <a href='#' class='btn btn-azul subir' style='margin-right: 15px' clase='" + next + "'><i class='fa fa-upload'></i> Subir Archivo</a>")
-                div.append("<div class='row' style='margin-top: 0px'><div class='titulo-archivo col-md-10'><span style='color: #327BBA'>Archivo:</span> " + ar.name + "</div></div>")
-                div.append(row1)
-                div.append(row2)
-                div.append(row3)
-                $("#files").append(div)
+                var div = $('<div class="fileContainer ui-corner-all d-' + next + '">');
+                var row1 = $("<div class='row resumen'>");
+                var row2 = $("<div class='row claves'>");
+                var row3 = $("<div class='row botones'  style='text-align: right'>");
+                var row4 = $("<div class='row'>");
+                row1.append(" <div class='col-md-1 etiqueta'>Resumen</div>");
+                row1.append("<div class='col-md-5'><textarea class='form-control  " + next + "' required id='resumen' name='resumen' cols='5' rows='5'></textarea> </div>");
+                row1.append("<div class='col-md-1 etiqueta'>Descripción</div>");
+                row1.append("<div class='col-md-5'><textarea class='form-control " + next + "' required id='descripcion' name='descripcion' cols='5' rows='5'></textarea></div>");
+                row2.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
+                row2.append(" <div class='col-md-11'><input type='text' class='form-control " + next + "' id='clave' name='clave'/></div>");
+                row3.append(" <a href='#' class='btn btn-azul subir' style='margin-right: 15px' clase='" + next + "'><i class='fa fa-upload'></i> Subir Archivo</a>");
+                div.append("<div class='row' style='margin-top: 0px'><div class='titulo-archivo col-md-10'><span style='color: #327BBA'>Archivo:</span> " + ar.name + "</div></div>");
+                div.append(row1);
+                div.append(row2);
+                div.append(row3);
+                $("#files").append(div);
                 if ($("#files").height() * 1 > 120) {
-                    $("#titulo-arch").show()
-                    $("#linea-arch").show()
+                    $("#titulo-arch").show();
+                    $("#linea-arch").show();
                 } else {
-                    $("#titulo-arch").hide()
-                    $("#linea-arch").hide()
+                    $("#titulo-arch").hide();
+                    $("#linea-arch").hide();
                 }
             }
             function boundBotones() {
-                $(".subir").unbind("click")
+                $(".subir").unbind("click");
                 $(".subir").bind("click", function () {
-                    error = false
+                    error = false;
                     $("." + $(this).attr("clase")).each(function () {
                         if ($(this).val().trim() == "") {
-                            error = true
+                            error = true;
                         }
-                    })
+                    });
                     if (error) {
                         bootbox.alert("llene todos los campos")
                     } else {
                         /*Aqui subir*/
-                        upload($(this).attr("clase") * 1 - 1)
+                        upload($(this).attr("clase") * 1 - 1);
                     }
                 });
             }
-            var request = []
-            var tam = 0
+            var request = [];
+            var tam = 0;
             function upload(indice) {
 
                 var tramite = "${tramite.id}";
@@ -298,7 +298,7 @@
                 };
             }
 
-            var archivos = []
+            var archivos = [];
             function btnCerrar($panel, $footer, isError) {
                 var clase = isError ? "danger" : "success";
                 var icon = isError ? "times" : "check";
@@ -317,72 +317,107 @@
                 });
             }
             function cargaDocs() {
-                $("#anexos").html("")
+                $("#anexos").html("");
 //        openLoader("Cargando")
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'documentoTramite',action:'cargaDocs')}",
-                    data     : "id=${tramite.id}",
-                    async    : false,
-                    success  : function (msg) {
-                        $("#anexos").html(msg)
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'documentoTramite',action:'cargaDocs')}",
+                    data    : "id=${tramite.id}",
+                    async   : false,
+                    success : function (msg) {
+                        $("#anexos").html(msg);
 //                closeLoader()
                     }
                 });
             }
+
+            function revisarAnexosDex(mensaje, url) {
+                if ("${tramite.tipoDocumento.codigo}" == "DEX") {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'documentoTramite',action:'validarAnexosDEX')}",
+                        data    : {
+                            id :${tramite.id}
+                        },
+                        async   : false,
+                        success : function (msg) {
+                            console.log(msg, msg == "true");
+                            if (msg == "true") {
+                                location.href = url;
+                            } else {
+                                bootbox.alert(mensaje);
+                            }
+                        }
+                    });
+                } else {
+                    location.href = url;
+                }
+            }
+
             $(function () {
+
+                $(".btn-editar").click(function () {
+                    revisarAnexosDex("Debe cargar al menos un anexo antes de editar el encabezado.", $(this).attr("href"));
+                    return false;
+                });
+                $(".btn-redactar").click(function () {
+                    revisarAnexosDex("Debe cargar al menos un anexo antes de redactar el documento.", $(this).attr("href"));
+                    return false;
+                });
+
                 $("#adj-tramites").click(function () {
-                    openLoader()
+                    openLoader();
                     $.ajax({type : "POST", url : "${g.createLink(controller: 'documentoTramite',action:'cargaTramites')}",
                         data     : "",
                         async    : false,
                         success  : function (msg) {
-                            $("#dialog-body").html(msg)
-                            $("#dialog").modal("show")
-                            closeLoader()
+                            $("#dialog-body").html(msg);
+                            $("#dialog").modal("show");
+                            closeLoader();
                         }
                     });
                 });
 
                 $("#adj-tramite").click(function () {
-                    var data = "ids="
+                    var data = "ids=";
                     $(".chk").each(function () {
                         if ($(this).prop("checked") == true) {
-                            data += $(this).attr("iden") + ";"
+                            data += $(this).attr("iden") + ";";
                         }
                     });
                     if (data == "ids=") {
                         bootbox.alert("Seleccione al menos un tramite para adjuntar")
                     } else {
-                        openLoader()
-                        data += "&tramite=${tramite.id}"
+                        openLoader();
+                        data += "&tramite=${tramite.id}";
                         $.ajax({type : "POST", url : "${g.createLink(controller: 'documentoTramite',action:'adjuntarTramites')}",
                             data     : data,
                             async    : false,
                             success  : function (msg) {
-                                cargaDocs()
-                                $("#dialog").modal("hide")
-                                closeLoader()
+                                cargaDocs();
+                                $("#dialog").modal("hide");
+                                closeLoader();
                             }
                         });
                     }
-                })
+                });
 
                 cargaDocs();
                 $("#reset-files").click(function () {
-                    reset()
-                    $("#file").val("")
-                    $("#titulo-arch").hide()
+                    reset();
+                    $("#file").val("");
+                    $("#titulo-arch").hide();
                     $("#linea-arch").hide()
-                })
+                });
 
                 $("#file").change(function () {
                     reset();
-                    archivos = $(this)[0].files
-                    var length = archivos.length
+                    archivos = $(this)[0].files;
+                    var length = archivos.length;
                     for (i = 0; i < length; i++) {
-                        createContainer()
+                        createContainer();
                     }
-                    boundBotones()
-
+                    boundBotones();
                 });
             });
         </script>

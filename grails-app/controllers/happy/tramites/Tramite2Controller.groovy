@@ -886,9 +886,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
              */
-            if (paramsTramite.para) {
+            if (paramsTramite.para || tramite.tipoDocumento.codigo == "OFI") {
                 def rolPara = RolPersonaTramite.findByCodigo('R001')
-                def para = paramsTramite.para.toInteger()
+                def para
+                if (paramsTramite.para) {
+                    para = paramsTramite.para.toInteger()
+                } else {
+                    para = session.usuario.departamento.id.toInteger() * -1
+                }
                 def paraDocumentoTramite = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", tramite)
                     eq("rolPersonaTramite", rolPara)
