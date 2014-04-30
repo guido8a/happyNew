@@ -152,6 +152,35 @@
 
     });
 
+    var arbol = {
+        text   : 'Cadena del trámite',
+        icon   : "<i class='fa fa-sitemap'></i>",
+        action : function (e) {
+            location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqt"
+        }
+    };
+
+    var detalles = {
+        text   : 'Detalles',
+        icon   : "<i class='fa fa-search'></i>",
+        action : function (e) {
+            $("tr.trHighlight").removeClass("trHighlight");
+            e.preventDefault();
+            $.ajax({
+                type    : 'POST',
+                url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                data    : {
+                    id : id
+                },
+                success : function (msg) {
+                    $("#dialog-body").html(msg)
+                }
+            });
+            $("#dialog").modal("show")
+        }
+    };
+
+
 
     context.settings({
         onShow: function (e) {
@@ -169,17 +198,20 @@
         {
             header: 'Acciones'
         },
-        {
-            text: 'Seguimiento Tramite',
-            icon: "<i class='fa fa-code-fork'></i>",
-            action: function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                e.preventDefault();
 
-                location.href="${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/"+id;
-            }
+        detalles,
+        arbol
+        %{--{--}%
+            %{--text: 'Seguimiento Tramite',--}%
+            %{--icon: "<i class='fa fa-code-fork'></i>",--}%
+            %{--action: function (e) {--}%
+                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                %{--e.preventDefault();--}%
 
-        }
+                %{--location.href="${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/"+id;--}%
+            %{--}--}%
+
+        %{--}--}%
 
     ]);
 
