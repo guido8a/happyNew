@@ -971,7 +971,7 @@ class TramiteController extends happy.seguridad.Shield {
         def tramitesSinHijos = []
 
         tramites.each { tr ->
-            if (Tramite.countByPadre(tr.tramite) == 0) {
+            if (Tramite.countByPadreAndDe(tr.tramite, session.usuario) == 0) {
                 tramitesSinHijos += tr
             }
         }

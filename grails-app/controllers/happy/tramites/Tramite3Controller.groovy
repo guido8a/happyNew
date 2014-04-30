@@ -468,7 +468,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramitesSinHijos = []
 
         pxtTodos.each { tr ->
-            if (Tramite.countByPadre(tr.tramite) == 0) {
+            if (Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0) {
                 tramitesSinHijos += tr
             }
         }
@@ -753,6 +753,55 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [tramites: pxtTramites]
 
 
+    }
+
+    def arbolTramite() {
+        if (!params.id) {
+            params.id = 61
+        }
+
+        def tramite = Tramite.get(params.id.toLong())
+        def principal = tramite
+        if (tramite.padre) {
+            principal = tramite.padre
+            while (true) {
+                if (!principal.padre)
+                    break
+                else {
+                    principal = principal.padre
+                }
+            }
+        }
+        def html = "<ul>" + "\n"
+        html += makeTree(principal, tramite)
+        html += "</ul>" + "\n"
+
+        return [html: html]
+    }
+
+    private String makeTree(Tramite principal, Tramite tramite) {
+        def html = ""
+        def clase = ""
+        def rel = "hijo"
+        def hijos = Tramite.findAllByPadre(principal)
+        if (principal.id == tramite.id) {
+            clase = "active"
+        }
+        if (hijos.size() > 0) {
+            clase += " jstree-open"
+            rel = "padre"
+        }
+
+        html += "<li id='${principal.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + principal.codigo + "\n"
+        if (hijos.size() > 0) {
+            html += "<ul>" + "\n"
+            hijos.each { hijo ->
+                html += makeTree(hijo, tramite)
+            }
+            html += "</ul>" + "\n"
+            html += "</li>" + "\n"
+        }
+        return html
     }
 
 }

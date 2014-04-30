@@ -309,12 +309,12 @@ class DepartamentoController extends happy.seguridad.Shield {
 
                     if (hijo.esTriangulo) {
                         rel += "Triangulo"
-                        println "++++++++++++++++++++++++++++"
-                        println hijo
-                        println hijo.departamento
-                        println hijo.departamento.triangulos
-                        println hijo.departamento.triangulos.size()
-                        println "++++++++++++++++++++++++++++"
+//                        println "++++++++++++++++++++++++++++"
+//                        println hijo
+//                        println hijo.departamento
+//                        println hijo.departamento.triangulos
+//                        println hijo.departamento.triangulos.size()
+//                        println "++++++++++++++++++++++++++++"
                         data += "data-triangulos=" + (hijo.departamento.triangulos.size())
                     }
 
