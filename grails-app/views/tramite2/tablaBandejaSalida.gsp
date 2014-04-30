@@ -27,21 +27,36 @@
                 <g:set var="esImprimir" value="${true}"/>
             </g:if>
 
-            <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
-                <g:set var="clase" value="${'sumilla'}"/>
+            <g:if test="${tramite?.anexo == 1}">
+                <g:set var="anexo" value="${'conAnexo'}"/>
             </g:if>
             <g:else>
-                <g:set var="clase" value="${'sinSumilla'}"/>
+                <g:set var="anexo" value="${'sinAnexo'}"/>
             </g:else>
+
+            <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
+                <g:set var="clase" value="${'sumilla' + ' ' +  anexo}"/>
+            </g:if>
+            <g:else>
+                <g:set var="clase" value="${'sinSumilla' + ' ' + anexo}"/>
+            </g:else>
+
 
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
-                ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
+                ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
                 ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
                 estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}">
-                <td title="${tramite.asunto}">
-                    ${tramite?.codigo}
-                </td>
+                <g:if test="${tramite?.anexo == 1}">
+                    <td title="${tramite.asunto}">
+                        ${tramite?.codigo} <i class="fa fa-paperclip"></i>
+                    </td>
+                </g:if>
+                <g:else>
+                    <td title="${tramite.asunto}">
+                        ${tramite?.codigo}
+                    </td>
+                </g:else>
                 <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
                 <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                 <g:set var="para" value="${tramite.getPara()}"/>

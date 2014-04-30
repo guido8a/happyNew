@@ -53,11 +53,16 @@
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" anexo="${anexo}">
-                <td title="${tramite?.tramite?.asunto}">
-                    ${tramite?.tramite?.codigo}
-                    %{--<br/>--}%
-                    %{--${happy.tramites.Tramite.countByPadre(tramite.tramite)}--}%
-                </td>
+               <g:if test="${tramite?.tramite?.anexo == 1}">
+                   <td title="${tramite?.tramite?.asunto}">
+                       ${tramite?.tramite?.codigo} <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
+                   </td>
+               </g:if>
+                <g:else>
+                    <td title="${tramite?.tramite?.asunto}">
+                        ${tramite?.tramite?.codigo}
+                    </td>
+                </g:else>
                 <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                 <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                 <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>

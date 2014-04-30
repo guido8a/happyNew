@@ -320,6 +320,15 @@
                     }
                 };
 
+                var anexos = {
+                    text   : 'Anexos',
+                    icon   : "<i class='fa fa-paperclip'></i>",
+                    action : function (e) {
+                        location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                    }
+                };
+
+
                 var desenviar = {
                     text   : 'Quitar el enviado',
                     icon   : "<i class='fa fa-magic text-danger'></i>",
@@ -438,6 +447,34 @@
                     detalles,
                     desenviar
                 ]);
+
+                context.attach(".alerta.desenviar.sumilla.sinAnexo", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    desenviar
+                ]);
+
+                context.attach(".E001.sinSumilla.conAnexo", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    editar,
+                    anexos
+                ]);
+
+                context.attach(".alerta.sinSumilla.conAnexo", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    anexos
+                ]);
+
 
 
 
