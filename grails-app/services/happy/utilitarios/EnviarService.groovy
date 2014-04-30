@@ -88,11 +88,11 @@ class EnviarService {
         resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
 
         def text = (tramite?.texto ?: '')
-        println "--------------------------------------------------------------"
-        println text
+//        println "--------------------------------------------------------------"
+//        println text
         text = text.replaceAll("&lt;", "*lt*")
         text = text.replaceAll("&gt;", "*gt*")
-        println "--------------------------------------------------------------"
+//        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
         text = text.decodeHTML()
         text = text.replaceAll("\\*lt\\*", "&lt;")
@@ -104,8 +104,8 @@ class EnviarService {
         text = text.replaceAll(~"\\?\\_debugResources=y\\&n=[0-9]*", "")
 //        text = text.replaceAll(message(code: 'pathImages'), pathImages)
         text = text.replaceAll(mensaje, pathImages)
-        println text
-        println "--------------------------------------------------------------"
+//        println text
+//        println "--------------------------------------------------------------"
 
         def content = "<!DOCTYPE HTML>\n<html>\n"
         content += "<head>\n"
@@ -171,12 +171,14 @@ class EnviarService {
         file.delete()
 
         def dpto = ""
+        def anio = tramite.fechaCreacion.format("yyyy")
         if (enviar == "1") {
 //            println("entro enviar")
             def pathPdf = realPath + "tramites/"
             if (tramite.de.departamento && tramite.de.departamento.codigo && tramite.de.departamento.codigo != "") {
                 dpto = tramite.de.departamento.codigo
                 pathPdf += dpto + "/"
+                pathPdf += anio + "/"
             }
             new File(pathPdf).mkdirs()
             def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
@@ -190,7 +192,7 @@ class EnviarService {
         if (type == "download") {
             println("entro!!!!!")
 //            render "OK*" + tramite.codigo + ".pdf"
-            return "OK*" + dpto + "/" + tramite.codigo + ".pdf"
+            return "OK*" + dpto + "/" + anio + "/" + tramite.codigo + ".pdf"
         } else {
 //            response.setContentType("application/pdf")
 //            response.setHeader("Content-disposition", "attachment; filename=" + (tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))

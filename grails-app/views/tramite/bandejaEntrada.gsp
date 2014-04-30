@@ -215,7 +215,7 @@
 
         <script type="text/javascript">
 
-        var valAnexo
+            var valAnexo
 
             $("input").keyup(function (ev) {
                 if (ev.keyCode == 13) {
@@ -392,10 +392,17 @@
                     text   : 'Anexos',
                     icon   : "<i class='fa fa-paperclip'></i>",
                     action : function (e) {
-                       location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
 
+                var arbol = {
+                    text   : 'Cadena del trámite',
+                    icon   : "<i class='fa fa-sitemap'></i>",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
+                    }
+                };
 
                 var archivar = {
                     text   : 'Archivar Documentos',
@@ -572,7 +579,7 @@
                         id = $tr.data("id");
                         archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                         valAnexo = $tr.attr("anexo");
-                                 }
+                    }
                 });
 
                 context.attach('.porRecibir, .sinRecepcion', [
@@ -580,6 +587,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -592,6 +600,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -602,11 +611,12 @@
                     </g:if>
 
                 ]);
-                context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion',  [
+                context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [
                     {
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -620,6 +630,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -628,11 +639,9 @@
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     archivar,
                     </g:if>
-                        anexos
+                    anexos
 
                 ]);
-
-
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false);

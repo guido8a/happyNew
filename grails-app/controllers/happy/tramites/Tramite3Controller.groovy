@@ -776,7 +776,23 @@ class Tramite3Controller extends happy.seguridad.Shield {
         html += makeTree(principal, tramite)
         html += "</ul>" + "\n"
 
-        return [html: html]
+        def url = ""
+        switch (params.b) {
+            case "bep":
+                url = createLink(controller: "tramite", action: "bandejaEntrada")
+                break;
+            case "bad":
+                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+                break;
+            case "bsp":
+                url = createLink(controller: "tramite2", action: "bandejaSalida")
+                break;
+            case "bsd":
+                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+                break;
+        }
+
+        return [html: html, url: url]
     }
 
     private String makeTree(Tramite principal, Tramite tramite) {

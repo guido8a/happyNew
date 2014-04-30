@@ -292,6 +292,14 @@
                     }
                 };
 
+                var arbol = {
+                    text   : 'Cadena del trámite',
+                    icon   : "<i class='fa fa-sitemap'></i>",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
+                    }
+                };
+
                 var detalles = {
                     text   : 'Detalles',
                     icon   : "<i class='fa fa-search'></i>",
@@ -324,10 +332,9 @@
                     text   : 'Anexos',
                     icon   : "<i class='fa fa-paperclip'></i>",
                     action : function (e) {
-                        location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
-
 
                 var desenviar = {
                     text   : 'Quitar el enviado',
@@ -376,6 +383,7 @@
                         header : 'Acciones'
                     },
                     ver,
+                    arbol,
                     editar
                     %{--<g:if test="${revisar}">,--}%
                     %{--{--}%
@@ -394,21 +402,24 @@
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol
                 ]);
                 context.attach(".E004", [
                     {
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol,
                 ]);
                 context.attach(".alerta", [
                     {
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol,
                 ]);
                 context.attach(".desenviar", [
                     {
@@ -416,6 +427,7 @@
                     },
                     ver,
                     detalles,
+                    arbol,
 //                    editar,
                     desenviar
                 ]);
@@ -425,6 +437,7 @@
                         header : 'Acciones'
                     },
                     ver,
+                    arbol,
                     editar
                 ]);
 
@@ -438,6 +451,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla", [
@@ -445,6 +459,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     desenviar
                 ]);
 
@@ -453,6 +468,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     desenviar
                 ]);
 
@@ -462,6 +478,7 @@
                     },
                     ver,
                     detalles,
+                    arbol,
                     editar,
                     anexos
                 ]);
@@ -472,12 +489,9 @@
                     },
                     ver,
                     detalles,
+                    arbol,
                     anexos
                 ]);
-
-
-
-
 
                 </g:if>
                 $(".btnBuscar").click(function () {

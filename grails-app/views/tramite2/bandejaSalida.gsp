@@ -382,6 +382,14 @@
                     }
                 };
 
+                var arbol = {
+                    text   : 'Cadena del trámite',
+                    icon   : "<i class='fa fa-sitemap'></i>",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
+                    }
+                };
+
                 var editar = {
                     text   : 'Editar',
                     icon   : "<i class='fa fa-pencil'></i>",
@@ -391,15 +399,13 @@
                     }
                 };
 
-
                 var anexos = {
                     text   : 'Anexos',
                     icon   : "<i class='fa fa-paperclip'></i>",
                     action : function (e) {
-                        location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
-
 
                 var desenviar = {
                     text   : 'Quitar el enviado',
@@ -464,6 +470,7 @@
                     },
                     ver,
                     detalles,
+                    arbol,
                     editar,
                     imprimir
                 ]);
@@ -478,14 +485,16 @@
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol
                 ]);
                 context.attach(".E004", [
                     {
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol
                 ]);
 
                 context.attach(".alerta", [
@@ -493,7 +502,8 @@
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol
                 ]);
 
                 context.attach(".imprimir", [
@@ -501,7 +511,8 @@
                         header : 'Acciones'
                     },
                     ver,
-                    detalles
+                    detalles,
+                    arbol
                 ]);
 
                 context.attach(".desenviar", [
@@ -510,12 +521,10 @@
                     },
                     ver,
                     detalles,
+                    arbol,
 //                    editar,
                     desenviar
                 ]);
-
-
-
 
                 context.attach(".E001.sumilla", [
                     {
@@ -527,6 +536,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla.sinAnexo", [
@@ -534,6 +544,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     desenviar
                 ]);
 
@@ -543,6 +554,7 @@
                     },
                     ver,
                     detalles,
+                    arbol,
                     editar,
                     imprimir,
                     anexos
@@ -554,14 +566,9 @@
                     },
                     ver,
                     detalles,
+                    arbol,
                     anexos
                 ]);
-
-
-
-
-
-
 
                 </g:if>
 

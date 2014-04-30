@@ -282,6 +282,14 @@
                     }
                 });
 
+                var arbol = {
+                    text   : 'Cadena del trámite',
+                    icon   : "<i class='fa fa-sitemap'></i>",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
+                    }
+                };
+
                 var contestar = {
                     text   : 'Contestar Documento',
                     icon   : "<i class='fa fa-external-link'></i>",
@@ -500,7 +508,7 @@
                     text   : 'Anexos',
                     icon   : "<i class='fa fa-paperclip'></i>",
                     action : function (e) {
-                        location.href='${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
 
@@ -509,6 +517,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -521,6 +530,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeVer}">
 //                    ver,
 //                    seguimiento,
@@ -539,12 +549,12 @@
                     },
                     contestar,
                     detalles,
+                    arbol,
 //                    ver,
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     archivar
                     </g:if>
                 ]);
-
 
                 context.attach(".conAnexo.jefe", [
                     {
@@ -552,6 +562,7 @@
                     },
                     contestar,
                     detalles,
+                    arbol,
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
                     archivar,
                     </g:if>
@@ -563,6 +574,7 @@
                         header : 'Acciones'
                     },
                     detalles,
+                    arbol,
                     observaciones,
                     contestar,
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
@@ -576,10 +588,10 @@
                         header : 'Acciones'
                     },
                     detalles,
-                     recibir,
-                     anexos
+                    arbol,
+                    recibir,
+                    anexos
                 ]);
-
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)

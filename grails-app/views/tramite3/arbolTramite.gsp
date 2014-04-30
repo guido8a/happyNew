@@ -24,6 +24,17 @@
     </head>
 
     <body>
+
+        <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
+            <div class="btn-group">
+                <g:if test="${url}">
+                    <a href="${url}" class="btn btn-primary btnBuscar">
+                        <i class="fa fa-arrow-left"></i> Regresar
+                    </a>
+                </g:if>
+            </div>
+        </div>
+
         <div id="jstree">
             <util:renderHTML html="${html}"/>
         </div>
