@@ -76,9 +76,9 @@
     <div class="body ui-corner-all" style="width: 850px;position: relative;margin: auto;margin-top: 0px;height: 510px;
     background: #40709a;">
 
-        %{--<g:if test="${prms.contains('rubroPrincipal')}">--}%
+        <g:if test="${prms.contains('bandejaEntrada')}">
             <a href="${createLink(controller: 'tramite', action: 'bandejaEntrada')}" style="text-decoration: none">
-        %{--</g:if>--}%
+        </g:if>
         <div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
@@ -88,13 +88,13 @@
                 <div class="texto"><b>Bandeja Personal</b>: trámites que se han enviado al ususario, recibidos y pendientes</div>
             </div>
         </div>
-        %{--<g:if test="${prms.contains('rubroPrincipal')}">--}%
+        <g:if test="${prms.contains('bandejaEntrada')}">
             </a>
-        %{--</g:if>--}%
+        </g:if>
 
-        %{--<g:if test="${prms.contains('registroObra')}">--}%
+        <g:if test="${prms.contains('bandejaEntradaDpto')}">
             <a href= "${createLink(controller:'tramite3', action: 'bandejaEntradaDpto')}" style="text-decoration: none">
-        %{--</g:if>--}%
+        </g:if>
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
@@ -104,13 +104,13 @@
                 <div class="texto"><b>Bandeja de la Oficina</b>: recepción y envío de trámites a otras oficinas</div>
             </div>
         </div>
-        %{--<g:if test="${prms.contains('registroObra')}">--}%
+        <g:if test="${prms.contains('bandejaEntradaDpto')}">
             </a>
-        %{--</g:if>--}%
+        </g:if>
 
-        %{--<g:if test="${prms.contains('registrarPac')}">--}%
+        <g:if test="${prms.contains('seguimientoExternos')}">
             <a href= "${createLink(controller:'busquedaExternos', action: 'seguimientoExternos')}" style="text-decoration: none">
-        %{--</g:if>--}%
+        </g:if>
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
@@ -120,13 +120,13 @@
                 <div class="texto"><b>Trámites externos</b>: recepción de documentos externos</div>
             </div>
         </div>
-        %{--<g:if test="${prms.contains('registrarPac')}">--}%
+        <g:if test="${prms.contains('seguimientoExternos')}">
             </a>
-        %{--</g:if>--}%
+        </g:if>
 
-        %{--<g:if test="${prms.contains('verContrato')}">--}%
+        <g:if test="${prms.contains('archivadosDpto')}">
             <a href= "${createLink(controller:'tramite3', action: 'archivadosDpto')}" style="text-decoration: none">
-        %{--</g:if>--}%
+        </g:if>
         <div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
@@ -136,9 +136,9 @@
                 <div class="texto"><b>Archivo</b>: trámites archivados...</div>
             </div>
         </div>
-        %{--<g:if test="${prms.contains('verContrato')}">--}%
+        <g:if test="${prms.contains('archivadosDpto')}">
             </a>
-        %{--</g:if>--}%
+        </g:if>
 
         <g:link controller="reportes" action="index" style="text-decoration: none">
             <div class="ui-corner-all  item fuera">

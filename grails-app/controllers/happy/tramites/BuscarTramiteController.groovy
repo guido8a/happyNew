@@ -20,7 +20,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 
 //        def tramite1 = Tramite.get(50)
 
-        println("params" + params)
+        println("params tablaBusquedaTramite:" + params)
 
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 00:00:00")
@@ -100,7 +100,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         def cn = dbConnectionService.getConnection();
 
         sql = "select * from tramites(" + tramite.id + ") "
-
+        println "........" + sql
         cn.eachRow(sql) { r ->
             println(">>>>>" + r)
             result.add(r.toRowResult())

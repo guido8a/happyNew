@@ -28,6 +28,7 @@
             <g:each in="${tramites}" var="tramite">
                 <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}">
                    <td>${tramite?.trmtcdgo}</td>
+
                     <g:if test="${tramite?.pr_prsn}">
                         <td>${tramite?.pr_prsn}</td>
                     </g:if>
@@ -37,9 +38,13 @@
                     <g:else>
                         <td></td>
                     </g:else>
+
                     <td>${tramite?.en_prsn}</td>
+
                     <td>${tramite?.trmtasnt}</td>
+
                     <td>${tramite?.tppddscr}</td>
+
                     <g:if test="${tramite?.de_prsn}">
                         <td>${tramite?.de_prsn}</td>
                     </g:if>

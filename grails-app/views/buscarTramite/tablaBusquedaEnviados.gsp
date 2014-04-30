@@ -26,7 +26,7 @@
             <tbody>
             <g:each in="${tramites}" var="tramite">
                 <tr id="${tramite?.id}" data-id="${tramite.id}">
-                    <td>${tramite?.codigo}</td>
+                    <td width="100px;">${tramite?.codigo}</td>
                     <g:if test="${tramite?.para?.persona}">
                         <td>${tramite?.para?.persona?.nombre + " " + tramite?.para?.persona?.apellido}</td>
                     </g:if>
