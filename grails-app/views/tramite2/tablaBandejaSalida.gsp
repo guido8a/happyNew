@@ -18,7 +18,9 @@
     </thead>
     <tbody id="tabla_salida">
         <g:each in="${tramites}" var="tramite">
+
             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+            <g:set var="padre" value=""/>
 
             <g:set var="esImprimir" value="${false}"/>
             <g:if test="${(happy.tramites.PersonaDocumentoTramite.findAllByPersonaAndTramite(session.usuario, tramite).findAll {
@@ -35,18 +37,23 @@
             </g:else>
 
             <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
-                <g:set var="clase" value="${'sumilla' + ' ' +  anexo}"/>
+                <g:set var="clase" value="${'sumilla' + ' ' + anexo}"/>
             </g:if>
             <g:else>
                 <g:set var="clase" value="${'sinSumilla' + ' ' + anexo}"/>
             </g:else>
 
+            <g:if test="${tramite.padre}">
+                <g:set var="clase" value="${clase + ' conPadre'}"/>
+                <g:set var="padre" value="${tramite.padreId}"/>
+            </g:if>
 
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
                 ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
                 ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
-                estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}">
+                estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
+                departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
                 <g:if test="${tramite?.anexo == 1}">
                     <td title="${tramite.asunto}">
                         ${tramite?.codigo} <i class="fa fa-paperclip"></i>

@@ -390,6 +390,14 @@
                     }
                 };
 
+                var crearHermano = {
+                    text   : "Agregar documento al trámite",
+                    icon   : "<i class='fa fa-paste'></i>",
+                    action : function () {
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
+                    }
+                };
+
                 var editar = {
                     text   : 'Editar',
                     icon   : "<i class='fa fa-pencil'></i>",
@@ -449,7 +457,7 @@
                     }
                 };
 
-                var archivo;
+                var archivo, padre, id, codigo;
 
                 context.settings({
                     onShow : function (e) {
@@ -459,8 +467,9 @@
                         id = $tr.data("id");
                         codigo = $tr.attr("codigo");
                         estado = $tr.attr("estado");
+                        padre = $tr.attr("padre");
                         de = $tr.attr("de");
-                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
+                        archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo")
                     }
                 });
                 <g:if test="${!bloqueo}">
@@ -472,6 +481,17 @@
                     detalles,
                     arbol,
                     editar,
+                    imprimir
+                ]);
+                context.attach(".E001.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    editar,
+                    crearHermano,
                     imprimir
                 ]);
                 context.attach(".E002", [
@@ -488,6 +508,15 @@
                     detalles,
                     arbol
                 ]);
+                context.attach(".E003.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
+                ]);
                 context.attach(".E004", [
                     {
                         header : 'Acciones'
@@ -495,6 +524,15 @@
                     ver,
                     detalles,
                     arbol
+                ]);
+                context.attach(".E004.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
                 ]);
 
                 context.attach(".alerta", [
@@ -504,6 +542,16 @@
                     ver,
                     detalles,
                     arbol
+                ]);
+
+                context.attach(".alerta.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
                 ]);
 
                 context.attach(".imprimir", [
@@ -526,10 +574,29 @@
                     desenviar
                 ]);
 
+                context.attach(".desenviar.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano,
+//                    editar,
+                    desenviar
+                ]);
+
                 context.attach(".E001.sumilla", [
                     {
                         header : 'Sin Acciones'
                     }
+                ]);
+
+                context.attach(".E001.sumilla.conHermano", [
+                    {
+                        header : 'Acciones'
+                    },
+                    crearHermano
                 ]);
                 context.attach(".E003.desenviar.sumilla", [
                     {
@@ -539,12 +606,30 @@
                     arbol,
                     desenviar
                 ]);
+                context.attach(".E003.desenviar.sumilla.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    arbol,
+                    crearHermano,
+                    desenviar
+                ]);
                 context.attach(".alerta.desenviar.sumilla.sinAnexo", [
                     {
                         header : 'Acciones'
                     },
                     detalles,
                     arbol,
+                    desenviar
+                ]);
+                context.attach(".alerta.desenviar.sumilla.sinAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    arbol,
+                    crearHermano,
                     desenviar
                 ]);
 
@@ -560,6 +645,19 @@
                     anexos
                 ]);
 
+                context.attach(".E001.sinSumilla.conAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    editar,
+                    crearHermano,
+                    imprimir,
+                    anexos
+                ]);
+
                 context.attach(".alerta.sinSumilla.conAnexo", [
                     {
                         header : 'Acciones'
@@ -567,6 +665,17 @@
                     ver,
                     detalles,
                     arbol,
+                    anexos
+                ]);
+
+                context.attach(".alerta.sinSumilla.conAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano,
                     anexos
                 ]);
 

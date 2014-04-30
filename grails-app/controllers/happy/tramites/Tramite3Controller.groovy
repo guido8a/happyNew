@@ -756,9 +756,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     def arbolTramite() {
-        if (!params.id) {
-            params.id = 61
-        }
+//        if (!params.id) {
+//            params.id = 61
+//        }
 
         def tramite = Tramite.get(params.id.toLong())
         def principal = tramite

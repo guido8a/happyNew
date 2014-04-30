@@ -761,9 +761,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         todos = disponibles + disp2
         def bloqueo = false
-//        if (session.departamento.estado == "B") {
-//            bloqueo = true
-//        }
+        if (session.departamento.estado == "B") {
+            bloqueo = true
+        }
 
 
         return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc]

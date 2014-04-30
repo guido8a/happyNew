@@ -266,8 +266,7 @@
                     });
                 });
 
-                var estado;
-                var de;
+                var estado, de, id, codigo, archivo, padre;
                 context.settings({
                     onShow : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
@@ -277,7 +276,8 @@
                         codigo = $tr.attr("codigo");
                         estado = $tr.attr("estado");
                         de = $tr.attr("de");
-                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
+                        padre = $tr.attr("padre");
+                        archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo")
                     }
                 });
                 <g:if test="${!bloqueo}">
@@ -297,6 +297,14 @@
                     icon   : "<i class='fa fa-sitemap'></i>",
                     action : function (e) {
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsd"
+                    }
+                };
+
+                var crearHermano = {
+                    text   : "Agregar documento al trámite",
+                    icon   : "<i class='fa fa-paste'></i>",
+                    action : function () {
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre;
                     }
                 };
 
@@ -384,7 +392,29 @@
                     },
                     ver,
                     arbol,
-                    editar
+                    editar,
+
+                    %{--<g:if test="${revisar}">,--}%
+                    %{--{--}%
+                    %{--text   : 'Revisar',--}%
+                    %{--icon   : "<i class='fa fa-check'></i>",--}%
+                    %{--action : function (e) {--}%
+                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                    %{--location.href = "${g.createLink(action: 'revision',controller: 'tramite2')}/" + id--}%
+                    %{--}--}%
+
+                    %{--}--}%
+                    %{--</g:if>--}%
+                ]);
+
+                context.attach(".E001.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    arbol,
+                    editar,
+                    crearHermano
                     %{--<g:if test="${revisar}">,--}%
                     %{--{--}%
                     %{--text   : 'Revisar',--}%
@@ -405,6 +435,15 @@
                     detalles,
                     arbol
                 ]);
+                context.attach(".E003.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
+                ]);
                 context.attach(".E004", [
                     {
                         header : 'Acciones'
@@ -412,6 +451,15 @@
                     ver,
                     detalles,
                     arbol,
+                ]);
+                context.attach(".E004.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
                 ]);
                 context.attach(".alerta", [
                     {
@@ -421,6 +469,15 @@
                     detalles,
                     arbol,
                 ]);
+                context.attach(".alerta.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano
+                ]);
                 context.attach(".desenviar", [
                     {
                         header : 'Acciones'
@@ -428,6 +485,17 @@
                     ver,
                     detalles,
                     arbol,
+//                    editar,
+                    desenviar
+                ]);
+                context.attach(".desenviar.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    crearHermano,
 //                    editar,
                     desenviar
                 ]);
@@ -441,10 +509,27 @@
                     editar
                 ]);
 
+                context.attach(".E001.sinSumilla.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    arbol,
+                    editar,
+                    crearHermano
+                ]);
+
                 context.attach(".E001.sumilla", [
                     {
                         header : 'Sin Acciones'
                     }
+                ]);
+
+                context.attach(".E001.sumilla.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    crearHermano
                 ]);
                 context.attach(".E003.desenviar.sumilla", [
                     {
@@ -462,6 +547,15 @@
                     arbol,
                     desenviar
                 ]);
+                context.attach(".alerta.desenviar.sumilla.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    arbol,
+                    crearHermano,
+                    desenviar
+                ]);
 
                 context.attach(".alerta.desenviar.sumilla.sinAnexo", [
                     {
@@ -469,6 +563,16 @@
                     },
                     detalles,
                     arbol,
+                    desenviar
+                ]);
+
+                context.attach(".alerta.desenviar.sumilla.sinAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    detalles,
+                    arbol,
+                    crearHermano,
                     desenviar
                 ]);
 
@@ -483,6 +587,18 @@
                     anexos
                 ]);
 
+                context.attach(".E001.sinSumilla.conAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    editar,
+                    anexos,
+                    crearHermano
+                ]);
+
                 context.attach(".alerta.sinSumilla.conAnexo", [
                     {
                         header : 'Acciones'
@@ -491,6 +607,17 @@
                     detalles,
                     arbol,
                     anexos
+                ]);
+
+                context.attach(".alerta.sinSumilla.conAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    detalles,
+                    arbol,
+                    anexos,
+                    crearHermano
                 ]);
 
                 </g:if>
