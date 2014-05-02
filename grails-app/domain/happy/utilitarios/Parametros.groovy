@@ -13,8 +13,11 @@ class Parametros {
     String textoCn
     String passAdm
 
-
     String imagenes
+
+    String institucion
+    Integer bloqueo
+    String validaLDAP
 
 
 
@@ -34,6 +37,9 @@ class Parametros {
             textoCn column: 'prmt__cn'
             passAdm column: 'prmtpass'
             imagenes column: 'prmtimgn'
+            institucion column: 'prmtinst'
+            bloqueo  column: 'prmtblqo'
+            validaLDAP column: 'prmtvlda'
         }
     }
     static constraints = {
@@ -47,6 +53,10 @@ class Parametros {
         passAdm(blank: false, nullable: false, attributes: [title: 'contraseña de administracion LDAP'])
 
         imagenes(blank: false, nullable: false, attributes: [title: 'path de las imagenes para los pdfs'])
+
+        institucion(blank: false, nullable: false, attributes: [title: 'Nombre de la Institución'])
+        bloqueo(blank: false, nullable: false, attributes: [title: 'Bloqueo de la bandeja de entrada en horas'])
+        validaLDAP(blank: false, nullable: false, attributes: [title: 'Validar contra LDAP'])
     }
 
     def getInicioJornada() {
