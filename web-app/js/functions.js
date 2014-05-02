@@ -192,3 +192,9 @@ function str_replace(search, replace, subject, count) {
     }
     return sa ? s : s[0];
 }
+
+$.expr[":"].contains = $.expr.createPseudo(function (arg) {
+    return function (elem) {
+        return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+    };
+});

@@ -43,6 +43,104 @@ class NumeroController extends happy.seguridad.Shield {
         return lista
     }
 
+    def config() {
+
+//        def tiposDoc = Numero.list([sort: "tipoDocumento"]).tipoDocumento.unique()
+        def tiposDoc = TipoDocumento.list([sort: 'descripcion'])
+        def departamentos = Departamento.list([sort: "descripcion"])
+
+        def html = "<table class='table table-condensed table-bordered'>"
+        html += "<thead>"
+        html += "<tr>"
+        html += "<th rowspan='2'>Departamento</th>"
+        html += "<th colspan='${tiposDoc.size()}'>Tipo de documento</th>"
+        html += "</tr>"
+        html += "<tr>"
+        tiposDoc.each { tp ->
+            html += "<th>${tp.descripcion}</th>"
+        }
+        html += "</tr>"
+        html += "</thead>"
+        html += "<tbody>"
+        def body = ""
+        departamentos.each { dep ->
+            def cont = 0
+            def linea = "<tr>"
+            linea += "<td class='departamento'>" + dep.descripcion + "</td>"
+            tiposDoc.each { tp ->
+                def num = Numero.findAllByDepartamentoAndTipoDocumento(dep, tp)
+                def puede = TipoDocumentoDepartamento.withCriteria {
+                    eq("departamento", dep)
+                    eq("tipo", tp)
+                    eq("estado", 1)
+                }
+                if (puede.size() > 0) {
+                    if (num.size() == 0) {
+                        linea += "<td class='tipoDoc' title='${dep.codigo} - ${tp.descripcion}'>" +
+                                g.textField(name: dep.id + "_" + tp.id, class: "form-control input-sm", value: 0) +
+                                "</td>"
+                    } else if (num.size() > 1) {
+                        linea += "<td class='tipoDoc danger' title='Este campo tiene un error. Comuníquese con el administrador.'>${num.valor}</td>"
+                    } else {
+                        num = num.first()
+                        linea += "<td class='tipoDoc info' title='${dep.codigo} - ${tp.descripcion}'>" +
+                                g.textField(name: num.id, class: "form-control input-sm text-info", value: num.valor) +
+                                "</td>"
+                    }
+                    cont++
+                } else {
+                    linea += "<td class='tipoDoc warning' title='Este departamento no tiene asignado este tipo de documento.'>-</td>"
+                }
+            }
+            linea += "</tr>"
+            if (cont == 0) {
+                linea = ""
+            }
+            body += linea
+        }
+        html += body
+        html += "</tbody>"
+        html += "<table>"
+        return [html: html]
+    }
+
+    def saveConfig() {
+        //'action':'saveConfig', 'format':null, 'controller':'numero'
+        params.remove("action")
+        params.remove("format")
+        params.remove("controller")
+        params.each { k, v ->
+            if (k.toString().contains("_")) {
+                //es nuevo [0]->dep.id, [1]->tipoDoc.id
+                if (v.toInteger() > 0) {
+                    def parts = k.toString().split("_")
+                    def depId = parts[0]
+                    def tipoDocId = parts[1]
+                    println "NUEVO: " + depId + "    " + tipoDocId
+                    def num = new Numero([
+                            departamento : Departamento.get(depId),
+                            tipoDocumento: TipoDocumento.get(tipoDocId),
+                            valor        : v.toInteger()
+                    ])
+                    if (!num.save(flush: true)) {
+                        println "error en create: " + num.errors
+                    }
+                }
+            } else {
+                // es save
+                def num = Numero.get(k.toLong())
+                if (num.valor != v.toInteger()) {
+                    println "EXISTE: " + num
+                    num.valor = v.toInteger()
+                    if (!num.save(flush: true)) {
+                        println "error en ${num.id}: " + num.errors
+                    }
+                }
+            }
+        }
+        redirect(action: "config")
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def numeroInstanceList = Numero.list(params)
