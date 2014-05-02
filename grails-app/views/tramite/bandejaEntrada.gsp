@@ -228,14 +228,16 @@
                     $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
                         data      : datos,
                         success   : function (msg) {
+                            openLoader();
                             $("#bandeja").html(msg);
-
+                            closeLoader();
                         }
                     });
                 }
             });
 
             function cargarBandeja(band, datos) {
+                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 if (!datos) {
                     datos = {};
                 }
@@ -686,6 +688,7 @@
                 });
 
                 $(".btnBusqueda").click(function () {
+                    $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();
@@ -695,7 +698,6 @@
                         data      : datos,
                         success   : function (msg) {
                             $("#bandeja").html(msg);
-
                         }
                     });
                 });

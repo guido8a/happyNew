@@ -5,7 +5,7 @@
   Time: 11:18 AM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.Tramite" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main">
@@ -43,7 +43,7 @@
     <div style="margin-bottom: 20px">
         <div class="col-md-2">
             <label>Documento</label>
-            <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+            <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps" />
         </div>
 
         <div class="col-md-2">
@@ -92,6 +92,25 @@
 
 </div>
 
+<div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Detalles</h4>
+            </div>
+
+            <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 
 <script>
     $(function () {
@@ -132,8 +151,8 @@
     }
 
     $(".btnBusqueda").click(function () {
-
-        var interval = loading("bandeja")
+        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+//        var interval = loading("bandeja")
 
         var memorando = $("#memorando").val();
         var asunto = $("#asunto").val();
@@ -145,12 +164,31 @@
         $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
             data: datos,
             success: function (msg) {
-                clearInterval(interval)
+//                clearInterval(interval)
                 $("#bandeja").html(msg);
             }
         });
 
     });
+
+
+    var padre
+
+    context.settings({
+        onShow: function (e) {
+            $("tr.trHighlight").removeClass("trHighlight");
+            var $tr = $(e.target).parents("tr");
+            $tr.addClass("trHighlight");
+            id = $tr.data("id");
+            padre = $tr.attr("padre");
+
+        }
+
+
+    });
+
+
+
 
     var arbol = {
         text   : 'Cadena del trámite',
@@ -180,27 +218,27 @@
         }
     };
 
-
-
-    context.settings({
-        onShow: function (e) {
-            $("tr.trHighlight").removeClass("trHighlight");
-            var $tr = $(e.target).parents("tr");
-            $tr.addClass("trHighlight");
-            id = $tr.data("id");
+    var crearHermano = {
+        text   : "Agregar documento al trámite",
+        icon   : "<i class='fa fa-paste'></i>",
+        action : function () {
+            location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
         }
+    };
 
 
-    });
 
+    %{--context.attach('tr', [--}%
+        %{--{--}%
+            %{--header: 'Acciones'--}%
+        %{--},--}%
 
-    context.attach('tr', [
-        {
-            header: 'Acciones'
-        },
+        %{--detalles,--}%
+        %{--arbol--}%
+            %{--<g:if test="${ Tramite.get(id).de?.id == session.usuario.id}">--}%
+        %{--,crearHermano--}%
+            %{--</g:if>--}%
 
-        detalles,
-        arbol
         %{--{--}%
             %{--text: 'Seguimiento Tramite',--}%
             %{--icon: "<i class='fa fa-code-fork'></i>",--}%
@@ -212,6 +250,31 @@
             %{--}--}%
 
         %{--}--}%
+
+    %{--]);--}%
+
+
+
+    context.attach('.padre', [
+        {
+            header: 'Acciones'
+        },
+
+        detalles,
+        arbol,
+       crearHermano
+
+
+    ]);
+
+    context.attach('.nada', [
+        {
+            header: 'Acciones'
+        },
+
+        detalles,
+        arbol
+
 
     ]);
 

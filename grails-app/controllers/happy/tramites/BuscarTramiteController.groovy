@@ -20,7 +20,9 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 
 //        def tramite1 = Tramite.get(50)
 
-        println("params tablaBusquedaTramite:" + params)
+//        println("params tablaBusquedaTramite:" + params)
+
+        def persona = session.usuario.id
 
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 00:00:00")
@@ -86,7 +88,7 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         tramitesFiltrados.sort{it.trmtcdgo}
 
 //        return [tramites: res, resTramites: filtro]
-        return [tramites: tramitesFiltrados]
+        return [tramites: tramitesFiltrados, persona: persona]
 
     }
 
@@ -100,9 +102,9 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         def cn = dbConnectionService.getConnection();
 
         sql = "select * from tramites(" + tramite.id + ") "
-        println "........" + sql
+//        println "........" + sql
         cn.eachRow(sql) { r ->
-            println(">>>>>" + r)
+//            println(">>>>>" + r)
             result.add(r.toRowResult())
         }
 

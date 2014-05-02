@@ -26,7 +26,20 @@
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
-                <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}">
+
+
+                <g:set var="padre" value=""/>
+                <g:set var="clase" value="${'nada'}"/>
+
+                <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).de?.id == session.usuario.id}">
+                    <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).padre}">
+                        <g:set var="padre" value="${happy.tramites.Tramite.get(tramite?.trmt__id).padre?.id}"/>
+                        <g:set var="clase" value="${'padre'}"/>
+                    </g:if>
+                </g:if>
+
+
+                <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}">
                    <td>${tramite?.trmtcdgo}</td>
 
                     <g:if test="${tramite?.pr_prsn}">

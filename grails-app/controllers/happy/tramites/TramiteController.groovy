@@ -1090,13 +1090,42 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
 
-        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+//      def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+
+        params.domain = params.domain ?: "persDoc"
+        params.sort = params.sort ?: "fechaEnvio"
+        params.order = params.order ?: "desc"
+
+        def tramites = PersonaDocumentoTramite.withCriteria {
+            eq("persona", persona)
+            inList("rolPersonaTramite", [rolPara, rolCopia])
+            isNotNull("fechaEnvio")
+            tramite {
+                inList("estadoTramite", [enviado, recibido])
+                if (params.domain == "tramite") {
+                    order(params.sort, params.order)
+                }
+            }
+            if (params.domain == "persDoc") {
+                order(params.sort, params.order)
+            }
+        }
+
+        def tramitesSinHijos = []
+
+        tramites.each { tr ->
+            if (Tramite.countByPadreAndDe(tr.tramite, session.usuario) == 0) {
+                tramitesSinHijos += tr
+            }
+        }
 
 
 
         def pxtTodos = []
-        def pxtTramites = tramites
+        def pxtTramites = tramitesSinHijos
 
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
