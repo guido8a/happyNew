@@ -133,18 +133,27 @@
                 </label>
 
                 <div class="col-md-2">
+                    <g:select name="bloqueo" from="${1..4}" value="${parametrosInstance?.bloqueo ?: 1}"
+                    optionValue="${{ it.toString().padLeft(2, '0') }}"/>
+
+%{--
                     <g:textField name="bloqueo" required="" class="form-control required"
                                  value="${parametrosInstance?.bloqueo}" style="width:60px;" maxlength="1"/>
+--}%
                 </div>
             </span>
             <span class="grupo">
-                <label for="validaLDAP" class="col-md-3 control-label text-info">
-                    Valida contra LDAP
+                <label for="validaLDAP" class="col-md-4 control-label text-info">
+                    Validar usuarios contra LDAP
                 </label>
 
                 <div class="col-md-2">
+                    <g:select name="validaLDAP" from="[0: 'NO', 1: 'SI']" value="${parametrosInstance.validaLDAP}"
+                              class="form-control required" required="" optionKey="key" optionValue="value"/>
+%{--
                     <g:textField name="validaLDAP" required="" class="form-control required"
                                  value="${parametrosInstance?.validaLDAP}" style="width:100px;" maxlength="1"/>
+--}%
                 </div>
             </span>
         </div>

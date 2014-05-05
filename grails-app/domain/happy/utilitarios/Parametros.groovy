@@ -17,7 +17,7 @@ class Parametros {
 
     String institucion
     Integer bloqueo
-    String validaLDAP
+    Integer validaLDAP
 
 
 
@@ -56,7 +56,7 @@ class Parametros {
 
         institucion(blank: false, nullable: false, attributes: [title: 'Nombre de la Institución'])
         bloqueo(blank: false, nullable: false, attributes: [title: 'Bloqueo de la bandeja de entrada en horas'])
-        validaLDAP(blank: false, nullable: false, attributes: [title: 'Validar contra LDAP'])
+        validaLDAP(blank: false, nullable: false, inList:[1,0], attributes: [title: 'Validar contra LDAP'])
     }
 
     def getInicioJornada() {

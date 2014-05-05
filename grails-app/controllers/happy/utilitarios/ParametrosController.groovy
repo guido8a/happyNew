@@ -68,6 +68,7 @@ class ParametrosController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        println params
         def parametrosInstance = new Parametros()
         if(params.id) {
             parametrosInstance = Parametros.get(params.id)
