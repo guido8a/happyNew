@@ -44,6 +44,17 @@ class RetrasadosController {
         now=now.plus(2)
         def tramites = Tramite.findAll("from Tramite where estadoTramite=${estadoR.id} and (estado !='C' or estado is null)")
         def datos = [:]
+        def usuario = null
+        def deps = []
+        if(params.prsn){
+            usuario = Persona.get(params.prsn)
+            deps.add(usuario.departamento)
+            def hi = Departamento.findAllByPadre(usuario.departamento)
+            while(hi.size()>0){
+                deps+=hi
+                hi=Departamento.findAllByPadreInList(hi)
+            }
+        }
 
         tramites.each {t->
             if(t.fechaMaximoRespuesta < now){
@@ -86,6 +97,11 @@ class RetrasadosController {
         contenido.add(new Paragraph("-"+datos["objeto"], times12bold))
         if(datos["tramites"].size()>0){
             contenido.add(new Paragraph("Traimites:", times10bold))
+            datos["triangulos"].each{t->
+                par = new Paragraph(""+t, times8bold)
+                par.setIndentationLeft(lvl["nivel"]*20+20)
+                contenido.add(par)
+            }
         }
         datos["tramites"].each{t->
             contenido.add(new Paragraph("${t.codigo}", times8normal))
@@ -95,101 +111,116 @@ class RetrasadosController {
         document.add(headers);
         document.add(contenido)
         PdfPTable tablaTramites
-        /*TODO quitar el para... talvez reemplazar con algo*/
-        hijos.each{lvl->
-            def par = new Paragraph("-"+lvl["objeto"], times12bold)
-            par.setIndentationLeft(lvl["nivel"]*20)
-            document.add(par)
-            def par2= new Paragraph("", times8normal)
-            par2.setSpacingBefore(4)
-            def par3= new Paragraph("", times8normal)
-            par3.setSpacingBefore(4)
-            if(lvl["tramites"].size()>0){
-                par = new Paragraph("Traimites:", times10bold)
-                par.setIndentationLeft(lvl["nivel"]*20+10)
-                document.add(par)
-                tablaTramites = new PdfPTable(4);
-                tablaTramites.setWidthPercentage(100);
-                par = new Paragraph("Número", times8bold)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("De", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Para", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Fec. Envío", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-            }
-            lvl["tramites"].each{t->
-                par2.setIndentationLeft(lvl["nivel"]*20+20)
-                par = new Paragraph("${t.tramite.codigo}", times8normal)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.tramite.de}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.departamento}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
 
-            }
-            if(lvl["tramites"].size()>0){
-                par2.add(tablaTramites)
-                document.add(par2)
-            }
-            if(lvl["personas"].size()>0){
-                par = new Paragraph("Usuarios:", times10bold)
-                par.setIndentationLeft(lvl["nivel"]*20+10)
+        hijos.each{lvl->
+            if(!usuario || (deps.id.contains(lvl["objeto"].id))){
+                def par = new Paragraph("-"+lvl["objeto"], times12bold)
+                par.setIndentationLeft(lvl["nivel"]*20)
                 document.add(par)
-                tablaTramites = new PdfPTable(4);
-                tablaTramites.setWidthPercentage(100);
-                par = new Paragraph("Número", times8bold)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("De", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Para", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Fec. Envío", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-            }
-            lvl["personas"].eachp{p->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
-                par3= new Paragraph("", times8normal)
+                def par2= new Paragraph("", times8normal)
+                par2.setSpacingBefore(4)
+                def par3= new Paragraph("", times8normal)
                 par3.setSpacingBefore(4)
-                par = new Paragraph(""+p["objeto"], times8bold)
-                par.setIndentationLeft(lvl["nivel"]*20+20)
-                document.add(par)
-                par3.setIndentationLeft(lvl["nivel"]*20+30)
-                p["tramites"].each{t->
-                    par = new Paragraph("${t.tramite.codigo}", times8normal)
+//                println "wtf "+lvl["triangulos"]
+
+                if(lvl["tramites"].size()>0){
+                    par = new Paragraph("Traimites:", times10bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+10)
+                    document.add(par)
+                    lvl["triangulos"].each{t->
+                        par = new Paragraph(""+t+" ("+lvl["tramites"].size()+")", times8bold)
+                        par.setIndentationLeft(lvl["nivel"]*20+20)
+                        document.add(par)
+                    }
+                    tablaTramites = new PdfPTable(4);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Número", times8bold)
                     PdfPCell cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.tramite.de}", times8normal)
+                    par = new Paragraph("De", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.persona}", times8normal)
+                    par = new Paragraph("Para", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                    par = new Paragraph("Fec. Envío", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                 }
-                if(p["tramites"].size()>0){
-                    par3.add(tablaTramites)
-                    document.add(par3)
+                if(params.detalle){
+                    lvl["tramites"].each{t->
+                        par2.setIndentationLeft(lvl["nivel"]*20+20)
+                        par = new Paragraph("${t.tramite.codigo}", times8normal)
+                        PdfPCell cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.tramite.de}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.departamento}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+
+                    }
+                    if(lvl["tramites"].size()>0){
+                        par2.add(tablaTramites)
+                        document.add(par2)
+                    }
                 }
+                if(lvl["personas"].size()>0){
+                    par = new Paragraph("Usuarios:", times10bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+10)
+                    document.add(par)
+
+                }
+                lvl["personas"].each{p->
+//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
+                    par3= new Paragraph("", times8normal)
+                    par3.setSpacingBefore(4)
+                    par = new Paragraph(""+p["objeto"]+" ("+  p["tramites"].size()+")", times8bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+20)
+                    document.add(par)
+                    par3.setIndentationLeft(lvl["nivel"]*20+30)
+                    tablaTramites = new PdfPTable(4);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Número", times8bold)
+                    PdfPCell cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("De", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Para", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Fec. Envío", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    if(params.detalle){
+                        p["tramites"].each{t->
+                            par = new Paragraph("${t.tramite.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.de}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.persona}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                        }
+                        if(p["tramites"].size()>0){
+                            par3.add(tablaTramites)
+                            document.add(par3)
+                        }
+                    }
+                }
+                imprimeHijosPdf(lvl,document,tablaTramites,params,usuario,deps)
             }
-            imprimeHijosPdf(lvl,document,tablaTramites)
+
         }
 
 
@@ -204,103 +235,115 @@ class RetrasadosController {
     }
 
 
-    def imprimeHijosPdf(arr,contenido,tablaTramites){
+    def imprimeHijosPdf(arr,contenido,tablaTramites,params,usuario,deps){
         def datos = arr["hijos"]
         datos.each{lvl->
 //            println  "\t "+lvl["objeto"]
 //            println "\t\t Tramites:"
-            def par = new Paragraph("-"+lvl["objeto"], times12bold)
-            par.setIndentationLeft(lvl["nivel"]*20)
-            contenido.add(par)
-            def par2= new Paragraph("", times8normal)
-            par2.setSpacingBefore(4)
-            def par3= new Paragraph("", times8normal)
-            par3.setSpacingBefore(4)
-            if(lvl["tramites"].size()>0){
-                par = new Paragraph("Traimites:", times10bold)
-                par.setIndentationLeft(lvl["nivel"]*20+10)
+            if(!usuario || (deps.id.contains(lvl["objeto"].id))){
+                def par = new Paragraph("-"+lvl["objeto"], times12bold)
+                par.setIndentationLeft(lvl["nivel"]*20)
                 contenido.add(par)
-                tablaTramites = new PdfPTable(4);
-                tablaTramites.setWidthPercentage(100);
-                par = new Paragraph("Número", times8bold)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("De", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Para", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Fec. Envío", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-            }
-            lvl["tramites"].each{t->
-                par2.setIndentationLeft(lvl["nivel"]*20+20)
-                par = new Paragraph("${t.tramite.codigo}", times8normal)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.tramite.de}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.departamento}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-
-            }
-            if(lvl["tramites"].size()>0){
-                par2.add(tablaTramites)
-                contenido.add(par2)
-            }
-            if(lvl["personas"].size()>0){
-                par = new Paragraph("Usuarios:", times10bold)
-                par.setIndentationLeft(lvl["nivel"]*20+10)
-                contenido.add(par)
-                tablaTramites = new PdfPTable(4);
-                tablaTramites.setWidthPercentage(100);
-                par = new Paragraph("Número", times8bold)
-                PdfPCell cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("De", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Para", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-                par = new Paragraph("Fec. Envío", times8bold)
-                cell = new PdfPCell(par);
-                tablaTramites.addCell(cell);
-            }
-            lvl["personas"].each{p->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
-                par = new Paragraph(""+p["objeto"], times8bold)
-                par.setIndentationLeft(lvl["nivel"]*20+20)
-                contenido.add(par)
-                par3.setIndentationLeft(lvl["nivel"]*20+30)
-                p["tramites"].each{t->
-                    par = new Paragraph("${t.tramite.codigo}", times8normal)
+                def par2= new Paragraph("", times8normal)
+                par2.setSpacingBefore(4)
+                def par3= new Paragraph("", times8normal)
+                par3.setSpacingBefore(4)
+                if(lvl["tramites"].size()>0){
+                    par = new Paragraph("Traimites:", times10bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+10)
+                    contenido.add(par)
+                    lvl["triangulos"].each{t->
+                        par = new Paragraph(""+t+" ("+lvl["tramites"].size()+")", times8bold)
+                        par.setIndentationLeft(lvl["nivel"]*20+20)
+                        contenido.add(par)
+                    }
+                    tablaTramites = new PdfPTable(4);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Número", times8bold)
                     PdfPCell cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.tramite.de}", times8normal)
+                    par = new Paragraph("De", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.persona}", times8normal)
+                    par = new Paragraph("Para", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-                    par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                    par = new Paragraph("Fec. Envío", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                 }
-                if(p["tramites"].size()>0){
-                    par3.add(tablaTramites)
-                    contenido.add(par3)
+                if(params.detalle){
+                    lvl["tramites"].each{t->
+                        par2.setIndentationLeft(lvl["nivel"]*20+20)
+                        par = new Paragraph("${t.tramite.codigo}", times8normal)
+                        PdfPCell cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.tramite.de}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.departamento}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+
+                    }
+                    if(lvl["tramites"].size()>0){
+                        par2.add(tablaTramites)
+                        contenido.add(par2)
+                    }
                 }
+                if(lvl["personas"].size()>0){
+                    par = new Paragraph("Usuarios:", times10bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+10)
+                    contenido.add(par)
+
+                }
+                lvl["personas"].each{p->
+//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
+                    tablaTramites = new PdfPTable(4);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Número", times8bold)
+                    PdfPCell cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("De", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Para", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Fec. Envío", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph(""+p["objeto"]+" ("+  p["tramites"].size()+")", times8bold)
+                    par.setIndentationLeft(lvl["nivel"]*20+20)
+                    contenido.add(par)
+                    par3.setIndentationLeft(lvl["nivel"]*20+30)
+                    if(params.detalle){
+                        p["tramites"].each{t->
+                            par = new Paragraph("${t.tramite.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.de}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.persona}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.fechaEnvio.format('dd-mm-yyyy hh:mm')}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                        }
+                        if(p["tramites"].size()>0){
+                            par3.add(tablaTramites)
+                            contenido.add(par3)
+                        }
+                    }
+                }
+                if(lvl["hijos"].size()>0)
+                    imprimeHijos(lvl,contenido,tablaTramites)
             }
-            if(lvl["hijos"].size()>0)
-                imprimeHijos(lvl,contenido,tablaTramites)
         }
     }
     def imprimeHijos(arr){
@@ -351,6 +394,7 @@ class RetrasadosController {
             datos.put("tramites",[])
             datos.put("hijos",[])
             datos.put("personas",[])
+            datos.put("triangulos",first.getTriangulos())
             datos.put("nivel",0)
         }
         lvl = datos["hijos"]
@@ -402,6 +446,7 @@ class RetrasadosController {
                 temp.put("tramites",[])
                 temp.put("hijos",[])
                 temp.put("personas",[])
+                temp.put("triangulos",p.getTriangulos())
                 if(pdt.departamento){
                     temp["tramites"].add(pdt)
                 }else{
