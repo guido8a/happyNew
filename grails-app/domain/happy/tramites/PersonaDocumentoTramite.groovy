@@ -22,6 +22,7 @@ class PersonaDocumentoTramite {
     Date fechaLimiteRespuesta               // segun la prioridad, se setea el mismo rato que fechaRecepcion (fechaRecepcion + horas segun prioridad)
     Date fechaRespuesta                     // fecha en la q se crea el tramite hijo de respuesta
     Date fechaArchivo                       // fecha en la q se archivo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
+    Date fechaAnulacion                     // fecha en la q se anulo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
 
     EstadoTramite estado
 
@@ -44,6 +45,7 @@ class PersonaDocumentoTramite {
             fechaLimiteRespuesta column: 'prtrfclr'
             fechaRespuesta column: 'prtrfcrs'
             fechaArchivo column: 'prtrfcar'
+            fechaAnulacion column: 'prtrfcan'
 
             estado column: 'edtr__id'
         }
@@ -60,6 +62,7 @@ class PersonaDocumentoTramite {
         fechaLimiteRespuesta(nullable: true, blank: true)
         fechaRespuesta(nullable: true, blank: true)
         fechaArchivo(nullable: true, blank: true)
+        fechaAnulacion(nullable: true, blank: true)
 
         estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
     }

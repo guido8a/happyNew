@@ -36,7 +36,7 @@
         </div>
 
         <div id="jstree">
-            <util:renderHTML html="${html}"/>
+            <util:renderHTML html="${html2}"/>
         </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -60,9 +60,9 @@
 
         <script type="text/javascript">
             function createContextMenu(node) {
-//                var nodeStrId = node.id;
                 var nodeId = node.id;
                 var $node = $("#" + nodeId);
+                var tramiteId = $node.data("jstree").tramite;
 
                 var items = {
                     detalles : {
@@ -73,7 +73,7 @@
                                 type    : 'POST',
                                 url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
                                 data    : {
-                                    id : nodeId
+                                    id : tramiteId
                                 },
                                 success : function (msg) {
                                     $("#dialog-body").html(msg)
@@ -106,11 +106,11 @@
                         items        : createContextMenu
                     },
                     types       : {
-                        padre : {
-                            icon : "fa fa-files-o text-info"
-                        },
-                        hijo  : {
+                        para  : {
                             icon : "fa fa-file-o text-info"
+                        },
+                        copia : {
+                            icon : "fa fa-files-o text-info"
                         }
                     }
                 });

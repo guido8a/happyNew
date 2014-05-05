@@ -382,22 +382,24 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def tramites = []
         def principal = null
-        def rolesNo = [RolPersonaTramite.findByCodigo("E004"),RolPersonaTramite.findByCodigo("E003")]
-        tramites.add(tramite)
-        if (tramite.padre) {
-            principal = tramite.padre
-            while (true) {
-                tramites.add(principal)
-                if (!principal.padre)
-                    break
-                else {
-                    principal = principal.padre
-                }
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
+        if (tramite) {
+            tramites.add(tramite)
+            if (tramite.padre) {
+                principal = tramite.padre
+                while (true) {
+                    tramites.add(principal)
+                    if (!principal.padre)
+                        break
+                    else {
+                        principal = principal.padre
+                    }
 
+                }
             }
         }
         tramites = tramites.reverse()
-        return [tramite: tramite, principal: principal, tramites: tramites,rolesNo:rolesNo]
+        return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo]
     }
 
 
@@ -509,8 +511,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def rolCC = RolPersonaTramite.findByCodigo("R002")
             def rolImprimir = RolPersonaTramite.findByCodigo("I005")
             def triangulo = false
-            if(params.source=="bed")
-                triangulo=true
+            if (params.source == "bed")
+                triangulo = true
             def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
 //            println "es circu "+esCircular+" depto "+triangulo
             def pxt = PersonaDocumentoTramite.withCriteria {
@@ -549,7 +551,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             if (pxt.size() > 1) {
                 pxt.each {
-                    println " "+it.persona+"   "+it.departamento+"   "+it.rolPersonaTramite.descripcion+"  "+it.tramite
+                    println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
                 }
                 flash.message = "ERROR"
                 println "mas de 1 PDT: ${pxt}"
@@ -590,7 +592,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             pxt.fechaRecepcion = hoy
 //            println "aaa2"
             pxt.fechaLimiteRespuesta = limite
-            pxt.estado=EstadoTramite.findByCodigo("E004")
+            pxt.estado = EstadoTramite.findByCodigo("E004")
 
             if (pxt.save(flush: true) && tramite.save(flush: true)) {
                 def pdt = new PersonaDocumentoTramite([
@@ -624,7 +626,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 println tramite.errors
                 render "NO_Ocurrió un error al recibir"
             }
-        }else {
+        } else {
             response.sendError(403)
         }
     }
@@ -778,7 +780,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     }
 
-    def arbolTramite() {
+    def arbolTramite_old() {
 //        if (!params.id) {
 //            params.id = 61
 //        }
@@ -825,11 +827,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [html: html, url: url]
     }
 
-    def arbolTramite2() {
-//        if (!params.id) {
-//            params.id = 61
-//        }
-
+    def arbolTramite() {
         def tramite = Tramite.get(params.id.toLong())
         def principal = tramite
         if (tramite.padre) {
@@ -843,7 +841,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
         }
         def html2 = "<ul>" + "\n"
-        html2 += makeTreeExtended(principal, tramite)
+        html2 += makeTreeExtended(principal)
         html2 += "</ul>" + "\n"
 
         def url = ""
@@ -872,15 +870,63 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [html2: html2, url: url]
     }
 
-    private String makeTreeExtended(Tramite principal, Tramite actual) {
-
-        def tramiteInfo = { PersonaDocumentoTramite tramiteParaInfo ->
-            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
-            def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.descripcion : tramiteParaInfo.tramite.de.login
-            def rol = tramiteParaInfo.rolPersonaTramite.descripcion
-            def strInfo = "<span>(DE: ${deStr}, ${rol} ${paraStr})</span>"
-            return strInfo
+    private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
+        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
+        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.login
+        def rol = tramiteParaInfo.rolPersonaTramite
+        def strInfo = ""
+        if (rol.codigo == "R002") {
+            strInfo += "[CC] "
         }
+        strInfo += "<strong>${tramiteParaInfo.tramite.codigo} </strong>"
+        strInfo += "<small>("
+        strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}"
+        strInfo += ", <strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
+        if (tramiteParaInfo.fechaEnvio) {
+            strInfo += ", <strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm")
+        }
+        if (tramiteParaInfo.fechaRecepcion) {
+            strInfo += ", <strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm")
+        }
+        if (tramiteParaInfo.fechaArchivo) {
+            strInfo += ", <strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm")
+        }
+        if (tramiteParaInfo.fechaAnulacion) {
+            strInfo += ", <strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm")
+        }
+        strInfo += ")</small>"
+        return strInfo
+    }
+
+    private String makeLeaf(PersonaDocumentoTramite para) {
+        def html = "", clase = "", rel = "para", data = ""
+        if (para.rolPersonaTramite.codigo == "R002") {
+            rel = "copia"
+        }
+        def strInfo = tramiteInfo(para)
+        def hijos
+        if (para.departamento) {
+            hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
+        } else {
+            hijos = Tramite.findAllByPadreAndDe(para.tramite, para.persona)
+        }
+        if (hijos.size() > 0) {
+            clase += " jstree-open"
+        }
+        data += ',"tramite":"' + para.tramiteId + '"'
+        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${strInfo}\n"
+        if (hijos.size() > 0) {
+            html += "<ul>" + "\n"
+            hijos.each { hijo ->
+                html += makeTreeExtended(hijo)
+            }
+            html += "</ul>" + "\n"
+        }
+        html += "</li>"
+        return html
+    }
+
+    private String makeTreeExtended(Tramite principal) {
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
@@ -888,29 +934,18 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
         def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
 
-        def html = "", clase = "", rel = ""
+        def html = ""
 
-        //esto muestra una hoja por destinatario (para es padre de las copias, si no hay para la 1ra copia es padre del resto)
+        //esto muestra una hoja por destinatario
         paras.each { para ->
-            def strInfo = tramiteInfo(para)
-            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+            html += makeLeaf(para)
         }
-        if (paras.size() == 0) {
-            def para = ccs.first()
-            def strInfo = tramiteInfo(para)
-            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
-            ccs = ccs[1..(ccs.size() - 1)]
-        }
-//        if (ccs.size() > 0) {
-//            html += "<ul>"
-//        }
+
+        //el para y las copias son hermanos
         ccs.each { para ->
-            def strInfo = tramiteInfo(para)
-            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+            html += makeLeaf(para)
         }
-//        if (ccs.size() > 0) {
-//            html += "</ul>"
-//        }
+
         return html
     }
 
@@ -935,12 +970,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def strInfo = "(DE: ${deStr}, PARA ${paraStr})"
             return strInfo
         }
-
-        def rolPara = RolPersonaTramite.findByCodigo("R001")
-        def rolCc = RolPersonaTramite.findByCodigo("R002")
-
-        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
-        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+//
+//        def rolPara = RolPersonaTramite.findByCodigo("R001")
+//        def rolCc = RolPersonaTramite.findByCodigo("R002")
+//
+//        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
+//        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
 
         //esto muestra una sola hoja por tramite
         html += "<li id='${principal.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + principal.codigo + "\n"

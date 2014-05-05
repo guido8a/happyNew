@@ -36,7 +36,7 @@
         </div>
 
         <div id="jstree">
-            <util:renderHTML html="${html2}"/>
+            <util:renderHTML html="${html}"/>
         </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
