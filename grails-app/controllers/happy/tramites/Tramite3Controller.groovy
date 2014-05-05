@@ -483,50 +483,61 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //    }
 
     def recibirTramite() {
-        def persona = Persona.get(session.usuario.id)
+//        println "recibir tramite "+params
+        if (request.getMethod() == "POST") {
+            def persona = Persona.get(session.usuario.id)
 
-        def tramite = Tramite.get(params.id)
-        def porEnviar = EstadoTramite.findByCodigo("E001")
-        def enviado = EstadoTramite.findByCodigo("E003")
-        def recibido = EstadoTramite.findByCodigo("E004")
-        //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-        if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
-            render "ERROR_Se ha cancelado el envío.<br/>Este trámite no puede ser gestionado."
-            return
-        }
+            def tramite = Tramite.get(params.id)
+            def porEnviar = EstadoTramite.findByCodigo("E001")
+            def enviado = EstadoTramite.findByCodigo("E003")
+            def recibido = EstadoTramite.findByCodigo("E004")
+            //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
+            if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
+                render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
+                return
+            }
 
-        def paraDpto = tramite.para?.departamento
-        def paraPrsn = tramite.para?.persona
-        def esCircular = false
-        if (!paraPrsn && !paraDpto) {
-            esCircular = true
-        }
+            def paraDpto = tramite.para?.departamento
+            def paraPrsn = tramite.para?.persona
 
-        def rolPara = RolPersonaTramite.findByCodigo("R001")
-        def rolCC = RolPersonaTramite.findByCodigo("R002")
-        def rolImprimir = RolPersonaTramite.findByCodigo("I005")
+            def esCircular = false
+            if (!paraPrsn && !paraDpto) {
+                esCircular = true
+            }
 
-        def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
-        def pxt = PersonaDocumentoTramite.withCriteria {
-            eq("tramite", tramite)
-            if (!esCircular) {
-                if (paraDpto) {
-                    eq("departamento", persona.departamento)
-                } else if (paraPrsn) {
-                    eq("persona", persona)
+            def rolPara = RolPersonaTramite.findByCodigo("R001")
+            def rolCC = RolPersonaTramite.findByCodigo("R002")
+            def rolImprimir = RolPersonaTramite.findByCodigo("I005")
+            def triangulo = false
+            if(params.source=="bed")
+                triangulo=true
+            def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
+//            println "es circu "+esCircular+" depto "+triangulo
+            def pxt = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tramite)
+                if (!esCircular) {
+                    if (triangulo) {
+                        eq("departamento", persona.departamento)
+                    } else {
+                        eq("persona", persona)
+                    }
+                } else {
+                    if (triangulo) {
+                        eq("departamento", persona.departamento)
+                    } else {
+                        eq("persona", persona)
+                    }
+//                    or {
+//                        eq("departamento", persona.departamento)
+//                        eq("persona", persona)
+//                    }
                 }
-            } else {
                 or {
-                    eq("departamento", persona.departamento)
-                    eq("persona", persona)
+                    eq("rolPersonaTramite", rolPara)
+                    eq("rolPersonaTramite", rolCC)
+                    eq("rolPersonaTramite", rolImprimir)
                 }
-            }
-            or {
-                eq("rolPersonaTramite", rolPara)
-                eq("rolPersonaTramite", rolCC)
-                eq("rolPersonaTramite", rolImprimir)
-            }
-        }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
+            }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
 
 //        println "tramite: " + tramite
 //        println "paraDpto: " + paraDpto
@@ -534,76 +545,86 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "rolPara: " + rolPara
 //        println "rolCC: " + rolCC
 //        println "rolImprimir: " + rolImprimir
+//            println "pxt 1 "+pxt
 
+            if (pxt.size() > 1) {
+                pxt.each {
+                    println " "+it.persona+"   "+it.departamento+"   "+it.rolPersonaTramite.descripcion+"  "+it.tramite
+                }
+                flash.message = "ERROR"
+                println "mas de 1 PDT: ${pxt}"
+                redirect(action: "errores")
+                return
+            } else if (pxt.size() == 0) {
+                flash.message = "ERROR"
+                println "0 PDT"
+                redirect(action: "errores")
+            } else {
+                pxt = pxt.first()
+            }
 
-        if (pxt.size() > 1) {
-            flash.message = "ERROR"
-            println "mas de 1 PDT: ${pxt}"
-            redirect(action: "errores")
-            return
-        } else if (pxt.size() == 0) {
-            flash.message = "ERROR"
-            println "0 PDT"
-            redirect(action: "errores")
-        } else {
-            pxt = pxt.first()
-        }
+            if (paraDpto && persona.departamentoId == paraDpto.id) {
+                tramite.estadoTramite = estadoRecibido
+            }
+            if (paraPrsn && persona.id == paraPrsn.id) {
+                tramite.estadoTramite = estadoRecibido
+            }
 
-        if (paraDpto && persona.departamentoId == paraDpto.id) {
-            tramite.estadoTramite = estadoRecibido
-        }
-        if (paraPrsn && persona.id == paraPrsn.id) {
-            tramite.estadoTramite = estadoRecibido
-        }
+            def hoy = new Date()
 
-        def hoy = new Date()
-        def limite = hoy
+            def limite = hoy
 //        use(TimeCategory) {
 //            limite = limite + tramite.prioridad.tiempo.hours
 //        }
-        limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-        if (limite[0]) {
-            limite = limite[1]
-        } else {
-            flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
-            redirect(controller: 'tramite', action: 'errores')
-            return
-        }
-
-        pxt.fechaRecepcion = hoy
-        pxt.fechaLimiteRespuesta = limite
-
-        if (pxt.save(flush: true) && tramite.save(flush: true)) {
-            def pdt = new PersonaDocumentoTramite([
-                    tramite             : tramite,
-                    persona             : persona,
-                    rolPersonaTramite   : RolPersonaTramite.findByCodigo("E003"),
-                    fechaRecepcion      : hoy,
-                    fechaLimiteRespuesta: limite
-            ])
-            def alerta
-            if (pxt.departamento) {
-                alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento, pxt.tramite)
+            limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
+            if (limite[0]) {
+                limite = limite[1]
             } else {
-                alerta = Alerta.findByPersonaAndTramite(pxt.persona, pxt.tramite)
+                flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+                redirect(controller: 'tramite', action: 'errores')
+                return
             }
-            if (alerta) {
-                if (!alerta.fechaRecibido) {
-                    alerta.mensaje += " - Recibido"
-                    alerta.fechaRecibido = new Date()
-                    alerta.save(flush: true)
+//            println "aaa1"
+//            println "hoy "+hoy
+//            println "pxt "+pxt
+            pxt.fechaRecepcion = hoy
+//            println "aaa2"
+            pxt.fechaLimiteRespuesta = limite
+
+            if (pxt.save(flush: true) && tramite.save(flush: true)) {
+                def pdt = new PersonaDocumentoTramite([
+                        tramite             : tramite,
+                        persona             : persona,
+                        rolPersonaTramite   : RolPersonaTramite.findByCodigo("E003"),
+                        fechaRecepcion      : hoy,
+                        fechaLimiteRespuesta: limite
+                ])
+                def alerta
+                if (pxt.departamento) {
+                    alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento, pxt.tramite)
+                } else {
+                    alerta = Alerta.findByPersonaAndTramite(pxt.persona, pxt.tramite)
                 }
-            }
-            if (pdt.save(flush: true)) {
-                render "OK_Trámite recibido correctamente"
+                if (alerta) {
+                    if (!alerta.fechaRecibido) {
+                        alerta.mensaje += " - Recibido"
+                        alerta.fechaRecibido = new Date()
+                        alerta.save(flush: true)
+                    }
+                }
+                if (pdt.save(flush: true)) {
+                    render "OK_Trámite recibido correctamente"
+                } else {
+                    println pdt.errors
+                    render "NO_Ocurrió un error al recibir"
+                }
             } else {
-                println pdt.errors
+                println pxt.errors
+                println tramite.errors
                 render "NO_Ocurrió un error al recibir"
             }
-        } else {
-            println pxt.errors
-            println tramite.errors
-            render "NO_Ocurrió un error al recibir"
+        }else {
+            response.sendError(403)
         }
     }
 
