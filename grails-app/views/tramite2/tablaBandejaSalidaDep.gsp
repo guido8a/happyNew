@@ -46,7 +46,7 @@
 
                 <tr id="${tramite?.id}" data-id="${tramite?.id}"
                     class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
-                    ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
+                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}"
                     codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
                     anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">

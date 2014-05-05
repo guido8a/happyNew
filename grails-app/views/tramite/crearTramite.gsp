@@ -586,6 +586,7 @@
                     }
                 });
                 $chkAnexos.prop("checked", false);
+                $cc.prop("checked", false);
 
                 switch (cod) {
                     case "CIR":
@@ -623,7 +624,7 @@
 //                        $divPara.html($selPara).prepend("Para: ");
 //                        $divPara.removeClass("hide");
 //                        $divBotonInfo.removeClass("hide");
-                        $divCopia.removeClass("hide");
+                        $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.addClass("hide");

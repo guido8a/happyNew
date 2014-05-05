@@ -122,6 +122,7 @@ class TramiteController extends happy.seguridad.Shield {
             def para = tramite.para
 
 //            crearPdf(tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje)
+            enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
 
             if (params.para) {
                 if (params.para.toLong() > 0) {
@@ -129,7 +130,6 @@ class TramiteController extends happy.seguridad.Shield {
                 } else {
                     para.departamento = Departamento.get(params.para.toLong() * -1)
                 }
-                enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
                 if (para.save(flush: true)) {
                     render "OK_Trámite guardado exitosamente"
                 } else {
@@ -276,7 +276,7 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
 //        println("params " + params)
-        def rolesNo = [RolPersonaTramite.findByCodigo("E004"),RolPersonaTramite.findByCodigo("E003")]
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
         def tramite = new Tramite(params)
@@ -379,7 +379,7 @@ class TramiteController extends happy.seguridad.Shield {
 //            bloqueo = true
 //        }
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc,rolesNo:rolesNo]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo]
     }
 
     def cargaUsuarios() {
@@ -1317,7 +1317,6 @@ class TramiteController extends happy.seguridad.Shield {
         def hijosPxt = PersonaDocumentoTramite
 
     }
-
 
 
     def archivar() {
