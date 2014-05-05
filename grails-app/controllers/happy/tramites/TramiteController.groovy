@@ -276,6 +276,7 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
 //        println("params " + params)
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"),RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
         def tramite = new Tramite(params)
@@ -378,7 +379,7 @@ class TramiteController extends happy.seguridad.Shield {
 //            bloqueo = true
 //        }
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc,rolesNo:rolesNo]
     }
 
     def cargaUsuarios() {

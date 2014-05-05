@@ -104,47 +104,35 @@
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre}">
-                <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
+                <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                     <p class="css-vertical-text">D. Principal</p>
-
                     <div class="linea"></div>
-
-                    <div class="row col2">
-
-                        <div class="col-md-2 negrilla">Documento:</div>
-
-                        <div class="col-md-8">${principal.codigo}</div>
-
-                        <div class="col-md-1 negrilla">Fecha:</div>
-
-                        <div class="col-md-5">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+                    <div class="row">
+                        <div class="col-xs-1 negrilla">Documento:</div>
+                        <div class="col-xs-2">${principal.codigo}</div>
+                        <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+                        <div class="col-xs-2">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+                        <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
+                        <div class="col-xs-3">${principal.deDepartamento ? principal.deDepartamento.codigo :""+principal.de.departamento.codigo+":"+principal.de.nombre + ' ' + principal.de.apellido}</div>
                     </div>
 
-                    <div class="row col2">
-                        <div class="col-md-2 negrilla">De:</div>
-                        <g:if test="${principal?.deDepartamento}">
-                            <div class="col-md-8">${principal?.deDepartamento}</div>
-                        </g:if>
-                        <g:else>
-                            <div class="col-md-8">${principal?.de}</div>
-                        </g:else>
-
-                        <div class="col-md-2 negrilla">Para:</div>
-                        <g:if test="${principal?.para?.persona}">
-                            <div class="col-md-8">${principal?.para?.persona}</div>
-                        </g:if>
-                        <g:else>
-                            <div class="col-md-8">${principal?.para?.departamento?.descripcion}</div>
-                        </g:else>
+                    <div class="row ">
+                        <div class="col-xs-10">
+                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal,rolesNo)}" var="pdt" status="j">
+                                <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                                <span style="margin-right: 10px">
+                                ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                                ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                                </span>
+                            </g:each>
+                        </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-1 negrilla">Asunto:</div>
 
                         <div class="col-md-11">${principal.asunto}</div>
                     </div>
-
                     <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim() != ''}">
                         <div class="row">
                             <div class="col-md-1 negrilla">Texto:</div>
@@ -165,40 +153,31 @@
 
                 </div>
                 <g:if test="${padre != principal}">
-                    <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
+                    <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                         <p class="css-vertical-text">Contesta a</p>
 
                         <div class="linea"></div>
 
-                        <div class="row col2">
-                            <div class="col-md-2 negrilla">Documento:</div>
-
-                            <div class="col-md-8">${padre?.codigo}</div>
-
-                            <div class="col-md-1 negrilla">Fecha:</div>
-
-                            <div class="col-md-5">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
+                        <div class="row">
+                            <div class="col-xs-1 negrilla">Documento:</div>
+                            <div class="col-xs-2">${padre.codigo}</div>
+                            <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+                            <div class="col-xs-2">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
+                            <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
+                            <div class="col-xs-3">${padre.deDepartamento ? padre.deDepartamento.codigo :""+padre.de.departamento.codigo+":"+padre.de.nombre + ' ' + padre.de.apellido}</div>
                         </div>
 
-                        <div class="row col2">
-                            <div class="col-md-2 negrilla">De:</div>
-
-                            <g:if test="${padre.deDepartamento}">
-                                <div class="col-md-8">${padre.deDepartamento}</div>
-                            </g:if>
-                            <g:else>
-                                <div class="col-md-8">${padre.de}</div>
-                            </g:else>
-
-                            <div class="col-md-2 negrilla">Para:</div>
-                            <g:if test="${padre?.para?.persona}">
-                                <div class="col-md-8">${padre.para?.persona}</div>
-                            </g:if>
-                            <g:else>
-                                <div class="col-md-8">${padre.para?.departamento?.descripcion}</div>
-                            </g:else>
-
+                        <div class="row ">
+                            <div class="col-xs-10">
+                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre,rolesNo)}" var="pdt" status="j">
+                                    <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                                    <span style="margin-right: 10px">
+                                        ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                                        ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                                    </span>
+                                </g:each>
+                            </div>
                         </div>
 
                         <div class="row">

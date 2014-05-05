@@ -647,6 +647,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 //        println("params " + params)
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"),RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
         def principal = null
@@ -766,7 +767,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc,rolesNo:rolesNo]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento

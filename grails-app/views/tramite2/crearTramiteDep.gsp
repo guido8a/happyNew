@@ -104,127 +104,109 @@
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
-            <g:if test="${padre}">
-                <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
+        <g:if test="${padre}">
+            <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
-                    <p class="css-vertical-text">D. Principal</p>
+                <p class="css-vertical-text">D. Principal</p>
+                <div class="linea"></div>
+                <div class="row">
+                    <div class="col-xs-1 negrilla">Documento:</div>
+                    <div class="col-xs-2">${principal.codigo}</div>
+                    <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+                    <div class="col-xs-2">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+                    <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
+                    <div class="col-xs-3">${principal.deDepartamento ? principal.deDepartamento.codigo :""+principal.de.departamento.codigo+":"+principal.de.nombre + ' ' + principal.de.apellido}</div>
+                </div>
+
+                <div class="row ">
+                    <div class="col-xs-10">
+                        <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal,rolesNo)}" var="pdt" status="j">
+                            <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                            <span style="margin-right: 10px">
+                                ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                                ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                            </span>
+                        </g:each>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 negrilla">Asunto:</div>
+
+                    <div class="col-md-11">${principal.asunto}</div>
+                </div>
+                <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim() != ''}">
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Texto:</div>
+
+                        <div class="col-md-11 texto">
+                            <util:renderHTML html="${principal.texto}"/>
+                        </div>
+                    </div>
+                </g:if>
+
+                <g:if test="${principal.observaciones && principal.observaciones?.trim() != ''}">
+                    <div class="row">
+                        <div class="col-md-1 negrilla">Obs:</div>
+
+                        <div class="col-md-11">${principal.observaciones}</div>
+                    </div>
+                </g:if>
+
+            </div>
+            <g:if test="${padre != principal}">
+                <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
+
+                    <p class="css-vertical-text">Contesta a</p>
 
                     <div class="linea"></div>
 
-                    <div class="row col2">
-                        <div class="col-md-2 negrilla">Documento:</div>
-
-                        <div class="col-md-8">${principal.codigo}</div>
-
-                        <div class="col-md-1 negrilla">Fecha:</div>
-
-                        <div class="col-md-5">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+                    <div class="row">
+                        <div class="col-xs-1 negrilla">Documento:</div>
+                        <div class="col-xs-2">${padre.codigo}</div>
+                        <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+                        <div class="col-xs-2">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
+                        <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
+                        <div class="col-xs-3">${padre.deDepartamento ? padre.deDepartamento.codigo :""+padre.de.departamento.codigo+":"+padre.de.nombre + ' ' + padre.de.apellido}</div>
                     </div>
 
-                    <div class="row col2">
-                        <div class="col-md-2 negrilla">De:</div>
-                        <g:if test="${principal?.deDepartamento}">
-                            <div class="col-md-8">${principal?.deDepartamento} - ${principal?.de}</div>
-                        </g:if>
-                        <g:else>
-                            <div class="col-md-8">${principal?.de}</div>
-                        </g:else>
-
-                        <div class="col-md-2 negrilla">Para:</div>
-                        <g:if test="${principal?.para?.departamento}">
-                            <div class="col-md-8">${principal?.para?.departamento}</div>
-                        </g:if>
-                        <g:else>
-                            <div class="col-md-8">${principal?.para?.persona}</div>
-                        </g:else>
+                    <div class="row ">
+                        <div class="col-xs-10">
+                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre,rolesNo)}" var="pdt" status="j">
+                                <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                                <span style="margin-right: 10px">
+                                    ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                                    ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                                </span>
+                            </g:each>
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-1 negrilla">Asunto:</div>
 
-                        <div class="col-md-11">${principal.asunto}</div>
+                        <div class="col-md-11">${padre.asunto}</div>
                     </div>
 
-                    <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim() != ''}">
+                    <g:if test="${padre.personaPuedeLeer(session.usuario) && padre.texto?.trim() != ''}">
                         <div class="row">
                             <div class="col-md-1 negrilla">Texto:</div>
 
                             <div class="col-md-11 texto">
-                                <util:renderHTML html="${principal.texto}"/>
+                                <util:renderHTML html="${padre.texto}"/>
                             </div>
                         </div>
                     </g:if>
 
-                    <g:if test="${principal.observaciones && principal.observaciones?.trim() != ''}">
+                    <g:if test="${padre.observaciones && padre.observaciones?.trim() != ''}">
                         <div class="row">
                             <div class="col-md-1 negrilla">Obs:</div>
 
-                            <div class="col-md-11">${principal.observaciones}</div>
+                            <div class="col-md-11">${padre.observaciones}</div>
                         </div>
                     </g:if>
                 </div>
-                <g:if test="${padre != principal}">
-                    <div style="margin-top: 30px; min-height: 100px;" class="vertical-container">
-
-                        <p class="css-vertical-text">Contesta a</p>
-
-                        <div class="linea"></div>
-
-                        <div class="row col2">
-                            <div class="col-md-2 negrilla">Documento:</div>
-
-                            <div class="col-md-8">${padre?.codigo}</div>
-
-                            <div class="col-md-1 negrilla">Fecha:</div>
-
-                            <div class="col-md-5">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
-                        </div>
-
-                        <div class="row col2">
-                            <div class="col-md-2 negrilla">De:</div>
-                            <g:if test="${padre?.deDepartamento}">
-                                <div class="col-md-8">${padre?.deDepartamento} - ${padre?.de}</div>
-                            </g:if>
-                            <g:else>
-                                <div class="col-md-8">${padre.de}</div>
-                            </g:else>
-
-                            <div class="col-md-2 negrilla">Para:</div>
-                            <g:if test="${padre?.para?.persona}">
-                                <div class="col-md-8">${padre?.para?.persona}</div>
-                            </g:if>
-                            <g:else>
-                                <div class="col-md-8">${padre?.para?.departamento?.descripcion}</div>
-                            </g:else>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Asunto:</div>
-
-                            <div class="col-md-11">${padre.asunto}</div>
-                        </div>
-
-                        <g:if test="${padre.personaPuedeLeer(session.usuario) && padre.texto?.trim() != ''}">
-                            <div class="row">
-                                <div class="col-md-1 negrilla">Texto:</div>
-
-                                <div class="col-md-11 texto">
-                                    <util:renderHTML html="${padre.texto}"/>
-                                </div>
-                            </div>
-                        </g:if>
-
-                        <g:if test="${padre.observaciones && padre.observaciones?.trim() != ''}">
-                            <div class="row">
-                                <div class="col-md-1 negrilla">Obs:</div>
-
-                                <div class="col-md-11">${padre.observaciones}</div>
-                            </div>
-                        </g:if>
-                    </div>
-                </g:if>
             </g:if>
+        </g:if>
 
             <div style="margin-top: 30px;" class="vertical-container">
 
