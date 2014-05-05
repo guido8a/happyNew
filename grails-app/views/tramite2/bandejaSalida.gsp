@@ -421,38 +421,46 @@
                     icon   : "<i class='fa fa-magic text-danger'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
-                        bootbox.dialog({
-                            title   : "Alerta",
-                            message : "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i><p>" +
-                                      "¿Está seguro que desea quitar el enviado del trámite seleccionado?<br/>Esta acción no se puede deshacer.</p>",
-                            buttons : {
-                                cancelar  : {
-                                    label     : "Cancelar",
-                                    className : "btn-primary",
-                                    callback  : function () {
-                                    }
-                                },
-                                desenviar : {
-                                    label     : "<i class='fa fa-magic'></i> Quitar enviado",
-                                    className : "btn-danger",
-                                    callback  : function () {
-                                        openLoader("Quitando enviado");
-                                        $.ajax({
-                                            type    : "POST",
-                                            url     : '${createLink(action:'desenviar_ajax')}',
-                                            data    : {
-                                                id : id
-                                            },
-                                            success : function (msg) {
-                                                var parts = msg.split("_");
-                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                if (parts[0] == "OK") {
-                                                    location.reload(true);
-                                                }
+                        $.ajax({
+                            type    : "POST",
+                            url     : '${createLink(action:'desenviarLista_ajax')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar  : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
                                             }
-                                        });
+                                        },
+                                        desenviar : {
+                                            label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                            className : "btn-danger",
+                                            callback  : function () {
+                                                openLoader("Quitando enviado");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(action:'desenviar_ajax')}',
+                                                    data    : {
+                                                        id : id
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            location.reload(true);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
-                                }
+                                });
                             }
                         });
                     }

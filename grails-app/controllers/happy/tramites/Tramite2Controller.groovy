@@ -239,6 +239,24 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
     }
 
+    def desenviarLista_ajax() {
+        def tramite = Tramite.get(params.id)
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        def paras = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            eq("rolPersonaTramite", rolPara)
+        }
+        def ccs = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            eq("rolPersonaTramite", rolCc)
+        }
+
+        return [tramite: tramite, paras: paras, ccs: ccs]
+    }
+
     def bandejaSalida() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
