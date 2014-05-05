@@ -1,5 +1,5 @@
 <%@ page import="happy.seguridad.Persona" %>
-<div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
+<div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;font-size: 11px">
     <g:each in="${tramites}" var="t" status="i">
         <g:if test="${i==0}">
             <div style="margin-bottom: 20px;min-height: 140px" class="vertical-container">
@@ -19,8 +19,14 @@
 
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
-
-                    <div class="col-xs-8">${t.deDepartamento ? t.deDepartamento.codigo : t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo :""+t.de.departamento.codigo+":"+t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-5">
+                        <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t,rolesNo)}" var="pdt" status="j">
+                            <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                            ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<br>
+                        </g:each>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -63,8 +69,14 @@
 
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
-
-                    <div class="col-xs-8">${t.deDepartamento ? t.deDepartamento.codigo : t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo :""+t.de.departamento.codigo+":"+t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-5">
+                        <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t,rolesNo)}" var="pdt" status="j">
+                            <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                            ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<br>
+                        </g:each>
+                    </div>
                 </div>
 
                 <div class="row">
