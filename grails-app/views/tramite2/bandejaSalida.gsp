@@ -263,6 +263,7 @@
 
             $("input").keyup(function (ev) {
                 if (ev.keyCode == 13) {
+                    $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();
@@ -776,6 +777,7 @@
                 }, 300000);
 
                 $(".btnBusqueda").click(function () {
+                    $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();

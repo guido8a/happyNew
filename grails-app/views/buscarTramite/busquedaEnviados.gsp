@@ -160,9 +160,6 @@
 
     $(".btnBusqueda").click(function () {
         $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-
-//        var interval = loading("bandeja")
-
         var memorando = $("#memorando").val();
         var asunto = $("#asunto").val();
         var fecha = $("#fechaBusqueda_input").val();
@@ -173,12 +170,31 @@
         $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
             data: datos,
             success: function (msg) {
-//                clearInterval(interval)
                 $("#bandeja").html(msg);
             }
         });
 
     });
+
+    $("input").keyup(function (ev) {
+       if(ev.keyCode == 13){
+           $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+           var memorando = $("#memorando").val();
+           var asunto = $("#asunto").val();
+           var fecha = $("#fechaBusqueda_input").val();
+           var fechaRecepcion = $("#fechaRecepcion_input").val();
+
+           var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
+
+           $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
+               data: datos,
+               success: function (msg) {
+                   $("#bandeja").html(msg);
+               }
+           });
+       }
+    });
+
 
 var padre
 
