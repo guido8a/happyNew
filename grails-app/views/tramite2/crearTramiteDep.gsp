@@ -571,6 +571,7 @@
                     }
                 });
                 $chkAnexos.prop("checked", false);
+                $cc.prop("checked", false);
 
                 switch (cod) {
                     case "CIR":
