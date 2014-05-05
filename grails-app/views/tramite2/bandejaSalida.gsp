@@ -408,6 +408,15 @@
                     }
                 };
 
+                var editarSumilla = {
+                    text   : 'Editar',
+                    icon   : "<i class='fa fa-pencil'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        location.href = "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
+                    }
+                };
+
                 var anexos = {
                     text   : 'Anexos',
                     icon   : "<i class='fa fa-paperclip'></i>",
@@ -598,7 +607,8 @@
                 context.attach(".E001.sumilla", [
                     {
                         header : 'Sin Acciones'
-                    }
+                    },
+                      editarSumilla
                 ]);
 
                 context.attach(".E001.sumilla.conHermano", [
