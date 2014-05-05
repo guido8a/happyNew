@@ -75,7 +75,12 @@ class MenuTagLib {
         html += '<span class="icon-bar"></span>'
         html += '<span class="icon-bar"></span>'
         html += '</button>'
-        html += '<a class="navbar-brand" href="#">' + attrs.title + '</a>'
+        html += '<a class="navbar-brand" href="#" style="margin-top:-10px;font-size: 11px !important;width:310px;color:white;cursor:default">'
+        html += '<img src="'+g.resource(dir: 'images',file: 'logo_gadpp_reportes.png')+'" height="40px" style="float:left" >'
+        html += '<div style="width:210px !important;float:left;height:40px;margin-left:5px;font-weight:bold;text-align:center">'
+        html += 'Gobierno de la provincia de Pichincha. Eficiencia y solidaridad '
+        html += '</div>'
+        html += '</a>'
         html += '</div>'
         //<!-- Collect the nav links, forms, and other content for toggling -->
         html += '<div class="collapse navbar-collapse" id="happy-navbar-collapse">'
