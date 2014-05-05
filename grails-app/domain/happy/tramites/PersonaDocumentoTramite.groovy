@@ -23,6 +23,8 @@ class PersonaDocumentoTramite {
     Date fechaRespuesta                     // fecha en la q se crea el tramite hijo de respuesta
     Date fechaArchivo                       // fecha en la q se archivo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
 
+    EstadoTramite estado
+
     static mapping = {
         table 'prtr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -42,6 +44,8 @@ class PersonaDocumentoTramite {
             fechaLimiteRespuesta column: 'prtrfclr'
             fechaRespuesta column: 'prtrfcrs'
             fechaArchivo column: 'prtrfcar'
+
+            estado column: 'edtr__id'
         }
     }
     static constraints = {
@@ -56,5 +60,7 @@ class PersonaDocumentoTramite {
         fechaLimiteRespuesta(nullable: true, blank: true)
         fechaRespuesta(nullable: true, blank: true)
         fechaArchivo(nullable: true, blank: true)
+
+        estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
     }
 }

@@ -802,6 +802,95 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [html: html, url: url]
     }
 
+    def arbolTramite2() {
+//        if (!params.id) {
+//            params.id = 61
+//        }
+
+        def tramite = Tramite.get(params.id.toLong())
+        def principal = tramite
+        if (tramite.padre) {
+            principal = tramite.padre
+            while (true) {
+                if (!principal.padre)
+                    break
+                else {
+                    principal = principal.padre
+                }
+            }
+        }
+        def html2 = "<ul>" + "\n"
+        html2 += makeTreeExtended(principal, tramite)
+        html2 += "</ul>" + "\n"
+
+        def url = ""
+        switch (params.b) {
+            case "bep":
+                url = createLink(controller: "tramite", action: "bandejaEntrada")
+                break;
+            case "bed":
+                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+                break;
+            case "bsp":
+                url = createLink(controller: "tramite2", action: "bandejaSalida")
+                break;
+            case "bsd":
+                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+                break;
+            case "bqt":
+                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+                break;
+            case "bqe":
+                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
+                break;
+
+        }
+
+        return [html2: html2, url: url]
+    }
+
+    private String makeTreeExtended(Tramite principal, Tramite actual) {
+
+        def tramiteInfo = { PersonaDocumentoTramite tramiteParaInfo ->
+            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
+            def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.descripcion : tramiteParaInfo.tramite.de.login
+            def rol = tramiteParaInfo.rolPersonaTramite.descripcion
+            def strInfo = "<span>(DE: ${deStr}, ${rol} ${paraStr})</span>"
+            return strInfo
+        }
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
+        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+
+        def html = "", clase = "", rel = ""
+
+        //esto muestra una hoja por destinatario (para es padre de las copias, si no hay para la 1ra copia es padre del resto)
+        paras.each { para ->
+            def strInfo = tramiteInfo(para)
+            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+        }
+        if (paras.size() == 0) {
+            def para = ccs.first()
+            def strInfo = tramiteInfo(para)
+            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+            ccs = ccs[1..(ccs.size() - 1)]
+        }
+//        if (ccs.size() > 0) {
+//            html += "<ul>"
+//        }
+        ccs.each { para ->
+            def strInfo = tramiteInfo(para)
+            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+        }
+//        if (ccs.size() > 0) {
+//            html += "</ul>"
+//        }
+        return html
+    }
+
     private String makeTree(Tramite principal, Tramite tramite) {
         def html = ""
         def clase = ""
@@ -815,7 +904,46 @@ class Tramite3Controller extends happy.seguridad.Shield {
             rel = "padre"
         }
 
+        def tramiteInfo = { PersonaDocumentoTramite tramiteParaInfo ->
+            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
+            def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.descripcion : tramiteParaInfo.tramite.de.login
+
+
+            def strInfo = "(DE: ${deStr}, PARA ${paraStr})"
+            return strInfo
+        }
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
+        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+
+        //esto muestra una sola hoja por tramite
         html += "<li id='${principal.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + principal.codigo + "\n"
+
+        //esto muestra una hoja por destinatario (para es padre de las copias, si no hay para la 1ra copia es padre del resto)
+//        paras.each { para ->
+//            def strInfo = tramiteInfo(para)
+//            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+//        }
+//        if (paras.size() == 0) {
+//            def para = ccs.first()
+//            def strInfo = tramiteInfo(para)
+//            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+//            ccs = ccs[1..(ccs.size() - 1)]
+//        }
+////        if (ccs.size() > 0) {
+////            html += "<ul>"
+////        }
+//        ccs.each { para ->
+//            def strInfo = tramiteInfo(para)
+//            html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"}' >" + para.tramite.codigo + " ${strInfo}\n"
+//        }
+//        if (ccs.size() > 0) {
+//            html += "</ul>"
+//        }
+
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
             hijos.each { hijo ->
