@@ -416,7 +416,8 @@
                             type    : "POST",
                             url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
                             data    : {
-                                id   : idPxt,
+//                                id   : idPxt,
+                                id   : id
                                 tipo : "archivar"
                             },
                             success : function (msg) {
