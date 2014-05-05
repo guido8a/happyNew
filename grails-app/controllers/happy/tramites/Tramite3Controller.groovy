@@ -590,6 +590,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             pxt.fechaRecepcion = hoy
 //            println "aaa2"
             pxt.fechaLimiteRespuesta = limite
+            pxt.estado=EstadoTramite.findByCodigo("E004")
 
             if (pxt.save(flush: true) && tramite.save(flush: true)) {
                 def pdt = new PersonaDocumentoTramite([
