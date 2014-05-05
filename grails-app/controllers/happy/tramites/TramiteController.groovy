@@ -1296,21 +1296,27 @@ class TramiteController extends happy.seguridad.Shield {
 
     def revisarHijos() {
 
-//        println("params" + params)
+        //original
 
-        def tramite = Tramite.get(params.id)
-        def observacion = ObservacionTramite.findByTramite(tramite)
-        def hijos
+//        def tramite = Tramite.get(params.id)
+//        def observacion = ObservacionTramite.findByTramite(tramite)
+//        def hijos
+//
+//        if (params.tipo == 'archivar') {
+//            hijos = Tramite.findAllByPadre(tramite)
+//        } else if (params.tipo == 'anular') {
+//            def padre = tramite
+//            hijos = todaDescendencia(tramite)
+//        }
+//        return [tramite: tramite, observacion: observacion, hijos: hijos, params: params]
 
-        if (params.tipo == 'archivar') {
-            hijos = Tramite.findAllByPadre(tramite)
-        } else if (params.tipo == 'anular') {
-            def padre = tramite
-            hijos = todaDescendencia(tramite)
-//            println ("hijos--->" + hijos)
-        }
-        return [tramite: tramite, observacion: observacion, hijos: hijos, params: params]
+        //nuevo
+
+        def pxt = PersonaDocumentoTramite.get(params.id)
+
     }
+
+
 
     def archivar() {
 

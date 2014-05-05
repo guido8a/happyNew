@@ -52,7 +52,7 @@
 
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"
-                codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" anexo="${anexo}">
+                codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" anexo="${anexo}" prtr="${tramite?.id}">
                <g:if test="${tramite?.tramite?.anexo == 1}">
                    <td title="${tramite?.tramite?.asunto}">
                        ${tramite?.tramite?.codigo} <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>

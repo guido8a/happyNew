@@ -336,7 +336,7 @@
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id,
+                            url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "&source=bep",
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
@@ -416,7 +416,7 @@
                             type    : "POST",
                             url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
                             data    : {
-                                id   : id,
+                                id   : idPxt,
                                 tipo : "archivar"
                             },
                             success : function (msg) {
@@ -579,6 +579,7 @@
                         var $tr = $(e.target).parents("tr");
                         $tr.addClass("trHighlight");
                         id = $tr.data("id");
+                        idPxt = $tr.attr("prtr");
                         archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
                         valAnexo = $tr.attr("anexo");
                     }
