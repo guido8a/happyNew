@@ -354,7 +354,7 @@
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(action: 'recibirTramite')}/' + id + "&source=bed",
+                            url     : '${createLink(action: 'recibirTramite')}/' + id + "?source=bed",
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();

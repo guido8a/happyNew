@@ -1312,7 +1312,9 @@ class TramiteController extends happy.seguridad.Shield {
 
         //nuevo
 
-        def pxt = PersonaDocumentoTramite.get(params.id)
+        def tramite = Tramite.get(params.id)
+        def pxt = PersonaDocumentoTramite.get(params.idPxt)
+        def hijosPxt = PersonaDocumentoTramite
 
     }
 

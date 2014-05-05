@@ -336,7 +336,7 @@
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "&source=bep",
+                            url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "?source=bep",
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
