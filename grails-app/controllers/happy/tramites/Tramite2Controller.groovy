@@ -202,41 +202,102 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
 
-        tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
-        tramite.estadoTramite = porEnviar
-        tramite.fechaEnvio = null
+        def ids = params.ids
+        def errores = ""
 
-        if (tramite.save(flush: true)) {
-            def personas = PersonaDocumentoTramite.findAllByTramite(tramite)
-            def errores = ""
-            personas.each {
-                if (it.rolPersonaTramite.codigo != 'E004') {
-                    def alerta
-                    if (it.persona)
-                        alerta = Alerta.findByPersonaAndTramite(it.persona, it.tramite)
-                    else
-                        alerta = Alerta.findByDepartamentoAndTramite(it.departamento, it.tramite)
-                    if (alerta) {
-                        alerta.mensaje += " - Tramite cambiado de estado"
-                        alerta.fechaRecibido = new Date()
-                        alerta.save(flush: true)
-                    }
-                    it.fechaEnvio = null
-                    if (!it.save(flush: true)) {
-                        errores += "<li>" + renderErrors(bean: it) + "</li>"
-                    }
-                } //no es el que envia
-            } //persona doc tramite . each
-            if (errores == "") {
-                render "OK_Envío del trámite cancelado correctamente"
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        //esta quitando el enviado a estos
+        (ids.split("_")).each { id ->
+            def persDoc = PersonaDocumentoTramite.get(id.toLong())
+            //cambia la fecha de envio, el estadoy las obs
+            persDoc.fechaEnvio = null
+            persDoc.estado = porEnviar
+            persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                    "(previa fecha de envío: " +
+                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+            if (persDoc.save(flush: true)) {
+                def alerta
+                if (persDoc.persona)
+                    alerta = Alerta.findByPersonaAndTramite(persDoc.persona, persDoc.tramite)
+                else
+                    alerta = Alerta.findByDepartamentoAndTramite(persDoc.departamento, persDoc.tramite)
+                if (alerta) {
+                    alerta.mensaje += " - Tramite cambiado de estado"
+                    alerta.fechaRecibido = new Date()
+                    alerta.save(flush: true)
+                }
             } else {
-                render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
+                println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
+                errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
             }
-        } else {
-            render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + renderErrors(bean: tramite)
         }
+        //originalmente era para todos estos: verifico si ninguno ha recibido le cambio el estado al tramite a borrador
+        def recibidos = 0
+        PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            inList("rolPersonaTramite", [rolPara, rolCc])
+        }.each { persDoc ->
+            if (persDoc.fechaRecepcion) {
+                recibidos++
+            }
+        }
+        if (recibidos == 0) {
+            tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                    "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
+            tramite.estadoTramite = porEnviar
+            tramite.fechaEnvio = null
+        }
+        if (!tramite.save(flush: true)) {
+            println "ERROR AL CAMBIAR ESTADO TRAMITE: " + tramite.errors
+            errores += "<li>" + renderErrors(bean: tramite) + "</li>"
+        }
+
+        if(errores == "") {
+            render "OK_Envío del trámite cancelado correctamente"
+        } else {
+            render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
+        }
+
+        //ESTA PARTE DESENVIABA EL TRAMITE ENTERO: YA NO SE USA
+//        tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+//                "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+//                "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
+//        tramite.estadoTramite = porEnviar
+//        tramite.fechaEnvio = null
+//
+//        if (tramite.save(flush: true)) {
+//            def personas = PersonaDocumentoTramite.findAllByTramite(tramite)
+//            def errores = ""
+//            personas.each {
+//                if (it.rolPersonaTramite.codigo != 'E004') {
+//                    def alerta
+//                    if (it.persona)
+//                        alerta = Alerta.findByPersonaAndTramite(it.persona, it.tramite)
+//                    else
+//                        alerta = Alerta.findByDepartamentoAndTramite(it.departamento, it.tramite)
+//                    if (alerta) {
+//                        alerta.mensaje += " - Tramite cambiado de estado"
+//                        alerta.fechaRecibido = new Date()
+//                        alerta.save(flush: true)
+//                    }
+//                    it.fechaEnvio = null
+//                    if (!it.save(flush: true)) {
+//                        errores += "<li>" + renderErrors(bean: it) + "</li>"
+//                    }
+//                } //no es el que envia
+//            } //persona doc tramite . each
+//            if (errores == "") {
+//                render "OK_Envío del trámite cancelado correctamente"
+//            } else {
+//                render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
+//            }
+//        } else {
+//            render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + renderErrors(bean: tramite)
+//        }
     }
 
     def desenviarLista_ajax() {
@@ -665,7 +726,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 //        println("params " + params)
-        def rolesNo = [RolPersonaTramite.findByCodigo("E004"),RolPersonaTramite.findByCodigo("E003")]
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
         def principal = null
@@ -785,7 +846,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc,rolesNo:rolesNo]
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento

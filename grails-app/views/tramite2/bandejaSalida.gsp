@@ -451,12 +451,22 @@
                                             label     : "<i class='fa fa-magic'></i> Quitar enviado",
                                             className : "btn-danger",
                                             callback  : function () {
+                                                var ids = "";
+                                                $(".chkOne").each(function () {
+                                                    if ($(this).hasClass("fa-check-square")) {
+                                                        if (ids != "") {
+                                                            ids += "_"
+                                                        }
+                                                        ids += $(this).attr("id");
+                                                    }
+                                                });
                                                 openLoader("Quitando enviado");
                                                 $.ajax({
                                                     type    : "POST",
                                                     url     : '${createLink(action:'desenviar_ajax')}',
                                                     data    : {
-                                                        id : id
+                                                        id  : id,
+                                                        ids : ids
                                                     },
                                                     success : function (msg) {
                                                         var parts = msg.split("_");
@@ -608,7 +618,7 @@
                     {
                         header : 'Sin Acciones'
                     },
-                      editarSumilla
+                    editarSumilla
                 ]);
 
                 context.attach(".E001.sumilla.conHermano", [
