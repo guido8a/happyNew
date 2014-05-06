@@ -278,7 +278,7 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        location.href = "${g.createLink(action: 'crearTramite')}/?padre=" + id;
+                        location.href = "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt;
                     }
                 };
 
@@ -416,8 +416,8 @@
                             type    : "POST",
                             url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
                             data    : {
-//                                id   : idPxt,
-                                id   : id
+                                id   : idPxt,
+//                                id   : id,
                                 tipo : "archivar"
                             },
                             success : function (msg) {

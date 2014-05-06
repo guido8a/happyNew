@@ -102,32 +102,41 @@
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
+            <g:hiddenField name="tramite.aQuienContesta" value="${pdt}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre}">
                 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                     <p class="css-vertical-text">D. Principal</p>
+
                     <div class="linea"></div>
+
                     <div class="row">
                         <div class="col-xs-1 negrilla">Documento:</div>
+
                         <div class="col-xs-2">${principal.codigo}</div>
+
                         <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+
                         <div class="col-xs-2">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+
                         <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
-                        <div class="col-xs-3">${principal.deDepartamento ? principal.deDepartamento.codigo :""+principal.de.departamento.codigo+":"+principal.de.nombre + ' ' + principal.de.apellido}</div>
+
+                        <div class="col-xs-3">${principal.deDepartamento ? principal.deDepartamento.codigo : "" + principal.de.departamento.codigo + ":" + principal.de.nombre + ' ' + principal.de.apellido}</div>
                     </div>
 
                     <div class="row ">
                         <div class="col-xs-10">
-                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal,rolesNo)}" var="pdt" status="j">
+                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo)}" var="pdt" status="j">
                                 <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                 <span style="margin-right: 10px">
-                                ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
-                                ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                                    ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                                    ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}
                                 </span>
                             </g:each>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-1 negrilla">Asunto:</div>
 
@@ -161,20 +170,25 @@
 
                         <div class="row">
                             <div class="col-xs-1 negrilla">Documento:</div>
+
                             <div class="col-xs-2">${padre.codigo}</div>
+
                             <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+
                             <div class="col-xs-2">${padre.fechaCreacion.format("dd-MM-yyyy")}</div>
+
                             <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
-                            <div class="col-xs-3">${padre.deDepartamento ? padre.deDepartamento.codigo :""+padre.de.departamento.codigo+":"+padre.de.nombre + ' ' + padre.de.apellido}</div>
+
+                            <div class="col-xs-3">${padre.deDepartamento ? padre.deDepartamento.codigo : "" + padre.de.departamento.codigo + ":" + padre.de.nombre + ' ' + padre.de.apellido}</div>
                         </div>
 
                         <div class="row ">
                             <div class="col-xs-10">
-                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre,rolesNo)}" var="pdt" status="j">
+                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre, rolesNo)}" var="pdt" status="j">
                                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                     <span style="margin-right: 10px">
-                                        ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
-                                        ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}
+                                        ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                                        ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}
                                     </span>
                                 </g:each>
                             </div>

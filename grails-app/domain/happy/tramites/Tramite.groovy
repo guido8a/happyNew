@@ -34,6 +34,8 @@ class Tramite {
     def diasLaborablesService
     Integer guia
 
+    PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
+
     static mapping = {
         table 'trmt'
         cache usage: 'read-write', include: 'non-lazy'
@@ -67,6 +69,8 @@ class Tramite {
             fechaEnvio column: 'trmtfcen'
             deDepartamento column: 'dpto__de'
             guia column: 'trmtguia'
+
+            aQuienContesta column: 'prtrcnts'
         }
     }
     static constraints = {
@@ -96,6 +100,7 @@ class Tramite {
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
         guia(blank: true, nullable: true, attributes: [title: 'guia'])
 
+        aQuienContesta(blank: true, nullable: true)
     }
 
     def getPara() {

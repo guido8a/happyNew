@@ -379,7 +379,8 @@ class TramiteController extends happy.seguridad.Shield {
 //            bloqueo = true
 //        }
 
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo]
+        return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
+                persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pdt: params.pdt]
     }
 
     def cargaUsuarios() {
@@ -1294,26 +1295,63 @@ class TramiteController extends happy.seguridad.Shield {
         return decendencia
     }
 
+    def todaDescendenciaExtended(Tramite tramite, String tipo, objeto) {
+        def decendencia = []
+        def hijos
+        if (tipo == "dep") {
+            hijos = Tramite.findAllByPadreAndDeDepartamento(tramite, objeto)
+        } else {
+            hijos = Tramite.findAllByPadreAndDe(tramite, objeto)
+        }
+        hijos.each { h ->
+            decendencia += h
+            def cantHijos
+            def nuevoObjeto
+            if (tipo == "dep") {
+                cantHijos = Tramite.countByPadreAndDeDepartamento(tramite, objeto)
+            } else {
+                cantHijos = Tramite.countByPadreAndDe(tramite, objeto)
+            }
+            if (cantHijos > 0) {
+                decendencia += todaDescendenciaExtended(h, tipo, nuevoObjeto)
+            }
+        }
+        return decendencia
+    }
+
     def revisarHijos() {
 
         //original
-
-        def tramite = Tramite.get(params.id)
-        def observacion = ObservacionTramite.findByTramite(tramite)
-        def hijos
-
-        if (params.tipo == 'archivar') {
-            hijos = Tramite.findAllByPadre(tramite)
-        } else if (params.tipo == 'anular') {
-            def padre = tramite
-            hijos = todaDescendencia(tramite)
-        }
-        return [tramite: tramite, observacion: observacion, hijos: hijos, params: params]
+//        def tramite = Tramite.get(params.id)
+//        def observacion = ObservacionTramite.findByTramite(tramite)
+//        def hijos
+//
+//        if (params.tipo == 'archivar') {
+//            hijos = Tramite.findAllByPadre(tramite)
+//        } else if (params.tipo == 'anular') {
+//            def padre = tramite
+//            hijos = todaDescendencia(tramite)
+//        }
+//        return [tramite: tramite, observacion: observacion, hijos: hijos, params: params]
 
         //nuevo
 //        def tramite = Tramite.get(params.id)
-//        def pxt = PersonaDocumentoTramite.get(params.idPxt)
-//        def hijosPxt = PersonaDocumentoTramite
+        def pxt = PersonaDocumentoTramite.get(params.idPxt)
+        def hijos
+        if (params.tipo == 'archivar') {
+            if (pxt.departamento) {
+                hijos = Tramite.findAllByPadreAndDeDepartamento(pxt.tramite, pxt.departamento)
+            } else {
+                hijos = Tramite.findAllByPadreAndDe(pxt.tramite, pxt.persona)
+            }
+        } else if (params.tipo == 'anular') {
+            if (pxt.departamento) {
+                hijos = todaDescendenciaExtended(pxt.tramite, 'dep', pxt.departamento)
+            } else {
+                hijos = todaDescendenciaExtended(pxt.tramite, 'per', pxt.persona)
+            }
+        }
+
 
     }
 

@@ -16,6 +16,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
 
+//        println params
+//        println paramsTramite
+//        println paramsOrigen
+
         def tipoTramite
         if (params.confi == "on") {
             tipoTramite = TipoTramite.findByCodigo("C")
@@ -75,8 +79,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
         } else {
             tramite = new Tramite()
         }
+        println "ANTES DEL SAVE " + paramsTramite
         tramite.properties = paramsTramite
-
+        println "DESPUES: " + tramite.aQuienContesta
+        println "DESPUES: " + tramite.aQuienContesta.id
+        if (tramite.padre) {
+            tramite.padre.estado = "C"
+//            tramite.padre.save(flush: true)
+        }
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -84,10 +94,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
             redirect(controller: 'tramite', action: "crearTramite", id: tramite.id)
             return
         } else {
-            if (tramite.padre) {
-                tramite.padre.estado = "C"
-                tramite.padre.save(flush: true)
-            }
             /*
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
