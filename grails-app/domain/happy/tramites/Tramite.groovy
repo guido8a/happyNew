@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+import happy.utilitarios.Parametros
 
 //import happy.utilitarios.DiasLaborablesService
 
@@ -202,8 +203,15 @@ class Tramite {
             return null
         } else {
             def limite = this.getFechaLimite()
-//            println limite
-            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 1)
+            def par = Parametros.list([sort: "id",order: "desc"])
+            def tiempoBloqueo=1
+            if(par.size()>0){
+                par = par.pop()
+                tiempoBloqueo=par.bloqueo
+            }
+
+//            println "tiempo Bloqueo "+tiempoBloqueo
+            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
             if (fechaLimite[0]) {
                 return fechaLimite[1]
             } else {

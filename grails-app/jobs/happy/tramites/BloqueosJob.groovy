@@ -10,7 +10,7 @@ class BloqueosJob {
 
     def execute() {
         // execute job
-        /*todo cambiar esto*/
+
         def ahora = new Date()
         println "----------------------------------"
         println "bloqueo bandeja salida "+ahora

@@ -80,13 +80,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tramite = new Tramite()
         }
         println "ANTES DEL SAVE " + paramsTramite
-        tramite.properties = paramsTramite
-        println "DESPUES: " + tramite.aQuienContesta
-        println "DESPUES: " + tramite.aQuienContesta.id
         if (tramite.padre) {
             tramite.padre.estado = "C"
-//            tramite.padre.save(flush: true)
+            tramite.aQuienContesta=PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+            tramite.padre.save(flush: true)
         }
+        tramite.properties = paramsTramite
+
+
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -98,6 +99,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
              */
+            println "DESPUES1: " + tramite.aQuienContesta
+            println "DESPUES1: " + tramite.aQuienContesta.id
             if (paramsTramite.para || tramite.tipoDocumento.codigo == "OFI") {
                 def rolPara = RolPersonaTramite.findByCodigo('R001')
                 def para
@@ -110,22 +113,28 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     eq("tramite", tramite)
                     eq("rolPersonaTramite", rolPara)
                 }
+//                println "DESPUES2: " + tramite.aQuienContesta
+//                println "DESPUES2: " + tramite.aQuienContesta.id
+                println "pdt para "+paraDocumentoTramite
                 if (paraDocumentoTramite.size() == 0) {
-                    paraDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: rolPara
-                    ])
+                    paraDocumentoTramite = new PersonaDocumentoTramite()
+                    paraDocumentoTramite.tramite=tramite
+                    paraDocumentoTramite.rolPersonaTramite=rolPara
+//                    println "DESPUES2.5: " + tramite.aQuienContesta
+//                    println "DESPUES2.5: " + tramite.aQuienContesta.id
                 } else if (paraDocumentoTramite.size() == 1) {
                     paraDocumentoTramite = paraDocumentoTramite.first()
                 } else {
                     paraDocumentoTramite.each {
+//                        println "delete "+it.id
                         it.delete(flush: true)
                     }
-                    paraDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: rolPara
-                    ])
+                    paraDocumentoTramite = new PersonaDocumentoTramite()
+                    paraDocumentoTramite.tramite=tramite
+                    paraDocumentoTramite.rolPersonaTramite=rolPara
                 }
+//                println "DESPUES3: " + tramite.aQuienContesta
+//                println "DESPUES3: " + tramite.aQuienContesta.id
                 if (para > 0) {
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
@@ -138,6 +147,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 if (!paraDocumentoTramite.save(flush: true)) {
                     println "error para: " + paraDocumentoTramite.errors
                 }
+//                println "DESPUES4: " + tramite.aQuienContesta
+//                println "DESPUES4: " + tramite.aQuienContesta.id
             } else {
                 def paraOld = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", tramite)
@@ -150,6 +161,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     }
                 }
             }
+//            println "DESPUES dp: " + tramite.aQuienContesta
+//            println "DESPUES dp: " + tramite.aQuienContesta.id
+
             def rolCc = RolPersonaTramite.findByCodigo('R002')
 
             PersonaDocumentoTramite.withCriteria {
@@ -161,10 +175,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             if (paramsTramite.hiddenCC.toString().size() > 0) {
                 (paramsTramite.hiddenCC.split("_")).each { cc ->
-                    def ccDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: rolCc
-                    ])
+                    def ccDocumentoTramite = new PersonaDocumentoTramite()
+                    ccDocumentoTramite.tramite=tramite
+                    ccDocumentoTramite.rolPersonaTramite=rolCc
                     if (cc.toInteger() > 0) {
                         //persona
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
@@ -177,6 +190,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     }
                 }
             }
+//            println "DESPUES hc: " + tramite.aQuienContesta
+//            println "DESPUES hc: " + tramite.aQuienContesta.id
 //            if (params.cc == "on") {
             def tipoDoc
             if (paramsTramite.id) {
@@ -199,9 +214,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     println "error origen tramite: " + origen.errors
                 }
                 tramite.origenTramite = origen
+
                 if (!tramite.save(flush: true)) {
                     println "ERROR AAAAA: " + tramite.errors
                 }
+                println "save mas abajo "+tramite.aQuienContesta
             } else {
                 if (tipoDoc.codigo != "OFI") {
                     def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
@@ -214,6 +231,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
         }
+//
+//        println "DESPUES u: " + tramite.aQuienContesta
+//        println "DESPUES u: " + tramite.aQuienContesta.id
 
         if (tramite.tipoDocumento.codigo == "SUM") {
             redirect(controller: "tramite2", action: "bandejaSalida", id: tramite.id)
@@ -618,7 +638,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     if (!alerta.fechaRecibido) {
                         alerta.mensaje += " - Recibido"
                         alerta.fechaRecibido = new Date()
-                        alerta.save(flush: true)
+                        alerta.save()
                     }
                 }
                 if (pdt.save(flush: true)) {
@@ -849,7 +869,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def html2 = "<ul>" + "\n"
         html2 += makeTreeExtended(principal)
         html2 += "</ul>" + "\n"
-
         def url = ""
         switch (params.b) {
             case "bep":
@@ -1018,5 +1037,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
         return html
     }
+
+
+
+
 
 }
