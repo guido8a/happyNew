@@ -1044,7 +1044,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         println "get cade down "+pdt
         def res = []
         def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "tramite "+tramite
         def roles = [RolPersonaTramite.findByCodigo("R002")]
         def lvl
 
