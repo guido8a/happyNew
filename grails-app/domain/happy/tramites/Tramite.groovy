@@ -31,11 +31,11 @@ class Tramite {
     Date fechaModificacion              //ultima modificacion realizada
     Date fechaRevision                  //ultima revision realizada --> estado cambiado a revisado
     Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
+    Integer guia
+    PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
 
     def diasLaborablesService
-    Integer guia
 
-    PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
 
     static mapping = {
         table 'trmt'

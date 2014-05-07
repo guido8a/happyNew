@@ -869,6 +869,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def html2 = "<ul>" + "\n"
         html2 += makeTreeExtended(principal)
         html2 += "</ul>" + "\n"
+        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297))
         def url = ""
         switch (params.b) {
             case "bep":
@@ -1039,7 +1040,74 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
 
+    def getCadenaDown(pdt){
+        println "get cade down "+pdt
+        def res = []
+        def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
+        println "tramite "+tramite
+        def roles = [RolPersonaTramite.findByCodigo("R002")]
+        def lvl
 
+        if(tramite){
+            tramite.pop()
+            def tmp = [:]
+            tmp.put("nodo":tramite)
+            tmp.put("tipo":"tramite")
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
+            tmp.put("hijos":[])
+            pdts.each {
+                def r = getHijos(it,roles)
+                if(r.size()>0)
+                    tmp["hijos"]+=r
+            }
+            tmp.put("origen":pdt)
+            res.add(tmp)
+            res = getHermanos(tramite,res,roles)
+        }else{
+            return []
+        }
+
+
+        println "res lol "+res
+
+    }
+
+    def getHermanos(tramite,res,roles){
+        def lvl
+        def hermanos = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
+        while(hermanos.size()>0){
+            def nodo = hermanos.pop()
+            def tmp = [:]
+            tmp.put("nodo":nodo)
+            tmp.put("hijos":getHijos(nodo))
+            tmp.put("tipo":"pdt")
+
+            res.add(tmp)
+
+        }
+        return res
+    }
+
+    def getHijos(pdt,roles){
+        def res =[]
+        def t = Tramite.findByAQuienContesta(pdt)
+        if(t){
+            def tmp = [:]
+            tmp.put("nodo":t)
+            tmp.put("tipo","tramite")
+            tmp.put("hijos":[])
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t,roles)
+            tmp.put("hijos":[])
+            pdts.each {
+                def r = getHijos(it,roles)
+                if(r.size()>0)
+                    tmp["hijos"]+=r
+            }
+            res = getHermanos(t,res,roles)
+            res.add(tmp)
+        }
+        return res
+    }
 
 
 }
