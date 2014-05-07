@@ -411,51 +411,65 @@
                 };
 
                 var archivar = {
-                    text   : 'Archivar trámite',
+                    text   : 'Archivar Documentos',
                     icon   : "<i class='fa fa-folder-open-o'></i>",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        var b = bootbox.dialog({
-                            id      : "dlgArchivar",
-                            title   : "Archivar trámite",
-                            message : "<p>¿Está seguro de querer archivar el trámite <b>" + codigo + "</b>?<br/>" +
-                                      "Una vez archivado no podrá utilizarlo de ninguna manera.</p>" +
-                                      "<p>Observaciones</p>" +
-                                      "<textarea id='txaObsArchivar' rows='6' class='form-control'></textarea>",
-                            buttons : {
-                                cancelar : {
-                                    label     : '<i class="fa fa-times"></i> Cancelar',
-                                    className : 'btn-danger',
-                                    callback  : function () {
-                                    }
-                                },
-                                recibir  : {
-                                    id        : 'btnEnviar',
-                                    label     : '<i class="fa fa-thumbs-o-up"></i> Archivar',
-                                    className : 'btn-success',
-                                    callback  : function () {
-                                        var obs = $("#txaObsArchivar").val();
-                                        openLoader();
-                                        $.ajax({
-                                            type    : 'POST',
-                                            url     : '${createLink(controller: 'tramite', action: 'archivar')}',
-                                            data    : {
-                                                id    : id,
-                                                texto : obs
-                                            },
-                                            success : function (msg) {
-                                                var parts = msg.split("_");
-                                                cargarBandeja();
-                                                closeLoader();
-                                                log(parts[1], parts[0] == "NO" ? "error" : "success");
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
+                            data    : {
+                                id   : idPxt,
+//                                id   : id,
+                                tipo : "archivar"
+                            },
+                            success : function (msg) {
+                                var b = bootbox.dialog({
+                                    id      : "dlgArchivar",
+                                    title   : 'Archivar Tramite',
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+
                                             }
-                                        });
+                                        },
+                                        archivar : {
+                                            id        : 'btnArchivar',
+                                            label     : '<i class="fa fa-check"></i> Archivar',
+                                            className : "btn-success",
+                                            callback  : function () {
+
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(controller:'tramite',action: 'archivar')}/' + idPxt,
+                                                    data    : {
+                                                        texto : $("#observacionArchivar").val()
+                                                    },
+                                                    success : function (msg) {
+                                                        openLoader();
+                                                        cargarBandeja();
+                                                        closeLoader();
+                                                        if (msg == 'ok') {
+                                                            log("Trámite archivado correctamente", 'success')
+                                                        } else if (msg == 'no') {
+                                                            log("Error al archivar el trámite", 'error')
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
-                                }
+                                })
+
                             }
-                        })
+
+                        });
                     }
+
                 };
 
                 var observaciones = {

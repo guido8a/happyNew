@@ -441,7 +441,7 @@
 
                                                 $.ajax({
                                                     type    : 'POST',
-                                                    url     : '${createLink(action: 'archivar')}/' + id,
+                                                    url     : '${createLink(action: 'archivar')}/' + idPxt,
                                                     data    : {
                                                         texto : $("#observacionArchivar").val()
                                                     },
@@ -610,9 +610,9 @@
 //                    seguimiento,
                     </g:if>
                     contestar,
-                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeArchivar}">--}%
                     archivar
-                    </g:if>
+                    %{--</g:if>--}%
 
                 ]);
                 context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [

@@ -959,8 +959,9 @@ class TramiteController extends happy.seguridad.Shield {
             eq("persona", persona)
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
+            inList("estado", [enviado, recibido])
             tramite {
-                inList("estadoTramite", [enviado, recibido])
+//                inList("estadoTramite", [enviado, recibido])
                 if (params.domain == "tramite") {
                     order(params.sort, params.order)
                 }
@@ -1336,7 +1337,8 @@ class TramiteController extends happy.seguridad.Shield {
 
         //nuevo
 //        def tramite = Tramite.get(params.id)
-        def pxt = PersonaDocumentoTramite.get(params.idPxt)
+        println "rev hijos "+params
+        def pxt = PersonaDocumentoTramite.get(params.id)
         def hijos
         if (params.tipo == 'archivar') {
             if (pxt.departamento) {
@@ -1358,24 +1360,21 @@ class TramiteController extends happy.seguridad.Shield {
 
     def archivar() {
 
-//        println("params" + params)
+        println("params" + params)
 
         def persona = Persona.get(session.usuario.id)
-        def tramite = Tramite.get(params.id)
+        def pdt = PersonaDocumentoTramite.get(params.id)
         def estadoTramite = EstadoTramite.findByCodigo('E005')
-
-        tramite.estadoTramite = estadoTramite
-
-        def observacion = new ObservacionTramite()
-
-        observacion.persona = persona
-        observacion.tramite = tramite
-        observacion.fecha = new Date()
-        observacion.observaciones = params.texto
-        observacion.tipo = 'archivar'
-        observacion.save(flush: true)
-
-        if (!tramite.save(flush: true) || !observacion.save(flush: true)) {
+        pdt.estado = estadoTramite
+        pdt.observaciones=(pdt.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
+        if(pdt.rolPersonaTramite.codigo=="R001"){
+            pdt.tramite.observaciones=(pdt.tramite.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
+            pdt.tramite.save()
+        }else{
+            pdt.tramite.observaciones=(pdt.tramite.observaciones?:"")+" COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
+            pdt.tramite.save()
+        }
+        if (!pdt.save(flush: true)) {
             render("no")
         } else {
             render("ok")
@@ -1385,7 +1384,7 @@ class TramiteController extends happy.seguridad.Shield {
 
     def anular() {
 
-        print("params anular" + params)
+//        print("params anular" + params)
 
         def persona = Persona.get(session.usuario.id)
         def tramite = Tramite.get(params.id)

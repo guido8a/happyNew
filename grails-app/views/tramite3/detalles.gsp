@@ -20,11 +20,11 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
                     <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo :""+t.de.departamento.codigo+":"+t.de.nombre + ' ' + t.de.apellido}</div>
-                    <div class="col-xs-5">
+                    <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t,rolesNo)}" var="pdt" status="j">
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
-                            ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
-                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<br>
+                            ${(pdt.departamento)?pdt.departamento.codigo:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<b>${pdt.estado?.descripcion}</b><br>
                         </g:each>
                     </div>
                 </div>
@@ -70,11 +70,11 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
                     <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo :""+t.de.departamento.codigo+":"+t.de.nombre + ' ' + t.de.apellido}</div>
-                    <div class="col-xs-5">
+                    <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t,rolesNo)}" var="pdt" status="j">
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
-                            ${(pdt.departamento)?pdt.departamento:""+pdt.persona.departamento.codigo+":"+pdt.persona}
-                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<br>
+                            ${(pdt.departamento)?pdt.departamento.codigo:""+pdt.persona.departamento.codigo+":"+pdt.persona}
+                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<b>${pdt.estado.descripcion}</b><br>
                         </g:each>
                     </div>
                 </div>
