@@ -74,7 +74,7 @@
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t,rolesNo)}" var="pdt" status="j">
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                             ${(pdt.departamento)?pdt.departamento.codigo:""+pdt.persona.departamento.codigo+":"+pdt.persona}
-                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<b>${pdt.estado.descripcion}</b><br>
+                            ${pdt.fechaRecepcion?"("+pdt.fechaRecepcion.format("dd-MM-yyyy")+")":""}<b>${pdt?.estado?.descripcion}</b><br>
                         </g:each>
                     </div>
                 </div>
