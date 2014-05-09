@@ -170,10 +170,120 @@ class TramiteAdminController {
 
     def anular() {
 
+        def funcion = {objeto->
+            def anulado = EstadoTramite.findByCodigo("E006")
+            objeto.estado=anulado
+            objeto.fechaAnulacion=new Date()
+            objeto.observaciones = (objeto.observaciones ?: "") +  "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
+            if(objeto.rolPersonaTramite.codigo=="R002")
+                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") +"COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            if(objeto.rolPersonaTramite.codigo=="R001")
+                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            objeto.tramite.save(flush:true)
+            objeto.save(flush: true)
+        }
+        def pdt = PersonaDocumentoTramite.get(params.id)
+        getCadenaDown(pdt,funcion)
+        if( pdt.tramite.aQuienContesta){
+            pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
+            pdt.tramite.aQuienContesta.fechaAnulacion=null
+            pdt.tramite.aQuienContesta.fechaArchivo=null
+            pdt.tramite.aQuienContesta.observaciones = ( pdt.tramite.aQuienContesta.observaciones ?: "") + "Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            pdt.tramite.aQuienContesta.save(flush: true)
+        }
+
     }
 
     def desanular() {
+        def pdt = PersonaDocumentoTramite.get(params.id)
+        pdt.estado=EstadoTramite.findByCodigo("E004")
+        pdt.observaciones=  (pdt.observaciones ?: "")+"Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
+        pdt.fechaAnulacion=null
+        if(pdt.rolPersonaTramite.codigo=="R002")
+            pdt.tramite.observaciones=  (pdt.tramite.observaciones ?: "")+"COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+        if(pdt.rolPersonaTramite.codigo=="R001")
+            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "")+"Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+        pdt.tramite.save(flush: true)
+        if(pdt.save(flush: true)){
+            render "OK"
+        }else{
+            render "NO"
+        }
+    }
+
+    def getCadenaDown(pdt,funcion){
+        println "get cade down "+pdt
+        def res = []
+        def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
+        println "tramite "+tramite
+        def roles = [RolPersonaTramite.findByCodigo("R002"),RolPersonaTramite.findByCodigo("R001")]
+        def lvl
+        funcion pdt
+        if(tramite){
+            tramite=tramite.pop()
+            def tmp = [:]
+            tmp.put("nodo",tramite)
+            tmp.put("tipo","tramite")
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
+            tmp.put("hijos",[])
+
+            pdts.each {
+                def r = getHijos(it,roles,funcion)
+                if(r.size()>0)
+                    tmp["hijos"]+=r
+            }
+            tmp.put("origen",pdt)
+            res.add(tmp)
+            res = getHermanos(tramite,res,roles,funcion)
+        }else{
+            return []
+        }
+
+
+        println "res lol "+res
 
     }
+
+    def getHermanos(tramite,res,roles,funcion){
+//        println "get hermanos "+tramite.id
+        def lvl
+        def hermanos = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
+        while(hermanos.size()>0){
+            def nodo = hermanos.pop()
+            def tmp = [:]
+            tmp.put("nodo",nodo)
+            tmp.put("hijos",getHijos(nodo,roles,funcion))
+            tmp.put("tipo","pdt")
+            funcion nodo
+            res.add(tmp)
+
+        }
+//        println "return get hermanos "+res
+        return res
+    }
+
+    def getHijos(pdt,roles,funcion){
+//        println "get hijos "+pdt.id+" "+pdt.rolPersonaTramite.descripcion
+        def res =[]
+        def t = Tramite.findByAQuienContesta(pdt)
+        if(t){
+            def tmp = [:]
+            tmp.put("nodo",t)
+            tmp.put("tipo","tramite")
+            tmp.put("hijos",[])
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t,roles)
+            tmp.put("hijos",[])
+            pdts.each {
+                def r = getHijos(it,roles,funcion)
+                if(r.size()>0)
+                    tmp["hijos"]+=r
+            }
+            res = getHermanos(t,res,roles,funcion)
+            res.add(tmp)
+        }
+//        println "fin hijos "+res
+        return res
+    }
+
 
 }

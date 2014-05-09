@@ -25,7 +25,9 @@ class ErrorLog {
         }
     }
     static constraints = {
-
+        error(size: 1..4024)
+        causa(size: 1..4024)
+        url(size: 1..1024)
 
     }
 
