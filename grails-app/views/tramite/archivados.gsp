@@ -211,6 +211,25 @@
 
 </div>
 
+<div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Detalles</h4>
+            </div>
+
+            <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 
 
 <script>
@@ -238,19 +257,71 @@
 
     $(function () {
 
+        var archivo
+
         context.settings({
             onShow : function (e) {
                 $("tr.trHighlight").removeClass("trHighlight");
                 var $tr = $(e.target).parents("tr");
                 $tr.addClass("trHighlight");
-                id = $tr.data("id");
+                archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
+                id = $tr.attr("id");
             }
         });
+
+        var detalles = {
+            text   : 'Detalles',
+            icon   : "<i class='fa fa-search'></i>",
+            action : function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                $.ajax({
+                    type    : 'POST',
+                    url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                    data    : {
+                        id : id
+                    },
+                    success : function (msg) {
+                        $("#dialog-body").html(msg)
+                    }
+                });
+                $("#dialog").modal("show")
+            }
+        };
+
+
+        var ver = {
+            text   : 'Ver',
+            icon   : "<i class='fa fa-search'></i>",
+            action : function (e) {
+                $("tr.trHighlight").removeClass("trHighlight");
+                e.preventDefault();
+                %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
+                %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+
+                $.ajax({
+                    type    : 'POST',
+                    url     : '${createLink(action: 'revisarConfidencial')}/' + id,
+                    success : function (msg) {
+                        if (msg == 'ok') {
+                            window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
+                        } else if (msg == 'no') {
+//                                    log("No tiene permiso para ver este trámite", 'danger')
+                            bootbox.alert('No tiene permiso para ver el PDF de este trámite')
+                        }
+                    }
+
+                });
+            }
+        };
+
+
         context.attach('tbody>tr', [
             {
                 header : 'Sin Acciones'
             },
-
+            ver,
+            detalles
 
         ]);
     });

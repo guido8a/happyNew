@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             <g:each in="${tramites}" var="tramite">
-                <tr>
+                <tr id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}">
                     <td>${tramite?.tramite?.codigo}</td>
                     <g:if test="${tramite?.tramite?.deDepartamento}">
                         <td>${tramite?.tramite?.deDepartamento?.descripcion}</td>
