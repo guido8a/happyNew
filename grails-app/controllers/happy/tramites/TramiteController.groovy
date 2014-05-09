@@ -1205,22 +1205,16 @@ class TramiteController extends happy.seguridad.Shield {
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
         def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona,rolPara,estadoArchivado)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona,rolCopia,estadoArchivado)
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
 
-
-         pxtPara += pxtCopia
+        pxtPara += pxtCopia
 
 //        println("archivados:" +  pxtPara)
-
-
         return [tramites: pxtPara]
-
-
     }
 
     def busquedaArchivados() {
-
 
         //old
 //        def usuario = session.usuario
@@ -1254,8 +1248,8 @@ class TramiteController extends happy.seguridad.Shield {
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
         def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona,rolPara,estadoArchivado)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona,rolCopia,estadoArchivado)
+        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
+        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
 
 
         pxtPara += pxtCopia
@@ -1372,9 +1366,9 @@ class TramiteController extends happy.seguridad.Shield {
 
         //nuevo
 //        def tramite = Tramite.get(params.id)
-        println "rev hijos "+params
+//        println "rev hijos "+params
         def pxt = PersonaDocumentoTramite.get(params.id)
-        def hijos
+        def hijos = []
         if (params.tipo == 'archivar') {
             if (pxt.departamento) {
                 hijos = Tramite.findAllByPadreAndDeDepartamento(pxt.tramite, pxt.departamento)
@@ -1388,8 +1382,7 @@ class TramiteController extends happy.seguridad.Shield {
                 hijos = todaDescendenciaExtended(pxt.tramite, 'per', pxt.persona)
             }
         }
-
-
+        [pxt: pxt, hijos: hijos]
     }
 
 
@@ -1402,12 +1395,12 @@ class TramiteController extends happy.seguridad.Shield {
         def estadoTramite = EstadoTramite.findByCodigo('E005')
         pdt.estado = estadoTramite
         pdt.fechaArchivo = new Date();
-        pdt.observaciones=(pdt.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
-        if(pdt.rolPersonaTramite.codigo=="R001"){
-            pdt.tramite.observaciones=(pdt.tramite.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
+        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+        if (pdt.rolPersonaTramite.codigo == "R001") {
+            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
             pdt.tramite.save()
-        }else{
-            pdt.tramite.observaciones=(pdt.tramite.observaciones?:"")+" COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
+        } else {
+            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
             pdt.tramite.save()
         }
         if (!pdt.save(flush: true)) {

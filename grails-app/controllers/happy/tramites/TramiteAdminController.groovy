@@ -78,7 +78,6 @@ class TramiteAdminController {
         if (para.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
         }
-        def strInfo = tramiteInfo(para)
         def hijos
         if (para.departamento) {
             hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
@@ -88,23 +87,34 @@ class TramiteAdminController {
         if (hijos.size() > 0) {
             clase += " jstree-open"
         }
+        def estado = ""
+        if (para.fechaEnvio) {
+            clase += " enviado"
+            estado = "Enviado"
+        }
+        if (para.fechaRecepcion) {
+            clase += " recibido"
+            estado = "Recibido"
+        }
 
         if (para.fechaArchivo) {
             clase += " archivado"
-            rel += "Archivado"
+            estado = "Archivado"
         }
 
         if (para.fechaAnulacion) {
             clase += " anulado"
-            rel += "Anulado"
+            estado = "Anulado"
         }
 
-        if (para.fechaRecepcion) {
-            clase += " recibido"
-        }
+        rel += estado
+
+        def duenio = para.tramite.deDepartamento ? "-" + para.tramite.deDepartamento.id : para.tramite.de.id
 
         data += ',"tramite":"' + para.tramiteId + '"'
-        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${strInfo}\n"
+        data += ',"duenio":"' + duenio + '"'
+        data += ',"codigo":"' + para.tramite.codigo + '"'
+        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${tramiteInfo(para)}\n"
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
             hijos.each { hijo ->
@@ -129,19 +139,41 @@ class TramiteAdminController {
         strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}"
         strInfo += ", <strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
         if (tramiteParaInfo.fechaEnvio) {
-            strInfo += ", <strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm")
+            strInfo += ", <span class='text-info'><strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaRecepcion) {
-            strInfo += ", <strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm")
+            strInfo += ", <span class='text-success'><strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaArchivo) {
-            strInfo += ", <strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm")
+            strInfo += ", <span class='text-warning'><strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaAnulacion) {
-            strInfo += ", <strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm")
+            strInfo += ", <span class='text-danger'><strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         strInfo += ")</small>"
         return strInfo
+    }
+
+    def desrecibir() {
+        def persDocTram = PersonaDocumentoTramite.get(params.id)
+        persDocTram.observaciones = (persDocTram.observaciones ?: "") +
+                " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.observaciones
+        persDocTram.fechaRecepcion = null
+        persDocTram.fechaLimiteRespuesta = null
+        if (persDocTram.save(flush: true)) {
+            render "OK"
+        } else {
+            render "NO*" + renderErrors(bean: persDocTram)
+        }
+    }
+
+    def anular() {
+
+    }
+
+    def desanular() {
+
     }
 
 }
