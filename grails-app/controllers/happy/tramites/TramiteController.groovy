@@ -1401,6 +1401,7 @@ class TramiteController extends happy.seguridad.Shield {
         def pdt = PersonaDocumentoTramite.get(params.id)
         def estadoTramite = EstadoTramite.findByCodigo('E005')
         pdt.estado = estadoTramite
+        pdt.fechaArchivo = new Date();
         pdt.observaciones=(pdt.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"
         if(pdt.rolPersonaTramite.codigo=="R001"){
             pdt.tramite.observaciones=(pdt.tramite.observaciones?:"")+" Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: "+params.texto+";"

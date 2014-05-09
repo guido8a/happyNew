@@ -183,6 +183,16 @@ class Persona {
         return permisos.size() > 0
     }
 
+
+    def getPuedeAdmin() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P013"))
+        }
+        def permisos = perm.findAll { it.estaActivo }
+        return permisos.size() > 0
+    }
+
     def getJefePersona() {
         def personas = Persona.withCriteria {
             eq("departamento", this.departamento)

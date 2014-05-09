@@ -243,6 +243,14 @@
         }
     };
 
+    var administrar = {
+        text   : "Administrar trámite",
+        icon   : "<i class='fa fa-cogs'></i>",
+        action : function () {
+            location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
+        }
+    };
+
 
 
     %{--context.attach('tr', [--}%
@@ -280,6 +288,9 @@
         detalles,
         arbol,
        crearHermano
+       <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+        ,administrar
+      </g:if>
 
 
     ]);
@@ -291,6 +302,9 @@
 
         detalles,
         arbol
+        <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+        ,administrar
+        </g:if>
 
 
     ]);
