@@ -256,7 +256,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             errores += "<li>" + renderErrors(bean: tramite) + "</li>"
         }
 
-        if(errores == "") {
+        if (errores == "") {
             render "OK_Envío del trámite cancelado correctamente"
         } else {
             render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
@@ -430,6 +430,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         tramites = tramites?.reverse()
 
         def trams = []
+        def trams2 = []
 
         tramites.each { tr ->
             def pxd = PersonaDocumentoTramite.withCriteria {
@@ -831,13 +832,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
         def idDepartamento = (Persona.get(session.usuario.id)?.departamento?.id)
-        def negativo = idDepartamento*-1
+        def negativo = idDepartamento * -1
         def lista = new ArrayList()
 
 
 
         disp.each { dep ->
-            if(dep.id*-1!=negativo) {
+            if (dep.id * -1 != negativo) {
                 if (params.id) {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
@@ -852,22 +853,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-
-
-
-
-
-
         todos = disponibles + disp2
-
-
         def bloqueo = false
         if (session.departamento.estado == "B") {
             bloqueo = true
         }
 
-
-        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo]
+        def pdt = null
+        if (params.pdt) {
+            pdt = params.pdt
+        } else if (params.hermano) {
+            def herm = Tramite.get(params.hermano)
+            pdt = herm.aQuienContesta.id
+        }
+        return [de: de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
+                bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento
@@ -969,6 +969,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         } else {
             tramite = new Tramite()
+        }
+        println "ANTES DEL SAVE " + paramsTramite
+        if (tramite.padre) {
+            tramite.padre.estado = "C"
+            tramite.aQuienContesta=PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+            tramite.padre.save(flush: true)
         }
         tramite.properties = paramsTramite
 

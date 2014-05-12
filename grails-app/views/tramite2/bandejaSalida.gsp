@@ -395,7 +395,7 @@
                     text   : "Agregar documento al trámite",
                     icon   : "<i class='fa fa-paste'></i>",
                     action : function () {
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id;
                     }
                 };
 

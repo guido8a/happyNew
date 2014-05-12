@@ -1,9 +1,17 @@
 package happy.tramites
 
+import happy.seguridad.Persona
+
 class TramiteAdminController {
 
+    def tramitesService
+
     def arbolAdminTramite() {
-        params.id = 98
+
+        def usu = Persona.get(session.usuario.id)
+        def puedeAdministrar = usu.puedeAdmin
+        println "PUEDE??? " + puedeAdministrar
+
         def html = "", url = ""
         def tramite = Tramite.get(params.id.toLong())
         if (tramite) {
@@ -109,11 +117,29 @@ class TramiteAdminController {
 
         rel += estado
 
+        def rol = para.rolPersonaTramite
         def duenio = para.tramite.deDepartamento ? "-" + para.tramite.deDepartamento.id : para.tramite.de.id
+        def paraStr = "Para: "
+        if (rol.codigo == "R002") {
+            paraStr = "CC: "
+        }
+        paraStr += para.departamento ? para.departamento.descripcion : para.persona.login
+        def deStr = "De: " + (para.tramite.deDepartamento ? para.tramite.deDepartamento.codigo : para.tramite.de.login)
 
         data += ',"tramite":"' + para.tramiteId + '"'
         data += ',"duenio":"' + duenio + '"'
         data += ',"codigo":"' + para.tramite.codigo + '"'
+        data += ',"de":"' + deStr + '"'
+        data += ',"para":"' + paraStr + '"'
+
+//        if (tramitesService.verificaHijos(para, EstadoTramite.findByCodigo("E006"))) {
+//            //false: no tiene hijos vivos
+//            clase += " tieneHijos"
+//        }
+        if (para.tramite.padre) {
+            clase += " tienePadre"
+        }
+
         html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${tramiteInfo(para)}\n"
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
@@ -154,14 +180,48 @@ class TramiteAdminController {
         return strInfo
     }
 
+    def desarchivar() {
+        def persDocTram = PersonaDocumentoTramite.get(params.id)
+        def obs = " Quitado el archivado por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                "(originalmente archivado el ${persDocTram.fechaArchivo.format('dd-MM-yyyy HH:mm')}): " + params.texto
+        persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
+        if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
+            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
+        } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
+            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
+        }
+        persDocTram.fechaArchivo = null
+        persDocTram.estado = EstadoTramite.findByCodigo("E004")  // RECIBIDO
+        if (persDocTram.save(flush: true)) {
+            if (!persDocTram.tramite.save(flush: true)) {
+                println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
+            }
+            render "OK"
+        } else {
+            render "NO*" + renderErrors(bean: persDocTram)
+        }
+    }
+
     def desrecibir() {
         def persDocTram = PersonaDocumentoTramite.get(params.id)
-        persDocTram.observaciones = (persDocTram.observaciones ?: "") +
-                " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.observaciones
+
+        def obs = " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.texto
+
+        persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
+
+        if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
+            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
+        } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
+            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
+        }
         persDocTram.fechaRecepcion = null
         persDocTram.fechaLimiteRespuesta = null
+        persDocTram.estado = EstadoTramite.findByCodigo("E003")  // ENVIADO
         if (persDocTram.save(flush: true)) {
+            if (!persDocTram.tramite.save(flush: true)) {
+                println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
+            }
             render "OK"
         } else {
             render "NO*" + renderErrors(bean: persDocTram)
@@ -170,90 +230,91 @@ class TramiteAdminController {
 
     def anular() {
 
-        def funcion = {objeto->
+        def funcion = { objeto ->
             def anulado = EstadoTramite.findByCodigo("E006")
-            objeto.estado=anulado
-            objeto.fechaAnulacion=new Date()
-            objeto.observaciones = (objeto.observaciones ?: "") +  "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
-            if(objeto.rolPersonaTramite.codigo=="R002")
-                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") +"COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-            if(objeto.rolPersonaTramite.codigo=="R001")
+            objeto.estado = anulado
+            objeto.fechaAnulacion = new Date()
+            objeto.observaciones = (objeto.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
+            if (objeto.rolPersonaTramite.codigo == "R002")
+                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + "COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            if (objeto.rolPersonaTramite.codigo == "R001")
                 objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-            objeto.tramite.save(flush:true)
+            objeto.tramite.save(flush: true)
             objeto.save(flush: true)
         }
         def pdt = PersonaDocumentoTramite.get(params.id)
-        getCadenaDown(pdt,funcion)
-        if( pdt.tramite.aQuienContesta){
+        getCadenaDown(pdt, funcion)
+        if (pdt.tramite.aQuienContesta) {
             pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
-            pdt.tramite.aQuienContesta.fechaAnulacion=null
-            pdt.tramite.aQuienContesta.fechaArchivo=null
-            pdt.tramite.aQuienContesta.observaciones = ( pdt.tramite.aQuienContesta.observaciones ?: "") + "Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            pdt.tramite.aQuienContesta.fechaAnulacion = null
+            pdt.tramite.aQuienContesta.fechaArchivo = null
+            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + "Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             pdt.tramite.aQuienContesta.save(flush: true)
         }
 
+        render "OK"
     }
 
     def desanular() {
         def pdt = PersonaDocumentoTramite.get(params.id)
-        pdt.estado=EstadoTramite.findByCodigo("E004")
-        pdt.observaciones=  (pdt.observaciones ?: "")+"Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
-        pdt.fechaAnulacion=null
-        if(pdt.rolPersonaTramite.codigo=="R002")
-            pdt.tramite.observaciones=  (pdt.tramite.observaciones ?: "")+"COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-        if(pdt.rolPersonaTramite.codigo=="R001")
-            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "")+"Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+        pdt.estado = EstadoTramite.findByCodigo("E004")
+        pdt.observaciones = (pdt.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
+        pdt.fechaAnulacion = null
+        if (pdt.rolPersonaTramite.codigo == "R002")
+            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+        if (pdt.rolPersonaTramite.codigo == "R001")
+            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
         pdt.tramite.save(flush: true)
-        if(pdt.save(flush: true)){
+        if (pdt.save(flush: true)) {
             render "OK"
-        }else{
+        } else {
             render "NO"
         }
     }
 
-    def getCadenaDown(pdt,funcion){
-        println "get cade down "+pdt
+    def getCadenaDown(pdt, funcion) {
+        println "get cade down " + pdt
         def res = []
         def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "tramite "+tramite
-        def roles = [RolPersonaTramite.findByCodigo("R002"),RolPersonaTramite.findByCodigo("R001")]
+        println "tramite " + tramite
+        def roles = [RolPersonaTramite.findByCodigo("R002"), RolPersonaTramite.findByCodigo("R001")]
         def lvl
         funcion pdt
-        if(tramite){
-            tramite=tramite.pop()
+        if (tramite) {
+            tramite = tramite.pop()
             def tmp = [:]
-            tmp.put("nodo",tramite)
-            tmp.put("tipo","tramite")
-            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
-            tmp.put("hijos",[])
+            tmp.put("nodo", tramite)
+            tmp.put("tipo", "tramite")
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, roles)
+            tmp.put("hijos", [])
 
             pdts.each {
-                def r = getHijos(it,roles,funcion)
-                if(r.size()>0)
-                    tmp["hijos"]+=r
+                def r = getHijos(it, roles, funcion)
+                if (r.size() > 0)
+                    tmp["hijos"] += r
             }
-            tmp.put("origen",pdt)
+            tmp.put("origen", pdt)
             res.add(tmp)
-            res = getHermanos(tramite,res,roles,funcion)
-        }else{
+            res = getHermanos(tramite, res, roles, funcion)
+        } else {
             return []
         }
 
 
-        println "res lol "+res
+        println "res lol " + res
 
     }
 
-    def getHermanos(tramite,res,roles,funcion){
+    def getHermanos(tramite, res, roles, funcion) {
 //        println "get hermanos "+tramite.id
         def lvl
-        def hermanos = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite,roles)
-        while(hermanos.size()>0){
+        def hermanos = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, roles)
+        while (hermanos.size() > 0) {
             def nodo = hermanos.pop()
             def tmp = [:]
-            tmp.put("nodo",nodo)
-            tmp.put("hijos",getHijos(nodo,roles,funcion))
-            tmp.put("tipo","pdt")
+            tmp.put("nodo", nodo)
+            tmp.put("hijos", getHijos(nodo, roles, funcion))
+            tmp.put("tipo", "pdt")
             funcion nodo
             res.add(tmp)
 
@@ -262,23 +323,23 @@ class TramiteAdminController {
         return res
     }
 
-    def getHijos(pdt,roles,funcion){
+    def getHijos(pdt, roles, funcion) {
 //        println "get hijos "+pdt.id+" "+pdt.rolPersonaTramite.descripcion
-        def res =[]
+        def res = []
         def t = Tramite.findByAQuienContesta(pdt)
-        if(t){
+        if (t) {
             def tmp = [:]
-            tmp.put("nodo",t)
-            tmp.put("tipo","tramite")
-            tmp.put("hijos",[])
-            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t,roles)
-            tmp.put("hijos",[])
+            tmp.put("nodo", t)
+            tmp.put("tipo", "tramite")
+            tmp.put("hijos", [])
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t, roles)
+            tmp.put("hijos", [])
             pdts.each {
-                def r = getHijos(it,roles,funcion)
-                if(r.size()>0)
-                    tmp["hijos"]+=r
+                def r = getHijos(it, roles, funcion)
+                if (r.size() > 0)
+                    tmp["hijos"] += r
             }
-            res = getHermanos(t,res,roles,funcion)
+            res = getHermanos(t, res, roles, funcion)
             res.add(tmp)
         }
 //        println "fin hijos "+res

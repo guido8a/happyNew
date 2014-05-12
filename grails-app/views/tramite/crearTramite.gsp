@@ -102,7 +102,7 @@
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
-            <g:hiddenField name="tramite.aQuienContesta.id" value="${pdt}"/>
+            <g:hiddenField name="tramite.aQuienContesta.id" value="${pxt}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre}">
                 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
@@ -339,7 +339,7 @@
                     </div>
 
                     <div class="col-xs-2 negrilla" style="margin-top: 20px;" id="divCc">
-                        <label for="cc"><input type="checkbox" name="cc" id="cc" ${cc != '' ? 'checked' : ''}/>
+                        <label for="cc"><input type="checkbox" name="cc" id="cc"/>
                             Con copia
                         </label>
                     </div>
@@ -351,7 +351,7 @@
                     %{--</div>--}%
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px;">
-                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo" ${tramite.anexo == 1 ? 'checked' : ''}/>
+                        <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/>
                             Con anexos
                         </label>
                     </div>
@@ -579,9 +579,18 @@
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
 //                $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
-                <g:if test="${tramite.id && tramite.copias.size() == 0}">
+                <g:if test="${!tramite.id || (tramite.id && tramite.copias.size() == 0)}">
                 $cc.prop('checked', false);
                 </g:if>
+                <g:else>
+                $cc.prop('checked', true);
+                </g:else>
+                <g:if test="${tramite.id && tramite.anexo == 1}">
+                $chkAnexos.prop('checked', true);
+                </g:if>
+                <g:else>
+                $chkAnexos.prop('checked', false);
+                </g:else>
                 $tituloCopia.text("Con copia");
                 $divOrigen.addClass("hide");
 
@@ -599,8 +608,6 @@
                         $divPara.replaceWith(msg);
                     }
                 });
-                $chkAnexos.prop("checked", false);
-                $cc.prop("checked", false);
 
                 switch (cod) {
                     case "CIR":
