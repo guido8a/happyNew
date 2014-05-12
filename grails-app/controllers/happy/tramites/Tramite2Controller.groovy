@@ -1005,7 +1005,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
                 if (paraDocumentoTramite.size() == 0) {
                     paraDocumentoTramite = new PersonaDocumentoTramite()
-                    paraDocumentoTramite.tramite=tram
+                    paraDocumentoTramite.tramite=tramite //******
                     paraDocumentoTramite.rolPersonaTramite=rolPara
                 } else if (paraDocumentoTramite.size() == 1) {
                     paraDocumentoTramite = paraDocumentoTramite.first()
@@ -1014,7 +1014,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         it.delete(flush: true)
                     }
                     paraDocumentoTramite = new PersonaDocumentoTramite()
-                    paraDocumentoTramite.tramite=tram
+                    paraDocumentoTramite.tramite=tramite //*****
                     paraDocumentoTramite.rolPersonaTramite=rolPara
                 }
                 if (para > 0) {
