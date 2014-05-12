@@ -985,10 +985,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite2", action: "crearTramiteDep", id: tramite.id)
             return
         } else {
-            if (tramite.padre) {
-                tramite.padre.estado = "C"
-                tramite.padre.save(flush: true)
-            }
+
             /*
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
@@ -1006,20 +1003,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     eq("rolPersonaTramite", rolPara)
                 }
                 if (paraDocumentoTramite.size() == 0) {
-                    paraDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: rolPara
-                    ])
+                    paraDocumentoTramite = new PersonaDocumentoTramite()
+                    paraDocumentoTramite.tramite=tram
+                    paraDocumentoTramite.rolPersonaTramite=rolPara
                 } else if (paraDocumentoTramite.size() == 1) {
                     paraDocumentoTramite = paraDocumentoTramite.first()
                 } else {
                     paraDocumentoTramite.each {
                         it.delete(flush: true)
                     }
-                    paraDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: rolPara
-                    ])
+                    paraDocumentoTramite = new PersonaDocumentoTramite()
+                    paraDocumentoTramite.tramite=tram
+                    paraDocumentoTramite.rolPersonaTramite=rolPara
                 }
                 if (para > 0) {
                     //persona
@@ -1055,10 +1050,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
             if (paramsTramite.hiddenCC.toString().size() > 0) {
                 (paramsTramite.hiddenCC.split("_")).each { cc ->
-                    def ccDocumentoTramite = new PersonaDocumentoTramite([
-                            tramite          : tramite,
-                            rolPersonaTramite: RolPersonaTramite.findByCodigo('R002')
-                    ])
+                    def ccDocumentoTramite = new PersonaDocumentoTramite()
+                    ccDocumentoTramite.tramite=tramite
+                    ccDocumentoTramite.rolPersonaTramite=rolCc
                     if (cc.toInteger() > 0) {
                         //persona
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())

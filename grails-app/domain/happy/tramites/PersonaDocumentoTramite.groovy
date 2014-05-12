@@ -1,6 +1,7 @@
 package happy.tramites
 
 import happy.seguridad.Persona
+import happy.utilitarios.Parametros
 
 class PersonaDocumentoTramite {
     Tramite tramite
@@ -25,7 +26,7 @@ class PersonaDocumentoTramite {
     Date fechaAnulacion                     // fecha en la q se anulo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
 
     EstadoTramite estado
-
+    def diasLaborablesService
     static mapping = {
         table 'prtr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -65,5 +66,53 @@ class PersonaDocumentoTramite {
         fechaAnulacion(nullable: true, blank: true)
 
         estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
+    }
+
+    def getFechaLimite() {
+        def limite = this.fechaEnvio
+        if (limite) {
+//            def diaLaborableService
+            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
+
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
+//                println fechaLimite[1]
+                return null
+            }
+//            use(TimeCategory) {
+//                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
+//                    limite = limite + 2.hours + 15.hours + 30.minutes
+//                else
+//                    limite = limite + 2.hours
+//            }
+//            return limite
+        }
+        return null
+    }
+    def getFechaBloqueo() {
+
+        if(this.fechaRecepcion)
+            return null
+        else{
+            def limite = this.getFechaLimite()
+            def par = Parametros.list([sort: "id",order: "desc"])
+            def tiempoBloqueo=1
+            if(par.size()>0){
+                par = par.pop()
+                tiempoBloqueo=par.bloqueo
+            }
+
+//            println "tiempo Bloqueo "+tiempoBloqueo
+            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
+                return null
+            }
+        }
+
+
+
     }
 }

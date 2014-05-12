@@ -199,9 +199,8 @@ class Tramite {
     }
 
     def getFechaBloqueo() {
-        if (this.estadoTramite.codigo != "E003") {
-            return null
-        } else {
+
+
             def limite = this.getFechaLimite()
             def par = Parametros.list([sort: "id",order: "desc"])
             def tiempoBloqueo=1
@@ -222,7 +221,7 @@ class Tramite {
 //                limite = limite + 48.hours
 //            }
 //            return limite
-        }
+
     }
 
     def getDeTexto() {

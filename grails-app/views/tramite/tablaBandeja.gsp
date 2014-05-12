@@ -34,7 +34,7 @@
                 </g:else>
             </g:if>
             <g:else>
-                <g:if test="${tramite.tramite.fechaLimite < now}">
+                <g:if test="${tramite.fechaLimite < now}">
                     <g:set var="clase" value="sinRecepcion"/>
                 </g:if>
                 <g:else>
