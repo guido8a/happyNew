@@ -12,6 +12,7 @@ import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfWriter
 import happy.seguridad.Persona
 import happy.tramites.Departamento
+import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.Tramite
 import org.xhtmlrenderer.extend.FontResolver
 
@@ -218,8 +219,13 @@ class TramiteExportController {
         println("imprimir guia:" + params)
 
         def cantidadTramites = params.ids
+        def personaDocumento
+        def pxt = []
 
-
+        cantidadTramites.split(',').each {
+            def tramite = Tramite.get(it)
+            pxt += PersonaDocumentoTramite.findAllByTramite(tramite)
+        }
 
 
         def baos = new ByteArrayOutputStream()
@@ -257,35 +263,53 @@ class TramiteExportController {
         headers.add(new Paragraph("", times12bold));
 
 
-        PdfPTable tablaTramites = new PdfPTable(4);
+        PdfPTable tablaTramites = new PdfPTable(5);
         tablaTramites.setWidthPercentage(100);
-        tablaTramites.setWidths(arregloEnteros([30, 25, 15, 15]))
+        tablaTramites.setWidths(arregloEnteros([20, 10, 25, 15, 15]))
 
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
         addCellTabla(tablaTramites, new Paragraph("DOCUMENTO", times10bold), prmsHeaderHoja1)
-        addCellTabla(tablaTramites, new Paragraph("PARA", times8bold), prmsHeaderHoja1)
-        addCellTabla(tablaTramites, new Paragraph("RECIBE", times8bold), prmsHeaderHoja1)
-        addCellTabla(tablaTramites, new Paragraph("FIRMA", times8bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("ROL", times10bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("PARA", times10bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("RECIBE", times10bold), prmsHeaderHoja1)
+        addCellTabla(tablaTramites, new Paragraph("FIRMA", times10bold), prmsHeaderHoja1)
 
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
-        cantidadTramites.split(',').each {
-//            println(it)
-            addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
-            if(Tramite.get(it).getPara()?.persona?.nombre){
-                addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
-            }else{
-                addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).getPara()?.departamento?.descripcion ?: '', times8bold), prmsHeaderHoja)
+//        cantidadTramites.split(',').each {
+////            println(it)
+//            addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
+//            if(Tramite.get(it).getPara()?.persona?.nombre){
+//                addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
+//            }else{
+//                addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).getPara()?.departamento?.descripcion ?: '', times8bold), prmsHeaderHoja)
+//            }
+//            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+//            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+//        }
+
+        pxt.each {
+            if(it.rolPersonaTramite.codigo != 'E004'){
+                addCellTabla(tablaTramites, new Paragraph(it.tramite.codigo, times10bold), prmsHeaderHoja)
+                addCellTabla(tablaTramites, new Paragraph(it.rolPersonaTramite.descripcion , times10bold), prmsHeaderHoja)
+                if(it?.departamento){
+
+                    addCellTabla(tablaTramites, new Paragraph(it?.departamento?.descripcion ?: '', times8bold), prmsHeaderHoja)
+                }else {
+                    addCellTabla(tablaTramites, new Paragraph((it?.persona?.nombre ?: '') + " " + (it?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
+                }
+                addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+                addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
             }
-            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
-            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
         }
 
         document.add(headers);

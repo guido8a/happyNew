@@ -283,7 +283,7 @@
 
                 detalles,
                 arbol,
-                crearHermano
+                //crearHermano
                 <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
                 ,
                 administrar
@@ -295,14 +295,13 @@
                     header : 'Acciones'
                 },
 
-                detalles,
-                arbol,
-                crearHermano,
-                anexos,
-                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
-                ,
-                administrar
-                </g:if>
+        detalles,
+        arbol,
+        anexos            
+       //crearHermano
+       <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+        ,administrar
+      </g:if>
 
             ]);
 
@@ -327,7 +326,7 @@
 
                 detalles,
                 arbol,
-                anexos,
+                anexos
                 <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
                 ,
                 administrar

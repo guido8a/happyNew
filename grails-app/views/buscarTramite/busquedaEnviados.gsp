@@ -285,7 +285,7 @@ var padre
 
         detalles,
         arbol,
-        crearHermano
+//        crearHermano
         <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
         ,administrar
         </g:if>

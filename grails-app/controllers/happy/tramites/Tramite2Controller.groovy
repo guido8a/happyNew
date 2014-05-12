@@ -542,6 +542,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 def envio = new Date();
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
+//                    println("llllll" + t)
                     t.fechaEnvio = envio
                     t.estado = EstadoTramite.findByCodigo("E003")
                     if (t.save(flush: true)) {
