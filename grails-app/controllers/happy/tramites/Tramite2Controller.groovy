@@ -581,6 +581,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     println tramite.errors
                     error += renderErrors(bean: tramite)
                 }
+
+                println("-->" + pdt)
+
             }
             if (error == "") {
                 render "ok"

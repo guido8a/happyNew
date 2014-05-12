@@ -220,6 +220,8 @@ class TramiteExportController {
         def cantidadTramites = params.ids
 
 
+
+
         def baos = new ByteArrayOutputStream()
         def name = "guia_tramites_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
         Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);

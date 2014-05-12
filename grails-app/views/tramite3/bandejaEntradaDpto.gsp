@@ -297,7 +297,7 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id;
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id +  "&pdt=" + idPxt;
                     }
                 };
 
