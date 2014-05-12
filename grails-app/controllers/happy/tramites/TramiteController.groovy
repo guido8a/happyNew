@@ -242,7 +242,20 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</script>"
             }
         }
-        render html
+
+        def js = "<script type='text/javascript'>"
+        js+=" \$(\"#para\").change(function () {\n" +
+                "            var paraId = \$(this).val();\n" +
+                "            \$(\"#ulSeleccionados\").children().each(function () {\n" +
+                "                if(\$(this).data(\"id\") == paraId ){\n" +
+                "                    \$(this).addClass('selected')\n" +
+                "                    moveSelected(\$(\"#ulSeleccionados\"), \$(\"#ulDisponibles\"), true);\n" +
+                "                }\n" +
+                "            });\n" +
+                "        });"
+        js+="</script>"
+
+        render html+js
     }
 
     def crearTramite() {

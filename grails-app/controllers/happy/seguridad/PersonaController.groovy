@@ -393,8 +393,18 @@ class PersonaController extends happy.seguridad.Shield {
     def loadFoto() {
         def usuario = Persona.get(session.usuario.id)
         def path = servletContext.getRealPath("/") + "images/perfiles/" //web-app/archivos
-        def img = ImageIO.read(new File(path + usuario.foto));
-        return [usuario: usuario, w: img.getWidth(), h: img.getHeight()]
+        def img
+        def w
+        def h
+        if(usuario.foto){
+           img = ImageIO.read(new File(path + usuario.foto));
+           w =  img.getWidth();
+           h = img.getHeight();
+        }else{
+           w=0
+           h=0
+        }
+        return [usuario: usuario, w: w, h: h]
     }
 
     def validarPass_ajax() {

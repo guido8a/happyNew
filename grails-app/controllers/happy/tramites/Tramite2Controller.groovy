@@ -826,21 +826,38 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
+
+        def idDepartamento = (Persona.get(session.usuario.id)?.departamento?.id)
+        def negativo = idDepartamento*-1
+        def lista = new ArrayList()
+
+
+
         disp.each { dep ->
-            if (params.id) {
-                if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
+            if(dep.id*-1!=negativo) {
+                if (params.id) {
+                    if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
+                        if (dep.triangulos.size() > 0) {
+                            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                        }
+                    }
+                } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
                     }
                 }
-            } else {
-                if (dep.triangulos.size() > 0) {
-                    disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
-                }
             }
         }
 
+
+
+
+
+
+
         todos = disponibles + disp2
+
+
         def bloqueo = false
         if (session.departamento.estado == "B") {
             bloqueo = true
