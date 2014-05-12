@@ -1,6 +1,7 @@
 package happy
 
 import happy.alertas.Alerta
+import happy.utilitarios.Parametros
 
 class MenuTagLib {
     static namespace = "mn"
@@ -78,7 +79,8 @@ class MenuTagLib {
         html += '<a class="navbar-brand" href="#" style="margin-top:-10px;font-size: 11px !important;width:310px;color:white;cursor:default">'
         html += '<img src="'+g.resource(dir: 'images',file: 'logo_gadpp_reportes.png')+'" height="40px" style="float:left" >'
         html += '<div style="width:210px !important;float:left;height:40px;margin-left:5px;font-weight:bold;text-align:center">'
-        html += 'Gobierno de la provincia de Pichincha. Eficiencia y solidaridad '
+//        html += 'Gobierno de la Provincia de Pichincha Eficiencia y Solidaridad '
+        html += Parametros.get(1).institucion
         html += '</div>'
         html += '</a>'
         html += '</div>'
