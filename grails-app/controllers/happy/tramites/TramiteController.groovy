@@ -985,17 +985,43 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         def tramitesSinHijos = []
-
+        def anulado = EstadoTramite.findByCodigo("E006")
+        def band = false
         tramites.each { tr ->
-            if (Tramite.countByPadreAndDe(tr.tramite, session.usuario) == 0) {
-                tramitesSinHijos += tr
+            band= verificaHijos(tr,anulado)
+            println "estado!!! "+ band+"   "+tr.id
+            if(!band){
+                tramitesSinHijos+=tr
             }
         }
 
         return [tramites: tramitesSinHijos, params: params]
     }
 
-    //alertas
+
+    /*Verifica toda la cadena del tramite en busca de un estado, retorna true si  encontro un personaDocumentoTramite que no es del estado que recibe como parametro*/
+    Boolean verificaHijos(pdt,estado){
+        def hijos = Tramite.findAllByAQuienContesta(pdt)
+        def res = false
+//        println "tramite ver hijos "+hijos
+        hijos.each{t->
+            if(!res){
+                def pdts=PersonaDocumentoTramite.findAllByTramite(t)
+                pdts.each {pd->
+//                    println "pdt "+pd+"   "+pd.estado?.descripcion+"    "+(pd.estado!=estado)
+                    if(pd.estado?.codigo!=estado.codigo){
+                        res = true
+                    }else{
+                        if(verficaHijos(pd,estado))
+                            res = true
+                    }
+
+
+                }
+            }
+        }
+        return res
+    }
 
 
     def observaciones() {
