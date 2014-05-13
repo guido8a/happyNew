@@ -23,7 +23,7 @@ class Tramite {
     Integer anexo                       //1 indica que hay anexos, 0 que no hay anexos
     String texto
     int ampliacionPlazo = 0
-    String externo
+    String externo                      //1 indica que es externo, 0 que es interno
     String nota                         //para guardar las observaciones de revision
     String estado
     String observaciones
@@ -33,6 +33,15 @@ class Tramite {
     Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
     Integer guia
     PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
+
+    /* Para los tramites externos de otro tipo q no son oficios:
+            la institucion se guarda en paraExterno
+            contacto y telefono agregados aqui
+    */
+    String contacto
+    String telefono
+
+    EstadoTramiteExterno estadoTramiteExterno
 
     def diasLaborablesService
 
@@ -72,6 +81,10 @@ class Tramite {
             guia column: 'trmtguia'
 
             aQuienContesta column: 'prtrcnts'
+
+            contacto column: 'trmtcntc'
+            telefono column: 'trmttfct'
+            estadoTramiteExterno column: 'edtx__id'
         }
     }
     static constraints = {
@@ -102,6 +115,10 @@ class Tramite {
         guia(blank: true, nullable: true, attributes: [title: 'guia'])
 
         aQuienContesta(blank: true, nullable: true)
+
+        contacto(blank: true, nullable: true, maxSize: 63)
+        telefono(blank: true, nullable: true, maxSize: 15)
+        estadoTramiteExterno(blank: true, nullable: true)
     }
 
     def getPara() {
@@ -201,22 +218,22 @@ class Tramite {
     def getFechaBloqueo() {
 
 
-            def limite = this.getFechaLimite()
-            def par = Parametros.list([sort: "id",order: "desc"])
-            def tiempoBloqueo=1
-            if(par.size()>0){
-                par = par.pop()
-                tiempoBloqueo=par.bloqueo
-            }
+        def limite = this.getFechaLimite()
+        def par = Parametros.list([sort: "id", order: "desc"])
+        def tiempoBloqueo = 1
+        if (par.size() > 0) {
+            par = par.pop()
+            tiempoBloqueo = par.bloqueo
+        }
 
 //            println "tiempo Bloqueo "+tiempoBloqueo
-            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
-            if (fechaLimite[0]) {
-                return fechaLimite[1]
-            } else {
+        def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+        if (fechaLimite[0]) {
+            return fechaLimite[1]
+        } else {
 //                println fechaLimite[1]
-                return null
-            }
+            return null
+        }
 //            use(TimeCategory) {
 //                limite = limite + 48.hours
 //            }
