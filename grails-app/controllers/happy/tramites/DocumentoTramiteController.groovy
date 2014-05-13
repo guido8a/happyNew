@@ -99,8 +99,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     def generateKey() {
         if (request.getMethod() == "POST") {
+//            println "generate key "+params
             def doc = DocumentoTramite.get(params.id)
-            session.key = doc?.path.size() + doc.resumen?.encodeAsMD5().substring(0, 10)
+            session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
             render "ok"
         } else {
             response.sendError(403)
@@ -112,13 +113,13 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         def departamento = doc.tramite.deDepartamento
         if (!departamento)
             departamento = doc.tramite.de.departamento
-        if (session.key == (doc.path.size() + doc.resumen?.encodeAsMD5().substring(0, 10))) {
+        if (session.key == (doc.path.size() + doc.descripcion?.encodeAsMD5().substring(0, 10))) {
             session.key = null
             def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
-            println "path " + doc.path + " " + doc.path.split("\\.")
+//            println "path " + doc.path + " " + doc.path.split("\\.")
             def tipo = doc.path.split("\\.")
             tipo = tipo[1]
-            println "tipo " + tipo
+//            println "tipo " + tipo
             switch (tipo) {
                 case "jpeg":
                 case "gif":

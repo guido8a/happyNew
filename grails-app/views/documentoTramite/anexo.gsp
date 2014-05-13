@@ -199,19 +199,19 @@
 //        console.log(file.files[0])
                 var div = $('<div class="fileContainer ui-corner-all d-' + next + '">');
                 var row1 = $("<div class='row resumen'>");
-                var row2 = $("<div class='row claves'>");
+//                var row2 = $("<div class='row claves'>");
                 var row3 = $("<div class='row botones'  style='text-align: right'>");
                 var row4 = $("<div class='row'>");
-                row1.append(" <div class='col-md-1 etiqueta'>Resumen</div>");
-                row1.append("<div class='col-md-5'><textarea class='form-control  " + next + "' required id='resumen' name='resumen' cols='5' rows='5'></textarea> </div>");
                 row1.append("<div class='col-md-1 etiqueta'>Descripción</div>");
                 row1.append("<div class='col-md-5'><textarea class='form-control " + next + "' required id='descripcion' name='descripcion' cols='5' rows='5'></textarea></div>");
-                row2.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
-                row2.append(" <div class='col-md-11'><input type='text' class='form-control " + next + "' id='clave' name='clave'/></div>");
+                row1.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
+                row1.append("<div class='col-md-5'><textarea class='form-control  " + next + "' required id='clave' name='clave' cols='5' rows='5'></textarea> </div>");
+//                row2.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
+//                row2.append(" <div class='col-md-11'><input type='text' class='form-control " + next + "' id='clave' name='clave'/></div>");
                 row3.append(" <a href='#' class='btn btn-azul subir' style='margin-right: 15px' clase='" + next + "'><i class='fa fa-upload'></i> Subir Archivo</a>");
                 div.append("<div class='row' style='margin-top: 0px'><div class='titulo-archivo col-md-10'><span style='color: #327BBA'>Archivo:</span> " + ar.name + "</div></div>");
                 div.append(row1);
-                div.append(row2);
+//                div.append(row2);
                 div.append(row3);
                 $("#files").append(div);
                 if ($("#files").height() * 1 > 120) {

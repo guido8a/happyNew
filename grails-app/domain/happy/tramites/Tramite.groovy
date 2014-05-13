@@ -34,7 +34,7 @@ class Tramite {
     Integer guia
     PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
 
-    /* Para los tramites externos de otro tipo q no son oficios:
+    /* Para los tramites externos dex:
             la institucion se guarda en paraExterno
             contacto y telefono agregados aqui
     */

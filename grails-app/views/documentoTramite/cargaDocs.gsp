@@ -46,10 +46,10 @@
                     </div>
 
                     <div class='row'>
-                        <div class='col-md-1 etiqueta'>Resumen:</div>
+                        <div class='col-md-1 etiqueta'>Palabras clave:</div>
 
-                        <div class='col-md-5 ' title="Resumen: ${anexo.resumen}">
-                            ${anexo.resumenCorto}
+                        <div class='col-md-5 ' title="palabras clave:">
+                            ${anexo.clave}
                         </div>
 
                         <div class='col-md-1 etiqueta'>Descripción:</div>
@@ -59,13 +59,7 @@
                         </div>
                     </div>
 
-                    <div class='row' style="margin-bottom: 10px">
-                        <div class='col-md-1 etiqueta'>Palabras clave:</div>
 
-                        <div class='col-md-11'>
-                            ${anexo.clave}
-                        </div>
-                    </div>
                 </div>
             </g:else>
         </g:each>

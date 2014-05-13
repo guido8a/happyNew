@@ -56,11 +56,26 @@
                         <div class="col-xs-8">${t.observaciones}</div>
                     </div>
                 </g:if>
+                <g:if test="${t.anexo==1}">
+                    <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                        <div class="row" style="margin-bottom: 10px;margin-left: 2px">
+                            <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
+                                <span style='color: #327BBA'>Archivo:</span>
+                                ${anexo.path}
+                                <a href='#' class='btn btn-success bajar' style='margin-right: 15px' title="Descargar Archivo" iden="${anexo.id}">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                ${anexo.descripcion}
+                                <br>
+                            </g:each>
+                        </div>
+                    </g:if>
+                </g:if>
             </div>
         </g:if>
         <g:else>
             <div style="margin-bottom: 20px" class="vertical-container">
-                <p class="css-vertical-text">Tramite</p>
+                <p class="css-vertical-text">Trámite</p>
 
                 <div class="linea"></div>
 
@@ -113,9 +128,41 @@
                         <div class="col-xs-8">${tramite.observaciones}</div>
                     </div>
                 </g:if>
+                <g:if test="${t.anexo==1}">
+                    <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                        <div class="row" style="margin-bottom: 10px;margin-left: 2px">
+                            <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
+                                <span style='color: #327BBA'>Archivo:</span>
+                                ${anexo.path}
+                                <a href='#' class='btn btn-success bajar' style='margin-right: 15px' title="Descargar Archivo" iden="${anexo.id}">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                ${anexo.descripcion}
+                                <br>
+                            </g:each>
+                        </div>
+                    </g:if>
+                </g:if>
             </div>
         </g:else>
 
     </g:each>
 
 </div>
+<script type="text/javascript">
+    $(".bajar").click(function () {
+        var id = $(this).attr("iden")
+        openLoader()
+        $.ajax({
+            type    : "POST",
+            url     : "${g.createLink(controller: 'documentoTramite',action: 'generateKey')}",
+            data    : "id=" + id,
+            success : function (msg) {
+                closeLoader()
+                if (msg == "ok") {
+                    location.href = "${g.createLink(controller: 'documentoTramite', action: 'descargarDoc')}/" + id
+                }
+            }
+        });
+    })
+</script>
