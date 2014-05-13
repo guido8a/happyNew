@@ -19,6 +19,10 @@
             overflow-y : auto;
             height     : 600px;
         }
+
+        .esMio {
+            background : #DFD7C3 !important;
+        }
         </style>
 
     </head>
@@ -76,6 +80,8 @@
                 var tramiteDe = $node.data("jstree").de;
                 var tramitePara = $node.data("jstree").para;
 
+                var padreId = $node.data("jstree").padre;
+
                 var tramiteInfo = tramiteCodigo + " (" + tramiteDe + ", " + tramitePara + ")";
 
                 var estaAnulado = $node.hasClass("anulado");
@@ -86,7 +92,7 @@
                 var tienePadre = $node.hasClass("tienePadre");
 
                 var duenio = $node.data("jstree").duenio;
-                var soyDuenio = duenio.toString() == "${session.usuario.id}";
+                var esMio = $node.hasClass("esMio");
 
                 var items = {};
                 items.detalles = {
@@ -108,7 +114,7 @@
                 };
 
                 if (!estaAnulado && !estaArchivado) {
-                    if (soyDuenio) {
+                    if (esMio) {
                         items.copia = {
                             separator_before : true,
                             label            : "Copia para",
@@ -117,13 +123,15 @@
 
                             }
                         };
-                        items.crearHermano = {
-                            label  : "Agregar documento al trámite",
-                            icon   : "fa fa-paste",
-                            action : function () {
-
-                            }
-                        };
+                        if (tienePadre) {
+                            items.crearHermano = {
+                                label  : "Agregar documento al trámite",
+                                icon   : "fa fa-paste",
+                                action : function () {
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padreId + '&hermano=' + tramiteId;
+                                }
+                            };
+                        }
                     }
                     if (!tienePadre) {
                         items.agregarPadre = {
@@ -183,7 +191,7 @@
                             }
                         };
                     }
-                    if (!soyDuenio && !tienePadre) {
+                    if (!esMio && !tienePadre) {
                         items.agregarPadre.separator_before = true;
                     }
                     if (!tieneHijos) {

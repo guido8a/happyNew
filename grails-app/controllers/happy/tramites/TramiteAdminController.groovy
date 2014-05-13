@@ -118,7 +118,8 @@ class TramiteAdminController {
         rel += estado
 
         def rol = para.rolPersonaTramite
-        def duenio = para.tramite.deDepartamento ? "-" + para.tramite.deDepartamento.id : para.tramite.de.id
+        def duenioPrsn = para.tramite.de.id
+        def duenioDpto = para.tramite.deDepartamento?.id
         def paraStr = "Para: "
         if (rol.codigo == "R002") {
             paraStr = "CC: "
@@ -127,11 +128,13 @@ class TramiteAdminController {
         def deStr = "De: " + (para.tramite.deDepartamento ? para.tramite.deDepartamento.codigo : para.tramite.de.login)
 
         data += ',"tramite":"' + para.tramiteId + '"'
-        data += ',"duenio":"' + duenio + '"'
+//        data += ',"duenio":"' + duenio + '"'
         data += ',"codigo":"' + para.tramite.codigo + '"'
         data += ',"de":"' + deStr + '"'
         data += ',"para":"' + paraStr + '"'
-
+        if (para.tramite.padre) {
+            data += ',"padre":"' + para.tramite.padreId + '"'
+        }
 //        if (tramitesService.verificaHijos(para, EstadoTramite.findByCodigo("E006"))) {
 //            //false: no tiene hijos vivos
 //            clase += " tieneHijos"
@@ -139,6 +142,11 @@ class TramiteAdminController {
         if (para.tramite.padre) {
             clase += " tienePadre"
         }
+
+        if (duenioPrsn == session.usuario.id || duenioDpto == session.usuario.departamento.id) {
+            clase += " esMio"
+        }
+
 
         html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${tramiteInfo(para)}\n"
         if (hijos.size() > 0) {
