@@ -126,28 +126,28 @@
             <div class="btn-toolbar toolbar">
                 <div class="btn-group">
                     <g:if test="${tramite.deDepartamento}">
-                        <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
+                        <g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
                             <i class="fa fa-list-ul"></i> Bandeja de Entrada
                         </g:link>
-                        <g:link controller="tramite2" action="bandejaSalidaDep" class="btn btn-sm btn-azul btnRegresar">
+                        <g:link controller="tramite2" action="bandejaSalidaDep" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:if>
                     <g:else>
-                        <g:link action="bandejaEntrada" class="btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
+                        <g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
                             <i class="fa fa-list-ul"></i> Bandeja de Entrada
                         </g:link>
-                        <g:link controller="tramite2" action="bandejaSalida" class="btn btn-sm btn-azul btnRegresar">
+                        <g:link controller="tramite2" action="bandejaSalida" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:else>
                     <g:if test="${tramite.deDepartamento}">
-                        <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class=" btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                        <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class="leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
                             <i class="fa fa-pencil"></i>
                         </g:link>
                     </g:if>
                     <g:else>
-                        <g:link action="crearTramite" id="${tramite.id}" class="  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                        <g:link action="crearTramite" id="${tramite.id}" class=" leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
                             <i class="fa fa-pencil"></i>
                         </g:link>
                     </g:else>
@@ -172,12 +172,71 @@
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
         </div>
         <script>
+            var textoInicial = "${tramite.texto}";
+
+            //            function validaTexto(textoInicial, url) {
+            //                var textoActual = $("#editorTramite").val();
+            //                var esIgual = textoInicial == textoActual;
+            //                if (esIgual) {
+            //                    location.href = url;
+            //                } else {
+            //                    var msg = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
+            //                              "<p>El texto ha sido cambiado y no ha sido guardado. Si continúa se perderán los cambios.</p><p>¿Desea continuar?</p>";
+            //                    bootbox.dialog({
+            //                        title   : "Alerta",
+            //                        message : msg,
+            //                        buttons : {
+            //                            cancelar  : {
+            //                                label     : "Cancelar",
+            //                                className : "btn-primary",
+            //                                callback  : function () {
+            //                                }
+            //                            },
+            //                            continuar : {
+            //                                label     : "<i class='fa fa-arrow-circle-o-right'></i> Salir",
+            //                                className : "btn-warning",
+            //                                callback  : function () {
+            //                                    location.href = url;
+            //                                }
+            //                            }
+            //                        }
+            //                    });
+            //                }
+            //            }
+
+            //            //            function closeEditorWarning() {
+            //            //                return 'It looks like you have been editing something -- if you leave before submitting your changes will be lost.'
+            //            //            }
+            //            //
+            //            //            window.onbeforeunload = closeEditorWarning;
+            //            $(window).bind('beforeunload', function (e) {
+            //                if ($('#form').serialize() != $('#form').data('serialize'))return true;
+            //                else e = null;
+            //                // i.e; if form state change show warning box, else don't show it.
+            //            });
+
+            window.onbeforeunload = function (e) {
+                var textoActual = $("#editorTramite").val();
+                var esIgual = textoInicial == textoActual;
+                if (esIgual) {
+                    return null;
+                } else {
+                    return "Alerta";
+                }
+            };
+
             $(function () {
+
 //                var $also = $("#divInfoContenido");
 //                var $div = $("#divInfo");
 //                console.log($also.width(), $div.width(), $also.height(), $div.height(), "dw=" + ($div.width() - $also.width()), "dh=" + ($div.height() - $also.height()));
 
-                $(".header-tramite").append($(".btn-editar"))
+//                $(".leave").click(function () {
+//                    validaTexto(textoInicial, $(this).attr("href"));
+//                    return false;
+//                });
+
+                $(".header-tramite").append($(".btn-editar"));
 
                 $("#divInfo").resizable({
                     maxWidth  : 450,
@@ -303,6 +362,9 @@
                         success : function (msg) {
                             closeLoader();
                             var parts = msg.split("_");
+                            if (parts[0] == "OK") {
+                                textoInicial = $("#editorTramite").val();
+                            }
                             log(parts[1], parts[0] == "NO" ? "error" : "success");
                         }
                     });
@@ -326,6 +388,7 @@
                         success : function (msg) {
                             var parts = msg.split("*");
                             if (parts[0] == "OK") {
+                                textoInicial = $("#editorTramite").val();
                                 closeLoader();
                                 window.open("${resource(dir:'tramites')}/" + parts[1]);
                             }
