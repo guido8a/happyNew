@@ -594,6 +594,11 @@
                     }
                 });
 
+                //removeAllSelected
+                var $ul = $("#ulSeleccionados");
+                $ul.find("li").addClass("selected");
+                moveSelected($ul, $("#ulDisponibles"), true);
+
                 switch (cod) {
                     case "CIR":
 //                        $divPara.html("");
@@ -601,7 +606,12 @@
 //                        $divBotonInfo.addClass("hide");
                         $divCopia.removeClass("hide");
                         $divCc.addClass("hide");
-                        $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
+                        //addAllDisponibles
+//                        $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
+                        var $ul = $("#ulDisponibles");
+                        $ul.find("li").addClass("selected");
+                        moveSelected($ul, $("#ulSeleccionados"), false);
+
                         $tituloCopia.text("Circular");
                         $divConfidencial.addClass("hide");
                         $divAnexos.addClass("hide");
