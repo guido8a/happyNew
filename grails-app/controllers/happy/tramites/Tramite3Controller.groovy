@@ -700,25 +700,25 @@ class Tramite3Controller extends happy.seguridad.Shield {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolPara)
             isNotNull("fechaEnvio")
-            tramite {
+//            tramite {
                 or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                    eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
                 }
-            }
+//            }
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
             eq("rolPersonaTramite", rolCopia)
             isNotNull("fechaEnvio")
-            tramite {
+//            tramite {
                 or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+                    eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                    eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                    eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
                 }
-            }
+//            }
         }
 
 
@@ -734,6 +734,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (params.order == "desc") {
             pxtTramites = pxtTramites.reverse()
         }
+
+
+        def tramitesSinHijos = []
+
+        pxtTramites.each {tr->
+            if(Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0){
+                tramitesSinHijos += tr
+            }
+        }
+
+
 
         //busqueda
         if (params.fecha) {
@@ -758,12 +769,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
         }
 
-//        println("--->" + res)
-//        println("DDDD:" + pxtTramites)
-//        println("dominio2:" + params.domain)
 
 //        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
-        return [tramites: res, pxtTramites: pxtTramites]
+        return [tramites: res, pxtTramites: tramitesSinHijos]
 
     }
 

@@ -792,6 +792,7 @@
                 }, 300000);
 
                 $(".btnBusqueda").click(function () {
+                    openLoader();
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda").val();
@@ -802,6 +803,7 @@
                         data    : datos,
                         success : function (msg) {
                             $("#bandeja").html(msg);
+                            closeLoader()
                         }
 
                     });

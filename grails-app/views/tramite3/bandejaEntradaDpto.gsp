@@ -613,12 +613,16 @@
                 });
 
                 $(".btnActualizar").click(function () {
+
                     cargarBandeja();
                     clearInterval(intervalBandeja);
                     intervalBandeja = setInterval(function () {
+                        openLoader();
                         cargarBandeja();
+                        closeLoader()
                     }, 1000 * 60 * 5);
                     log('Tabla de trámites y alertas actualizadas!', "success");
+
                     return false;
                 });
 
@@ -632,21 +636,23 @@
 
             $(".btnSalir").click(function () {
                 $(".buscar").attr("hidden", true);
+                openLoader();
                 cargarBandeja();
-
+                closeLoader()
             });
 
             $(".btnBusqueda").click(function () {
+                openLoader();
                 var memorando = $("#memorando").val();
                 var asunto = $("#asunto").val();
                 var fecha = $("#fechaBusqueda_input").val();
                 var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-
                 $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
                     data      : datos,
                     success   : function (msg) {
-                        $("#bandeja").html(msg);
 
+                        $("#bandeja").html(msg);
+                        closeLoader();
                     }
                 });
             });

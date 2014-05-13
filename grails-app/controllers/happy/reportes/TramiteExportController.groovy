@@ -216,7 +216,7 @@ class TramiteExportController {
 
     def imprimirGuia() {
 
-        println("imprimir guia:" + params)
+//        println("imprimir guia:" + params)
 
         def cantidadTramites = params.ids
         def personaDocumento
@@ -299,6 +299,7 @@ class TramiteExportController {
 
         pxt.each {
             if(it.rolPersonaTramite.codigo != 'E004'){
+                if(it.fechaEnvio){
                 addCellTabla(tablaTramites, new Paragraph(it.tramite.codigo, times10bold), prmsHeaderHoja)
                 addCellTabla(tablaTramites, new Paragraph(it.rolPersonaTramite.descripcion , times10bold), prmsHeaderHoja)
                 if(it?.departamento){
@@ -309,6 +310,7 @@ class TramiteExportController {
                 }
                 addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
                 addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+            }
             }
         }
 
