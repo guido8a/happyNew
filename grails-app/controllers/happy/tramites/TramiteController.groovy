@@ -179,7 +179,7 @@ class TramiteController extends happy.seguridad.Shield {
                     html += g.textField(name: "paraExt",
                             class: "form-control label-shared required",
                             value: tramite?.paraExterno,
-                            style: "width:310px;")
+                            style: "width:300px;")
                     html += "</div>"
                     break;
                 default: //DEX SUM MEM PLA
@@ -187,7 +187,7 @@ class TramiteController extends happy.seguridad.Shield {
                     html += elm.comboPara(name: "tramite.para",
                             id: "para",
                             value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
-                            style: "width:310px;",
+                            style: "width:300px;",
                             class: "form-control label-shared required",
                             tipoDoc: tipoDoc,
                             tipo: params.tipo)
