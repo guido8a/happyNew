@@ -68,6 +68,11 @@ class EstadoTramiteExternoController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def save_ajax() {
+        params.each { k, v ->
+            if (v != "date.struct" && v instanceof java.lang.String) {
+                params[k] = v.toUpperCase()
+            }
+        }
         def estadoTramiteExternoInstance = new EstadoTramiteExterno()
         if (params.id) {
             estadoTramiteExternoInstance = EstadoTramiteExterno.get(params.id)

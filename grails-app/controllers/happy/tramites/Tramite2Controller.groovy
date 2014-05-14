@@ -895,6 +895,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             paramsTramite.anexo = 0
         }
+        if (params.externo == "on") {
+            paramsTramite.externo = 1
+        } else {
+            paramsTramite.externo = 0
+        }
+
+        if(paramsTramite.externo == '1' || paramsTramite.externo == 1){
+            paramsTramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("EX03") //pendiente
+        }
 
         if (params.paraExt) {
             paramsTramite.paraExterno = params.paraExt
@@ -1074,32 +1083,32 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
             if (tipoDoc.codigo == "DEX") {
-                paramsOrigen.tramite = tramite
-                paramsOrigen.fecha = new Date()
-                def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
-                if (origen.size() == 0) {
-                    origen = new OrigenTramite(paramsOrigen)
-                } else {
-                    println "Hay ${origen.size()} filas de origenTramite con cedula ${paramsOrigen.cedula}"
-                    origen = origen.first()
-                    origen.properties = paramsOrigen
-                }
-                if (!origen.save(flush: true)) {
-                    println "error origen tramite: " + origen.errors
-                }
-                tramite.origenTramite = origen
-                if (!tramite.save(flush: true)) {
-                    println "ERROR AAAAA: " + tramite.errors
-                }
+//                paramsOrigen.tramite = tramite
+//                paramsOrigen.fecha = new Date()
+//                def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
+//                if (origen.size() == 0) {
+//                    origen = new OrigenTramite(paramsOrigen)
+//                } else {
+//                    println "Hay ${origen.size()} filas de origenTramite con cedula ${paramsOrigen.cedula}"
+//                    origen = origen.first()
+//                    origen.properties = paramsOrigen
+//                }
+//                if (!origen.save(flush: true)) {
+//                    println "error origen tramite: " + origen.errors
+//                }
+//                tramite.origenTramite = origen
+//                if (!tramite.save(flush: true)) {
+//                    println "ERROR AAAAA: " + tramite.errors
+//                }
             } else {
                 if (tipoDoc.codigo != "OFI") {
-                    def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
-                    if (origen.size() > 0) {
-                        println "Hay ${origen.size()} filas de origenTramite con cedula ${paramsOrigen.cedula} que se eliminan"
-                        origen.each {
-                            it.delete(flush: true)
-                        }
-                    }
+//                    def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
+//                    if (origen.size() > 0) {
+//                        println "Hay ${origen.size()} filas de origenTramite con cedula ${paramsOrigen.cedula} que se eliminan"
+//                        origen.each {
+//                            it.delete(flush: true)
+//                        }
+//                    }
                 }
             }
         }
