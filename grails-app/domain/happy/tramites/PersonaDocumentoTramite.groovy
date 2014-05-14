@@ -72,21 +72,20 @@ class PersonaDocumentoTramite {
         def limite = this.fechaEnvio
         if (limite) {
 //            def diaLaborableService
-            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
-
-            if (fechaLimite[0]) {
-                return fechaLimite[1]
-            } else {
-//                println fechaLimite[1]
+            if(this.tramite.externo=="1")
                 return null
+            else{
+                def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
+//                println " fl "+fechaLimite
+                if (fechaLimite[0]) {
+                    return fechaLimite[1]
+                } else {
+//                println fechaLimite[1]
+                    return null
+                }
             }
-//            use(TimeCategory) {
-//                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
-//                    limite = limite + 2.hours + 15.hours + 30.minutes
-//                else
-//                    limite = limite + 2.hours
-//            }
-//            return limite
+
+
         }
         return null
     }
@@ -95,6 +94,8 @@ class PersonaDocumentoTramite {
         if(this.fechaRecepcion)
             return null
         else{
+            if(this.tramite.externo=="1")
+                return null
             def limite = this.getFechaLimite()
             def par = Parametros.list([sort: "id",order: "desc"])
             def tiempoBloqueo=1

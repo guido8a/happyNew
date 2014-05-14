@@ -91,9 +91,6 @@
 
     <div class="btn-group" style="margin-left: 30px">
 
-        <g:link action="crearTramite" class="btn btn-default btnCrearTramite">
-            <i class="fa fa-edit"></i> Crear Trámite
-        </g:link>
 
     </div>
 
@@ -119,13 +116,13 @@
     </div>
 
 
-    <div>
-        <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
-            (<span id="numPen"></span>)
-        Sin Recepción
+    %{--<div>--}%
+        %{--<div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">--}%
+            %{--(<span id="numPen"></span>)--}%
+        %{--Sin Recepción--}%
         %{--No recibidos--}%
-        </div>
-    </div>
+        %{--</div>--}%
+    %{--</div>--}%
 
     <div>
         <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
@@ -134,12 +131,12 @@
         </div>
     </div>
 
-    <div>
-        <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
-            (<span id="numRet"></span>)
-        Retrasados
-        </div>
-    </div>
+    %{--<div>--}%
+        %{--<div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">--}%
+            %{--(<span id="numRet"></span>)--}%
+        %{--Retrasados--}%
+        %{--</div>--}%
+    %{--</div>--}%
 </div>
 
 
@@ -240,7 +237,7 @@
         }
         $.ajax({
             type    : "POST",
-            url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
+            url     : "${g.createLink(controller: 'externos',action:'tablaBandeja')}",
             data    : datos,
             async   : false,
             success : function (msg) {
@@ -255,8 +252,8 @@
     }
 
     function cargarAlertas() {
-        $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
-        $("#numRet").html($(".retrasado").size()); //retrasado
+//        $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
+//        $("#numRet").html($(".retrasado").size()); //retrasado
         $("#numEnv").html($(".porRecibir").size()); //porRecibir
         $("#numRec").html($(".recibido").size()); //recibido
     }
@@ -330,7 +327,7 @@
                 $.ajax({
                     type    : 'POST',
                     %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                    url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "?source=bep",
+                    url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/?pdt=' + idPxt + "&source=bep",
                     success : function (msg) {
                         var parts = msg.split('_')
                         openLoader();
@@ -435,7 +432,7 @@
 
                                         $.ajax({
                                             type    : 'POST',
-                                            url     : '${createLink(action: 'archivar')}/' + idPxt,
+                                            url     : '${createLink(controller: 'tramite',action: 'archivar')}/' + idPxt,
                                             data    : {
                                                 texto : $("#observacionArchivar").val()
                                             },
@@ -599,12 +596,6 @@
             },
             detalles,
             arbol,
-            <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-            </g:if>
-            contestar,
-            %{--<g:if test="${Persona.get(session.usuario.id).puedeArchivar}">--}%
             archivar
             %{--</g:if>--}%
 
@@ -615,10 +606,6 @@
             },
             detalles,
             arbol,
-            <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-            </g:if>
             recibir,
             anexos
         ]);
@@ -629,11 +616,6 @@
             },
             detalles,
             arbol,
-            <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-            </g:if>
-            contestar,
             <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
             archivar,
             </g:if>

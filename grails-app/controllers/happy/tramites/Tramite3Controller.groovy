@@ -89,13 +89,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tramite = new Tramite()
         }
         println "ANTES DEL SAVE " + paramsTramite
-        if (tramite.padre) {
-            tramite.padre.estado = "C"
-            tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
-            tramite.padre.save(flush: true)
-        }
-        tramite.properties = paramsTramite
 
+        tramite.properties = paramsTramite
 
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
@@ -108,6 +103,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
              *          si es positivo es una persona
              */
+            if (tramite.padre) {
+                tramite.padre.estado = "C"
+                tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                tramite.padre.save(flush: true)
+                if(tramite.padre.estadoTramiteExterno){
+                    tramite.estadoTramiteExterno=tramite.padre.estadoTramiteExterno
+
+                }
+                tramite.save(flush: true)
+            }
             def tram = Tramite.lock(tramite.id)
 //            println "DESPUES1: " + tramite.aQuienContesta
 //            println "DESPUES1: " + tramite.aQuienContesta.id

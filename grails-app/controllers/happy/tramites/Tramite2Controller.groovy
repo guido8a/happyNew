@@ -173,7 +173,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
             order("fechaCreacion", "desc")
         }
-
+//        println "tramites "+trams.codigo
         trams.each { tr ->
             def pxd = PersonaDocumentoTramite.withCriteria {
                 eq("tramite", tr)
@@ -996,11 +996,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite = new Tramite()
         }
         println "ANTES DEL SAVE " + paramsTramite
-        if (tramite.padre) {
-            tramite.padre.estado = "C"
-            tramite.aQuienContesta=PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
-            tramite.padre.save(flush: true)
-        }
+
         tramite.properties = paramsTramite
 
         if (!tramite.save(flush: true)) {
@@ -1010,6 +1006,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite2", action: "crearTramiteDep", id: tramite.id)
             return
         } else {
+
+            if (tramite.padre) {
+                tramite.padre.estado = "C"
+                tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                tramite.padre.save(flush: true)
+                if(tramite.padre.estadoTramiteExterno){
+                    tramite.estadoTramiteExterno=tramite.padre.estadoTramiteExterno
+
+                }
+                tramite.save(flush: true)
+            }
 
             /*
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento

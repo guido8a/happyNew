@@ -20,29 +20,32 @@ class BloqueosJob {
         def warningUsu = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
 //            println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
-            def fechaBloqueo = pdt.fechaBloqueo
-            if(fechaBloqueo && fechaBloqueo<ahora){
-                if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
-                    if(pdt.tramite.deDepartamento){
-                        if(!warning.id.contains(pdt.tramite.deDepartamento.id))
-                            warning.add(pdt.tramite.deDepartamento)
-                    }else{
-                        if(!warningUsu.id.contains(pdt.tramite.de.id))
-                            warningUsu.add(pdt.tramite.de)
-                    }
+            if(pdt.tramite.externo!="1"){
+                def fechaBloqueo = pdt.fechaBloqueo
+                if(fechaBloqueo && fechaBloqueo<ahora){
+                    if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
+                        if(pdt.tramite.deDepartamento){
+                            if(!warning.id.contains(pdt.tramite.deDepartamento.id))
+                                warning.add(pdt.tramite.deDepartamento)
+                        }else{
+                            if(!warningUsu.id.contains(pdt.tramite.de.id))
+                                warningUsu.add(pdt.tramite.de)
+                        }
 
-                    if(pdt.persona){
+                        if(pdt.persona){
 //                       println "add bloquear "+pdt.persona
-                        if(!bloquearUsu.id.contains(pdt.persona.id))
-                            bloquearUsu.add(pdt.persona)
-                    }else{
+                            if(!bloquearUsu.id.contains(pdt.persona.id))
+                                bloquearUsu.add(pdt.persona)
+                        }else{
 //                        println "add bloquear "+pdt.departamento
-                        if(!bloquear.id.contains(pdt.departamento.id))
-                            bloquear.add(pdt.departamento)
+                            if(!bloquear.id.contains(pdt.departamento.id))
+                                bloquear.add(pdt.departamento)
+                        }
                     }
-                }
 
+                }
             }
+
         }
         Departamento.list().each {dep->
             if(bloquear.id.contains(dep.id)){
@@ -90,30 +93,32 @@ class BloqueosJob {
         def warning = []
         def warningUsu = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
-            def fechaBloqueo = pdt.fechaBloqueo
-            if(fechaBloqueo && fechaBloqueo<ahora){
-                if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
+            if(pdt.tramite.externo!="1"){
+                def fechaBloqueo = pdt.fechaBloqueo
+                if(fechaBloqueo && fechaBloqueo<ahora){
+                    if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
 //                    println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
 
-                    if(pdt.tramite.deDepartamento){
-                        if(!warning.id.contains(pdt.tramite.deDepartamento.id))
-                            warning.add(pdt.tramite.deDepartamento)
-                    }else{
-                        if(!warningUsu.id.contains(pdt.tramite.de.id))
-                            warningUsu.add(pdt.tramite.de)
-                    }
+                        if(pdt.tramite.deDepartamento){
+                            if(!warning.id.contains(pdt.tramite.deDepartamento.id))
+                                warning.add(pdt.tramite.deDepartamento)
+                        }else{
+                            if(!warningUsu.id.contains(pdt.tramite.de.id))
+                                warningUsu.add(pdt.tramite.de)
+                        }
 
-                    if(pdt.persona){
+                        if(pdt.persona){
 //                        println "add bloquear "+pdt.persona
-                        if(!bloquearUsu.id.contains(pdt.persona.id))
-                            bloquearUsu.add(pdt.persona)
-                    }else{
+                            if(!bloquearUsu.id.contains(pdt.persona.id))
+                                bloquearUsu.add(pdt.persona)
+                        }else{
 //                        println "add bloquear "+pdt.departamento
-                        if(!bloquear.id.contains(pdt.departamento.id))
-                            bloquear.add(pdt.departamento)
+                            if(!bloquear.id.contains(pdt.departamento.id))
+                                bloquear.add(pdt.departamento)
+                        }
                     }
-                }
 
+                }
             }
         }
         Departamento.list().each {dep->

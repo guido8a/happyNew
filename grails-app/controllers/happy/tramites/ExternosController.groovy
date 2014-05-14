@@ -1,5 +1,6 @@
 package happy.tramites
 
+import happy.alertas.Alerta
 import happy.seguridad.Persona
 
 class ExternosController {
@@ -12,10 +13,9 @@ class ExternosController {
 
     }
     def tablaBandeja(){
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
+
+        def persona = Persona.get(session.usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
-        def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def enviado = EstadoTramite.findByCodigo("E003")
         def recibido = EstadoTramite.findByCodigo("E004")
         def anexo
@@ -25,33 +25,54 @@ class ExternosController {
         params.sort = params.sort ?: "fechaEnvio"
         params.order = params.order ?: "desc"
 
-        def tramites = PersonaDocumentoTramite.withCriteria {
-            eq("persona", persona)
-            inList("rolPersonaTramite", [rolPara, rolCopia])
-            isNotNull("fechaEnvio")
-            inList("estado", [enviado, recibido])
-            tramite {
-//                inList("estadoTramite", [enviado, recibido])
-                if (params.domain == "tramite") {
-                    order(params.sort, params.order)
-                }
+        def tramites=Tramite.findAll("from Tramite where externo='1' and (de=${persona.id} ${(persona.esTriangulo())?'or deDepartamento='+persona.departamento.id:''}) and tipoDocumento!=${TipoDocumento.findByCodigo('DEX')?.id}")
+        def pdts = []
+        tramites.each {t->
+            def pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(t,rolPara)
+            if(pdt && (pdt.estado==enviado || pdt.estado==recibido)){
+                if(pdt.fechaEnvio)
+                    pdts +=pdt
             }
-            if (params.domain == "persDoc") {
-                order(params.sort, params.order)
-            }
-        }
 
-        def tramitesSinHijos = []
-        def anulado = EstadoTramite.findByCodigo("E006")
-        def band = false
-        tramites.each { tr ->
-            band = verificaHijos(tr, anulado)
-            println "estado!!! " + band + "   " + tr.id
-            if (!band) {
-                tramitesSinHijos += tr
-            }
         }
+        pdts=pdts.sort{it.fechaEnvio}
 
-        return [tramites: tramitesSinHijos, params: params]
+
+
+        return [tramites: pdts, params: params]
+    }
+
+    def recibirTramiteExterno() {
+//        println "recibir tramite "+params
+        if (request.getMethod() == "POST") {
+            def persona = Persona.get(session.usuario.id)
+            def pdt = PersonaDocumentoTramite.get(params.pdt)
+            def tramite = pdt.tramite
+            def porEnviar = EstadoTramite.findByCodigo("E001")
+            def enviado = EstadoTramite.findByCodigo("E003")
+            def recibido = EstadoTramite.findByCodigo("E004")
+            //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
+            if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
+                render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
+                return
+            }
+
+            pdt.fechaRecepcion = new Date()
+            pdt.estado=recibido
+            pdt.tramite.estadoTramite=recibido
+            pdt.save(flush: true)
+            pdt.tramite.save(flush: true)
+            def pdtRecibe = new PersonaDocumentoTramite()
+            pdtRecibe.tramite = tramite
+            pdtRecibe.persona = persona
+            pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+            pdtRecibe.fechaRecepcion =  new Date()
+            pdtRecibe.save(flush: true)
+            render "OK_Trámite recibido correctamente"
+
+
+        } else {
+            response.sendError(403)
+        }
     }
 }
