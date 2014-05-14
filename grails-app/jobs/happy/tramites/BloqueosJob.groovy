@@ -90,7 +90,7 @@ class BloqueosJob {
         def warning = []
         def warningUsu = []
         PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
-            def fechaBloqueo = pdt.tramite.fechaBloqueo
+            def fechaBloqueo = pdt.fechaBloqueo
             if(fechaBloqueo && fechaBloqueo<ahora){
                 if(pdt.rolPersonaTramite.codigo!="E004" && pdt.rolPersonaTramite.codigo!="I005" ){
 //                    println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
