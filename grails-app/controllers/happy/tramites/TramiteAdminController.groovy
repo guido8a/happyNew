@@ -6,6 +6,129 @@ class TramiteAdminController {
 
     def tramitesService
 
+    def asociarTramite_ajax() {
+        def original = PersonaDocumentoTramite.get(params.original)
+        def duenioDep = original.tramite.deDepartamento
+        def duenioPer = original.tramite.de
+        def codigo = params.codigo;
+        def msg
+        def tramites = Tramite.findAllByCodigoIlike(codigo)
+        if (tramites.size() == 0) {
+            msg = "<div class='alert alert-danger'>"
+            msg += "No se encontró un trámite disponible con código " + codigo.toUpperCase()
+            msg += "</div>"
+        } else {
+            def rolPara = RolPersonaTramite.findByCodigo("R001")
+            def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+            def estadoArchivado = EstadoTramite.findByCodigo("E005")
+            def estadoAnulado = EstadoTramite.findByCodigo("E006")
+            def estadoEnviado = EstadoTramite.findByCodigo("E003")
+            def estadoRecibido = EstadoTramite.findByCodigo("E004")
+
+            msg = "<p>Seleccione el trámite al que se asociará ${original.tramite.codigo}</p>"
+            msg += "<table class='table table-condensed table-bordered'>"
+            msg += "<thead>"
+            msg += "<tr>"
+            msg += "<th>Trámite</th>"
+            msg += "<th>De</th>"
+            msg += "<th>Para</th>"
+            msg += "<th>Info.</th>"
+            msg += "<th>Seleccionar</th>"
+            msg += "</tr>"
+            msg += "</thead>"
+            def algo = false
+            tramites.each { tr ->
+                def cod = tr.codigo
+                def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
+                def personas = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", tr)
+                    or {
+                        eq("rolPersonaTramite", rolPara)
+                        eq("rolPersonaTramite", rolCc)
+                    }
+                    eq("estado", estadoRecibido)
+                    tramite {
+                        lt("fechaCreacion", original.tramite.fechaCreacion)
+                    }
+                    if (duenioDep) {
+                        eq("departamento", duenioDep)
+                    }
+                    if (duenioPer) {
+                        eq("persona", duenioPer)
+                    }
+                }
+                personas.each { cc ->
+                    algo = true
+                    msg += "<tr>"
+                    msg += "<td>${cod}</td>"
+                    msg += "<td>${de}</td>"
+                    msg += "<td>${cc.rolPersonaTramite.descripcion} ${cc.departamento ? cc.departamento.codigo : cc.persona.login}</td>"
+                    msg += "<td>${tramiteFechas(cc)}</td>"
+                    msg += "<td><a href='#' class='btn btn-success select' id='${cc.id}'><i class='fa fa-check'></i></a></td>"
+                    msg += "</tr>"
+                }
+            }
+            msg += "</table>"
+
+            msg += "<script type='text/javascript'>"
+            msg += '$(function(){'
+            msg += '$(".select").click(function() {'
+            msg += "openLoader('Asociando trámites');"
+            msg += '$.ajax({\n' +
+                    '   type: "POST",\n' +
+                    '   url: "' + createLink(action: 'guardarAsociarTramite') + '",\n' +
+                    '   data: {\n' +
+                    '\tid: $(this).attr("id"),\n' +
+                    '\toriginal: ' + params.original + '\n' +
+                    '\t},\n' +
+                    '   success: function(msg){\n' +
+                    '     location.reload(true);\n' +
+                    '   }\n' +
+                    ' });'
+            msg += "return false;"
+            msg += '});'
+            msg += '});'
+            msg += "</script>"
+
+            if (!algo) {
+                msg = "<div class='alert alert-danger'>"
+                msg += "No se encontró un trámite disponible con código " + codigo.toUpperCase()
+                msg += "</div>"
+            }
+        }
+        render msg
+    }
+
+    def guardarAsociarTramite() {
+        def original = PersonaDocumentoTramite.get(params.original)
+        def nuevoPadre = PersonaDocumentoTramite.get(params.id)
+
+        original.tramite.padre = nuevoPadre.tramite
+        original.tramite.aQuienContesta = nuevoPadre
+
+        original.observaciones = (original.observaciones ?: "") + " Trámite asociado al trámite ${nuevoPadre.tramite.codigo} por " +
+                "${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')}"
+
+        nuevoPadre.tramite.estado = "C"
+        def msg = ""
+        if (!original.save(flush: true)) {
+            msg += renderErrors(bean: original)
+        }
+        if (!original.tramite.save(flush: true)) {
+            msg += renderErrors(bean: original.tramite)
+        }
+        if (!nuevoPadre.tramite.save(flush: true)) {
+            msg += renderErrors(bean: nuevoPadre.tramite)
+        }
+        if (msg != "") {
+            msg = "NO*<ul>" + msg + "</ul>"
+        } else {
+            msg = "OK"
+        }
+        render msg
+    }
+
     def arbolAdminTramite() {
 
         def usu = Persona.get(session.usuario.id)
@@ -160,18 +283,9 @@ class TramiteAdminController {
         return html
     }
 
-    private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
-        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
-        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.login
-        def rol = tramiteParaInfo.rolPersonaTramite
+    private static String tramiteFechas(PersonaDocumentoTramite tramiteParaInfo) {
         def strInfo = ""
-        if (rol.codigo == "R002") {
-            strInfo += "[CC] "
-        }
-        strInfo += "<strong>${tramiteParaInfo.tramite.codigo} </strong>"
-        strInfo += "<small>("
-        strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}"
-        strInfo += ", <strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
+        strInfo += "<strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
         if (tramiteParaInfo.fechaEnvio) {
             strInfo += ", <span class='text-info'><strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm") + "</span>"
         }
@@ -184,6 +298,21 @@ class TramiteAdminController {
         if (tramiteParaInfo.fechaAnulacion) {
             strInfo += ", <span class='text-danger'><strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm") + "</span>"
         }
+        return strInfo
+    }
+
+    private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
+        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.login
+        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.login
+        def rol = tramiteParaInfo.rolPersonaTramite
+        def strInfo = ""
+        if (rol.codigo == "R002") {
+            strInfo += "[CC] "
+        }
+        strInfo += "<strong>${tramiteParaInfo.tramite.codigo} </strong>"
+        strInfo += "<small>("
+        strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}, "
+        strInfo += tramiteFechas(tramiteParaInfo)
         strInfo += ")</small>"
         return strInfo
     }

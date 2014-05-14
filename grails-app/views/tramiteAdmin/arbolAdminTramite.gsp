@@ -138,17 +138,52 @@
                             label  : "Asociar trámite",
                             icon   : "fa fa-gift",
                             action : function () {
-                                var msg = "<i class='fa fa-gift fa-3x pull-left text-shadow'></i>" +
-                                          "<p class='lead'>Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>.</p>" +
-                                          "<label for='nuevoPadre'>Código trámite padre:</label>" +
-                                          "<input type='text' name='nuevoPadre' id='nuevoPadre' class='form-control'/>" +
-                                          "<label for='observacionAsociar'>Observaciones:</label>" +
-                                          '<textarea id="observacionAsociar" style="resize: none; height: 150px; " ' +
-                                          'class="form-control" maxlength="255" name="observacionAsociar"></textarea>';
+                                var $container = $("<div>");
+                                $container.append("<i class='fa fa-gift fa-3x pull-left text-shadow'></i>");
+                                var $p = $("<p class='lead'>");
+                                $p.html("Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>");
+                                $container.append($p);
+                                var $row = $("<div class='row'>");
+                                var $col = $("<div class='col-md-6'>");
+                                $col.append("<label for='nuevoPadre'>Código trámite padre:</label>");
+                                var $inputGroup = $("<div class='input-group'>");
+                                var $input = $("<input type='text' name='nuevoPadre' id='nuevoPadre' class='form-control allCaps'/>");
+                                $inputGroup.append($input);
+                                var $span = $("<span class='input-group-btn'>");
+                                var $btn = $("<a href='#' class='btn btn-azul' id='btnBuscar'><i class='fa fa-search'></i>&nbsp;</a>");
+                                $span.append($btn);
+                                $inputGroup.append($span);
+                                $col.append($inputGroup);
+                                $row.append($col);
+                                $container.append($row);
+                                var $res = $("<div>").css({
+                                    marginTop : 5,
+                                    maxHeight : 200,
+                                    overflow  : "auto"
+                                });
+                                $container.append($res);
+
+                                $btn.click(function () {
+                                    $res.html(spinner);
+                                    var np = $.trim($input.val());
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(action:'asociarTramite_ajax')}",
+                                        data    : {
+                                            codigo   : np,
+                                            original : nodeId
+                                        },
+                                        success : function (msg) {
+                                            $res.html(msg);
+                                        }
+                                    });
+                                    return false;
+                                });
+
                                 bootbox.dialog({
                                     id      : "dlgAsociar",
                                     title   : '<i class="fa fa-gift"></i> Asociar Trámite',
-                                    message : msg,
+                                    message : $container,
                                     buttons : {
                                         cancelar : {
                                             label     : '<i class="fa fa-times"></i> Cancelar',
@@ -156,34 +191,12 @@
                                             callback  : function () {
                                             }
                                         },
-                                        archivar : {
-                                            id        : 'btnArchivar',
+                                        asociar  : {
+                                            id        : 'btnAsociar',
                                             label     : '<i class="fa fa-check"></i> Asociar',
                                             className : "btn-success",
                                             callback  : function () {
-                                                openLoader("Quitando el anulado");
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',
-                                                    data    : {
-                                                        id    : nodeId,
-                                                        texto : $("#observacionDesanular").val()
-                                                    },
-                                                    success : function (msg) {
-                                                        openLoader();
-                                                        closeLoader();
-                                                        var parts = msg.split("*");
-                                                        if (parts[0] == 'OK') {
-                                                            log("Quitado el recibido del trámite correctamente", 'success')
-                                                            setTimeout(function () {
-                                                                location.reload(true);
-                                                            }, 500);
-                                                        } else if (parts[0] == 'NO') {
-                                                            closeLoader();
-                                                            log("Error al quitar el recibido del trámite el trámite", 'error')
-                                                        }
-                                                    }
-                                                });
+
                                             }
                                         }
                                     }
