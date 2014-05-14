@@ -460,22 +460,27 @@
                                                         ids += $(this).attr("id");
                                                     }
                                                 });
-                                                openLoader("Quitando enviado");
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : '${createLink(action:'desenviar_ajax')}',
-                                                    data    : {
-                                                        id  : id,
-                                                        ids : ids
-                                                    },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        if (parts[0] == "OK") {
-                                                            location.reload(true);
+                                                if(ids){
+                                                    openLoader("Quitando enviado");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : '${createLink(action:'desenviar_ajax')}',
+                                                        data    : {
+                                                            id  : id,
+                                                            ids : ids
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            if (parts[0] == "OK") {
+                                                                location.reload(true);
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }else{
+                                                    log('No seleccionó ninguna persona ', 'error')
+                                                }
+
                                             }
                                         }
                                     }
@@ -616,15 +621,18 @@
 
                 context.attach(".E001.sumilla", [
                     {
-                        header : 'Sin Acciones'
+                        header : 'Acciones'
                     },
-                    editarSumilla
+                    editarSumilla,
+                        detalles
                 ]);
 
                 context.attach(".E001.sumilla.conHermano", [
                     {
                         header : 'Acciones'
                     },
+                        editar,
+                        detalles,
                     crearHermano
                 ]);
                 context.attach(".E003.desenviar.sumilla", [
@@ -641,7 +649,6 @@
                     },
                     detalles,
                     arbol,
-                    crearHermano,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla.sinAnexo", [

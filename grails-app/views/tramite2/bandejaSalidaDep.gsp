@@ -499,7 +499,7 @@
 
                 context.attach(".E001.sumilla", [
                     {
-                        header : 'Sin Acciones'
+                        header : 'Acciones'
                     },
                     editarSumilla
                 ]);
@@ -597,15 +597,21 @@
 
                 context.attach(".E001.sumilla", [
                     {
-                        header : 'Sin Acciones'
-                    }
+                        header : 'Acciones'
+                    },
+                    editar,
+                    detalles
+
                 ]);
 
                 context.attach(".E001.sumilla.conPadre", [
                     {
                         header : 'Acciones'
                     },
+                    editar,
+                    detalles,
                     crearHermano
+
                 ]);
                 context.attach(".E003.desenviar.sumilla", [
                     {

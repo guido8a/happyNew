@@ -199,41 +199,56 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def desenviar_ajax() {
+
+        println("params des" + params)
+
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
+        def ids
 
-        def ids = params.ids
+        if(params.ids){
+            ids = params.ids
+        }else{
+            ids = null
+        }
+
+
         def errores = ""
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
         //esta quitando el enviado a estos
-        (ids.split("_")).each { id ->
-            def persDoc = PersonaDocumentoTramite.get(id.toLong())
-            //cambia la fecha de envio, el estadoy las obs
-            persDoc.fechaEnvio = null
-            persDoc.estado = porEnviar
-            persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                    "(previa fecha de envío: " +
-                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
-            if (persDoc.save(flush: true)) {
-                def alerta
-                if (persDoc.persona)
-                    alerta = Alerta.findByPersonaAndTramite(persDoc.persona, persDoc.tramite)
-                else
-                    alerta = Alerta.findByDepartamentoAndTramite(persDoc.departamento, persDoc.tramite)
-                if (alerta) {
-                    alerta.mensaje += " - Tramite cambiado de estado"
-                    alerta.fechaRecibido = new Date()
-                    alerta.save(flush: true)
-                }
-            } else {
-                println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
-                errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
+
+
+    (ids.split("_")).each { id ->
+        def persDoc = PersonaDocumentoTramite.get(id.toLong())
+        //cambia la fecha de envio, el estadoy las obs
+        persDoc.fechaEnvio = null
+        persDoc.estado = porEnviar
+        persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+                "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                "(previa fecha de envío: " +
+                "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+        if (persDoc.save(flush: true)) {
+            def alerta
+            if (persDoc.persona)
+                alerta = Alerta.findByPersonaAndTramite(persDoc.persona, persDoc.tramite)
+            else
+                alerta = Alerta.findByDepartamentoAndTramite(persDoc.departamento, persDoc.tramite)
+            if (alerta) {
+                alerta.mensaje += " - Tramite cambiado de estado"
+                alerta.fechaRecibido = new Date()
+                alerta.save(flush: true)
             }
+        } else {
+            println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
+            errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
         }
+    }
+
+
+
         //originalmente era para todos estos: verifico si ninguno ha recibido le cambio el estado al tramite a borrador
         def recibidos = 0
         PersonaDocumentoTramite.withCriteria {

@@ -444,6 +444,14 @@
                         ]
                     });
                 }
+
+                CKEDITOR.on('instanceReady', function (ev) {
+                    // Prevent drag-and-drop.
+                    ev.editor.document.on('drop', function (ev) {
+                        ev.data.preventDefault(true);
+                    });
+                });
+
             });
         </script>
     </body>
