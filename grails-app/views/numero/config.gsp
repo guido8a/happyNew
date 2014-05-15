@@ -32,7 +32,7 @@
                     <i class="fa fa-save"></i> Guardar
                 </a>
             </div>
-
+        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
             %{--<div class="btn-group pull-right col-md-3">--}%
             %{--<div class="input-group">--}%
             %{--<input type="text" class="form-control span2 input-search" placeholder="Buscar" value="${params.search}">--}%

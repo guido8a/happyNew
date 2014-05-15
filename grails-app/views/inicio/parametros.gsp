@@ -238,6 +238,25 @@
                             </div>
                         </li>
 
+
+                        <li>
+                            <i class="fa-li ${iconTrmt}"></i>
+                            <span id="nmro">
+                                <g:link controller="numero" action="config">Fijar números consecutivos por tipo documento</g:link> sirve para
+                                fijar los números consecutivos que se aplican por departamento y tipo de documento
+                            </span>
+
+                            <div class="descripcion hide">
+                                <h4>Fijar Consecutivos</h4>
+
+                                <p>Fija los números consecutivos para cada tipo de documento que puede emitir el Departamento.</p>
+                                <p>Primero se debe definir que tipos de documentos puede tramitar un Departamento para luego
+                                actualizar los números consecutivos que se han de usar</p>
+                                <p>Este proceso debe usarse sólo al poner en marcha el sistema</p>
+
+                            </div>
+                        </li>
+
                     </ul>
 
                 </div>
