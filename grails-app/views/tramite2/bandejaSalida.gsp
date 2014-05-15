@@ -110,9 +110,7 @@
         <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
             <div class="btn-group">
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-            %{--<g:link action="" class="btn btn-primary btnTramites">--}%
-            %{--<i class="fa fa-gears"></i> Trámites--}%
-            %{--</g:link>--}%
+
                 <g:link action="" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
                 </g:link>
@@ -121,31 +119,26 @@
                 </g:link>
             </div>
 
+        <div style="float: right">
             <div data-type="" class="alert borrador alertas" clase="E001">
                 (<span id="numBor"></span>)
             ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
             </div>
 
-            %{--<div id="alertaRevisados">--}%
-            %{--<div data-type="revisado" class="alert alert-success alertas" clase="E002" style="margin-left: 20px;padding-left: 30px; padding-top: 10px; width: 150px">--}%
-            %{--(<span id="numRev"></span>)--}%
-            %{--Revisados--}%
-            %{--</div>--}%
-            %{--</div>--}%
-
-            <div id="alertaEnviados">
+            %{--<div id="alertaEnviados">--}%
                 <div data-type="enviado" class="alert enviado alertas" clase="E003">
                     (<span id="numEnv"></span>)
                 ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E003').descripcion)}
                 </div>
-            </div>
+            %{--</div>--}%
 
-            <div id="alertaNoRecibidos">
+            %{--<div id="alertaNoRecibidos">--}%
                 <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
                     (<span id="numNoRec"></span>)
                 Sin Recepción
                 </div>
-            </div>
+            %{--</div>--}%
+        </div>
         </div>
 
 
@@ -624,7 +617,8 @@
                         header : 'Acciones'
                     },
                     editarSumilla,
-                        detalles
+                        detalles,
+                    crearHermano
                 ]);
 
                 context.attach(".E001.sumilla.conHermano", [
@@ -641,6 +635,7 @@
                     },
                     detalles,
                     arbol,
+                    crearHermano,
                     desenviar
                 ]);
                 context.attach(".E003.desenviar.sumilla.conPadre", [
@@ -649,6 +644,7 @@
                     },
                     detalles,
                     arbol,
+                    crearHermano,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla.sinAnexo", [

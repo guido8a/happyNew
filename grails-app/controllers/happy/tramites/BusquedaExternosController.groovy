@@ -4,28 +4,68 @@ class BusquedaExternosController {
 
     def index() {}
 
-    def buscarExternos () {}
-
-    def seguimientoExternos () {
+    def buscarExternos () {
 
 
-        def tipoDocumento = TipoDocumento.findByCodigo('DEX')
+
+    }
+
+    def tablaBusquedaExternos () {
+   //        println("params:" + params)
 
         def res
         def filtrados
         if (params.memorando) {
             res = Tramite.withCriteria {
-                    eq('tipoDocumento', tipoDocumento)
+//                    eq('paraExterno', externo)
+                ilike('codigo', params.memorando)
+            }
+
+//            println("res:" + res)
+
+            if(res){
+                res.each {
+//                    println("externo:" + it.externo)
+                    if(it.externo == '1'){
+                        filtrados = it
+                    }
+
+                }
+            }
+    }
+
+        return [tramites: filtrados]
+}
+
+    def seguimientoExternos () {
+
+       def externo = 1
+
+       println("params:" + params)
+
+        def res
+        def filtrados
+        if (params.memorando) {
+            res = Tramite.withCriteria {
+//                    eq('paraExterno', externo)
                     ilike('codigo', params.memorando)
             }
-         if(res){
 
+            println("res:" + res)
+
+         if(res){
               res.each {
-                  filtrados = it
+                  println("externo:" + it.externo)
+                  if(it.externo == '1'){
+                      filtrados = it
+                  }
+
               }
 
+             println("-->" + filtrados)
+
               def primerTramite = filtrados
-              while (primerTramite.padre) {
+              while (primerTramite?.padre) {
                   primerTramite = primerTramite.padre
               }
 
@@ -92,13 +132,13 @@ class BusquedaExternosController {
                     "data-id='${h.id}' data-asunto='${h.asunto}' data-observaciones='${h.observaciones}'>"
             html += "<td>${h.codigo}</td>"
             html += "<td>${h.fechaEnvio ? h.fechaEnvio.format('dd-MM-yyyy HH:mm') : 'no enviado'}</td>"
-            html += "<td title='${h.de.departamento.descripcion}'>${h.de.departamento.codigo}</td>"
+            html += "<td title='${h.de?.departamento?.descripcion}'>${h.de?.departamento?.codigo}</td>"
             html += "<td title='${h.de.nombre + ' ' + h.de.apellido}'>${h.de.login}</td>"
-            html += "<td title='${h.para.persona ? h.para.persona.nombre + ' ' + h.para.persona.apellido : h.para.departamento.descripcion}'>" +
-                    "${h.para.persona ? h.para.persona.login : h.para.departamento.codigo}</td>"
+            html += "<td title='${h.para?.persona ? h.para?.persona?.nombre + ' ' + h.para?.persona?.apellido : h.para?.departamento?.descripcion}'>" +
+                    "${h.para?.persona ? h.para?.persona.login : h.para?.departamento?.codigo}</td>"
             html += "<td>${h.prioridad.descripcion}</td>"
             html += "<td>${h.fechaMaximoRespuesta ? h.fechaMaximoRespuesta.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
-            html += "<td>${h.para.fechaRecepcion ? h.para.fechaRecepcion.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
+            html += "<td>${h.para?.fechaRecepcion ? h.para?.fechaRecepcion.format('dd-MM-yyyy HH:mm') : 'no recibido'}</td>"
             html += "<td>${h.estadoTramite.descripcion}</td>"
             html += "</tr>"
             creaHtmlSeguimiento(h, selected, nc)

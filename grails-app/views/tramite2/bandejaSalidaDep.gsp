@@ -113,6 +113,7 @@
                 </g:link>
             </div>
 
+         <div style="float: right">
             <div data-type="" class="alert borrador alertas" clase="E001">
                 (<span id="numBor"></span>)
             ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
@@ -127,6 +128,7 @@
                 (<span id="numNoRec"></span>)
             No recibidos
             </div>
+         </div>
         </div>
 
         <div class="buscar" hidden="hidden" style="margin-bottom: 20px">
@@ -413,47 +415,6 @@
                     }
                 };
 
-                %{--var desenviar = {--}%
-                %{--text   : 'Quitar el enviado',--}%
-                %{--icon   : "<i class='fa fa-magic text-danger'></i>",--}%
-                %{--action : function (e) {--}%
-                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                %{--bootbox.dialog({--}%
-                %{--title   : "Alerta",--}%
-                %{--message : "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i><p>" +--}%
-                %{--"¿Está seguro que desea quitar el enviado del trámite seleccionado?<br/>Esta acción no se puede deshacer.</p>",--}%
-                %{--buttons : {--}%
-                %{--cancelar  : {--}%
-                %{--label     : "Cancelar",--}%
-                %{--className : "btn-primary",--}%
-                %{--callback  : function () {--}%
-                %{--}--}%
-                %{--},--}%
-                %{--desenviar : {--}%
-                %{--label     : "<i class='fa fa-magic'></i> Quitar enviado",--}%
-                %{--className : "btn-danger",--}%
-                %{--callback  : function () {--}%
-                %{--openLoader("Quitando el enviado");--}%
-                %{--$.ajax({--}%
-                %{--type    : "POST",--}%
-                %{--url     : '${createLink(action:'desenviar_ajax')}',--}%
-                %{--data    : {--}%
-                %{--id : id--}%
-                %{--},--}%
-                %{--success : function (msg) {--}%
-                %{--var parts = msg.split("_");--}%
-                %{--log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)--}%
-                %{--if (parts[0] == "OK") {--}%
-                %{--location.reload(true);--}%
-                %{--}--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--}--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--};--}%
 
                 context.attach(".E001", [
                     {
@@ -461,19 +422,7 @@
                     },
                     ver,
                     arbol,
-                    editar,
-
-                    %{--<g:if test="${revisar}">,--}%
-                    %{--{--}%
-                    %{--text   : 'Revisar',--}%
-                    %{--icon   : "<i class='fa fa-check'></i>",--}%
-                    %{--action : function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                    %{--location.href = "${g.createLink(action: 'revision',controller: 'tramite2')}/" + id--}%
-                    %{--}--}%
-
-                    %{--}--}%
-                    %{--</g:if>--}%
+                    editar
                 ]);
 
                 context.attach(".E001.conPadre", [
@@ -484,17 +433,6 @@
                     arbol,
                     editar,
                     crearHermano
-                    %{--<g:if test="${revisar}">,--}%
-                    %{--{--}%
-                    %{--text   : 'Revisar',--}%
-                    %{--icon   : "<i class='fa fa-check'></i>",--}%
-                    %{--action : function (e) {--}%
-                    %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                    %{--location.href = "${g.createLink(action: 'revision',controller: 'tramite2')}/" + id--}%
-                    %{--}--}%
-
-                    %{--}--}%
-                    %{--</g:if>--}%
                 ]);
 
                 context.attach(".E001.sumilla", [
@@ -600,7 +538,8 @@
                         header : 'Acciones'
                     },
                     editar,
-                    detalles
+                    detalles,
+                    crearHermano
 
                 ]);
 
@@ -619,6 +558,7 @@
                     },
                     detalles,
                     arbol,
+                    crearHermano,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla", [
@@ -627,6 +567,7 @@
                     },
                     detalles,
                     arbol,
+                    crearHermano,
                     desenviar
                 ]);
                 context.attach(".alerta.desenviar.sumilla.conPadre", [

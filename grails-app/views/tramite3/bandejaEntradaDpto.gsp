@@ -40,7 +40,7 @@
         }
 
         .container-celdas {
-            width      : 1070px;
+            width      : 1139px;
             height     : 310px;
             float      : left;
             overflow   : auto;
@@ -118,6 +118,8 @@
                 </a>
             </div>
 
+            <div style="float: right">
+
             <div data-type="pendiente" class="alert alert-blanco alertas">
                 <span id="spanPendientes" class="counter" data-class="porRecibir">(0)</span>
                 Por recibir
@@ -136,6 +138,7 @@
             <div data-type="retrasado" class="alert alert-danger alertas">
                 <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span>
                 Retrasados
+            </div>
             </div>
 
             %{--<div data-type="jefe" class="alert alert-azul alertas">--}%

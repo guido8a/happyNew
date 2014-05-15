@@ -62,11 +62,7 @@
         font-weight: bold;
 
     }
-
-
     </style>
-
-
 
 </head>
 
@@ -80,13 +76,14 @@
         <legend class="negrilla">Búsqueda de Trámites Externos</legend>
 
         <div>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-right: 20px">
                 <label for="memorando">Documento</label>
-                <g:textField name="memorando" value="" maxlength="15" class="form-control" style="width: 200px; margin-right: 20px"/>
+                <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
+
             </div>
 
-            <div style="padding-top: 22px">
-                <a href="#" name="busqueda" class="btn btn-success btnBusqueda" style="margin-left: 35px"><i class="fa fa-check-square-o"></i> Buscar</a>
+            <div class="col-md-2">
+            <a href="#" name="busqueda" class="btn btn-success btnBusqueda" style="margin-top: 22px"><i class="fa fa-check-square-o"></i> Buscar</a>
             </div>
 
         </div>
@@ -100,44 +97,106 @@
 
 </div>
 
+
+<div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Detalles</h4>
+            </div>
+
+            %{--<div style="margin-bottom: 20px;min-height: 140px" class="vertical-container">--}%
+                %{--<p class="css-vertical-text">Detalles</p>--}%
+                <div class="modal-body" id="dialog-body" style="padding: 15px">
+
+                </div>
+            %{--</div>       --}%
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 <script type="text/javascript">
 
 
-    function loading(div) {
-        y = 0;
-        $("#" + div).html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-        var interval = setInterval(function () {
-            if (y == 30) {
-                $("#detalle").html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>")
-                y = 0
-            }
-            $("#loading").append(".");
-            y++
-        }, 500);
-        return interval
-    }
+    var detalles = {
+        text   : 'Detalles',
+        icon   : "<i class='fa fa-search'></i>",
+        action : function (e) {
+            $("tr.trHighlight").removeClass("trHighlight");
+            e.preventDefault();
+            $.ajax({
+                type    : 'POST',
+                url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                data    : {
+                    id : id
+                },
+                success : function (msg) {
+                    $("#dialog-body").html(msg)
+                }
+            });
+            $("#dialog").modal("show")
+        }
+    };
 
+    context.settings({
+        onShow : function (e) {
+            $("tr.trHighlight").removeClass("trHighlight");
+            var $tr = $(e.target).parents("tr");
+            $tr.addClass("trHighlight");
+            id = $tr.data("id");
+//            idPxt = $tr.attr("prtr");
+//            archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
+//            valAnexo = $tr.attr("anexo");
+        }
+    });
+
+    context.attach('tr', [
+        {
+            header : 'Acciones'
+        },
+
+        detalles
+
+    ]);
 
 
     $(".btnBusqueda").click(function () {
 
-        var interval = loading("tabla")
-
         var memorando = $("#memorando").val();
-
         var datos = "memorando=" + memorando
 
-        $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'seguimientoExternos')}",
+        $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
             data: datos,
             success: function (msg) {
-                clearInterval(interval)
+                openLoader();
                 $("#tabla"). html(msg);
-
+                closeLoader();
             }
         });
-
     });
 
+
+    $("input").keyup(function (ev) {
+        if (ev.keyCode == 13) {
+
+            var memorando = $("#memorando").val();
+            var datos = "memorando=" + memorando
+
+            $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
+                data: datos,
+                success: function (msg) {
+                    openLoader();
+                    $("#tabla"). html(msg);
+                    closeLoader();
+                }
+            });
+
+        }
+    });
 
 
 </script>

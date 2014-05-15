@@ -39,7 +39,7 @@
 
     <div class="linea"></div>
 
-    <h3>${tramite.tipoDocumento?.descripcion} ${tramite.codigo} (prioridad: ${tramite.prioridad?.descripcion})</h3>
+    <h3>${tramite?.tipoDocumento?.descripcion} ${tramite?.codigo} (prioridad: ${tramite?.prioridad?.descripcion})</h3>
 
     <div class="row">
         <div class="col-xs-1 negrilla">
@@ -48,15 +48,15 @@
 
         <div class="col-xs-11" style="padding: 0">
             <span class="text-primary">
-                ${"" + tramite.de.departamento.codigo + ": " + tramite.de}
+                ${"" + tramite?.de?.departamento?.codigo + ": " + tramite?.de}
             </span>,
         creado el
             <span class="text-primary">
-                ${tramite.fechaCreacion?.format('dd-MM-yyyy HH:mm')}
+                ${tramite?.fechaCreacion?.format('dd-MM-yyyy HH:mm')}
             </span>,
         enviado el
             <span class="text-primary">
-                ${tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}
+                ${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}
             </span>
         </div>
     </div>
@@ -67,10 +67,10 @@
         </div>
 
         <div class="col-xs-11 text-primary" style="padding-left: 0">
-            ${tramite.para.persona ? tramite.para.persona.nombre + " " + tramite.para.persona.apellido : tramite.para.departamento.descripcion}
-            <g:if test="${tramite.para.fechaRecepcion}">
+            ${tramite?.para?.persona ? tramite?.para?.persona?.nombre + " " + tramite?.para?.persona?.apellido : tramite?.para?.departamento?.descripcion}
+            <g:if test="${tramite?.para?.fechaRecepcion}">
                 <span class="text-success">
-                    (recibido el ${tramite.para.fechaRecepcion.format("dd-MM-yyyy HH:mm")})
+                    (recibido el ${tramite?.para?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")})
                 </span>
             </g:if>
             <g:else>
@@ -82,17 +82,17 @@
     </div>
 
     <div class="row">
-        <g:if test="${tramite.copias.size() > 0}">
+        <g:if test="${tramite?.copias?.size() > 0}">
             <div class="col-xs-1  negrilla">
                 CC:
             </div>
 
             <div class="col-xs-8 text-primary" style="padding: 0">
-                <g:each in="${tramite.copias}" var="c" status="i">
+                <g:each in="${tramite?.copias}" var="c" status="i">
                     ${(c.persona ? c.persona.nombre + " " + c.persona.apellido : c.departamento.descripcion)}
-                    <g:if test="${c.fechaRecepcion}">
+                    <g:if test="${c?.fechaRecepcion}">
                         <span class="text-success">
-                            (recibido el ${c.fechaRecepcion.format("dd-MM-yyyy HH:mm")})
+                            (recibido el ${c?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")})
                         </span>
                     </g:if>
                     <g:else>
@@ -100,7 +100,7 @@
                             (no recibido)
                         </span>
                     </g:else>
-                    <g:if test="${i < tramite.copias.size() - 1}">
+                    <g:if test="${i < tramite?.copias?.size() - 1}">
                         ,
                     </g:if>
                 </g:each>
@@ -108,14 +108,14 @@
         </g:if>
     </div>
 
-    <g:if test="${tramite.observaciones}">
+    <g:if test="${tramite?.observaciones}">
         <div class="row">
             <div class="col-xs-1 negrilla">
                 Observaciones:
             </div>
 
             <div class="col-xs-11 text-primary" style="padding: 0">
-                ${tramite.observaciones}
+                ${tramite?.observaciones}
             </div>
         </div>
     </g:if>
@@ -126,7 +126,7 @@
         </div>
 
         <div class="col-xs-11 text-primary" style="padding: 0">
-            ${tramite.asunto}
+            ${tramite?.asunto}
         </div>
     </div>
 </div>

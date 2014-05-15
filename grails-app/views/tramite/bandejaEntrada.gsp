@@ -116,36 +116,38 @@
 
             </div>
 
-            <div>
+        <div style="float: right">
+            %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-blanco alertas" clase="porRecibir">
                     (<span id="numEnv"></span>)
                 Por recibir
-                %{--Pendientes--}%
                 </div>
-            </div>
+            %{--</div>--}%
 
 
-            <div>
+            %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
                     (<span id="numPen"></span>)
                 Sin Recepción
-                %{--No recibidos--}%
                 </div>
-            </div>
+            %{--</div>--}%
 
-            <div>
+            %{--<div>--}%
                 <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
                     (<span id="numRec"></span>)
                 Recibidos
                 </div>
-            </div>
+            %{--</div>--}%
 
-            <div>
+            %{--<div>--}%
                 <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
                     (<span id="numRet"></span>)
                 Retrasados
                 </div>
-            </div>
+            %{--</div>--}%
+        </div>
+
+
         </div>
 
 
