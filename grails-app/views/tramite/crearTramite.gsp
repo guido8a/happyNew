@@ -369,9 +369,9 @@
                 <div class="row hide" id="divParaExt">
                     <div class="col-xs-12 ">
                         <span class="grupo">
-                            <b>Para:</b>
+                            <b>Para externo:</b>
                             <input type="text" name="paraExt2" class="form-control required" maxlength="63"
-                                   style="width:200px; display: inline" value="${tramite.paraExterno}"/>
+                                   style="width:460px; display: inline" value="${tramite.paraExterno}"/>
                         </span>
                     </div>
                 </div>
