@@ -78,7 +78,7 @@
 
             <g:set var="abierto" value="${false}"/>
 
-            <g:if test="${Sesn.findAllByUsuarioAndPerfil(session.usuario, Prfl.findByCodigo('ADM')) != 0}">
+            <g:if test="${Sesn.findAllByUsuarioAndPerfil(session.usuario, Prfl.findByCodigo('ADM')) != 0 || happy.utilitarios.Parametros.list().first().validaLDAP == 0}">
                 <g:set var="abierto" value="${true}"/>
                 <div class="panel panel-default">
                     <div class="panel-heading">

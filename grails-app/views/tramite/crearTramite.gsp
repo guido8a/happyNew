@@ -366,6 +366,16 @@
 
                 </div>
 
+                <div class="row hide" id="divParaExt">
+                    <div class="col-xs-12 ">
+                        <span class="grupo">
+                            <b>Para:</b>
+                            <input type="text" name="paraExt2" class="form-control required" maxlength="63"
+                                   style="width:200px; display: inline" value="${tramite.paraExterno}"/>
+                        </span>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-xs-12 ">
                         <span class="grupo">
@@ -632,9 +642,7 @@
                 });
 
                 //removeAllSelected
-                var $ul = $("#ulSeleccionados");
-                $ul.find("li").addClass("selected");
-                moveSelected($ul, $("#ulDisponibles"), true);
+                removeAll();
 
                 switch (cod) {
                     case "CIR":
@@ -645,9 +653,9 @@
                         $divCc.addClass("hide");
                         //addAllDisponibles
 //                        $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
-                        var $ul = $("#ulDisponibles");
-                        $ul.find("li").addClass("selected");
-                        moveSelected($ul, $("#ulSeleccionados"), false);
+//                        var $ul = $("#ulDisponibles");
+//                        $ul.find("li").addClass("selected");
+//                        moveSelected($ul, $("#ulSeleccionados"), false);
 
                         $tituloCopia.text("Circular");
                         $divConfidencial.addClass("hide");
@@ -724,7 +732,10 @@
                 if (checked) {
                     $("#divCopia").removeClass("hide");
                 } else {
-                    $("#divCopia").addClass("hide");
+                    if (!$("#tipoDocumento option:selected").hasClass("CIR")) {
+                        $("#divCopia").addClass("hide");
+                        removeAll();
+                    }
                 }
             }
 
@@ -811,6 +822,12 @@
                 });
             }
 
+            function removeAll() {
+                var $ul = $("#ulSeleccionados");
+                $ul.find("li").addClass("selected");
+                moveSelected($ul, $("#ulDisponibles"), true);
+            }
+
             $(function () {
                 <g:if test="${bloqueo}">
                 $("#modalTabelGray").css({marginTop : "-20px", zIndex : "999"}).show()
@@ -852,6 +869,11 @@
                     var tipoDoc = $("#tipoDocumento").find("option:checked").attr("class");
                     if (tipoDoc == "OFI" || tipoDoc == "DEX") {
                         $(this).prop("checked", true);
+                    }
+                    if ($(this).is(":checked") && tipoDoc != "OFI" && tipoDoc != "DEX") {
+                        $("#divParaExt").removeClass("hide");
+                    } else {
+                        $("#divParaExt").addClass("hide");
                     }
                 });
 
@@ -911,17 +933,22 @@
                     var $ul = $("#ulDisponibles");
                     $ul.find("li").addClass("selected");
                     moveSelected($ul, $("#ulSeleccionados"), false);
+                    return false;
                 });
                 $("#btnAddSelected").click(function () {
                     moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false);
+                    return false;
                 });
                 $("#btnRemoveSelected").click(function () {
                     moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), true);
+                    return false;
                 });
                 $("#btnRemoveAll").click(function () {
-                    var $ul = $("#ulSeleccionados");
-                    $ul.find("li").addClass("selected");
-                    moveSelected($ul, $("#ulDisponibles"), true);
+//                    var $ul = $("#ulSeleccionados");
+//                    $ul.find("li").addClass("selected");
+//                    moveSelected($ul, $("#ulDisponibles"), true);
+                    removeAll();
+                    return false;
                 });
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {

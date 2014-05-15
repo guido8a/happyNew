@@ -38,7 +38,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             paramsTramite.externo = 0
         }
 
-        if(paramsTramite.externo == '1' || paramsTramite.externo == 1){
+        if (paramsTramite.externo == '1' || paramsTramite.externo == 1) {
             paramsTramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("EX03") //pendiente
         }
 
@@ -46,6 +46,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             paramsTramite.paraExterno = params.paraExt
         } else {
             paramsTramite.paraExterno = null
+        }
+        if (params.paraExt2) {
+            paramsTramite.paraExterno = params.paraExt2
         }
 
         paramsTramite.de = persona
@@ -107,8 +110,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 tramite.padre.estado = "C"
                 tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
                 tramite.padre.save(flush: true)
-                if(tramite.padre.estadoTramiteExterno){
-                    tramite.estadoTramiteExterno=tramite.padre.estadoTramiteExterno
+                if (tramite.padre.estadoTramiteExterno) {
+                    tramite.estadoTramiteExterno = tramite.padre.estadoTramiteExterno
 
                 }
                 tramite.save(flush: true)
