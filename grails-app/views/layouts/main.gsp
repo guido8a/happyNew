@@ -16,7 +16,7 @@
     <elm:bootstrapCss/>
 
     <!-- FontAwsome y mFizz: las fuentes con dibujitos para los iconos -->
-    <link href="${resource(dir: 'font-awesome-4.0.3/css', file: 'font-awesome.min.css')}" rel="stylesheet">
+    <link href="${resource(dir: 'font-awesome-4.1.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">
     <link href="${resource(dir: 'font-mfizz-1.2', file: 'font-mfizz.css')}" rel="stylesheet">
 
     <!-- JQuery -->

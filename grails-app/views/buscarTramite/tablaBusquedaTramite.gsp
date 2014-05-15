@@ -41,23 +41,47 @@
                         <g:set var="clase" value="${clase + ' conAnexo'}"/>
                     </g:if>
 
+                    <g:if test="${tramite?.fc_recp}">
+                        <g:set var="clase" value="${clase + ' recibido'}"/>
+                    </g:if>
+
                     <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}">
                         <td>
                             ${tramite?.trmtcdgo}
                             <g:if test="${tramite.trmtanxo == 1}">
                                 <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
                             </g:if>
+                            <g:if test="${tramite?.es_extr == 1}">
+                                (ext)
+                            </g:if>
                         </td>
 
-                        <g:if test="${tramite?.pr_prsn}">
-                            <td>${tramite?.pr_prsn}</td>
-                        </g:if>
-                        <g:elseif test="${tramite?.pr_dpto}">
-                            <td>${tramite?.pr_dpto}</td>
-                        </g:elseif>
-                        <g:else>
-                            <td></td>
-                        </g:else>
+                        <td>
+                            <g:if test="${tramite?.pr_prsn}">
+                                ${tramite?.pr_prsn}
+                            </g:if>
+                            <g:elseif test="${tramite?.pr_dpto}">
+                                ${tramite?.pr_dpto}
+                            </g:elseif>
+                            <g:if test="${tramite?.es_extr == 1 && tramite?.pr_extr}">
+                                (${tramite?.pr_extr})
+                            </g:if>
+                        </td>
+
+                        %{--<g:if test="${tramite?.es_extr == 1}">--}%
+                        %{--<td>--}%
+                        %{--${tramite?.pr_extr}--}%
+                        %{--</td>--}%
+                        %{--</g:if>--}%
+                        %{--<g:elseif test="${tramite?.pr_prsn}">--}%
+                        %{--<td>${tramite?.pr_prsn}</td>--}%
+                        %{--</g:elseif>--}%
+                        %{--<g:elseif test="${tramite?.pr_dpto}">--}%
+                        %{--<td>${tramite?.pr_dpto}</td>--}%
+                        %{--</g:elseif>--}%
+                        %{--<g:else>--}%
+                        %{--<td></td>--}%
+                        %{--</g:else>--}%
 
                         <td>${tramite?.en_prsn}</td>
 

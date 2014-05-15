@@ -3,7 +3,7 @@ package happy.tramites
 import happy.seguridad.Persona
 
 
-class BuscarTramiteController  extends happy.seguridad.Shield {
+class BuscarTramiteController extends happy.seguridad.Shield {
 
 //    def index() {
 //
@@ -11,12 +11,58 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 
     def dbConnectionService
 
-    def busquedaTramite () {
-
-
+    def busquedaTramite() {
     }
 
-    def tablaBusquedaTramite () {
+    def ampliarPlazo_ajax() {
+        def error = ""
+        params.each { k, v ->
+            if (k.contains("input")) {
+                def parts = k.split("_")
+                def persDocId = parts[1]
+                def persDocTram = PersonaDocumentoTramite.get(persDocId)
+                def fecha = new Date().parse("dd-MM-yyyy HH:mm", v.toString() + " " + persDocTram.fechaLimiteRespuesta.format("HH:mm"))
+
+                persDocTram.fechaLimiteRespuesta = fecha
+                if (!persDocTram.save(flush: true)) {
+                    error += renderErrors(bean: persDocTram)
+                }
+            }
+        }
+        if (error == "") {
+            render "OK_Plazo ampliado exitosamente"
+        } else {
+            render "NO_" + error
+        }
+    }
+
+    def ampliarPlazoUI_ajax() {
+        def tramite = Tramite.get(params.id)
+        def jefe = Persona.get(session.usuario.id)
+        def dpto = jefe.departamento
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        println "****************************"
+        println dpto.id
+
+        def personas = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            or {
+                eq("rolPersonaTramite", rolPara)
+                eq("rolPersonaTramite", rolCc)
+            }
+        }
+
+        println personas.persona.departamento.id
+        println personas.departamento.id
+        println "****************************"
+
+        return [tramite: tramite, jefe: jefe, personas: personas, dpto: dpto]
+    }
+
+    def tablaBusquedaTramite() {
 
 //        def tramite1 = Tramite.get(50)
 
@@ -25,17 +71,16 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
         def persona = session.usuario.id
 
         if (params.fecha) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 00:00:00")
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 23:59:59")
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
-        if(params.fechaRecepcion){
-            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion+" 00:00:00")
-            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion+" 23:59:59")
+        if (params.fechaRecepcion) {
+            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
+            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
         }
 
         def res = PersonaDocumentoTramite.withCriteria {
-
 
             if (params.fecha) {
                 gt('fechaEnvio', params.fechaIni)
@@ -45,9 +90,6 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 //            if(params.fechaRecepcion){
 //                gt('fechaRecepcion', params.fechaIniR)
 //                lt('fechaRecepcion', params.fechaFinR)
-//
-//
-//
 //            }
 
             tramite {
@@ -57,15 +99,11 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
-                if(params.fechaRecepcion){
+                if (params.fechaRecepcion) {
                     gt('fechaCreacion', params.fechaIniR)
                     lt('fechaCreacion', params.fechaFinR)
                 }
-
             }
-
-
-
         }
 
         def filtro = []
@@ -85,14 +123,14 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 //        println("filtro:" + filtro)
 //        println("filtrados:" + tramitesFiltrados)
 
-        tramitesFiltrados.sort{it.trmtcdgo}
+        tramitesFiltrados.sort { it.trmtcdgo }
 
 //        return [tramites: res, resTramites: filtro]
         return [tramites: tramitesFiltrados, persona: persona]
 
     }
 
-    def resTramites (Tramite tramite) {
+    def resTramites(Tramite tramite) {
 
         def sql = ""
 
@@ -112,48 +150,48 @@ class BuscarTramiteController  extends happy.seguridad.Shield {
 
     }
 
-    def busquedaEnviados () {
+    def busquedaEnviados() {
     }
 
-    def tablaBusquedaEnviados () {
+    def tablaBusquedaEnviados() {
 
 //        println("params" + params)
 
         if (params.fecha) {
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha+" 23:59:59")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
-        if(params.fechaRecepcion){
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion+" 00:00:00")
+        if (params.fechaRecepcion) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
         }
 
         def pers = Persona.get(session.usuario.id)
 
 
         def res = Tramite.withCriteria {
-                if (params.fecha) {
-                    ge('fechaEnvio', params.fechaIni)
-                    le('fechaEnvio', params.fechaFin)
-                }
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
-                }
-                if(pers.jefe == 1) {
-                    inList('de', Persona.findAllByDepartamento(pers.departamento))
-                    inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
-                } else {
-                    eq('de',pers)
-                    inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
-                }
-
-                order("estadoTramite",'desc')
-                order('codigo','desc')
+            if (params.fecha) {
+                ge('fechaEnvio', params.fechaIni)
+                le('fechaEnvio', params.fechaFin)
+            }
+            if (params.asunto) {
+                ilike('asunto', '%' + params.asunto + '%')
+            }
+            if (params.memorando) {
+                ilike('codigo', '%' + params.memorando + '%')
+            }
+            if (pers.jefe == 1) {
+                inList('de', Persona.findAllByDepartamento(pers.departamento))
+                inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
+            } else {
+                eq('de', pers)
+                inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
             }
 
-            return [persona: pers, tramites: res]
+            order("estadoTramite", 'desc')
+            order('codigo', 'desc')
         }
 
+        return [persona: pers, tramites: res]
     }
+
+}

@@ -5,7 +5,7 @@
   Time: 11:18 AM
 --%>
 
-<%@ page import="happy.tramites.Tramite" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona; happy.tramites.Tramite" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -194,10 +194,7 @@
                     $tr.addClass("trHighlight");
                     id = $tr.data("id");
                     padre = $tr.attr("padre");
-
                 }
-
-
             });
 
             var arbol = {
@@ -224,7 +221,7 @@
                             $("#dialog-body").html(msg)
                         }
                     });
-                    $("#dialog").modal("show")
+                    $("#dialog").modal("show");
                 }
             };
 
@@ -249,6 +246,57 @@
                 icon   : "<i class='fa fa-paperclip'></i>",
                 action : function (e) {
                     location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                }
+            };
+
+            var ampliarPlazo = {
+                text   : "Ampliar plazo",
+                icon   : "<i class='fa fa-arrows-h'></i>",
+                action : function (e) {
+                    $("tr.trHighlight").removeClass("trHighlight");
+                    e.preventDefault();
+                    $.ajax({
+                        type    : 'POST',
+                        url     : '${createLink(controller: 'buscarTramite', action: 'ampliarPlazoUI_ajax')}',
+                        data    : {
+                            id : id
+                        },
+                        success : function (msg) {
+                            bootbox.dialog({
+                                title   : "Ampmliar plazo",
+                                message : msg,
+                                class   : "long",
+                                buttons : {
+                                    cancelar : {
+                                        label     : "Cancelar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    },
+                                    guardar  : {
+                                        label     : "<i class='fa fa-save'></i> Guardar",
+                                        className : "btn-success",
+                                        callback  : function () {
+                                            var $frm = $("#frm-ampliar");
+                                            if ($frm.valid()) {
+                                                openLoader("Ampliando plazo");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : $frm.attr("action"),
+                                                    data    : $frm.serialize(),
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        closeLoader();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
                 }
             };
             %{--context.attach('tr', [--}%
@@ -280,7 +328,6 @@
                 {
                     header : 'Acciones'
                 },
-
                 detalles,
                 arbol,
                 //crearHermano
@@ -288,42 +335,69 @@
                 ,
                 administrar
                 </g:if>
-
             ]);
             context.attach('.padre.conAnexo', [
                 {
                     header : 'Acciones'
                 },
-
-        detalles,
-        arbol,
-        anexos            
-       //crearHermano
-       <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
-        ,administrar
-      </g:if>
-
+                detalles,
+                arbol,
+                anexos
+                //crearHermano
+                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+                ,
+                administrar
+                </g:if>
+            ]);
+            context.attach('.padre.recibido', [
+                {
+                    header : 'Acciones'
+                },
+                detalles,
+                arbol,
+                //crearHermano
+                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+                ,
+                administrar
+                </g:if>
+                <g:if test="${Persona.get(session.usuario.id).jefe == 1}">
+                ,
+                ampliarPlazo
+                </g:if>
+            ]);
+            context.attach('.padre.conAnexo.recibido', [
+                {
+                    header : 'Acciones'
+                },
+                detalles,
+                arbol,
+                anexos
+                //crearHermano
+                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+                ,
+                administrar
+                </g:if>
+                <g:if test="${Persona.get(session.usuario.id).jefe == 1}">
+                ,
+                ampliarPlazo
+                </g:if>
             ]);
 
             context.attach('.nada', [
                 {
                     header : 'Acciones'
                 },
-
                 detalles,
                 arbol
                 <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
                 ,
                 administrar
                 </g:if>
-
             ]);
-
             context.attach('.nada.conAnexo', [
                 {
                     header : 'Acciones'
                 },
-
                 detalles,
                 arbol,
                 anexos
@@ -331,7 +405,37 @@
                 ,
                 administrar
                 </g:if>
-
+            ]);
+            context.attach('.nada.recibido', [
+                {
+                    header : 'Acciones'
+                },
+                detalles,
+                arbol
+                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+                ,
+                administrar
+                </g:if>
+                <g:if test="${Persona.get(session.usuario.id).jefe == 1}">
+                ,
+                ampliarPlazo
+                </g:if>
+            ]);
+            context.attach('.nada.conAnexo.recibido', [
+                {
+                    header : 'Acciones'
+                },
+                detalles,
+                arbol,
+                anexos
+                <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+                ,
+                administrar
+                </g:if>
+                <g:if test="${Persona.get(session.usuario.id).jefe == 1}">
+                ,
+                ampliarPlazo
+                </g:if>
             ]);
 
             $(".btnBorrar").click(function () {

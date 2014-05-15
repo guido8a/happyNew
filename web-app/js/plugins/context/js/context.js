@@ -52,39 +52,42 @@ var context = context || (function () {
             compressed = options.compress ? ' compressed-context' : '',
             $menu = $('<ul class="dropdown-menu dropdown-context' + subClass + compressed + '" id="dropdown-' + id + '"></ul>');
         var i = 0, linkTarget = '';
+
         for (i; i < data.length; i++) {
-            if (typeof data[i].divider !== 'undefined') {
-                $menu.append('<li class="divider"></li>');
-            } else if (typeof data[i].header !== 'undefined') {
-                $menu.append('<li class="nav-header">' + data[i].header + '</li>');
-            } else {
-                if (typeof data[i].href == 'undefined') {
-                    data[i].href = '#';
-                }
-                if (typeof data[i].target !== 'undefined') {
-                    linkTarget = ' target="' + data[i].target + '"';
-                }
-                if (typeof data[i].subMenu !== 'undefined') {
-                    $sub = ('<li class="dropdown-submenu"><a tabindex="-1" href="' + data[i].href + '">' + (data[i].icon ? data[i].icon + " " : "") + data[i].text + '</a></li>');
+            if (data[i]) {
+                if (typeof data[i].divider !== 'undefined') {
+                    $menu.append('<li class="divider"></li>');
+                } else if (typeof data[i].header !== 'undefined') {
+                    $menu.append('<li class="nav-header">' + data[i].header + '</li>');
                 } else {
-                    $sub = $('<li><a tabindex="-1" href="' + data[i].href + '"' + linkTarget + '>' + (data[i].icon ? data[i].icon + " " : "") + data[i].text + '</a></li>');
+                    if (typeof data[i].href == 'undefined') {
+                        data[i].href = '#';
+                    }
+                    if (typeof data[i].target !== 'undefined') {
+                        linkTarget = ' target="' + data[i].target + '"';
+                    }
+                    if (typeof data[i].subMenu !== 'undefined') {
+                        $sub = ('<li class="dropdown-submenu"><a tabindex="-1" href="' + data[i].href + '">' + (data[i].icon ? data[i].icon + " " : "") + data[i].text + '</a></li>');
+                    } else {
+                        $sub = $('<li><a tabindex="-1" href="' + data[i].href + '"' + linkTarget + '>' + (data[i].icon ? data[i].icon + " " : "") + data[i].text + '</a></li>');
+                    }
+                    if (typeof data[i].action !== 'undefined') {
+                        var actiond = new Date(),
+                            actionID = 'event-' + actiond.getTime() * Math.floor(Math.random() * 100000),
+                            eventAction = data[i].action;
+                        $sub.find('a').attr('id', actionID);
+                        $('#' + actionID).addClass('context-event');
+                        $(document).on('click', '#' + actionID, eventAction);
+                    }
+                    $menu.append($sub);
+                    if (typeof data[i].subMenu != 'undefined') {
+                        var subMenuData = buildMenu(data[i].subMenu, id, true);
+                        $menu.find('li:last').append(subMenuData);
+                    }
                 }
-                if (typeof data[i].action !== 'undefined') {
-                    var actiond = new Date(),
-                        actionID = 'event-' + actiond.getTime() * Math.floor(Math.random() * 100000),
-                        eventAction = data[i].action;
-                    $sub.find('a').attr('id', actionID);
-                    $('#' + actionID).addClass('context-event');
-                    $(document).on('click', '#' + actionID, eventAction);
+                if (typeof options.filter == 'function') {
+                    options.filter($menu.find('li:last'));
                 }
-                $menu.append($sub);
-                if (typeof data[i].subMenu != 'undefined') {
-                    var subMenuData = buildMenu(data[i].subMenu, id, true);
-                    $menu.find('li:last').append(subMenuData);
-                }
-            }
-            if (typeof options.filter == 'function') {
-                options.filter($menu.find('li:last'));
             }
         }
         return $menu;
