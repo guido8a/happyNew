@@ -155,7 +155,7 @@
 
                 <div class="btn-group">
                     <g:link action="bandejaEntrada" class="btn btn-sm btn-success btnSave">
-                        <i class="fa fa-save"></i> Guardar y Terminar
+                        <i class="fa fa-save"></i> Guardar
                     </g:link>
                     <g:link action="bandejaEntrada" class="btn btn-sm btn-primary btnPrint">
                         <i class="fa fa-file"></i> PDF
