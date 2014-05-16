@@ -34,7 +34,14 @@ environments {
             password = "janus"
         }
     }
-
+    pruebasvt {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:postgresql://127.0.0.1:5432/pruebasvt"
+            username = "postgres"
+            password = "janus"
+        }
+    }
     produccionSAD {
         dataSource {
             dbCreate = "update"

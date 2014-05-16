@@ -22,8 +22,9 @@ class LoginController {
             LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP,"${user.getConnectionString()}","${pass}")
             println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
             println " "+prmt.textoCn
+            /*No borrar esta linea println */
             println "  exist "+ldap.exists("${prmt.textoCn}")
-            assert ! ldap.exists("${prmt.textoCn}")
+//            assert ! ldap.exists("${prmt.textoCn}")
 //            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
         }catch(e){
             println "no se conecto error: "+e
