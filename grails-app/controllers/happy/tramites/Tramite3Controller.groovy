@@ -937,8 +937,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
-        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.login
-        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.login
+        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo+":"+tramiteParaInfo.persona.login
+        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo+":"+tramiteParaInfo.tramite.de.login
         def rol = tramiteParaInfo.rolPersonaTramite
         def strInfo = ""
         if (rol.codigo == "R002") {
