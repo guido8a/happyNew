@@ -168,6 +168,10 @@ class DepartamentoController extends happy.seguridad.Shield {
         }
     }
 
+    def arbolReportes() {
+        return [params: params]
+    }
+
     def arbol() {
         return [params: params]
     }
