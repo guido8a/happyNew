@@ -63,6 +63,8 @@
         <!-- context menu para el click derecho -->
         <script src="${resource(dir: 'js/plugins/context/js', file: 'context.js')}"></script>
         <link href="${resource(dir: 'js/plugins/context/css', file: 'context.css')}" rel="stylesheet">
+        <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+        <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
         <!-- el timer para cerrar la sesion -->
         <script src="${resource(dir: 'js/plugins/jquery.countdown', file: 'jquery.countdown.min.js')}"></script>

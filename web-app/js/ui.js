@@ -36,14 +36,14 @@ bootbox.setDefaults({
 });
 
 //para el context menu deshabilita el click derecho en las paginas
-context.init({
-    preventDoubleContext : false
-});
-//context.attach('html', [
-//    {
-//        header : 'No click derecho!'
+//$("html").contextMenu({
+//    items  : {
+//        header : {
+//            label  : "No click derecho!!",
+//            header : true
+//        }
 //    }
-//]);
+//});
 
 $(".digits").keydown(function (ev) {
     return validarInt(ev);

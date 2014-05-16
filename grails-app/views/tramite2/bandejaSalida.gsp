@@ -119,26 +119,26 @@
                 </g:link>
             </div>
 
-        <div style="float: right">
-            <div data-type="" class="alert borrador alertas" clase="E001">
-                (<span id="numBor"></span>)
-            ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
-            </div>
+            <div style="float: right">
+                <div data-type="" class="alert borrador alertas" clase="E001">
+                    (<span id="numBor"></span>)
+                ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
+                </div>
 
-            %{--<div id="alertaEnviados">--}%
+                %{--<div id="alertaEnviados">--}%
                 <div data-type="enviado" class="alert enviado alertas" clase="E003">
                     (<span id="numEnv"></span>)
                 ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E003').descripcion)}
                 </div>
-            %{--</div>--}%
+                %{--</div>--}%
 
-            %{--<div id="alertaNoRecibidos">--}%
+                %{--<div id="alertaNoRecibidos">--}%
                 <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
                     (<span id="numNoRec"></span>)
                 Sin Recepción
                 </div>
-            %{--</div>--}%
-        </div>
+                %{--</div>--}%
+            </div>
         </div>
 
 
@@ -254,58 +254,46 @@
                 $("#numBor").html($(".E001").size())
             }
 
-            $("input").keyup(function (ev) {
-                if (ev.keyCode == 13) {
-                    $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-                    var memorando = $("#memorando").val();
-                    var asunto = $("#asunto").val();
-                    var fecha = $("#fechaBusqueda_input").val();
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
-                    $.ajax({
-                        type    : "POST",
-                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
-                        data    : datos,
-                        success : function (msg) {
-                            $("#bandeja").html(msg);
-                        }
-                    });
-                }
-            });
+            var selPersonal = '<p id="seleccionar"> </p>';
+            var $sel = $("#selector").clone();
 
-            $(function () {
+            function createContextMenu(node) {
+                var $tr = $(node);
 
-                <g:if test="${bloqueo}">
-                $("#bloqueo-salida").show();
-                </g:if>
+                var items = {
+                    header : {
+                        label  : "Sin Acciones",
+                        header : true
+                    }
+                };
 
-                $(".alertas").click(function () {
+                <g:if test="${!bloqueo}">
+                var id = $tr.data("id");
+                var codigo = $tr.attr("codigo");
+                var estado = $tr.attr("estado");
+                var padre = $tr.attr("padre");
+                var de = $tr.attr("de");
+                var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
 
-                    var clase = $(this).attr("clase");
-                    $("tr").each(function () {
-                        if ($(this).hasClass(clase)) {
-                            if ($(this).hasClass("trHighlight"))
-                                $(this).removeClass("trHighlight");
-                            else
-                                $(this).addClass("trHighlight")
-                        } else {
-                            $(this).removeClass("trHighlight")
-                        }
-                    });
+                var porEnviar = $tr.hasClass("E001"); //por enviar
+                var revisado = $tr.hasClass("E002"); //revisado
+                var enviado = $tr.hasClass("E003"); //enviado
+                var recibido = $tr.hasClass("E004"); //recibido
 
-                });
+                var esSumilla = $tr.hasClass("sumilla");
 
-                var estado;
-                var de;
-                var selPersonal = '<p id="seleccionar"> </p>';
-                var $sel = $("#selector").clone();
+                var tienePadre = $tr.hasClass("conPadre");
+                var tieneAlerta = $tr.hasClass("alerta");
+                var tieneAnexo = $tr.hasClass("conAnexo");
 
-                var imprimir = {
-                    text   : 'Permiso Imprimir',
-                    icon   : "<i class='fa fa-print'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
-                        var b = bootbox.dialog({
+                var puedeImprimir = $tr.hasClass("imprimir");
+                var puedeDesenviar = $tr.hasClass("desenviar");
+
+                var permisoImprimir = {
+                    label  : "Permiso de Imprimir",
+                    icon   : "fa fa-print",
+                    action : function () {
+                        bootbox.dialog({
                             id      : "dlgImprimir",
                             title   : "Permiso de impresión para el trámite:  " + codigo,
                             message : "<label style='margin-left: 30px; margin-top: 30px'>Personal:</label>" + selPersonal +
@@ -344,24 +332,20 @@
                             $("#seleccionar").append($sel);
                         }
                     }
-                };
+                }; //imprimir
 
                 var ver = {
-                    text   : 'Ver',
-                    icon   : "<i class='fa fa-search'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    label  : "Ver",
+                    icon   : "fa fa-search",
+                    action : function () {
                         window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
                     }
-                };
+                }; //ver
 
                 var detalles = {
-                    text   : 'Detalles',
-                    icon   : "<i class='fa fa-search'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+                    label  : "Detalles",
+                    icon   : "fa fa-search",
+                    action : function () {
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
@@ -372,57 +356,44 @@
                                 $("#dialog-body").html(msg)
                             }
                         });
-                        $("#dialog").modal("show")
+                        $("#dialog").modal("show");
                     }
-                };
+                }; //detalles
 
                 var arbol = {
-                    text   : 'Cadena del trámite',
-                    icon   : "<i class='fa fa-sitemap'></i>",
-                    action : function (e) {
-                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsp"
-                    }
-                };
+                    label : "Cadena del trámite",
+                    icon  : "fa fa-sitemap",
+                    url   : '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsp"
+                }; //arbol
 
                 var crearHermano = {
-                    text   : "Agregar documento al trámite",
-                    icon   : "<i class='fa fa-paste'></i>",
-                    action : function () {
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id;
-                    }
-                };
+                    label : "Agregar documento al trámite",
+                    icon  : "fa fa-paste",
+                    url   : '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id
+                }; //crear hermano
 
                 var editar = {
-                    text   : 'Editar',
-                    icon   : "<i class='fa fa-pencil'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        location.href = "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
-                    }
-                };
+                    label : "Editar",
+                    icon  : "fa fa-pencil",
+                    url   : "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
+                }; //editar
 
                 var editarSumilla = {
-                    text   : 'Editar',
-                    icon   : "<i class='fa fa-pencil'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        location.href = "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
-                    }
-                };
+                    label : "Editar",
+                    icon  : "fa fa-pencil",
+                    url   : "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
+                }; //editar sumilla
 
                 var anexos = {
-                    text   : 'Anexos',
-                    icon   : "<i class='fa fa-paperclip'></i>",
-                    action : function (e) {
-                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
-                    }
-                };
+                    label : "Anexos",
+                    icon  : "fa fa-paperclip",
+                    url   : '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                }; //anexos
 
                 var desenviar = {
-                    text   : 'Quitar el enviado',
-                    icon   : "<i class='fa fa-magic text-danger'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
+                    label  : "Quitar el enviado",
+                    icon   : "fa fa-magic text-danger",
+                    action : function () {
                         $.ajax({
                             type    : "POST",
                             url     : '${createLink(action:'desenviarLista_ajax')}',
@@ -453,7 +424,7 @@
                                                         ids += $(this).attr("id");
                                                     }
                                                 });
-                                                if(ids){
+                                                if (ids) {
                                                     openLoader("Quitando enviado");
                                                     $.ajax({
                                                         type    : "POST",
@@ -470,7 +441,7 @@
                                                             }
                                                         }
                                                     });
-                                                }else{
+                                                } else {
                                                     log('No seleccionó ninguna persona ', 'error')
                                                 }
 
@@ -483,235 +454,78 @@
                     }
                 };
 
-                var archivo, padre, id, codigo;
-
-                context.settings({
-                    onShow : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parents("tr");
-                        $tr.addClass("trHighlight");
-                        id = $tr.data("id");
-                        codigo = $tr.attr("codigo");
-                        estado = $tr.attr("estado");
-                        padre = $tr.attr("padre");
-                        de = $tr.attr("de");
-                        archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo")
+//                if (!revisado) {
+                items.header.label = "Acciones";
+                if (!esSumilla) {
+                    items.ver = ver;
+                }
+                items.detalles = detalles;
+                items.arbol = arbol;
+                if (porEnviar) {
+                    if (esSumilla) {
+                        items.editar = editarSumilla;
+                    } else {
+                        items.editar = editar;
                     }
-                });
-                <g:if test="${!bloqueo}">
-                context.attach(".E001", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    imprimir
-                ]);
-                context.attach(".E001.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    crearHermano,
-                    imprimir
-                ]);
-                context.attach(".E002", [
-                    {
-                        header : 'Sin Acciones'
-                    }
-
-                ]);
-                context.attach(".E003", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol
-                ]);
-                context.attach(".E003.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-                context.attach(".E004", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol
-                ]);
-                context.attach(".E004.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-
-                context.attach(".alerta", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol
-                ]);
-
-                context.attach(".alerta.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-
-                context.attach(".imprimir", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol
-                ]);
-
-                context.attach(".desenviar", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-//                    editar,
-                    desenviar
-                ]);
-
-                context.attach(".desenviar.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano,
-//                    editar,
-                    desenviar
-                ]);
-
-                context.attach(".E001.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    editarSumilla,
-                        detalles,
-                    crearHermano
-                ]);
-
-                context.attach(".E001.sumilla.conHermano", [
-                    {
-                        header : 'Acciones'
-                    },
-                        editar,
-                        detalles,
-                    crearHermano
-                ]);
-                context.attach(".E003.desenviar.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-                context.attach(".E003.desenviar.sumilla.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-                context.attach(".alerta.desenviar.sumilla.sinAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    desenviar
-                ]);
-                context.attach(".alerta.desenviar.sumilla.sinAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-
-                context.attach(".E001.sinSumilla.conAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    imprimir,
-                    anexos
-                ]);
-
-                context.attach(".E001.sinSumilla.conAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    crearHermano,
-                    imprimir,
-                    anexos
-                ]);
-
-                context.attach(".alerta.sinSumilla.conAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    anexos
-                ]);
-
-                context.attach(".alerta.sinSumilla.conAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    anexos
-                ]);
+                }
+                if (tienePadre) {
+                    items.hermano = crearHermano;
+                }
+                if (porEnviar) {
+                    items.imprimir = permisoImprimir;
+                }
+                if (tieneAnexo) {
+                    items.anexos = anexos;
+                }
+                if (enviado && puedeDesenviar) {
+                    items.desenviar = desenviar;
+                }
+//                }
 
                 </g:if>
+
+                return items;
+            }
+
+            $(function () {
+
+                $("input").keyup(function (ev) {
+                    if (ev.keyCode == 13) {
+                        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                        var memorando = $("#memorando").val();
+                        var asunto = $("#asunto").val();
+                        var fecha = $("#fechaBusqueda_input").val();
+                        var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
+                            data    : datos,
+                            success : function (msg) {
+                                $("#bandeja").html(msg);
+                            }
+                        });
+                    }
+                });
+
+                <g:if test="${bloqueo}">
+                $("#bloqueo-salida").show();
+                </g:if>
+
+                $(".alertas").click(function () {
+
+                    var clase = $(this).attr("clase");
+                    $("tr").each(function () {
+                        if ($(this).hasClass(clase)) {
+                            if ($(this).hasClass("trHighlight"))
+                                $(this).removeClass("trHighlight");
+                            else
+                                $(this).addClass("trHighlight")
+                        } else {
+                            $(this).removeClass("trHighlight")
+                        }
+                    });
+
+                });
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)
