@@ -14,7 +14,7 @@ class LoginController {
     def conecta(user,pass){
 
         def prmt = Parametros.findAll()[0]
-        println "conecta "+user+" pass  "+pass
+//        println "conecta "+user+" pass  "+pass
         def connect = true
         try{
             println "connect    "+user.getConnectionString()
