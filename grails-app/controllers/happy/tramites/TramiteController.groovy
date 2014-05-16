@@ -65,6 +65,7 @@ class TramiteController extends happy.seguridad.Shield {
             def ahora = new Date();
             def rolEnvia = RolPersonaTramite.findByCodigo("E004")
             def rolRecibe = RolPersonaTramite.findByCodigo("E003")
+            def rolPara = RolPersonaTramite.findByCodigo("R001")
 
             def estadoEnviado = EstadoTramite.findByCodigo('E003')
             def estadoRecibido = EstadoTramite.findByCodigo('E004')
@@ -89,6 +90,41 @@ class TramiteController extends happy.seguridad.Shield {
             if (!pdt2.save(flush: true)) {
                 println pdt2.errors
             }
+
+            def pdtPara = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tramite)
+                eq("rolPersonaTramite", rolPara)
+            }
+            if (pdtPara.size() > 0) {
+                def limite = ahora
+                limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
+                if (limite[0]) {
+                    limite = limite[1]
+                } else {
+                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+                    redirect(controller: 'tramite', action: 'errores')
+                    return
+                }
+                if (pdtPara.size() > 1) {
+                    println "Se encontraron varios pdtPara!! se utiliza el primero......."
+                }
+//                println "****************"
+//                println ahora
+//                println tramite.prioridad.descripcion
+//                println tramite.prioridad.tiempo
+//                println limite
+//                println "****************"
+                pdtPara = pdtPara.first()
+                pdtPara.fechaEnvio = ahora
+                pdtPara.fechaRecepcion = ahora
+                pdtPara.fechaLimiteRespuesta = limite
+                pdtPara.estado = estadoRecibido
+
+                if (!pdtPara.save(flush: true)) {
+                    println "error ala guardar pdtPara: " + pdtPara.errors
+                }
+            }
+
             tramite.fechaEnvio = ahora
             tramite.estadoTramite = estadoRecibido
             if (tramite.save(flush: true)) {

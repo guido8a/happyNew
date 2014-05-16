@@ -337,6 +337,7 @@
                                     closeLoader();
                                     var parts = msg.split("*");
                                     if (parts[0] == "OK") {
+                                        textoInicial = $("#editorTramite").val();
                                         location.href = parts[1];
                                     } else {
                                         bootbox.alert(parts[1]);

@@ -667,7 +667,7 @@
                         $divOrigen.removeClass("hide");
                         $divConfidencial.addClass("hide");
                         $divAnexos.removeClass("hide");
-                        $chkAnexos.prop("checked", true);
+//                        $chkAnexos.prop("checked", true);
 
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);

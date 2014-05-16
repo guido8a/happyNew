@@ -113,22 +113,22 @@
                 </g:link>
             </div>
 
-         <div style="float: right">
-            <div data-type="" class="alert borrador alertas" clase="E001">
-                (<span id="numBor"></span>)
-            ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
-            </div>
+            <div style="float: right">
+                <div data-type="" class="alert borrador alertas" clase="E001">
+                    (<span id="numBor"></span>)
+                ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E001').descripcion)}
+                </div>
 
-            <div data-type="enviado" class="alert enviado alertas" clase="E003">
-                (<span id="numEnv"></span>)
-            ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E003').descripcion)}
-            </div>
+                <div data-type="enviado" class="alert enviado alertas" clase="E003">
+                    (<span id="numEnv"></span>)
+                ${WordUtils.capitalizeFully(EstadoTramite.findByCodigo('E003').descripcion)}
+                </div>
 
-            <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
-                (<span id="numNoRec"></span>)
-            No recibidos
+                <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
+                    (<span id="numNoRec"></span>)
+                No recibidos
+                </div>
             </div>
-         </div>
         </div>
 
         <div class="buscar" hidden="hidden" style="margin-bottom: 20px">
@@ -415,7 +415,6 @@
                     }
                 };
 
-
                 context.attach(".E001", [
                     {
                         header : 'Acciones'
@@ -640,6 +639,15 @@
                     detalles,
                     arbol,
                     anexos,
+                    crearHermano
+                ]);
+
+                context.attach(".E001.sumilla.sinAnexo.conPadre", [
+                    {
+                        header : 'Acciones'
+                    },
+                    editarSumilla,
+                    detalles,
                     crearHermano
                 ]);
 
