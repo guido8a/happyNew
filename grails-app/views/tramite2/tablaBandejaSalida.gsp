@@ -132,7 +132,6 @@
 
 <script type="text/javascript">
     $(function () {
-//        console.log($("tr"));
         $("tr").contextMenu({
             items  : createContextMenu,
             onShow : function ($element) {

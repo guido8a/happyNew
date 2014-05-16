@@ -248,74 +248,50 @@
                 $("#numBor").html($(".E001").size())
             }
 
-            $(function () {
+            function createContextMenu(node) {
+                var $tr = $(node);
 
-                <g:if test="${bloqueo}">
-                $("#bloqueo-salida").show();
-                </g:if>
-
-                $(".alertas").click(function () {
-                    var clase = $(this).attr("clase");
-                    $("tr").each(function () {
-                        if ($(this).hasClass(clase)) {
-                            if ($(this).hasClass("trHighlight"))
-                                $(this).removeClass("trHighlight");
-                            else
-                                $(this).addClass("trHighlight")
-                        } else {
-                            $(this).removeClass("trHighlight")
-                        }
-                    });
-                });
-
-                var estado, de, id, codigo, archivo, padre;
-                context.settings({
-                    onShow : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parents("tr");
-                        $tr.addClass("trHighlight");
-                        id = $tr.data("id");
-                        codigo = $tr.attr("codigo");
-                        estado = $tr.attr("estado");
-                        de = $tr.attr("de");
-                        padre = $tr.attr("padre");
-                        archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo")
+                var items = {
+                    header : {
+                        label  : "Sin Acciones",
+                        header : true
                     }
-                });
+                };
+
                 <g:if test="${!bloqueo}">
+                var id = $tr.data("id");
+                var codigo = $tr.attr("codigo");
+                var estado = $tr.attr("estado");
+                var padre = $tr.attr("padre");
+                var de = $tr.attr("de");
+                var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
+
+                var porEnviar = $tr.hasClass("E001"); //por enviar
+                var revisado = $tr.hasClass("E002"); //revisado
+                var enviado = $tr.hasClass("E003"); //enviado
+                var recibido = $tr.hasClass("E004"); //recibido
+
+                var esSumilla = $tr.hasClass("sumilla");
+
+                var tienePadre = $tr.hasClass("conPadre");
+                var tieneAlerta = $tr.hasClass("alerta");
+                var tieneAnexo = $tr.hasClass("conAnexo");
+
+                var puedeImprimir = $tr.hasClass("imprimir");
+                var puedeDesenviar = $tr.hasClass("desenviar");
 
                 var ver = {
-                    text   : 'Ver',
-                    icon   : "<i class='fa fa-search'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        %{--location.href="${g.createLink(action: 'seguimientoTramite',controller: 'tramite3')}/"+id--}%
+                    label  : "Ver",
+                    icon   : "fa fa-search",
+                    action : function () {
                         window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
                     }
-                };
-
-                var arbol = {
-                    text   : 'Cadena del trámite',
-                    icon   : "<i class='fa fa-sitemap'></i>",
-                    action : function (e) {
-                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsd"
-                    }
-                };
-
-                var crearHermano = {
-                    text   : "Agregar documento al trámite",
-                    icon   : "<i class='fa fa-paste'></i>",
-                    action : function () {
-                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id;
-                    }
-                };
+                }; //ver
 
                 var detalles = {
-                    text   : 'Detalles',
-                    icon   : "<i class='fa fa-search'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+                    label  : "Detalles",
+                    icon   : "fa fa-search",
+                    action : function () {
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
@@ -326,40 +302,44 @@
                                 $("#dialog-body").html(msg)
                             }
                         });
-                        $("#dialog").modal("show")
+                        $("#dialog").modal("show");
                     }
-                };
+                }; //detalles
+
+                var arbol = {
+                    label : "Cadena del trámite",
+                    icon  : "fa fa-sitemap",
+                    url   : '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsp"
+                }; //arbol
+
+                var crearHermano = {
+                    label : "Agregar documento al trámite",
+                    icon  : "fa fa-paste",
+                    url   : '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id
+                }; //crear hermano
+
                 var editar = {
-                    text   : 'Editar',
-                    icon   : "<i class='fa fa-pencil'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        location.href = "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
-                    }
-                };
+                    label : "Editar",
+                    icon  : "fa fa-pencil",
+                    url   : "${g.createLink(action: 'redactar',controller: 'tramite')}/" + id
+                }; //editar
 
                 var editarSumilla = {
-                    text   : 'Editar',
-                    icon   : "<i class='fa fa-pencil'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        location.href = "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
-                    }
-                };
+                    label : "Editar",
+                    icon  : "fa fa-pencil",
+                    url   : "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
+                }; //editar sumilla
 
                 var anexos = {
-                    text   : 'Anexos',
-                    icon   : "<i class='fa fa-paperclip'></i>",
-                    action : function (e) {
-                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
-                    }
-                };
+                    label : "Anexos",
+                    icon  : "fa fa-paperclip",
+                    url   : '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                }; //anexos
 
                 var desenviar = {
-                    text   : 'Quitar el enviado',
-                    icon   : "<i class='fa fa-magic text-danger'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
+                    label  : "Quitar el enviado",
+                    icon   : "fa fa-magic text-danger",
+                    action : function () {
                         $.ajax({
                             type    : "POST",
                             url     : '${createLink(action:'desenviarLista_ajax')}',
@@ -390,22 +370,27 @@
                                                         ids += $(this).attr("id");
                                                     }
                                                 });
-                                                openLoader("Quitando enviado");
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : '${createLink(action:'desenviar_ajax')}',
-                                                    data    : {
-                                                        id  : id,
-                                                        ids : ids
-                                                    },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        if (parts[0] == "OK") {
-                                                            location.reload(true);
+                                                if (ids) {
+                                                    openLoader("Quitando enviado");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : '${createLink(action:'desenviar_ajax')}',
+                                                        data    : {
+                                                            id  : id,
+                                                            ids : ids
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            if (parts[0] == "OK") {
+                                                                location.reload(true);
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                } else {
+                                                    log('No seleccionó ninguna persona ', 'error')
+                                                }
+
                                             }
                                         }
                                     }
@@ -415,243 +400,58 @@
                     }
                 };
 
-                context.attach(".E001", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    arbol,
-                    editar
-                ]);
-
-                context.attach(".E001.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    arbol,
-                    editar,
-                    crearHermano
-                ]);
-
-                context.attach(".E001.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    editarSumilla
-                ]);
-                context.attach(".E003", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol
-                ]);
-                context.attach(".E003.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-                context.attach(".E004", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                ]);
-                context.attach(".E004.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-                context.attach(".alerta", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                ]);
-                context.attach(".alerta.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano
-                ]);
-                context.attach(".desenviar", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-//                    editar,
-                    desenviar
-                ]);
-                context.attach(".desenviar.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    crearHermano,
-//                    editar,
-                    desenviar
-                ]);
-
-                context.attach(".E001.sinSumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    arbol,
-                    editar
-                ]);
-
-                context.attach(".E001.sinSumilla.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    arbol,
-                    editar,
-                    crearHermano
-                ]);
-
-                context.attach(".E001.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    editar,
-                    detalles,
-                    crearHermano
-
-                ]);
-
-                context.attach(".E001.sumilla.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    editar,
-                    detalles,
-                    crearHermano
-
-                ]);
-                context.attach(".E003.desenviar.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-                context.attach(".alerta.desenviar.sumilla", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-                context.attach(".alerta.desenviar.sumilla.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-
-                context.attach(".alerta.desenviar.sumilla.sinAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    desenviar
-                ]);
-
-                context.attach(".alerta.desenviar.sumilla.sinAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    crearHermano,
-                    desenviar
-                ]);
-
-                context.attach(".E001.sinSumilla.conAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    anexos
-                ]);
-
-                context.attach(".E001.sinSumilla.conAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    editar,
-                    anexos,
-                    crearHermano
-                ]);
-
-                context.attach(".alerta.sinSumilla.conAnexo", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    anexos
-                ]);
-
-                context.attach(".alerta.sinSumilla.conAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    ver,
-                    detalles,
-                    arbol,
-                    anexos,
-                    crearHermano
-                ]);
-
-                context.attach(".E001.sumilla.sinAnexo.conPadre", [
-                    {
-                        header : 'Acciones'
-                    },
-                    editarSumilla,
-                    detalles,
-                    crearHermano
-                ]);
+//                if (!revisado) {
+                items.header.label = "Acciones";
+                if (!esSumilla) {
+                    items.ver = ver;
+                }
+                items.detalles = detalles;
+                items.arbol = arbol;
+                if (porEnviar) {
+                    if (esSumilla) {
+                        items.editar = editarSumilla;
+                    } else {
+                        items.editar = editar;
+                    }
+                }
+                if (tienePadre) {
+                    items.hermano = crearHermano;
+                }
+//                if (porEnviar) {
+//                    items.imprimir = permisoImprimir;
+//                }
+                if (tieneAnexo) {
+                    items.anexos = anexos;
+                }
+                if (enviado && puedeDesenviar) {
+                    items.desenviar = desenviar;
+                }
+//                }
 
                 </g:if>
+                return items;
+            }
+
+            $(function () {
+
+                <g:if test="${bloqueo}">
+                $("#bloqueo-salida").show();
+                </g:if>
+
+                $(".alertas").click(function () {
+                    var clase = $(this).attr("clase");
+                    $("tr").each(function () {
+                        if ($(this).hasClass(clase)) {
+                            if ($(this).hasClass("trHighlight"))
+                                $(this).removeClass("trHighlight");
+                            else
+                                $(this).addClass("trHighlight")
+                        } else {
+                            $(this).removeClass("trHighlight")
+                        }
+                    });
+                });
+
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)
                 });
