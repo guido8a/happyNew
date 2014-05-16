@@ -17,10 +17,10 @@ class LoginController {
 //        println "conecta "+user+" pass  "+pass
         def connect = true
         try{
-            println "connect    "+user.getConnectionString()
+//            println "connect    "+user.getConnectionString()
 //            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
             LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP,"${user.getConnectionString()}","${pass}")
-            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
+//            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
             println " "+prmt.textoCn
             /*No borrar esta linea println */
             println "  exist "+ldap.exists("${prmt.textoCn}")
