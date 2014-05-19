@@ -1,5 +1,6 @@
 package happy.tramites
 
+import happy.alertas.Alerta
 import happy.seguridad.Persona
 
 class TramiteAdminController {
@@ -127,6 +128,112 @@ class TramiteAdminController {
             msg = "OK"
         }
         render msg
+    }
+
+    def copiaParaLista_ajax() {
+        def persDocTram = PersonaDocumentoTramite.get(params.id)
+        def tramite = persDocTram.tramite
+        def de = tramite.de
+        def deDep = tramite.deDepartamento
+        def para = tramite.para
+        def persona = Persona.get(session.usuario.id)
+
+        def disp, disponibles = [], users = [], disp2 = [], todos = []
+
+        if (persona.puedeTramitar) {
+            disp = Departamento.list([sort: 'descripcion'])
+        } else {
+            disp = [persona.departamento]
+        }
+        disp.each { dep ->
+//            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+            if (dep.id == persona.departamento.id) {
+//                def users = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep)
+                usuarios.each {
+                    if (it.id != de.id) {
+                        if (!para.persona || (para.persona && para.personaId != it.id)) {
+                            users += it
+                        }
+                    }
+                }
+                for (int i = users.size() - 1; i > -1; i--) {
+                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                        users.remove(i)
+                    } else {
+                        if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
+                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                        }
+                    }
+                }
+            }
+        }
+
+        disp.each { dep ->
+            if (!deDep || (deDep && deDep.id != dep.id)) {
+                if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
+                    if (dep.triangulos.size() > 0) {
+                        if (!para.departamento || (para.departamento && para.departamentoId != dep.id)) {
+                            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                        }
+                    }
+                }
+            }
+        }
+        todos = disponibles + disp2
+
+        return [tramite: tramite, disponibles: todos]
+    }
+
+    def enviarCopias_ajax() {
+        def persDocTram = PersonaDocumentoTramite.get(params.id)
+        def tramite = persDocTram.tramite
+        def copias = params.copias.split("_")
+
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def estadoEnviado = EstadoTramite.findByCodigo("E003")
+
+        def errores = ""
+
+        copias.each { copia ->
+            def id = copia.toInteger()
+            def copiaPers = new PersonaDocumentoTramite()
+            if (id > 0) {
+                copiaPers.persona = Persona.get(id)
+            } else {
+                copiaPers.departamento = Departamento.get(id * -1)
+            }
+            copiaPers.fechaEnvio = new Date()
+            copiaPers.tramite = tramite
+            copiaPers.rolPersonaTramite = rolCopia
+            copiaPers.estado = estadoEnviado
+
+            if (!copiaPers.save(flush: true)) {
+                errores += "<li>" + renderErrors(bean: copiaPers) + "</li>"
+            } else {
+                def alerta = new Alerta()
+                alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                if (copiaPers.persona) {
+                    alerta.controlador = "tramite"
+                    alerta.accion = "bandejaEntrada"
+                    alerta.persona = copiaPers.persona
+                } else {
+                    alerta.departamento = copiaPers.departamento
+                    alerta.accion = "bandejaEntradaDpto"
+                    alerta.controlador = "tramite3"
+                }
+                alerta.datos = copiaPers.id
+                alerta.tramite = copiaPers.tramite
+                if (!alerta.save(flush: true)) {
+                    println "error save alerta " + alerta.errors
+                }
+            }
+        }
+        if (errores == "") {
+            render "OK"
+        } else {
+            render "NO*<ul>" + errores + "</ul>"
+        }
     }
 
     def arbolAdminTramite() {

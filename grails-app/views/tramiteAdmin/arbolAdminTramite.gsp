@@ -115,25 +115,71 @@
                 };
 
                 if (!estaAnulado && !estaArchivado) {
-                    if (esMio && estaEnviado) {
-                        items.copia = {
-                            separator_before : true,
-                            label            : "Copia para",
-                            icon             : "fa fa-files-o",
-                            action           : function () {
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : "some.php",
-                                    data    : {
-                                        name     : "John",
-                                        location : "Boston"
-                                    },
-                                    success : function (msg) {
-                                        alert("Data Saved: " + msg);
-                                    }
-                                });
-                            }
-                        };
+                    if (esMio) {
+                        if (estaEnviado) {
+                            items.copia = {
+                                separator_before : true,
+                                label            : "Copia para",
+                                icon             : "fa fa-files-o",
+                                action           : function () {
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
+                                        data    : {
+                                            id : nodeId
+                                        },
+                                        success : function (msg) {
+                                            bootbox.dialog({
+                                                id      : "dlgCopiaPara",
+                                                title   : '<i class="fa fa-files-o"></i> Copia para',
+                                                class   : "long",
+                                                message : msg,
+                                                buttons : {
+                                                    cancelar : {
+                                                        label     : '<i class="fa fa-times"></i> Cancelar',
+                                                        className : 'btn-danger',
+                                                        callback  : function () {
+                                                        }
+                                                    },
+                                                    enviar   : {
+                                                        id        : 'btnEnviarCopia',
+                                                        label     : '<i class="fa fa-check"></i> Enviar copias',
+                                                        className : "btn-success",
+                                                        callback  : function () {
+                                                            var cc = "";
+                                                            $("#ulSeleccionados li").not(".disabled").each(function () {
+                                                                cc += $(this).data("id") + "_";
+                                                            });
+                                                            openLoader("Enviando copias");
+                                                            $.ajax({
+                                                                type    : "POST",
+                                                                url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
+                                                                data    : {
+                                                                    id     : nodeId,
+                                                                    copias : cc
+                                                                },
+                                                                success : function (msg) {
+                                                                    var parts = msg.split("*");
+                                                                    if (parts[0] == 'OK') {
+                                                                        log("Copias enviadas exitosamente", 'success');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
+                                                                    } else if (msg == 'NO') {
+                                                                        closeLoader();
+                                                                        log(parts[1], 'error');
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            };
+                        }
                         if (tienePadre) {
                             items.crearHermano = {
                                 label  : "Agregar documento al trámite",
@@ -174,7 +220,7 @@
                                 });
                                 $container.append($res);
 
-                                $btn.click(function () {
+                                function buscarAsociar() {
                                     $res.html(spinner);
                                     var np = $.trim($input.val());
                                     $.ajax({
@@ -188,6 +234,16 @@
                                             $res.html(msg);
                                         }
                                     });
+                                }
+
+                                $input.keyup(function (e) {
+                                    if (e.keyCode == 13) {
+                                        buscarAsociar();
+                                    }
+                                });
+
+                                $btn.click(function () {
+                                    buscarAsociar();
                                     return false;
                                 });
 
