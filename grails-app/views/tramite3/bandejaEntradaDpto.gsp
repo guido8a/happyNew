@@ -508,6 +508,12 @@
 
                 }
 
+                if(sinRecepcion){
+                    items.recibir = recibir
+                    items.arbol = arbol
+
+                }
+
                 if(recibido){
                     items.contestar = contestar
                     <g:if test="${happy.seguridad.Persona.get(session.usuario.id).puedeArchivar}">

@@ -6,42 +6,40 @@
 --%>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
+
+<div style="height: 200px" class="container-celdas">
 <table class="table table-bordered table-condensed table-hover">
     <thead>
     <tr>
         <th class="cabecera">Documento</th>
-        <th class="cabecera" style="width: 150px;">Fecha Envío</th>
+        %{--<th class="cabecera" style="width: 150px;">Fecha Envío</th>--}%
         <th class="cabecera" style="width: 150px;">Fecha Recepción</th>
-        <th class="cabecera">De</th>
-        <th class="cabecera">Creado por</th>
-        <th class="cabecera">Para</th>
-        <th class="cabecera">Receptor</th>
+        %{--<th class="cabecera">De</th>--}%
+        %{--<th class="cabecera">Creado por</th>--}%
+        <th class="cabecera">Número Doc.Externo</th>
+        <th class="cabecera" style="text-align: center">Para</th>
+        <th class="cabecera">Institución</th>
+        <th class="cabecera">Contacto</th>
         <th class="cabecera">Estado</th>
     </tr>
 
     </thead>
     <tbody>
     <g:each in="${tramites}" var="tramite">
-
         <g:set var="now" value="${new java.util.Date()}"/>
-
         <g:set var="clase" value=""/>
-
-
         <tr data-id="${tramite?.id}"
             class="${clase}"
             codigo="${tramite.codigo}" departamento="${tramite?.de?.departamento?.codigo}"
             anexo="${anexo}" prtr="${tramite?.id}">
-
-                <td title="${tramite?.asunto}">
+            <td title="${tramite?.asunto}">
                     ${tramite?.codigo}
-                </td>
-
-            <td style="width: 150px;">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+            </td>
+            %{--<td style="width: 150px;">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>--}%
             <td style="width: 150px;">${tramite?.getPara()?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
-            <td title="${tramite?.de?.departamento?.descripcion}">${tramite?.de?.departamento?.codigo}</td>
-            <td title="${tramite?.de}">${tramite?.de?.login ?: tramite?.de?.toString()}</td>
-
+            %{--<td title="${tramite?.de?.departamento?.descripcion}">${tramite?.de?.departamento?.codigo}</td>--}%
+            %{--<td title="${tramite?.de}">${tramite?.de?.login ?: tramite?.de?.toString()}</td>--}%
+            <td style="width: 150px">${tramite?.numeroDocExterno}</td>
             <g:if test="${tramite?.getPara()?.persona}">
                 <td>${tramite?.getPara()?.persona?.nombre + " " + tramite?.getPara()?.persona?.apellido}</td>
             </g:if>
@@ -49,12 +47,14 @@
                 <td>${tramite?.getPara()?.departamento?.descripcion}</td>
             </g:else>
             <td>${tramite?.paraExterno}</td>
+            <td>${tramite?.contacto}</td>
             <td>${tramite?.estadoTramiteExterno?.descripcion}</td>
         </tr>
     </g:each>
 
     </tbody>
 </table>
+</div>
 
 <script type="text/javascript">
     $(function () {

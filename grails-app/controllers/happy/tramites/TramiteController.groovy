@@ -1258,85 +1258,126 @@ class TramiteController extends happy.seguridad.Shield {
 
     def tablaArchivados() {
 
-        //old
 
-//        def usuario = session.usuario
-//        def persona = Persona.get(usuario.id)
+//        def persona = Persona.get(session.usuario.id)
 //        def rolPara = RolPersonaTramite.findByCodigo('R001');
 //        def rolCopia = RolPersonaTramite.findByCodigo('R002');
 //
+//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
+//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
+//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
 //
-//        def pxtTodos = []
-//        def pxtTramites = []
+//        pxtPara += pxtCopia
 //
-//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
-//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-//
-//        pxtTodos = pxtPara
-//        pxtTodos += pxtCopia
-//
-//        pxtTodos.each {
-//            println("-->" + it?.tramite?.deDepartamento?.id)
-//            if (it?.tramite?.estadoTramite?.codigo == 'E005' && it?.tramite?.deDepartamento?.id == null) {
-//                pxtTramites.add(it)
-//            }
-//        }
+//        println("archivados:" +  pxtPara)
+//        return [tramites: pxtPara]
 
-        //nuevo
 
         def persona = Persona.get(session.usuario.id)
+        def departamento = persona?.departamento
+
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
-        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
+        def pxtPara = PersonaDocumentoTramite.withCriteria {
+            if(persona?.esTriangulo()){
+                eq("departamento", departamento)
+            }else{
+                eq("persona", persona)
+            }
+            eq("rolPersonaTramite", rolPara)
+            eq('estado', EstadoTramite.findByCodigo("E005"))
+            isNotNull("fechaEnvio")
+
+            or {
+                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+            }
+
+        }
+        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+            if(persona?.esTriangulo()){
+                eq("departamento", departamento)
+            }else{
+                eq("persona", persona)
+            }
+            eq("rolPersonaTramite", rolCopia)
+            eq('estado', EstadoTramite.findByCodigo("E005"))
+            isNotNull("fechaEnvio")
+
+            or {
+                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+            }
+
+        }
 
         pxtPara += pxtCopia
 
-//        println("archivados:" +  pxtPara)
-        return [tramites: pxtPara]
+
+     return [tramites: pxtPara]
+
+
     }
 
     def busquedaArchivados() {
 
-        //old
-//        def usuario = session.usuario
-//        def persona = Persona.get(usuario.id)
+
+//        def persona = Persona.get(session.usuario.id)
 //        def rolPara = RolPersonaTramite.findByCodigo('R001');
 //        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 //
-//        def pxtTodos = []
-//        def pxtTramites = []
-//
-//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolPara)
-//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolCopia)
-//        def pxtImprimir = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir)
+//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
+//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
+//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
 //
 //
-//        pxtTodos = pxtPara
-//        pxtTodos += pxtCopia
-//        pxtTodos += pxtImprimir
-//
-//        pxtTodos.each {
-//            if (it?.tramite?.estadoTramite?.codigo == 'E005') {
-//                pxtTramites += it
-//            }
-//        }
+//        pxtPara += pxtCopia
 
-        //nuevo
 
         def persona = Persona.get(session.usuario.id)
+        def departamento = persona?.departamento
+
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
-        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
-        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
+        def pxtPara = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolPara)
+            eq('estado', EstadoTramite.findByCodigo("E005"))
+            isNotNull("fechaEnvio")
 
+            or {
+                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+            }
+
+        }
+        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+            eq("departamento", departamento)
+            eq("rolPersonaTramite", rolCopia)
+            eq('estado', EstadoTramite.findByCodigo("E005"))
+            isNotNull("fechaEnvio")
+
+            or {
+                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
+                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+            }
+
+        }
 
         pxtPara += pxtCopia
+
+
+
 
 //        println("todos:" + pxtPara)
 
@@ -1363,7 +1404,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
 
-//        println("filtrados" + res)
+        println("filtrados" + res)
 
         return [tramites: res, pxtTramites: pxtPara]
 

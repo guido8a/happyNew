@@ -337,6 +337,9 @@
 
 
         $(".buscar").attr("hidden", true)
+        openLoader();
+        cargarBandeja();
+        closeLoader();
 
     });
 

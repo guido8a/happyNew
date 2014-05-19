@@ -54,6 +54,15 @@
         /*text-shadow: 0px 0px 1px #333;*/
     }
 
+    .container-celdas {
+        width      : 1000px;
+        height     : 150px;
+        float      : left;
+        overflow   : auto;
+        overflow-y : auto;
+    }
+
+
     .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
         background-color: #FFBD4C;
     }
@@ -69,7 +78,7 @@
 <body>
 
 
-<div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '650'}px;" class="well">
+<div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '700'}px;" class="well">
     <div class="page-header" style="margin-top: -10px;">
         <h1>S.A.D. Web</h1>
         <h3>
@@ -95,8 +104,16 @@
                 <div class="col-md-4" style="margin-right: 20px; text-align: left">
                     <label for="institucion">Institución Remitente</label>
                 </div>
-                <div class="col-md-2">
-                    <g:textField name="institucion" value="" maxlength="15" class="form-control" style="width: 180px"/>
+                <div class="col-md-5">
+                    <g:textField name="institucion" value="" maxlength="35" class="form-control" style="width: 350px"/>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                    <label for="contacto">Entregado por</label>
+                </div>
+                <div class="col-md-5">
+                    <g:textField name="contacto" value="" maxlength="35" class="form-control" style="width: 350px"/>
                 </div>
             </div>
             <div class="col-md-10">
@@ -107,14 +124,7 @@
                     <g:textField name="numero" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
                 </div>
             </div>
-            <div class="col-md-10">
-                <div class="col-md-4" style="margin-right: 20px; text-align: left">
-                    <label for="contacto">Entregado por</label>
-                </div>
-                <div class="col-md-2">
-                    <g:textField name="contacto" value="" maxlength="15" class="form-control" style="width: 180px"/>
-                </div>
-            </div>
+
             <div class="col-md-10">
                 <div class="col-md-4" style="margin-right: 20px; text-align: left">
                     <label for="codigo">Código del trámite</label>
@@ -185,10 +195,10 @@
 
     $(".btnBusqueda").click(function () {
 
-        var codigo = $("#codigo").val();
-        var contacto = $("#contacto").val();
-        var numero = $("#numero").val();
-        var institucion = $("#institucion").val();
+        var codigo = $("#codigo").val().toUpperCase();
+        var contacto = $("#contacto").val().toUpperCase();
+        var numero = $("#numero").val().toUpperCase();
+        var institucion = $("#institucion").val().toUpperCase();
 
         $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
             data: {
@@ -209,10 +219,10 @@
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
 
-            var codigo = $("#codigo").val();
-            var contacto = $("#contacto").val();
-            var numero = $("#numero").val();
-            var institucion = $("#institucion").val();
+            var codigo = $("#codigo").val().toUpperCase();
+            var contacto = $("#contacto").val().toUpperCase();
+            var numero = $("#numero").val().toUpperCase();
+            var institucion = $("#institucion").val().toUpperCase();
 
             $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
                 data: {
