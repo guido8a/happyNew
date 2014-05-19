@@ -217,8 +217,6 @@
 
         <script type="text/javascript">
 
-            var valAnexo
-
             $("input").keyup(function (ev) {
                 if (ev.keyCode == 13) {
 //                    submitForm($(".btnBusqueda"));
@@ -269,24 +267,45 @@
                 $("#numRec").html($(".recibido").size()); //recibido
             }
 
-            $(function () {
-                <g:if test="${bloqueo}">
-                $("#bloqueo-salida").show();
-                </g:if>
+            //nuevo contextMenu
+
+            function createContextMenu (node){
+                var $tr = $(node);
+
+                var items = {
+                  header : {
+                   label : "Sin Acciones",
+                      header: true
+                  }
+                };
+
+                <g:if test="${!bloqueo}">
+
+                var id = $tr.data("id");
+                var codigo = $tr.attr("codigo");
+                var estado = $tr.attr("estado");
+                var padre = $tr.attr("padre");
+                var de = $tr.attr("de");
+                var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
+                var idPxt = $tr.attr("prtr");
+                var valAnexo = $tr.attr("anexo");
+
+                var porRecibir = $tr.hasClass("porRecibir");
+                var sinRecepcion = $tr.hasClass("sinRecepcion");
+                var recibido = $tr.hasClass("recibido");
+                var retrasado = $tr.hasClass("retrasado");
+                var conAnexo = $tr.hasClass("conAnexo")
+
 
                 var contestar = {
-                    text   : 'Contestar Documento',
-                    icon   : "<i class='fa fa-external-link'></i>",
-                    action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
-                        location.href = "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt;
-                    }
+                    label   : 'Contestar Documento',
+                    icon   : "fa fa-external-link",
+                    url: "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt
                 };
 
                 var ver = {
-                    text   : 'Ver',
-                    icon   : "<i class='fa fa-search'></i>",
+                    label   : 'Ver',
+                    icon   : "fa fa-search",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -310,31 +329,11 @@
                 };
 
                 var recibir = {
-                    text   : 'Recibir Documento',
-                    icon   : "<i class='fa fa-check-square-o'></i>",
+                    label   : 'Recibir Documento',
+                    icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        %{--$.ajax({--}%
-                        %{--type    : 'POST',--}%
-                        %{--url     : "${createLink(action: 'recibir')}/" + id,--}%
-                        %{--success : function (msg) {--}%
-                        %{--var b = bootbox.dialog({--}%
-                        %{--id      : "dlgRecibido",--}%
-                        %{--title   : "Trámite a ser recibido",--}%
-                        %{--message : msg,--}%
-                        %{--buttons : {--}%
-                        %{--cancelar : {--}%
-                        %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
-                        %{--className : 'btn-danger',--}%
-                        %{--callback  : function () {--}%
-                        %{--}--}%
-                        %{--},--}%
-                        %{--recibir  : {--}%
-                        %{--id        : 'btnRecibir',--}%
-                        %{--label     : '<i class="fa fa-thumbs-o-up"></i> Recibir',--}%
-                        %{--className : 'btn-success',--}%
-                        %{--callback  : function () {--}%
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
@@ -353,18 +352,12 @@
                                 }
                             }
                         }); //ajax
-//                                            }
-//                                        }
-//                                    }
-//                                })
-//                            }
-//                        });
                     } //action
                 };
 
                 var seguimiento = {
-                    text   : 'Seguimiento Trámite',
-                    icon   : "<i class='fa fa-sitemap'></i>",
+                    label   : 'Seguimiento Trámite',
+                    icon   : "fa fa-sitemap",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -373,8 +366,8 @@
                 };
 
                 var detalles = {
-                    text   : 'Detalles',
-                    icon   : "<i class='fa fa-search'></i>",
+                    label   : 'Detalles',
+                    icon   : "fa fa-search",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -393,24 +386,24 @@
                 };
 
                 var anexos = {
-                    text   : 'Anexos',
-                    icon   : "<i class='fa fa-paperclip'></i>",
+                    label   : 'Anexos',
+                    icon   : "fa fa-paperclip",
                     action : function (e) {
                         location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
 
                 var arbol = {
-                    text   : 'Cadena del trámite',
-                    icon   : "<i class='fa fa-sitemap'></i>",
+                    label   : 'Cadena del trámite',
+                    icon   : "fa fa-sitemap",
                     action : function (e) {
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
                     }
                 };
 
                 var archivar = {
-                    text   : 'Archivar Documentos',
-                    icon   : "<i class='fa fa-folder-open-o'></i>",
+                    label   : 'Archivar Documentos',
+                    icon   : "fa fa-folder-open-o",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -471,8 +464,8 @@
                 };
 
                 var distribuir = {
-                    text   : 'Distribuir a Jefes',
-                    icon   : "<i class='fa fa-eye'></i>",
+                    label   : 'Distribuir a Jefes',
+                    icon   : "fa fa-eye",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -517,8 +510,8 @@
                 };
 
                 var anular = {
-                    text   : 'Anular Trámite',
-                    icon   : "<i class='fa fa-flash'></i>",
+                    label   : 'Anular Trámite',
+                    icon   : "fa fa-flash",
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
@@ -574,80 +567,390 @@
                     }
                 };
 
-                var archivo;
-//                var valAnexo;
-                context.settings({
-                    onShow : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parents("tr");
-                        $tr.addClass("trHighlight");
-                        id = $tr.data("id");
-                        idPxt = $tr.attr("prtr");
-                        archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
-                        valAnexo = $tr.attr("anexo");
-                    }
-                });
+                items.header.label = "Acciones";
 
-                context.attach('.porRecibir, .sinRecepcion', [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-                    </g:if>
-                    recibir
+                if(conAnexo){
+                    items.anexo = anexos
+                }
+                if(retrasado){
+                    items.detalles = detalles
+                    items.arbol = arbol
+                }
+                if(porRecibir){
+                    items.recibir = recibir
+                }
 
-                ]);
-                context.attach('.recibido, .retrasado', [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-                    </g:if>
-                    contestar,
+                if(recibido){
+                    items.contestar = contestar
+                }
+
+
+                <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                items.archivar = archivar
+                </g:if>
+
+                </g:if>
+
+
+                return items
+            }
+
+            //old
+            $(function () {
+                %{--<g:if test="${bloqueo}">--}%
+                %{--$("#bloqueo-salida").show();--}%
+                %{--</g:if>--}%
+
+                %{--var contestar = {--}%
+                    %{--text   : 'Contestar Documento',--}%
+                    %{--icon   : "<i class='fa fa-external-link'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--location.href = "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt;--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var ver = {--}%
+                    %{--text   : 'Ver',--}%
+                    %{--icon   : "<i class='fa fa-search'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
+                        %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+
+                        %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(action: 'revisarConfidencial')}/' + id,--}%
+                            %{--success : function (msg) {--}%
+                                %{--if (msg == 'ok') {--}%
+                                    %{--window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");--}%
+                                %{--} else if (msg == 'no') {--}%
+%{--//                                    log("No tiene permiso para ver este trámite", 'danger')--}%
+                                    %{--bootbox.alert('No tiene permiso para ver el PDF de este trámite')--}%
+                                %{--}--}%
+                            %{--}--}%
+
+                        %{--});--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var recibir = {--}%
+                    %{--text   : 'Recibir Documento',--}%
+                    %{--icon   : "<i class='fa fa-check-square-o'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            %{--url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "?source=bep",--}%
+                            %{--success : function (msg) {--}%
+                                %{--var parts = msg.split('_')--}%
+                                %{--openLoader();--}%
+                                %{--cargarBandeja();--}%
+                                %{--closeLoader();--}%
+                                %{--if (parts[0] == 'NO') {--}%
+                                    %{--log(parts[1], "error");--}%
+                                %{--} else if (parts[0] == "OK") {--}%
+                                    %{--log(parts[1], "success")--}%
+                                %{--} else if (parts[0] == "ERROR") {--}%
+                                    %{--bootbox.alert(parts[1]);--}%
+                                %{--}--}%
+                            %{--}--}%
+                        %{--}); //ajax--}%
+                    %{--} //action--}%
+                %{--};--}%
+
+                %{--var seguimiento = {--}%
+                    %{--text   : 'Seguimiento Trámite',--}%
+                    %{--icon   : "<i class='fa fa-sitemap'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id + "?pers=1";--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var detalles = {--}%
+                    %{--text   : 'Detalles',--}%
+                    %{--icon   : "<i class='fa fa-search'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(controller: 'tramite3', action: 'detalles')}',--}%
+                            %{--data    : {--}%
+                                %{--id : id--}%
+                            %{--},--}%
+                            %{--success : function (msg) {--}%
+                                %{--$("#dialog-body").html(msg)--}%
+                            %{--}--}%
+                        %{--});--}%
+                        %{--$("#dialog").modal("show")--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var anexos = {--}%
+                    %{--text   : 'Anexos',--}%
+                    %{--icon   : "<i class='fa fa-paperclip'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var arbol = {--}%
+                    %{--text   : 'Cadena del trámite',--}%
+                    %{--icon   : "<i class='fa fa-sitemap'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var archivar = {--}%
+                    %{--text   : 'Archivar Documentos',--}%
+                    %{--icon   : "<i class='fa fa-folder-open-o'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--$.ajax({--}%
+                            %{--type    : "POST",--}%
+                            %{--url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",--}%
+                            %{--data    : {--}%
+                                %{--id   : idPxt,--}%
+%{--//                                id   : id,--}%
+                                %{--tipo : "archivar"--}%
+                            %{--},--}%
+                            %{--success : function (msg) {--}%
+                                %{--var b = bootbox.dialog({--}%
+                                    %{--id      : "dlgArchivar",--}%
+                                    %{--title   : 'Archivar Tramite',--}%
+                                    %{--message : msg,--}%
+                                    %{--buttons : {--}%
+                                        %{--cancelar : {--}%
+                                            %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                                            %{--className : 'btn-danger',--}%
+                                            %{--callback  : function () {--}%
+
+                                            %{--}--}%
+                                        %{--},--}%
+                                        %{--archivar : {--}%
+                                            %{--id        : 'btnArchivar',--}%
+                                            %{--label     : '<i class="fa fa-check"></i> Archivar',--}%
+                                            %{--className : "btn-success",--}%
+                                            %{--callback  : function () {--}%
+
+                                                %{--$.ajax({--}%
+                                                    %{--type    : 'POST',--}%
+                                                    %{--url     : '${createLink(action: 'archivar')}/' + idPxt,--}%
+                                                    %{--data    : {--}%
+                                                        %{--texto : $("#observacionArchivar").val()--}%
+                                                    %{--},--}%
+                                                    %{--success : function (msg) {--}%
+                                                        %{--openLoader();--}%
+                                                        %{--cargarBandeja();--}%
+                                                        %{--closeLoader();--}%
+                                                        %{--if (msg == 'ok') {--}%
+                                                            %{--log("Trámite archivado correctamente", 'success')--}%
+                                                        %{--} else if (msg == 'no') {--}%
+                                                            %{--log("Error al archivar el trámite", 'error')--}%
+                                                        %{--}--}%
+                                                    %{--}--}%
+                                                %{--});--}%
+                                            %{--}--}%
+                                        %{--}--}%
+                                    %{--}--}%
+                                %{--})--}%
+
+                            %{--}--}%
+
+                        %{--});--}%
+                    %{--}--}%
+
+                %{--};--}%
+
+                %{--var distribuir = {--}%
+                    %{--text   : 'Distribuir a Jefes',--}%
+                    %{--icon   : "<i class='fa fa-eye'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--$.ajax({--}%
+                            %{--type    : "POST",--}%
+                            %{--url     : "${createLink(action: 'observaciones')}/" + id,--}%
+                            %{--success : function (msg) {--}%
+                                %{--var b = bootbox.dialog({--}%
+                                    %{--id      : "dlgObservaciones",--}%
+                                    %{--title   : "Distribución al Jefe: Observaciones",--}%
+                                    %{--message : msg,--}%
+                                    %{--buttons : {--}%
+                                        %{--cancelar : {--}%
+                                            %{--label     : "Cancelar",--}%
+                                            %{--className : 'btn-danger',--}%
+                                            %{--callback  : function () {--}%
+                                            %{--}--}%
+                                        %{--},--}%
+                                        %{--guardar  : {--}%
+                                            %{--id        : 'btnSave',--}%
+                                            %{--label     : '<i class="fa fa-save"></i> Guardar',--}%
+                                            %{--className : "btn-success",--}%
+                                            %{--callback  : function () {--}%
+
+                                                %{--$.ajax({--}%
+                                                    %{--type    : 'POST',--}%
+                                                    %{--url     : '${createLink(action: 'guardarObservacion')}/' + id,--}%
+                                                    %{--data    : {--}%
+                                                        %{--texto : $("#observacion").val()--}%
+                                                    %{--},--}%
+                                                    %{--success : function (msg) {--}%
+                                                        %{--bootbox.alert(msg)--}%
+                                                    %{--}--}%
+                                                %{--});--}%
+                                            %{--}--}%
+                                        %{--}--}%
+                                    %{--}--}%
+                                %{--})--}%
+                            %{--}--}%
+                        %{--});--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var anular = {--}%
+                    %{--text   : 'Anular Trámite',--}%
+                    %{--icon   : "<i class='fa fa-flash'></i>",--}%
+                    %{--action : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--e.preventDefault();--}%
+                        %{--$.ajax({--}%
+                            %{--type    : "POST",--}%
+                            %{--url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",--}%
+                            %{--data    : {--}%
+                                %{--id   : id,--}%
+                                %{--tipo : "anular"--}%
+                            %{--},--}%
+                            %{--success : function (msg) {--}%
+                                %{--var b = bootbox.dialog({--}%
+                                    %{--id      : "dlgAnular",--}%
+                                    %{--title   : 'Anular Trámite',--}%
+                                    %{--message : msg,--}%
+                                    %{--buttons : {--}%
+                                        %{--cancelar : {--}%
+                                            %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                                            %{--className : 'btn-danger',--}%
+                                            %{--callback  : function () {--}%
+
+                                            %{--}--}%
+                                        %{--},--}%
+                                        %{--archivar : {--}%
+                                            %{--id        : 'btnAnular',--}%
+                                            %{--label     : '<i class="fa fa-check"></i> Anular',--}%
+                                            %{--className : "btn-success",--}%
+                                            %{--callback  : function () {--}%
+
+                                                %{--$.ajax({--}%
+                                                    %{--type    : 'POST',--}%
+                                                    %{--url     : '${createLink(action: 'anular')}/' + id,--}%
+                                                    %{--data    : {--}%
+                                                        %{--texto : $("#observacionArchivar").val()--}%
+                                                    %{--},--}%
+                                                    %{--success : function (msg) {--}%
+                                                        %{--openLoader();--}%
+                                                        %{--cargarBandeja();--}%
+                                                        %{--closeLoader();--}%
+                                                        %{--if (msg == 'ok') {--}%
+                                                            %{--log("Trámite anulado correctamente", 'success')--}%
+                                                        %{--} else if (msg == 'no') {--}%
+                                                            %{--log("Error al anular el trámite", 'error')--}%
+                                                        %{--}--}%
+                                                    %{--}--}%
+                                                %{--});--}%
+                                            %{--}--}%
+                                        %{--}--}%
+                                    %{--}--}%
+                                %{--})--}%
+                            %{--}--}%
+                        %{--});--}%
+                    %{--}--}%
+                %{--};--}%
+
+                %{--var archivo;--}%
+
+
+
+                %{--context.settings({--}%
+                    %{--onShow : function (e) {--}%
+                        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+                        %{--var $tr = $(e.target).parents("tr");--}%
+                        %{--$tr.addClass("trHighlight");--}%
+                        %{--id = $tr.data("id");--}%
+                        %{--idPxt = $tr.attr("prtr");--}%
+                        %{--archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")--}%
+                        %{--valAnexo = $tr.attr("anexo");--}%
+                    %{--}--}%
+                %{--});--}%
+
+                %{--context.attach('.porRecibir, .sinRecepcion', [--}%
+                    %{--{--}%
+                        %{--header : 'Acciones'--}%
+                    %{--},--}%
+                    %{--detalles,--}%
+                    %{--arbol,--}%
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeVer}">--}%
+%{--//                    ver,--}%
+%{--//                    seguimiento,--}%
+                    %{--</g:if>--}%
+                    %{--recibir--}%
+
+                %{--]);--}%
+                %{--context.attach('.recibido, .retrasado', [--}%
+                    %{--{--}%
+                        %{--header : 'Acciones'--}%
+                    %{--},--}%
+                    %{--detalles,--}%
+                    %{--arbol,--}%
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeVer}">--}%
+%{--//                    ver,--}%
+%{--//                    seguimiento,--}%
+                    %{--</g:if>--}%
+                    %{--contestar,--}%
                     %{--<g:if test="${Persona.get(session.usuario.id).puedeArchivar}">--}%
-                    archivar
+                    %{--archivar--}%
                     %{--</g:if>--}%
 
-                ]);
-                context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-                    </g:if>
-                    recibir,
-                    anexos
-                ]);
+                %{--]);--}%
+                %{--context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [--}%
+                    %{--{--}%
+                        %{--header : 'Acciones'--}%
+                    %{--},--}%
+                    %{--detalles,--}%
+                    %{--arbol,--}%
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeVer}">--}%
+%{--//                    ver,--}%
+%{--//                    seguimiento,--}%
+                    %{--</g:if>--}%
+                    %{--recibir,--}%
+                    %{--anexos--}%
+                %{--]);--}%
 
-                context.attach('.conAnexo.recibido, .conAnexo.retrasado', [
-                    {
-                        header : 'Acciones'
-                    },
-                    detalles,
-                    arbol,
-                    <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-                    </g:if>
-                    contestar,
-                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
-                    archivar,
-                    </g:if>
-                    anexos
+                %{--context.attach('.conAnexo.recibido, .conAnexo.retrasado', [--}%
+                    %{--{--}%
+                        %{--header : 'Acciones'--}%
+                    %{--},--}%
+                    %{--detalles,--}%
+                    %{--arbol,--}%
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeVer}">--}%
+%{--//                    ver,--}%
+%{--//                    seguimiento,--}%
+                    %{--</g:if>--}%
+                    %{--contestar,--}%
+                    %{--<g:if test="${Persona.get(session.usuario.id).puedeArchivar}">--}%
+                    %{--archivar,--}%
+                    %{--</g:if>--}%
+                    %{--anexos--}%
 
-                ]);
+                %{--]);--}%
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false);

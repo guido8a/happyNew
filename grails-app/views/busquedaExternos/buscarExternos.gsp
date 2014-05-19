@@ -69,32 +69,75 @@
 <body>
 
 
+<div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '580'}px;" class="well">
+    <div class="page-header" style="margin-top: -10px;">
+        <h1>S.A.D. Web</h1>
+        <h3>
+            <p class="text-info">GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA</p>
 
-<div class="buscar" style="margin-bottom: 20px">
+            <p class="text-info">Sistema de Administración de Documentos</p>
+        </h3>
+    </div>
+    <elm:flashMessage tipo="${flash.tipo}" icon="${flash.icon}"
+                      clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-    <fieldset>
-        <legend class="negrilla">Búsqueda de Trámites Externos</legend>
+    <div class="dialog ui-corner-all" style="height: 295px;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
+        %{--<div style="text-align: center; margin-top: 10px; color: #810;">--}%
+            %{--<img src="${resource(dir: 'images', file: 'logoSAD.png')}"/>--}%
+        %{--</div>--}%
 
-        <div>
-            <div class="col-md-2" style="margin-right: 20px">
-                <label for="memorando">Documento</label>
-                <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
+    <div class="buscar" style="margin-bottom: 20px">
 
+        <fieldset>
+            <legend class="text-info">Consulta de Trámites</legend>
+
+            <div class="col-md-10">
+                <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                    <label for="institucion">Institución Remitente</label>
+                </div>
+                <div class="col-md-2">
+                    <g:textField name="institucion" value="" maxlength="15" class="form-control" style="width: 180px"/>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                    <label for="numero" style="text-align: left">Número de documento Externo</label>
+                </div>
+                <div class="col-md-2">
+                    <g:textField name="numero" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                    <label for="contacto">Entregado por</label>
+                </div>
+                <div class="col-md-2">
+                    <g:textField name="contacto" value="" maxlength="15" class="form-control" style="width: 180px"/>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                    <label for="codigo">Código del trámite</label>
+                </div>
+                <div class="col-md-2">
+                    <g:textField name="codigo" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
+                </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-10">
             <a href="#" name="busqueda" class="btn btn-success btnBusqueda" style="margin-top: 22px"><i class="fa fa-check-square-o"></i> Buscar</a>
             </div>
 
-        </div>
+        </fieldset>
+    </div>
 
 
-    </fieldset>
+    <div id="tabla">
 
-</div>
+    </div>
 
-<div id="tabla">
 
+    </div>
 </div>
 
 
@@ -105,13 +148,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Detalles</h4>
             </div>
-
-            %{--<div style="margin-bottom: 20px;min-height: 140px" class="vertical-container">--}%
-                %{--<p class="css-vertical-text">Detalles</p>--}%
                 <div class="modal-body" id="dialog-body" style="padding: 15px">
 
                 </div>
-            %{--</div>       --}%
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
