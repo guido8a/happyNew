@@ -1180,8 +1180,33 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def persona = Persona.get(session.usuario.id)
         def tramites = []
-        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
-        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+//        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+
+        def porEnviar = EstadoTramite.findByCodigo("E001")
+        def revisado = EstadoTramite.findByCodigo("E002")
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+
+        def para = RolPersonaTramite.findByCodigo("R001")
+        def cc = RolPersonaTramite.findByCodigo("R002")
+//        tramites = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+
+        def trams = Tramite.withCriteria {
+            eq("deDepartamento", persona.departamento)
+            inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
+            order("fechaCreacion", "desc")
+        }
+//        println "tramites "+trams.codigo
+        trams.each { tr ->
+            def pxd = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                inList("rolPersonaTramite", [para, cc])
+                isNull("fechaRecepcion")
+            }
+            if (pxd.size() > 0) {
+                tramites += tr
+            }
+        }
 
 //busqueda
 
@@ -1207,8 +1232,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-//        println("-->" + tramites)
-//        println("DD" + res.tramite.id.unique())
 
         return [tramites: res.tramite.unique(), pxtTramites: tramites]
 

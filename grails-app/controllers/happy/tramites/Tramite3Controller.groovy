@@ -760,11 +760,23 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def tramitesSinHijos = []
 
-        pxtTramites.each { tr ->
-            if (Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0) {
+//        pxtTramites.each { tr ->
+//            if (Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0) {
+//                tramitesSinHijos += tr
+//            }
+//        }
+
+        def band = false
+        def anulado = EstadoTramite.findByCodigo("E006")
+        pxtTodos.each { tr ->
+            band = tramitesService.verificaHijos(tr, anulado)
+//            println "estado!!! " + band + "   " + tr.id
+            if (!band) {
                 tramitesSinHijos += tr
             }
         }
+
+
 
         //busqueda
         if (params.fecha) {
