@@ -7,6 +7,7 @@ import happy.seguridad.Persona
 class Tramite3Controller extends happy.seguridad.Shield {
 
     def diasLaborablesService
+    def tramitesService
 
     def save() {
 
@@ -515,12 +516,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println("domain:" + params.domain)
 
         def tramitesSinHijos = []
-
+        def band = false
+        def anulado = EstadoTramite.findByCodigo("E006")
         pxtTodos.each { tr ->
-            if (Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0) {
+            band = tramitesService.verificaHijos(tr, anulado)
+//            println "estado!!! " + band + "   " + tr.id
+            if (!band) {
                 tramitesSinHijos += tr
             }
         }
+
 
         return [persona: persona, tramites: tramitesSinHijos, ahora: ahora, params: params]
     }
@@ -974,7 +979,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (para.departamento) {
             hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
         } else {
-            hijos = Tramite.findAllByPadreAndDe(para.tramite, para.persona)
+            hijos = Tramite.withCriteria {
+                eq("padre", para.tramite)
+                eq("de", para.persona)
+                isNull("deDepartamento")
+            }
         }
         if (hijos.size() > 0) {
             clase += " jstree-open"

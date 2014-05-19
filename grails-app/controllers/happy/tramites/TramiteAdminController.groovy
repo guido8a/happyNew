@@ -320,7 +320,12 @@ class TramiteAdminController {
         if (para.departamento) {
             hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
         } else {
-            hijos = Tramite.findAllByPadreAndDe(para.tramite, para.persona)
+//            hijos = Tramite.findAllByPadreAndDe(para.tramite, para.persona)
+            hijos = Tramite.withCriteria {
+                eq("padre", para.tramite)
+                eq("de", para.persona)
+                isNull("deDepartamento")
+            }
         }
         if (hijos.size() > 0) {
             clase += " jstree-open"
