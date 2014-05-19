@@ -271,9 +271,6 @@ class ElementosTagLib {
                 strPara += p.departamento.descripcion
             }
         }
-        if (tramite.paraExterno) {
-            strPara = tramite.paraExterno
-        }
         def html
 
         if (!attrs.pdf) {
@@ -297,7 +294,11 @@ class ElementosTagLib {
             html += "                    DE"
             html += "                </div>"
             html += "                <div class=\"col-xs-10  col-buen-height\">"
-            html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+            if (tramite.tipoDocumento.codigo == "DEX") {
+                html += "                    ${tramite.paraExterno} (ext.)"
+            } else {
+                html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+            }
             html += "                </div>"
             html += "            </div>"
             if (para || tramite.paraExterno) {
@@ -307,6 +308,11 @@ class ElementosTagLib {
                 html += "                    </div>"
                 html += ""
                 html += "                    <div class=\"col-xs-10  col-buen-height\">"
+                if (tramite.tipoDocumento.codigo != "DEX") {
+                    if (tramite.paraExterno) {
+                        strPara = tramite.paraExterno
+                    }
+                }
                 html += strPara
                 html += "                    </div>"
                 html += "                </div>"

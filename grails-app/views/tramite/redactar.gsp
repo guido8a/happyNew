@@ -160,11 +160,11 @@
                     <g:link action="bandejaEntrada" class="btn btn-sm btn-primary btnPrint">
                         <i class="fa fa-file"></i> PDF
                     </g:link>
-                    <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
-                        <g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">
-                            <i class="fa fa-check"></i> Guardar y Terminar
-                        </g:link>
-                    </g:if>
+                    %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
+                        %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
+                            %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
+                        %{--</g:link>--}%
+                    %{--</g:if>--}%
                 </div>
             </div>
             <elm:headerTramite tramite="${tramite}"/>
