@@ -32,9 +32,9 @@
         <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
             <div class="btn-group">
 
-                    <a href="javascript: history.go(-1)" class="btn btn-primary regresar">
-                        <i class="fa fa-arrow-left"></i> Regresar
-                    </a>
+                <a href="javascript: history.go(-1)" class="btn btn-primary regresar">
+                    <i class="fa fa-arrow-left"></i> Regresar
+                </a>
 
             </div>
         </div>
@@ -86,6 +86,7 @@
 
                 var estaAnulado = $node.hasClass("anulado");
                 var estaArchivado = $node.hasClass("archivado");
+                var estaEnviado = $node.hasClass("enviado");
                 var estaRecibido = $node.hasClass("recibido");
 
                 var tieneHijos = $node.hasClass("tieneHijos");
@@ -114,13 +115,23 @@
                 };
 
                 if (!estaAnulado && !estaArchivado) {
-                    if (esMio) {
+                    if (esMio && estaEnviado) {
                         items.copia = {
                             separator_before : true,
                             label            : "Copia para",
                             icon             : "fa fa-files-o",
                             action           : function () {
-
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "some.php",
+                                    data    : {
+                                        name     : "John",
+                                        location : "Boston"
+                                    },
+                                    success : function (msg) {
+                                        alert("Data Saved: " + msg);
+                                    }
+                                });
                             }
                         };
                         if (tienePadre) {
@@ -497,7 +508,7 @@
             }
 
             $(function () {
-                $(".regresar").click(function(){
+                $(".regresar").click(function () {
                     history.go(-1)
                 });
 

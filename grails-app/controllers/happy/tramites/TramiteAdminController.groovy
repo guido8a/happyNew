@@ -247,8 +247,8 @@ class TramiteAdminController {
         if (rol.codigo == "R002") {
             paraStr = "CC: "
         }
-        paraStr += para.departamento ? para.departamento.descripcion : para.persona.departamento.codigo+":"+para.persona.login
-        def deStr = "De: " + (para.tramite.deDepartamento ? para.tramite.deDepartamento.codigo : para.tramite.de.departamento.codigo+":"+para.tramite.de.login)
+        paraStr += para.departamento ? para.departamento.descripcion : para.persona.departamento.codigo + ":" + para.persona.login
+        def deStr = "De: " + (para.tramite.deDepartamento ? para.tramite.deDepartamento.codigo : para.tramite.de.departamento.codigo + ":" + para.tramite.de.login)
 
         data += ',"tramite":"' + para.tramiteId + '"'
 //        data += ',"duenio":"' + duenio + '"'
@@ -258,10 +258,11 @@ class TramiteAdminController {
         if (para.tramite.padre) {
             data += ',"padre":"' + para.tramite.padreId + '"'
         }
-//        if (tramitesService.verificaHijos(para, EstadoTramite.findByCodigo("E006"))) {
-//            //false: no tiene hijos vivos
-//            clase += " tieneHijos"
-//        }
+        if (tramitesService.verificaHijos(para, EstadoTramite.findByCodigo("E006"))) {
+            //false: no tiene hijos vivos
+//            println "tiene hijos"
+            clase += " tieneHijos"
+        }
         if (para.tramite.padre) {
             clase += " tienePadre"
         }
@@ -302,8 +303,8 @@ class TramiteAdminController {
     }
 
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
-        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.departamento.codigo+":"+tramiteParaInfo.persona.login
-        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo+":"+tramiteParaInfo.tramite.de.login
+        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
         def rol = tramiteParaInfo.rolPersonaTramite
         def strInfo = ""
         if (rol.codigo == "R002") {
