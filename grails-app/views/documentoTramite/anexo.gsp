@@ -14,10 +14,10 @@
         .file {
             width    : 100%;
             height   : 40px;
-            margin   : 0px;
+            margin   : 0;
             position : absolute;
-            top      : 0px;
-            left     : 0px;
+            top      : 0;
+            left     : 0;
             opacity  : 0;
         }
 
@@ -242,60 +242,68 @@
             var request = [];
             var tam = 0;
             function upload(indice) {
-
                 var tramite = "${tramite.id}";
                 var file = document.getElementById("file");
                 /* Create a FormData instance */
                 var formData = new FormData();
                 tam = file.files[indice];
-                tam = tam["size"];
-                // console.log("tam "+tam)
-                formData.append("file", file.files[indice]);
-                formData.append("id", tramite);
-                $("." + (indice + 1)).each(function () {
-//            console.log($(this))
-                    formData.append($(this).attr("name"), $(this).val());
-                });
-                var rs = request.length;
-//        console.log("rs ",rs)
-                $(".d-" + (indice + 1)).addClass("subiendo").addClass("rs-" + rs);
-                $(".rs-" + rs).find(".resumen").remove();
-                $(".rs-" + rs).find(".botones").remove();
-                $(".rs-" + rs).find(".claves").remove();
-                $(".rs-" + rs).append('<div class="progress-bar-svt ui-corner-all" id="p-b"><div class="progress-svt background-image" id="p-' + rs + '"></div></div>').css({height : 100, fontWeight : "bold"});
-                request[rs] = new XMLHttpRequest();
-                request[rs].open("POST", "${g.createLink(controller: 'documentoTramite',action: 'uploadSvt')}");
-//        console.log("request ",request[rs],tam)
-//        console.log( $(".rs-"+rs),"rs-"+rs,request[rs]);
+                var type = tam.type;
+                if (okContents[type]) {
+                    tam = tam["size"];
+                    // console.log("tam "+tam)
+                    formData.append("file", file.files[indice]);
+                    formData.append("id", tramite);
+                    $("." + (indice + 1)).each(function () {
+                        //            console.log($(this))
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                    var rs = request.length;
+                    //        console.log("rs ",rs)
+                    $(".d-" + (indice + 1)).addClass("subiendo").addClass("rs-" + rs);
+                    $(".rs-" + rs).find(".resumen").remove();
+                    $(".rs-" + rs).find(".botones").remove();
+                    $(".rs-" + rs).find(".claves").remove();
+                    $(".rs-" + rs).append('<div class="progress-bar-svt ui-corner-all" id="p-b"><div class="progress-svt background-image" id="p-' + rs + '"></div></div>').css({height : 100, fontWeight : "bold"});
+                    request[rs] = new XMLHttpRequest();
+                    request[rs].open("POST", "${g.createLink(controller: 'documentoTramite',action: 'uploadSvt')}");
+                    //        console.log("request ",request[rs],tam)
+                    //        console.log( $(".rs-"+rs),"rs-"+rs,request[rs]);
 
-                request[rs].upload.onprogress = function (ev) {
-//            console.log("buscando?","#p-"+rs, $("#p-"+rs))
-                    var loaded = ev.loaded;
-                    var width = (loaded * 100 / tam);
-                    if (width > 100)
-                        width = 100;
-//        console.log(width)
-                    $("#p-" + rs).css({width : parseInt(width) + "%"});
-                    if ($("#p-" + rs).width() > 50) {
-                        $("#p-" + rs).html("" + parseInt(width) + "%");
-                    }
-                };
-                request[rs].send(formData);
-                request[rs].onreadystatechange = function () {
-//            console.log("rs??",rs)
-                    if (request[rs].readyState == 4 && request[rs].status == 200) {
-                        if ($("#files").height() * 1 > 120) {
-                            $("#titulo-arch").show();
-                            $("#linea-arch").show();
-                        } else {
-                            $("#titulo-arch").hide();
-                            $("#linea-arch").hide();
+                    request[rs].upload.onprogress = function (ev) {
+                        //            console.log("buscando?","#p-"+rs, $("#p-"+rs))
+                        var loaded = ev.loaded;
+                        var width = (loaded * 100 / tam);
+                        if (width > 100)
+                            width = 100;
+                        //        console.log(width)
+                        $("#p-" + rs).css({width : parseInt(width) + "%"});
+                        if ($("#p-" + rs).width() > 50) {
+                            $("#p-" + rs).html("" + parseInt(width) + "%");
                         }
-                        $(".rs-" + rs).html("<i class='fa fa-check' style='color:#327BBA;margin-right: 10px'></i> " + $(".rs-" + rs).find(".titulo-archivo").html() + " subido exitosamente").css({height : 50, fontWeight : "bold"}).removeClass("subiendo")
-                        cargaDocs();
+                    };
+                    request[rs].send(formData);
+                    request[rs].onreadystatechange = function () {
+                        //            console.log("rs??",rs)
+                        if (request[rs].readyState == 4 && request[rs].status == 200) {
+                            if ($("#files").height() * 1 > 120) {
+                                $("#titulo-arch").show();
+                                $("#linea-arch").show();
+                            } else {
+                                $("#titulo-arch").hide();
+                                $("#linea-arch").hide();
+                            }
+                            $(".rs-" + rs).html("<i class='fa fa-check' style='color:#327BBA;margin-right: 10px'></i> " + $(".rs-" + rs).find(".titulo-archivo").html() + " subido exitosamente").css({height : 50, fontWeight : "bold"}).removeClass("subiendo")
+                            cargaDocs();
 
-                    }
-                };
+                        }
+                    };
+                } else {
+                    var $div = $(".fileContainer.d-" + (indice + 1));
+                    $div.addClass("bg-danger").addClass("text-danger");
+                    var $p = $("<div>").addClass("alert divError").html("No puede subir archivos de tipo <b>" + type + "</b>");
+                    $div.prepend($p);
+                    return false;
+                }
             }
 
             var archivos = [];
@@ -341,7 +349,7 @@
                         },
                         async   : false,
                         success : function (msg) {
-                            console.log(msg, msg == "true");
+//                            console.log(msg, msg == "true");
                             if (msg == "true") {
                                 location.href = url;
                             } else {
