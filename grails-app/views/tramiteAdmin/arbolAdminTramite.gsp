@@ -101,7 +101,7 @@
         var padreEstaArchivado = $padre.hasClass("archivado");
         var padreEstaAnulado = $padre.hasClass("anulado");
 
-        console.log(padreEstaAnulado);
+//        console.log(padreEstaAnulado);
 
         var items = {};
         items.detalles = {

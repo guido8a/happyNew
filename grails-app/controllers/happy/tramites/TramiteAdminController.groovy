@@ -131,8 +131,13 @@ class TramiteAdminController {
     }
 
     def copiaParaLista_ajax() {
-        def persDocTram = PersonaDocumentoTramite.get(params.id)
-        def tramite = persDocTram.tramite
+        def tramite
+        if(params.id) {
+            def persDocTram = PersonaDocumentoTramite.get(params.id)
+            tramite = persDocTram.tramite
+        } else if(params.tramite) {
+            tramite = Tramite.get(params.tramite)
+        }
         def de = tramite.de
         def deDep = tramite.deDepartamento
         def para = tramite.para
@@ -186,8 +191,13 @@ class TramiteAdminController {
     }
 
     def enviarCopias_ajax() {
+        def tramite
+        if(params.id) {
         def persDocTram = PersonaDocumentoTramite.get(params.id)
-        def tramite = persDocTram.tramite
+        tramite = persDocTram.tramite
+        } else if(params.tramite) {
+            tramite = Tramite.get(params.tramite)
+        }
         def copias = params.copias.split("_")
 
         def rolCopia = RolPersonaTramite.findByCodigo("R002")

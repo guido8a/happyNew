@@ -282,6 +282,69 @@
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
+                var copia = {
+                    separator_before : true,
+                    label            : "Copia para",
+                    icon             : "fa fa-files-o",
+                    action           : function () {
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
+                            data    : {
+                                tramite : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    id      : "dlgCopiaPara",
+                                    title   : '<i class="fa fa-files-o"></i> Copia para',
+                                    class   : "long",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        enviar   : {
+                                            id        : 'btnEnviarCopia',
+                                            label     : '<i class="fa fa-check"></i> Enviar copias',
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var cc = "";
+                                                $("#ulSeleccionados li").not(".disabled").each(function () {
+                                                    cc += $(this).data("id") + "_";
+                                                });
+                                                openLoader("Enviando copias");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
+                                                    data    : {
+                                                        tramite     : id,
+                                                        copias : cc
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("*");
+                                                        if (parts[0] == 'OK') {
+                                                            log("Copias enviadas exitosamente", 'success');
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
+                                                        } else if (msg == 'NO') {
+                                                            closeLoader();
+                                                            log(parts[1], 'error');
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
+
 
                 var recibirExterno = {
                     label   : 'Recibir Documento',
@@ -486,6 +549,9 @@
                 }
                 if(esExterno && enviado){
                     items.recibirExterno = recibirExterno
+                }
+                if(enviado || tieneAlerta) {
+                    items.copia = copia;
                 }
                 </g:if>
                 return items;

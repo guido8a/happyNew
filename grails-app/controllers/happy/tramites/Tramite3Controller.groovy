@@ -474,6 +474,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
             }
 
+
+
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
@@ -519,11 +521,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def band = false
         def anulado = EstadoTramite.findByCodigo("E006")
         pxtTodos.each { tr ->
-            band = tramitesService.verificaHijos(tr, anulado)
+            if(!(tr.tramite.tipoDocumento.codigo=="OFI" && tr.estado.codigo=="E004")){
+                band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
-            if (!band) {
-                tramitesSinHijos += tr
+                if (!band) {
+                    tramitesSinHijos += tr
+                }
             }
+
         }
 
 
