@@ -279,7 +279,7 @@
                   }
                 };
 
-                <g:if test="${!bloqueo}">
+
 
                 var id = $tr.data("id");
                 var codigo = $tr.attr("codigo");
@@ -582,14 +582,12 @@
 
                 if(recibido){
                     items.contestar = contestar
+                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    items.archivar = archivar
+                    </g:if>
+
                 }
 
-
-                <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
-                items.archivar = archivar
-                </g:if>
-
-                </g:if>
 
 
                 return items

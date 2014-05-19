@@ -1,6 +1,10 @@
 <%@ page import="happy.tramites.Tramite" %>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
+<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
+
+
 <div style="height: 450px" class="container-celdas">
     <table class="table table-bordered table-condensed table-hover">
         <thead>
@@ -124,5 +128,18 @@
             };
             cargarBandeja(false, data);
         });
+
+
+        $("tr").contextMenu({
+            items  : createContextMenu,
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
+            }
+        });
+
+
     });
 </script>
