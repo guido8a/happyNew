@@ -42,6 +42,20 @@ function validarInt(ev) {
 }
 
 /**
+ * retorna true en caso de q la tecla presionada sea un numero (teclado numerico o no), backspace, delete, tab, flecha izq, flecha der o guion
+ * @param ev
+ * @returns {boolean}
+ */
+function validarTelf(ev) {
+    return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
+            (ev.keyCode >= 96 && ev.keyCode <= 105) ||
+            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
+            ev.keyCode == 37 || ev.keyCode == 39 ||
+            ev.keyCode == 109 || ev.keyCode == 173
+        );
+}
+
+/**
  * muestra notificaciones flotantes
  * @param msg: el mensaje a mostrar
  * @param type: tipo de mensaje: 'error' o 'success'

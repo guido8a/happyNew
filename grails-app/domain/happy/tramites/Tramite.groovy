@@ -40,6 +40,7 @@ class Tramite {
     */
     String contacto
     String telefono
+    String numeroDocExterno
 
     EstadoTramiteExterno estadoTramiteExterno
 
@@ -84,6 +85,8 @@ class Tramite {
 
             contacto column: 'trmtcntc'
             telefono column: 'trmttfct'
+            numeroDocExterno column: 'trmtndex'
+
             estadoTramiteExterno column: 'edtx__id'
         }
     }
@@ -118,6 +121,7 @@ class Tramite {
 
         contacto(blank: true, nullable: true, maxSize: 63)
         telefono(blank: true, nullable: true, maxSize: 15)
+        numeroDocExterno(blank: true, nullable: true, maxSize: 35)
         estadoTramiteExterno(blank: true, nullable: true)
     }
 

@@ -53,6 +53,10 @@ $(".number").keydown(function (ev) {
     return validarDec(ev);
 });
 
+$(".telefono").keydown(function (ev) {
+    return validarTelf(ev);
+});
+
 function doSearch($btn) {
     var str = $btn.parent().prev().val();
     location.href = $btn.attr("href") + "?search=" + str;

@@ -349,15 +349,15 @@
 
                 </div>
 
-                <div class="row hide" id="divParaExt">
-                    <div class="col-xs-12 ">
-                        <span class="grupo">
-                            <b>Para:</b>
-                            <input type="text" name="paraExt2" class="form-control required" maxlength="63"
-                                   style="width:200px; display: inline" value="${tramite.paraExterno}"/>
-                        </span>
-                    </div>
-                </div>
+                %{--<div class="row hide" id="divParaExt">--}%
+                %{--<div class="col-xs-12 ">--}%
+                %{--<span class="grupo">--}%
+                %{--<b>Para:</b>--}%
+                %{--<input type="text" name="paraExt2" class="form-control required" maxlength="63"--}%
+                %{--style="width:200px; display: inline" value="${tramite.paraExterno}"/>--}%
+                %{--</span>--}%
+                %{--</div>--}%
+                %{--</div>--}%
 
                 <div class="row">
                     <div class="col-xs-12 ">
@@ -390,10 +390,20 @@
 
                     <div class="col-xs-3 ">
                         <span class="grupo">
+                            <b>Núm. doc. ext.:</b>
+                            <g:textField id="numeroDocExterno" name="tramite.numeroDocExterno" class="form-control" maxlength="35"
+                                         value="${tramite.numeroDocExterno}"/>
+                            %{--<g:textField id="nombreContactoOrigen" name="origen.nombreContacto" class="origenTram form-control " maxlength="31"--}%
+                            %{--value="${origen?.nombreContacto}"/>--}%
+                        </span>
+                    </div>
+
+                    <div class="col-xs-3 ">
+                        <span class="grupo">
                             <b>Teléfono:</b>
 
                             <div class="input-group">
-                                <g:textField id="telefonoExt" name="tramite.telefono" class="form-control " maxlength="63"
+                                <g:textField id="telefonoExt" name="tramite.telefono" class="form-control  telefono" maxlength="63"
                                              value="${tramite?.telefono}"/>
                                 %{--<g:textField id="telefonoOrigen" name="origen.telefono" class="origenTram form-control " maxlength="63"--}%
                                 %{--value="${origen?.telefono}"/>--}%
@@ -588,24 +598,6 @@
 
                 var cod = $tipoDoc.find("option:selected").attr("class");
 //                $("#ulSeleccionados li").removeClass("selected").appendTo($("#ulDisponibles"));
-                <g:if test="${!tramite.id || (tramite.id && tramite.copias.size() == 0)}">
-                $cc.prop('checked', false);
-                </g:if>
-                <g:else>
-                $cc.prop('checked', true);
-                </g:else>
-                <g:if test="${tramite.id && tramite.anexo == 1}">
-                $chkAnexos.prop('checked', true);
-                </g:if>
-                <g:else>
-                $chkAnexos.prop('checked', false);
-                </g:else>
-                <g:if test="${tramite.externo=='1'}">
-                $chkExterno.prop('checked', true);
-                </g:if>
-                <g:else>
-                $chkExterno.prop('checked', false);
-                </g:else>
                 $tituloCopia.text("Con copia");
                 $divOrigen.addClass("hide");
 
@@ -708,6 +700,26 @@
                     $divExterno.addClass("hide");
                     $chkExterno.prop("checked", false);
                 }
+                <g:if test="${!tramite.id || (tramite.id && tramite.copias.size() == 0)}">
+                $cc.prop('checked', false);
+                </g:if>
+                <g:else>
+                $cc.prop('checked', true);
+                </g:else>
+                <g:if test="${tramite.id && tramite.anexo == 1}">
+                $chkAnexos.prop('checked', true);
+                </g:if>
+                <g:else>
+                $chkAnexos.prop('checked', false);
+                </g:else>
+                <g:if test="${tramite.externo=='1'}">
+                $chkExterno.prop('checked', true);
+                </g:if>
+                <g:else>
+                if (cod != "DEX" && cod != "OFI") {
+                    $chkExterno.prop('checked', false);
+                }
+                </g:else>
             }
 
             function validarCheck() {
