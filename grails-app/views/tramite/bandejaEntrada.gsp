@@ -309,8 +309,8 @@
                     action : function (e) {
                         $("tr.trHighlight").removeClass("trHighlight");
                         e.preventDefault();
-                        %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
-                        %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
+                        location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
+                        location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
 
                         $.ajax({
                             type    : 'POST',
@@ -336,7 +336,7 @@
                         e.preventDefault();
                         $.ajax({
                             type    : 'POST',
-                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            url     : '${createLink(action: 'guardarRecibir')}/' + id,
                             url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "?source=bep",
                             success : function (msg) {
                                 var parts = msg.split('_')
@@ -568,13 +568,17 @@
                 };
 
                 items.header.label = "Acciones";
+                items.detalles = detalles
+                items.arbol = arbol
 
                 if(conAnexo){
                     items.anexo = anexos
                 }
                 if(retrasado){
-                    items.detalles = detalles
-                    items.arbol = arbol
+                    items.contestar = contestar
+                }
+                if(sinRecepcion){
+                    items.recibir = recibir
                 }
                 if(porRecibir){
                     items.recibir = recibir

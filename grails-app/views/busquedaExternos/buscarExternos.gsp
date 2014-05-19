@@ -69,7 +69,7 @@
 <body>
 
 
-<div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '580'}px;" class="well">
+<div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '650'}px;" class="well">
     <div class="page-header" style="margin-top: -10px;">
         <h1>S.A.D. Web</h1>
         <h3>
@@ -181,35 +181,22 @@
         }
     };
 
-    context.settings({
-        onShow : function (e) {
-            $("tr.trHighlight").removeClass("trHighlight");
-            var $tr = $(e.target).parents("tr");
-            $tr.addClass("trHighlight");
-            id = $tr.data("id");
-//            idPxt = $tr.attr("prtr");
-//            archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
-//            valAnexo = $tr.attr("anexo");
-        }
-    });
-
-    context.attach('tr', [
-        {
-            header : 'Acciones'
-        },
-
-        detalles
-
-    ]);
 
 
     $(".btnBusqueda").click(function () {
 
-        var memorando = $("#memorando").val();
-        var datos = "memorando=" + memorando
+        var codigo = $("#codigo").val();
+        var contacto = $("#contacto").val();
+        var numero = $("#numero").val();
+        var institucion = $("#institucion").val();
 
         $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
-            data: datos,
+            data: {
+                codigo: codigo,
+                contacto: contacto,
+                numero: numero,
+                institucion: institucion
+            },
             success: function (msg) {
                 openLoader();
                 $("#tabla"). html(msg);
@@ -222,11 +209,18 @@
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
 
-            var memorando = $("#memorando").val();
-            var datos = "memorando=" + memorando
+            var codigo = $("#codigo").val();
+            var contacto = $("#contacto").val();
+            var numero = $("#numero").val();
+            var institucion = $("#institucion").val();
 
             $.ajax ({ type : "POST", url: "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
-                data: datos,
+                data: {
+                    codigo: codigo,
+                    contacto: contacto,
+                    numero: numero,
+                    institucion: institucion
+                },
                 success: function (msg) {
                     openLoader();
                     $("#tabla"). html(msg);

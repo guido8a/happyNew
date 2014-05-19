@@ -11,28 +11,45 @@ class BusquedaExternosController {
     }
 
     def tablaBusquedaExternos () {
-   //        println("params:" + params)
+           println("params:" + params)
 
         def res
         def filtrados
-        if (params.memorando) {
-            res = Tramite.withCriteria {
-//                    eq('paraExterno', externo)
-                ilike('codigo', params.memorando)
-            }
 
+        if(!params.contacto && !params.numero && !params.codigo && !params.institucion ){
+
+            res = []
+        }else{
+            res = Tramite.withCriteria {
+
+                if(params.contacto){
+                    ilike('contacto', params.contacto.trim())
+                }
+                if(params.codigo){
+                    ilike('codigo', params.codigo.trim())
+                }
+                if(params.numero){
+                    ilike('numeroDocExterno', params.numero.trim())
+                }
+                if(params.institucion){
+                    ilike('paraExterno',params.institucion.trim())
+                }
+
+            }
+        }
 //            println("res:" + res)
 
             if(res){
                 res.each {
-//                    println("externo:" + it.externo)
+                    println("externo:" + it.externo)
                     if(it.externo == '1'){
                         filtrados = it
                     }
 
                 }
             }
-    }
+
+//            println("filtrados:" + filtrados)
 
         return [tramites: filtrados]
 }
