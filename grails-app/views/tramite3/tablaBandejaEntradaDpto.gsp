@@ -84,27 +84,48 @@
                     prtr="${tramite?.id}"
                     class="${clase} ${type}">
 
-                    <g:if test="${tramite?.tramite?.anexo == 1}">
-                        <td title="${tramite.tramite.asunto}">
-                            ${tramite?.tramite?.codigo}<i class="fa fa-paperclip" style="margin-left: 10px"></i>
-                        </td>
-                    </g:if>
-                    <g:else>
-                        <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
-                    </g:else>
-                    <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
-                    <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
-                    <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
-                    <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}</td>
+                    <td title="${tramite.tramite.asunto}">
+                        ${tramite?.tramite?.codigo}
+                        <g:if test="${tramite?.tramite?.anexo == 1}">
+                            <i class="fa fa-paperclip" style="margin-left: 10px"></i>
+                        </g:if>
+                    </td> <!-- documento -->
+                    <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td> <!-- fecha envio -->
+                    <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td> <!-- fecha recepcion -->
+                    <td title="${tramite?.tramite?.de?.departamento?.descripcion}">
+                        <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
+                            DEX
+                        </g:if>
+                        <g:else>
+                            ${tramite?.tramite?.de?.departamento?.codigo}
+                        </g:else>
+                    </td> <!-- de -->
+                    <td title="${tramite?.tramite?.de}">
+                        <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
+                            ${tramite.tramite.paraExterno}
+                        </g:if>
+                        <g:else>
+                            ${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}
+                        </g:else>
+                    </td> <!-- creado por -->
                     <g:if test="${tramite?.persona}">
-                        <td>${tramite?.persona}</td>
+                        <td>${tramite?.persona}</td> <!-- para persona-->
                     </g:if>
                     <g:else>
-                        <td title="${tramite?.departamento?.descripcion}">${tramite?.departamento?.codigo}</td>
+                        <g:if test="${tramite.tramite.tipoDocumento.codigo == 'OFI'}">
+                            <td>
+                                ${tramite?.tramite.paraExterno} (ext.)
+                            </td> <!-- para externo-->
+                        </g:if>
+                        <g:else>
+                            <td title="${tramite?.departamento?.descripcion}">
+                                ${tramite?.departamento?.codigo}
+                            </td> <!-- para departamento -->
+                        </g:else>
                     </g:else>
-                    <td>${tramite.tramite.prioridad.descripcion}</td>
-                    <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
-                    <td>${tramite?.rolPersonaTramite?.descripcion}</td>
+                    <td>${tramite.tramite.prioridad.descripcion}</td> <!-- prioridad -->
+                    <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td> <!-- fecha limite -->
+                    <td>${tramite?.rolPersonaTramite?.descripcion}</td> <!-- rol -->
                 </tr>
             </g:each>
         </tbody>
@@ -129,7 +150,6 @@
             cargarBandeja(false, data);
         });
 
-
         $("tr").contextMenu({
             items  : createContextMenu,
             onShow : function ($element) {
@@ -139,7 +159,6 @@
                 $(".trHighlight").removeClass("trHighlight");
             }
         });
-
 
     });
 </script>
