@@ -137,9 +137,9 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
         if (msg == "") {
-            render "OK*" + createLink(controller: 'tramite3', action: "bandejaEntradaDpto")
+            render "OK_" + createLink(controller: 'tramite3', action: "bandejaEntradaDpto")
         } else {
-            render "NO*<ul>" + msg + "</ul>"
+            render "NO_<ul>" + msg + "</ul>"
         }
     }
 

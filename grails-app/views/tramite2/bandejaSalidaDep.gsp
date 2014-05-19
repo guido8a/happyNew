@@ -272,13 +272,67 @@
                 var recibido = $tr.hasClass("E004"); //recibido
 
                 var esSumilla = $tr.hasClass("sumilla");
-
+                var esExterno = $tr.hasClass("externo");
+                var tieneEstado = $tr.hasClass("estado");
+                var esDex = $tr.hasClass("DEX");
                 var tienePadre = $tr.hasClass("conPadre");
                 var tieneAlerta = $tr.hasClass("alerta");
                 var tieneAnexo = $tr.hasClass("conAnexo");
 
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
+
+
+                var recibirExterno = {
+                    label   : 'Recibir Documento',
+                    icon   : "fa fa-check-square-o",
+                    action : function (e) {
+                        $.ajax({
+                            type    : 'POST',
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/'+ id ,
+                            success : function (msg) {
+                                var parts = msg.split('_')
+                                openLoader();
+                                cargarBandeja();
+                                closeLoader();
+                                if (parts[0] == 'NO') {
+                                    log(parts[1], "error");
+                                } else if (parts[0] == "OK") {
+                                    log(parts[1], "success")
+                                } else if (parts[0] == "ERROR") {
+                                    bootbox.alert(parts[1]);
+                                }
+                            }
+                        }); //ajax
+
+                    } //action
+                }
+                var enviarDex = {
+                    label   : 'Enviar y recibir',
+                    icon   : "fa fa-check-square-o",
+                    action : function (e) {
+                        $.ajax({
+                            type    : 'POST',
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            url     : '${createLink(controller: 'tramite', action: 'saveDEX')}/'+id,
+                            success : function (msg) {
+                                var parts = msg.split('_')
+                                openLoader();
+                                cargarBandeja();
+                                closeLoader();
+                                if (parts[0] == 'NO') {
+                                    log(parts[1], "error");
+                                } else if (parts[0] == "OK") {
+                                    log(parts[1], "success")
+                                } else if (parts[0] == "ERROR") {
+                                    bootbox.alert(parts[1]);
+                                }
+                            }
+                        }); //ajax
+
+                    } //action
+                }
 
                 var ver = {
                     label  : "Ver",
@@ -427,7 +481,12 @@
                     items.desenviar = desenviar;
                 }
 //                }
-
+                if(esDex && porEnviar){
+                    items.enviarDex = enviarDex
+                }
+                if(esExterno && enviado){
+                    items.recibirExterno = recibirExterno
+                }
                 </g:if>
                 return items;
             }

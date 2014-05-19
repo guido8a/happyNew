@@ -46,8 +46,13 @@ class ExternosController {
 //        println "recibir tramite "+params
         if (request.getMethod() == "POST") {
             def persona = Persona.get(session.usuario.id)
-            def pdt = PersonaDocumentoTramite.get(params.pdt)
-            def tramite = pdt.tramite
+            def tramite = Tramite.get(params.id)
+            def rolPara = RolPersonaTramite.findByCodigo("R001")
+            def pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite,rolPara)
+            if(!pdt){
+                render "NO_no se encontro el destinatario"
+                return
+            }
             def porEnviar = EstadoTramite.findByCodigo("E001")
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
