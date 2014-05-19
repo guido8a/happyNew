@@ -280,7 +280,6 @@
                 };
 
 
-
                 var id = $tr.data("id");
                 var codigo = $tr.attr("codigo");
                 var estado = $tr.attr("estado");
@@ -295,7 +294,7 @@
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
                 var conAnexo = $tr.hasClass("conAnexo")
-
+//                console.log("por porRecibir",porRecibir)
 
                 var contestar = {
                     label   : 'Contestar Documento',
@@ -307,8 +306,7 @@
                     label   : 'Ver',
                     icon   : "fa fa-search",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
                         location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
 
@@ -332,11 +330,10 @@
                     label   : 'Recibir Documento',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         $.ajax({
                             type    : 'POST',
-                            url     : '${createLink(action: 'guardarRecibir')}/' + id,
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
                             url     : '${createLink(controller: 'tramite3', action: 'recibirTramite')}/' + id + "?source=bep",
                             success : function (msg) {
                                 var parts = msg.split('_')
@@ -359,8 +356,7 @@
                     label   : 'Seguimiento Trámite',
                     icon   : "fa fa-sitemap",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         location.href = "${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/" + id + "?pers=1";
                     }
                 };
@@ -369,8 +365,7 @@
                     label   : 'Detalles',
                     icon   : "fa fa-search",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
@@ -405,8 +400,7 @@
                     label   : 'Archivar Documentos',
                     icon   : "fa fa-folder-open-o",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         $.ajax({
                             type    : "POST",
                             url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
@@ -467,8 +461,7 @@
                     label   : 'Distribuir a Jefes',
                     icon   : "fa fa-eye",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         $.ajax({
                             type    : "POST",
                             url     : "${createLink(action: 'observaciones')}/" + id,
@@ -513,8 +506,7 @@
                     label   : 'Anular Trámite',
                     icon   : "fa fa-flash",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
+
                         $.ajax({
                             type    : "POST",
                             url     : "${createLink(controller: 'tramite', action: "revisarHijos")}",
@@ -580,7 +572,9 @@
                 if(sinRecepcion){
                     items.recibir = recibir
                 }
+
                 if(porRecibir){
+
                     items.recibir = recibir
                 }
 

@@ -531,7 +531,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //    }
 
     def recibirTramite() {
-//        println "recibir tramite "+params
+        println "recibir tramite "+params
         if (request.getMethod() == "POST") {
             def persona = Persona.get(session.usuario.id)
 

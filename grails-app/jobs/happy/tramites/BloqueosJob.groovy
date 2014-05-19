@@ -143,16 +143,16 @@ class BloqueosJob {
         }
         Persona.findAllByEstadoInList(["B","W"]).each {
             it.estado=""
-            it.save()
+            it.save(flush: true)
         }
         bloquearUsu.each {
             println "bloqueando usu "+it
             it.estado="B"
-            it.save()
+            it.save(flush: true)
         }
         warningUsu.each {
             it.estado="B"
-            it.save()
+            it.save(flush: true)
         }
 
 
