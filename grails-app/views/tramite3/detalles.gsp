@@ -21,13 +21,25 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
 
-                    <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-3">
+                        <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
+                            ${t.paraExterno} (EXT)
+                        </g:if>
+                        <g:else>
+                            ${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}
+                        </g:else>
+                    </div>
 
                     <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
-                            ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
-                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}<b>${pdt.estado?.descripcion}</b><br>
+                            <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
+                                ${t.paraExterno} (EXT)
+                            </g:if>
+                            <g:else>
+                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                            </g:else>
+                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b>${pdt.estado?.descripcion}</b><br>
                         </g:each>
                     </div>
                 </div>
@@ -56,7 +68,7 @@
                         <div class="col-xs-8">${t.observaciones}</div>
                     </div>
                 </g:if>
-                <g:if test="${t.anexo==1}">
+                <g:if test="${t.anexo == 1}">
                     <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
                         <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                             <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
@@ -128,7 +140,7 @@
                         <div class="col-xs-8">${tramite.observaciones}</div>
                     </div>
                 </g:if>
-                <g:if test="${t.anexo==1}">
+                <g:if test="${t.anexo == 1}">
                     <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
                         <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                             <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">

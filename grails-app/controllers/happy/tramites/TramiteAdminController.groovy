@@ -132,10 +132,10 @@ class TramiteAdminController {
 
     def copiaParaLista_ajax() {
         def tramite
-        if(params.id) {
+        if (params.id) {
             def persDocTram = PersonaDocumentoTramite.get(params.id)
             tramite = persDocTram.tramite
-        } else if(params.tramite) {
+        } else if (params.tramite) {
             tramite = Tramite.get(params.tramite)
         }
         def de = tramite.de
@@ -192,10 +192,10 @@ class TramiteAdminController {
 
     def enviarCopias_ajax() {
         def tramite
-        if(params.id) {
-        def persDocTram = PersonaDocumentoTramite.get(params.id)
-        tramite = persDocTram.tramite
-        } else if(params.tramite) {
+        if (params.id) {
+            def persDocTram = PersonaDocumentoTramite.get(params.id)
+            tramite = persDocTram.tramite
+        } else if (params.tramite) {
             tramite = Tramite.get(params.tramite)
         }
         def copias = params.copias.split("_")
@@ -245,6 +245,24 @@ class TramiteAdminController {
             render "NO*<ul>" + errores + "</ul>"
         }
     }
+
+    def cambiarEstado() {
+        def tramite = Tramite.get(params.id)
+        return [params: params, tramite: tramite]
+    }
+
+    def guardarEstado() {
+        def tramite = Tramite.get(params.id)
+        def estado = EstadoTramiteExterno.get(params.estado)
+
+        tramite.estadoTramiteExterno = estado
+        if (tramite.save(flush: true)) {
+            render "OK*Estado cambiado exitosamente"
+        } else {
+            render "NO*Ha ocurrido un error al cambiar de estado el trámite: " + renderErrors(bean: tramite)
+        }
+    }
+
 
     def arbolAdminTramite() {
 
@@ -360,6 +378,10 @@ class TramiteAdminController {
             estado = "Anulado"
         }
 
+        if (para.tramite.estadoTramiteExterno) {
+            clase += " externo"
+        }
+
         rel += estado
 
         def rol = para.rolPersonaTramite
@@ -425,8 +447,21 @@ class TramiteAdminController {
     }
 
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
-        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.descripcion : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
-        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
+        def paraStr, deStr
+        if (tramiteParaInfo.tramite.tipoDocumento.codigo == "OFI") {
+            paraStr = tramiteParaInfo.tramite.paraExterno + " (EXT)"
+        } else {
+            paraStr = tramiteParaInfo.departamento ?
+                    tramiteParaInfo.departamento.descripcion :
+                    tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+        }
+        if (tramiteParaInfo.tramite.tipoDocumento.codigo == "DEX") {
+            deStr = tramiteParaInfo.tramite.paraExterno + " (EXT)"
+        } else {
+            deStr = tramiteParaInfo.tramite.deDepartamento ?
+                    tramiteParaInfo.tramite.deDepartamento.codigo :
+                    tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
+        }
         def rol = tramiteParaInfo.rolPersonaTramite
         def strInfo = ""
         if (rol.codigo == "R002") {
@@ -437,6 +472,9 @@ class TramiteAdminController {
         strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}, "
         strInfo += tramiteFechas(tramiteParaInfo)
         strInfo += ")</small>"
+        if (tramiteParaInfo.tramite.estadoTramiteExterno) {
+            strInfo += " - " + tramiteParaInfo.tramite.estadoTramiteExterno.descripcion
+        }
         return strInfo
     }
 
