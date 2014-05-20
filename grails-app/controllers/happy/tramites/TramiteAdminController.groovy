@@ -265,31 +265,31 @@ class TramiteAdminController {
 
 
     def arbolAdminTramite() {
+        def html = "", url = "", tramite = null
+        if (params.id) {
+            def usu = Persona.get(session.usuario.id)
+            def puedeAdministrar = usu.puedeAdmin
+            println "PUEDE??? " + puedeAdministrar
 
-        def usu = Persona.get(session.usuario.id)
-        def puedeAdministrar = usu.puedeAdmin
-        println "PUEDE??? " + puedeAdministrar
-
-        def html = "", url = ""
-        def tramite = Tramite.get(params.id.toLong())
-        if (tramite) {
-            def principal = tramite
-            if (tramite.padre) {
-                principal = tramite.padre
-                while (true) {
-                    if (!principal.padre)
-                        break
-                    else {
-                        principal = principal.padre
+            tramite = Tramite.get(params.id.toLong())
+            if (tramite) {
+                def principal = tramite
+                if (tramite.padre) {
+                    principal = tramite.padre
+                    while (true) {
+                        if (!principal.padre)
+                            break
+                        else {
+                            principal = principal.padre
+                        }
                     }
                 }
-            }
-            html = "<ul>" + "\n"
-            html += makeTreeExtended(principal)
-            html += "</ul>" + "\n"
+                html = "<ul>" + "\n"
+                html += makeTreeExtended(principal)
+                html += "</ul>" + "\n"
 
 //        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297))
-
+            }
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")
 //        switch (params.b) {
 //            case "bep":
@@ -313,7 +313,7 @@ class TramiteAdminController {
 //
 //        }
         }
-        return [html2: html, url: url]
+        return [html2: html, url: url, tramite: tramite]
     }
 
     private String makeTreeExtended(Tramite principal) {

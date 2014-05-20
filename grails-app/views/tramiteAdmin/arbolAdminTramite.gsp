@@ -39,9 +39,16 @@
             </div>
         </div>
 
-        <div id="jstree">
-            <util:renderHTML html="${html2}"/>
-        </div>
+        <g:if test="${tramite}">
+            <div id="jstree">
+                <util:renderHTML html="${html2}"/>
+            </div>
+        </g:if>
+        <g:else>
+            <div class="alert alert-danger">
+                No ha seleccionado un trámite
+            </div>
+        </g:else>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
