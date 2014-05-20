@@ -1182,7 +1182,6 @@ class TramiteController extends happy.seguridad.Shield {
         def enviado = EstadoTramite.findByCodigo("E003")
         def recibido = EstadoTramite.findByCodigo("E004")
 
-//      def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"
@@ -1193,7 +1192,7 @@ class TramiteController extends happy.seguridad.Shield {
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
             tramite {
-                inList("estadoTramite", [enviado, recibido])
+//                inList("estadoTramite", [enviado, recibido])
                 if (params.domain == "tramite") {
                     order(params.sort, params.order)
                 }
@@ -1204,10 +1203,15 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         def tramitesSinHijos = []
-
+        def anulado = EstadoTramite.findByCodigo("E006")
+        def band = false
         tramites.each { tr ->
-            if (Tramite.countByPadreAndDe(tr.tramite, session.usuario) == 0) {
-                tramitesSinHijos += tr
+            if(!(tr.tramite.tipoDocumento.codigo=="OFI" && tr.estado.codigo=="E004")){
+                band = tramitesService.verificaHijos(tr, anulado)
+//            println "estado!!! " + band + "   " + tr.id
+                if (!band) {
+                    tramitesSinHijos += tr
+                }
             }
         }
 

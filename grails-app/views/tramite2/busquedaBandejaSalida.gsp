@@ -1,31 +1,28 @@
 <%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 25/02/14
-  Time: 04:52 PM
---%>
+<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
-<div style="margin-top: 10px; height: 450px"  class="container-celdas">
-    <span class="grupo">
-        <table class="table table-bordered table-striped table-condensed table-hover">
-            <thead>
-            <tr>
-                <th class="cabecera">Documento</th>
-                <th>De</th>
-                <th class="cabecera">Fec. Creación</th>
-                <th class="cabecera">Para</th>
-                <th class="cabecera">Destinatario</th>
-                <th class="cabecera">Prioridad</th>
-                <th class="cabecera">Fecha Envio</th>
-                <th class="cabecera">F Límite Recepción</th>
-                <th class="cabecera">Estado</th>
-                <th class="cabecera">Enviar</th>
-            </tr>
+<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
-            </thead>
-            <tbody>
-            <g:each in="${tramites}" var="tramite">
+<table class="table table-bordered  table-condensed table-hover">
+    <thead>
+    <tr>
+        <th class="cabecera">Documento</th>
+        <th>De</th>
+        <th class="cabecera">Fec. Creación</th>
+        <th class="cabecera">Para</th>
+        <th class="cabecera">Destinatario</th>
+        <th class="cabecera">Prioridad</th>
+        <th class="cabecera">Fecha Envio</th>
+        <th class="cabecera">F Límite Recepción</th>
+        <th class="cabecera">Estado</th>
+        <th class="cabecera">Enviar</th>
+    </tr>
+    </thead>
+    <tbody id="tabla_salida">
+    <g:each in="${tramites}" var="tramite">
+        <g:each in="${pxtTramites}" var="pxt">
+            <g:if test="${tramite?.id == pxt?.id}">
 
                 <g:set var="limite" value="${tramite.getFechaLimite()}"/>
                 <g:set var="padre" value=""/>
@@ -59,7 +56,7 @@
                 <tr id="${tramite?.id}" data-id="${tramite?.id}"
                     class="${esImprimir ? 'imprimir' : ''}
                     ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
-                    ${tramite.fechaEnvio && tramite.noRecibido ? 'desenviar' + ' ' + clase : ''}"
+                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno?'estado':''} ${tramite.externo=='1'?((tramite.tipoDocumento.codigo=='DEX')?'DEX':'externo'):''}  "
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
                     departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
                     <g:if test="${tramite?.anexo == 1}">
@@ -75,7 +72,12 @@
                     <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                     <g:set var="para" value="${tramite.getPara()}"/>
-                    <td>${para?.departamento?.codigo}</td>
+                    <g:if test="${tramite.tipoDocumento.codigo=='OFI'}">
+                        <td>EXT</td>
+                    </g:if>
+                    <g:else>
+                        <td>${para?.departamento?.codigo}</td>
+                    </g:else>
                     <g:set var="infoExtra" value=""/>
                     <g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">
                         <g:if test="${infoExtra != ''}">
@@ -98,8 +100,8 @@
                         </g:if>
                     </g:each>
                     <td title="${infoExtra}">
-                        <g:if test="${tramite.origenTramite}">
-                            ${tramite.origenTramite?.nombre}
+                        <g:if test="${tramite.tipoDocumento.codigo=='OFI'}">
+                            ${tramite.paraExterno}
                         </g:if>
                         <g:else>
                             <g:if test="${para}">
@@ -131,18 +133,23 @@
                         </g:if>
                     </td>
                 </tr>
+            </g:if>
+        </g:each>
+    </g:each>
+    </tbody>
+</table>
 
+<script type="text/javascript">
+    $(function () {
+        $("tr").contextMenu({
+            items  : createContextMenu,
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
+            }
+        });
 
-
-
-
-
-
-            </g:each>
-
-            </tbody>
-        </table>
-
-    </span>
-
-</div>
+      });
+</script>

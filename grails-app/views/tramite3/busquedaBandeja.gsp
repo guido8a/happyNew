@@ -94,5 +94,17 @@
             };
             cargarBandeja(false, data);
         });
+
+
+        $("tr").contextMenu({
+            items  : createContextMenu,
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
+            }
+        });
+
     });
 </script>

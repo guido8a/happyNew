@@ -168,7 +168,7 @@
                     </div>
 
                     <div class="col-md-2" style="margin-left: 130px">
-                        <label>Fecha</label>
+                        <label>Fecha Envio</label>
                         <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                     </div>
 

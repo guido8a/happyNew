@@ -100,4 +100,18 @@
         clean();
         $("."+clase).addClass(clase+"Color");
     }
+
+    $(function () {
+
+        $("tr").contextMenu({
+            items  : createContextMenu,
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
+            }
+        });
+    });
+
 </script>

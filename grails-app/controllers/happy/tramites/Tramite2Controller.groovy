@@ -613,14 +613,29 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def busquedaBandejaSalida() {
 
+        def porEnviar = EstadoTramite.findByCodigo("E001")
+        def revisado = EstadoTramite.findByCodigo("E002")
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+
+        def para = RolPersonaTramite.findByCodigo("R001")
+        def cc = RolPersonaTramite.findByCodigo("R002")
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def persona = Persona.get(session.usuario.id)
         def tramites = []
-        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
+        def estados = [porEnviar, revisado, enviado, recibido]
         if (persona.jefe == 1) {
             Persona.findAllByDepartamento(persona.departamento).each { p ->
                 def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
+
+//                def t = Tramite.withCriteria {
+//                    eq("de", p)
+//                    isNull("deDepartamento")
+//                    inList("estadoTramite", estados)
+//                    order("fechaCreacion", "desc")
+//                }
                 if (t.size() > 0)
                     tramites += t
                 t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
@@ -631,6 +646,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (t.size() > 0)
                 tramites += t
         } else {
+//            tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona, estados, [sort: "fechaCreacion", order: "desc"])
             tramites = Tramite.withCriteria {
                 eq("de", persona)
                 isNull("deDepartamento")
@@ -643,6 +659,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
+
+        def trams = []
+        def trams2 = []
+
+        tramites.each { tr ->
+            def pxd = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                inList("rolPersonaTramite", [para, cc])
+                isNull("fechaRecepcion")
+            }
+            if (pxd.size() > 0) {
+                trams += tr
+            }
+        }
 
 //busqueda
 
@@ -668,10 +698,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-//        println("-->" + tramites)
+//        println("-->" + trams)
 //        println("DD" + res.tramite.id.unique())
 
-        return [tramites: res.tramite.unique(), pxtTramites: tramites]
+        return [tramites: res.tramite.unique(), pxtTramites: trams]
 
 
     }
@@ -1231,6 +1261,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
+//
+//        println("->" + res.tramite.unique())
+//        println("pxt" + tramites)
 
 
         return [tramites: res.tramite.unique(), pxtTramites: tramites]
