@@ -86,6 +86,13 @@
             background-color : #f2c1b9;
             font-weight      : bold;
         }
+
+        .letra {
+
+            /*font-family: "Arial Black", arial-black;*/
+            background-color:#eacb89;
+
+        }
         </style>
         <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
     </head>
@@ -93,8 +100,15 @@
     <body>
 
         <div class="row" style="margin-top: 0px; margin-left: 1px">
+
             <span class="grupo">
-                <label class="well well-sm" style="text-align: center; float: left">
+                <label class="well well-sm letra" style="text-align: center">
+                    BANDEJA DE SALIDA DEPARTAMENTO
+                </label>
+            </span>
+
+            <span class="grupo">
+                <label class="well well-sm" style="text-align: center">
                     Departamento: ${persona?.departamento?.descripcion}
                 </label>
             </span>

@@ -87,35 +87,47 @@
             background-color : #F2DEDE ! important;
             /*color: #ffffff;*/
         }
+
+        .letra {
+
+            /*font-family: "Arial Black", arial-black;*/
+            /*background-color: #7eb75e;*/
+            background-color: #8fc6f3;
+
+        }
         </style>
     </head>
 
     <body>
         <div class="row" style="margin-top: 0px; margin-left: 1px">
+
             <span class="grupo">
-                <label class="well well-sm"
-                       style="text-align: center; float: left">Departamento: ${persona?.departamento?.descripcion}</label>
+                <label class="well well-sm letra" style="text-align: center">
+                    BANDEJA DE ENTRADA DEPARTAMENTO
+                </label>
             </span>
 
-            <div class="btn-group" style="margin-left: 30px">
 
-                <g:link controller="tramite2" action="crearTramiteDep" class="btn btn-default btnCrearTramite">
-                    <i class="fa fa-edit"></i> Crear Trámite
-                </g:link>
+            <span class="grupo">
+                <label class="well well-sm" style="text-align: center">Departamento: ${persona?.departamento?.descripcion}</label>
+            </span>
 
-            </div>
         </div>
 
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
 
-                <a href="#" class="btn btn-primary btnArchivados">
-                    <i class="fa fa-folder"></i> Archivados
-                </a>
+                %{--<a href="#" class="btn btn-primary btnArchivados">--}%
+                    %{--<i class="fa fa-folder"></i> Archivados--}%
+                %{--</a>--}%
                 <a href="#" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
                 </a>
+
+                <g:link controller="tramite2" action="crearTramiteDep" class="btn btn-default btnCrearTramite" style="margin-left: 10px">
+                    <i class="fa fa-edit"></i> Crear Trámite Principal
+                </g:link>
             </div>
 
             <div style="float: right">

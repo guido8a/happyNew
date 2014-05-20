@@ -255,26 +255,39 @@
 
 <script type="text/javascript">
 
-    $(function () {
+//    $(function () {
 
-        var archivo
 
-        context.settings({
-            onShow : function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                var $tr = $(e.target).parents("tr");
-                $tr.addClass("trHighlight");
-                archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
-                id = $tr.attr("id");
-            }
-        });
+        function createContextMenu (node){
+            var $tr = $(node);
+
+            var items = {
+                header : {
+                    label : "Sin Acciones",
+                    header: true
+                }
+            };
+
+            var id = $tr.data("id");
+            var codigo = $tr.attr("codigo");
+            var estado = $tr.attr("estado");
+            var padre = $tr.attr("padre");
+            var de = $tr.attr("de");
+            var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
+            var idPxt = $tr.attr("prtr");
+            var valAnexo = $tr.attr("anexo");
+
+            var porRecibir = $tr.hasClass("porRecibir");
+            var sinRecepcion = $tr.hasClass("sinRecepcion");
+            var recibido = $tr.hasClass("recibido");
+            var retrasado = $tr.hasClass("retrasado");
+            var conAnexo = $tr.hasClass("conAnexo")
+            var conPadre = $tr.hasClass("padre")
 
         var detalles = {
-            text   : 'Detalles',
-            icon   : "<i class='fa fa-search'></i>",
+            label   : 'Detalles',
+            icon   : "fa fa-search",
             action : function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                e.preventDefault();
                 $.ajax({
                     type    : 'POST',
                     url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
@@ -291,14 +304,9 @@
 
 
         var ver = {
-            text   : 'Ver',
-            icon   : "<i class='fa fa-search'></i>",
+            label   : 'Ver',
+            icon   : "fa fa-search",
             action : function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                e.preventDefault();
-                %{--location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;--}%
-                %{--location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";--}%
-
                 $.ajax({
                     type    : 'POST',
                     url     : '${createLink(action: 'revisarConfidencial')}/' + id,
@@ -316,15 +324,16 @@
         };
 
 
-        context.attach('tbody>tr', [
-            {
-                header : 'Sin Acciones'
-            },
-            ver,
-            detalles
+        items.header.label = "Acciones";
 
-        ]);
-    });
+        items.ver = ver
+            items.detalles = detalles
+        return items
+
+
+
+
+    };
 
     $(".btnBuscar").click(function () {
 

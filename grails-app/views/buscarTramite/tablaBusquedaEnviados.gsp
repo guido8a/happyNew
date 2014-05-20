@@ -4,7 +4,9 @@
   Date: 14/04/14
   Time: 03:41 PM
 --%>
-
+<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
+<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
 
 <div style="height: 450px"  class="container-celdas">
@@ -69,3 +71,18 @@
     </span>
 
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        $("tr").contextMenu({
+            items  : createContextMenu,
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
+            }
+        });
+    });
+</script>
+

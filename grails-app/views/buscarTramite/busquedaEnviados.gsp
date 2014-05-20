@@ -198,33 +198,47 @@
 
 var padre
 
-    context.settings({
-        onShow: function (e) {
-            $("tr.trHighlight").removeClass("trHighlight");
-            var $tr = $(e.target).parents("tr");
-            $tr.addClass("trHighlight");
-            id = $tr.data("id");
-            padre = $tr.attr('padre');
-        }
+
+    function createContextMenu (node){
+        var $tr = $(node);
+
+        var items = {
+            header : {
+                label : "Sin Acciones",
+                header: true
+            }
+        };
 
 
-    });
+        var id = $tr.data("id");
+        var codigo = $tr.attr("codigo");
+        var estado = $tr.attr("estado");
+        var padre = $tr.attr("padre");
+        var de = $tr.attr("de");
+        var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
+        var idPxt = $tr.attr("prtr");
+        var valAnexo = $tr.attr("anexo");
+
+        var porRecibir = $tr.hasClass("porRecibir");
+        var sinRecepcion = $tr.hasClass("sinRecepcion");
+        var recibido = $tr.hasClass("recibido");
+        var retrasado = $tr.hasClass("retrasado");
+        var conAnexo = $tr.hasClass("conAnexo")
+        var conPadre = $tr.hasClass("padre")
 
 
-    var arbol = {
-        text   : 'Cadena del trámite',
-        icon   : "<i class='fa fa-sitemap'></i>",
+        var arbol = {
+        label   : 'Cadena del trámite',
+        icon   : "fa fa-sitemap",
         action : function (e) {
             location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqe"
         }
     };
 
     var detalles = {
-        text   : 'Detalles',
-        icon   : "<i class='fa fa-search'></i>",
+        label   : 'Detalles',
+        icon   : "fa fa-search",
         action : function (e) {
-            $("tr.trHighlight").removeClass("trHighlight");
-            e.preventDefault();
             $.ajax({
                 type    : 'POST',
                 url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
@@ -240,72 +254,35 @@ var padre
     };
 
     var crearHermano = {
-        text   : "Agregar documento al trámite",
-        icon   : "<i class='fa fa-paste'></i>",
+        label   : "Agregar documento al trámite",
+        icon   : "fa fa-paste",
         action : function () {
             location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
         }
     };
 
     var administrar = {
-        text   : "Administrar trámite",
-        icon   : "<i class='fa fa-cogs'></i>",
+        label   : "Administrar trámite",
+        icon   : "fa fa-cogs",
         action : function () {
             location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
         }
     };
 
-    %{--context.attach('tr', [--}%
-        %{--{--}%
-            %{--header: 'Acciones'--}%
-        %{--},--}%
 
-            %{--detalles,--}%
-            %{--arbol--}%
-        %{--{--}%
-            %{--text: 'Seguimiento Tramite',--}%
-            %{--icon: "<i class='fa fa-code-fork'></i>",--}%
-            %{--action: function (e) {--}%
-                %{--$("tr.trHighlight").removeClass("trHighlight");--}%
-                %{--e.preventDefault();--}%
-
-                %{--location.href="${g.createLink(controller: 'tramite3', action: 'seguimientoTramite')}/"+id;--}%
-            %{--}--}%
-
-        %{--}--}%
-
-    %{--]);--}%
-
-
-
-    context.attach('.padre', [
-        {
-            header: 'Acciones'
-        },
-
-        detalles,
-        arbol,
-//        crearHermano
+        items.header.label = "Acciones";
+        items.detalles = detalles
+        items.arbol = arbol
         <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
-        ,administrar
+        items.administrar = administrar
         </g:if>
 
-
-    ]);
-
-    context.attach('.nada', [
-        {
-            header: 'Acciones'
-        },
-
-        detalles,
-        arbol
-        <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
-         ,administrar
-        </g:if>
+        return items
 
 
-    ]);
+
+    }
+
 
     $(".btnBorrar").click(function () {
 

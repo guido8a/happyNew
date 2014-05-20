@@ -74,6 +74,16 @@
             background-color : #F2DEDE ! important;
             /*color: #ffffff;*/
         }
+
+        .letra {
+
+            /*font-family: "Arial Black", arial-black;*/
+            /*background-color: #7eb75e;*/
+            background-color: #8fc6f3;
+        }
+
+        #7aaedb
+
         </style>
 
     </head>
@@ -82,20 +92,19 @@
 
         <div class="row" style="margin-top: 0px; margin-left: 1px">
             <span class="grupo">
+                <label class="well well-sm letra" style="text-align: center">
+                    BANDEJA DE ENTRADA PERSONAL
+                </label>
+            </span>
+
+
+            <span class="grupo">
                 <label class="well well-sm"
-                       style="text-align: center; float: left">
+                       style="text-align: center;">
                     Usuario: ${(persona?.titulo ?: '') + " " + persona?.nombre + " " + persona?.apellido + " - " +
                             persona?.departamento?.descripcion}
                 </label>
             </span>
-
-            <div class="btn-group" style="margin-left: 30px">
-
-                <g:link action="crearTramite" class="btn btn-default btnCrearTramite">
-                    <i class="fa fa-edit"></i> Crear Trámite
-                </g:link>
-
-            </div>
 
         </div>
 
@@ -106,12 +115,16 @@
             <div class="btn-group">
 
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-                <g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">
-                    <i class="fa fa-folder"></i> Archivados
-                </g:link>
+                %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
+                    %{--<i class="fa fa-folder"></i> Archivados--}%
+                %{--</g:link>--}%
 
                 <g:link action="" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
+                </g:link>
+
+                <g:link action="crearTramite" class="btn btn-default btnCrearTramite" style="margin-left: 10px">
+                    <i class="fa fa-edit"></i> Crear Trámite Principal
                 </g:link>
 
             </div>

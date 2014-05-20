@@ -91,6 +91,15 @@
             cursor      : pointer;
             /*margin-top: -5px;*/
         }
+
+        .letra {
+
+            /*font-family: "Arial Black", arial-black;*/
+            /*background-color: #7eb75e;*/
+            background-color:#eacb89;
+        }
+
+        #c99671
         </style>
         <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
     </head>
@@ -98,7 +107,14 @@
     <body>
         <div class="row" style="margin-top: 0px; margin-left: 1px">
             <span class="grupo">
-                <label class="well well-sm" style="text-align: center; float: left">
+                <label class="well well-sm letra" style="text-align: center">
+                    BANDEJA DE SALIDA PERSONAL
+                </label>
+            </span>
+
+
+            <span class="grupo">
+                <label class="well well-sm" style="text-align: center">
                     Usuario:
                     ${(persona?.titulo ?: '') + " " + persona?.nombre + " " + persona?.apellido + " - " + persona?.departamento?.descripcion}
                 </label>
