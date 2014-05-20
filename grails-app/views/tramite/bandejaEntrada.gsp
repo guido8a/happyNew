@@ -79,7 +79,7 @@
 
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
-            background-color: #8fc6f3;
+            background-color: #8fe6c3;
         }
 
         #7aaedb
