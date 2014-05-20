@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.TipoDepartamento; happy.tramites.Departamento" %>
+<%@ page import="org.omg.CORBA.NO_IMPLEMENT; happy.tramites.TipoDepartamento; happy.tramites.Departamento" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!departamentoInstance}">
@@ -23,21 +23,21 @@
     %{--</span>--}%
     %{--</div>--}%
 
-        %{--<g:if test="${departamentoInstance.padre}">--}%
-            <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
-                <span class="grupo">
-                    <label for="padre" class="col-md-2 control-label text-info">
-                        Padre
-                    </label>
+    %{--<g:if test="${departamentoInstance.padre}">--}%
+        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'padre', 'error')} ">
+            <span class="grupo">
+                <label for="padre" class="col-md-2 control-label text-info">
+                    Padre
+                </label>
 
-                    <div class="col-md-6">
-                        <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id, [sort: 'descripcion'])}"
-                                  optionKey="id" optionValue="descripcion" noSelection="['': '']"
-                                  value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
-                    </div>
-                </span>
-            </div>
-        %{--</g:if>--}%
+                <div class="col-md-6">
+                    <g:select id="padre" name="padre.id" from="${happy.tramites.Departamento.findAllByIdNotEqual(departamentoInstance.id, [sort: 'descripcion'])}"
+                              optionKey="id" optionValue="descripcion" noSelection="['': '']"
+                              value="${departamentoInstance?.padre?.id}" class="many-to-one form-control" style="width: 440px;"/>
+                </div>
+            </span>
+        </div>
+    %{--</g:if>--}%
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
@@ -70,6 +70,20 @@
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps"
                                  value="${departamentoInstance?.descripcion}" style="width: 440px;"/>
+                </div>
+                *
+            </span>
+        </div>
+
+        <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'externo', 'error')} required">
+            <span class="grupo">
+                <label for="externo" class="col-md-2 control-label text-info">
+                    Externo
+                </label>
+
+                <div class="col-md-2">
+                    <g:select name="externo" from="${[1: 'SI', 0: 'NO']}" optionKey="key" optionValue="value"
+                              class="form-control" value="${departamentoInstance.padre?.externo}"/>
                 </div>
                 *
             </span>

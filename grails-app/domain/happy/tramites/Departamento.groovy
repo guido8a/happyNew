@@ -12,6 +12,8 @@ class Departamento {
     String direccion
     String estado /*para controlar los bloqueos*/
 
+    Integer externo //1->externo, 0->interno
+
     Integer activo //1-> activo 0-> inactivo
     static mapping = {
         table 'dpto'
@@ -30,6 +32,7 @@ class Departamento {
             direccion column: 'dptodire'
             estado column: 'dptoetdo'
             activo column: 'dptoactv'
+            externo column: 'dptoextr'
         }
     }
     static constraints = {

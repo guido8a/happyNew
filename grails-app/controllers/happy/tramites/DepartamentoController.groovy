@@ -284,6 +284,10 @@ class DepartamentoController extends happy.seguridad.Shield {
 
                     data = "data-tramites='${pxtTodos.size()}'"
 
+                    if (hijo.externo == 1) {
+                        rel += "Externo"
+                    }
+
                 } else if (hijo instanceof Persona) {
                     switch (params.sort) {
                         case 'apellido':

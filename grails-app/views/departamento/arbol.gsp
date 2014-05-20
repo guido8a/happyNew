@@ -64,12 +64,13 @@
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
-%{--
-                    <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
-                        <i class="fa fa-users"></i> Usuarios LDAP
-                    </g:link>
---}%
-                    <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP</a>
+                    %{--
+                                        <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
+                                            <i class="fa fa-users"></i> Usuarios LDAP
+                                        </g:link>
+                    --}%
+                    <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP
+                    </a>
 
                 </div>
 
@@ -917,11 +918,23 @@
                         padreInactivo            : {
                             icon : "fa fa-building-o text-muted"
                         },
+                        padreExternoActivo       : {
+                            icon : "fa fa-paper-plane text-info"
+                        },
+                        padreExternoInactivo     : {
+                            icon : "fa fa-paper-plane text-muted"
+                        },
                         hijoActivo               : {
                             icon : "fa fa-home text-success"
                         },
                         hijoInactivo             : {
                             icon : "fa fa-home text-muted"
+                        },
+                        hijoExternoActivo        : {
+                            icon : "fa fa-paper-plane-o text-success"
+                        },
+                        hijoExternoInactivo      : {
+                            icon : "fa fa-paper-plane-o text-muted"
                         },
                         usuarioActivo            : {
                             icon : "fa fa-user text-info"
