@@ -864,34 +864,43 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     } else {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                                disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                                disponibles.add([id     : users[i].id,
+                                                 label  : users[i].toString(),
+                                                 obj    : users[i],
+                                                 externo: false],)
                             }
                         } else {
-                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                            disponibles.add([id     : users[i].id,
+                                             label  : users[i].toString(),
+                                             obj    : users[i],
+                                             externo: false])
                         }
                     }
                 }
             }
         }
 
-
         def idDepartamento = (Persona.get(session.usuario.id)?.departamento?.id)
         def negativo = idDepartamento * -1
         def lista = new ArrayList()
-
-
 
         disp.each { dep ->
             if (dep.id * -1 != negativo) {
                 if (params.id) {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
-                            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                            disp2.add([id     : dep.id * -1,
+                                       label  : dep.descripcion,
+                                       obj    : dep,
+                                       externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
-                        disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                        disp2.add([id     : dep.id * -1,
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             }

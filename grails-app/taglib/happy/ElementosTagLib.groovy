@@ -214,7 +214,10 @@ class ElementosTagLib {
                     usuarios.each {
                         if (it.id != persona.id && it.estaActivo && it.puedeRecibir) {
 //                            users += it
-                            disponibles.add([id: it.id, label: it.toString(), obj: it])
+                            disponibles.add([id     : it.id,
+                                             label  : it.toString(),
+                                             obj    : it,
+                                             externo: "interno"])
                         }
                     }
 //                    for (int i = users.size() - 1; i > -1; i--) {
@@ -231,7 +234,10 @@ class ElementosTagLib {
             disp.each { dep ->
                 if (dep.triangulos.size() > 0) {
                     if (dep.id.toLong() != persona.departamento.id.toLong() || (dep.id.toLong() == persona.departamento.id.toLong() && !esDepartamento)) {
-                        disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                        disp2.add([id     : dep.id * -1,
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1 ? "externo" : "interno"])
                     }
                 }
             }
@@ -241,7 +247,8 @@ class ElementosTagLib {
             attrs.id = attrs.name
         }
 
-        html = g.select(name: attrs.name, id: attrs.id, from: todos, optionKey: "id", optionValue: "label",
+        html = elm.select(name: attrs.name, id: attrs.id, from: todos,
+                optionKey: "id", optionValue: "label", optionClass: { it.externo },
                 style: attrs.style, "class": attrs.class, value: attrs.value)
 
         out << html

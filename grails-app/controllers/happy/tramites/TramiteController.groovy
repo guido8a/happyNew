@@ -398,10 +398,16 @@ class TramiteController extends happy.seguridad.Shield {
                     } else {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                                disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                                disponibles.add([id     : users[i].id,
+                                                 label  : users[i].toString(),
+                                                 obj    : users[i],
+                                                 externo: false])
                             }
                         } else {
-                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                            disponibles.add([id     : users[i].id,
+                                             label  : users[i].toString(),
+                                             obj    : users[i],
+                                             externo: false])
                         }
                     }
                 }
@@ -412,12 +418,18 @@ class TramiteController extends happy.seguridad.Shield {
             if (params.id) {
                 if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                     if (dep.triangulos.size() > 0) {
-                        disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                        disp2.add([id     : dep.id * -1,
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             } else {
                 if (dep.triangulos.size() > 0) {
-                    disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                    disp2.add([id     : dep.id * -1,
+                               label  : dep.descripcion,
+                               obj    : dep,
+                               externo: dep.externo == 1])
                 }
             }
         }
@@ -1033,7 +1045,7 @@ class TramiteController extends happy.seguridad.Shield {
         def anulado = EstadoTramite.findByCodigo("E006")
         def band = false
         tramites.each { tr ->
-            if(!(tr.tramite.tipoDocumento.codigo=="OFI" && tr.estado.codigo=="E004")){
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI" && tr.estado.codigo == "E004")) {
                 band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
                 if (!band) {
@@ -1206,7 +1218,7 @@ class TramiteController extends happy.seguridad.Shield {
         def anulado = EstadoTramite.findByCodigo("E006")
         def band = false
         tramites.each { tr ->
-            if(!(tr.tramite.tipoDocumento.codigo=="OFI" && tr.estado.codigo=="E004")){
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI" && tr.estado.codigo == "E004")) {
                 band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
                 if (!band) {
@@ -1264,7 +1276,6 @@ class TramiteController extends happy.seguridad.Shield {
 
     def tablaArchivados() {
 
-
 //        def persona = Persona.get(session.usuario.id)
 //        def rolPara = RolPersonaTramite.findByCodigo('R001');
 //        def rolCopia = RolPersonaTramite.findByCodigo('R002');
@@ -1286,9 +1297,9 @@ class TramiteController extends happy.seguridad.Shield {
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
         def pxtPara = PersonaDocumentoTramite.withCriteria {
-            if(persona?.esTriangulo()){
+            if (persona?.esTriangulo()) {
                 eq("departamento", departamento)
-            }else{
+            } else {
                 eq("persona", persona)
             }
             eq("rolPersonaTramite", rolPara)
@@ -1304,9 +1315,9 @@ class TramiteController extends happy.seguridad.Shield {
 
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
-            if(persona?.esTriangulo()){
+            if (persona?.esTriangulo()) {
                 eq("departamento", departamento)
-            }else{
+            } else {
                 eq("persona", persona)
             }
             eq("rolPersonaTramite", rolCopia)
@@ -1325,13 +1336,12 @@ class TramiteController extends happy.seguridad.Shield {
         pxtPara += pxtCopia
 
 
-     return [tramites: pxtPara]
+        return [tramites: pxtPara]
 
 
     }
 
     def busquedaArchivados() {
-
 
 //        def persona = Persona.get(session.usuario.id)
 //        def rolPara = RolPersonaTramite.findByCodigo('R001');
@@ -1381,9 +1391,6 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         pxtPara += pxtCopia
-
-
-
 
 //        println("todos:" + pxtPara)
 

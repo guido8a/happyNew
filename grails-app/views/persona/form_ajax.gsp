@@ -110,9 +110,9 @@
                     </label>
 
                     <div class="col-md-7">
-                        <g:textField name="mail" maxlength="63" email="true" class="form-control noCaps" value="${personaInstance?.mail}"/>
+                        <g:textField name="mail" maxlength="63" email="true" class="required form-control noCaps" value="${personaInstance?.mail}"/>
                     </div>
-
+                    *
                 </span>
             </div>
 

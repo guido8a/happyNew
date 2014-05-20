@@ -496,12 +496,12 @@
                 <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
                     <g:each in="${disponibles}" var="disp">
                         <g:if test="${disp.id.toInteger() < 0}">
-                            <li data-id="${disp.id}">
-                                <i class="fa fa-li fa-building-o"></i> ${disp.label}
+                            <li data-id="${disp.id}" class="${disp.externo ? 'externo' : 'interno'}">
+                                <i class="fa fa-li ${disp.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.label}
                             </li>
                         </g:if>
                         <g:else>
-                            <li data-id="${disp.id}">
+                            <li data-id="${disp.id}" class="interno">
                                 <i class="fa fa-li fa-user"></i> ${disp.label}
                             </li>
                         </g:else>
@@ -535,12 +535,12 @@
                     <g:if test="${tramite.id}">
                         <g:each in="${tramite.copias}" var="disp">
                             <g:if test="${disp.persona}">
-                                <li data-id="${disp.persona.id}">
+                                <li data-id="${disp.persona.id}" class="interno">
                                     <i class="fa fa-li fa-user"></i> ${disp.persona.toString()}
                                 </li>
                             </g:if>
                             <g:else>
-                                <li data-id="-${disp.departamento.id}">
+                                <li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
                                     <i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}
                                 </li>
                             </g:else>
@@ -613,11 +613,16 @@
                     },
                     success : function (msg) {
                         $divPara.replaceWith(msg);
+                        validarExterno(false);
                     }
                 });
 
                 //removeAllSelected
+                <g:if test="${tramite.id}">
+                </g:if>
+                <g:else>
                 removeAll();
+                </g:else>
 
                 switch (cod) {
                     case "CIR":
@@ -823,6 +828,22 @@
                 moveSelected($ul, $("#ulDisponibles"), true);
             }
 
+            function validarExterno(remove) {
+                if (remove) {
+                    removeAll();
+                }
+                if ($("#externo").is(":checked")) {
+//                    console.log("externo");
+                    $(".externo").show();
+                    $(".interno").hide();
+                } else {
+//                    console.log("interno");
+                    $(".externo").hide();
+                    $(".interno").show();
+                }
+                $("#para").val($("#para option:visible:first").val());
+            }
+
             $(function () {
 
                 <g:if test="${bloqueo}">
@@ -932,7 +953,10 @@
                     } else {
                         $("#divParaExt").addClass("hide");
                     }
+                    validarExterno(true);
                 });
+
+                validarExterno(false);
 
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc();
