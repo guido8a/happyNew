@@ -838,7 +838,7 @@
                     $(".interno").hide();
                 } else {
 //                    console.log("interno");
-                    $(".externo").hide();
+                    $(".externo").show();
                     $(".interno").show();
                 }
                 $("#para").val($("#para option:visible:first").val());

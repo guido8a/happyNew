@@ -83,7 +83,7 @@
 
                 <div class="col-md-2">
                     <g:select name="externo" from="${[1: 'SI', 0: 'NO']}" optionKey="key" optionValue="value"
-                              class="form-control" value="${departamentoInstance.padre?.externo}"/>
+                              class="form-control" value="${departamentoInstance.externo}"/>
                 </div>
                 *
             </span>
