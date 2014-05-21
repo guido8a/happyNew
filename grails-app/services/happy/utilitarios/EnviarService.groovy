@@ -1,43 +1,20 @@
 package happy.utilitarios
 
-import com.itextpdf.text.pdf.PdfAStamper
-import com.itextpdf.text.pdf.PdfStamper
-import grails.transaction.Transactional
-import happy.seguridad.Persona
-import happy.tramites.Departamento
-import happy.tramites.Tramite
-import org.w3c.dom.Document
-import org.xhtmlrenderer.extend.FontResolver
-import org.xhtmlrenderer.pdf.ITextRenderer
 
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
+import grails.transaction.Transactional
+
 
 @Transactional
 
 
-import com.lowagie.text.Element
-import com.lowagie.text.Font
-import com.lowagie.text.HeaderFooter
-import com.lowagie.text.PageSize
-import com.lowagie.text.Paragraph
-import com.lowagie.text.Phrase
-import com.lowagie.text.Rectangle
-import com.lowagie.text.pdf.PdfPCell
-import com.lowagie.text.pdf.PdfPTable
-import com.lowagie.text.pdf.PdfWriter
 import happy.seguridad.Persona
-import happy.tramites.Departamento
 import happy.tramites.Tramite
 import org.xhtmlrenderer.extend.FontResolver
-
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
-import java.awt.Color
 import java.io.*;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.w3c.dom.Document;
-
 import happy.ElementosTagLib
 
 class EnviarService {

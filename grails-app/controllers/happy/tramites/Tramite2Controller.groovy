@@ -561,7 +561,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (t.save(flush: true)) {
                         if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
                             def alerta = new Alerta()
-                            alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                            if(t.tramite.tipoDocumento.codigo=="OFI")
+                                alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
+                            else
+                                alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
                             if (t.persona) {
                                 alerta.controlador = "tramite"
                                 alerta.accion = "bandejaEntrada"
@@ -865,15 +868,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
                                 disponibles.add([id     : users[i].id,
-                                                 label  : users[i].toString(),
-                                                 obj    : users[i],
-                                                 externo: false],)
+                                        label  : users[i].toString(),
+                                        obj    : users[i],
+                                        externo: false],)
                             }
                         } else {
                             disponibles.add([id     : users[i].id,
-                                             label  : users[i].toString(),
-                                             obj    : users[i],
-                                             externo: false])
+                                    label  : users[i].toString(),
+                                    obj    : users[i],
+                                    externo: false])
                         }
                     }
                 }
@@ -890,17 +893,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
                             disp2.add([id     : dep.id * -1,
-                                       label  : dep.descripcion,
-                                       obj    : dep,
-                                       externo: dep.externo == 1])
+                                    label  : dep.descripcion,
+                                    obj    : dep,
+                                    externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                   label  : dep.descripcion,
-                                   obj    : dep,
-                                   externo: dep.externo == 1])
+                                label  : dep.descripcion,
+                                obj    : dep,
+                                externo: dep.externo == 1])
                     }
                 }
             }

@@ -110,6 +110,9 @@
                         items        : createContextMenu
                     },
                     types       : {
+                        principal : {
+                          icon: "fa fa-edit text-info"
+                        },
                         para  : {
                             icon : "fa fa-file-o text-info"
                         },

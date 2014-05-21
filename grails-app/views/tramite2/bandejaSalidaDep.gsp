@@ -361,7 +361,7 @@
 
 
                 var recibirExterno = {
-                    label   : 'Recibir Documento',
+                    label   : 'Confirmar recepción',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $.ajax({

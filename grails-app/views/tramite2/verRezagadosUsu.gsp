@@ -113,7 +113,7 @@
 
 <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
     <div class="btn-group">
-        <g:link action="verRezagados" class="btn btn-success btnActualizar">
+        <g:link action="verRezagadosUsu" class="btn btn-success btnActualizar">
             <i class="fa fa-refresh"></i> Actualizar
         </g:link>
 

@@ -521,7 +521,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def band = false
         def anulado = EstadoTramite.findByCodigo("E006")
         pxtTodos.each { tr ->
-            if(!(tr.tramite.tipoDocumento.codigo=="OFI" && tr.estado.codigo=="E004")){
+            if(!(tr.tramite.tipoDocumento.codigo=="OFI")){
                 band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
                 if (!band) {
@@ -990,6 +990,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def html = "", clase = "", rel = "para", data = ""
         if (para.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
+        }
+        if(!para.tramite.padre){
+            rel = "principal"
         }
         def strInfo = tramiteInfo(para)
         def hijos

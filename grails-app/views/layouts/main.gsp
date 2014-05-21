@@ -140,7 +140,7 @@
                 </div>
 
                 <div class="texto-bloqueo">
-                    El departamento ${session.departamento} tiene trámites por recibir que sobrepasan el tiempo máximo.
+                    El departamento ${session.departamento}, ha enviado tramites que sobrepasan el tiempo máximo de recepción.
                 </div>
             </div>
         </g:if>
@@ -161,7 +161,7 @@
             </div>
         </g:if>
         <g:if test="${session.usuario.estado == 'W'}">
-            <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="width: 240px" style="z-index: 200001">
+            <div id="bloqueo-warning" class="bloqueoUsu  ui-corner-all alert alert-warning " style="width: 240px" style="z-index: 200001">
                 <div class="titulo-bloqueo">
                     <i class="fa fa-exclamation-circle"></i>
                     Alerta de trámites no recibidos
@@ -171,7 +171,7 @@
                 </div>
 
                 <div class="texto-bloqueo">
-                    El usuario ${session.usuario} tiene trámites por recibir que sobrepasan el tiempo máximo.
+                    El usuario ${session.usuario}, ha enviado tramites que sobrepasan el tiempo máximo de recepción.
                 </div>
             </div>
         </g:if>

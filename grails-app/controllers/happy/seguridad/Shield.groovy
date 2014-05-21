@@ -33,6 +33,7 @@ class Shield {
             def usu = Persona.get(session.usuario.id)
             if (usu.estaActivo) {
                 session.departamento = Departamento.get(session.departamento.id).refresh()
+                session.usuario = Persona.get(session.usuario.id).refresh()
                 return true
             } else {
                 session.usuario = null
