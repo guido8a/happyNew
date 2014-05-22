@@ -13,15 +13,15 @@ class TramitesService {
     Boolean verificaHijos(pdt, estado) {
         def hijos = Tramite.findAllByAQuienContesta(pdt)
         def res = false
-        println "-------------------!!---------------------------"
-        println "tramite ver hijos "+pdt.id+"   "+pdt.persona+"   "+pdt.departamento+"  "+pdt.tramite.codigo+"   "+estado.descripcion+"   "+estado.codigo
-        println "hijos "+hijos
+//        println "-------------------!!---------------------------"
+//        println "tramite ver hijos "+pdt.id+"   "+pdt.persona+"   "+pdt.departamento+"  "+pdt.tramite.codigo+"   "+estado.descripcion+"   "+estado.codigo
+//        println "hijos "+hijos
         def roles = [RolPersonaTramite.findByCodigo("R001"),RolPersonaTramite.findByCodigo("R002")]
         hijos.each { t ->
             if (!res) {
                 def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t,roles)
                 pdts.each { pd ->
-                    println "pdt del hijo "+t.codigo+"  --> "+pd+"   "+pd.estado?.descripcion+"    "+(pd.estado!=estado)
+//                    println "pdt del hijo "+t.codigo+"  --> "+pd+"   "+pd.estado?.descripcion+"    "+(pd.estado!=estado)
                     if(!pd.estado)
                         res=true
                     else{
@@ -29,7 +29,7 @@ class TramitesService {
                             if (pd.estado?.codigo != estado.codigo) {
                                 res = true
                             } else {
-                                println "dentro del bucle"
+//                                println "dentro del bucle"
                                 if (verificaHijos(pd, estado))
                                     res = true
                             }
@@ -39,8 +39,8 @@ class TramitesService {
                 }
             }
         }
-        println "return !!!! "+res
-        println "----------------------------------------------"
+//        println "return !!!! "+res
+//        println "----------------------------------------------"
         return res
     }
 }
