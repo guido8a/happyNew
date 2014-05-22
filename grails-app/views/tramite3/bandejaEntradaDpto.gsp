@@ -330,7 +330,7 @@
                 };
 
                 var recibir = {
-                    label   : 'Confirmar recepción',
+                    label   : 'Recibir Documento',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
 
