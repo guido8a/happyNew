@@ -298,6 +298,7 @@
 
                 var esSumilla = $tr.hasClass("sumilla");
                 var esExterno = $tr.hasClass("externo");
+                var esOficio = $tr.hasClass("OFI");
                 var tieneEstado = $tr.hasClass("estado");
                 var esDex = $tr.hasClass("DEX");
                 var tienePadre = $tr.hasClass("conPadre");
@@ -594,6 +595,10 @@
                 }
                 if(enviado || tieneAlerta) {
                     items.copia = copia;
+                }
+
+                if(esOficio){
+                    delete items.copia;
                 }
 
                 </g:if>
