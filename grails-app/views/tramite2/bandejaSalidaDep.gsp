@@ -90,7 +90,7 @@
         .letra {
 
             /*font-family: "Arial Black", arial-black;*/
-            background-color:#eacb89;
+            background-color : #eacb89;
 
         }
         </style>
@@ -334,8 +334,8 @@
                                                     type    : "POST",
                                                     url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
                                                     data    : {
-                                                        tramite     : id,
-                                                        copias : cc
+                                                        tramite : id,
+                                                        copias  : cc
                                                     },
                                                     success : function (msg) {
                                                         var parts = msg.split("*");
@@ -359,15 +359,14 @@
                     }
                 };
 
-
                 var recibirExterno = {
-                    label   : 'Confirmar recepción',
+                    label  : 'Confirmar recepción',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/'+ id ,
+                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
@@ -386,13 +385,13 @@
                     } //action
                 }
                 var enviarDex = {
-                    label   : 'Enviar y recibir',
+                    label  : 'Enviar y recibir',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'tramite', action: 'saveDEX')}/'+id,
+                            url     : '${createLink(controller: 'tramite', action: 'saveDEX')}/' + id,
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
@@ -515,13 +514,14 @@
                                                             log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                                             if (parts[0] == "OK") {
                                                                 location.reload(true);
+                                                            } else {
+                                                                closeLoader();
                                                             }
                                                         }
                                                     });
                                                 } else {
                                                     log('No seleccionó ninguna persona ', 'error')
                                                 }
-
                                             }
                                         }
                                     }
@@ -558,13 +558,13 @@
                     items.desenviar = desenviar;
                 }
 //                }
-                if(esDex && porEnviar){
+                if (esDex && porEnviar) {
                     items.enviarDex = enviarDex
                 }
-                if(esExterno && enviado){
+                if (esExterno && enviado) {
                     items.recibirExterno = recibirExterno
                 }
-                if(enviado || tieneAlerta) {
+                if (enviado || tieneAlerta) {
                     items.copia = copia;
                 }
                 </g:if>

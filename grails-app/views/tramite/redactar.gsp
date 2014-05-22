@@ -173,15 +173,19 @@
         </div>
         <script>
 
+            function arreglarTexto(texto) {
+                texto = texto.replace(/(?:\&)/g, "&amp;");
+                texto = texto.replace(/(?:<)/g, "&lt;");
+                texto = texto.replace(/(?:>)/g, "&gt;");
+                texto = texto.replace(/(?:\r\n|\r|\n)/g, '');
+                return texto;
+            }
+
             var textoInicial = "${tramite.texto}";
 
             window.onbeforeunload = function (e) {
                 textoInicial = textoInicial.replace(/(?:\r\n|\r|\n)/g, '');
-                var textoActual = $("#editorTramite").val();
-                textoActual = textoActual.replace(/(?:\&)/g, "&amp;");
-                textoActual = textoActual.replace(/(?:<)/g, "&lt;");
-                textoActual = textoActual.replace(/(?:>)/g, "&gt;");
-                textoActual = textoActual.replace(/(?:\r\n|\r|\n)/g, '');
+                var textoActual = arreglarTexto($("#editorTramite").val());
                 var esIgual = textoInicial == textoActual;
                 if (esIgual) {
                     return null;
@@ -350,7 +354,7 @@
                             closeLoader();
                             var parts = msg.split("_");
                             if (parts[0] == "OK") {
-                                textoInicial = $("#editorTramite").val();
+                                textoInicial = arreglarTexto($("#editorTramite").val());
                             }
                             log(parts[1], parts[0] == "NO" ? "error" : "success");
                         }
@@ -375,7 +379,7 @@
                         success : function (msg) {
                             var parts = msg.split("*");
                             if (parts[0] == "OK") {
-                                textoInicial = $("#editorTramite").val();
+                                textoInicial = arreglarTexto($("#editorTramite").val());
                                 closeLoader();
                                 window.open("${resource(dir:'tramites')}/" + parts[1]);
                             }

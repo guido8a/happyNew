@@ -180,7 +180,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 inList("rolPersonaTramite", [para, cc])
                 isNull("fechaRecepcion")
             }
-            if (pxd.size() > 0) {
+            def pdt = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                inList("rolPersonaTramite", [para, cc])
+            }
+            if (pxd.size() > 0 || pdt.size() == 0) {
                 tramites += tr
             }
         }
@@ -212,6 +216,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids = null
         }
 
+        println "********************"
+        println tramite
+        println ids
+        println "********************"
+//        render "AFSD"
 
         def errores = ""
 
@@ -219,36 +228,43 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
         //esta quitando el enviado a estos
-
-
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
             //cambia la fecha de envio, el estadoy las obs
-            persDoc.fechaEnvio = null
-            persDoc.estado = porEnviar
-            persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                    "(previa fecha de envío: " +
-                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
-            if (persDoc.save(flush: true)) {
+            def pers = persDoc.persona
+            def dpto = persDoc.departamento
+            def tram = persDoc.tramite
+//            persDoc.fechaEnvio = null
+//            persDoc.estado = porEnviar
+//            persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+//                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+//                    "(previa fecha de envío: " +
+//                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+//            if (persDoc.save(flush: true)) {
+            try {
+                persDoc.delete(flush: true)
                 def alerta
-                if (persDoc.persona)
-                    alerta = Alerta.findByPersonaAndTramite(persDoc.persona, persDoc.tramite)
+                if (pers)
+                    alerta = Alerta.findByPersonaAndTramite(pers, tram)
                 else
-                    alerta = Alerta.findByDepartamentoAndTramite(persDoc.departamento, persDoc.tramite)
+                    alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
                 if (alerta) {
                     alerta.mensaje += " - Tramite cambiado de estado"
                     alerta.fechaRecibido = new Date()
                     alerta.save(flush: true)
                 }
-            } else {
-                println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
-                errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
+            } catch (e) {
+                println "error: " + e
             }
+//            } else {
+//                println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
+//                errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
+//            }
         }
 
         //originalmente era para todos estos: verifico si ninguno ha recibido le cambio el estado al tramite a borrador
         def recibidos = 0
+        def enviados = 0
         PersonaDocumentoTramite.withCriteria {
             eq("tramite", tramite)
             inList("rolPersonaTramite", [rolPara, rolCc])
@@ -256,8 +272,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (persDoc.fechaRecepcion) {
                 recibidos++
             }
+            if (persDoc.fechaEnvio) {
+                enviados++
+            }
         }
-        if (recibidos == 0) {
+//        if (recibidos == 0) {
+        if (enviados == 0) {
             tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
                     "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
                     "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
@@ -561,7 +581,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (t.save(flush: true)) {
                         if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
                             def alerta = new Alerta()
-                            if(t.tramite.tipoDocumento.codigo=="OFI")
+                            if (t.tramite.tipoDocumento.codigo == "OFI")
                                 alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
                             else
                                 alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
@@ -868,15 +888,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
                                 disponibles.add([id     : users[i].id,
-                                        label  : users[i].toString(),
-                                        obj    : users[i],
-                                        externo: false],)
+                                                 label  : users[i].toString(),
+                                                 obj    : users[i],
+                                                 externo: false],)
                             }
                         } else {
                             disponibles.add([id     : users[i].id,
-                                    label  : users[i].toString(),
-                                    obj    : users[i],
-                                    externo: false])
+                                             label  : users[i].toString(),
+                                             obj    : users[i],
+                                             externo: false])
                         }
                     }
                 }
@@ -893,17 +913,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
                             disp2.add([id     : dep.id * -1,
-                                    label  : dep.descripcion,
-                                    obj    : dep,
-                                    externo: dep.externo == 1])
+                                       label  : dep.descripcion,
+                                       obj    : dep,
+                                       externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                label  : dep.descripcion,
-                                obj    : dep,
-                                externo: dep.externo == 1])
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             }
