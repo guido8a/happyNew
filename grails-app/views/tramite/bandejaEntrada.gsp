@@ -301,6 +301,8 @@
                 var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
+                var externo = $tr.hasClass("1")
+
 
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
@@ -340,7 +342,7 @@
                 };
 
                 var recibir = {
-                    label   : 'Confirmar recepción',
+                    label   : 'Recibir Documento',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
 
@@ -590,6 +592,11 @@
 
                     items.recibir = recibir
                 }
+//
+//                if(externo){
+//                    delete items.recibir
+//                    items.recibirExt = recibirExt
+//                }
 
                 if(recibido){
                     items.contestar = contestar

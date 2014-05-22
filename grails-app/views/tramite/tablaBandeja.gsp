@@ -55,6 +55,8 @@
             </g:else>
 
 
+
+
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"

@@ -51,6 +51,8 @@
                 <g:set var="padre" value="${tramite.padreId}"/>
             </g:if>
 
+
+
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
                 ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
