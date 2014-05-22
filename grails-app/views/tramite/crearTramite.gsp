@@ -240,9 +240,15 @@
                 %{--</g:if>--}%
 
                 <div class="row">
+                <div class="col-xs-4" >
+                    <b>De:</b>
+                </div>
+                </div>
+
+                <div class="row">
                     <div class="col-xs-4">
                         <g:set var="nombre" value="${de.nombre + " " + de.apellido}"/>
-                        <b style="margin-right: 5px">De:</b>
+
                         <g:if test="${nombre.size() <= 36}">
                             <div class="uneditable-input label-shared" id="de"
                                  title="${de.departamento?.descripcion}">
@@ -278,6 +284,15 @@
                                           value="${tramite.tipoDocumentoId}" tramite="${tramite}" tipo="pers"/>
                         %{--</g:else>--}%
                     </div>
+
+
+                    <g:if test="${persona.puedeTramitar}">
+                        <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px; margin-left: -15px">
+                            <label for="externo"><input type="checkbox" name="externo" id="externo">
+                                Externo
+                            </label>
+                        </div>
+                    </g:if>
 
 
                     <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
@@ -356,13 +371,13 @@
                         </label>
                     </div>
 
-                    <g:if test="${persona.puedeTramitar}">
-                        <div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">
-                            <label for="externo"><input type="checkbox" name="externo" id="externo">
-                                Externo
-                            </label>
-                        </div>
-                    </g:if>
+                    %{--<g:if test="${persona.puedeTramitar}">--}%
+                        %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
+                            %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                                %{--Externo--}%
+                            %{--</label>--}%
+                        %{--</div>--}%
+                    %{--</g:if>--}%
 
                 </div>
 
@@ -854,7 +869,7 @@
                     $(".interno").hide();
                 } else {
 //                    console.log("interno");
-                    $(".externo").hide();
+                    $(".externo").show();
                     $(".interno").show();
                 }
                 $("#para").val($("#para option:visible:first").val());

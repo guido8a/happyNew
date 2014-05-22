@@ -212,7 +212,8 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</div>"
                     break;
                 case "OFI":
-                    html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                    html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px; margin-left: -25px\"> "
+                    html += "<b>Para:</b>"
                     html += g.textField(name: "paraExt",
                             class: "form-control label-shared required",
                             value: tramite?.paraExterno,
@@ -220,7 +221,8 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</div>"
                     break;
                 default: //DEX SUM MEM PLA
-                    html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">Para: "
+                    html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px;margin-left: -25px\">"
+                    html += "<b>Para:</b>"
                     html += elm.comboPara(name: "tramite.para",
                             id: "para",
                             value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
@@ -229,7 +231,7 @@ class TramiteController extends happy.seguridad.Shield {
                             tipoDoc: tipoDoc,
                             tipo: params.tipo)
                     html += "</div>"
-                    html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\">\n" +
+                    html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\" style=\"margin-left: 30px\">\n" +
                             "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
                             "                    <i class=\"fa fa-search\"></i>\n" +
                             "                    </a>\n" +

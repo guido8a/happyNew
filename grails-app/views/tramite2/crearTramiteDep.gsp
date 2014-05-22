@@ -241,9 +241,15 @@
                 %{--</g:if>--}%
 
                 <div class="row">
-                    <div class="col-xs-4">
-                        <b style="margin-right: 5px">De:</b>
+                <div class="col-xs-4">
+                    <b>De:</b>
+                </div>
+                </div>
 
+
+                <div class="row">
+
+                    <div class="col-xs-3">
                         <div class="uneditable-input label-shared" id="de" title="${de.departamento?.descripcion}">
                             ${de.departamento?.codigo}
                         </div>
@@ -260,6 +266,12 @@
                         <b>Tipo de documento:</b>
                         <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
                                           value="${tramite.tipoDocumentoId}" tramite="${tramite}"/>
+                    </div>
+
+                    <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px;">
+                        <label for="externo"><input type="checkbox" name="externo" id="externo">
+                            Externo
+                        </label>
                     </div>
 
 
@@ -341,11 +353,11 @@
                         </label>
                     </div>
 
-                    <div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">
-                        <label for="externo"><input type="checkbox" name="externo" id="externo">
-                            Externo
-                        </label>
-                    </div>
+                    %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
+                        %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                            %{--Externo--}%
+                        %{--</label>--}%
+                    %{--</div>--}%
 
                 </div>
 

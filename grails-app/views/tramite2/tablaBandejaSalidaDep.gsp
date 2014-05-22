@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
+<%@ page import="happy.tramites.DocumentoTramite; happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
@@ -27,7 +27,7 @@
                 <g:set var="padre" value=""/>
                 <g:set var="clase" value=""/>
 
-                <g:if test="${tramite?.anexo == 1}">
+                <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite)>0}">
                     <g:set var="anexo" value="${'conAnexo'}"/>
                 </g:if>
                 <g:else>
@@ -49,12 +49,15 @@
 
                 <tr id="${tramite?.id}" data-id="${tramite?.id}"
                     class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
-                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
+                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
                     codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
                     anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
                     <g:if test="${tramite?.anexo == 1}">
-                        <td title="${tramite.asunto}">${tramite?.codigo}<i class="fa fa-paperclip" style="margin-left: 10px"></i>
+                        <td title="${tramite.asunto}">${tramite?.codigo}
+                            <g:if test="${DocumentoTramite.countByTramite(tramite)>0}">
+                                <i class="fa fa-paperclip" style="margin-left: 10px"></i>
+                            </g:if>
                         </td>
                     </g:if>
                     <g:else>

@@ -285,8 +285,10 @@
                 var enviado = $tr.hasClass("E003"); //enviado
                 var recibido = $tr.hasClass("E004"); //recibido
 
+
                 var esSumilla = $tr.hasClass("sumilla");
                 var esExterno = $tr.hasClass("externo");
+                var esOficio = $tr.hasClass("OFI")
                 var tieneEstado = $tr.hasClass("estado");
                 var esDex = $tr.hasClass("DEX");
                 var tienePadre = $tr.hasClass("conPadre");
@@ -298,7 +300,7 @@
 
                 var copia = {
                     separator_before : true,
-                    label            : "Copia para",
+                    label            : "Crear Copia",
                     icon             : "fa fa-files-o",
                     action           : function () {
                         $.ajax({
@@ -567,6 +569,11 @@
                 if (enviado || tieneAlerta) {
                     items.copia = copia;
                 }
+
+                if(esOficio){
+                    delete items.copia;
+                }
+
                 </g:if>
                 return items;
             }
