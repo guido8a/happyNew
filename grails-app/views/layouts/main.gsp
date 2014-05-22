@@ -126,21 +126,21 @@
                 <div class="texto-bloqueo">
                     Varias funciones del departamento ${session.departamento} están bloqueadas temporalmente debido a trámites no recibidos.
                 </div>
-                <a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
+                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
             </div>
         </g:if>
         <g:if test="${session.departamento.estado == 'W' && session.triangulo}">
-            <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-warning " style="width: 240px" style="z-index: 200001; ">
+            <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-warning " style="width: 240px; height: 150px;" style="z-index: 200001; ">
                 <div class="titulo-bloqueo">
                     <i class="fa fa-exclamation-circle"></i>
-                    Aviso: Trámites no recibidos
+                    Aviso: Trámites No Recibidos
                     <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
 
                 <div class="texto-bloqueo">
-                    El departamento ${session.departamento}, ha enviado tramites que sobrepasan el tiempo máximo de recepción.
+                    El departamento ${session.departamento}, tiene trámites que no le han recibido.
                 </div>
             </div>
         </g:if>
@@ -157,21 +157,22 @@
                 <div class="texto-bloqueo">
                     Varias funciones del usuario ${session.usuario} están bloqueadas temporalmente debido a trámites no recibidos.
                 </div>
-                <a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
+                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
+                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
             </div>
         </g:if>
         <g:if test="${session.usuario.estado == 'W'}">
-            <div id="bloqueo-warning" class="bloqueoUsu  ui-corner-all alert alert-warning " style="width: 240px" style="z-index: 200001">
+            <div id="bloqueo-warning" class="bloqueoUsu  ui-corner-all alert alert-warning " style="width: 240px; height: 150px;" style="z-index: 200001">
                 <div class="titulo-bloqueo">
                     <i class="fa fa-exclamation-circle"></i>
-                    Alerta de trámites no recibidos
+                    Alerta de Trámites No Recibidos
                     <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
 
                 <div class="texto-bloqueo">
-                    El usuario ${session.usuario}, ha enviado tramites que sobrepasan el tiempo máximo de recepción.
+                    El usuario ${session.usuario}, tiene trámites que no le han recibido.
                 </div>
             </div>
         </g:if>
