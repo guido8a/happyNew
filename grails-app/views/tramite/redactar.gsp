@@ -154,16 +154,16 @@
                 </div>
 
                 <div class="btn-group">
-                    <g:link action="bandejaEntrada" class="btn btn-sm btn-success btnSave">
+                    <a href="#" class="btn btn-sm btn-success btnSave">
                         <i class="fa fa-save"></i> Guardar
-                    </g:link>
-                    <g:link action="bandejaEntrada" class="btn btn-sm btn-primary btnPrint">
+                    </a>
+                    <a href="#" class="btn btn-sm btn-primary btnPrint">
                         <i class="fa fa-file"></i> PDF
-                    </g:link>
+                    </a>
                     %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
-                        %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
-                            %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
-                        %{--</g:link>--}%
+                    %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
+                    %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
+                    %{--</g:link>--}%
                     %{--</g:if>--}%
                 </div>
             </div>
@@ -172,57 +172,43 @@
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
         </div>
         <script>
+
             var textoInicial = "${tramite.texto}";
 
-            //            function validaTexto(textoInicial, url) {
-            //                var textoActual = $("#editorTramite").val();
-            //                var esIgual = textoInicial == textoActual;
-            //                if (esIgual) {
-            //                    location.href = url;
-            //                } else {
-            //                    var msg = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
-            //                              "<p>El texto ha sido cambiado y no ha sido guardado. Si continúa se perderán los cambios.</p><p>¿Desea continuar?</p>";
-            //                    bootbox.dialog({
-            //                        title   : "Alerta",
-            //                        message : msg,
-            //                        buttons : {
-            //                            cancelar  : {
-            //                                label     : "Cancelar",
-            //                                className : "btn-primary",
-            //                                callback  : function () {
-            //                                }
-            //                            },
-            //                            continuar : {
-            //                                label     : "<i class='fa fa-arrow-circle-o-right'></i> Salir",
-            //                                className : "btn-warning",
-            //                                callback  : function () {
-            //                                    location.href = url;
-            //                                }
-            //                            }
-            //                        }
-            //                    });
-            //                }
-            //            }
-
-            //            //            function closeEditorWarning() {
-            //            //                return 'It looks like you have been editing something -- if you leave before submitting your changes will be lost.'
-            //            //            }
-            //            //
-            //            //            window.onbeforeunload = closeEditorWarning;
-            //            $(window).bind('beforeunload', function (e) {
-            //                if ($('#form').serialize() != $('#form').data('serialize'))return true;
-            //                else e = null;
-            //                // i.e; if form state change show warning box, else don't show it.
-            //            });
-
             window.onbeforeunload = function (e) {
+                textoInicial = textoInicial.replace(/(?:\r\n|\r|\n)/g, '');
                 var textoActual = $("#editorTramite").val();
+                textoActual = textoActual.replace(/(?:\&)/g, "&amp;");
+                textoActual = textoActual.replace(/(?:<)/g, "&lt;");
+                textoActual = textoActual.replace(/(?:>)/g, "&gt;");
+                textoActual = textoActual.replace(/(?:\r\n|\r|\n)/g, '');
                 var esIgual = textoInicial == textoActual;
                 if (esIgual) {
                     return null;
                 } else {
                     return "Alerta";
                 }
+
+//                var textoActual = $("#editorTramite").val();
+//                var textoActual2 = textoActual.replace("\\n", "");
+//                var textoActual3 = textoActual.strReplaceAll("\\n", "");
+//                var textoActual4 = textoActual.replace(/(?:\r\n|\r|\n)/g, '');
+//                console.log(textoInicial);
+//                console.log(textoActual);
+//                console.log(textoActual2);
+//                console.log(textoActual3);
+//                console.log(textoActual4);
+//                console.log(textoInicial == textoActual);
+//                console.log(textoInicial == textoActual2);
+//                console.log(textoInicial == textoActual3);
+//                console.log(textoInicial == textoActual4);
+//                return "ASDFASDFASDFASD";
+//                if (esIgual) {
+////                    return null;
+//                    return "Alert";
+//                } else {
+//                    return "Alerta";
+//                }
             };
 
             $(function () {
