@@ -63,9 +63,9 @@ jQuery.validator.addMethod("integer", function (value, element) {
 /*
  7 dígitos
  */
-jQuery.validator.addMethod("telefono", function (value, element) {
-    return this.optional(element) || /^\d{7}$/.test(value);
-}, "Por favor ingrese un número de teléfono válido (7 dígitos)");
+//jQuery.validator.addMethod("telefono", function (value, element) {
+//    return this.optional(element) || /^\d{7}$/.test(value);
+//}, "Por favor ingrese un número de teléfono válido (7 dígitos)");
 
 /*
  10 dígitos, empzando con un 0

@@ -436,7 +436,7 @@
                             <b>Teléfono:</b>
 
                             <div class="input-group">
-                                <g:textField id="telefonoExt" name="tramite.telefono" class="form-control telefono" maxlength="63"
+                                <g:textField id="telefonoExt" name="tramite.telefono" class="form-control telefono required" maxlength="15"
                                              value="${tramite?.telefono}"/>
                                 %{--<g:textField id="telefonoOrigen" name="origen.telefono" class="origenTram form-control " maxlength="63"--}%
                                 %{--value="${origen?.telefono}"/>--}%
@@ -463,7 +463,7 @@
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Contacto:</b>
-                            <g:textField id="contacto" name="tramite.contacto" class="form-control " maxlength="31"
+                            <g:textField id="contacto" name="tramite.contacto" class="form-control required" maxlength="31"
                                          value="${tramite.contacto}"/>
                             %{--<g:textField id="nombreContactoOrigen" name="origen.nombreContacto" class="origenTram form-control " maxlength="31"--}%
                             %{--value="${origen?.nombreContacto}"/>--}%
