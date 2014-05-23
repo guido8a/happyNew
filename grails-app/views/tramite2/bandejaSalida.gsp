@@ -590,7 +590,7 @@
                     items.desenviar = desenviar;
                 }
 //                }
-                if(esExterno && enviado){
+                if(esExterno && (enviado || tieneAlerta)){
                     items.recibirExterno = recibirExterno
                 }
                 if(enviado || tieneAlerta) {

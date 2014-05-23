@@ -563,7 +563,7 @@
                 if (esDex && porEnviar) {
                     items.enviarDex = enviarDex
                 }
-                if (esExterno && enviado) {
+                if (esExterno && (enviado || tieneAlerta)) {
                     items.recibirExterno = recibirExterno
                 }
                 if (enviado || tieneAlerta) {
