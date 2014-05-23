@@ -90,7 +90,8 @@
         .letra {
 
             /*font-family: "Arial Black", arial-black;*/
-            background-color : #eacb89;
+            /*background-color : #eacb89;*/
+            background-color: #8fc6f3;
 
         }
         </style>
