@@ -126,7 +126,7 @@
                 <div class="texto-bloqueo">
                     Varias funciones del departamento ${session.departamento} están bloqueadas temporalmente debido a trámites no recibidos.
                 </div>
-                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
+                <a href="${g.createLink(controller: 'tramite2', action: 'verRezagados')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
             </div>
         </g:if>
         <g:if test="${session.departamento.estado == 'W' && session.triangulo}">
@@ -157,8 +157,7 @@
                 <div class="texto-bloqueo">
                     Varias funciones del usuario ${session.usuario} están bloqueadas temporalmente debido a trámites no recibidos.
                 </div>
-                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
-                %{--<a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>--}%
+                <a href="${g.createLink(controller: 'tramite2', action: 'verRezagadosUsu')}" class="" style="margin-top: 30px">Ver trámites no recibidos</a>
             </div>
         </g:if>
         <g:if test="${session.usuario.estado == 'W'}">
