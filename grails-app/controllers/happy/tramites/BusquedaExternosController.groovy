@@ -11,7 +11,7 @@ class BusquedaExternosController {
     }
 
     def tablaBusquedaExternos () {
-//           println("params:" + params)
+           println("params:" + params)
 
         def res
         def filtrados = []
@@ -42,7 +42,7 @@ class BusquedaExternosController {
             if(res){
                 res.each {
 //                    println("externo:" + it.externo)
-                    if(it.externo == '1'){
+                    if(it?.externo == '1'){
                         filtrados += it
                     }
 
