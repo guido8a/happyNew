@@ -39,7 +39,8 @@
              * * 'separator_after' - a boolean indicating if there should be a separator after this item
              * * 'disabled' - a boolean indicating if this action should be disabled, or a function that accepts a node and returns a boolean.
              * * 'label' - a string - the name of the action (could be a function returning a string)
-             * * 'action' - a function to be executed if this item is chosen
+             * * 'action' - a function to be executed if this item is chosen ($element: the element that was right clicked,
+             *                                                                $item:    the menu item clicked (li)
              * * 'icon' - a string, can be a path to an icon or a className,
              * if using an image that is in the current directory use a './' prefix, otherwise it will be detected as a class
              */
@@ -55,7 +56,7 @@
                         separator_after  : true,
                         disabled         : false,
                         label            : "Create",
-                        action           : function ($element) {
+                        action           : function ($element, $item) {
                             alert("You clicked the CREATE button on element with id " + $element.attr("id"));
                         }
                     },
@@ -65,7 +66,7 @@
                         separator_after  : false,
                         disabled         : false,
                         label            : "Delete",
-                        action           : function ($element) {
+                        action           : function ($element, $item) {
                             alert("You clicked the DELETE button on element with id " + $element.attr("id"));
                         }
                     },
@@ -117,6 +118,10 @@
                 }
                 if (cont || cont === undefined) {
                     showContextMenu(e.currentTarget, e.pageX, e.pageY, e);
+
+                    if ($.isFunction(settings.afterShow)) {
+                        settings.afterShow.call(this, $element);
+                    }
                 }
                 return false;
             }); // Open context menu
@@ -131,8 +136,11 @@
             });
         });
 
-        function createContextMenu(items, $element) {
+        function createContextMenu(items, $element, submenu) {
             var $menu = $("<ul class='lzm-dropdown-menu dropdown-menu'>");
+            if(submenu) {
+                $menu.addClass("lzm-dropdown-submenu-content");
+            }
             $.each(items, function (i, obj) {
 
                 var disabled = obj.disabled;
@@ -145,7 +153,7 @@
                 }
                 var clase = "";
                 if (obj.header) {
-                    clase = "dropdown-header";
+                    clase = "dropdown-header lzm-dropdown-header";
                 }
                 if (disabled) {
                     clase = "disabled";
@@ -186,7 +194,7 @@
                     if (obj.action && !disabled) {
                         $a.click(function () {
                             if ($.isFunction(obj.action)) {
-                                obj.action.call(this, $element);
+                                obj.action.call(this, $element, $li);
                             }
                         });
                     }
@@ -199,7 +207,7 @@
                 }
 
                 if (obj.submenu) {
-                    $li.append(createContextMenu(obj.submenu, $element));
+                    $li.append(createContextMenu(obj.submenu, $element, true));
                 }
                 $menu.append($li);
 
@@ -226,7 +234,7 @@
             }
             var $menu = "";
             if ($.isPlainObject(items)) {
-                $menu = createContextMenu(items, $element);
+                $menu = createContextMenu(items, $element, false);
             }
             if ($menu) {
                 $menu.appendTo("body")
@@ -234,7 +242,7 @@
                     .css({
                         display  : "block",
                         position : "absolute",
-                        left     : getLeftLocation(x),
+                        left     : getLeftLocation(x) - 20,
                         top      : getTopLocation(y)
                     });
             }

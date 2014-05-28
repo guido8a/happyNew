@@ -17,7 +17,7 @@
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
-        <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
+            <g:link class="btn btn-default col-md-2" style="width: 100px;" controller="inicio" action="parametros"><i class="fa fa-arrow-left"></i> Regresar</g:link>
 
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
@@ -172,71 +172,68 @@
                     return false;
                 });
 
-                context.settings({
-                    onShow : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parents("tr");
-                        $tr.addClass("trHighlight");
-                        id = $tr.data("id");
-                    }
-                });
-                context.attach('tbody>tr', [
-                    {
-                        header : 'Acciones'
-                    },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action:'show_ajax')}",
-                                data    : {
-                                    id : id
-                                },
-                                success : function (msg) {
-                                    var b = bootbox.dialog({
-                                        id      : "dlgVer",
-                                        title   : "Ver Codificación de la estructura",
-                                        message : msg,
-                                        buttons : {
-                                            ok : {
-                                                label     : "Aceptar",
-                                                className : "btn-primary",
-                                                callback  : function () {
+                $("tbody tr").contextMenu({
+                    items  : {
+                        header   : {
+                            label  : "Acciones",
+                            header : true
+                        },
+                        ver      : {
+                            label  : "Ver",
+                            icon   : "fa fa-search",
+                            action : function ($element) {
+                                var id = $element.data("id");
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(action:'show_ajax')}",
+                                    data    : {
+                                        id : id
+                                    },
+                                    success : function (msg) {
+                                        var b = bootbox.dialog({
+                                            title   : "Ver Codificación de la estructura",
+                                            message : msg,
+                                            buttons : {
+                                                ok : {
+                                                    label     : "Aceptar",
+                                                    className : "btn-primary",
+                                                    callback  : function () {
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
-                                    b.find("#dlgVer").draggable({
-                                        handle : ".modal-header"
-                                    });
-                                }
-                            });
+                                        });
+                                        b.find("#dlgVer").draggable({
+                                            handle : ".modal-header"
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        editar   : {
+                            label  : "Editar",
+                            icon   : "fa fa-pencil",
+                            action : function ($element) {
+                                var id = $element.data("id");
+                                createEditRow(id);
+                            }
+                        },
+                        eliminar : {
+                            label            : "Eliminar",
+                            icon             : "fa fa-trash-o",
+                            separator_before : true,
+                            action           : function ($element) {
+                                var id = $element.data("id");
+                                deleteRow(id);
+                            }
                         }
                     },
-                    {
-                        text   : 'Editar',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            createEditRow(id);
-                        }
+                    onShow : function ($element) {
+                        $element.addClass("trHighlight");
                     },
-                    {divider : true},
-                    {
-                        text   : 'Eliminar',
-                        icon   : "<i class='fa fa-trash-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            deleteRow(id);
-                        }
+                    onHide : function ($element) {
+                        $(".trHighlight").removeClass("trHighlight");
                     }
-                ]);
+                });
             });
         </script>
 

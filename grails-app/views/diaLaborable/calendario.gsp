@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/html">
     <head>
         <meta name="layout" content="main">
-        <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
-        <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
+        %{--<script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>--}%
+        %{--<link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">--}%
         <title>Días Laborables</title>
 
         <style type="text/css">
@@ -274,10 +274,10 @@
                     var submenuHoras = [];
                     for (var i = 7; i < 19; i++) {
                         submenuHoras.push({
-                            text   : i.toString().lpad('0', 2),
-                            action : function (e) {
-                                var $target = $(e.target);
-                                e.preventDefault();
+                            label  : i.toString().lpad('0', 2),
+                            action : function ($td, $target) {
+//                                var $target = $(e.target);
+//                                e.preventDefault();
                                 var $dia = $(".dia.selected");
                                 var hora = parseInt($target.text());
                                 $dia.data(tipo + "h", hora);
@@ -311,10 +311,11 @@
                     var submenuMinutos = [];
                     for (var i = 0; i < 60; i += 10) {
                         submenuMinutos.push({
-                            text   : i.toString().lpad('0', 2),
-                            action : function (e) {
-                                var $target = $(e.target);
-                                e.preventDefault();
+                            label  : i.toString().lpad('0', 2),
+                            action : function ($td, $target) {
+//                                console.log($target, $item);
+//                                var $target = $(e.target);
+//                                e.preventDefault();
                                 var $dia = $(".dia.selected");
                                 var hora = parseInt($target.text());
                                 $dia.data(tipo + "m", hora);
@@ -344,54 +345,54 @@
                     return submenuMinutos;
                 }
 
-                context.settings({
-                    onShow : function (e) {
-                        var $td = $(e.target);
-                        var $header = $(".nav-header");
-
+                $(".dia").contextMenu({
+                    items     : {
+                        header  : {
+                            label  : "Hora aqui",
+                            header : true
+                        },
+                        inicia  : {
+                            label   : "Inicia",
+                            submenu : {
+                                horas   : {
+                                    label   : "Horas",
+                                    submenu : submenuHoras("ini")
+                                },
+                                minutos : {
+                                    label   : "Minutos",
+                                    submenu : submenuMinutos("ini")
+                                }
+                            }
+                        },
+                        termina : {
+                            label   : "Termina",
+                            submenu : {
+                                horas   : {
+                                    label   : "Horas",
+                                    submenu : submenuHoras("fin")
+                                },
+                                minutos : {
+                                    label   : "Minutos",
+                                    submenu : submenuMinutos("fin")
+                                }
+                            }
+                        }
+                    },
+                    onShow    : function ($td) {
+                        $td.addClass("selected");
+                    },
+                    afterShow : function ($td) {
+                        var $header = $(".dropdown-header");
                         if ($td.hasClass("vacacion")) {
                             $header.text($td.data("fecha"));
                         } else {
                             $header.html($td.data("fecha") + " <span class='inih'>" + ($td.data("inih").toString().lpad('0', 2)) + "</span>:<span class='inim'>" + ($td.data("inim").toString().lpad('0', 2)) + "</span> - <span class='finh'>" + ($td.data("finh").toString().lpad('0', 2)) + "</span>:<span class='finm'>" + ($td.data("finm").toString().lpad('0', 2)) + "</span>");
                         }
+                    },
+                    onHide    : function ($element) {
                         $(".selected").removeClass("selected");
-                        $td.addClass("selected");
-                        id = $td.data("id");
                     }
                 });
-                context.attach('.dia', [
-                    {
-                        header : 'Acciones'
-                    },
-                    {
-                        text    : 'Inicia',
-                        subMenu : [
-                            {
-                                text    : "Horas",
-                                subMenu : submenuHoras("ini")
-                            },
-                            {
-                                text    : "Minutos",
-                                subMenu : submenuMinutos("ini")
-                            }
-                        ]
-                    },
-                    {
-                        text    : 'Termina',
-                        subMenu : [
-                            {
-                                text    : "Horas",
-                                subMenu : submenuHoras("fin")
-                            },
-                            {
-                                text    : "Minutos",
-                                subMenu : submenuMinutos("fin")
-                            }
-                        ]
-
-                    }
-                ]);
-
             });
         </script>
     </body>

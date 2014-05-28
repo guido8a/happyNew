@@ -157,7 +157,7 @@
         <elm:pagination total="${personaInstanceCount}" params="${params}"/>
 
         <script type="text/javascript">
-            var tramites = 0;
+            var id = null, tramites = 0;
             function submitForm() {
                 var $form = $("#frmPersona");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
@@ -457,106 +457,12 @@
 
                 var items = {
                     header : {
-                        label  : "Acciones",
+                        label  : "Sin Acciones",
                         header : true
                     }
                 };
 
                 var id = $tr.data("id");
-
-                var estaActivo = $tr.hasClass("activo");
-                var estaInactivo = $tr.hasClass("inactivo");
-
-                var puedeEliminar = $tr.hasClass("eliminar");
-
-                var ver = {
-                    label  : 'Ver',
-                    icon   : "fa fa-search",
-                    action : function () {
-                        $.ajax({
-                            type    : "POST",
-                            url     : "${createLink(action:'show_ajax')}",
-                            data    : {
-                                id : id
-                            },
-                            success : function (msg) {
-                                bootbox.dialog({
-                                    title   : "Ver Persona",
-                                    message : msg,
-                                    buttons : {
-                                        ok : {
-                                            label     : "Aceptar",
-                                            className : "btn-primary",
-                                            callback  : function () {
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                };
-
-                var editar = {
-                    label           : 'Editar',
-                    icon            : "fa fa-pencil",
-                    separator_after : true,
-                    action          : function (e) {
-                        createEditRow(id, "persona");
-                    }
-                };
-
-                var config = {
-                    label : 'Perfiles',
-                    icon  : "fa fa-gears",
-                    url   : "${createLink(action: 'config')}/" + id
-                };
-
-                var ausentismo = {
-                    label           : 'Ausentismo',
-                    icon            : "fa fa-gears",
-                    separator_after : true,
-                    url             : "${createLink(action: 'ausentismo')}/" + id
-                };
-
-                var desactivar = {
-                    label  : 'Desactivar',
-                    icon   : "fa ${iconDesactivar}'",
-                    action : function (e) {
-                        cambiarEstadoRow(id, false, tramites);
-                    }
-                };
-
-                var activar = {
-                    label  : 'Activar',
-                    icon   : "fa ${iconActivar}",
-                    action : function (e) {
-                        cambiarEstadoRow(id, true, tramites);
-                    }
-                };
-
-                var eliminar = {
-                    label            : 'Eliminar',
-                    icon             : "fa fa-trash-o",
-                    separator_before : true,
-                    action           : function (e) {
-                        deleteRow(id);
-                    }
-                };
-
-                items.ver = ver;
-                items.editar = editar;
-                if (estaActivo) {
-                    items.config = config;
-                    items.ausentismo = ausentismo;
-                    items.desactivar = desactivar;
-                }
-                if (estaInactivo) {
-                    items.activar = activar;
-                }
-                if (puedeEliminar) {
-                    items.eliminar = eliminar;
-                }
 
                 return items;
             }
@@ -620,6 +526,135 @@
                     }
                 });
 
+                var ver = {
+                    text   : 'Ver',
+                    icon   : "<i class='fa fa-search'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(action:'show_ajax')}",
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Ver Persona",
+                                    message : msg,
+                                    buttons : {
+                                        ok : {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
+                var editar = {
+                    text   : 'Editar',
+                    icon   : "<i class='fa fa-pencil'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        createEditRow(id, "persona");
+                    }
+                };
+                var config = {
+                    text   : 'Perfiles',
+                    icon   : "<i class='fa fa-gears'></i>",
+                    action : function (e) {
+                        location.href = "${createLink(action: 'config')}/" + id;
+                    }
+
+                };
+                var ausentismo = {
+                    text   : 'Ausentismo',
+                    icon   : "<i class='fa fa-gears'></i>",
+                    action : function (e) {
+                        location.href = "${createLink(action: 'ausentismo')}/" + id;
+                    }
+
+                };
+                var desactivar = {
+                    text   : 'Desactivar',
+                    icon   : "<i class='fa ${iconDesactivar}'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        cambiarEstadoRow(id, false, tramites);
+                    }
+                };
+                var activar = {
+                    text   : 'Activar',
+                    icon   : "<i class='fa ${iconActivar}'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        cambiarEstadoRow(id, true, tramites);
+                    }
+                };
+                var eliminar = {
+                    text   : 'Eliminar',
+                    icon   : "<i class='fa fa-trash-o'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        deleteRow(id);
+                    }
+                };
+
+                context.attach('.activo', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    config,
+                    ausentismo,
+                    {divider : true},
+                    desactivar
+                ]);
+
+                context.attach('.activo.eliminar', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    config,
+                    ausentismo,
+                    {divider : true},
+                    desactivar,
+                    eliminar
+                ]);
+
+                context.attach('.inactivo', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    activar
+                ]);
+
+                context.attach('.inactivo.eliminar', [
+                    {
+                        header : 'Acciones'
+                    },
+                    ver,
+                    editar,
+                    {divider : true},
+                    activar,
+                    eliminar
+                ]);
             });
         </script>
 

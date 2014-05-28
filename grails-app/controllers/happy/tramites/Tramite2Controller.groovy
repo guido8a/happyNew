@@ -1058,7 +1058,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             tramite = new Tramite()
         }
-        println "ANTES DEL SAVE " + paramsTramite
+//        println "ANTES DEL SAVE " + paramsTramite
 
         tramite.properties = paramsTramite
 
@@ -1069,6 +1069,34 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite2", action: "crearTramiteDep", id: tramite.id)
             return
         } else {
+
+//            println "SAVED!!"
+//            println "externo? " + paramsTramite.externo
+//            println "externo? " + tramite.externo
+//            println tramite.externo.class
+//            println "externo? " + (tramite.externo == 0)
+            if (tramite.externo == "0") {
+                def documentos = DocumentoTramite.findAllByTramite(tramite)
+//                println "docs: " + documentos
+                if (documentos.size() > 0) {
+                    def ids = documentos.id
+                    ids.each { id ->
+                        def doc = DocumentoTramite.get(id)
+                        def departamento = doc.tramite.deDepartamento
+                        if (!departamento) {
+                            departamento = doc.tramite.de.departamento
+                        }
+                        def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
+                        try {
+                            doc.delete(flush: true)
+                            def file = new File(path)
+                            file.delete()
+                        } catch (e) {
+                            println "Error al eliminar anexo: ${id}: " + e
+                        }
+                    }
+                }
+            }
 
             if (tramite.padre) {
                 tramite.padre.estado = "C"

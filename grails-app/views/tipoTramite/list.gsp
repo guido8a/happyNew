@@ -161,67 +161,66 @@
                     return false;
                 });
 
-                context.settings({
-                    onShow : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        var $tr = $(e.target).parents("tr");
-                        $tr.addClass("trHighlight");
-                        id = $tr.data("id");
-                    }
-                });
-                context.attach('tbody>tr', [
-                    {
-                        header : 'Acciones'
-                    },
-                    {
-                        text   : 'Ver',
-                        icon   : "<i class='fa fa-search'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action:'show_ajax')}",
-                                data    : {
-                                    id : id
-                                },
-                                success : function (msg) {
-                                    bootbox.dialog({
-                                        title   : "Ver Tipo de Trámite",
-                                        message : msg,
-                                        buttons : {
-                                            ok : {
-                                                label     : "Aceptar",
-                                                className : "btn-primary",
-                                                callback  : function () {
+
+                $("tbody tr").contextMenu({
+                    items  : {
+                        header   : {
+                            label  : "Acciones",
+                            header : true
+                        },
+                        ver      : {
+                            label  : "Ver",
+                            icon   : "fa fa-search",
+                            action : function ($element) {
+                                var id = $element.data("id");
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(action:'show_ajax')}",
+                                    data    : {
+                                        id : id
+                                    },
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            title   : "Ver Tipo de Trámite",
+                                            message : msg,
+                                            buttons : {
+                                                ok : {
+                                                    label     : "Aceptar",
+                                                    className : "btn-primary",
+                                                    callback  : function () {
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
-                                }
-                            });
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        editar   : {
+                            label  : "Editar",
+                            icon   : "fa fa-pencil",
+                            action : function ($element) {
+                                var id = $element.data("id");
+                                createEditRow(id);
+                            }
+                        },
+                        eliminar : {
+                            label            : "Eliminar",
+                            icon             : "fa fa-trash-o",
+                            separator_before : true,
+                            action           : function ($element) {
+                                var id = $element.data("id");
+                                deleteRow(id);
+                            }
                         }
                     },
-                    {
-                        text   : 'Editar',
-                        icon   : "<i class='fa fa-pencil'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            createEditRow(id);
-                        }
+                    onShow : function ($element) {
+                        $element.addClass("trHighlight");
                     },
-                    {divider : true},
-                    {
-                        text   : 'Eliminar',
-                        icon   : "<i class='fa fa-trash-o'></i>",
-                        action : function (e) {
-                            $("tr.trHighlight").removeClass("trHighlight");
-                            e.preventDefault();
-                            deleteRow(id);
-                        }
+                    onHide : function ($element) {
+                        $(".trHighlight").removeClass("trHighlight");
                     }
-                ]);
+                });
             });
         </script>
 

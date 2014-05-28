@@ -41,67 +41,127 @@
 
 <script type="text/javascript">
     $(function () {
-        var id = null;
-        context.settings({
-            onShow : function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                var $tr = $(e.target).parents("tr");
-                $tr.addClass("trHighlight");
-                id = $tr.data("id");
+        $(".rowAcc").contextMenu({
+            items  : {
+                header   : {
+                    label  : "Acciones",
+                    header : true
+                },
+                terminar : {
+                    label  : "Terminar",
+                    icon   : "fa fa-stop",
+                    action : function ($element) {
+                        var id = $element.data("id");
+                        bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>Esto cambiará la fecha final de la restricción a la fecha actual. ¿Desea continuar?</p>", function (res) {
+                            if (res) {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(action: 'terminarAcceso_ajax')}",
+                                    data    : {
+                                        id : id
+                                    },
+                                    success : function (msg) {
+                                        var parts = msg.split("_");
+                                        log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
+                                        loadAccesos();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+                eliminar : {
+                    label  : "Eliminar",
+                    icon   : "fa fa-trash-o",
+                    action : function ($element) {
+                        var id = $element.data("id");
+                        bootbox.confirm("<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>Esto eliminará completamente la restricción. ¿Desea continuar?</p>", function (res) {
+                            if (res) {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(action: 'eliminarAcceso_ajax')}",
+                                    data    : {
+                                        id : id
+                                    },
+                                    success : function (msg) {
+                                        var parts = msg.split("_");
+                                        log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
+                                        loadAccesos();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            },
+            onShow : function ($element) {
+                $element.addClass("trHighlight");
+            },
+            onHide : function ($element) {
+                $(".trHighlight").removeClass("trHighlight");
             }
         });
-        context.attach('.rowAcc', [
-            {
-                header : 'Acciones'
-            },
-            {
-                text   : 'Terminar',
-                icon   : "<i class='fa fa-stop'></i>",
-                action : function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>Esto cambiará la fecha final de la restricción a la fecha actual. ¿Desea continuar?</p>", function (res) {
-                        if (res) {
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action: 'terminarAcceso_ajax')}",
-                                data    : {
-                                    id : id
-                                },
-                                success : function (msg) {
-                                    var parts = msg.split("_");
-                                    log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
-                                    loadAccesos();
-                                }
-                            });
-                        }
-                    });
-                }
-            },
-            {
-                text   : 'Eliminar',
-                icon   : "<i class='fa fa-trash-o'></i>",
-                action : function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    bootbox.confirm("<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>Esto eliminará completamente la restricción. ¿Desea continuar?</p>", function (res) {
-                        if (res) {
-                            $.ajax({
-                                type    : "POST",
-                                url     : "${createLink(action: 'eliminarAcceso_ajax')}",
-                                data    : {
-                                    id : id
-                                },
-                                success : function (msg) {
-                                    var parts = msg.split("_");
-                                    log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");
-                                    loadAccesos();
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        ]);
+//        var id = null;
+//        context.settings({
+//            onShow : function (e) {
+//                $("tr.trHighlight").removeClass("trHighlight");
+//                var $tr = $(e.target).parents("tr");
+//                $tr.addClass("trHighlight");
+//                id = $tr.data("id");
+//            }
+//        });
+        %{--context.attach('.rowAcc', [--}%
+        %{--{--}%
+        %{--header : 'Acciones'--}%
+        %{--},--}%
+        %{--{--}%
+        %{--text   : 'Terminar',--}%
+        %{--icon   : "<i class='fa fa-stop'></i>",--}%
+        %{--action : function (e) {--}%
+        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+        %{--e.preventDefault();--}%
+        %{--bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>Esto cambiará la fecha final de la restricción a la fecha actual. ¿Desea continuar?</p>", function (res) {--}%
+        %{--if (res) {--}%
+        %{--$.ajax({--}%
+        %{--type    : "POST",--}%
+        %{--url     : "${createLink(action: 'terminarAcceso_ajax')}",--}%
+        %{--data    : {--}%
+        %{--id : id--}%
+        %{--},--}%
+        %{--success : function (msg) {--}%
+        %{--var parts = msg.split("_");--}%
+        %{--log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");--}%
+        %{--loadAccesos();--}%
+        %{--}--}%
+        %{--});--}%
+        %{--}--}%
+        %{--});--}%
+        %{--}--}%
+        %{--},--}%
+        %{--{--}%
+        %{--text   : 'Eliminar',--}%
+        %{--icon   : "<i class='fa fa-trash-o'></i>",--}%
+        %{--action : function (e) {--}%
+        %{--$("tr.trHighlight").removeClass("trHighlight");--}%
+        %{--e.preventDefault();--}%
+        %{--bootbox.confirm("<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i><p>Esto eliminará completamente la restricción. ¿Desea continuar?</p>", function (res) {--}%
+        %{--if (res) {--}%
+        %{--$.ajax({--}%
+        %{--type    : "POST",--}%
+        %{--url     : "${createLink(action: 'eliminarAcceso_ajax')}",--}%
+        %{--data    : {--}%
+        %{--id : id--}%
+        %{--},--}%
+        %{--success : function (msg) {--}%
+        %{--var parts = msg.split("_");--}%
+        %{--log(parts[1], parts[0] == "OK" ? "success" : parts[0] == "NO" ? "error" : "info");--}%
+        %{--loadAccesos();--}%
+        %{--}--}%
+        %{--});--}%
+        %{--}--}%
+        %{--});--}%
+        %{--}--}%
+        %{--}--}%
+        %{--]);--}%
     });
 </script>

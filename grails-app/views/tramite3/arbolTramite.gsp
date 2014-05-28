@@ -27,11 +27,9 @@
 
         <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
             <div class="btn-group">
-
                     <a href="javascript: history.go(-1)" class="btn btn-primary regresar">
                         <i class="fa fa-arrow-left"></i> Regresar
                     </a>
-
             </div>
         </div>
 

@@ -565,63 +565,63 @@
 
         var archivo;
 //                var valAnexo;
-        context.settings({
-            onShow : function (e) {
-                $("tr.trHighlight").removeClass("trHighlight");
-                var $tr = $(e.target).parents("tr");
-                $tr.addClass("trHighlight");
-                id = $tr.data("id");
-                idPxt = $tr.attr("prtr");
-                archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
-                valAnexo = $tr.attr("anexo");
-            }
-        });
+//        context.settings({
+//            onShow : function (e) {
+//                $("tr.trHighlight").removeClass("trHighlight");
+//                var $tr = $(e.target).parents("tr");
+//                $tr.addClass("trHighlight");
+//                id = $tr.data("id");
+//                idPxt = $tr.attr("prtr");
+//                archivo = $tr.attr("departamento") + "/" + $tr.attr("codigo")
+//                valAnexo = $tr.attr("anexo");
+//            }
+//        });
 
-        context.attach('.porRecibir, .sinRecepcion', [
-            {
-                header : 'Acciones'
-            },
-            detalles,
-            arbol,
-            <g:if test="${Persona.get(session.usuario.id).puedeVer}">
-//                    ver,
-//                    seguimiento,
-            </g:if>
-            recibir
+        %{--context.attach('.porRecibir, .sinRecepcion', [--}%
+            %{--{--}%
+                %{--header : 'Acciones'--}%
+            %{--},--}%
+            %{--detalles,--}%
+            %{--arbol,--}%
+            %{--<g:if test="${Persona.get(session.usuario.id).puedeVer}">--}%
+%{--//                    ver,--}%
+%{--//                    seguimiento,--}%
+            %{--</g:if>--}%
+            %{--recibir--}%
 
-        ]);
-        context.attach('.recibido, .retrasado', [
-            {
-                header : 'Acciones'
-            },
-            detalles,
-            arbol,
-            archivar
+        %{--]);--}%
+        %{--context.attach('.recibido, .retrasado', [--}%
+            %{--{--}%
+                %{--header : 'Acciones'--}%
+            %{--},--}%
+            %{--detalles,--}%
+            %{--arbol,--}%
+            %{--archivar--}%
             %{--</g:if>--}%
 
-        ]);
-        context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [
-            {
-                header : 'Acciones'
-            },
-            detalles,
-            arbol,
-            recibir,
-            anexos
-        ]);
+        %{--]);--}%
+        %{--context.attach('.conAnexo.porRecibir, .conAnexo.sinRecepcion', [--}%
+            %{--{--}%
+                %{--header : 'Acciones'--}%
+            %{--},--}%
+            %{--detalles,--}%
+            %{--arbol,--}%
+            %{--recibir,--}%
+            %{--anexos--}%
+        %{--]);--}%
 
-        context.attach('.conAnexo.recibido, .conAnexo.retrasado', [
-            {
-                header : 'Acciones'
-            },
-            detalles,
-            arbol,
-            <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
-            archivar,
-            </g:if>
-            anexos
+        %{--context.attach('.conAnexo.recibido, .conAnexo.retrasado', [--}%
+            %{--{--}%
+                %{--header : 'Acciones'--}%
+            %{--},--}%
+            %{--detalles,--}%
+            %{--arbol,--}%
+            %{--<g:if test="${Persona.get(session.usuario.id).puedeArchivar}">--}%
+            %{--archivar,--}%
+            %{--</g:if>--}%
+            %{--anexos--}%
 
-        ]);
+        %{--]);--}%
 
         $(".btnBuscar").click(function () {
             $(".buscar").attr("hidden", false);
