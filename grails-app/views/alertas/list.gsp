@@ -52,8 +52,6 @@
     <thead>
     <tr>
         <th></th>
-        <th>Usuario</th>
-        <th>Departamento</th>
         <th>Alerta</th>
         <th>Tramite</th>
         <th>Fecha</th>
@@ -64,8 +62,6 @@
     <g:each in="${alertas}" var="a">
         <tr>
             <td class="d${(((new Date()) - a.fechaCreacion)>2)?"mas":(new Date()) - a.fechaCreacion }"></td>
-            <td>${(a.persona)?a.persona:"-"}</td>
-            <td>${(a.persona)?a.persona.departamento.codigo:a.departamento.codigo}</td>
             <td>${a.mensaje}</td>
             <td>${a.tramite?.codigo}</td>
             <td>${a.fechaCreacion.format("dd-MM-yyyy hh:mm")}</td>
