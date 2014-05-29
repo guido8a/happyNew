@@ -175,21 +175,28 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 //        println "tramites "+trams.codigo
         trams.each { tr ->
-            def pxd = PersonaDocumentoTramite.withCriteria {
-                eq("tramite", tr)
-                inList("rolPersonaTramite", [para, cc])
-                isNull("fechaRecepcion")
+//            def pxd = PersonaDocumentoTramite.withCriteria {
+//                eq("tramite", tr)
+//                inList("rolPersonaTramite", [para, cc])
+//                isNull("fechaRecepcion")
+//            }
+//            def pdt = PersonaDocumentoTramite.withCriteria {
+//                eq("tramite", tr)
+//                inList("rolPersonaTramite", [para, cc])
+//                isNull("fechaRecepcion")
+//                isNull("fechaAnulacion")
+//                isNull("fechaArchivo")
+//            }
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr,[para, cc])
+            pdt.each {pd->
+                if(!pd.fechaRecepcion && pd.estado?.codigo!="E006" && pd.estado?.codigo!="E005"){
+                    if(!tramites.contains(tr))
+                        tramites+=tr
+                }
             }
-            def pdt = PersonaDocumentoTramite.withCriteria {
-                eq("tramite", tr)
-                inList("rolPersonaTramite", [para, cc])
-                isNull("fechaRecepcion")
-                isNull("fechaAnulacion")
-                isNull("fechaArchivo")
-            }
-            if (pxd.size() > 0 || pdt.size() == 0) {
-                tramites += tr
-            }
+//            if (pxd.size() > 0 || pdt.size() == 0) {
+//                tramites += tr
+//            }
         }
 
         return [persona: persona, tramites: tramites]
@@ -484,15 +491,23 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def trams2 = []
 
         tramites.each { tr ->
-            def pxd = PersonaDocumentoTramite.withCriteria {
-                eq("tramite", tr)
-                inList("rolPersonaTramite", [para, cc])
-                isNull("fechaRecepcion")
-                isNull("fechaAnulacion")
-                isNull("fechaArchivo")
-            }
-            if (pxd.size() > 0) {
-                trams += tr
+//            def pxd = PersonaDocumentoTramite.withCriteria {
+//                eq("tramite", tr)
+//                inList("rolPersonaTramite", [para, cc])
+//                isNull("fechaRecepcion")
+//                isNull("fechaAnulacion")
+//                isNull("fechaArchivo")
+//            }
+//            if (pxd.size() > 0) {
+//                trams += tr
+//            }
+
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr,[para, cc])
+            pdt.each {pd->
+                if(!pd.fechaRecepcion && pd.estado?.codigo!="E006" && pd.estado?.codigo!="E005"){
+                    if(!trams.contains(tr))
+                        trams+=tr
+                }
             }
         }
 
@@ -590,57 +605,68 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            if(ids instanceof java.lang.String){
 //                ids = [ids]
 //            }
+            def band = true
             ids.each { d ->
 //                println('\t'  + d)
                 def envio = new Date();
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
-//                    println("llllll" + t)
-                    t.fechaEnvio = envio
-                    t.estado = EstadoTramite.findByCodigo("E003")
-                    if (t.save(flush: true)) {
-                        if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
-                            def alerta = new Alerta()
-                            if (t.tramite.tipoDocumento.codigo == "OFI")
-                                alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
-                            else
-                                alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
-                            if (t.persona) {
-                                alerta.controlador = "tramite"
-                                alerta.accion = "bandejaEntrada"
-                                alerta.persona = t.persona
-                            } else {
-                                alerta.departamento = t.departamento
-                                alerta.accion = "bandejaEntradaDpto"
-                                alerta.controlador = "tramite3"
-                            }
-                            alerta.datos = t.id
-                            alerta.tramite = t.tramite
-                            if (!alerta.save(flush: true)) {
-                                println "error save alerta " + alerta.errors
+                    if(t.estado?.codigo!="EOO6" && t.estado?.codigo!="EOO5"){
+                        t.fechaEnvio = envio
+                        t.estado = EstadoTramite.findByCodigo("E003")
+                        if (t.save(flush: true)) {
+                            if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
+                                def alerta = new Alerta()
+                                if (t.tramite.tipoDocumento.codigo == "OFI")
+                                    alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
+                                else
+                                    alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                                if (t.persona) {
+                                    alerta.controlador = "tramite"
+                                    alerta.accion = "bandejaEntrada"
+                                    alerta.persona = t.persona
+                                } else {
+                                    alerta.departamento = t.departamento
+                                    alerta.accion = "bandejaEntradaDpto"
+                                    alerta.controlador = "tramite3"
+                                }
+                                alerta.datos = t.id
+                                alerta.tramite = t.tramite
+                                if (!alerta.save(flush: true)) {
+                                    println "error save alerta " + alerta.errors
+                                }
                             }
                         }
+                    }else{
+                        band=false
                     }
+//                    println("llllll" + t)
+
                 }
-                def pdt = new PersonaDocumentoTramite()
-                pdt.tramite = tramite
-                pdt.persona = session.usuario
-                pdt.departamento = session.departamento
-                pdt.fechaEnvio = envio
-                pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
-                pdt.save(flush: true)
-                tramite.fechaEnvio = envio
-                tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
-                if (tramite.save(flush: true)) {
-                    def realPath = servletContext.getRealPath("/")
-                    def mensaje = message(code: 'pathImages').toString();
-                    enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
-                } else {
-                    println tramite.errors
-                    error += renderErrors(bean: tramite)
+                if(band){
+                    def pdt = new PersonaDocumentoTramite()
+                    pdt.tramite = tramite
+                    pdt.persona = session.usuario
+                    pdt.departamento = session.departamento
+                    pdt.fechaEnvio = envio
+                    pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+                    pdt.save(flush: true)
+                    tramite.fechaEnvio = envio
+                    tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
+                    if (tramite.save(flush: true)) {
+                        def realPath = servletContext.getRealPath("/")
+                        def mensaje = message(code: 'pathImages').toString();
+                        enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
+                    } else {
+                        println tramite.errors
+                        error += renderErrors(bean: tramite)
+                    }
+                }else{
+                    band=true
                 }
 
-                println("-->" + pdt)
+
+//                println("-->" + pdt)
 
             }
             if (error == "") {
