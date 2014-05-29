@@ -938,6 +938,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def pdt = null
         if (params.pdt) {
             pdt = params.pdt
+            def pdto = PersonaDocumentoTramite.get(pdt)
+            if(pdto.estado.codigo=="E006" || pdto.estado.codigo=="E005"  ) {
+                flash.message="No puede responder a este tramite puesto que ha sido anulado o archivado"
+                response.sendError(403)
+            }
         } else if (params.hermano) {
             def herm = Tramite.get(params.hermano)
             pdt = herm.aQuienContesta.id

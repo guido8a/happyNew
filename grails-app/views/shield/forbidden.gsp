@@ -7,23 +7,28 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-    <head>
-        <meta name="layout" content="main">
-        <title>No disponible</title>
-    </head>
+<head>
+    <meta name="layout" content="main">
+    <title>No disponible</title>
+</head>
 
-    <body>
+<body>
 
-        <div class="alert alert-warning text-shadow">
-            <i class="fa fa-ban fa-4x pull-left"></i>
+<div class="alert alert-warning text-shadow">
+    <i class="fa fa-ban fa-4x pull-left"></i>
 
-            <h1 class="text-warning tituloError">Ha ocurrido un error</h1>
+    <h1 class="text-warning tituloError">Página restringida</h1>
 
-            <p style="font-size: 16px; margin-top: 25px;">La página solicitada no está disponible.</p>
 
-            <p style="font-size: 16px; margin-top: 25px;">Por favor utilice el menú de navegación para acceder a
-            las diferentes pantallas del sistema.</p>
-        </div>
+    <g:if test="${msn}">
+        <p style="font-size: 16px; margin-top: 25px;text-shadow: none">La página solicitada no está disponible: <b>${msn}.</b></p>
+    </g:if>
+    <g:else>
+        <p style="font-size: 16px; margin-top: 25px;">La página solicitada no está disponible.</p>
+    </g:else>
+    <p style="font-size: 16px; margin-top: 25px;">Por favor utilice el menú de navegación para acceder a
+    las diferentes pantallas del sistema.</p>
+</div>
 
-    </body>
+</body>
 </html>

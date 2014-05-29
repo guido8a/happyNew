@@ -81,6 +81,9 @@ class ShieldController {
     def forbidden = {
 
         def msn = "Forbidden"
+        if(flash.message)
+            msn=flash.message
+        flash.message=null
         return [msn: msn]
 
     }

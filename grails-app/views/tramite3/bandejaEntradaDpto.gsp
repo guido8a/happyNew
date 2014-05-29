@@ -558,8 +558,10 @@
             $(function () {
 
                 intervalBandeja = setInterval(function () {
-                    cargarBandeja();
-                }, 1000 * 60 * 5);
+                    openLoader();
+                    cargarBandeja(false);
+                    closeLoader()
+                }, 1000 * 60 );
                 var id, codigo;
 
                 $(".alertas").click(function () {

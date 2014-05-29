@@ -5,7 +5,7 @@ import happy.seguridad.Persona
 
 class BloqueosJob {
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*30*3
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60*3
     }
 
     def execute() {
@@ -33,11 +33,11 @@ class BloqueosJob {
                         }
 
                         if(pdt.persona){
-                       println "add bloquear "+pdt.persona+"  "+pdt.persona.login
+//                       println "add bloquear "+pdt.persona+"  "+pdt.persona.login
                             if(!bloquearUsu.id.contains(pdt.persona.id))
                                 bloquearUsu.add(pdt.persona)
                         }else{
-                        println "add bloquear "+pdt.departamento
+//                        println "add bloquear "+pdt.departamento
                             if(!bloquear.id.contains(pdt.departamento.id))
                                 bloquear.add(pdt.departamento)
                         }
@@ -49,7 +49,7 @@ class BloqueosJob {
         }
         Departamento.list().each {dep->
             if(bloquear.id.contains(dep.id)){
-                println "bloqueando dep "+dep
+//                println "bloqueando dep "+dep
                 dep.estado="B"
                 if(!dep.save(flush: true))
                     println "errores save dep "+dep.errors

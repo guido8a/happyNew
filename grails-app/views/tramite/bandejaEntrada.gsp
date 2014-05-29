@@ -635,12 +635,11 @@
                 cargarBandeja();
 
                 setInterval(function () {
-
                     openLoader();
                     cargarBandeja(false);
                     closeLoader();
 
-                }, 300000);
+                }, 1000*60*3);
 
                 $(".alertas").click(function () {
                     var clase = $(this).attr("clase");
