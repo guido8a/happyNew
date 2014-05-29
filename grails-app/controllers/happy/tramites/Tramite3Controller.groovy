@@ -665,15 +665,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 redirect(action: "errores")
             } else {
                 pxt = pxt.first()
-            }
-
-            def recibe = true
-            if (noRecibe.contains(pxt.estado.codigo)) {
-                recibe = false
-            }
-            if (!recibe) {
-                render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
-                return
+                def recibe = true
+                if (noRecibe.contains(pxt.estado)) {
+                    recibe = false
+                }
+                if (!recibe) {
+                    render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
+                    return
+                }
             }
 
             if (paraDpto && persona.departamentoId == paraDpto.id) {
