@@ -280,6 +280,7 @@
                         %{--</div>--}%
                         %{--</g:if>--}%
                         %{--<g:else>--}%
+                        ${tramite.tipoDocumentoId}
                         <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
                                           value="${tramite.tipoDocumentoId}" tramite="${tramite}" tipo="pers"/>
                         %{--</g:else>--}%

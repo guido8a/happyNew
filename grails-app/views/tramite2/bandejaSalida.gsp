@@ -97,7 +97,7 @@
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
             /*background-color:#faebc9;*/
-            background-color: #8fe6c3;
+            background-color : #8fe6c3;
         }
 
         #c99671
@@ -309,7 +309,6 @@
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
-
                 var copia = {
                     separator_before : true,
                     label            : "Copia para",
@@ -348,8 +347,8 @@
                                                     type    : "POST",
                                                     url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
                                                     data    : {
-                                                        tramite     : id,
-                                                        copias : cc
+                                                        tramite : id,
+                                                        copias  : cc
                                                     },
                                                     success : function (msg) {
                                                         var parts = msg.split("*");
@@ -374,13 +373,13 @@
                 };
 
                 var recibirExterno = {
-                    label   : 'Confirmar recepción',
+                    label  : 'Confirmar recepción',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/'+ id ,
+                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
@@ -572,7 +571,7 @@
                 items.detalles = detalles;
                 items.arbol = arbol;
                 if (porEnviar) {
-                    if (esSumilla) {
+                    if (esSumilla || esDex) {
                         items.editar = editarSumilla;
                     } else {
                         items.editar = editar;
@@ -591,14 +590,14 @@
                     items.desenviar = desenviar;
                 }
 //                }
-                if(esExterno && (enviado || tieneAlerta)){
+                if (esExterno && (enviado || tieneAlerta)) {
                     items.recibirExterno = recibirExterno
                 }
-                if(enviado || tieneAlerta) {
+                if (enviado || tieneAlerta) {
                     items.copia = copia;
                 }
 
-                if(esOficio){
+                if (esOficio) {
                     delete items.copia;
                 }
 

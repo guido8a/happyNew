@@ -280,7 +280,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "DESPUES u: " + tramite.aQuienContesta
 //        println "DESPUES u: " + tramite.aQuienContesta.id
 
-        if (tramite.tipoDocumento.codigo == "SUM") {
+        if (tramite.tipoDocumento.codigo == "SUM" || tramite.tipoDocumento.codigo == "DEX") {
             redirect(controller: "tramite2", action: "bandejaSalida", id: tramite.id)
         } else {
             if (params.anexo == "on") {

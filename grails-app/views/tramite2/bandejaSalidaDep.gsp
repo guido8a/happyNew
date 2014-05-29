@@ -91,7 +91,7 @@
 
             /*font-family: "Arial Black", arial-black;*/
             /*background-color : #eacb89;*/
-            background-color: #8fc6f3;
+            background-color : #8fc6f3;
 
         }
         </style>
@@ -286,7 +286,6 @@
                 var enviado = $tr.hasClass("E003"); //enviado
                 var recibido = $tr.hasClass("E004"); //recibido
 
-
                 var esSumilla = $tr.hasClass("sumilla");
                 var esExterno = $tr.hasClass("externo");
                 var esOficio = $tr.hasClass("OFI")
@@ -460,7 +459,7 @@
                 var editarSumilla = {
                     label : "Editar",
                     icon  : "fa fa-pencil",
-                    url   : "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
+                    url   : "${g.createLink(controller: 'tramite2', action: 'crearTramiteDep')}/" + id
                 }; //editar sumilla
 
                 var anexos = {
@@ -542,7 +541,7 @@
                 items.detalles = detalles;
                 items.arbol = arbol;
                 if (porEnviar) {
-                    if (esSumilla) {
+                    if (esSumilla || esDex) {
                         items.editar = editarSumilla;
                     } else {
                         items.editar = editar;
@@ -571,7 +570,7 @@
                     items.copia = copia;
                 }
 
-                if(esOficio){
+                if (esOficio) {
                     delete items.copia;
                 }
 
