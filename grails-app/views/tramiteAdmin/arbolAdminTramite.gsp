@@ -378,7 +378,7 @@
                                         callback  : function () {
                                         }
                                     },
-                                    archivar : {
+                                    anular : {
                                         id        : 'btnArchivar',
                                         label     : '<i class="fa fa-check"></i> Anular',
                                         className : "btn-success",
@@ -472,7 +472,7 @@
                         };
                     }
                 }
-                if (estaAnulado && (padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado) {
+                if (estaAnulado && (!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado))) {
                     items.desAnular = {
                         separator_before : true,
                         label            : "Quitar anulado",
