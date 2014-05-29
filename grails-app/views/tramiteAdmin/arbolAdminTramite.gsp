@@ -349,6 +349,8 @@
                             }
                         };
                     }
+                }
+                if (!estaAnulado) {
                     items.anular = {
                         label  : "Anular",
                         icon   : "fa fa-ban",
@@ -407,7 +409,8 @@
                             });
                         }
                     };
-
+                }
+                if (!estaAnulado && !estaArchivado) {
                     if (esExterno) {
                         items.externo = {
                             label  : "Cambiar estado",
@@ -676,7 +679,7 @@
                             icon : "fa fa-file-o text-warning"
                         },
                         paraAnulado   : {
-                            icon : "fa fa-file-o text-danger"
+                            icon : "fa fa-circle-o text-muted"
                         },
                         paraRecibido  : {
                             icon : "fa fa-file-o text-success"
@@ -692,7 +695,7 @@
                             icon : "fa fa-files-o text-warning"
                         },
                         copiaAnulado   : {
-                            icon : "fa fa-files-o text-danger"
+                            icon : "fa fa-circle-o text-muted"
                         },
                         copiaRecibido  : {
                             icon : "fa fa-files-o text-success"

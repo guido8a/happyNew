@@ -79,7 +79,7 @@
 
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
-            background-color: #8fe6c3;
+            background-color : #8fe6c3;
         }
 
         #7aaedb
@@ -115,9 +115,9 @@
             <div class="btn-group">
 
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-                %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
-                    %{--<i class="fa fa-folder"></i> Archivados--}%
-                %{--</g:link>--}%
+            %{--<g:link action="archivados" class="btn btn-primary btnArchivados" controller="tramite">--}%
+            %{--<i class="fa fa-folder"></i> Archivados--}%
+            %{--</g:link>--}%
 
                 <g:link action="" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
@@ -129,37 +129,36 @@
 
             </div>
 
-        <div style="float: right">
-            %{--<div>--}%
+            <div style="float: right">
+                %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-blanco alertas" clase="porRecibir">
                     (<span id="numEnv"></span>)
                 Por recibir
                 </div>
-            %{--</div>--}%
+                %{--</div>--}%
 
 
-            %{--<div>--}%
+                %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
                     (<span id="numPen"></span>)
                 Sin Recepción
                 </div>
-            %{--</div>--}%
+                %{--</div>--}%
 
-            %{--<div>--}%
+                %{--<div>--}%
                 <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
                     (<span id="numRec"></span>)
                 Recibidos
                 </div>
-            %{--</div>--}%
+                %{--</div>--}%
 
-            %{--<div>--}%
+                %{--<div>--}%
                 <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
                     (<span id="numRet"></span>)
                 Retrasados
                 </div>
-            %{--</div>--}%
-        </div>
-
+                %{--</div>--}%
+            </div>
 
         </div>
 
@@ -282,16 +281,15 @@
 
             //nuevo contextMenu
 
-            function createContextMenu (node){
+            function createContextMenu(node) {
                 var $tr = $(node);
 
                 var items = {
-                  header : {
-                   label : "Sin Acciones",
-                      header: true
-                  }
+                    header : {
+                        label  : "Sin Acciones",
+                        header : true
+                    }
                 };
-
 
                 var id = $tr.data("id");
                 var codigo = $tr.attr("codigo");
@@ -301,8 +299,9 @@
                 var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
-                var externo = $tr.hasClass("1")
+                var externo = $tr.hasClass("1");
 
+                var esCopia = $tr.hasClass("R002");
 
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
@@ -312,18 +311,18 @@
 //                console.log("por porRecibir",porRecibir)
 
                 var contestar = {
-                    label   : 'Contestar Documento',
-                    icon   : "fa fa-external-link",
-                    url: "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt
+                    label : 'Contestar Documento',
+                    icon  : "fa fa-external-link",
+                    url   : "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt
                 };
 
                 var ver = {
-                    label   : 'Ver',
+                    label  : 'Ver',
                     icon   : "fa fa-search",
                     action : function (e) {
 
-                        location.href="${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/"+id;
-                        location.href = "${resource(dir:'tramites')}/"+archivo+".pdf";
+                        location.href = "${g.createLink(action: 'verPdf',controller: 'tramiteExport')}/" + id;
+                        location.href = "${resource(dir:'tramites')}/" + archivo + ".pdf";
 
                         $.ajax({
                             type    : 'POST',
@@ -342,7 +341,7 @@
                 };
 
                 var recibir = {
-                    label   : 'Recibir Documento',
+                    label  : 'Recibir Documento',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
 
@@ -368,7 +367,7 @@
                 };
 
                 var seguimiento = {
-                    label   : 'Seguimiento Trámite',
+                    label  : 'Seguimiento Trámite',
                     icon   : "fa fa-sitemap",
                     action : function (e) {
 
@@ -377,7 +376,7 @@
                 };
 
                 var detalles = {
-                    label   : 'Detalles',
+                    label  : 'Detalles',
                     icon   : "fa fa-search",
                     action : function (e) {
 
@@ -396,7 +395,7 @@
                 };
 
                 var anexos = {
-                    label   : 'Anexos',
+                    label  : 'Anexos',
                     icon   : "fa fa-paperclip",
                     action : function (e) {
                         location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
@@ -404,7 +403,7 @@
                 };
 
                 var arbol = {
-                    label   : 'Cadena del trámite',
+                    label  : 'Cadena del trámite',
                     icon   : "fa fa-sitemap",
                     action : function (e) {
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bep"
@@ -412,7 +411,7 @@
                 };
 
                 var archivar = {
-                    label   : 'Archivar Documentos',
+                    label  : 'Archivar Documentos',
                     icon   : "fa fa-folder-open-o",
                     action : function (e) {
 
@@ -473,7 +472,7 @@
                 };
 
                 var distribuir = {
-                    label   : 'Distribuir a Jefes',
+                    label  : 'Distribuir a Jefes',
                     icon   : "fa fa-eye",
                     action : function (e) {
 
@@ -518,7 +517,7 @@
                 };
 
                 var anular = {
-                    label   : 'Anular Trámite',
+                    label  : 'Anular Trámite',
                     icon   : "fa fa-flash",
                     action : function (e) {
 
@@ -575,20 +574,20 @@
                 };
 
                 items.header.label = "Acciones";
-                items.detalles = detalles
-                items.arbol = arbol
+                items.detalles = detalles;
+                items.arbol = arbol;
 
-                if(conAnexo){
+                if (conAnexo) {
                     items.anexo = anexos
                 }
-                if(retrasado){
+                if (retrasado) {
                     items.contestar = contestar
                 }
-                if(sinRecepcion){
+                if (sinRecepcion) {
                     items.recibir = recibir
                 }
 
-                if(porRecibir){
+                if (porRecibir) {
 
                     items.recibir = recibir
                 }
@@ -598,22 +597,23 @@
 //                    items.recibirExt = recibirExt
 //                }
 
-                if(recibido){
-                    items.contestar = contestar
+                if (recibido) {
+                    items.contestar = contestar;
                     <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
-                    items.archivar = archivar
+                    items.archivar = archivar;
                     </g:if>
-
+                    <g:else>
+                    if (esCopia) {
+                        items.archivar = archivar;
+                    }
+                    </g:else>
                 }
-
-
 
                 return items
             }
 
             //old
             $(function () {
-
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false);

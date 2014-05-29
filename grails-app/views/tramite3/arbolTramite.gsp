@@ -27,9 +27,9 @@
 
         <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
             <div class="btn-group">
-                    <a href="javascript: history.go(-1)" class="btn btn-primary regresar">
-                        <i class="fa fa-arrow-left"></i> Regresar
-                    </a>
+                <a href="javascript: history.go(-1)" class="btn btn-primary regresar">
+                    <i class="fa fa-arrow-left"></i> Regresar
+                </a>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
 
             $(function () {
 
-                $(".regresar").click(function(){
+                $(".regresar").click(function () {
                     history.go(-1)
                 });
                 $('#jstree').jstree({
@@ -109,13 +109,16 @@
                     },
                     types       : {
                         principal : {
-                          icon: "fa fa-edit text-info"
+                            icon : "fa fa-edit text-info"
                         },
-                        para  : {
+                        para      : {
                             icon : "fa fa-file-o text-info"
                         },
-                        copia : {
+                        copia     : {
                             icon : "fa fa-files-o text-info"
+                        },
+                        anulado   : {
+                            icon : "fa fa-circle-o text-muted"
                         }
                     }
                 });

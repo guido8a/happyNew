@@ -92,7 +92,7 @@
 
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
-            background-color: #8fc6f3;
+            background-color : #8fc6f3;
 
         }
         </style>
@@ -119,7 +119,7 @@
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
 
                 %{--<a href="#" class="btn btn-primary btnArchivados">--}%
-                    %{--<i class="fa fa-folder"></i> Archivados--}%
+                %{--<i class="fa fa-folder"></i> Archivados--}%
                 %{--</a>--}%
                 <a href="#" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
@@ -132,25 +132,25 @@
 
             <div style="float: right">
 
-            <div data-type="pendiente" class="alert alert-blanco alertas">
-                <span id="spanPendientes" class="counter" data-class="porRecibir">(0)</span>
-                Por recibir
-            </div>
+                <div data-type="pendiente" class="alert alert-blanco alertas">
+                    <span id="spanPendientes" class="counter" data-class="porRecibir">(0)</span>
+                    Por recibir
+                </div>
 
-            <div data-type="noRecibido" class="alert alert-otroRojo alertas">
-                <span id="spanNoRecibidos" class="counter" data-class="sinRecepcion">(0)</span>
-                Sin Recepción
-            </div>
+                <div data-type="noRecibido" class="alert alert-otroRojo alertas">
+                    <span id="spanNoRecibidos" class="counter" data-class="sinRecepcion">(0)</span>
+                    Sin Recepción
+                </div>
 
-            <div data-type="recibido" class="alert alert-info alertas">
-                <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span>
-                Recibidos
-            </div>
+                <div data-type="recibido" class="alert alert-info alertas">
+                    <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span>
+                    Recibidos
+                </div>
 
-            <div data-type="retrasado" class="alert alert-danger alertas">
-                <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span>
-                Retrasados
-            </div>
+                <div data-type="retrasado" class="alert alert-danger alertas">
+                    <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span>
+                    Retrasados
+                </div>
             </div>
 
             %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
@@ -263,13 +263,13 @@
                 });
             }
 
-            function createContextMenu (node){
+            function createContextMenu(node) {
                 var $tr = $(node);
 
                 var items = {
                     header : {
-                        label : "Sin Acciones",
-                        header: true
+                        label  : "Sin Acciones",
+                        header : true
                     }
                 };
 
@@ -282,17 +282,17 @@
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
 
+                var esCopia = $tr.hasClass("R002");
+
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
                 var conAnexo = $tr.hasClass("conAnexo");
-                var jefe =$tr.hasClass("jefe");
-
-
+                var jefe = $tr.hasClass("jefe");
 
                 var arbol = {
-                    label   : 'Cadena del trámite',
+                    label  : 'Cadena del trámite',
                     icon   : "fa fa-sitemap",
                     action : function (e) {
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bed"
@@ -300,16 +300,16 @@
                 };
 
                 var contestar = {
-                    label   : 'Contestar Documento',
+                    label  : 'Contestar Documento',
                     icon   : "fa fa-external-link",
                     action : function (e) {
 
-                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id +  "&pdt=" + idPxt;
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id + "&pdt=" + idPxt;
                     }
                 };
 
                 var ver = {
-                    label   : 'Ver',
+                    label  : 'Ver',
                     icon   : "fa fa-search",
                     action : function (e) {
 
@@ -330,7 +330,7 @@
                 };
 
                 var recibir = {
-                    label   : 'Recibir Documento',
+                    label  : 'Recibir Documento',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
 
@@ -356,7 +356,7 @@
                 };
 
                 var seguimiento = {
-                    label   : 'Seguimiento Trámite',
+                    label  : 'Seguimiento Trámite',
                     icon   : "fa fa-sitemap",
                     action : function (e) {
 
@@ -365,7 +365,7 @@
                 };
 
                 var detalles = {
-                    label   : 'Detalles',
+                    label  : 'Detalles',
                     icon   : "fa fa-search",
                     action : function (e) {
 
@@ -385,7 +385,7 @@
                 };
 
                 var archivar = {
-                    label   : 'Archivar Documentos',
+                    label  : 'Archivar Documentos',
                     icon   : "fa fa-folder-open-o",
                     action : function (e) {
 
@@ -446,7 +446,7 @@
                 };
 
                 var observaciones = {
-                    label   : 'Añadir observaciones al trámite',
+                    label  : 'Añadir observaciones al trámite',
                     icon   : "fa fa-eye",
                     action : function (e) {
 
@@ -454,8 +454,8 @@
                             id      : "dlgJefe",
                             title   : "Añadir observaciones al trámite",
                             message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
-                                    "Escriba las observaciones: " +
-                                    "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                                      "Escriba las observaciones: " +
+                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',
@@ -492,7 +492,7 @@
                 };
 
                 var anexos = {
-                    label   : 'Anexos',
+                    label  : 'Anexos',
                     icon   : "fa fa-paperclip",
                     action : function (e) {
                         location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
@@ -502,10 +502,10 @@
                 items.header.label = "Acciones";
                 items.detalles = detalles
 
-                if(conAnexo){
+                if (conAnexo) {
                     items.anexo = anexos
                 }
-                if(retrasado){
+                if (retrasado) {
 
                     items.arbol = arbol
                     items.contestar = contestar
@@ -514,46 +514,46 @@
                     </g:if>
                     items.observaciones = observaciones
                 }
-                if(porRecibir){
+                if (porRecibir) {
                     items.recibir = recibir
                     items.arbol = arbol
 
                 }
 
-                if(sinRecepcion){
+                if (sinRecepcion) {
                     items.recibir = recibir
                     items.arbol = arbol
 
                 }
 
-                if(recibido){
+                if (recibido) {
                     items.contestar = contestar
                     <g:if test="${happy.seguridad.Persona.get(session.usuario.id).puedeArchivar}">
                     items.archivar = archivar
                     </g:if>
+                    <g:else>
+                    if (esCopia) {
+                        items.archivar = archivar;
+                    }
+                    </g:else>
                     items.observaciones = observaciones
-
                 }
 
-                if(jefe){
+                if (jefe) {
                     items.contestar = contestar
-                   items.arbol = arbol
+                    items.arbol = arbol
 
                 }
-
-
 
                 return items
 
             }
 
-             //old contextMenu
+            //old contextMenu
 
-                %{--<g:if test="${bloqueo}">--}%
-                %{--$("#bloqueo-salida").show()--}%
-                %{--</g:if>--}%
-
-
+            %{--<g:if test="${bloqueo}">--}%
+            %{--$("#bloqueo-salida").show()--}%
+            %{--</g:if>--}%
 
             $(function () {
 
@@ -572,10 +572,6 @@
                         $(".trHighlight").removeClass("trHighlight");
                     }
                 });
-
-
-
-
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)

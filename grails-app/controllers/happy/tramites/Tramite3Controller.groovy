@@ -1016,6 +1016,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (!para.tramite.padre) {
             rel = "principal"
         }
+        if (para.fechaAnulacion) {
+            rel = "anulado"
+        }
         def strInfo = tramiteInfo(para)
         def hijos
         if (para.departamento) {
@@ -1031,7 +1034,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
             clase += " jstree-open"
         }
         data += ',"tramite":"' + para.tramiteId + '"'
-        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${strInfo}\n"
+        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+        if (para.fechaAnulacion) {
+            html += "<span class='text-muted'>"
+        }
+        html += strInfo
+        if (para.fechaAnulacion) {
+            html += "</span>"
+        }
+        html += "\n"
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
             hijos.each { hijo ->

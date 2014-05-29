@@ -54,8 +54,7 @@
                 <g:set var="clase" value="${clase + ' sinAnexo'}"/>
             </g:else>
 
-
-
+            <g:set var="clase" value="${clase + ' ' + tramite.rolPersonaTramite.codigo}"/>
 
             <tr data-id="${tramite?.tramite?.id}"
                 class="${clase}"

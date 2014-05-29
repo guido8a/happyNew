@@ -77,6 +77,8 @@
             %{--<g:set var="clase" value="${clase} alert-azul"/>--}%
             %{--</g:if>--}%
 
+                <g:set var="clase" value="${clase + ' ' + tramite.rolPersonaTramite.codigo}"/>
+
                 <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}"
                     departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                     prtr="${tramite?.id}"

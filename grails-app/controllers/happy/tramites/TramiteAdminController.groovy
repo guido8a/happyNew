@@ -269,7 +269,7 @@ class TramiteAdminController {
         if (params.id) {
             def usu = Persona.get(session.usuario.id)
             def puedeAdministrar = usu.puedeAdmin
-            println "PUEDE??? " + puedeAdministrar
+//            println "PUEDE??? " + puedeAdministrar
 
             tramite = Tramite.get(params.id.toLong())
             if (tramite) {
@@ -416,7 +416,9 @@ class TramiteAdminController {
         }
 
 
-        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >${tramiteInfo(para)}\n"
+        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+        html += tramiteInfo(para)
+        html += "\n"
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
             hijos.each { hijo ->
@@ -431,17 +433,21 @@ class TramiteAdminController {
     private static String tramiteFechas(PersonaDocumentoTramite tramiteParaInfo) {
         def strInfo = ""
         strInfo += "<strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
+        def clase
         if (tramiteParaInfo.fechaEnvio) {
-            strInfo += ", <span class='text-info'><strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm") + "</span>"
+            clase = tramiteParaInfo.fechaAnulacion ? 'muted' : 'info'
+            strInfo += ", <span class='text-${clase}'><strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaRecepcion) {
-            strInfo += ", <span class='text-success'><strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm") + "</span>"
+            clase = tramiteParaInfo.fechaAnulacion ? 'muted' : 'success'
+            strInfo += ", <span class='text-${clase}'><strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaArchivo) {
-            strInfo += ", <span class='text-warning'><strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm") + "</span>"
+            clase = tramiteParaInfo.fechaAnulacion ? 'muted' : 'warning'
+            strInfo += ", <span class='text-${clase}'><strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         if (tramiteParaInfo.fechaAnulacion) {
-            strInfo += ", <span class='text-danger'><strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm") + "</span>"
+            strInfo += ", <span class='text-muted'><strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm") + "</span>"
         }
         return strInfo
     }
@@ -464,6 +470,9 @@ class TramiteAdminController {
         }
         def rol = tramiteParaInfo.rolPersonaTramite
         def strInfo = ""
+        if (tramiteParaInfo.fechaAnulacion) {
+            strInfo += "<span class='text-muted'>"
+        }
         if (rol.codigo == "R002") {
             strInfo += "[CC] "
         }
@@ -472,6 +481,9 @@ class TramiteAdminController {
         strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}, "
         strInfo += tramiteFechas(tramiteParaInfo)
         strInfo += ")</small>"
+        if (tramiteParaInfo.fechaAnulacion) {
+            strInfo += "</span>"
+        }
         if (tramiteParaInfo.tramite.estadoTramiteExterno) {
             strInfo += " - " + tramiteParaInfo.tramite.estadoTramiteExterno.descripcion
         }
