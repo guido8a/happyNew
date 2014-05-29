@@ -183,6 +183,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def pdt = PersonaDocumentoTramite.withCriteria {
                 eq("tramite", tr)
                 inList("rolPersonaTramite", [para, cc])
+                isNull("fechaRecepcion")
+                isNull("fechaAnulacion")
+                isNull("fechaArchivo")
             }
             if (pxd.size() > 0 || pdt.size() == 0) {
                 tramites += tr
@@ -438,15 +441,29 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                    inList("estadoTramite", estados)
 //                    order("fechaCreacion", "desc")
 //                }
-                if (t.size() > 0)
+                if (t.size() > 0) {
                     tramites += t
+                }
                 t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
-                if (t.size() > 0)
+//                t = PersonaDocumentoTramite.withCriteria {
+//                    eq("persona", p)
+//                    eq("rolPersonaTramite", rolImprimir)
+//                    isNull("fechaAnulacion")
+//                    isNull("fechaArchivo")
+//                }.tramite
+                if (t.size() > 0) {
                     tramites += t
+                }
             }
             def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
-            if (t.size() > 0)
+//            def t = Tramite.withCriteria {
+//                eq("deDepartamento", persona.departamento)
+//                inList("estadoTramite", estados)
+//
+//            }
+            if (t.size() > 0) {
                 tramites += t
+            }
         } else {
 //            tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona, estados, [sort: "fechaCreacion", order: "desc"])
             tramites = Tramite.withCriteria {
@@ -456,8 +473,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 order("fechaCreacion", "desc")
             }
             def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
-            if (t.size() > 0)
+            if (t.size() > 0) {
                 tramites += t
+            }
         }
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
@@ -470,6 +488,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 eq("tramite", tr)
                 inList("rolPersonaTramite", [para, cc])
                 isNull("fechaRecepcion")
+                isNull("fechaAnulacion")
+                isNull("fechaArchivo")
             }
             if (pxd.size() > 0) {
                 trams += tr

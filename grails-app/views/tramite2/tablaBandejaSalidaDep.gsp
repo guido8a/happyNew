@@ -27,7 +27,7 @@
                 <g:set var="padre" value=""/>
                 <g:set var="clase" value=""/>
 
-                <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite)>0}">
+                <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                     <g:set var="anexo" value="${'conAnexo'}"/>
                 </g:if>
                 <g:else>
@@ -55,7 +55,7 @@
                     anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
                     <g:if test="${tramite?.anexo == 1}">
                         <td title="${tramite.asunto}">${tramite?.codigo}
-                            <g:if test="${DocumentoTramite.countByTramite(tramite)>0}">
+                            <g:if test="${DocumentoTramite.countByTramite(tramite) > 0}">
                                 <i class="fa fa-paperclip" style="margin-left: 10px"></i>
                             </g:if>
                         </td>
@@ -72,6 +72,7 @@
 
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                     <g:set var="para" value="${tramite.getPara()}"/>
+                    <g:set var="copias" value="${tramite.getCopias()}"/>
                     <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                         <td>EXT</td>
                     </g:if>
@@ -100,19 +101,37 @@
                         </g:if>
                     </g:each>
                     <td title="${infoExtra}">
+                        <g:set var="dest" value="${0}"/>
                         <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                             ${tramite.paraExterno}
+                            <g:set var="dest" value="${tramite.paraExterno ? 1 : 0}"/>
                         </g:if>
                         <g:else>
                             <g:if test="${para}">
                                 <g:if test="${para.persona}">
                                     ${para?.persona}
+                                    <g:set var="dest" value="${1}"/>
                                 </g:if>
                                 <g:else>
                                     ${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}
+                                    <g:set var="dest" value="${1}"/>
                                 </g:else>
                             </g:if>
+                            <g:else>
+                                <g:each in="${copias}" var="copia" status="i">
+                                    <g:set var="dest" value="${dest++}"/>
+                                    [CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}
+                                    <g:if test="${i < copias.size() - 1}">
+                                        ,
+                                    </g:if>
+                                </g:each>
+                            </g:else>
                         </g:else>
+                        <g:if test="${dest == 0}">
+                            <span class="label label-danger" style="margin-top: 3px;">
+                                <i class="fa fa-warning"></i> Sin destinatario ni copias
+                            </span>
+                        </g:if>
                     </td>
                     <td>${tramite?.prioridad.descripcion}</td>
                     <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>

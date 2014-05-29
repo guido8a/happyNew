@@ -578,9 +578,31 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return
             }
-
             def paraDpto = tramite.para?.departamento
             def paraPrsn = tramite.para?.persona
+
+            def archivado = EstadoTramite.findByCodigo("E005")
+            def anulado = EstadoTramite.findByCodigo("E006")
+            def noRecibe = [archivado, anulado]
+
+//            def persDocTrams = PersonaDocumentoTramite.withCriteria {
+//                eq("tramite", tramite)
+//                if (paraDpto) {
+//                    eq("departamento", paraDpto)
+//                } else if (paraPrsn) {
+//                    eq("persona", paraPrsn)
+//                }
+//            }
+//            def recibe = true
+//            persDocTrams.each { pdt ->
+//                if (noRecibe.contains(pdt.estado.codigo)) {
+//                    recibe = false
+//                }
+//            }
+//            if (!recibe) {
+//                render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
+//                return
+//            }
 
             def esCircular = false
             if (!paraPrsn && !paraDpto) {
@@ -643,6 +665,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 redirect(action: "errores")
             } else {
                 pxt = pxt.first()
+            }
+
+            def recibe = true
+            if (noRecibe.contains(pxt.estado.codigo)) {
+                recibe = false
+            }
+            if (!recibe) {
+                render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
+                return
             }
 
             if (paraDpto && persona.departamentoId == paraDpto.id) {
