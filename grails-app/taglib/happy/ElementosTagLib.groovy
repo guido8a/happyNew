@@ -162,6 +162,11 @@ class ElementosTagLib {
             tipos.remove(TipoDocumento.findByCodigo("DEX"))
         }
 
+        if (!persona.puedeTramitar) {
+            tipos.remove(TipoDocumento.findByCodigo("OFI"))
+        }
+
+
         def params = [id         : attrs.id,
                       name       : attrs.name,
                       "class"    : attrs.class,

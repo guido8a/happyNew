@@ -12,6 +12,11 @@
         <title>Bandeja de Entrada</title>
 
         <style type="text/css">
+
+        body {
+            background-color : #DFD;
+        }
+
         .etiqueta {
             float       : left;
             /*width: 100px;*/
@@ -307,7 +312,7 @@
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
-                var conAnexo = $tr.hasClass("conAnexo")
+                var conAnexo = $tr.hasClass("conAnexo");
 //                console.log("por porRecibir",porRecibir)
 
                 var contestar = {
@@ -639,7 +644,7 @@
                     cargarBandeja(false);
                     closeLoader();
 
-                }, 1000*60*3);
+                }, 1000 * 60 * 3);
 
                 $(".alertas").click(function () {
                     var clase = $(this).attr("clase");

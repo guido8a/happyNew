@@ -141,18 +141,18 @@ class Tramite {
 
     def getCopias() {
         def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
-        if (para) {
+//        if (para) {
             return copias
-        }
-        return []
+//        }
+//        return []
     }
 
     def getImprime() {
         def impirme = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("I005"))
-        if (para) {
+//        if (para) {
             return impirme
-        }
-        return []
+//        }
+//        return []
     }
 
 

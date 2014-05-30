@@ -13,6 +13,10 @@
 
         <style type="text/css">
 
+        body {
+            background-color : #DFD;
+        }
+
         .etiqueta {
             float       : left;
             /*width: 100px;*/
@@ -561,7 +565,7 @@
                     openLoader();
                     cargarBandeja(false);
                     closeLoader()
-                }, 1000 * 60 );
+                }, 1000 * 60);
                 var id, codigo;
 
                 $(".alertas").click(function () {

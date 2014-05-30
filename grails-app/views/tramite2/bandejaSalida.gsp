@@ -13,6 +13,11 @@
         <title>Bandeja de Salida</title>
 
         <style type="text/css">
+
+        body {
+            background-color : #DDF;
+        }
+
         .etiqueta {
             float       : left;
             /*width: 100px;*/

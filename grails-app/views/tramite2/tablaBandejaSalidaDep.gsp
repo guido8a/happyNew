@@ -117,15 +117,17 @@
                                     <g:set var="dest" value="${1}"/>
                                 </g:else>
                             </g:if>
-                            <g:else>
+                        %{--<g:else>--}%
+                            <span class="small">
                                 <g:each in="${copias}" var="copia" status="i">
-                                    <g:set var="dest" value="${dest++}"/>
+                                    <g:set var="dest" value="${dest + 1}"/>
                                     [CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}
                                     <g:if test="${i < copias.size() - 1}">
                                         ,
                                     </g:if>
                                 </g:each>
-                            </g:else>
+                            </span>
+                        %{--</g:else>--}%
                         </g:else>
                         <g:if test="${dest == 0}">
                             <span class="label label-danger" style="margin-top: 3px;">
@@ -139,7 +141,8 @@
                     <td>${tramite?.estadoTramite.descripcion}</td>
                     <td id="${tramite?.id}" class="ck text-center">
                         <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
-                            <g:if test="${PersonaDocumentoTramite.countByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigoInList(['R001', 'R002'])]) > 0}">
+                        %{--<g:if test="${PersonaDocumentoTramite.countByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigoInList(['R001', 'R002'])]) > 0}">--}%
+                            <g:if test="${dest > 0}">
                                 <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 30px" class="form-control combo" checked="false"/>
                             </g:if>
                             <g:else>

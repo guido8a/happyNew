@@ -13,7 +13,9 @@
         <title>Bandeja de Salida Oficina</title>
 
         <style type="text/css">
-
+        body {
+            background-color : #DDF;
+        }
 
         .etiqueta {
             float       : left;
@@ -288,7 +290,7 @@
 
                 var esSumilla = $tr.hasClass("sumilla");
                 var esExterno = $tr.hasClass("externo");
-                var esOficio = $tr.hasClass("OFI")
+                var esOficio = $tr.hasClass("OFI");
                 var tieneEstado = $tr.hasClass("estado");
                 var esDex = $tr.hasClass("DEX");
                 var tienePadre = $tr.hasClass("conPadre");
@@ -370,7 +372,7 @@
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
                             url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,
                             success : function (msg) {
-                                var parts = msg.split('_')
+                                var parts = msg.split('_');
                                 openLoader();
                                 cargarBandeja();
                                 closeLoader();
@@ -385,7 +387,7 @@
                         }); //ajax
 
                     } //action
-                }
+                };
                 var enviarDex = {
                     label  : 'Enviar y recibir',
                     icon   : "fa fa-check-square-o",
@@ -395,7 +397,7 @@
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
                             url     : '${createLink(controller: 'tramite', action: 'saveDEX')}/' + id,
                             success : function (msg) {
-                                var parts = msg.split('_')
+                                var parts = msg.split('_');
                                 openLoader();
                                 cargarBandeja();
                                 closeLoader();
@@ -410,7 +412,7 @@
                         }); //ajax
 
                     } //action
-                }
+                };
 
                 var ver = {
                     label  : "Ver",
@@ -556,7 +558,7 @@
                 if (tieneAnexo) {
                     items.anexos = anexos;
                 }
-                if (enviado && puedeDesenviar) {
+                if ((enviado || tieneAlerta) && puedeDesenviar) {
                     items.desenviar = desenviar;
                 }
 //                }

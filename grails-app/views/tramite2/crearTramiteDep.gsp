@@ -241,9 +241,9 @@
                 %{--</g:if>--}%
 
                 <div class="row">
-                <div class="col-xs-4">
-                    <b>De:</b>
-                </div>
+                    <div class="col-xs-4">
+                        <b>De:</b>
+                    </div>
                 </div>
 
 
@@ -354,9 +354,9 @@
                     </div>
 
                     %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
-                        %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
-                            %{--Externo--}%
-                        %{--</label>--}%
+                    %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                    %{--Externo--}%
+                    %{--</label>--}%
                     %{--</div>--}%
 
                 </div>
@@ -650,7 +650,8 @@
 //                        moveSelected($ul, $("#ulSeleccionados"), false);
 
                         $tituloCopia.text("Circular");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
 
                         $divExterno.removeClass("hide");
@@ -661,7 +662,8 @@
 //                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
 
                         $divExterno.removeClass("hide");
@@ -674,7 +676,8 @@
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
                         $divOrigen.removeClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
 //                        $chkAnexos.prop("checked", true);
 
@@ -687,7 +690,8 @@
 //                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
 
                         $divExterno.addClass("hide");
@@ -699,6 +703,7 @@
 //                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
+//                        $divConfidencial.removeClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
 
