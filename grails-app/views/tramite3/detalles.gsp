@@ -16,8 +16,11 @@
 
                     <div class="col-xs-3">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
                 </div>
-
-
+                <g:if test="${t.tipoTramite.codigo=='C'}">
+                    <div class="row">
+                        <div class="col-xs-2 negrilla">Confidencial</div>>
+                    </div>
+                </g:if>
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
 
@@ -100,17 +103,33 @@
 
                     <div class="col-xs-3">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
                 </div>
-
+                <g:if test="${t.tipoTramite.codigo=='C'}">
+                    <div class="row">
+                        <div class="col-xs-2 negrilla">Confidencial</div>>
+                    </div>
+                </g:if>
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
 
-                    <div class="col-xs-3">${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}</div>
+                    <div class="col-xs-3">
+                        <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
+                            ${t.paraExterno} (EXT)
+                        </g:if>
+                        <g:else>
+                            ${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}
+                        </g:else>
+                    </div>
 
                     <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
-                            ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
-                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}<b>${pdt?.estado?.descripcion}</b><br>
+                            <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
+                                ${t.paraExterno} (EXT)
+                            </g:if>
+                            <g:else>
+                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                            </g:else>
+                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b>${pdt.estado?.descripcion}</b><br>
                         </g:each>
                     </div>
                 </div>

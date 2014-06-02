@@ -1052,7 +1052,7 @@ class TramiteController extends happy.seguridad.Shield {
         def anulado = EstadoTramite.findByCodigo("E006")
         def band = false
         tramites.each { tr ->
-            if (!(tr.tramite.tipoDocumento.codigo == "OFI" && tr.estado.codigo == "E004")) {
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI" )) {
                 band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
                 if (!band) {
