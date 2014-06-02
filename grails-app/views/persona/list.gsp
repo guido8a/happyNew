@@ -1,4 +1,4 @@
-<%@ page import="happy.seguridad.Prfl; happy.tramites.RolPersonaTramite; happy.tramites.PermisoUsuario; happy.seguridad.Sesn; happy.tramites.PersonaDocumentoTramite; happy.tramites.Tramite; happy.tramites.ObservacionTramite; happy.seguridad.Accs; happy.seguridad.Persona" %>
+<%@ page import="happy.tramites.PermisoTramite; happy.seguridad.Prfl; happy.tramites.RolPersonaTramite; happy.tramites.PermisoUsuario; happy.seguridad.Sesn; happy.tramites.PersonaDocumentoTramite; happy.tramites.Tramite; happy.tramites.ObservacionTramite; happy.seguridad.Accs; happy.seguridad.Persona" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -44,6 +44,8 @@
             </div>
         </div>
 
+        <g:set var="admin" value="${PermisoTramite.findByCodigo('P013')}"/>
+
         <table class="table table-condensed table-bordered" width='100%'>
             <thead>
                 <tr>
@@ -61,6 +63,9 @@
                                     </g:if>
                                     <g:if test="${params.estado == 'inactivo'}">
                                         <i class="fa fa-user text-muted"></i>
+                                    </g:if>
+                                    <g:if test="${params.estado == 'admin'}">
+                                        <i class="fa fa-user text-success"></i>
                                     </g:if>
                                 </g:if>
                                 <g:else>
@@ -91,6 +96,11 @@
                                         <i class="fa fa-user text-warning"></i> Autoridad
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="#" class="a" data-tipo="admin">
+                                        <i class="fa fa-user text-success"></i> Administrador
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -108,48 +118,55 @@
             </thead>
             <tbody>
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
-                    <g:set var="del" value="${true}"/>
-                    <g:if test="${Tramite.countByDe(personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
-                    <g:if test="${PersonaDocumentoTramite.countByPersona(personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
-                    <g:if test="${ObservacionTramite.countByPersona(personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
-                    <g:if test="${Accs.countByUsuarioOrAsignadoPor(personaInstance, personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
-                    <g:if test="${Sesn.countByUsuario(personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
-                    <g:if test="${PermisoUsuario.countByPersonaOrAsignadoPor(personaInstance, personaInstance) > 0}">
-                        <g:set var="del" value="${false}"/>
-                    </g:if>
+                    %{--<g:if test="${params.estado != 'admin' || (params.estado == 'admin' && personaInstance.puedeAdmin)}">--}%
+                        <g:set var="del" value="${true}"/>
+                        <g:if test="${Tramite.countByDe(personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
+                        <g:if test="${PersonaDocumentoTramite.countByPersona(personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
+                        <g:if test="${ObservacionTramite.countByPersona(personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
+                        <g:if test="${Accs.countByUsuarioOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
+                        <g:if test="${Sesn.countByUsuario(personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
+                        <g:if test="${PermisoUsuario.countByPersonaOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                            <g:set var="del" value="${false}"/>
+                        </g:if>
 
-                    <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
-                    <g:set var="rolCopia" value="${RolPersonaTramite.findByCodigo('R002')}"/>
-                    <g:set var="rolImprimir" value="${RolPersonaTramite.findByCodigo('I005')}"/>
+                        <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
+                        <g:set var="rolCopia" value="${RolPersonaTramite.findByCodigo('R002')}"/>
+                        <g:set var="rolImprimir" value="${RolPersonaTramite.findByCodigo('I005')}"/>
 
-                    <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
+                        <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
-                    <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
-                        <td class="text-center">
-                            <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
-                        </td>
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
-                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
-                        <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
-                        <td>${Sesn.withCriteria {
-                            eq("usuario", personaInstance)
-                            perfil {
-                                order("nombre")
-                            }
-                        }.perfil.nombre.join(", ")}</td>
-                        %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
-                    </tr>
+                        <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
+                            <td class="text-center">
+                                <g:if test="${personaInstance.puedeAdmin}">
+                                    <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : 'success'}"></i>
+                                </g:if>
+                                <g:else>
+                                    <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
+                                </g:else>
+                            </td>
+                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
+                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
+                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
+                            <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
+                            <td>${Sesn.withCriteria {
+                                eq("usuario", personaInstance)
+                                perfil {
+                                    order("nombre")
+                                }
+                            }.perfil.nombre.join(", ")}</td>
+                            %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
+                        </tr>
+                    %{--</g:if>--}%
                 </g:each>
             </tbody>
         </table>

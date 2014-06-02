@@ -8,7 +8,6 @@ import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.utilitarios.Parametros
 import org.apache.commons.lang.WordUtils
-import org.fusesource.jansi.Ansi
 import static java.awt.RenderingHints.*
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
@@ -25,6 +24,7 @@ class PersonaController extends happy.seguridad.Shield {
     } //index
 
     def getLista(params, all) {
+//        println "PARAMS: " + params
 //        String llega = params.search
 //        println llega
 //        println "iso***" + llega.getBytes('ISO-8859-1')
@@ -32,13 +32,14 @@ class PersonaController extends happy.seguridad.Shield {
         if (params.search) {
             def tx = params.search.toList()
 //            println tx
-            tx.size().times(){
-                if (tx[it].toString().getBytes('UTF-8').size() > 1){
+            tx.size().times() {
+                if (tx[it].toString().getBytes('UTF-8').size() > 1) {
                     println "posibe carácter especial: ${tx[it]} es en utf-8:" + tx[it].toString().getBytes('UTF-8')
                     if (tx[it].toString().getBytes('UTF-8')[1] == -123) println "llega texto en ISO-8859-1"
                 }
             }
         }
+
         def prms = params.clone()
 
         if (prms.sort == "perfil") {
@@ -49,44 +50,88 @@ class PersonaController extends happy.seguridad.Shield {
             prms.remove("offset")
             prms.remove("max")
         }
+        def permisoAdmin = PermisoTramite.findByCodigo("P013")
         def lista
         if (prms.search) {
-            def c = Persona.createCriteria()
-            lista = c.list(prms) {
-                and {
-                    or {
-                        ilike("cedula", "%" + prms.search + "%")
-                        ilike("nombre", "%" + prms.search + "%")
-                        ilike("apellido", "%" + prms.search + "%")
-                        ilike("cargo", "%" + prms.search + "%")
-                        ilike("login", "%" + prms.search + "%")
-                        ilike("codigo", "%" + prms.search + "%")
-                        departamento {
+            if (prms.estado == "admin") {
+                def c = PermisoUsuario.createCriteria()
+                lista = c.list(prms) {
+                    persona {
+                        and {
                             or {
-                                ilike("descripcion", "%" + prms.search + "%")
+                                ilike("cedula", "%" + prms.search + "%")
+                                ilike("nombre", "%" + prms.search + "%")
+                                ilike("apellido", "%" + prms.search + "%")
+                                ilike("cargo", "%" + prms.search + "%")
+                                ilike("login", "%" + prms.search + "%")
+                                ilike("codigo", "%" + prms.search + "%")
+                                departamento {
+                                    or {
+                                        ilike("descripcion", "%" + prms.search + "%")
+                                    }
+                                }
+                            }
+                            if (params.perfil) {
+                                perfiles {
+                                    eq("perfil", Prfl.get(params.perfil.toLong()))
+                                }
+                            }
+                            if (params.estado) {
+                                if (params.estado == "jefe") {
+                                    eq("jefe", 1)
+                                }
+                                if (params.estado == "usuario") {
+                                    eq("activo", 1)
+                                }
+                                if (params.estado == "inactivo") {
+                                    eq("activo", 0)
+                                }
                             }
                         }
+                        order(prms.order, prms.sort)
                     }
-                    if (params.perfil) {
-                        perfiles {
-                            eq("perfil", Prfl.get(params.perfil.toLong()))
+                    eq("permisoTramite", permisoAdmin)
+                }
+                lista = lista.persona
+            } else {
+                def c = Persona.createCriteria()
+                lista = c.list(prms) {
+                    and {
+                        or {
+                            ilike("cedula", "%" + prms.search + "%")
+                            ilike("nombre", "%" + prms.search + "%")
+                            ilike("apellido", "%" + prms.search + "%")
+                            ilike("cargo", "%" + prms.search + "%")
+                            ilike("login", "%" + prms.search + "%")
+                            ilike("codigo", "%" + prms.search + "%")
+                            departamento {
+                                or {
+                                    ilike("descripcion", "%" + prms.search + "%")
+                                }
+                            }
                         }
-                    }
-                    if (params.estado) {
-                        if (params.estado == "jefe") {
-                            eq("jefe", 1)
+                        if (params.perfil) {
+                            perfiles {
+                                eq("perfil", Prfl.get(params.perfil.toLong()))
+                            }
                         }
-                        if (params.estado == "usuario") {
-                            eq("activo", 1)
-                        }
-                        if (params.estado == "inactivo") {
-                            eq("activo", 0)
+                        if (params.estado) {
+                            if (params.estado == "jefe") {
+                                eq("jefe", 1)
+                            }
+                            if (params.estado == "usuario") {
+                                eq("activo", 1)
+                            }
+                            if (params.estado == "inactivo") {
+                                eq("activo", 0)
+                            }
                         }
                     }
                 }
             }
         } else {
 //            lista = Persona.list(prms)
+
             def c = Persona.createCriteria()
             lista = c.list(prms) {
                 if (params.perfil) {
@@ -107,6 +152,15 @@ class PersonaController extends happy.seguridad.Shield {
                         eq("activo", 0)
                     }
                 }
+            }
+            if (params.estado == "admin") {
+                def listaTemp = []
+                lista.each { l ->
+                    if (l.puedeAdmin) {
+                        listaTemp.add(l)
+                    }
+                }
+                lista = listaTemp
             }
         }
         return lista
@@ -396,13 +450,13 @@ class PersonaController extends happy.seguridad.Shield {
         def img
         def w
         def h
-        if(usuario.foto){
-           img = ImageIO.read(new File(path + usuario.foto));
-           w =  img.getWidth();
-           h = img.getHeight();
-        }else{
-           w=0
-           h=0
+        if (usuario.foto) {
+            img = ImageIO.read(new File(path + usuario.foto));
+            w = img.getWidth();
+            h = img.getHeight();
+        } else {
+            w = 0
+            h = 0
         }
         return [usuario: usuario, w: w, h: h]
     }
@@ -1020,7 +1074,6 @@ class PersonaController extends happy.seguridad.Shield {
 //        def file = new File(pathImages+"/users")
         def prmt = Parametros.findAll()[0]
 
-
 //        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, prmt.textoCn, prmt.passAdm)
         println "conectado " + ldap.class
@@ -1076,15 +1129,15 @@ class PersonaController extends happy.seguridad.Shield {
                             def nombres = WordUtils.capitalizeFully(e2["givenname"])
                             def mail = e2["mail"]
                             def apellido = WordUtils.capitalizeFully(e2["sn"])
-                            if (!apellido){
+                            if (!apellido) {
 //                                apellido = "sin apellido"
-                                noApellido.add(["nombre":logn])
+                                noApellido.add(["nombre": logn])
                             }
-                            if (!nombres){
-                                noNombre.add(["nombre":logn])
+                            if (!nombres) {
+                                noNombre.add(["nombre": logn])
                             }
-                            if (!mail || mail==""){
-                                noMail.add(["nombre":logn])
+                            if (!mail || mail == "") {
+                                noMail.add(["nombre": logn])
                             }
 
                             prsn = new Persona()
@@ -1120,9 +1173,9 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                 prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
                                 prsn.mail = e2["mail"]
-                                if(prsn.connect != e2["dn"]){
+                                if (prsn.connect != e2["dn"]) {
                                     prsn.connect = e2["dn"]
-                                    prsn.activo=0
+                                    prsn.activo = 0
                                 }
                                 def datos = e2["dn"].split(",")
                                 def dpto = null
@@ -1130,16 +1183,16 @@ class PersonaController extends happy.seguridad.Shield {
                                     dpto = datos[1].split("=")
 //                                println "departamento " + dpto[0] + "   " + datos[1]
                                 dpto = Departamento.findByDescripcion(dpto[1])
-                                if(prsn.departamento != dpto){
+                                if (prsn.departamento != dpto) {
                                     prsn.departamento = dpto
-                                    prsn.activo=0
+                                    prsn.activo = 0
                                 }
-                                if(!prsn.apellido)
-                                    prsn.apellido="N.A."
-                                println "update "+prsn.apellido
+                                if (!prsn.apellido)
+                                    prsn.apellido = "N.A."
+                                println "update " + prsn.apellido
                                 if (!prsn.save(flush: true)) {
                                     println "error save prns " + prsn.errors
-                                }else{
+                                } else {
                                     mod.add(prsn)
                                 }
                             }
@@ -1221,15 +1274,15 @@ class PersonaController extends happy.seguridad.Shield {
                 } else {
 //                    println "encontro"
                     if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != entry["mail"] || prsn.connect != entry["dn"]) {
-                        if(entry["sn"] && entry["sn"]!=""){
+                        if (entry["sn"] && entry["sn"] != "") {
                             prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
                             prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
-                            if(!prsn.apellido)
-                                prsn.apellido="N.A."
+                            if (!prsn.apellido)
+                                prsn.apellido = "N.A."
                             prsn.mail = entry["mail"]
-                            if(prsn.connect != entry["dn"]){
+                            if (prsn.connect != entry["dn"]) {
                                 prsn.connect = entry["dn"]
-                                prsn.activo=0
+                                prsn.activo = 0
                             }
                             def datos = entry["dn"].split(",")
                             def dpto = null
@@ -1237,15 +1290,15 @@ class PersonaController extends happy.seguridad.Shield {
                                 dpto = datos[1].split("=")
 //                                println "departamento " + dpto[0] + "   " + datos[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
-                            if(prsn.departamento != dpto){
+                            if (prsn.departamento != dpto) {
                                 prsn.departamento = dpto
-                                prsn.activo=0
+                                prsn.activo = 0
                             }
-                            println "update "+prsn.apellido
+                            println "update " + prsn.apellido
                             if (!prsn.save(flush: true)) {
 
                                 println "error save prns " + prsn.errors
-                            }else{
+                            } else {
                                 mod.add(prsn)
                             }
                         }
@@ -1263,7 +1316,7 @@ class PersonaController extends happy.seguridad.Shield {
 
         println "hay " + cont + " usuarios"
 
-        return [users: users, reg: registrados, nuevos: nuevos, mod: mod,noNombre:noNombre,noMail:noMail,noApellido:noApellido]
+        return [users: users, reg: registrados, nuevos: nuevos, mod: mod, noNombre: noNombre, noMail: noMail, noApellido: noApellido]
 
     }
 
