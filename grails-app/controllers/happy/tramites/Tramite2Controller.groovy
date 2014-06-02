@@ -187,11 +187,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                isNull("fechaAnulacion")
 //                isNull("fechaArchivo")
 //            }
-            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr,[para, cc])
-            pdt.each {pd->
-                if(!pd.fechaRecepcion && pd.estado?.codigo!="E006" && pd.estado?.codigo!="E005"){
-                    if(!tramites.contains(tr))
-                        tramites+=tr
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            pdt.each { pd ->
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+                    if (!tramites.contains(tr))
+                        tramites += tr
                 }
             }
 //            if (pxd.size() > 0 || pdt.size() == 0) {
@@ -241,35 +241,50 @@ class Tramite2Controller extends happy.seguridad.Shield {
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
             //cambia la fecha de envio, el estadoy las obs
+            def alerta
+
             def pers = persDoc.persona
             def dpto = persDoc.departamento
             def tram = persDoc.tramite
-//            persDoc.fechaEnvio = null
-//            persDoc.estado = porEnviar
-//            persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-//                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-//                    "(previa fecha de envío: " +
-//                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
-//            if (persDoc.save(flush: true)) {
-            try {
-                persDoc.delete(flush: true)
-                def alerta
-                if (pers)
-                    alerta = Alerta.findByPersonaAndTramite(pers, tram)
-                else
-                    alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
-                if (alerta) {
-                    alerta.mensaje += " - Tramite cambiado de estado"
-                    alerta.fechaRecibido = new Date()
-                    alerta.save(flush: true)
+            if (persDoc.rolPersonaTramite == rolPara) {
+                println "es PARA: cambia fechas"
+                persDoc.fechaEnvio = null
+                persDoc.estado = porEnviar
+                persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+                        "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                        "(previa fecha de envío: " +
+                        "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+                if (persDoc.save(flush: true)) {
+                    if (pers)
+                        alerta = Alerta.findByPersonaAndTramite(pers, tram)
+                    else
+                        alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
+                    if (alerta) {
+                        alerta.mensaje += " - Tramite cambiado de estado"
+                        alerta.fechaRecibido = new Date()
+                        alerta.save(flush: true)
+                    }
+                } else {
+                    println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
+                    errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
                 }
-            } catch (e) {
-                println "error: " + e
+            } else {
+                println "es COPIA: delete"
+                try {
+                    persDoc.delete(flush: true)
+                    if (pers)
+                        alerta = Alerta.findByPersonaAndTramite(pers, tram)
+                    else
+                        alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
+                    if (alerta) {
+                        alerta.mensaje += " - Tramite cambiado de estado"
+                        alerta.fechaRecibido = new Date()
+                        alerta.save(flush: true)
+                    }
+                } catch (e) {
+                    println "error: " + e
+                }
             }
-//            } else {
-//                println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
-//                errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
-//            }
         }
 
         //originalmente era para todos estos: verifico si ninguno ha recibido le cambio el estado al tramite a borrador
@@ -502,11 +517,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                trams += tr
 //            }
 
-            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr,[para, cc])
-            pdt.each {pd->
-                if(!pd.fechaRecepcion && pd.estado?.codigo!="E006" && pd.estado?.codigo!="E005"){
-                    if(!trams.contains(tr))
-                        trams+=tr
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            pdt.each { pd ->
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+                    if (!trams.contains(tr))
+                        trams += tr
                 }
             }
         }
@@ -611,7 +626,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 def envio = new Date();
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
-                    if(t.estado?.codigo!="EOO6" && t.estado?.codigo!="EOO5"){
+                    if (t.estado?.codigo != "EOO6" && t.estado?.codigo != "EOO5") {
                         t.fechaEnvio = envio
                         t.estado = EstadoTramite.findByCodigo("E003")
                         if (t.save(flush: true)) {
@@ -637,13 +652,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 }
                             }
                         }
-                    }else{
-                        band=false
+                    } else {
+                        band = false
                     }
 //                    println("llllll" + t)
 
                 }
-                if(band){
+                if (band) {
                     def pdt = new PersonaDocumentoTramite()
                     pdt.tramite = tramite
                     pdt.persona = session.usuario
@@ -661,10 +676,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         println tramite.errors
                         error += renderErrors(bean: tramite)
                     }
-                }else{
-                    band=true
+                } else {
+                    band = true
                 }
-
 
 //                println("-->" + pdt)
 
