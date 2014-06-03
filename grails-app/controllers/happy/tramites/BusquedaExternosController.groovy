@@ -10,7 +10,7 @@ class BusquedaExternosController {
     }
 
     def tablaBusquedaExternos() {
-        println("params:" + params)
+//        println("params:" + params)
         def res
         def filtrados = []
         if (!params.contacto && !params.numero && !params.codigo && !params.institucion) {
@@ -48,6 +48,7 @@ class BusquedaExternosController {
             filtrados = filtrados.first()
 
             def tram = ultimoHijo(filtrados)
+//            println "TRAM: " + tram.codigo
 
             def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = "- Sin director asignado -"
             def para = tram.para
@@ -87,7 +88,7 @@ class BusquedaExternosController {
                         (director.nombre + " " + director.apellido)
             }
             def msg = "<div class='well well-lg text-left'>"
-            msg+="<h4>Trámite ${filtrados.codigo}</h4>"
+            msg += "<h4>Trámite ${filtrados.codigo}</h4>"
             msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion}</em></strong></p>"
             msg += "<p>El documento se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
             msg += "<p>Quien labora en el departamento: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
@@ -107,12 +108,16 @@ class BusquedaExternosController {
     }
 
     def ultimoHijo(Tramite tramite) {
-//        println tramite
+//        println tramite.codigo
         def ret = tramite
         Tramite.findAllByAQuienContesta(tramite.para).each { tr ->
-            ret = tr
-            ultimoHijo(tr)
+//            println "\t" + tr.codigo
+            ret = ultimoHijo(tr)
+            if (!ret) {
+                ret = tr
+            }
         }
+//        println "RET=" + ret.codigo
         return ret
     }
 
