@@ -692,17 +692,22 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
-        params.sort = params.sort ?: "apellido"
-        params.perfil = params.perfil ?: ''
-        params.estado = params.estado ?: ''
-        def personaInstanceList = getLista(params, false)
-        def personaInstanceCount = getLista(params, true).size()
-        if (personaInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
-            personaInstanceList = getLista(params, false)
+        if (session.usuario.puedeAdmin) {
+            params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
+            params.sort = params.sort ?: "apellido"
+            params.perfil = params.perfil ?: ''
+            params.estado = params.estado ?: ''
+            def personaInstanceList = getLista(params, false)
+            def personaInstanceCount = getLista(params, true).size()
+            if (personaInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+                personaInstanceList = getLista(params, false)
+            }
+            return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params]
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
-        return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params]
     } //list
 
     def show_ajax() {
@@ -875,6 +880,11 @@ class PersonaController extends happy.seguridad.Shield {
 //                params[k] = v.toUpperCase()
 //            }
 //        }
+
+        if (params.password) {
+            params.password = params.password.toString().encodeAsMD5()
+        }
+
         params.mail = params.mail.toString().toLowerCase()
         def personaInstance = new Persona()
         if (params.id) {
