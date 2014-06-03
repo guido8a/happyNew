@@ -195,68 +195,74 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def calendario() {
-        def parametros = Parametros.list()
-        if (parametros.size() == 0) {
-            parametros = new Parametros([
-                    horaInicio  : 8,
-                    minutoInicio: 00,
-                    horaFin     : 16,
-                    minutoFin   : 30
-            ])
-            if (!parametros.save(flush: true)) {
-                println "error al guardar params: " + parametros.errors
-            }
-        } else {
-            parametros = parametros.first()
-        }
-
-        if (!params.anio) {
-            params.anio = new Date().format('yyyy').toInteger()
-        }
-
-        def anio = Anio.findAllByNumero(params.anio, [sort: "id"])
-        if (anio.size() > 1) {
-            flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
-            redirect(action: "error")
-            return
-        } else if (anio.size() == 0) {
-            flash.message = "No se encontraron registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
-            redirect(action: "error")
-            return
-        }
-        anio = anio.first()
-
-        if (anio.estado == 0) {
-            flash.message = "El año ${params.anio} se emcuentra desactivado. Por favor póngase en contacto con el administrador."
-            redirect(action: "error")
-            return
-        }
-
-        def dias = DiaLaborable.withCriteria {
-            eq("anio", anio)
-            order("fecha", "asc")
-        }
-
-        if (dias.size() < 365) {
-            if (DiaLaborable.count() == 0) {
-                flash.message = "<p>No se encontraron registros de días laborables. Para inicializar el calendario haga click en el botón Inicializar.</p>" +
-                        "<p>" +
-                        g.link(action: "inicializar", class: "btn btn-success") {
-                            "<i class='fa fa-check'></i> Inicializar"
-                        } +
-                        "</p>"
-                redirect(action: "error")
-                return
+        if(session.usuario.puedeAdmin) {
+            def parametros = Parametros.list()
+            if (parametros.size() == 0) {
+                parametros = new Parametros([
+                        horaInicio  : 8,
+                        minutoInicio: 00,
+                        horaFin     : 16,
+                        minutoFin   : 30
+                ])
+                if (!parametros.save(flush: true)) {
+                    println "error al guardar params: " + parametros.errors
+                }
             } else {
-                flash.message = "No se encontraron registros para los días laborables del año ${params.anio}. Por favor póngase en contacto con el administrador."
+                parametros = parametros.first()
+            }
+
+            if (!params.anio) {
+                params.anio = new Date().format('yyyy').toInteger()
+            }
+
+            def anio = Anio.findAllByNumero(params.anio, [sort: "id"])
+            if (anio.size() > 1) {
+                flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
+                redirect(action: "error")
+                return
+            } else if (anio.size() == 0) {
+                flash.message = "No se encontraron registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
                 redirect(action: "error")
                 return
             }
+            anio = anio.first()
+
+            if (anio.estado == 0) {
+                flash.message = "El año ${params.anio} se emcuentra desactivado. Por favor póngase en contacto con el administrador."
+                redirect(action: "error")
+                return
+            }
+
+            def dias = DiaLaborable.withCriteria {
+                eq("anio", anio)
+                order("fecha", "asc")
+            }
+
+            if (dias.size() < 365) {
+                if (DiaLaborable.count() == 0) {
+                    flash.message = "<p>No se encontraron registros de días laborables. Para inicializar el calendario haga click en el botón Inicializar.</p>" +
+                            "<p>" +
+                            g.link(action: "inicializar", class: "btn btn-success") {
+                                "<i class='fa fa-check'></i> Inicializar"
+                            } +
+                            "</p>"
+                    redirect(action: "error")
+                    return
+                } else {
+                    flash.message = "No se encontraron registros para los días laborables del año ${params.anio}. Por favor póngase en contacto con el administrador."
+                    redirect(action: "error")
+                    return
+                }
+            }
+
+            def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+            return [anio: anio, dias: dias, meses: meses, params: params]
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+            response.sendError(403)
         }
 
-        def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-
-        return [anio: anio, dias: dias, meses: meses, params: params]
     }
 
     def inicializar() {

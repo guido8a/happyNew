@@ -31,14 +31,20 @@ class TipoDocumentoController extends happy.seguridad.Shield {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def tipoDocumentoInstanceList = getLista(params, false)
-        def tipoDocumentoInstanceCount = getLista(params, true).size()
-        if (tipoDocumentoInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
+        if(session.usuario.puedeAdmin) {
+           params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+            def tipoDocumentoInstanceList = getLista(params, false)
+            def tipoDocumentoInstanceCount = getLista(params, true).size()
+            if (tipoDocumentoInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+            }
+            tipoDocumentoInstanceList = getLista(params, false)
+            return [tipoDocumentoInstanceList: tipoDocumentoInstanceList, tipoDocumentoInstanceCount: tipoDocumentoInstanceCount, params: params]
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+            response.sendError(403)
         }
-        tipoDocumentoInstanceList = getLista(params, false)
-        return [tipoDocumentoInstanceList: tipoDocumentoInstanceList, tipoDocumentoInstanceCount: tipoDocumentoInstanceCount, params: params]
+
     } //list
 
     def show_ajax() {

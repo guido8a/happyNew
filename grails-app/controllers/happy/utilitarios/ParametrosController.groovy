@@ -32,14 +32,21 @@ class ParametrosController extends happy.seguridad.Shield {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def parametrosInstanceList = getLista(params, false)
-        def parametrosInstanceCount = getLista(params, true).size()
-        if(parametrosInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
+        if(session.usuario.puedeAdmin) {
+            params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+            def parametrosInstanceList = getLista(params, false)
+            def parametrosInstanceCount = getLista(params, true).size()
+            if(parametrosInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+            }
+            parametrosInstanceList = getLista(params, false)
+            return [parametrosInstanceList: parametrosInstanceList, parametrosInstanceCount: parametrosInstanceCount, params: params]
+
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+            response.sendError(403)
         }
-        parametrosInstanceList = getLista(params, false)
-        return [parametrosInstanceList: parametrosInstanceList, parametrosInstanceCount: parametrosInstanceCount, params: params]
+
     } //list
 
     def show_ajax() {

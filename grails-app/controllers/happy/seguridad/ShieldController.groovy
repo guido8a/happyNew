@@ -1,5 +1,6 @@
 package happy.seguridad
 
+import happy.alertas.Alerta
 import happy.tramites.EstadoTramite
 import happy.tramites.Tramite
 
@@ -80,6 +81,12 @@ class ShieldController {
 
     def forbidden = {
 
+        def alerta = new Alerta()
+        alerta.accion=" "
+        alerta.controlador=" "
+        alerta.mensaje="Usuario: ${session.usuario.login} Fecha: ${new Date().format('dd-MM-yyyy hh:mm')}"
+        alerta.fechaCreacion=new Date()
+        alerta.save(flush: true)
         def msn = "Forbidden"
         if(flash.message)
             msn=flash.message

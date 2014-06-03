@@ -44,64 +44,69 @@ class NumeroController extends happy.seguridad.Shield {
     }
 
     def config() {
+        if(session.usuario.puedeAdmin) {
+            def tiposDoc = TipoDocumento.list([sort: 'descripcion'])
+            def departamentos = Departamento.list([sort: "descripcion"])
 
-//        def tiposDoc = Numero.list([sort: "tipoDocumento"]).tipoDocumento.unique()
-        def tiposDoc = TipoDocumento.list([sort: 'descripcion'])
-        def departamentos = Departamento.list([sort: "descripcion"])
-
-        def html = "<table class='table table-condensed table-bordered'>"
-        html += "<thead>"
-        html += "<tr>"
-        html += "<th rowspan='2'>Departamento</th>"
-        html += "<th colspan='${tiposDoc.size()}'>Tipo de documento</th>"
-        html += "</tr>"
-        html += "<tr>"
-        tiposDoc.each { tp ->
-            html += "<th>${tp.descripcion}</th>"
-        }
-        html += "</tr>"
-        html += "</thead>"
-        html += "<tbody>"
-        def body = ""
-        departamentos.each { dep ->
-            def cont = 0
-            def linea = "<tr>"
-            linea += "<td class='departamento'>" + dep.descripcion + "</td>"
+            def html = "<table class='table table-condensed table-bordered'>"
+            html += "<thead>"
+            html += "<tr>"
+            html += "<th rowspan='2'>Departamento</th>"
+            html += "<th colspan='${tiposDoc.size()}'>Tipo de documento</th>"
+            html += "</tr>"
+            html += "<tr>"
             tiposDoc.each { tp ->
-                def num = Numero.findAllByDepartamentoAndTipoDocumento(dep, tp)
-                def puede = TipoDocumentoDepartamento.withCriteria {
-                    eq("departamento", dep)
-                    eq("tipo", tp)
-                    eq("estado", 1)
-                }
-                if (puede.size() > 0) {
-                    if (num.size() == 0) {
-                        linea += "<td class='tipoDoc' title='${dep.codigo} - ${tp.descripcion}'>" +
-                                g.textField(name: dep.id + "_" + tp.id, class: "form-control input-sm", value: 0) +
-                                "</td>"
-                    } else if (num.size() > 1) {
-                        linea += "<td class='tipoDoc danger' title='Este campo tiene un error. Comuníquese con el administrador.'>${num.valor}</td>"
-                    } else {
-                        num = num.first()
-                        linea += "<td class='tipoDoc info' title='${dep.codigo} - ${tp.descripcion}'>" +
-                                g.textField(name: num.id, class: "form-control input-sm text-info", value: num.valor) +
-                                "</td>"
+                html += "<th>${tp.descripcion}</th>"
+            }
+            html += "</tr>"
+            html += "</thead>"
+            html += "<tbody>"
+            def body = ""
+            departamentos.each { dep ->
+                def cont = 0
+                def linea = "<tr>"
+                linea += "<td class='departamento'>" + dep.descripcion + "</td>"
+                tiposDoc.each { tp ->
+                    def num = Numero.findAllByDepartamentoAndTipoDocumento(dep, tp)
+                    def puede = TipoDocumentoDepartamento.withCriteria {
+                        eq("departamento", dep)
+                        eq("tipo", tp)
+                        eq("estado", 1)
                     }
-                    cont++
-                } else {
-                    linea += "<td class='tipoDoc warning' title='Este departamento no tiene asignado este tipo de documento.'>-</td>"
+                    if (puede.size() > 0) {
+                        if (num.size() == 0) {
+                            linea += "<td class='tipoDoc' title='${dep.codigo} - ${tp.descripcion}'>" +
+                                    g.textField(name: dep.id + "_" + tp.id, class: "form-control input-sm", value: 0) +
+                                    "</td>"
+                        } else if (num.size() > 1) {
+                            linea += "<td class='tipoDoc danger' title='Este campo tiene un error. Comuníquese con el administrador.'>${num.valor}</td>"
+                        } else {
+                            num = num.first()
+                            linea += "<td class='tipoDoc info' title='${dep.codigo} - ${tp.descripcion}'>" +
+                                    g.textField(name: num.id, class: "form-control input-sm text-info", value: num.valor) +
+                                    "</td>"
+                        }
+                        cont++
+                    } else {
+                        linea += "<td class='tipoDoc warning' title='Este departamento no tiene asignado este tipo de documento.'>-</td>"
+                    }
                 }
+                linea += "</tr>"
+                if (cont == 0) {
+                    linea = ""
+                }
+                body += linea
             }
-            linea += "</tr>"
-            if (cont == 0) {
-                linea = ""
-            }
-            body += linea
+            html += body
+            html += "</tbody>"
+            html += "<table>"
+            return [html: html]
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+            response.sendError(403)
         }
-        html += body
-        html += "</tbody>"
-        html += "<table>"
-        return [html: html]
+//        def tiposDoc = Numero.list([sort: "tipoDocumento"]).tipoDocumento.unique()
+
     }
 
     def saveConfig() {

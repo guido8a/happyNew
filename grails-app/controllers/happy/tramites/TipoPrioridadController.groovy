@@ -34,14 +34,20 @@ class TipoPrioridadController extends happy.seguridad.Shield {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def tipoPrioridadInstanceList = getLista(params, false)
-        def tipoPrioridadInstanceCount = getLista(params, true).size()
-        if (tipoPrioridadInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
+        if(session.usuario.puedeAdmin) {
+            params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+            def tipoPrioridadInstanceList = getLista(params, false)
+            def tipoPrioridadInstanceCount = getLista(params, true).size()
+            if (tipoPrioridadInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+            }
+            tipoPrioridadInstanceList = getLista(params, false)
+            return [tipoPrioridadInstanceList: tipoPrioridadInstanceList, tipoPrioridadInstanceCount: tipoPrioridadInstanceCount, params: params]
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+            response.sendError(403)
         }
-        tipoPrioridadInstanceList = getLista(params, false)
-        return [tipoPrioridadInstanceList: tipoPrioridadInstanceList, tipoPrioridadInstanceCount: tipoPrioridadInstanceCount, params: params]
+
     } //list
 
     def show_ajax() {

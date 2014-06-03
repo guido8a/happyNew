@@ -24,7 +24,7 @@ class AccionesController extends happy.seguridad.Shield {
             def modulos = Modulo.list([sort: 'orden'])
             return [modulos: modulos]
         }else{
-            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada."
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
     }
