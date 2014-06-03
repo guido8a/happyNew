@@ -866,12 +866,12 @@
 //                    console.log("externo");
                     $(".externo").show();
                     $(".interno").hide();
+                    $("#para").val($("#para option:visible:first").val());
                 } else {
 //                    console.log("interno");
                     $(".externo").show();
                     $(".interno").show();
                 }
-                $("#para").val($("#para option:visible:first").val());
             }
 
             $(function () {

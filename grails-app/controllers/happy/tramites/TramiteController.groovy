@@ -221,6 +221,9 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</div>"
                     break;
                 default: //DEX SUM MEM PLA
+//                    println "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+//                    println tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId
+//                    println "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                     html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px;margin-left: -25px\">"
                     html += "<b>Para:</b>"
                     html += elm.comboPara(name: "tramite.para",

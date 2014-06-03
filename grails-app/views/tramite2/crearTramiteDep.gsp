@@ -625,6 +625,11 @@
                     },
                     success : function (msg) {
                         $divPara.replaceWith(msg);
+//                        var op = $("#para option:selected");
+//                        $("#para").remove($("#para option:selected"));
+//                        $("#para").prepend(op);
+//                        //console.log($("#para"),$("#para").val(),$("#para option:selected").attr("value"));
+//                        $("#para").val(""+$("#para option:selected").attr("value"));
                         validarExterno(false);
                     }
                 });
@@ -844,15 +849,16 @@
                     removeAll();
                 }
                 if ($("#externo").is(":checked")) {
-//                    console.log("externo");
+//                    //console.log("externo");
                     $(".externo").show();
                     $(".interno").hide();
+                    $("#para").val($("#para option:visible:first").val());
                 } else {
-//                    console.log("interno");
+//                    //console.log("interno");
                     $(".externo").show();
                     $(".interno").show();
                 }
-                $("#para").val($("#para option:visible:first").val());
+
             }
 
             $(function () {
