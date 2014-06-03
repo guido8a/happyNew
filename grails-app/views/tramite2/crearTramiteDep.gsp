@@ -72,7 +72,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="redactar" class="btn btn-azul btnSave">
-                    <i class="fa fa-save"></i> Guardar y empezar a redactar
+                    <i class="fa fa-save"></i> Guardar %{--y empezar a redactar--}%
                 </g:link>
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
@@ -339,13 +339,13 @@
                         </label>
                     </div>
 
-                    <g:if test="${!tramite.padre}">
-                        <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px; width: 125px;">
-                            <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
-                                Confidencial
-                            </label>
-                        </div>
-                    </g:if>
+                    %{--<g:if test="${!tramite.padre}">--}%
+                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px; width: 125px;">
+                        <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
+                            Confidencial
+                        </label>
+                    </div>
+                    %{--</g:if>--}%
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px; width: 120px;">
                         <label for="anexo"><input type="checkbox" name="anexo" id="anexo" ${tramite.anexo == 1 ? 'checked' : ''}/>
@@ -653,7 +653,6 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
-
                         $divExterno.removeClass("hide");
                         break;
                     case "OFI":
@@ -665,7 +664,6 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
                         break;
@@ -680,7 +678,6 @@
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
 //                        $chkAnexos.prop("checked", true);
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
                         break;
@@ -693,7 +690,6 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
-
                         $divExterno.addClass("hide");
                         $chkExterno.prop("checked", false);
                         break;
@@ -706,7 +702,6 @@
 //                        $divConfidencial.removeClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", false);
                 }
@@ -718,7 +713,6 @@
                     $divCc.addClass("hide");
                     $divConfidencial.addClass("hide");
                     $divAnexos.addClass("hide");
-
                     $divExterno.addClass("hide");
                     $chkExterno.prop("checked", false);
                 }
@@ -864,12 +858,62 @@
             $(function () {
 
                 <g:if test="${bloqueo}">
-                $("#modalTabelGray").css({marginTop : "-20px", zIndex : "999"}).show()
+                $("#modalTabelGray").css({marginTop : "-20px", zIndex : "999"}).show();
                 </g:if>
                 var $dir = $("#direccion");
                 var $selPrioridad = $("#prioridad");
 //                var $selPara = $("#para").clone(true);
 //                var $selParaExt = $("#paraExt").clone(true);
+
+                $selPrioridad.change(function () {
+                    validarTiempos();
+                }).change();
+
+                $dir.change(function () {
+                    var id = $(this).val();
+                    var $div = $("#divBtnDir");
+                    if (id != "" && $div.children().length == 0) {
+                        var $btn = $("<a href='#' class='btn btn-xs btn-primary'>Agregar dirección</a>");
+                        $div.html($btn);
+
+                        $btn.click(function () {
+                            addItem($dir, "direccion");
+                            return false;
+                        });
+                    }
+                    if (id == "") {
+                        $div.html("");
+                    }
+                });
+
+                $("#externo").click(function () {
+                    var tipoDoc = $("#tipoDocumento").find("option:checked").attr("class");
+                    if (tipoDoc == "OFI" || tipoDoc == "DEX") {
+                        $(this).prop("checked", true);
+                    }
+                    if ($(this).is(":checked") && tipoDoc != "OFI" && tipoDoc != "DEX") {
+                        $("#divParaExt").removeClass("hide");
+                    } else {
+                        $("#divParaExt").addClass("hide");
+                    }
+                    validarExterno(true);
+                });
+                validarExterno(false);
+
+                $("#btnDetalles").click(function () {
+                    $.ajax({
+                        type    : 'POST',
+                        url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                        data    : {
+                            id : "${tramite.id?:tramite.padreId}"
+                        },
+                        success : function (msg) {
+                            $("#dialog-body").html(msg)
+                        }
+                    });
+                    $("#dialog").modal("show")
+                    return false;
+                });
 
                 $("#btnInfoPara").click(function () {
                     var para = $("#para").val();
@@ -913,42 +957,6 @@
                     return false;
                 });
 
-                $selPrioridad.change(function () {
-                    validarTiempos();
-                }).change();
-
-                $dir.change(function () {
-                    var id = $(this).val();
-                    var $div = $("#divBtnDir");
-                    if (id != "" && $div.children().length == 0) {
-                        var $btn = $("<a href='#' class='btn btn-xs btn-primary'>Agregar dirección</a>");
-                        $div.html($btn);
-
-                        $btn.click(function () {
-                            addItem($dir, "direccion");
-                            return false;
-                        });
-                    }
-                    if (id == "") {
-                        $div.html("");
-                    }
-                });
-
-                $("#btnDetalles").click(function () {
-                    $.ajax({
-                        type    : 'POST',
-                        url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
-                        data    : {
-                            id : "${tramite.id?:tramite.padreId}"
-                        },
-                        success : function (msg) {
-                            $("#dialog-body").html(msg)
-                        }
-                    });
-                    $("#dialog").modal("show")
-                    return false;
-                });
-
                 $("#cc").click(function () {
                     validarCheck();
                 });
@@ -959,21 +967,6 @@
 //                        $(this).prop("checked", true);
 //                    }
 //                });
-
-                $("#externo").click(function () {
-                    var tipoDoc = $("#tipoDocumento").find("option:checked").attr("class");
-                    if (tipoDoc == "OFI" || tipoDoc == "DEX") {
-                        $(this).prop("checked", true);
-                    }
-                    if ($(this).is(":checked") && tipoDoc != "OFI" && tipoDoc != "DEX") {
-                        $("#divParaExt").removeClass("hide");
-                    } else {
-                        $("#divParaExt").addClass("hide");
-                    }
-                    validarExterno(true);
-                });
-
-                validarExterno(false);
 
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc();

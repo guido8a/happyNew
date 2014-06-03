@@ -72,7 +72,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <g:link action="redactar" class="btn btn-azul btnSave">
-                    <i class="fa fa-save"></i> Guardar y empezar a redactar
+                    <i class="fa fa-save"></i> Guardar %{--y empezar a redactar--}%
                 </g:link>
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
@@ -240,9 +240,9 @@
                 %{--</g:if>--}%
 
                 <div class="row">
-                <div class="col-xs-4" >
-                    <b>De:</b>
-                </div>
+                    <div class="col-xs-4">
+                        <b>De:</b>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -360,11 +360,11 @@
                         </label>
                     </div>
 
-                    %{--<div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">--}%
-                    %{--<label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>--}%
-                    %{--Confidencial--}%
-                    %{--</label>--}%
-                    %{--</div>--}%
+                    <div class="col-xs-2 negrilla hide" id="divConfidencial" style="margin-top: 20px;">
+                        <label for="confi"><input type="checkbox" name="confi" id="confi" ${tramite.tipoTramite?.codigo == 'C' ? 'checked' : ''}/>
+                            Confidencial
+                        </label>
+                    </div>
 
                     <div class="col-xs-2 negrilla hide" id="divAnexos" style="margin-top: 20px; width: 120px;">
                         <label for="anexo"><input type="checkbox" name="anexo" id="anexo"/>
@@ -373,11 +373,11 @@
                     </div>
 
                     %{--<g:if test="${persona.puedeTramitar}">--}%
-                        %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
-                            %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
-                                %{--Externo--}%
-                            %{--</label>--}%
-                        %{--</div>--}%
+                    %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
+                    %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                    %{--Externo--}%
+                    %{--</label>--}%
+                    %{--</div>--}%
                     %{--</g:if>--}%
 
                 </div>
@@ -671,9 +671,9 @@
 //                        moveSelected($ul, $("#ulSeleccionados"), false);
 
                         $tituloCopia.text("Circular");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
-
                         $divExterno.removeClass("hide");
                         break;
                     case "OFI":
@@ -682,9 +682,9 @@
 //                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
                         break;
@@ -695,10 +695,10 @@
                         $divCopia.addClass("hide");
                         $divCc.addClass("hide");
                         $divOrigen.removeClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
 //                        $chkAnexos.prop("checked", true);
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
                         break;
@@ -708,9 +708,9 @@
 //                        $divBotonInfo.removeClass("hide");
                         $divCopia.addClass("hide");
                         $divCc.removeClass("hide");
-                        $divConfidencial.addClass("hide");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
-
                         $divExterno.addClass("hide");
                         $chkExterno.prop("checked", false);
                         break;
@@ -722,7 +722,6 @@
                         $divCc.removeClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
-
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", false);
                 }
@@ -734,7 +733,6 @@
                     $divCc.addClass("hide");
                     $divConfidencial.addClass("hide");
                     $divAnexos.addClass("hide");
-
                     $divExterno.addClass("hide");
                     $chkExterno.prop("checked", false);
                 }
@@ -878,7 +876,7 @@
 
             $(function () {
                 <g:if test="${bloqueo}">
-                $("#modalTabelGray").css({marginTop : "-20px", zIndex : "999"}).show()
+                $("#modalTabelGray").css({marginTop : "-20px", zIndex : "999"}).show();
                 </g:if>
                 var $dir = $("#direccion");
                 var $selPrioridad = $("#prioridad");
@@ -939,6 +937,48 @@
                         }
                     });
                     $("#dialog").modal("show")
+                    return false;
+                });
+
+                $("#btnInfoPara").click(function () {
+                    var para = $("#para").val();
+                    var paraExt = $("#paraExt").val();
+                    var id;
+                    var url = "";
+                    if (para) {
+                        if (parseInt(para) > 0) {
+                            url = "${createLink(controller: 'persona', action: 'show_ajax')}";
+                            id = para;
+                        } else {
+                            url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
+                            id = parseInt(para) * -1;
+                        }
+                    }
+                    if (paraExt) {
+                        url = "${createLink(controller: 'origenTramite', action: 'show_ajax')}";
+                        id = paraExt;
+                    }
+                    $.ajax({
+                        type    : "POST",
+                        url     : url,
+                        data    : {
+                            id : id
+                        },
+                        success : function (msg) {
+                            bootbox.dialog({
+                                title   : "Información",
+                                message : msg,
+                                buttons : {
+                                    aceptar : {
+                                        label     : "Aceptar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
                     return false;
                 });
 

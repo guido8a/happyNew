@@ -86,9 +86,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def error = false
         if (paramsTramite.id) {
             tramite = Tramite.get(paramsTramite.id)
-            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
-                tramite.tipoTramite = TipoTramite.findByCodigo("C")
-            }
+//            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
+//                tramite.tipoTramite = TipoTramite.findByCodigo("C")
+//            }
         } else {
             tramite = new Tramite()
         }
@@ -244,6 +244,90 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
             if (tipoDoc.codigo == "DEX") {
+
+                //aqui envia y recibe automaticamente el tramite
+                def ahora = new Date();
+                def rolEnvia = RolPersonaTramite.findByCodigo("E004")
+                def rolRecibe = RolPersonaTramite.findByCodigo("E003")
+                def rolPara = RolPersonaTramite.findByCodigo("R001")
+
+                def estadoEnviado = EstadoTramite.findByCodigo('E003')
+                def estadoRecibido = EstadoTramite.findByCodigo('E004')
+
+                def pdt = new PersonaDocumentoTramite()
+                pdt.tramite = tramite
+                pdt.persona = session.usuario
+                pdt.departamento = session.departamento
+                pdt.fechaEnvio = ahora
+                pdt.rolPersonaTramite = rolEnvia
+                if (!pdt.save(flush: true)) {
+                    println pdt.errors
+                }
+
+                def pdt2 = new PersonaDocumentoTramite()
+                pdt2.tramite = tramite
+                pdt2.persona = session.usuario
+                pdt2.departamento = session.departamento
+                pdt2.fechaEnvio = ahora
+                pdt2.fechaRecepcion = ahora
+                pdt2.rolPersonaTramite = rolRecibe
+                if (!pdt2.save(flush: true)) {
+                    println pdt2.errors
+                }
+
+                def pdtPara = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", tramite)
+                    eq("rolPersonaTramite", rolPara)
+                }
+                if (pdtPara.size() > 0) {
+                    def limite = ahora
+                    limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
+                    if (limite[0]) {
+                        limite = limite[1]
+                    } else {
+                        flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+                        redirect(controller: 'tramite', action: 'errores')
+                        return
+                    }
+                    if (pdtPara.size() > 1) {
+                        println "Se encontraron varios pdtPara!! se utiliza el primero......."
+                    }
+//                println "****************"
+//                println ahora
+//                println tramite.prioridad.descripcion
+//                println tramite.prioridad.tiempo
+//                println limite
+//                println "****************"
+                    pdtPara = pdtPara.first()
+                    pdtPara.fechaEnvio = ahora
+                    pdtPara.fechaRecepcion = ahora
+                    pdtPara.fechaLimiteRespuesta = limite
+                    pdtPara.estado = estadoRecibido
+
+                    if (!pdtPara.save(flush: true)) {
+                        println "error ala guardar pdtPara: " + pdtPara.errors
+                    }
+                }
+
+                tramite.fechaEnvio = ahora
+                tramite.estadoTramite = estadoRecibido
+                if (tramite.save(flush: true)) {
+//                    def realPath = servletContext.getRealPath("/")
+//                    def mensaje = message(code: 'pathImages').toString();
+//                    enviarService.crearPdf(tramite, session.usuario, "1", 'download', realPath, mensaje);
+                } else {
+                    println tramite.errors
+//                    msg += "<li>" + renderErrors(bean: tramite) + "<li>"
+                }
+
+                if (params.anexo == "on") {
+                    redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
+                    return
+                } else {
+                    redirect(controller: "tramite2", action: "bandejaSalida")
+                    return
+                }
+
 //                paramsOrigen.tramite = tram
 //                paramsOrigen.fecha = new Date()
 //                def origen = OrigenTramite.findAllByCedula(paramsOrigen.cedula)
@@ -280,14 +364,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "DESPUES u: " + tramite.aQuienContesta
 //        println "DESPUES u: " + tramite.aQuienContesta.id
 
-        if (tramite.tipoDocumento.codigo == "SUM" || tramite.tipoDocumento.codigo == "DEX") {
+        if (tramite.tipoDocumento.codigo == "SUM"/* || tramite.tipoDocumento.codigo == "DEX"*/) {
             redirect(controller: "tramite2", action: "bandejaSalida", id: tramite.id)
+            return
         } else {
             if (params.anexo == "on") {
                 redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
+                return
             } else {
 //            redirect(controller: "tramite", action: "redactar", id: tramite.id)
                 redirect(controller: "tramite", action: "redactar", id: tramite.id)
+                return
             }
         }
     }
