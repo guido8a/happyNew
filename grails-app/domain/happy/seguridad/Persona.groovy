@@ -157,7 +157,7 @@ class Persona {
     }
 
     def getPuedeTramitar() {
-        println "puede trami "+this.permisos
+//        println "puede trami "+this.permisos
         if(this.permisos.size()>0) {
             def perm = null
             this.permisos.each {
@@ -428,7 +428,7 @@ class Persona {
 //        }
 //        def permisos = perm.findAll { it.estaActivo }
 //        return permisos.size() > 0
-        println "puede admin "+this.permisos
+//        println "puede admin "+this.permisos
         if(this.permisos.size()>0) {
             def perm = null
             this.permisos.each {
