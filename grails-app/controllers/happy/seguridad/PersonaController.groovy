@@ -46,57 +46,17 @@ class PersonaController extends happy.seguridad.Shield {
             prms.remove("sort")
         }
 
-        if (all) {
+        if (all || params.estado == "admin") {
             prms.remove("offset")
             prms.remove("max")
         }
         def permisoAdmin = PermisoTramite.findByCodigo("P013")
         def lista
-        if (prms.search) {
-            if (prms.estado == "admin") {
-                def c = PermisoUsuario.createCriteria()
-                lista = c.list(prms) {
-                    persona {
-                        and {
-                            or {
-                                ilike("cedula", "%" + prms.search + "%")
-                                ilike("nombre", "%" + prms.search + "%")
-                                ilike("apellido", "%" + prms.search + "%")
-                                ilike("cargo", "%" + prms.search + "%")
-                                ilike("login", "%" + prms.search + "%")
-                                ilike("codigo", "%" + prms.search + "%")
-                                departamento {
-                                    or {
-                                        ilike("descripcion", "%" + prms.search + "%")
-                                    }
-                                }
-                            }
-                            if (params.perfil) {
-                                perfiles {
-                                    eq("perfil", Prfl.get(params.perfil.toLong()))
-                                }
-                            }
-                            if (params.estado) {
-                                if (params.estado == "jefe") {
-                                    eq("jefe", 1)
-                                }
-                                if (params.estado == "usuario") {
-                                    eq("activo", 1)
-                                }
-                                if (params.estado == "inactivo") {
-                                    eq("activo", 0)
-                                }
-                            }
-                        }
-                        order(prms.order, prms.sort)
-                    }
-                    eq("permisoTramite", permisoAdmin)
-                }
-                lista = lista.persona
-            } else {
-                def c = Persona.createCriteria()
-                lista = c.list(prms) {
-                    and {
+//        if (prms.search) {
+            def c = Persona.createCriteria()
+            lista = c.list(prms) {
+                and {
+                    if (prms.search) {
                         or {
                             ilike("cedula", "%" + prms.search + "%")
                             ilike("nombre", "%" + prms.search + "%")
@@ -110,58 +70,64 @@ class PersonaController extends happy.seguridad.Shield {
                                 }
                             }
                         }
-                        if (params.perfil) {
-                            perfiles {
-                                eq("perfil", Prfl.get(params.perfil.toLong()))
-                            }
+                    }
+                    if (params.perfil) {
+                        perfiles {
+                            eq("perfil", Prfl.get(params.perfil.toLong()))
                         }
-                        if (params.estado) {
-                            if (params.estado == "jefe") {
-                                eq("jefe", 1)
-                            }
-                            if (params.estado == "usuario") {
-                                eq("activo", 1)
-                            }
-                            if (params.estado == "inactivo") {
-                                eq("activo", 0)
-                            }
+                    }
+                    if (params.estado) {
+                        if (params.estado == "jefe") {
+                            eq("jefe", 1)
+                        }
+                        if (params.estado == "usuario") {
+                            eq("activo", 1)
+                        }
+                        if (params.estado == "inactivo") {
+                            eq("activo", 0)
                         }
                     }
                 }
             }
-        } else {
-//            lista = Persona.list(prms)
+//        } else {
+////            lista = Persona.list(prms)
+//
+//            def c = Persona.createCriteria()
+//            lista = c.list(prms) {
+//                if (params.perfil) {
+//                    perfiles {
+//                        eq("perfil", Prfl.get(params.perfil.toLong()))
+//                    }
+//                }
+//                if (params.estado) {
+//                    if (params.estado == "jefe") {
+//                        eq("jefe", 1)
+//                        eq("activo", 1)
+//                    }
+//                    if (params.estado == "usuario") {
+//                        eq("activo", 1)
+//                        eq("jefe", 0)
+//                    }
+//                    if (params.estado == "inactivo") {
+//                        eq("activo", 0)
+//                    }
+//                }
+//            }
+//        }
+        if (params.estado == "admin") {
+            println "params: "+params+"\t"+prms
+            println "Antes: "+lista
+            lista = lista.findAll { it.puedeAdmin }
+            println "despues: "+lista
 
-            def c = Persona.createCriteria()
-            lista = c.list(prms) {
-                if (params.perfil) {
-                    perfiles {
-                        eq("perfil", Prfl.get(params.perfil.toLong()))
-                    }
-                }
-                if (params.estado) {
-                    if (params.estado == "jefe") {
-                        eq("jefe", 1)
-                        eq("activo", 1)
-                    }
-                    if (params.estado == "usuario") {
-                        eq("activo", 1)
-                        eq("jefe", 0)
-                    }
-                    if (params.estado == "inactivo") {
-                        eq("activo", 0)
-                    }
-                }
-            }
-            if (params.estado == "admin") {
-                def listaTemp = []
-                lista.each { l ->
-                    if (l.puedeAdmin) {
-                        listaTemp.add(l)
-                    }
-                }
-                lista = listaTemp
-            }
+//            if(!all && params.offset && params.max && lista.size() > params.max) {
+//                def init = params.offset.toInteger() * params.max.toInteger()
+//                def fin = init + params.max.toInteger()
+//                lista = lista.subList(init, fin)
+//            }
+//            println "despues2: "+lista
+
+            println "*************************"
         }
         return lista
     }
@@ -731,8 +697,8 @@ class PersonaController extends happy.seguridad.Shield {
         def personaInstanceCount = getLista(params, true).size()
         if (personaInstanceList.size() == 0 && params.offset && params.max) {
             params.offset = params.offset - params.max
+            personaInstanceList = getLista(params, false)
         }
-        personaInstanceList = getLista(params, false)
         return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params]
     } //list
 
