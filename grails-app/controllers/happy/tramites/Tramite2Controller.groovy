@@ -1340,7 +1340,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
                     return
                 } else {
-                    redirect(controller: "tramite2", action: "bandejaSalidaDep")
+                    redirect(controller: "tramite3", action: "bandejaEntradaDpto")
                     return
                 }
 

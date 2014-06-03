@@ -94,20 +94,34 @@
     <body>
         <elm:headerTramite tramite="${tramite}" extraTitulo="- Cargar anexos"/>
 
-        <g:if test="${tramite.deDepartamento}">
-            <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class=" btn-editar btn  btn-azul btnRegresar" title="Editar encabezado">
-                Editar encabezado
+        <g:if test="${tramite.tipoDocumento.codigo != 'DEX'}">
+            <g:if test="${tramite.deDepartamento}">
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class=" btn-editar btn  btn-azul btnRegresar" title="Editar encabezado">
+                    Editar encabezado
+                </g:link>
+            </g:if>
+            <g:else>
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="crearTramite" id="${tramite.id}" class="  btn-editar btn btn-azul btnRegresar" title="Editar encabezado">
+                    Editar encabezado
+                </g:link>
+            </g:else>
+
+            <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-redactar btn-azul">
+                Redactar
             </g:link>
         </g:if>
         <g:else>
-            <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="crearTramite" id="${tramite.id}" class="  btn-editar btn btn-azul btnRegresar" title="Editar encabezado">
-                Editar encabezado
-            </g:link>
+            <g:if test="${tramite.deDepartamento}">
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul">
+                    Bandeja de entrada
+                </g:link>
+            </g:if>
+            <g:else>
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="bandejaEntrada" class="btn btn-azul">
+                    Redactar
+                </g:link>
+            </g:else>
         </g:else>
-
-        <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-redactar btn-azul">
-            Redactar
-        </g:link>
         %{--<g:link controller="tramite" action="redactar" id="${tramite.id}" class="btn btn-azul" style="margin-top: 8px">--}%
         %{--Editar encabezado--}%
         %{--</g:link>--}%
