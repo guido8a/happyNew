@@ -104,6 +104,7 @@
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
             <g:hiddenField name="tramite.aQuienContesta.id" value="${pxt}"/>
+            <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre}">
                 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">

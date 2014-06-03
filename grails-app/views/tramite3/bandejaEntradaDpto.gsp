@@ -307,8 +307,7 @@
                     label  : 'Contestar Documento',
                     icon   : "fa fa-external-link",
                     action : function (e) {
-
-                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id + "&pdt=" + idPxt;
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id + "&pdt=" + idPxt + "&esRespuesta=1";
                     }
                 };
 
@@ -529,7 +528,6 @@
                     items.arbol = arbol
 
                 }
-
 
                 if (recibido) {
                     if (esExterno) {

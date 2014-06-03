@@ -17,6 +17,19 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
 
+        if (paramsTramite.padre.id) {
+            def padre = Tramite.get(paramsTramite.padre.id)
+
+            if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
+                if (padre.respuestas.size() > 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                            "'Agregar documento al trámite' de la bandeja de salida."
+                    redirect(action: "errores")
+                    return
+                }
+            }
+        }
+
 //        println params
 //        println paramsTramite
 //        println paramsOrigen
@@ -95,8 +108,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "ANTES DEL SAVE " + paramsTramite
 
         tramite.properties = paramsTramite
-        if(tramite.tipoDocumento.codigo=="DEX")
-            tramite.estadoTramiteExterno=EstadoTramiteExterno.findByCodigo("E001")
+        if (tramite.tipoDocumento.codigo == "DEX")
+            tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
 
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors

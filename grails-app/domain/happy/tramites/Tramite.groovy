@@ -44,6 +44,8 @@ class Tramite {
 
     EstadoTramiteExterno estadoTramiteExterno
 
+    Integer esRespuesta = 0
+
     def diasLaborablesService
 
 
@@ -88,6 +90,8 @@ class Tramite {
             numeroDocExterno column: 'trmtndex'
 
             estadoTramiteExterno column: 'edtx__id'
+
+            esRespuesta column: 'trmtesrs'
         }
     }
     static constraints = {
@@ -125,6 +129,26 @@ class Tramite {
         estadoTramiteExterno(blank: true, nullable: true)
     }
 
+    def getHermanos() {
+        if (this.padre) {
+            return Tramite.findAllByPadre(this.padre)
+        } else {
+            return []
+        }
+    }
+
+    def getHermanosRespuesta() {
+        if (this.padre) {
+            return Tramite.findAllByPadreAndEsRespuesta(this.padre, 1)
+        } else {
+            return []
+        }
+    }
+
+    def getRespuestas() {
+        return Tramite.findAllByPadreAndEsRespuesta(this, 1)
+    }
+
     def getPara() {
 //        def para = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R001"))
 //        if (para) {
@@ -142,7 +166,7 @@ class Tramite {
     def getCopias() {
         def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
 //        if (para) {
-            return copias
+        return copias
 //        }
 //        return []
     }
@@ -150,7 +174,7 @@ class Tramite {
     def getImprime() {
         def impirme = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("I005"))
 //        if (para) {
-            return impirme
+        return impirme
 //        }
 //        return []
     }

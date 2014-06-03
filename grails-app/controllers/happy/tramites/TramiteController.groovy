@@ -301,7 +301,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
-
+        params.esRespuesta = params.esRespuesta ?: 0
         if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(action: "errores")
@@ -345,6 +345,15 @@ class TramiteController extends happy.seguridad.Shield {
                     break
                 } else {
                     principal = principal.padre
+                }
+            }
+
+            if (params.esRespuesta == 1 || params.esRespuesta == '1') {
+                if (padre.respuestas.size() > 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                            "'Agregar documento al trámite' de la bandeja de salida."
+                    redirect(action: "errores")
+                    return
                 }
             }
         }
@@ -450,8 +459,8 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.pdt) {
             pdt = params.pdt
             def pdto = PersonaDocumentoTramite.get(pdt)
-            if(pdto.estado.codigo=="E006" || pdto.estado.codigo=="E005") {
-                flash.message="No puede responder a este tramite puesto que ha sido anulado o archivado"
+            if (pdto.estado.codigo == "E006" || pdto.estado.codigo == "E005") {
+                flash.message = "No puede responder a este tramite puesto que ha sido anulado o archivado"
                 response.sendError(403)
             }
         } else if (params.hermano) {
@@ -460,7 +469,7 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
-                persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt]
+                persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }
 
     def cargaUsuarios() {
@@ -1055,7 +1064,7 @@ class TramiteController extends happy.seguridad.Shield {
         def anulado = EstadoTramite.findByCodigo("E006")
         def band = false
         tramites.each { tr ->
-            if (!(tr.tramite.tipoDocumento.codigo == "OFI" )) {
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                 band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
                 if (!band) {

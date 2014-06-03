@@ -828,7 +828,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
-
+        params.esRespuesta = params.esRespuesta ?: 0
         if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
@@ -871,6 +871,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     break
                 } else {
                     principal = principal.padre
+                }
+            }
+
+            if (params.esRespuesta == 1 || params.esRespuesta == '1') {
+                if (padre.respuestas.size() > 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                            "'Agregar documento al trámite' de la bandeja de salida."
+                    redirect(controller: 'tramite', action: "errores")
+                    return
                 }
             }
         }
@@ -1008,7 +1017,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             pdt = herm.aQuienContesta.id
         }
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
-                bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt]
+                bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }
 /*
         paramsTramite.deDepartamento = persona.departamento
@@ -1022,6 +1031,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
+
+        if (paramsTramite.padre.id) {
+            def padre = Tramite.get(paramsTramite.padre.id)
+
+            if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
+                if (padre.respuestas.size() > 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                            "'Agregar documento al trámite' de la bandeja de salida."
+                    redirect(controller: "tramite", action: "errores")
+                    return
+                }
+            }
+        }
 
         def tipoTramite
         if (params.confi == "on") {
@@ -1126,8 +1148,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "ANTES DEL SAVE " + paramsTramite
 
         tramite.properties = paramsTramite
-        if(tramite.tipoDocumento.codigo=="DEX")
-            tramite.estadoTramiteExterno=EstadoTramiteExterno.findByCodigo("E001")
+        if (tramite.tipoDocumento.codigo == "DEX")
+            tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
