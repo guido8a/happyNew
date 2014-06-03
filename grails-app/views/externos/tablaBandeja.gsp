@@ -41,7 +41,7 @@
 
 
         <tr data-id="${tramite?.tramite?.id}"
-            class="${clase}"
+            class="${clase}   "
             codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
             anexo="${anexo}" prtr="${tramite?.id}">
             <g:if test="${tramite?.tramite?.anexo == 1}">

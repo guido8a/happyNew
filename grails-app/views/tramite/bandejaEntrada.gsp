@@ -305,7 +305,7 @@
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
                 var externo = $tr.hasClass("1");
-
+                var esExterno = $tr.hasClass("estadoExterno")
                 var esCopia = $tr.hasClass("R002");
 
                 var porRecibir = $tr.hasClass("porRecibir");
@@ -613,6 +613,71 @@
                     }
                     </g:else>
                 }
+
+                if (recibido) {
+                    if (esExterno) {
+                        items.externo = {
+                            label  : "Cambiar estado",
+                            icon   : "fa fa-exchange",
+                            action : function () {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(controller: 'tramiteAdmin', action: 'cambiarEstado')}",
+                                    data    : {
+                                        id          : id,
+                                        tramiteInfo : ""
+                                    },
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            id      : "dlgExterno",
+                                            title   : '<span class="text-default"><i class="fa fa-exchange"></i> Cambiar estado de trámite externo</span>',
+                                            message : msg,
+                                            buttons : {
+                                                cancelar : {
+                                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                                    className : 'btn-danger',
+                                                    callback  : function () {
+                                                    }
+                                                },
+                                                cambiar  : {
+                                                    id        : 'btnCambiar',
+                                                    label     : '<i class="fa fa-check"></i> Cambiar estado',
+                                                    className : "btn-success",
+                                                    callback  : function () {
+                                                        var nuevoEstado = $("#estadoExterno").val();
+                                                        openLoader("Cambiando estado");
+                                                        $.ajax({
+                                                            type    : 'POST',
+                                                            url     : '${createLink(controller: "tramiteAdmin", action: "guardarEstado")}',
+                                                            data    : {
+                                                                id     : id,
+                                                                estado : nuevoEstado
+                                                            },
+                                                            success : function (msg) {
+                                                                var parts = msg.split("*");
+                                                                if (parts[0] == 'OK') {
+                                                                    log(parts[1], 'success');
+                                                                    setTimeout(function () {
+                                                                        location.reload(true);
+                                                                    }, 500);
+                                                                } else if (parts[0] == 'NO') {
+                                                                    closeLoader();
+                                                                    log(parts[1], 'error');
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        };
+                    }
+                }
+
+
 
                 return items
             }

@@ -82,7 +82,7 @@
                 <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}"
                     departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                     prtr="${tramite?.id}"
-                    class="${clase} ${type}">
+                    class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}">
 
                     <g:if test="${tramite?.tramite?.anexo == 1}">
                         <td title="${tramite.tramite.asunto}">

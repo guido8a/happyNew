@@ -57,7 +57,7 @@
             <g:set var="clase" value="${clase + ' ' + tramite.rolPersonaTramite.codigo}"/>
 
             <tr data-id="${tramite?.tramite?.id}"
-                class="${clase}"
+                class="${clase} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}"
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                 anexo="${anexo}" prtr="${tramite?.id}">
                 <g:if test="${tramite?.tramite?.anexo == 1}">

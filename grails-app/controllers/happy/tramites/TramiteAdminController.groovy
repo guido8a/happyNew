@@ -546,9 +546,9 @@ class TramiteAdminController {
             objeto.fechaAnulacion = new Date()
             objeto.observaciones = (objeto.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
             if (objeto.rolPersonaTramite.codigo == "R002")
-                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + "COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             if (objeto.rolPersonaTramite.codigo == "R001")
-                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             objeto.tramite.save(flush: true)
             objeto.save(flush: true)
         }
@@ -558,7 +558,7 @@ class TramiteAdminController {
             pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
             pdt.tramite.aQuienContesta.fechaAnulacion = null
             pdt.tramite.aQuienContesta.fechaArchivo = null
-            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + "Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             pdt.tramite.aQuienContesta.save(flush: true)
         }
 
