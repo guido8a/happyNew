@@ -145,7 +145,7 @@ class TramiteAdminController {
 
         def disp, disponibles = [], users = [], disp2 = [], todos = []
 
-        if (persona.puedeTramitar) {
+        if (session.usuario.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
         } else {
             disp = [persona.departamento]
@@ -268,7 +268,7 @@ class TramiteAdminController {
         def html = "", url = "", tramite = null
         if (params.id) {
             def usu = Persona.get(session.usuario.id)
-            def puedeAdministrar = usu.puedeAdmin
+            def puedeAdministrar = session.usuario.puedeAdmin
 //            println "PUEDE??? " + puedeAdministrar
 
             tramite = Tramite.get(params.id.toLong())

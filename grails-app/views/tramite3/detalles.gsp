@@ -53,7 +53,7 @@
                     <div class="col-xs-8">${t.asunto}</div>
                 </div>
 
-                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id)) && t.texto?.size() > 2}">
+                <g:if test="${t.personaPuedeLeer(session.usuario) && t.texto?.size() > 2}">
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Texto:</div>
 
@@ -72,7 +72,7 @@
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
-                    <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                    <g:if test="${t.personaPuedeLeer(session.usuario)}">
                         <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                             <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
                                 <span style='color: #327BBA'>Archivo:</span>
@@ -140,7 +140,7 @@
                     <div class="col-xs-8">${t.asunto}</div>
                 </div>
 
-                <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id)) && t.texto?.size() > 2}">
+                <g:if test="${t.personaPuedeLeer(session.usuario) && t.texto?.size() > 2}">
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Texto:</div>
 
@@ -160,7 +160,7 @@
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
-                    <g:if test="${t.personaPuedeLeer(Persona.get(session.usuario.id))}">
+                    <g:if test="${t.personaPuedeLeer(session.usuario.id)}">
                         <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                             <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
                                 <span style='color: #327BBA'>Archivo:</span>

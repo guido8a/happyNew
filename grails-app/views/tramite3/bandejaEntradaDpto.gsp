@@ -513,7 +513,7 @@
 
                     items.arbol = arbol
                     items.contestar = contestar
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).puedeArchivar}">
+                    <g:if test="${session.usuario.puedeArchivar}">
                     items.archivar = archivar
                     </g:if>
                     items.observaciones = observaciones
@@ -532,7 +532,7 @@
 
                 if (recibido) {
                     items.contestar = contestar
-                    <g:if test="${happy.seguridad.Persona.get(session.usuario.id).puedeArchivar}">
+                    <g:if test="${session.usuario.puedeArchivar}">
                     items.archivar = archivar
                     </g:if>
                     <g:else>

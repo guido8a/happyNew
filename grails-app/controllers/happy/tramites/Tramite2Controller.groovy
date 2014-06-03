@@ -829,7 +829,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def crearTramiteDep() {
 
-        if (Persona.get(session.usuario.id).tiposDocumento.size() == 0) {
+        if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
             return
@@ -909,7 +909,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def todos = []
         def users = []
 
-        if (persona.puedeTramitar) {
+        if (session.usuario.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
         } else {
             disp = [persona.departamento]

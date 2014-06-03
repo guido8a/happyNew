@@ -177,14 +177,21 @@ class LoginController {
                     }
                 }
                 if (perfiles.size() == 1) {
+                    session.usuario.vaciarPermisos()
                     session.perfil = perfiles.first().perfil
                     def cn = "inicio"
                     def an = "index"
                     def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+                    def permisos = Prpf.findAllByPerfil(session.perfil)
+                    permisos.each {
+                        session.usuario.permisos.add(it.permiso)
+                    }
+//                    println "add "+session.usuario.permisos
+//                    println "puede tramite "+session.usuario.getPuedeRecibir()
                     if(count>0)
                         redirect(controller: 'alertas',action: 'list')
                     else{
-                        println "count = 0 "+session.usuario.esTriangulo()
+//                        println "count = 0 "+session.usuario.esTriangulo()
                         if(session.usuario.esTriangulo()){
                             count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
                             println "count "+count
@@ -200,6 +207,7 @@ class LoginController {
 //                    redirect(controller: cn, action: an)
                     return
                 } else {
+                    session.usuario.vaciarPermisos()
                     redirect(action: "perfiles")
                     return
                 }
@@ -218,6 +226,18 @@ class LoginController {
         def sesn = Sesn.get(params.prfl)
         def perf = sesn.perfil
         if (perf) {
+
+            def permisos = Prpf.findAllByPerfil(perf)
+            permisos.each {
+                session.usuario.permisos.add(it.permiso)
+            }
+            println "add "+session.usuario.permisos
+//            println "puede recibir "+session.usuario.getPuedeRecibir()
+//            println "puede getPuedeVer "+session.usuario.getPuedeVer()
+//            println "puede getPuedeAdmin "+session.usuario.getPuedeAdmin()
+//            println "puede getPuedeExternos "+session.usuario.getPuedeExternos()
+//            println "puede getPuedeAnular "+session.usuario.getPuedeAnular()
+//            println "puede getPuedeTramitar "+session.usuario.getPuedeTramitar()
             session.perfil = perf
 //            if (session.an && session.cn) {
 //                if (session.an.toString().contains("ajax")) {

@@ -604,7 +604,7 @@
 
                 if (recibido) {
                     items.contestar = contestar;
-                    <g:if test="${Persona.get(session.usuario.id).puedeArchivar}">
+                    <g:if test="${session.usuario.puedeArchivar}">
                     items.archivar = archivar;
                     </g:if>
                     <g:else>

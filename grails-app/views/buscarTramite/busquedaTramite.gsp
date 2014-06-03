@@ -320,7 +320,7 @@
            items.header.label = "Acciones";
                 items.detalles = detalles
                 items.arbol = arbol
-            <g:if test="${happy.seguridad.Persona.get(session.usuario.id).getPuedeAdmin()}">
+            <g:if test="${session.usuario.getPuedeAdmin()}">
                 items.administrar = administrar
             </g:if>
                 if(conPadre){

@@ -287,7 +287,7 @@
                     </div>
 
 
-                    <g:if test="${persona.puedeTramitar}">
+                    <g:if test="${session.usuario.puedeTramitar}">
                         <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px; margin-left: -15px">
                             <label for="externo"><input type="checkbox" name="externo" id="externo">
                                 Externo

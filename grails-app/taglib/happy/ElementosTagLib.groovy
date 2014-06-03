@@ -146,7 +146,7 @@ class ElementosTagLib {
 
 //        def tipos = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(depar, 1).tipo
 //        tipos.sort { it.descripcion }
-        def tipos = persona.tiposDocumento
+        def tipos = session.usuario.tiposDocumento
 
         if (!attrs.id) {
             attrs.id = attrs.name
@@ -162,7 +162,7 @@ class ElementosTagLib {
             tipos.remove(TipoDocumento.findByCodigo("DEX"))
         }
 
-        if (!persona.puedeTramitar) {
+        if (!session.usuario.puedeTramitar) {
             tipos.remove(TipoDocumento.findByCodigo("OFI"))
         }
 
@@ -210,7 +210,7 @@ class ElementosTagLib {
                 todos = [[id: persona.departamento.id * -1, label: persona.departamento.descripcion, obj: persona.departamento]]
             }
         } else {
-            if (persona.puedeTramitar) {
+            if (session.usuario.puedeTramitar) {
                 disp = Departamento.list([sort: 'descripcion'])
             } else {
                 disp = [persona.departamento]
@@ -421,7 +421,7 @@ class ElementosTagLib {
         def disp2 = []
         def todos = []
 
-        if (persona.puedeTramitar) {
+        if (session.usuario.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
         } else {
             disp = [persona.departamento]

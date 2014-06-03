@@ -20,8 +20,13 @@ class AccionesController extends happy.seguridad.Shield {
 //        cn.close()
 //        render(view:"acciones", model:[lstacmbo: resultado])
 
-        def modulos = Modulo.list([sort: 'orden'])
-        return [modulos: modulos]
+        if(session.usuario.puedeAdmin) {
+            def modulos = Modulo.list([sort: 'orden'])
+            return [modulos: modulos]
+        }else{
+            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada."
+            response.sendError(403)
+        }
     }
 
     def ajaxAcciones = {
