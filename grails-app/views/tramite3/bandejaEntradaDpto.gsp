@@ -115,7 +115,7 @@
             <span class="grupo">
                 <label class="well well-sm" style="text-align: center">Departamento: ${persona?.departamento?.descripcion}</label>
             </span>
-
+            ${flash.message}
         </div>
 
         <div class="btn-toolbar toolbar">

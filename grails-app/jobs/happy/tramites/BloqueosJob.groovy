@@ -87,7 +87,7 @@ class BloqueosJob {
 
 //        println "fin bloqueo bandeja salida "+new Date()
     }
-    def executeRecibir(){
+    def executeRecibir(depar,persona){
         def ahora = new Date()
 //        println "----------------------------------"
 //        println "bloqueo bandeja recibir!!! "+ahora
@@ -95,7 +95,10 @@ class BloqueosJob {
         def bloquearUsu = []
         def warning = []
         def warningUsu = []
-        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull().each {pdt->
+        def deps = [depar]
+//        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull()
+
+        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and fechaRecepcion is null and (departamento=${depar.id} or persona=${persona.id})").each {pdt->
             if(pdt.tramite.externo!="1"){
                 def fechaBloqueo = pdt.fechaBloqueo
                 if(fechaBloqueo && fechaBloqueo<ahora){
@@ -124,7 +127,7 @@ class BloqueosJob {
                 }
             }
         }
-        Departamento.list().each {dep->
+        deps.each {dep->
             if(bloquear.id.contains(dep.id)){
 //                println "bloqueando dep "+dep
                 dep.estado="B"
@@ -144,7 +147,7 @@ class BloqueosJob {
 
             }
         }
-        Persona.findAllByEstadoInList(["B","W"]).each {
+        Persona.findAllByEstadoInListAndDepartamento(["B","W"],depar).each {
             it.estado=""
             it.save(flush: true)
         }

@@ -125,18 +125,31 @@
 
             <div class="btn-toolbar toolbar">
                 <div class="btn-group">
+                    <a href="#" class="btn btn-sm btn-success btnSave">
+                        <i class="fa fa-save"></i> Guardar
+                    </a>
+                    <a href="#" class="btn btn-sm btn-primary btnPrint">
+                        <i class="fa fa-file"></i> PDF
+                    </a>
+                    %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
+                    %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
+                    %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
+                    %{--</g:link>--}%
+                    %{--</g:if>--}%
+                </div>
+                <div class="btn-group">
                     <g:if test="${tramite.deDepartamento}">
-                        <g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
-                            <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                        </g:link>
+                        %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
+                            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                        %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:if>
                     <g:else>
-                        <g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">
-                            <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                        </g:link>
+                        %{--<g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
+                            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                        %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
@@ -153,19 +166,7 @@
                     </g:else>
                 </div>
 
-                <div class="btn-group">
-                    <a href="#" class="btn btn-sm btn-success btnSave">
-                        <i class="fa fa-save"></i> Guardar
-                    </a>
-                    <a href="#" class="btn btn-sm btn-primary btnPrint">
-                        <i class="fa fa-file"></i> PDF
-                    </a>
-                    %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
-                    %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
-                    %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
-                    %{--</g:link>--}%
-                    %{--</g:if>--}%
-                </div>
+
             </div>
             <elm:headerTramite tramite="${tramite}"/>
 

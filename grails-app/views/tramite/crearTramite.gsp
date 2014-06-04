@@ -77,9 +77,9 @@
             %{--<a href="#" class="btn btn-azul" id="guardar">--}%
             %{--<i class="fa fa-save"></i> ${(tramite) ? "Guardar " : "Guardar y empezar a redactar"}--}%
             %{--</a>--}%
-                <g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">
-                    <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                </g:link>
+                %{--<g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">--}%
+                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                %{--</g:link>--}%
                 <g:if test="${tramite.padre || tramite.id}">
                     <a href="#" class="btn btn-azul" id="btnDetalles">
                         <i class="fa fa-search"></i> Detalles

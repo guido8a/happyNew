@@ -42,7 +42,7 @@
                             <g:else>
                                 ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
                             </g:else>
-                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b>${pdt.estado?.descripcion}</b><br>
+                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b><br>
                         </g:each>
                     </div>
                 </div>

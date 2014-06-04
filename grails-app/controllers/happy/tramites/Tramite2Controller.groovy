@@ -226,10 +226,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids = null
         }
 
-        println "********************"
-        println tramite
-        println ids
-        println "********************"
+//        println "********************"
+//        println tramite
+//        println ids
+//        println "********************"
 //        render "AFSD"
 
         def errores = ""
@@ -247,9 +247,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def dpto = persDoc.departamento
             def tram = persDoc.tramite
             if (persDoc.rolPersonaTramite == rolPara) {
-                println "es PARA: cambia fechas"
+//                println "es PARA: cambia fechas"
                 persDoc.fechaEnvio = null
                 persDoc.estado = porEnviar
+                persDoc.tramite.estadoTramite=porEnviar
                 persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
                         "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
 //                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +

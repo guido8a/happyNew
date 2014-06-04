@@ -80,9 +80,9 @@
             %{--<g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">--}%
             %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
             %{--</g:link>--}%
-                <g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">
-                    <i class="fa fa-list-ul"></i> Bandeja de Entrada
-                </g:link>
+                %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">--}%
+                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                %{--</g:link>--}%
                 <g:if test="${tramite.padre || tramite.id}">
                     <a href="#" class="btn btn-azul" id="btnDetalles">
                         <i class="fa fa-search"></i> Detalles

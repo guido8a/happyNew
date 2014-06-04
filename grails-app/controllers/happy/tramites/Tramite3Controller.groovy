@@ -833,7 +833,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     render "NO_Ocurrió un error al recibir"
                 }
                 def job = new BloqueosJob()
-                job.executeRecibir()
+                job.executeRecibir(persona.departamento,session.usuario)
                 job = null
             } else {
                 println pxt.errors

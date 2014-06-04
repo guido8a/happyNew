@@ -3,11 +3,11 @@ package happy.alertas
 class AlertasController {
 
     def list(){
-        def alertas = Alerta.findAllByPersonaAndFechaRecibidoIsNull(session.usuario,[sort:"fechaCreacion"])
+        def alertas
         if(session.usuario.esTriangulo()){
-            def temp = Alerta.findAllByDepartamentoAndFechaRecibidoIsNull(session.departamento,[sort:"fechaCreacion"])
-            if(temp)
-                alertas+=temp
+            alertas = Alerta.findAllByDepartamentoAndFechaRecibidoIsNull(session.departamento,[sort:"fechaCreacion"])
+        }else{
+            alertas = Alerta.findAllByPersonaAndFechaRecibidoIsNull(session.usuario,[sort:"fechaCreacion"])
         }
         alertas.sort{
             it.fechaCreacion

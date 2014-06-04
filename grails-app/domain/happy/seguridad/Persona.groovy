@@ -491,12 +491,40 @@ class Persona {
     }
 
     def esTriangulo() {
-        def perm = PermisoUsuario.withCriteria {
-            eq("persona", this)
-            eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+//        def perm = PermisoUsuario.withCriteria {
+//            eq("persona", this)
+//            eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+//        }
+//        def permisos = perm.findAll { it.estaActivo }
+//        return permisos.size() > 0
+        if(this.permisos.size()>0) {
+            def perm = null
+            this.permisos.each {
+                if (!perm) {
+                    if (it.codigo == "E001") {
+                        perm = PermisoUsuario.findByPermisoTramite(it)
+//                    println "prus "+perm+" "+perm.estaActivo
+                    }
+                }
+            }
+            if (perm) {
+                if (perm.estaActivo) {
+                    return true
+                }
+            } else {
+                return false
+            }
+        }else{
+//            println "else111  "
+            def perm = PermisoUsuario.withCriteria {
+                eq("persona", this)
+                eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+            }
+//            println "perm "+perm
+            def perms = perm.findAll { it.estaActivo }
+//            println "perms "+perms
+            return perms.size() > 0
         }
-        def permisos = perm.findAll { it.estaActivo }
-        return permisos.size() > 0
     }
 
     def getEsTriangulo() {
