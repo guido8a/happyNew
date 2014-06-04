@@ -10,6 +10,7 @@
     }
 
     .item {
+
         width: 260px;
         height: 220px;
         float: left;
