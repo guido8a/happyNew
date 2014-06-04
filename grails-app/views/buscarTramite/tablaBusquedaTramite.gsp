@@ -15,6 +15,7 @@
                 <tr>
 
                     %{--<th class="cabecera">Asunto</th>--}%
+%{--
                     <th class="alinear">Documento</th>
                     <th class="alinear">Para</th>
                     <th class="alinear">Envia</th>
@@ -22,6 +23,15 @@
                     <th class="alinear">Prioridad</th>
                     <th class="alinear">De</th>
                     <th class="alinear">Fecha Creación</th>
+                    <th class="alinear">Fecha Envio</th>
+--}%
+                    <th class="alinear">Documento</th>
+                    <th class="alinear">Fecha Creación</th>
+                    <th class="alinear">De</th>
+                    <th class="alinear">Para</th>
+                    <th class="alinear">Asunto</th>
+                    <th class="alinear">Prioridad</th>
+                    <th class="alinear">Envia</th>
                     <th class="alinear">Fecha Envio</th>
                 </tr>
 
@@ -58,17 +68,6 @@
                             </g:if>
                         </td>
 
-                        <td>
-                            <g:if test="${tramite?.pr_prsn}">
-                                ${tramite?.pr_prsn}
-                            </g:if>
-                            <g:elseif test="${tramite?.pr_dpto}">
-                                ${tramite?.pr_dpto}
-                            </g:elseif>
-                            <g:if test="${tramite?.es_extr == 1 && tramite?.pr_extr}">
-                                (${tramite?.pr_extr})
-                            </g:if>
-                        </td>
 
                         %{--<g:if test="${tramite?.es_extr == 1}">--}%
                         %{--<td>--}%
@@ -85,11 +84,8 @@
                         %{--<td></td>--}%
                         %{--</g:else>--}%
 
-                        <td>${tramite?.en_prsn}</td>
+                        <td>${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
 
-                        <td>${tramite?.trmtasnt}</td>
-
-                        <td>${tramite?.tppddscr}</td>
 
                         <g:if test="${tramite?.de_prsn}">
                             <td>${tramite?.de_prsn}</td>
@@ -100,7 +96,26 @@
                         <g:else>
                             <td></td>
                         </g:else>
-                        <td>${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
+
+                        <td>
+                            <g:if test="${tramite?.pr_prsn}">
+                                ${tramite?.pr_prsn}
+                            </g:if>
+                            <g:elseif test="${tramite?.pr_dpto}">
+                                ${tramite?.pr_dpto}
+                            </g:elseif>
+                            <g:if test="${tramite?.es_extr == 1 && tramite?.pr_extr}">
+                                (${tramite?.pr_extr})
+                            </g:if>
+                        </td>
+
+
+                        <td>${tramite?.trmtasnt}</td>
+
+                        <td>${tramite?.tppddscr}</td>
+
+                        <td>${tramite?.en_prsn}</td>
+
                         <g:if test="${tramite?.fc_envi}">
                             <td>${tramite?.fc_envi?.format('dd-MM-yyyy HH:mm')}</td>
                         </g:if>

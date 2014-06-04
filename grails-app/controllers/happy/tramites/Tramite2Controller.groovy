@@ -240,7 +240,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         //esta quitando el enviado a estos
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
-            //cambia la fecha de envio, el estadoy las obs
+            //cambia la fecha de envio, el estado y las obs
             def alerta
 
             def pers = persDoc.persona
@@ -252,7 +252,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 persDoc.estado = porEnviar
                 persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
                         "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                        "(previa fecha de envío: " +
+//                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +
                         "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
                 if (persDoc.save(flush: true)) {
                     if (pers)
