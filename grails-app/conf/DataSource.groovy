@@ -13,7 +13,7 @@ environments {
     development {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:postgresql://10.0.0.4:5432/happy11"
+            url = "jdbc:postgresql://127.0.0.1:5432/happy"
             username = "postgres"
             password = "postgres"
         }
