@@ -26,7 +26,7 @@ class BloqueosJob {
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and fechaRecepcion is null and (estado is null or estado!=${anulado.id}) and rolPersonaTramite not in (${rolEnvia.id},${rolRecibe.id})").each {pdt->
 //            println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}    "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
             if(pdt.tramite.externo!="1"){
-                println "no es externo"
+//                println "no es externo"
                 def fechaBloqueo = pdt.fechaBloqueo
                 if(fechaBloqueo && fechaBloqueo<ahora){
 
@@ -39,11 +39,11 @@ class BloqueosJob {
                     }
 
                     if(pdt.persona){
-                        println "add bloquear "+pdt.persona+"  "+pdt.persona.login
+//                        println "add bloquear "+pdt.persona+"  "+pdt.persona.login
                         if(!bloquearUsu.id.contains(pdt.persona.id))
                             bloquearUsu.add(pdt.persona)
                     }else{
-                        println "add bloquear "+pdt.departamento
+//                        println "add bloquear "+pdt.departamento
                         if(!bloquear.id.contains(pdt.departamento.id))
                             bloquear.add(pdt.departamento)
                     }
@@ -62,8 +62,10 @@ class BloqueosJob {
 
             }else{
                 if(warning.id.contains(dep.id)){
-                    dep.estado="W"
-                    dep.save(flush: true)
+                    if(dep.estado!="B") {
+                        dep.estado = "W"
+                        dep.save(flush: true)
+                    }
                 }else{
                     if(dep.estado!=""){
                         dep.estado=""
@@ -149,8 +151,10 @@ class BloqueosJob {
 
             }else{
                 if(warning.id.contains(dep.id)){
-                    dep.estado="W"
-                    dep.save(flush: true)
+                    if(dep.estado!="B"){
+                        dep.estado="W"
+                        dep.save(flush: true)
+                    }
                 }else{
                     if(dep.estado!=""){
                         dep.estado=""

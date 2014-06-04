@@ -87,22 +87,26 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        if(session.departamento.estado=="B")
 //            bloqueo=true
 //        println "bloqueo "+bloqueo
-        def tienePermiso = PermisoUsuario.withCriteria {
-            eq("persona", persona)
-            eq("permisoTramite", triangulo)
-            le("fechaInicio", new Date())
-            or {
-                ge("fechaFin", new Date())
-                isNull("fechaFin")
-            }
-        }
-        println "tiene " + tienePermiso + " jefe " + persona.jefe
-        if (tienePermiso.size() == 0 && persona.jefe != 1) {
-            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
-            flash.tipo = "error"
-
-            redirect(controller: "tramite2", action: "bandejaSalida")
-            return
+//        def tienePermiso = PermisoUsuario.withCriteria {
+//            eq("persona", persona)
+//            eq("permisoTramite", triangulo)
+//            le("fechaInicio", new Date())
+//            or {
+//                ge("fechaFin", new Date())
+//                isNull("fechaFin")
+//            }
+//        }
+//        println "tiene " + tienePermiso + " jefe " + persona.jefe
+//        if (tienePermiso.size() == 0 && persona.jefe != 1) {
+//            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
+//            flash.tipo = "error"
+//
+//            redirect(controller: "tramite2", action: "bandejaSalida")
+//            return
+//        }
+        if(!session.usuario.esTriangulo()){
+            flash.message="Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
+            redirect(controller: 'tramite2',action: 'bandejaSalida')
         }
         if (persona.jefe == 1)
             revisar = true
@@ -382,10 +386,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def revisar = false
         def bloqueo = false
-//        if (session.departamento.estado == "B") {
-//            bloqueo = true
-//        }
-//        println "bloqueo " + bloqueo
+        if(session.usuario.esTriangulo()){
+           redirect(action: 'bandejaSalidaDep')
+            return
+        }
         if (persona.jefe == 1)
             revisar = true
         else {

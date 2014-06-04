@@ -527,26 +527,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     def bandejaEntradaDpto() {
         def usu = Persona.get(session.usuario.id)
-        def triangulo = PermisoTramite.findByCodigo("E001")
+//        def triangulo = PermisoTramite.findByCodigo("E001")
         def bloqueo = false
-//        if (session.departamento.estado == "B") {
-//            bloqueo = true
-//        }
-        def tienePermiso = PermisoUsuario.withCriteria {
-            eq("persona", usu)
-            eq("permisoTramite", triangulo)
-            le("fechaInicio", new Date())
-            or {
-                ge("fechaFin", new Date())
-                isNull("fechaFin")
-            }
-        }
-
-        if (tienePermiso.size() == 0) {
-//            flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de entrada del departamento. Ha sido redireccionado a su bandeja de entrada personal."
-//            flash.tipo = "error"
-            redirect(controller: "tramite", action: "bandejaEntrada")
-            return
+        if(!session.usuario.esTriangulo()){
+            flash.message="Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
+            response.sendError(403)
         }
         return [persona: usu, bloqueo: bloqueo]
     }

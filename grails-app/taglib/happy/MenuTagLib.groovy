@@ -97,7 +97,7 @@ class MenuTagLib {
 //        html += '<li><a href="' + g.createLink(controller: 'login', action: 'logout') + '"><i class="fa fa-power-off"></i> Salir</a></li>'
 
         html += '<li class="dropdown">'
-        html += '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' + usuario.login + ' <b class="caret"></b></a>'
+        html += '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' + usuario.login+' ('+session.perfil+')' + ' <b class="caret"></b></a>'
         html += '<ul class="dropdown-menu">'
         html += '<li><a href="' + g.createLink(controller: 'persona', action: 'personal') + '"><i class="fa fa-cogs"></i> Configuración</a></li>'
         html += '<li class="divider"></li>'

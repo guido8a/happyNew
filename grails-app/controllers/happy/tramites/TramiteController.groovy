@@ -1015,6 +1015,10 @@ class TramiteController extends happy.seguridad.Shield {
             redirect(controller: 'tramite3',action: 'bandejaEntradaDpto')
             return
         }
+        if(!session.usuario.puedeRecibir){
+            flash.message="Su perfil no tiene acceso a la bandeja de entrada pesonal"
+            response.sendError(403)
+        }
 
         def persona = Persona.get(session.usuario.id)
 
