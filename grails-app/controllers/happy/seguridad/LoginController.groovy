@@ -231,7 +231,7 @@ class LoginController {
             permisos.each {
                 session.usuario.permisos.add(it.permiso)
             }
-            println "add "+session.usuario.permisos
+//            println "add "+session.usuario.permisos
 //            println "puede recibir "+session.usuario.getPuedeRecibir()
 //            println "puede getPuedeVer "+session.usuario.getPuedeVer()
 //            println "puede getPuedeAdmin "+session.usuario.getPuedeAdmin()
