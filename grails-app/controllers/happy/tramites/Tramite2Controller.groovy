@@ -240,6 +240,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
+        def rolEnvia = RolPersonaTramite.findByCodigo("E004")
+
+        def strEnvioPrevio = ""
+        def quienEnvio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolEnvia)
+        if (quienEnvio.size() == 0) {
+            strEnvioPrevio = "- Sin registro de la persona que envió anteriormente -"
+        } else if (quienEnvio.size() == 1) {
+            quienEnvio = quienEnvio.first()
+            strEnvioPrevio = "Enviado anteriormente por " + quienEnvio.persona?.login
+        } else {
+            strEnvioPrevio = "Enviado anteriormente por "
+            quienEnvio.each { q ->
+                strEnvioPrevio += q.persona?.login
+            }
+        }
 
         //esta quitando el enviado a estos
         (ids.split("_")).each { id ->
@@ -253,13 +268,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 def tram = persDoc.tramite
                 if (persDoc.rolPersonaTramite == rolPara) {
 //                println "es PARA: cambia fechas"
+                    def copiaA = persDoc.persona ? persDoc.persona.login : persDoc.departamento.codigo
                     persDoc.fechaEnvio = null
                     persDoc.estado = porEnviar
                     persDoc.tramite.estadoTramite = porEnviar
                     persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                            "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-//                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +
+                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
                             "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+//                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +
+//                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+
+                    tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío (PARA ${copiaA}) por el usuario ${session.usuario.login} " +
+                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
+                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}); "
                     if (persDoc.save(flush: true)) {
                         if (pers)
                             alerta = Alerta.findByPersonaAndTramite(pers, tram)
@@ -280,11 +301,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         eq("tramite", tramite)
                         ne("rolPersonaTramite", rolPara)
                     }.id
-                    println copias
+//                    println copias
                     copias.each { idCopia ->
                         try {
                             def persTram = PersonaDocumentoTramite.get(idCopia)
                             if (persTram) {
+                                if (persTram.rolPersonaTramite == rolCc) {
+                                    copiaA = persTram.persona ? persTram.persona.login : persTram.departamento.codigo
+                                    tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
+                                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
+                                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}); "
+                                }
                                 persTram.delete(flush: true)
                                 if (persTram.persona)
                                     alerta = Alerta.findByPersonaAndTramite(persTram.persona, tram)
@@ -336,9 +363,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 //        if (recibidos == 0) {
         if (enviados == 0) {
-            tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                    "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
+//            tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+//                    "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+//                    "(previa fecha de envío: ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')})"
             tramite.estadoTramite = porEnviar
             tramite.fechaEnvio = null
         }
