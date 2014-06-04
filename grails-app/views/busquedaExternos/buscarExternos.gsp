@@ -78,6 +78,10 @@
 
         <div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '700'}px;" class="well">
             <div class="page-header" style="margin-top: -10px;">
+                <div style="position: fixed; margin-left: 20px; width: 100px">
+                    <img src="${resource(dir: 'images', file: 'logo_gadpp_reportes.png')}"/>
+                    EFICIENCIA Y SOLIDARIDAD
+                </div>
                 <h1>S.A.D. Web</h1>
 
                 <h3>
@@ -99,50 +103,62 @@
                     <fieldset>
                         <legend class="text-info">Consulta de Trámites</legend>
 
-                        <div class="col-md-10">
-                            <div class="col-md-4" style="margin-right: 20px; text-align: left">
-                                <label for="institucion">Institución Remitente</label>
-                            </div>
 
-                            <div class="col-md-5">
-                                <g:textField name="institucion" value="" maxlength="35" class="form-control" style="width: 350px"/>
-                            </div>
-                        </div>
+                        %{--<div class="col-md-10">--}%
+                            %{--<div class="col-md-4" style="margin-right: 20px; text-align: left">--}%
+                                %{--<label for="institucion">Institución Remitente</label>--}%
+                            %{--</div>--}%
 
-                        <div class="col-md-10">
-                            <div class="col-md-4" style="margin-right: 20px; text-align: left">
-                                <label for="contacto">Entregado por</label>
-                            </div>
+                            %{--<div class="col-md-5">--}%
+                                %{--<g:textField name="institucion" value="" maxlength="35" class="form-control" style="width: 350px"/>--}%
+                            %{--</div>--}%
+                        %{--</div>--}%
 
-                            <div class="col-md-5">
-                                <g:textField name="contacto" value="" maxlength="35" class="form-control" style="width: 350px"/>
-                            </div>
-                        </div>
+                        %{--<div class="col-md-10">--}%
+                            %{--<div class="col-md-4" style="margin-right: 20px; text-align: left">--}%
+                                %{--<label for="contacto">Entregado por</label>--}%
+                            %{--</div>--}%
 
-                        <div class="col-md-10">
-                            <div class="col-md-4" style="margin-right: 20px; text-align: left">
-                                <label for="numero" style="text-align: left">Número de documento Externo</label>
-                            </div>
+                            %{--<div class="col-md-5">--}%
+                                %{--<g:textField name="contacto" value="" maxlength="35" class="form-control" style="width: 350px"/>--}%
+                            %{--</div>--}%
+                        %{--</div>--}%
 
-                            <div class="col-md-2">
-                                <g:textField name="numero" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
-                            </div>
-                        </div>
+                        %{--<div class="col-md-10">--}%
+                            %{--<div class="col-md-4" style="margin-right: 20px; text-align: left">--}%
+                                %{--<label for="numero" style="text-align: left">Número de documento Externo</label>--}%
+                            %{--</div>--}%
 
-                        <div class="col-md-10">
-                            <div class="col-md-4" style="margin-right: 20px; text-align: left">
+                            %{--<div class="col-md-2">--}%
+                                %{--<g:textField name="numero" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>--}%
+                            %{--</div>--}%
+                        %{--</div>--}%
+
+
+                        <div >
+                            <div class="col-md-2" style="text-align: left">
                                 <label for="codigo">Código del trámite</label>
                             </div>
 
-                            <div class="col-md-2">
-                                <g:textField name="codigo" value="" maxlength="15" class="form-control allCaps" style="width: 180px"/>
+                            <div class="col-md-2" style="margin-left: -20px;">
+                                <g:textField name="codigo" value="" maxlength="15" class="form-control allCaps" style="width: 160px"/>
                             </div>
+                        <div class="col-md-7" style="text-align: left; margin-left: 30px; margin-top: -5px; width: 580px;">
+                            Ingrese el código del trámie en el formato: DEX - # - OFI - AÑO. <br/> Donde: <strong>DEX</strong>: es el prefijo para todos los trámites,
+                            <strong>#</strong>: representa el número del trámite, <strong>OFI</strong> son las siglas de la oficina y
+                            <strong>AÑO</strong> es los dos dígitos del año. <span style="color: #448"> Ejemplo: DEX-43-DSG-14</span>
                         </div>
+                    </div>
 
                         <div class="col-md-10">
                             <a href="#" name="busqueda" class="btn btn-success btnBusqueda" style="margin-top: 22px"><i class="fa fa-check-square-o"></i> Buscar
                             </a>
                         </div>
+
+                        <div class="col-md-10" style="text-align: left; margin-left: 20px; margin-top: 5px;">
+                            <p class="text-info"> Si desconoce el número o código del trámite, por favor comuníquese con la Secretaría General al teléfono: 2499508</p>
+                        </div>
+
 
                     </fieldset>
                 </div>
@@ -203,18 +219,18 @@
 
 //                openLoader("Buscando");
                 var codigo = $("#codigo").val().toUpperCase();
-                var contacto = $("#contacto").val().toUpperCase();
-                var numero = $("#numero").val().toUpperCase();
-                var institucion = $("#institucion").val().toUpperCase();
+//                var contacto = $("#contacto").val().toUpperCase();
+//                var numero = $("#numero").val().toUpperCase();
+//                var institucion = $("#institucion").val().toUpperCase();
 
                 $.ajax({
                     type    : "POST",
                     url     : "${g.createLink(controller: 'busquedaExternos', action: 'tablaBusquedaExternos')}",
                     data    : {
-                        codigo      : codigo,
-                        contacto    : contacto,
-                        numero      : numero,
-                        institucion : institucion
+                        codigo      : codigo
+//                        contacto    : contacto,
+//                        numero      : numero,
+//                        institucion : institucion
                     },
                     success : function (msg) {
                         $("#tabla").html(msg);

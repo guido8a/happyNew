@@ -257,6 +257,23 @@
                             </div>
                         </li>
 
+
+                        <li>
+                            <i class="fa-li ${iconTrmt}"></i>
+                            <span id="trex">
+                                <g:link controller="estadoTramiteExterno" action="list">Estado de los trámites externos</g:link> sirve para
+                                fijar el estado que puede tener un trámite externo
+                            </span>
+
+                            <div class="descripcion hide">
+                                <h4>Estado de Trámite Externo</h4>
+
+                                <p>Fija el estado de untrámite externo:</p>
+                                <p>Por defecto empieza en "EN TRAMITE"</p>
+
+                            </div>
+                        </li>
+
                     </ul>
 
                 </div>
