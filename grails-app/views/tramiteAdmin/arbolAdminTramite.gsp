@@ -132,84 +132,84 @@
 
                 if (!estaAnulado && !estaArchivado) {
                     if (esMio) {
-                        if (estaEnviado) {
-                            items.copia = {
-                                separator_before : true,
-                                label            : "Copia para",
-                                icon             : "fa fa-files-o",
-                                action           : function () {
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
-                                        data    : {
-                                            id : nodeId
-                                        },
-                                        success : function (msg) {
-                                            bootbox.dialog({
-                                                id      : "dlgCopiaPara",
-                                                title   : '<i class="fa fa-files-o"></i> Copia para',
-                                                class   : "long",
-                                                message : msg,
-                                                buttons : {
-                                                    cancelar : {
-                                                        label     : '<i class="fa fa-times"></i> Cancelar',
-                                                        className : 'btn-danger',
-                                                        callback  : function () {
-                                                        }
-                                                    },
-                                                    enviar   : {
-                                                        id        : 'btnEnviarCopia',
-                                                        label     : '<i class="fa fa-check"></i> Enviar copias',
-                                                        className : "btn-success",
-                                                        callback  : function () {
-                                                            var cc = "";
-                                                            $("#ulSeleccionados li").not(".disabled").each(function () {
-                                                                cc += $(this).data("id") + "_";
-                                                            });
-                                                            openLoader("Enviando copias");
-                                                            $.ajax({
-                                                                type    : "POST",
-                                                                url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
-                                                                data    : {
-                                                                    id     : nodeId,
-                                                                    copias : cc
-                                                                },
-                                                                success : function (msg) {
-                                                                    var parts = msg.split("*");
-                                                                    if (parts[0] == 'OK') {
-                                                                        log("Copias enviadas exitosamente", 'success');
-                                                                        setTimeout(function () {
-                                                                            location.reload(true);
-                                                                        }, 500);
-                                                                    } else if (msg == 'NO') {
-                                                                        closeLoader();
-                                                                        log(parts[1], 'error');
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            };
-                        }
-                        if (tienePadre) {
-                            items.crearHermano = {
-                                label  : "Agregar documento al trámite",
-                                icon   : "fa fa-paste",
-                                action : function () {
-                                    <g:if test="${session.usuario.esTriangulo()}">
-                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padreId + '&hermano=' + tramiteId;
-                                    </g:if>
-                                    <g:else>
-                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padreId + '&hermano=' + tramiteId;
-                                    </g:else>
-                                }
-                            };
-                        }
+//                        if (estaEnviado) {
+                        %{--items.copia = {--}%
+                        %{--separator_before : true,--}%
+                        %{--label            : "Copia para",--}%
+                        %{--icon             : "fa fa-files-o",--}%
+                        %{--action           : function () {--}%
+                        %{--$.ajax({--}%
+                        %{--type    : "POST",--}%
+                        %{--url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",--}%
+                        %{--data    : {--}%
+                        %{--id : nodeId--}%
+                        %{--},--}%
+                        %{--success : function (msg) {--}%
+                        %{--bootbox.dialog({--}%
+                        %{--id      : "dlgCopiaPara",--}%
+                        %{--title   : '<i class="fa fa-files-o"></i> Copia para',--}%
+                        %{--class   : "long",--}%
+                        %{--message : msg,--}%
+                        %{--buttons : {--}%
+                        %{--cancelar : {--}%
+                        %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                        %{--className : 'btn-danger',--}%
+                        %{--callback  : function () {--}%
+                        %{--}--}%
+                        %{--},--}%
+                        %{--enviar   : {--}%
+                        %{--id        : 'btnEnviarCopia',--}%
+                        %{--label     : '<i class="fa fa-check"></i> Enviar copias',--}%
+                        %{--className : "btn-success",--}%
+                        %{--callback  : function () {--}%
+                        %{--var cc = "";--}%
+                        %{--$("#ulSeleccionados li").not(".disabled").each(function () {--}%
+                        %{--cc += $(this).data("id") + "_";--}%
+                        %{--});--}%
+                        %{--openLoader("Enviando copias");--}%
+                        %{--$.ajax({--}%
+                        %{--type    : "POST",--}%
+                        %{--url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",--}%
+                        %{--data    : {--}%
+                        %{--id     : nodeId,--}%
+                        %{--copias : cc--}%
+                        %{--},--}%
+                        %{--success : function (msg) {--}%
+                        %{--var parts = msg.split("*");--}%
+                        %{--if (parts[0] == 'OK') {--}%
+                        %{--log("Copias enviadas exitosamente", 'success');--}%
+                        %{--setTimeout(function () {--}%
+                        %{--location.reload(true);--}%
+                        %{--}, 500);--}%
+                        %{--} else if (msg == 'NO') {--}%
+                        %{--closeLoader();--}%
+                        %{--log(parts[1], 'error');--}%
+                        %{--}--}%
+                        %{--}--}%
+                        %{--});--}%
+                        %{--}--}%
+                        %{--}--}%
+                        %{--}--}%
+                        %{--});--}%
+                        %{--}--}%
+                        %{--});--}%
+                        %{--}--}%
+                        %{--};--}%
+//                        }
+                        %{--if (tienePadre) {--}%
+                        %{--items.crearHermano = {--}%
+                        %{--label  : "Agregar documento al trámite",--}%
+                        %{--icon   : "fa fa-paste",--}%
+                        %{--action : function () {--}%
+                        %{--<g:if test="${session.usuario.esTriangulo()}">--}%
+                        %{--location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padreId + '&hermano=' + tramiteId;--}%
+                        %{--</g:if>--}%
+                        %{--<g:else>--}%
+                        %{--location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padreId + '&hermano=' + tramiteId;--}%
+                        %{--</g:else>--}%
+                        %{--}--}%
+                        %{--};--}%
+                        %{--}--}%
                     }
                     if (!tienePadre) {
                         items.agregarPadre = {
@@ -295,60 +295,60 @@
                     if (!esMio && !tienePadre) {
                         items.agregarPadre.separator_before = true;
                     }
-                    if (!tieneHijos && estaRecibido) {
-                        items.archivar = {
-                            separator_before : true,
-                            label            : "Archivar",
-                            icon             : "fa fa-folder-open-o",
-                            action           : function () {
-                                var msg = "<i class='fa fa-folder-open-o fa-3x pull-left text-warning text-shadow'></i>" +
-                                          "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser archivado.</p>" +
-                                          "<label for='observacionArchivar'>Observaciones:</label>" +
-                                          '<textarea id="observacionArchivar" style="resize: none; height: 150px;" ' +
-                                          'class="form-control" maxlength="255" name="observacionArchivar"></textarea>';
-                                bootbox.dialog({
-                                    id      : "dlgArchivar",
-                                    title   : '<span class="text-warning"><i class="fa fa-folder-open-o"></i> Archivar Tramite</span>',
-                                    message : msg,
-                                    buttons : {
-                                        cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
-                                            callback  : function () {
-                                            }
-                                        },
-                                        archivar : {
-                                            id        : 'btnArchivar',
-                                            label     : '<i class="fa fa-check"></i> Archivar',
-                                            className : "btn-success",
-                                            callback  : function () {
-                                                openLoader("Archivando");
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    url     : '${createLink(controller: "tramite", action: "archivar")}',
-                                                    data    : {
-                                                        id    : nodeId,
-                                                        texto : $("#observacionArchivar").val()
-                                                    },
-                                                    success : function (msg) {
-                                                        if (msg == 'ok') {
-                                                            log("Trámite archivado correctamente", 'success');
-                                                            setTimeout(function () {
-                                                                location.reload(true);
-                                                            }, 500);
-                                                        } else if (msg == 'no') {
-                                                            closeLoader();
-                                                            log("Error al archivar el trámite el trámite", 'error');
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        };
-                    }
+//                    if (!tieneHijos && estaRecibido) {
+                    %{--items.archivar = {--}%
+                    %{--separator_before : true,--}%
+                    %{--label            : "Archivar",--}%
+                    %{--icon             : "fa fa-folder-open-o",--}%
+                    %{--action           : function () {--}%
+                    %{--var msg = "<i class='fa fa-folder-open-o fa-3x pull-left text-warning text-shadow'></i>" +--}%
+                    %{--"<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser archivado.</p>" +--}%
+                    %{--"<label for='observacionArchivar'>Observaciones:</label>" +--}%
+                    %{--'<textarea id="observacionArchivar" style="resize: none; height: 150px;" ' +--}%
+                    %{--'class="form-control" maxlength="255" name="observacionArchivar"></textarea>';--}%
+                    %{--bootbox.dialog({--}%
+                    %{--id      : "dlgArchivar",--}%
+                    %{--title   : '<span class="text-warning"><i class="fa fa-folder-open-o"></i> Archivar Tramite</span>',--}%
+                    %{--message : msg,--}%
+                    %{--buttons : {--}%
+                    %{--cancelar : {--}%
+                    %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                    %{--className : 'btn-danger',--}%
+                    %{--callback  : function () {--}%
+                    %{--}--}%
+                    %{--},--}%
+                    %{--archivar : {--}%
+                    %{--id        : 'btnArchivar',--}%
+                    %{--label     : '<i class="fa fa-check"></i> Archivar',--}%
+                    %{--className : "btn-success",--}%
+                    %{--callback  : function () {--}%
+                    %{--openLoader("Archivando");--}%
+                    %{--$.ajax({--}%
+                    %{--type    : 'POST',--}%
+                    %{--url     : '${createLink(controller: "tramite", action: "archivar")}',--}%
+                    %{--data    : {--}%
+                    %{--id    : nodeId,--}%
+                    %{--texto : $("#observacionArchivar").val()--}%
+                    %{--},--}%
+                    %{--success : function (msg) {--}%
+                    %{--if (msg == 'ok') {--}%
+                    %{--log("Trámite archivado correctamente", 'success');--}%
+                    %{--setTimeout(function () {--}%
+                    %{--location.reload(true);--}%
+                    %{--}, 500);--}%
+                    %{--} else if (msg == 'no') {--}%
+                    %{--closeLoader();--}%
+                    %{--log("Error al archivar el trámite el trámite", 'error');--}%
+                    %{--}--}%
+                    %{--}--}%
+                    %{--});--}%
+                    %{--}--}%
+                    %{--}--}%
+                    %{--}--}%
+                    %{--});--}%
+                    %{--}--}%
+                    %{--};--}%
+//                    }
                 }
                 if (!estaAnulado) {
                     items.anular = {
@@ -378,7 +378,7 @@
                                         callback  : function () {
                                         }
                                     },
-                                    anular : {
+                                    anular   : {
                                         id        : 'btnArchivar',
                                         label     : '<i class="fa fa-check"></i> Anular',
                                         className : "btn-success",
