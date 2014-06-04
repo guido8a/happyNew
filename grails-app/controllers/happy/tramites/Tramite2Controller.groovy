@@ -898,6 +898,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             flash.message="Su perfil (${session.perfil}), no tiene permiso para entrar a esta pantalla"
             response.sendError(403)
         }
+
         if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
