@@ -10,7 +10,7 @@ class BusquedaExternosController {
     }
 
     def tablaBusquedaExternos() {
-//        println("params:" + params)
+        println("params:" + params)
         def res
         def filtrados = []
         if (!params.contacto && !params.numero && !params.codigo && !params.institucion) {
@@ -89,12 +89,20 @@ class BusquedaExternosController {
             }
             def msg = "<div class='well well-lg text-left'>"
             msg += "<h4>Trámite ${filtrados.codigo}</h4>"
-            msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion}</em></strong></p>"
-            msg += "<p>El documento se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
-            msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
-            msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
-            msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
-            msg += "<p>Nombre del director: <strong><em>${strDirector} (${dptoPadre.descripcion})</em></strong></p>"
+            if (tram.para.estado?.codigo == "E005") { //Archivado
+                msg += "<p>El estado de su trámite es: <strong><em>ARCHIVADO</em></strong></p>"
+            } else {
+                msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion ?: ''}</em></strong></p>"
+            }
+            if (tram.tipoDocumento.codigo == "OFI") {
+                msg += "Contestación enviada con trámite externo <strong><em>${tram.codigo}</em></strong> el <strong><em>${tram.fechaEnvio.format('dd-MM-yyyy HH:mm')}</em></strong>"
+            } else {
+                msg += "<p>El documento se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
+                msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
+                msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
+                msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
+                msg += "<p>Nombre del director: <strong><em>${strDirector} (${dptoPadre.descripcion})</em></strong></p>"
+            }
             msg += "</div>"
             render msg
         } else {
@@ -110,7 +118,7 @@ class BusquedaExternosController {
     def ultimoHijo(Tramite tramite) {
 //        println tramite.codigo
         def ret = tramite
-        Tramite.findAllByAQuienContesta(tramite.para).each { tr ->
+        Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para).each { tr ->
 //            println "\t" + tr.codigo
             ret = ultimoHijo(tr)
             if (!ret) {
