@@ -34,7 +34,7 @@ td {
             <th class="text-center"><i class="chk chkAll fa fa-square-o fa-lg"></i></th>
         </thead>
         <tbody>
-            <g:each in="${paras + ccs}" var="para">
+            <g:each in="${[paras] + ccs}" var="para">
                 <tr>
                     <td>${para.rolPersonaTramite.descripcion}</td>
                     <td>${para.departamento ? para.departamento.descripcion : para.persona.login}</td>

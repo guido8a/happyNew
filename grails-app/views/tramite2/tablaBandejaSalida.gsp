@@ -25,6 +25,9 @@
             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
             <g:set var="padre" value=""/>
 
+            <g:set var="para" value="${tramite.getPara()}"/>
+            <g:set var="copias" value="${tramite.getCopias()}"/>
+
             <g:set var="esImprimir" value="${false}"/>
             <g:if test="${(happy.tramites.PersonaDocumentoTramite.findAllByPersonaAndTramite(session.usuario, tramite).findAll {
                 it.rolPersonaTramite.codigo == 'I005'
@@ -51,8 +54,6 @@
                 <g:set var="padre" value="${tramite.padreId}"/>
             </g:if>
 
-
-
             <tr id="${tramite?.id}" data-id="${tramite?.id}"
                 class="${esImprimir ? 'imprimir' : ''}
                 ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
@@ -74,8 +75,6 @@
                 </g:else>
                 <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
                 <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
-                <g:set var="para" value="${tramite.getPara()}"/>
-                <g:set var="copias" value="${tramite.getCopias()}"/>
                 <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                     <td>EXT</td>
                 </g:if>
@@ -83,24 +82,28 @@
                     <td>${para?.departamento?.codigo}</td>
                 </g:else>
                 <g:set var="infoExtra" value=""/>
-                <g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">
-                    <g:if test="${infoExtra != ''}">
-                        <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
-                    </g:if>
-                    <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
-                    <g:if test="${pdt.departamento}">
-                        <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
-                    </g:if>
-                    <g:else>
-                        <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
-                    </g:else>
-                    <g:if test="${pdt.fechaEnvio}">
-                        <g:if test="${pdt.fechaRecepcion}">
-                            <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
+            %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
+
+                <g:each in="${[para] + copias}" var="pdt">
+                    <g:if test="${pdt}">
+                        <g:if test="${infoExtra != ''}">
+                            <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
+                        </g:if>
+                        <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
+                        <g:if test="${pdt.departamento}">
+                            <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
                         </g:if>
                         <g:else>
-                            <g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>
+                            <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
                         </g:else>
+                        <g:if test="${pdt.fechaEnvio}">
+                            <g:if test="${pdt.fechaRecepcion}">
+                                <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
+                            </g:if>
+                            <g:else>
+                                <g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>
+                            </g:else>
+                        </g:if>
                     </g:if>
                 </g:each>
                 <td title="${infoExtra}">
@@ -120,16 +123,20 @@
                                 <g:set var="dest" value="${1}"/>
                             </g:else>
                         </g:if>
-                        <g:else>
+                    %{--<g:else>--}%
+                        <span class="small">
                             <g:each in="${copias}" var="copia" status="i">
-                                <g:set var="dest" value="${dest++}"/>
+                                <g:set var="dest" value="${dest + 1}"/>
+                            %{--/${dest}/--}%
                                 [CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}
                                 <g:if test="${i < copias.size() - 1}">
                                     ,
                                 </g:if>
                             </g:each>
-                        </g:else>
+                        </span>
+                    %{--</g:else>--}%
                     </g:else>
+                %{--*${dest}*--}%
                     <g:if test="${dest == 0}">
                         <span class="label label-danger" style="margin-top: 3px;">
                             <i class="fa fa-warning"></i> Sin destinatario ni copias

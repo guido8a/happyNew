@@ -104,9 +104,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            redirect(controller: "tramite2", action: "bandejaSalida")
 //            return
 //        }
-        if(!session.usuario.esTriangulo()){
-            flash.message="Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
-            redirect(controller: 'tramite2',action: 'bandejaSalida')
+        if (!session.usuario.esTriangulo()) {
+            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
+            redirect(controller: 'tramite2', action: 'bandejaSalida')
         }
         if (persona.jefe == 1)
             revisar = true
@@ -244,50 +244,78 @@ class Tramite2Controller extends happy.seguridad.Shield {
         //esta quitando el enviado a estos
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
-            //cambia la fecha de envio, el estado y las obs
-            def alerta
+            if (persDoc) {
+                //cambia la fecha de envio, el estado y las obs
+                def alerta
 
-            def pers = persDoc.persona
-            def dpto = persDoc.departamento
-            def tram = persDoc.tramite
-            if (persDoc.rolPersonaTramite == rolPara) {
+                def pers = persDoc.persona
+                def dpto = persDoc.departamento
+                def tram = persDoc.tramite
+                if (persDoc.rolPersonaTramite == rolPara) {
 //                println "es PARA: cambia fechas"
-                persDoc.fechaEnvio = null
-                persDoc.estado = porEnviar
-                persDoc.tramite.estadoTramite=porEnviar
-                persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
-                        "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                    persDoc.fechaEnvio = null
+                    persDoc.estado = porEnviar
+                    persDoc.tramite.estadoTramite = porEnviar
+                    persDoc.observaciones = (persDoc.observaciones ?: '') + " Cancelado el envío por el usuario ${session.usuario.login} " +
+                            "el ${new Date().format('dd-MM-yyyy HH:mm')} " +
 //                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +
-                        "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
-                if (persDoc.save(flush: true)) {
-                    if (pers)
-                        alerta = Alerta.findByPersonaAndTramite(pers, tram)
-                    else
-                        alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
-                    if (alerta) {
-                        alerta.mensaje += " - Tramite cambiado de estado"
-                        alerta.fechaRecibido = new Date()
-                        alerta.save(flush: true)
+                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+                    if (persDoc.save(flush: true)) {
+                        if (pers)
+                            alerta = Alerta.findByPersonaAndTramite(pers, tram)
+                        else
+                            alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
+                        if (alerta) {
+                            alerta.mensaje += " - Tramite cambiado de estado"
+                            alerta.fechaRecibido = new Date()
+                            alerta.save(flush: true)
+                        }
+                    } else {
+                        println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
+                        errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
+                    }
+                    //ademas elimina todas las copias
+
+                    def copias = PersonaDocumentoTramite.withCriteria {
+                        eq("tramite", tramite)
+                        ne("rolPersonaTramite", rolPara)
+                    }.id
+                    println copias
+                    copias.each { idCopia ->
+                        try {
+                            def persTram = PersonaDocumentoTramite.get(idCopia)
+                            if (persTram) {
+                                persTram.delete(flush: true)
+                                if (persTram.persona)
+                                    alerta = Alerta.findByPersonaAndTramite(persTram.persona, tram)
+                                else
+                                    alerta = Alerta.findByDepartamentoAndTramite(persTram.departamento, tram)
+                                if (alerta) {
+                                    alerta.mensaje += " - Tramite cambiado de estado"
+                                    alerta.fechaRecibido = new Date()
+                                    alerta.save(flush: true)
+                                }
+                            }
+                        } catch (e) {
+                            println "***error: " + e
+                        }
                     }
                 } else {
-                    println "ERROR AL CAMBIAR PERS DOC TRAM: " + persDoc.errors
-                    errores += "<li>" + renderErrors(bean: persDoc) + "</li>"
-                }
-            } else {
-                println "es COPIA: delete"
-                try {
-                    persDoc.delete(flush: true)
-                    if (pers)
-                        alerta = Alerta.findByPersonaAndTramite(pers, tram)
-                    else
-                        alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
-                    if (alerta) {
-                        alerta.mensaje += " - Tramite cambiado de estado"
-                        alerta.fechaRecibido = new Date()
-                        alerta.save(flush: true)
+//                println "es COPIA: delete"
+                    try {
+                        persDoc.delete(flush: true)
+                        if (pers)
+                            alerta = Alerta.findByPersonaAndTramite(pers, tram)
+                        else
+                            alerta = Alerta.findByDepartamentoAndTramite(dpto, tram)
+                        if (alerta) {
+                            alerta.mensaje += " - Tramite cambiado de estado"
+                            alerta.fechaRecibido = new Date()
+                            alerta.save(flush: true)
+                        }
+                    } catch (e) {
+                        println "error: " + e
                     }
-                } catch (e) {
-                    println "error: " + e
                 }
             }
         }
@@ -366,19 +394,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
     def desenviarLista_ajax() {
         def tramite = Tramite.get(params.id)
 
-        def rolPara = RolPersonaTramite.findByCodigo("R001")
-        def rolCc = RolPersonaTramite.findByCodigo("R002")
+//        def rolPara = RolPersonaTramite.findByCodigo("R001")
+//        def rolCc = RolPersonaTramite.findByCodigo("R002")
+//
+//        def paras = PersonaDocumentoTramite.withCriteria {
+//            eq("tramite", tramite)
+//            eq("rolPersonaTramite", rolPara)
+//        }
+//        def ccs = PersonaDocumentoTramite.withCriteria {
+//            eq("tramite", tramite)
+//            eq("rolPersonaTramite", rolCc)
+//        }
 
-        def paras = PersonaDocumentoTramite.withCriteria {
-            eq("tramite", tramite)
-            eq("rolPersonaTramite", rolPara)
-        }
-        def ccs = PersonaDocumentoTramite.withCriteria {
-            eq("tramite", tramite)
-            eq("rolPersonaTramite", rolCc)
-        }
-
-        return [tramite: tramite, paras: paras, ccs: ccs]
+//        return [tramite: tramite, paras: paras, ccs: ccs]
+        return [tramite: tramite, paras: tramite.para, ccs: tramite.copias]
     }
 
     def bandejaSalida() {
@@ -386,8 +415,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def revisar = false
         def bloqueo = false
-        if(session.usuario.esTriangulo()){
-           redirect(action: 'bandejaSalidaDep')
+        if (session.usuario.esTriangulo()) {
+            redirect(action: 'bandejaSalidaDep')
             return
         }
         if (persona.jefe == 1)

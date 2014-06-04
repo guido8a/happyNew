@@ -164,7 +164,28 @@ class Tramite {
 //    }
 
     def getCopias() {
-        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
+//        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estados = [estadoAnulado.id, estadoArchivado.id]
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def copias = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", this)
+            eq("rolPersonaTramite", rolCopia)
+            or {
+                not {
+                    inList("estado", [estadoAnulado, estadoArchivado])
+                }
+                isNull("estado")
+            }
+        }
+//        println this.codigo
+//        println PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, rolCopia).estado.codigo
+//        println copias.estado.codigo
+//        println copias
+//        copias.findAll { !estados.contains(it.estadoId) }
+//        println copias.estado.codigo
+//        println "******"
 //        if (para) {
         return copias
 //        }

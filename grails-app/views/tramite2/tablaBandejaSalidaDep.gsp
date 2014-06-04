@@ -27,6 +27,9 @@
                 <g:set var="padre" value=""/>
                 <g:set var="clase" value=""/>
 
+                <g:set var="para" value="${tramite.getPara()}"/>
+                <g:set var="copias" value="${tramite.getCopias()}"/>
+
                 <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                     <g:set var="anexo" value="${'conAnexo'}"/>
                 </g:if>
@@ -71,33 +74,35 @@
                     </g:else>
 
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
-                    <g:set var="para" value="${tramite.getPara()}"/>
-                    <g:set var="copias" value="${tramite.getCopias()}"/>
                     <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                         <td>EXT</td>
                     </g:if>
                     <g:else>
-                        <td>${para?.departamento?.codigo}</td>
+                        <td>${para?.departamento?.codigo}%{--//${todos}--}%</td>
                     </g:else>
                     <g:set var="infoExtra" value=""/>
-                    <g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">
-                        <g:if test="${infoExtra != ''}">
-                            <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
-                        </g:if>
-                        <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
-                        <g:if test="${pdt.departamento}">
-                            <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
-                        </g:if>
-                        <g:else>
-                            <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
-                        </g:else>
-                        <g:if test="${pdt.fechaEnvio}">
-                            <g:if test="${pdt.fechaRecepcion}">
-                                <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
+                %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
+                    <g:each in="${[para] + copias}" var="pdt">
+                        <g:if test="${pdt}">
+                        %{--<g:set var="infoExtra" value="${pdt.toString() + '<br/>'}"/>--}%
+                            <g:if test="${infoExtra != ''}">
+                                <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
+                            </g:if>
+                            <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
+                            <g:if test="${pdt.departamento}">
+                                <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
                             </g:if>
                             <g:else>
-                                <g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>
+                                <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
                             </g:else>
+                            <g:if test="${pdt.fechaEnvio}">
+                                <g:if test="${pdt.fechaRecepcion}">
+                                    <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
+                                </g:if>
+                                <g:else>
+                                    <g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>
+                                </g:else>
+                            </g:if>
                         </g:if>
                     </g:each>
                     <td title="${infoExtra}">
