@@ -560,6 +560,42 @@
                         deleteRow(id);
                     }
                 };
+                var eliminarUsu = {
+                    label  : 'Eliminar usuario',
+                    icon   : "fa ${iconActivar}",
+                    action : function (e) {
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(action:'delete_ajax')}",
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                var men=""
+                                if(msg!="ok"){
+                                    men=msg
+                                }else{
+                                    men="Persona eliminada"
+                                    deleteRow(id);
+                                }
+
+                                bootbox.dialog({
+                                    title   : "Eliminar persona",
+                                    message : men,
+                                    buttons : {
+                                        ok : {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
+
 
                 items.ver = ver;
                 items.editar = editar;
@@ -574,6 +610,7 @@
                 if (puedeEliminar) {
                     items.eliminar = eliminar;
                 }
+                items.eliminar=eliminarUsu
 
                 return items;
             }

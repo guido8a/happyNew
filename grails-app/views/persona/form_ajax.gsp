@@ -188,7 +188,7 @@
                     </span>
                 </div>
 
-                <g:if test="${personaInstance.puedeAdmin}">
+                <g:if test="${session.usuario.puedeAdmin && personaInstance.id && personaInstance?.puedeAdmin}">
                     <div class="form-group keeptogether ${hasErrors(bean: personaInstance, field: 'password', 'error')} required">
                         <span class="grupo">
                             <label for="password" class="col-md-3 control-label text-info">

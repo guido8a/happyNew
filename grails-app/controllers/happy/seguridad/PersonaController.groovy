@@ -1031,9 +1031,9 @@ class PersonaController extends happy.seguridad.Shield {
             if (personaInstance) {
                 try {
                     personaInstance.delete(flush: true)
-                    render "OK_Eliminación de Persona exitosa."
+                    render "ok."
                 } catch (e) {
-                    render "NO_No se pudo eliminar Persona."
+                    render "No se pudo eliminar esta persona."
                 }
             } else {
                 notFound_ajax()
