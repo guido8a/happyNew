@@ -91,10 +91,10 @@ class BusquedaExternosController {
             msg += "<h4>Trámite ${filtrados.codigo}</h4>"
             msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion}</em></strong></p>"
             msg += "<p>El documento se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
-            msg += "<p>Quien labora en el departamento: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
+            msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
             msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
             msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
-            msg += "<p>Nombre del director: <strong><em>${strDirector} (dpto: ${dptoPadre.descripcion})</em></strong></p>"
+            msg += "<p>Nombre del director: <strong><em>${strDirector} (${dptoPadre.descripcion})</em></strong></p>"
             msg += "</div>"
             render msg
         } else {
