@@ -1,22 +1,16 @@
 <%--
   Created by IntelliJ IDEA.
   User: gato
-  Date: 14/04/14
-  Time: 03:40 PM
+  Date: 04/06/14
+  Time: 12:29 PM
 --%>
 
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 14/03/14
-  Time: 11:18 AM
---%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main">
-    <title>Búsqueda de Trámites Enviados</title>
+    <title>Búsqueda de Trámites Archivados</title>
 
 
     <style type="text/css">
@@ -167,7 +161,7 @@
 
         var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-        $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
+        $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
             data: datos,
             success: function (msg) {
                 $("#bandeja").html(msg);
@@ -177,26 +171,26 @@
     });
 
     $("input").keyup(function (ev) {
-       if(ev.keyCode == 13){
-           $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-           var memorando = $("#memorando").val();
-           var asunto = $("#asunto").val();
-           var fecha = $("#fechaBusqueda_input").val();
-           var fechaRecepcion = $("#fechaRecepcion_input").val();
+        if(ev.keyCode == 13){
+            $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+            var memorando = $("#memorando").val();
+            var asunto = $("#asunto").val();
+            var fecha = $("#fechaBusqueda_input").val();
+            var fechaRecepcion = $("#fechaRecepcion_input").val();
 
-           var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
+            var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-           $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
-               data: datos,
-               success: function (msg) {
-                   $("#bandeja").html(msg);
-               }
-           });
-       }
+            $.ajax({ type: "POST", url: "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
+                data: datos,
+                success: function (msg) {
+                    $("#bandeja").html(msg);
+                }
+            });
+        }
     });
 
 
-var padre
+    var padre
 
 
     function createContextMenu (node){
@@ -231,46 +225,46 @@ var padre
 
 
         var arbol = {
-        label   : 'Cadena del trámite',
-        icon   : "fa fa-sitemap",
-        action : function (e) {
-            location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqe"
-        }
-    };
+            label   : 'Cadena del trámite',
+            icon   : "fa fa-sitemap",
+            action : function (e) {
+                location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqe"
+            }
+        };
 
-    var detalles = {
-        label   : 'Detalles',
-        icon   : "fa fa-search",
-        action : function (e) {
-            $.ajax({
-                type    : 'POST',
-                url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
-                data    : {
-                    id : id
-                },
-                success : function (msg) {
-                    $("#dialog-body").html(msg)
-                }
-            });
-            $("#dialog").modal("show")
-        }
-    };
+        var detalles = {
+            label   : 'Detalles',
+            icon   : "fa fa-search",
+            action : function (e) {
+                $.ajax({
+                    type    : 'POST',
+                    url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                    data    : {
+                        id : id
+                    },
+                    success : function (msg) {
+                        $("#dialog-body").html(msg)
+                    }
+                });
+                $("#dialog").modal("show")
+            }
+        };
 
-    var crearHermano = {
-        label   : "Agregar documento al trámite",
-        icon   : "fa fa-paste",
-        action : function () {
-            location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id;
-        }
-    };
+        var crearHermano = {
+            label   : "Agregar documento al trámite",
+            icon   : "fa fa-paste",
+            action : function () {
+                location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id;
+            }
+        };
 
-    var administrar = {
-        label   : "Administrar trámite",
-        icon   : "fa fa-cogs",
-        action : function () {
-            location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
-        }
-    };
+        var administrar = {
+            label   : "Administrar trámite",
+            icon   : "fa fa-cogs",
+            action : function () {
+                location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
+            }
+        };
 
         var copia = {
             separator_before : true,
@@ -339,17 +333,7 @@ var padre
         items.header.label = "Acciones";
         items.detalles = detalles
         items.arbol = arbol
-        <g:if test="${session.usuario.getPuedeAdmin()}">
-        items.administrar = administrar
-        </g:if>
 
-        if(padre){
-            items.hermano = crearHermano;
-        }
-
-//        if((enviado == 'E003') || tieneAlerta){
-            items.copia = copia;
-//        }
 
         return items
     }

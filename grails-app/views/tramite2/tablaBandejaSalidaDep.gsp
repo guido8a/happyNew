@@ -37,7 +37,6 @@
                     <g:set var="anexo" value="${'sinAnexo'}"/>
                 </g:else>
 
-
                 <g:if test="${tramite?.tipoDocumento?.codigo == 'SUM'}">
                     <g:set var="clase" value="${'sumilla' + ' ' + anexo}"/>
                 </g:if>

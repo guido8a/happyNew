@@ -1302,20 +1302,6 @@ class TramiteController extends happy.seguridad.Shield {
 
     def tablaArchivados() {
 
-//        def persona = Persona.get(session.usuario.id)
-//        def rolPara = RolPersonaTramite.findByCodigo('R001');
-//        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//
-//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
-//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
-//
-//        pxtPara += pxtCopia
-//
-//        println("archivados:" +  pxtPara)
-//        return [tramites: pxtPara]
-
-
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 

@@ -167,7 +167,8 @@ class DepartamentoExportController {
             if (esp2 != "") {
                 esp2 += " "
             }
-            def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
+//            def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
+            def desc = esp2 + "${dpto.descripcion}"
             if (dpto.telefono || dpto.extension || dpto.direccion) {
                 desc += ": "
                 if (dpto.telefono) {

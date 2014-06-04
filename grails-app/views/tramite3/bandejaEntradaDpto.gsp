@@ -504,6 +504,7 @@
 
                 items.header.label = "Acciones";
                 items.detalles = detalles
+                items.arbol = arbol
 
                 if (conAnexo) {
                     items.anexo = anexos
@@ -530,6 +531,7 @@
                 }
 
                 if (recibido) {
+
                     if (esExterno) {
                         items.externo = {
                             label  : "Cambiar estado",
@@ -593,6 +595,7 @@
                 }
 
                 if (recibido) {
+
                     items.contestar = contestar
                     <g:if test="${session.usuario.puedeArchivar}">
                     items.archivar = archivar
@@ -606,6 +609,7 @@
                 }
 
                 if (jefe) {
+                    items.detalles = detalles
                     items.contestar = contestar
                     items.arbol = arbol
 

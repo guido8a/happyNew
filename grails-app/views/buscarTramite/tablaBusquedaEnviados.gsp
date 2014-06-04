@@ -8,8 +8,7 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
-
-<div style="height: 450px"  class="container-celdas">
+<div style="height: 55px"  class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
@@ -26,10 +25,39 @@
 
             </thead>
             <tbody>
+
+            </tbody>
+        </table>
+
+    </span>
+
+</div>
+
+
+
+
+<div style="height: 350px"  class="container-celdas">
+    <span class="grupo">
+        <table class="table table-bordered table-condensed table-hover">
+            <thead>
+            <tr>
+                %{--<th class="alinear">Documento</th>--}%
+                %{--<th class="alinear">Para</th>--}%
+                %{--<th class="alinear">Asunto</th>--}%
+                %{--<th class="alinear">Prioridad</th>--}%
+                %{--<th class="alinear">De</th>--}%
+                %{--<th class="alinear">Fecha Creación</th>--}%
+                %{--<th class="alinear">Fecha Envio</th>--}%
+                %{--<th class="alinear">Estado</th>--}%
+            </tr>
+
+            </thead>
+            <tbody>
             <g:each in="${tramites}" var="tramite">
 
              <g:set var="padre" value=""/>
              <g:set var="clase" value="${'nada'}"/>
+             <g:set var="limite" value="${tramite.getFechaLimite()}"/>
 
              <g:if test="${tramite?.de?.id == session.usuario.id}">
                  <g:if test="${tramite?.padre}">
@@ -38,7 +66,8 @@
                  </g:if>
              </g:if>
 
-                <tr id="${tramite?.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}">
+                <tr id="${tramite?.id}" data-id="${tramite.id}" padre="${padre}"
+                    class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase }" estado="${tramite?.estadoTramite?.codigo}">
                     <td width="100px;">${tramite?.codigo}</td>
                     <g:if test="${tramite?.para?.persona}">
                         <td>${tramite?.para?.persona?.nombre + " " + tramite?.para?.persona?.apellido}</td>
