@@ -24,7 +24,7 @@ class BloqueosJob {
 //        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull()
 
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and fechaRecepcion is null and (estado is null or estado!=${anulado.id}) and rolPersonaTramite not in (${rolEnvia.id},${rolRecibe.id})").each {pdt->
-            println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}  ${pdt.tramite.externo}   "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
+//            println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}  ${pdt.tramite.externo}   "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
             if(pdt.tramite.externo!="1"){
 //                println "no es externo"
                 def fechaBloqueo = pdt.fechaBloqueo
@@ -39,7 +39,7 @@ class BloqueosJob {
                     }
 
                     if(pdt.persona){
-                        println "add bloquear "+pdt.persona+"  "+pdt.persona.login
+//                        println "add bloquear "+pdt.persona+"  "+pdt.persona.login
                         if(!bloquearUsu.id.contains(pdt.persona.id))
                             bloquearUsu.add(pdt.persona)
                     }else{
