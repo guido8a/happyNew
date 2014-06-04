@@ -554,13 +554,16 @@ class TramiteAdminController {
         }
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def pdt = PersonaDocumentoTramite.get(params.id)
-        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite,rolCopia)
         getCadenaDown(pdt, funcion)
-        if(copias.size()>0){
-            copias.each {
-                getCadenaDown(it,funcion)
+        if(pdt.rolPersonaTramite.codigo=="R001"){
+            def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite,rolCopia)
+            if(copias.size()>0){
+                copias.each {
+                    getCadenaDown(it,funcion)
+                }
             }
         }
+
         if (pdt.tramite.aQuienContesta) {
             pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
             pdt.tramite.aQuienContesta.fechaAnulacion = null
