@@ -449,7 +449,7 @@
                 var crearHermano = {
                     label : "Agregar documento al trámite",
                     icon  : "fa fa-paste",
-                    url   : '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id
+                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id
                 }; //crear hermano
 
                 var editar = {
