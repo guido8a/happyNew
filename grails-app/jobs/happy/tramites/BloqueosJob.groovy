@@ -5,7 +5,7 @@ import happy.seguridad.Persona
 
 class BloqueosJob {
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60*1
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60*3
     }
 
     def execute() {
@@ -13,7 +13,7 @@ class BloqueosJob {
 
         def ahora = new Date()
 //        println "----------------------------------"
-//        println "bloqueo bandeja salida!!! "+ahora
+//        println "bloqueo bandeja salida!!!!! "+ahora
         def bloquear = []
         def bloquearUsu = []
         def warning = []
@@ -43,10 +43,11 @@ class BloqueosJob {
                         if(!bloquearUsu.id.contains(pdt.persona.id))
                             bloquearUsu.add(pdt.persona)
                     }else{
-//                        println "add bloquear "+pdt.departamento
+//                        println "add bloquear dep "+pdt.departamento
                         if(!bloquear.id.contains(pdt.departamento.id))
                             bloquear.add(pdt.departamento)
                     }
+//                    println "---------------------"
 
 
                 }
@@ -54,26 +55,24 @@ class BloqueosJob {
 
         }
         Departamento.list().each {dep->
+            dep.estado=""
+//            println "iter dep "+dep.codigo+"  "+dep.estado
             if(bloquear.id.contains(dep.id)){
 //                println "bloqueando dep "+dep
                 dep.estado="B"
-                if(!dep.save(flush: true))
-                    println "errores save dep "+dep.errors
+
 
             }else{
                 if(warning.id.contains(dep.id)){
                     if(dep.estado!="B") {
+//                        println "warning dep "+dep
                         dep.estado = "W"
-                        dep.save(flush: true)
-                    }
-                }else{
-                    if(dep.estado!=""){
-                        dep.estado=""
-                        dep.save(flush: true)
+
                     }
                 }
-
             }
+            if(!dep.save(flush: true))
+                println "errores save dep "+dep.errors
         }
         Persona.findAllByEstadoInList(["B","W"]).each {
 //            println "desbloq "+it.login
@@ -143,26 +142,24 @@ class BloqueosJob {
             }
         }
         deps.each {dep->
+            dep.estado=""
+//            println "iter dep "+dep.codigo+"  "+dep.estado
             if(bloquear.id.contains(dep.id)){
 //                println "bloqueando dep "+dep
                 dep.estado="B"
-                if(!dep.save(flush: true))
-                    println "errores save dep "+dep.errors
+
 
             }else{
                 if(warning.id.contains(dep.id)){
-                    if(dep.estado!="B"){
-                        dep.estado="W"
-                        dep.save(flush: true)
-                    }
-                }else{
-                    if(dep.estado!=""){
-                        dep.estado=""
-                        dep.save(flush: true)
+                    if(dep.estado!="B") {
+//                        println "warning dep "+dep
+                        dep.estado = "W"
+
                     }
                 }
-
             }
+            if(!dep.save(flush: true))
+                println "errores save dep "+dep.errors
         }
         Persona.findAllByEstadoInListAndDepartamento(["B","W"],depar).each {
             it.estado=""

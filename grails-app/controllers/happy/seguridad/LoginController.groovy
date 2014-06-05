@@ -194,7 +194,7 @@ class LoginController {
 //                        println "count = 0 "+session.usuario.esTriangulo()
                         if(session.usuario.esTriangulo()){
                             count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-                            println "count "+count
+//                            println "count "+count
                             if(count>0)
                                 redirect(controller: 'alertas',action: 'list')
                             else
@@ -250,10 +250,10 @@ class LoginController {
             if(count>0)
                 redirect(controller: 'alertas',action: 'list')
             else{
-                println "count = 0 "+session.usuario.esTriangulo()
+//                println "count = 0 "+session.usuario.esTriangulo()
                 if(session.usuario.esTriangulo()){
                     count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-                    println "count "+count
+//                    println "count "+count
                     if(count>0)
                         redirect(controller: 'alertas',action: 'list')
                     else
