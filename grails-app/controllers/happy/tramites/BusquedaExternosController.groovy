@@ -108,8 +108,9 @@ class BusquedaExternosController {
         } else {
 //            filtrados = null
             render "<div class=\"alert alert-info\">\n" +
-                    "<i class='icon-ghost fa-3x pull-left text-shadow'></i>" +
-                    "        <p class='lead'>No se encontró ningún trámite que coincida con los parámetros ingresados</p>\n" +
+                    "<p class='lead'>El código de trámite ingresado no existe en el sistema.</p>"+
+//                    "<i class='icon-ghost fa-3x pull-left text-shadow'></i>" +
+//                    "        <p class='lead'>No se encontró ningún trámite que coincida con los parámetros ingresados</p>\n" +
                     "    </div>"
         }
 //        return [tramite: filtrados]

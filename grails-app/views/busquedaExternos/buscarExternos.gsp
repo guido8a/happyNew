@@ -146,7 +146,7 @@
                         <div class="col-md-7" style="text-align: left; margin-left: 30px; margin-top: -5px; width: 580px;">
                             Ingrese el código del trámie en el formato: DEX - # - OFI - AÑO. <br/> Donde: <strong>DEX</strong>: es el prefijo para todos los trámites,
                             <strong>#</strong>: representa el número del trámite, <strong>OFI</strong> son las siglas de la oficina y
-                            <strong>AÑO</strong> es los dos dígitos del año. <span style="color: #448"> Ejemplo: DEX-43-DSG-14</span>
+                            <strong>AÑO</strong> es los dos dígitos del año. <span style="color: #448"> Ejemplo: DEX-43-DPT-14</span>
                         </div>
                     </div>
 
