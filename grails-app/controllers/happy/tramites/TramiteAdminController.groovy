@@ -532,6 +532,13 @@ class TramiteAdminController {
             if (!persDocTram.tramite.save(flush: true)) {
                 println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
             }
+            if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
+                def estadoEnviado = EstadoTramite.findByCodigo("E003")
+                persDocTram.tramite.estadoTramite = estadoEnviado
+                if (!persDocTram.tramite.save(flush: true)) {
+                    println "Error al cambiar el estado del tramite: " + persDocTram.tramite.errors
+                }
+            }
             render "OK"
         } else {
             render "NO*" + renderErrors(bean: persDocTram)
@@ -555,11 +562,11 @@ class TramiteAdminController {
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def pdt = PersonaDocumentoTramite.get(params.id)
         getCadenaDown(pdt, funcion)
-        if(pdt.rolPersonaTramite.codigo=="R001"){
-            def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite,rolCopia)
-            if(copias.size()>0){
+        if (pdt.rolPersonaTramite.codigo == "R001") {
+            def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, rolCopia)
+            if (copias.size() > 0) {
                 copias.each {
-                    getCadenaDown(it,funcion)
+                    getCadenaDown(it, funcion)
                 }
             }
         }

@@ -111,6 +111,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (tramite.tipoDocumento.codigo == "DEX")
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
 
+        def externos = ["DEX", "OFI"]
+        if (externos.contains(tramite.tipoDocumento.codigo)) {
+            tramite.externo = '1'
+        }
+
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"

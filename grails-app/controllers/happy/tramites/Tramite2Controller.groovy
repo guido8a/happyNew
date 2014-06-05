@@ -894,8 +894,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def crearTramiteDep() {
         params.esRespuesta = params.esRespuesta ?: 0
-        if(!session.usuario.esTriangulo()){
-            flash.message="Su perfil (${session.perfil}), no tiene permiso para entrar a esta pantalla"
+        if (!session.usuario.esTriangulo()) {
+            flash.message = "Su perfil (${session.perfil}), no tiene permiso para entrar a esta pantalla"
             response.sendError(403)
         }
 
@@ -1078,8 +1078,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (params.pdt) {
             pdt = params.pdt
             def pdto = PersonaDocumentoTramite.get(pdt)
-            if (pdto.estado.codigo == "E006" || pdto.estado.codigo == "E005") {
-                flash.message = "No puede responder a este tramite puesto que ha sido anulado o archivado"
+            if (pdto.estado.codigo != "E004") {
+                flash.message = "No puede responder a este tramite puesto que ha sido anulado, archivado o no ha sido recibido"
                 response.sendError(403)
             }
         } else if (params.hermano) {
@@ -1220,6 +1220,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
         tramite.properties = paramsTramite
         if (tramite.tipoDocumento.codigo == "DEX")
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
+
+        def externos = ["DEX", "OFI"]
+        if (externos.contains(tramite.tipoDocumento.codigo)) {
+            tramite.externo = '1'
+        }
+
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
