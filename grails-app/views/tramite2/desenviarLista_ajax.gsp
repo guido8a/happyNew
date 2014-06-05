@@ -31,7 +31,15 @@ td {
         <thead>
             <th>Rol</th>
             <th>Persona/Departamento</th>
-            <th class="text-center"><i class="chk chkAll fa fa-square-o fa-lg"></i></th>
+            <th class="text-center">
+                <g:if test="${([paras] + ccs).size() == 1}">
+                    <i class="chk chkAll fa fa-check-square fa-lg"></i>
+                </g:if>
+                <g:else>
+                    <i class="chk chkAll fa fa-square-o fa-lg"></i>
+                </g:else>
+                %{--<i class="chk chkAll fa fa-square-o fa-lg"></i>--}%
+            </th>
         </thead>
         <tbody>
             <g:each in="${[paras] + ccs}" var="para">
@@ -45,7 +53,12 @@ td {
                                 ${para.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}
                             </g:if>
                             <g:else>
-                                <i class="chk chkOne fa fa-square-o fa-lg" id="${para.id}"></i>
+                                <g:if test="${([paras] + ccs).size() == 1}">
+                                    <i class="chk chkOne fa fa-check-square fa-lg" id="${para.id}"></i>
+                                </g:if>
+                                <g:else>
+                                    <i class="chk chkOne fa fa-square-o fa-lg" id="${para.id}"></i>
+                                </g:else>
                             </g:else>
                         </g:if>
                         <g:else>
