@@ -80,9 +80,9 @@
             %{--<g:link action="bandejaEntrada" class="btn btn-azul btnRegresar">--}%
             %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
             %{--</g:link>--}%
-                %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">--}%
-                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-                %{--</g:link>--}%
+            %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="btn btn-azul btnRegresar">--}%
+            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+            %{--</g:link>--}%
                 <g:if test="${tramite.padre || tramite.id}">
                     <a href="#" class="btn btn-azul" id="btnDetalles">
                         <i class="fa fa-search"></i> Detalles
@@ -144,7 +144,7 @@
 
                         <div class="col-md-11">${principal.asunto}</div>
                     </div>
-                    <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim() != ''}">
+                    <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim()?.size() > 0}">
                         <div class="row">
                             <div class="col-md-1 negrilla">Texto:</div>
 
@@ -154,7 +154,7 @@
                         </div>
                     </g:if>
 
-                    <g:if test="${principal.observaciones && principal.observaciones?.trim() != ''}">
+                    <g:if test="${principal.observaciones && principal.observaciones?.trim()?.size() > 0}">
                         <div class="row">
                             <div class="col-md-1 negrilla">Obs:</div>
 
@@ -202,7 +202,7 @@
                             <div class="col-md-11">${padre.asunto}</div>
                         </div>
 
-                        <g:if test="${padre.personaPuedeLeer(session.usuario) && padre.texto?.trim() != ''}">
+                        <g:if test="${padre.personaPuedeLeer(session.usuario) && padre.texto?.trim()?.size() > 0}">
                             <div class="row">
                                 <div class="col-md-1 negrilla">Texto:</div>
 
@@ -212,7 +212,7 @@
                             </div>
                         </g:if>
 
-                        <g:if test="${padre.observaciones && padre.observaciones?.trim() != ''}">
+                        <g:if test="${padre.observaciones && padre.observaciones?.trim()?.size() > 0}">
                             <div class="row">
                                 <div class="col-md-1 negrilla">Obs:</div>
 

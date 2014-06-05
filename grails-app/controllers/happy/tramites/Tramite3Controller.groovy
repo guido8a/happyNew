@@ -111,6 +111,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (tramite.tipoDocumento.codigo == "DEX")
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
 
+        def externos = ["DEX", "OFI"]
+        if (externos.contains(tramite.tipoDocumento.codigo)) {
+            tramite.externo = '1'
+        }
+
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -529,8 +534,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def usu = Persona.get(session.usuario.id)
 //        def triangulo = PermisoTramite.findByCodigo("E001")
         def bloqueo = false
-        if(!session.usuario.esTriangulo()){
-            flash.message="Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
+        if (!session.usuario.esTriangulo()) {
+            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
             response.sendError(403)
         }
         return [persona: usu, bloqueo: bloqueo]
@@ -661,6 +666,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
+            println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
                 render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return
@@ -818,7 +824,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     render "NO_Ocurrió un error al recibir"
                 }
                 def job = new BloqueosJob()
-                job.executeRecibir(persona.departamento,session.usuario)
+                job.executeRecibir(persona.departamento, session.usuario)
                 job = null
             } else {
                 println pxt.errors

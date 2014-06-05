@@ -141,7 +141,7 @@
                             </div>
 
                             <div class="col-md-2" style="margin-left: -20px;">
-                                <g:textField name="codigo" value="" maxlength="15" class="form-control allCaps" style="width: 160px"/>
+                                <g:textField name="codigo" value="" maxlength="20" class="form-control allCaps" style="width: 160px"/>
                             </div>
                         <div class="col-md-7" style="text-align: left; margin-left: 30px; margin-top: -5px; width: 580px;">
                             Ingrese el código del trámie en el formato: DEX - # - OFI - AÑO. <br/> Donde: <strong>DEX</strong>: es el prefijo para todos los trámites,

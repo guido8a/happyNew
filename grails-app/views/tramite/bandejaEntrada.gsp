@@ -318,7 +318,7 @@
                 var contestar = {
                     label : 'Contestar Documento',
                     icon  : "fa fa-external-link",
-                    url   : "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt+"&esRespuesta=1"
+                    url   : "${g.createLink(action: 'crearTramite')}/?padre=" + id + "&pdt=" + idPxt + "&esRespuesta=1"
                 };
 
                 var ver = {
@@ -676,8 +676,6 @@
                         };
                     }
                 }
-
-
 
                 return items
             }
