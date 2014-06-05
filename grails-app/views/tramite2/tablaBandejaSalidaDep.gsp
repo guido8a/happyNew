@@ -117,8 +117,17 @@
                                     <g:set var="dest" value="${1}"/>
                                 </g:if>
                                 <g:else>
-                                    ${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}
-                                    <g:set var="dest" value="${1}"/>
+                                    <g:if test="${para?.departamento?.triangulos}">
+                                        <span class="small">
+                                            <g:each in="${para?.departamento?.triangulos}" var="t" status="i">
+                                                <g:set var="dest" value="${dest + 1}"/>
+                                                <i class="fa fa-download"></i>
+                                                ${t.nombre} ${t.apellido}${i < para?.departamento?.triangulos.size() - 1 ? ', ' : ''}
+                                            </g:each>
+                                        </span>
+                                    </g:if>
+                                %{--${para?.departamento?.triangulos && para?.departamento?.triangulos.size() > 0 ? para?.departamento?.triangulos.first() : ''}--}%
+                                %{--<g:set var="dest" value="${1}"/>--}%
                                 </g:else>
                             </g:if>
                         %{--<g:else>--}%
