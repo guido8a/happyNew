@@ -187,14 +187,13 @@
 
             var padre;
 
-
-            function createContextMenu (node){
+            function createContextMenu(node) {
                 var $tr = $(node);
 
                 var items = {
                     header : {
-                        label : "Sin Acciones",
-                        header: true
+                        label  : "Sin Acciones",
+                        header : true
                     }
                 };
 
@@ -211,126 +210,144 @@
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
-                var conAnexo = $tr.hasClass("conAnexo")
-                var conPadre = $tr.hasClass("padre")
+                var conAnexo = $tr.hasClass("conAnexo");
+                var conPadre = $tr.hasClass("padre");
+                var esPrincipal = $tr.hasClass("principal");
 
+                var arbol = {
+                    label  : 'Cadena del trámite',
+                    icon   : "fa fa-sitemap",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqt"
+                    }
+                };
 
-            var arbol = {
-                label   : 'Cadena del trámite',
-                icon   : "fa fa-sitemap",
-                action : function (e) {
-                    location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqt"
-                }
-            };
+                var detalles = {
+                    label  : 'Detalles',
+                    icon   : "fa fa-search",
+                    action : function (e) {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                $("#dialog-body").html(msg)
+                            }
+                        });
+                        $("#dialog").modal("show");
+                    }
+                };
 
-            var detalles = {
-                label   : 'Detalles',
-                icon   : "fa fa-search",
-                action : function (e) {
-                    $.ajax({
-                        type    : 'POST',
-                        url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
-                        data    : {
-                            id : id
-                        },
-                        success : function (msg) {
-                            $("#dialog-body").html(msg)
-                        }
-                    });
-                    $("#dialog").modal("show");
-                }
-            };
+                var crearHermano = {
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        <g:if test="${session.usuario.esTriangulo}">
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre;
+                        </g:if>
+                        <g:else>
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
+                        </g:else>
+                    }
+                };
+                var contestar = {
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        <g:if test="${session.usuario.esTriangulo}">
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + id;
+                        </g:if>
+                        <g:else>
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + id;
+                        </g:else>
+                    }
+                };
 
-            var crearHermano = {
-                label   : "Agregar documento al trámite",
-                icon   : "fa fa-paste",
-                action : function () {
-                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
-                }
-            };
+                var administrar = {
+                    label  : "Administrar trámite",
+                    icon   : "fa fa-cogs",
+                    action : function () {
+                        location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
+                    }
+                };
 
-            var administrar = {
-                label   : "Administrar trámite",
-                icon   : "fa fa-cogs",
-                action : function () {
-                    location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
-                }
-            };
+                var anexos = {
+                    text   : 'Anexos',
+                    icon   : "<i class='fa fa-paperclip'></i>",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
+                    }
+                };
 
-            var anexos = {
-                text   : 'Anexos',
-                icon   : "<i class='fa fa-paperclip'></i>",
-                action : function (e) {
-                    location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
-                }
-            };
-
-            var ampliarPlazo = {
-                text   : "Ampliar plazo",
-                icon   : "<i class='fa fa-arrows-h'></i>",
-                action : function (e) {
-                    $("tr.trHighlight").removeClass("trHighlight");
-                    e.preventDefault();
-                    $.ajax({
-                        type    : 'POST',
-                        url     : '${createLink(controller: 'buscarTramite', action: 'ampliarPlazoUI_ajax')}',
-                        data    : {
-                            id : id
-                        },
-                        success : function (msg) {
-                            bootbox.dialog({
-                                title   : "Ampmliar plazo",
-                                message : msg,
-                                class   : "long",
-                                buttons : {
-                                    cancelar : {
-                                        label     : "Cancelar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                        }
-                                    },
-                                    guardar  : {
-                                        label     : "<i class='fa fa-save'></i> Guardar",
-                                        className : "btn-success",
-                                        callback  : function () {
-                                            var $frm = $("#frm-ampliar");
-                                            if ($frm.valid()) {
-                                                openLoader("Ampliando plazo");
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : $frm.attr("action"),
-                                                    data    : $frm.serialize(),
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        closeLoader();
-                                                    }
-                                                });
+                var ampliarPlazo = {
+                    text   : "Ampliar plazo",
+                    icon   : "<i class='fa fa-arrows-h'></i>",
+                    action : function (e) {
+                        $("tr.trHighlight").removeClass("trHighlight");
+                        e.preventDefault();
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'ampliarPlazoUI_ajax')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Ampmliar plazo",
+                                    message : msg,
+                                    class   : "long",
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        guardar  : {
+                                            label     : "<i class='fa fa-save'></i> Guardar",
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var $frm = $("#frm-ampliar");
+                                                if ($frm.valid()) {
+                                                    openLoader("Ampliando plazo");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : $frm.attr("action"),
+                                                        data    : $frm.serialize(),
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            closeLoader();
+                                                        }
+                                                    });
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
+                    }
+                };
+
+                items.header.label = "Acciones";
+                items.detalles = detalles;
+                items.arbol = arbol;
+                <g:if test="${session.usuario.getPuedeAdmin()}">
+                items.administrar = administrar;
+                </g:if>
+                if (conPadre) {
+                    items.crearHermano = crearHermano;
                 }
-            };
-
-
-           items.header.label = "Acciones";
-                items.detalles = detalles
-                items.arbol = arbol
-            <g:if test="${session.usuario.getPuedeAdmin()}">
-                items.administrar = administrar
-            </g:if>
-                if(conPadre){
-                    items.crearHermano = crearHermano
+                if (esPrincipal) {
+                    items.contestar = contestar;
                 }
 
-            return items
+                return items
 
             }
-
 
             $(".btnBorrar").click(function () {
 

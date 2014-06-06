@@ -43,6 +43,7 @@
                     <g:set var="clase" value="${'nada'}"/>
 
                     <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).de?.id == session.usuario.id}">
+                        <g:set var="clase" value="${'principal'}"/>
                         <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).padre}">
                             <g:set var="padre" value="${happy.tramites.Tramite.get(tramite?.trmt__id).padre?.id}"/>
                             <g:set var="clase" value="${'padre'}"/>
