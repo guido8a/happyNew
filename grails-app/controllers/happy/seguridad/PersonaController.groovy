@@ -631,8 +631,12 @@ class PersonaController extends happy.seguridad.Shield {
                         usu=it.persona
                         it.delete(flush: true)
                     }
-                    sesn = Sesn.findByUsuarioAndFechaFinIsNotNull(usu)
-                    sesn.fechaFin=now;
+                    Sesn.findAllByUsuarioAndFechaFinIsNotNull(usu).each{
+                        if(it.fechaFin==accs.accsFechaFinal) {
+                            it.fechaFin = now
+                            it.save()
+                        }
+                    }
                     accs.delete(flush: true)
                     render "OK_Restricción eliminada."
                 } catch (e) {
