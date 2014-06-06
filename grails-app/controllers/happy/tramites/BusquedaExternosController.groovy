@@ -50,7 +50,7 @@ class BusquedaExternosController {
             def tram = ultimoHijo(filtrados)
 //            println "TRAM: " + tram.codigo
 
-            def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = "- Sin director asignado -"
+            def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " "
             def para = tram.para
             if (para.persona) {
 //                strPara = (para.persona.titulo ? para.persona.titulo + " " : "") +
@@ -95,9 +95,11 @@ class BusquedaExternosController {
                 msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion ?: ''}</em></strong></p>"
             }
             if (tram.tipoDocumento.codigo == "OFI") {
-                msg += "Contestación enviada con trámite externo <strong><em>${tram.codigo}</em></strong> el <strong><em>${tram.fechaEnvio.format('dd-MM-yyyy HH:mm')}</em></strong>"
+                msg += "Contestación enviada con trámite externo <strong><em>${tram.codigo}</em></strong> el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong>"
             } else {
-                msg += "<p>El documento se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
+                msg += "<p>Con documento: <strong><em>${tram.codigo}</em></strong> "
+                msg += "desde el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong> "
+                msg += "se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
                 msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
                 msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
                 msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
