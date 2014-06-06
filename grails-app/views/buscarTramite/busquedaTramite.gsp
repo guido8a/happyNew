@@ -245,10 +245,10 @@
                     icon   : "fa fa-paste",
                     action : function () {
                         <g:if test="${session.usuario.esTriangulo}">
-                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre;
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre+"&hermano="+id;
                         </g:if>
                         <g:else>
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre;
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre+"&hermano="+id;
                         </g:else>
                     }
                 };
@@ -257,10 +257,10 @@
                     icon   : "fa fa-paste",
                     action : function () {
                         <g:if test="${session.usuario.esTriangulo}">
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + id;
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + id+"&buscar=1";
                         </g:if>
                         <g:else>
-                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + id;
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + id+"&buscar=1";
                         </g:else>
                     }
                 };

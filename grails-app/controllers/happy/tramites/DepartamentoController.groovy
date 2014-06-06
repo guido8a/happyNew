@@ -321,8 +321,10 @@ class DepartamentoController extends happy.seguridad.Shield {
                     def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
                     data = "data-tramites='${tramites.size()}'"
+//                    if(hijo.login=="mmoya")
+//                    println "hijo!!!!!!!  "+hijo.login +"  "+hijo.esTriangulo
+                    if (hijo.esTrianguloOff()) {
 
-                    if (hijo.esTriangulo) {
                         rel += "Triangulo"
 //                        println "++++++++++++++++++++++++++++"
 //                        println hijo

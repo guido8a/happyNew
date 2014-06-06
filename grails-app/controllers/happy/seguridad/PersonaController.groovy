@@ -1,6 +1,7 @@
 package happy.seguridad
 
 import groovy.json.JsonBuilder
+import happy.alertas.Alerta
 import happy.tramites.Departamento
 import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
@@ -410,7 +411,11 @@ class PersonaController extends happy.seguridad.Shield {
 
     def personal() {
         def usuario = Persona.get(session.usuario.id)
-        return [usuario: usuario, params: params]
+        def dep = usuario.departamento
+        def triangulos = dep.getTriangulos()
+        def personas = Persona.findAllByDepartamentoAndActivo(dep,1)
+        personas.remove(usuario)
+        return [usuario: usuario, params: params,triangulos:triangulos,personas: personas]
     }
 
     def loadFoto() {
@@ -530,12 +535,60 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def saveAccesos_ajax() {
+        println "asig acc "+params
         params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
             //println "error accesos: " + accs.errors
             render "NO_" + g.renderErrors(bean: accs)
         } else {
+            if(params.nuevoTriangulo){
+
+                def pers = Sesn.findAllByUsuario(session.usuario).perfil
+                def perfil = null
+                pers.each {p->
+                    if(!perfil){
+                        Prpf.findAllByPerfil(p).each {pr->
+                            if(pr.permiso.codigo=="E001"){
+                                perfil = p
+                            }
+                        }
+                    }
+                }
+                if(perfil){
+                    def asignado = Persona.get(params.nuevoTriangulo)
+                    accs.accsObservaciones+="; Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
+                    def sesion = new Sesn()
+                    sesion.perfil=perfil
+                    sesion.usuario=asignado
+                    sesion.fechaInicio=accs.accsFechaInicial
+                    sesion.fechaFin=accs.accsFechaFinal
+                    sesion.save(flush: true)
+                    Prpf.findAllByPerfil(perfil).each {pr->
+                        def permUsu = new PermisoUsuario()
+                        permUsu.persona=asignado
+                        permUsu.permisoTramite=pr.permiso
+                        permUsu.asignadoPor = session.usuario
+                        permUsu.fechaInicio=accs.accsFechaInicial
+                        permUsu.fechaFin=accs.accsFechaFinal
+                        permUsu.acceso=accs
+                        if(!permUsu.save(flush: true))
+                            println "error save perm nuevo triangulo "+permUsu.errors
+                    }
+                    def alerta = new Alerta()
+                    alerta.persona=asignado
+                    alerta.accion=""
+                    alerta.controlador=""
+                    alerta.fechaCreacion=new Date()
+                    alerta.mensaje="El usuario ${session.usuario.login} te ha asignado como ${perfil} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')} con motivo de su ausentismo"
+                    alerta.save(flush: true)
+                }else{
+                    println "wtf no hay perfil "+params
+                }
+
+
+//                println "nuevo perm "+permUsu.persona.id+"  "+permUsu.permisoTramite.descripcion+"  "+permUsu.fechaInicio+"  "+permUsu.fechaFin
+            }
             render "OK_Restricción agregada"
         }
     }
@@ -548,6 +601,9 @@ class PersonaController extends happy.seguridad.Shield {
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 accs.accsFechaFinal = now
+                def perm = PermisoUsuario.findByAcceso(accs)
+                perm.fechaFin= now;
+                perm.save(flush: true)
                 if (!accs.save(flush: true)) {
                     render "NO_" + renderErrors(bean: accs)
                 } else {
@@ -569,6 +625,14 @@ class PersonaController extends happy.seguridad.Shield {
                 render "INFO_No puede eliminar una restricción en curso. Puede terminarla."
             } else {
                 try {
+                    def sesn
+                    def usu
+                    PermisoUsuario.findAllByAcceso(accs).each {
+                        usu=it.persona
+                        it.delete(flush: true)
+                    }
+                    sesn = Sesn.findByUsuarioAndFechaFinIsNotNull(usu)
+                    sesn.fechaFin=now;
                     accs.delete(flush: true)
                     render "OK_Restricción eliminada."
                 } catch (e) {

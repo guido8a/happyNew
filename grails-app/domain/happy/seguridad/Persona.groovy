@@ -108,12 +108,20 @@ class Persona {
         if (this.activo != 1)
             return false
         def now = new Date()
-        def accs = Accs.findAllByUsuarioAndAccsFechaFinalGreaterThan(this, now)
+        def accs = Accs.findAllByUsuarioAndAccsFechaFinalGreaterThanEquals(this, now)
+//        println "accs "+accs?.accsFechaInicial+"  "+accs?.accsFechaFinal
+        def res = true
         accs.each {
-            if (it.accsFechaInicial >= now)
-                return false
+//            println "it  "+it.accsFechaInicial.format('dd-MM-yyyy')+"  "+(it.accsFechaInicial >= now)+"  "+now.format('dd-MM-yyyy')
+            if(res){
+                if (it.accsFechaInicial <= now) {
+//                println "ret false"
+                    res =  false
+                }
+            }
+
         }
-        return true
+        return res
     }
 
     def getPuedeRecibir() {
@@ -497,6 +505,7 @@ class Persona {
 //        }
 //        def permisos = perm.findAll { it.estaActivo }
 //        return permisos.size() > 0
+//        println "perm "+this.permisos
         if(this.permisos.size()>0) {
             def perm = null
             this.permisos.each {
@@ -525,6 +534,18 @@ class Persona {
 //            println "perms "+perms
             return perms.size() > 0
         }
+    }
+    def esTrianguloOff() {
+
+            def perm = PermisoUsuario.withCriteria {
+                eq("persona", this)
+                eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+            }
+//            println "perm "+perm
+            def perms = perm.findAll { it.estaActivo }
+//            println "perms "+perms
+            return perms.size() > 0
+
     }
 
     def getEsTriangulo() {

@@ -53,12 +53,15 @@ class Departamento {
     def getTriangulos() {
         def triangulos = []
         Persona.findAllByDepartamento(this).each { pr ->
-            def prm = PermisoUsuario.findAllByPersonaAndPermisoTramite(pr, PermisoTramite.findByCodigo("E001")).findAll {
-                it.estaActivo
+            if(pr.estaActivo){
+                def prm = PermisoUsuario.findAllByPersonaAndPermisoTramite(pr, PermisoTramite.findByCodigo("E001")).findAll {
+                    it.estaActivo
+                }
+                if (prm.size() > 0) {
+                    triangulos.add(pr)
+                }
             }
-            if (prm.size() > 0) {
-                triangulos.add(pr)
-            }
+
         }
         return triangulos
     }

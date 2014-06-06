@@ -1,6 +1,7 @@
 package happy.seguridad
 
 import happy.alertas.Alerta
+import happy.tramites.PermisoUsuario
 import happy.tramites.Tramite
 import happy.utilitarios.Parametros
 import org.apache.directory.groovyldap.LDAP
@@ -122,6 +123,7 @@ class LoginController {
             eq("login", params.login, [ignoreCase: true])
             eq("activo", 1)
         }
+
         if (user.size() == 0) {
             flash.message = "No se ha encontrado el usuario"
             flash.tipo = "error"
@@ -130,88 +132,105 @@ class LoginController {
             flash.tipo = "error"
         } else {
             user = user[0]
-            session.usuario = user
-            session.departamento = user.departamento
-            session.triangulo = user.esTriangulo()
-            def perfiles = Sesn.findAllByUsuario(user)
-            if (perfiles.size() == 0) {
-                flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
+            println "sta activo "+user.estaActivo
+            if(!user.estaActivo){
+                flash.message = "El usuario ingresado no esta activo."
                 flash.tipo = "error"
-                flash.icon = "icon-warning"
-                session.usuario = null
-            } else{
-                def admin = false
-                perfiles.each {
-                    if(it.perfil.codigo=="ADM"){
-                        admin=true
-                    }
+                redirect(controller: 'login', action: "login")
+                return
+            }else{
+                session.usuario = user
+                session.departamento = user.departamento
+                session.triangulo = user.esTriangulo()
+                def perf= Sesn.findAllByUsuario(user)
+                def perfiles = []
+                perf.each {p->
+//                    println "verf perfil "+p+" "+p.estaActivo
+                    if(p.estaActivo)
+                        perfiles.add(p)
                 }
-                if(!admin){
-                    def par = Parametros.list([sort: "id",order: "desc"])
-                    if(par.size()>0){
-                        par = par.pop()
-                        if(par.validaLDAP==0)
+                if (perfiles.size() == 0) {
+                    flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
+                    flash.tipo = "error"
+                    flash.icon = "icon-warning"
+                    session.usuario = null
+                } else{
+                    def admin = false
+                    perfiles.each {
+                        if(it.perfil.codigo=="ADM"){
                             admin=true
+                        }
                     }
-                }
+                    if(!admin){
+                        def par = Parametros.list([sort: "id",order: "desc"])
+                        if(par.size()>0){
+                            par = par.pop()
+                            if(par.validaLDAP==0)
+                                admin=true
+                        }
+                    }
 
-                if(!admin){
-                    if(!conecta(user,params.pass)){
-                        flash.message = "No se pudo validar la información ingresada con el sistema LDAP, contraseña incorrecta o usuario no registrado en el LDAP"
-                        flash.tipo = "error"
-                        flash.icon = "icon-warning"
-                        session.usuario = null
-                        session.departamento = null
-                        redirect(controller: 'login', action: "login")
-                        return
+                    if(!admin){
+                        if(!conecta(user,params.pass)){
+                            flash.message = "No se pudo validar la información ingresada con el sistema LDAP, contraseña incorrecta o usuario no registrado en el LDAP"
+                            flash.tipo = "error"
+                            flash.icon = "icon-warning"
+                            session.usuario = null
+                            session.departamento = null
+                            redirect(controller: 'login', action: "login")
+                            return
+                        }
+                    }else{
+                        if(params.pass.encodeAsMD5()!=user.password){
+                            flash.message = "Contraseña incorrecta"
+                            flash.tipo = "error"
+                            flash.icon = "icon-warning"
+                            session.usuario = null
+                            session.departamento = null
+                            redirect(controller: 'login', action: "login")
+                            return
+                        }
                     }
-                }else{
-                    if(params.pass.encodeAsMD5()!=user.password){
-                        flash.message = "Contraseña incorrecta"
-                        flash.tipo = "error"
-                        flash.icon = "icon-warning"
-                        session.usuario = null
-                        session.departamento = null
-                        redirect(controller: 'login', action: "login")
-                        return
-                    }
-                }
-                if (perfiles.size() == 1) {
-                    session.usuario.vaciarPermisos()
-                    session.perfil = perfiles.first().perfil
-                    def cn = "inicio"
-                    def an = "index"
-                    def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
-                    def permisos = Prpf.findAllByPerfil(session.perfil)
-                    permisos.each {
-                        session.usuario.permisos.add(it.permiso)
-                    }
+                    if (perfiles.size() == 1) {
+                        session.usuario.vaciarPermisos()
+                        session.perfil = perfiles.first().perfil
+                        def cn = "inicio"
+                        def an = "index"
+                        def count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+                        def permisos = Prpf.findAllByPerfil(session.perfil)
+                        permisos.each {
+                            def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario,it.permiso)
+                            if(perm.estaActivo)
+                                session.usuario.permisos.add(it.permiso)
+                        }
 //                    println "add "+session.usuario.permisos
 //                    println "puede tramite "+session.usuario.getPuedeRecibir()
-                    if(count>0)
-                        redirect(controller: 'alertas',action: 'list')
-                    else{
+                        if(count>0)
+                            redirect(controller: 'alertas',action: 'list')
+                        else{
 //                        println "count = 0 "+session.usuario.esTriangulo()
-                        if(session.usuario.esTriangulo()){
-                            count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+                            if(session.usuario.esTriangulo()){
+                                count=Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
 //                            println "count "+count
-                            if(count>0)
-                                redirect(controller: 'alertas',action: 'list')
-                            else
+                                if(count>0)
+                                    redirect(controller: 'alertas',action: 'list')
+                                else
+                                    redirect(controller: "inicio", action: "index")
+                            }else{
                                 redirect(controller: "inicio", action: "index")
-                        }else{
-                            redirect(controller: "inicio", action: "index")
-                        }
+                            }
 
-                    }
+                        }
 //                    redirect(controller: cn, action: an)
-                    return
-                } else {
-                    session.usuario.vaciarPermisos()
-                    redirect(action: "perfiles")
-                    return
+                        return
+                    } else {
+                        session.usuario.vaciarPermisos()
+                        redirect(action: "perfiles")
+                        return
+                    }
                 }
             }
+
         }
         redirect(controller: 'login', action: "login")
     }
@@ -219,7 +238,12 @@ class LoginController {
     def perfiles() {
         def usuarioLog = session.usuario
         def perfilesUsr = Sesn.findAllByUsuario(usuarioLog, [sort: 'perfil'])
-        return [perfilesUsr: perfilesUsr]
+        def perfiles=[]
+        perfilesUsr.each {p->
+            if(p.estaActivo)
+                perfiles.add(p)
+        }
+        return [perfilesUsr: perfiles]
     }
 
     def savePer() {
@@ -229,7 +253,9 @@ class LoginController {
 
             def permisos = Prpf.findAllByPerfil(perf)
             permisos.each {
-                session.usuario.permisos.add(it.permiso)
+                def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario,it.permiso)
+                if(perm.estaActivo)
+                    session.usuario.permisos.add(it.permiso)
             }
 //            println "add "+session.usuario.permisos
 //            println "puede recibir "+session.usuario.getPuedeRecibir()

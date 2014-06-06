@@ -1,5 +1,6 @@
 package happy.tramites
 
+import happy.seguridad.Accs
 import happy.seguridad.Persona
 
 class PermisoUsuario {
@@ -10,6 +11,7 @@ class PermisoUsuario {
     String observaciones
     Persona asignadoPor
     Persona modificadoPor
+    Accs acceso
 
     static mapping = {
         table 'prus'
@@ -27,6 +29,7 @@ class PermisoUsuario {
 
             asignadoPor column: 'prsnasgn'
             modificadoPor column: 'prsnmdfc'
+            acceso column: 'accs__id'
         }
     }
     static constraints = {
@@ -38,6 +41,7 @@ class PermisoUsuario {
 
         asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el permiso'])
         modificadoPor(blank: true, nullable: true, attributes: [title: 'modificado por'])
+        acceso(blank:true,nullable: true)
     }
 
     boolean getEstaActivo() {

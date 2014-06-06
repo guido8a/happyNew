@@ -64,11 +64,18 @@
             <td class="d${(((new Date()) - a.fechaCreacion)>2)?"mas":(new Date()) - a.fechaCreacion }"></td>
             <td>${a.mensaje}</td>
             <td>${a.tramite?.codigo}</td>
-            <td>${a.fechaCreacion.format("dd-MM-yyyy hh:mm")}</td>
+            <td>${a.fechaCreacion?.format("dd-MM-yyyy hh:mm")}</td>
             <td style="text-align: center">
-                <a href="#" link="${g.createLink(controller: a.controlador,action: a.accion)}/${a.datos}" class="btn btn-azul btn-small rev" iden="${a.id}" title="Revisar">
-                    <i class="fa fa-check"></i>
-                </a>
+                <g:if test="${a.controlador!='' && a.controlador.size()>1}">
+                    <a href="#" link="${g.createLink(controller: a.controlador,action: a.accion)}/${a.datos}" class="btn btn-azul btn-small rev" iden="${a.id}" title="Revisar">
+                        <i class="fa fa-check"></i>
+                    </a>
+                </g:if>
+                <g:else>
+                    <a href="#" link="${g.createLink(controller: 'inicio',action: 'index')}" class="btn btn-azul btn-small rev" iden="${a.id}" title="Revisar">
+                        <i class="fa fa-check"></i>
+                    </a>
+                </g:else>
             </td>
         </tr>
     </g:each>
