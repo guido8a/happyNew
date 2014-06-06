@@ -10,7 +10,7 @@ class BusquedaExternosController {
     }
 
     def tablaBusquedaExternos() {
-        println("params:" + params)
+//        println("params:" + params)
         def res
         def filtrados = []
         if (!params.contacto && !params.numero && !params.codigo && !params.institucion) {
@@ -33,7 +33,6 @@ class BusquedaExternosController {
             }
         }
 //            println("res:" + res)
-
         if (res) {
             res.each {
 //                    println("externo:" + it.externo)
@@ -95,7 +94,9 @@ class BusquedaExternosController {
                 msg += "<p>El estado de su trámite es: <strong><em>${tram.estadoTramiteExterno?.descripcion ?: ''}</em></strong></p>"
             }
             if (tram.tipoDocumento.codigo == "OFI") {
-                msg += "Contestación enviada con trámite externo <strong><em>${tram.codigo}</em></strong> el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong>"
+                msg += "Contestación enviada con trámite externo <strong><em>${tram.codigo}</em></strong> el " +
+                        "<strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong> para " +
+                        "<strong><em>${tram.paraExterno}</em></strong>."
             } else {
                 msg += "<p>Con documento: <strong><em>${tram.codigo}</em></strong> "
                 msg += "desde el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong> "
@@ -110,7 +111,7 @@ class BusquedaExternosController {
         } else {
 //            filtrados = null
             render "<div class=\"alert alert-info\">\n" +
-                    "<p class='lead'>El código de trámite ingresado no existe en el sistema.</p>"+
+                    "<p class='lead'>El código de trámite ingresado no existe en el sistema.</p>" +
 //                    "<i class='icon-ghost fa-3x pull-left text-shadow'></i>" +
 //                    "        <p class='lead'>No se encontró ningún trámite que coincida con los parámetros ingresados</p>\n" +
                     "    </div>"

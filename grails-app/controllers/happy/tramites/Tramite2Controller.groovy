@@ -1086,6 +1086,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def herm = Tramite.get(params.hermano)
             pdt = herm.aQuienContesta.id
         }
+        if (params.buscar == '1') {
+            pdt = padre.para.id
+        }
+
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
                 bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }

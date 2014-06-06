@@ -467,6 +467,9 @@ class TramiteController extends happy.seguridad.Shield {
             def herm = Tramite.get(params.hermano)
             pdt = herm.aQuienContesta.id
         }
+        if (params.buscar == '1') {
+            pdt = padre.para.id
+        }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
                 persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
@@ -1010,13 +1013,13 @@ class TramiteController extends happy.seguridad.Shield {
 
     def bandejaEntrada() {
         def bloqueo = false
-        if(session.usuario.esTriangulo()){
-            flash.message="Su perfil no le permite ingresar a la bandeja de entrada personal"
-            redirect(controller: 'tramite3',action: 'bandejaEntradaDpto')
+        if (session.usuario.esTriangulo()) {
+            flash.message = "Su perfil no le permite ingresar a la bandeja de entrada personal"
+            redirect(controller: 'tramite3', action: 'bandejaEntradaDpto')
             return
         }
-        if(!session.usuario.puedeRecibir){
-            flash.message="Su perfil no tiene acceso a la bandeja de entrada pesonal"
+        if (!session.usuario.puedeRecibir) {
+            flash.message = "Su perfil no tiene acceso a la bandeja de entrada pesonal"
             response.sendError(403)
         }
 
