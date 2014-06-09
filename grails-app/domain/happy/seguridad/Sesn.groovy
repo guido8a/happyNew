@@ -32,7 +32,7 @@ class Sesn implements Serializable {
     boolean getEstaActivo() {
         def now = new Date()
 //        now = now.plus(5)
-//        println "now "+now+"  "+fechaInicio+"  "+fechaFin
+//        println " ${this.perfil} now "+now+" inicio  "+fechaInicio+" fin "+fechaFin
         if(fechaInicio == null)
             return true
         else{

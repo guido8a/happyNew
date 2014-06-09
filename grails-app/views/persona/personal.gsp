@@ -207,7 +207,7 @@
             </p>
             <g:form class="form-horizontal" name="frmAccesos" role="form" action="saveAccesos_ajax" method="POST" style="margin-top: -10px">
                 <div class="form-group required" style="margin-top: 0px;margin-left: 0px">
-                    <g:if test="${usuario.esTriangulo() &&  triangulos.size()<2}">
+                    <g:if test="${usuario.esTrianguloOff() &&  triangulos.size()<2}">
                         <h3 style="font-size: 16px;color:#3A87AD">Debe asignar las funciones de Recepción a otro usuario dentro de su departamento</h3>
                     </g:if>
                     <div class="row">
@@ -219,7 +219,7 @@
                             <div class="col-md-2">
                                 <elm:datepicker name="accsFechaInicial" title="desde"
                                                 class="datepicker form-control required" daysOfWeekDisabled="0,6"
-                                                onChangeDate="validarFechasAcceso"/>
+                                                />
                             </div>
                         </span>
 
@@ -243,7 +243,7 @@
                                 <g:textField class=" form-control" name="accsObservaciones" style="width:100%;"/>
                             </div>
                         </span>
-                        <g:if test="${!usuario.esTriangulo() ||  triangulos.size()>1}">
+                        <g:if test="${!usuario.esTrianguloOff() ||  triangulos.size()>1}">
                             <div class="col-md-2 text-center">
                                 <a href="#" class="btn btn-success" id="btnAccesos">
                                     <i class="fa fa-plus"></i> Agregar
@@ -252,7 +252,7 @@
                         </g:if>
                     </div>
                     <div class="row">
-                        <g:if test="${usuario.esTriangulo() &&  triangulos.size()<2}">
+                        <g:if test="${usuario.esTrianguloOff() &&  triangulos.size()<2}">
                             <span class="grupo">
                                 <label for="accsObservaciones" class="col-md-3 xs control-label text-info" style="text-align: left">
                                     Nuevo usuario para recepción de tramites:
@@ -481,13 +481,27 @@
                     data    : data,
                     success : function (msg) {
                         var parts = msg.split("_");
-                        log(parts[1], parts[0] == "OK" ? "success" : "error");
-                        spinner.remove();
-                        $btnAccesos.show();
-                        $frmAccesos.find("input, textarea").val("");
-                        $("#accsFechaInicial").val("date.struct");
-                        $("#accsFechaFinal").val("date.struct");
-                        loadAccesos();
+//                        console.log(parts)
+                        if(parts.length==3){
+                            log(parts[1]+". Usted será desconectado del sistema en 5 segundos", parts[0] == "OK" ? "success" : "error");
+                            spinner.remove();
+                            $("#btnAccesos-svt").show();
+                            $frmAccesos.find("input, textarea").val("");
+                            $("#accsFechaInicial").val("date.struct");
+                            $("#accsFechaFinal").val("date.struct");
+                            loadAccesos();
+                            setInterval(function () {
+                                location.href="${g.createLink(controller: 'login',action: 'logout')}"
+                            }, 5000);
+                        }else{
+                            log(parts[1], parts[0] == "OK" ? "success" : "error");
+                            spinner.remove();
+                            $("#btnAccesos-svt").show();
+                            $frmAccesos.find("input, textarea").val("");
+                            $("#accsFechaInicial").val("date.struct");
+                            $("#accsFechaFinal").val("date.struct");
+                            loadAccesos();
+                        }
                     }
                 });
             }
@@ -496,25 +510,46 @@
         });
        $("#btnAccesos-svt").click(function () {
             if ($frmAccesos.valid()) {
-                var url = $frmAccesos.attr("action");
-                var data = "usuario.id=${usuario.id}";
-                data += "&" + $frmAccesos.serialize();
-                $("#btnAccesos-svt").hide().after(spinner);
-                $.ajax({
-                    type    : "POST",
-                    url     : url,
-                    data    : data,
-                    success : function (msg) {
-                        var parts = msg.split("_");
-                        log(parts[1], parts[0] == "OK" ? "success" : "error");
-                        spinner.remove();
-                        $("#btnAccesos-svt").show();
-                        $frmAccesos.find("input, textarea").val("");
-                        $("#accsFechaInicial").val("date.struct");
-                        $("#accsFechaFinal").val("date.struct");
-                        loadAccesos();
-                    }
-                });
+//                console.log($("#nuevo-triangulo").val())
+                if($("#nuevo-triangulo").val()!="" && !isNaN($("#nuevo-triangulo").val())){
+                    var url = $frmAccesos.attr("action");
+                    var data = "usuario.id=${usuario.id}";
+                    data += "&" + $frmAccesos.serialize();
+                    $("#btnAccesos-svt").hide().after(spinner);
+                    $.ajax({
+                        type    : "POST",
+                        url     : url,
+                        data    : data,
+                        success : function (msg) {
+                            var parts = msg.split("_");
+
+                            if(parts.length==3){
+                                log(parts[1]+". Usted será desconectado del sistema en 5 segundos", parts[0] == "OK" ? "success" : "error");
+                                spinner.remove();
+                                $("#btnAccesos-svt").show();
+                                $frmAccesos.find("input, textarea").val("");
+                                $("#accsFechaInicial").val("date.struct");
+                                $("#accsFechaFinal").val("date.struct");
+                                loadAccesos();
+                                setInterval(function () {
+                                    location.href="${g.createLink(controller: 'login',action: 'logout')}"
+                                }, 5000);
+                            }else{
+                                log(parts[1], parts[0] == "OK" ? "success" : "error");
+                                spinner.remove();
+                                $("#btnAccesos-svt").show();
+                                $frmAccesos.find("input, textarea").val("");
+                                $("#accsFechaInicial").val("date.struct");
+                                $("#accsFechaFinal").val("date.struct");
+                                loadAccesos();
+                            }
+
+                        }
+                    });
+                }else{
+                    bootbox.alert("Debe escoger un usuario para asignarle las funciones de recepcón, en caso de no haber usuarios activos comuniquese con el administrador del sistema.")
+                }
+
             }
 
             return false;

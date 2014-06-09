@@ -148,10 +148,10 @@
                         <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
                             <td class="text-center">
                                 <g:if test="${personaInstance.puedeAdmin}">
-                                    <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : 'success'}"></i>
+                                    <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'success'}"></i>
                                 </g:if>
                                 <g:else>
-                                    <i class="fa fa-user text-${personaInstance.activo == 0 ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
+                                    <i class="fa fa-user text-${!personaInstance.estaActivo? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
                                 </g:else>
                             </td>
                             <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>

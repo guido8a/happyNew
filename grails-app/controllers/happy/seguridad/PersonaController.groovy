@@ -91,6 +91,15 @@ class PersonaController extends happy.seguridad.Shield {
                 }
             }
         }
+
+
+        if(params.estado=="usuario")
+            lista=lista.findAll{it.estaActivo}
+        if(params.estado=="inactivo")
+            lista=lista.findAll{!it.estaActivo}
+
+
+
 //        } else {
 ////            lista = Persona.list(prms)
 //
@@ -475,9 +484,14 @@ class PersonaController extends happy.seguridad.Shield {
 
     def config() {
         def usu = Persona.get(params.id)
-        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id
+        def perfilesUsu = Sesn.findAllByUsuario(usu)
+        def pers = []
+        perfilesUsu.each {
+            if(it.estaActivo)
+                pers.add(it.perfil.id)
+        }
         def permisosUsu = PermisoUsuario.findAllByPersona(usu).permisoTramite.id
-        return [usuario: usu, perfilesUsu: perfilesUsu, permisosUsu: permisosUsu]
+        return [usuario: usu, perfilesUsu: pers, permisosUsu: permisosUsu]
     }
 
     def savePermisos_ajax() {
@@ -542,6 +556,9 @@ class PersonaController extends happy.seguridad.Shield {
             //println "error accesos: " + accs.errors
             render "NO_" + g.renderErrors(bean: accs)
         } else {
+//            println "date "+accs.accsFechaFinal.format("dd-MM-yyyy")+" 23:55"+"   "+accs.accsFechaFinal.format("dd-MM-yyyy HH:mm")
+            accs.accsFechaFinal= new Date().parse("dd-MM-yyyy HH:mm",accs.accsFechaFinal.format("dd-MM-yyyy")+" 23:55")
+            println "accs final date "+accs.accsFechaFinal
             if(params.nuevoTriangulo){
 
                 def pers = Sesn.findAllByUsuario(session.usuario).perfil
@@ -588,8 +605,30 @@ class PersonaController extends happy.seguridad.Shield {
 
 
 //                println "nuevo perm "+permUsu.persona.id+"  "+permUsu.permisoTramite.descripcion+"  "+permUsu.fechaInicio+"  "+permUsu.fechaFin
+            }else{
+                def usu = Persona.get(session.usuario.id)
+                def jefes = usu.departamento.getJefes()
+                jefes.each {
+                    def alerta = new Alerta()
+                    alerta.persona=it
+                    alerta.accion=""
+                    alerta.controlador=""
+                    alerta.fechaCreacion=new Date()
+                    alerta.mensaje="El usuario ${usu.login} ha registrado un ausentismo del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}. Por favor reasigne los tramites de dicho usuario durante las fechas mencionadas anteriormente."
+                    alerta.save(flush: true)
+                }
+
             }
-            render "OK_Restricción agregada"
+            accs.save(flush: true)
+            if(accs.accsFechaInicial<=new Date()){
+
+                session.flag = 2
+                println "session.flag "+session.flag
+                render "OK_Restricción agregada_logout"
+            }else{
+                render "OK_Restricción agregada"
+            }
+
         }
     }
 

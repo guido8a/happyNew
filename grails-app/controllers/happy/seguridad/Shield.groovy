@@ -33,21 +33,30 @@ class Shield {
             def usu = Persona.get(session.usuario.id)
             if (usu.estaActivo) {
                 session.departamento = Departamento.get(session.departamento.id).refresh()
-                def perms = session.usuario.permisos
-                session.usuario = Persona.get(session.usuario.id).refresh()
-                session.usuario.permisos=perms
+//                def perms = session.usuario.permisos
+//                session.usuario = Persona.get(session.usuario.id).refresh()
+//                session.usuario.permisos=perms
                 return true
             } else {
-                session.usuario = null
-                session.perfil = null
-                session.permisos = null
-                session.menu = null
-                session.an = null
-                session.cn = null
-                session.invalidate()
-                redirect(controller: 'login', action: 'login')
-                session.finalize()
-                return false
+//                println "session.flag shield "+session.flag
+                if(!session.flag || session.flag<1) {
+//                    println "menor que cero "+session.flag
+                    session.usuario = null
+                    session.perfil = null
+                    session.permisos = null
+                    session.menu = null
+                    session.an = null
+                    session.cn = null
+                    session.invalidate()
+                    session.flag=null
+                    session.finalize()
+                    redirect(controller: 'login', action: 'login')
+                    return false
+                }else{
+                    session.flag = session.flag-1
+                    session.departamento = Departamento.get(session.departamento.id).refresh()
+                    return true
+                }
             }
         }
         /*************************************************************************** */

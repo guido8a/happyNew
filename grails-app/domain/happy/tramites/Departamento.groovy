@@ -69,4 +69,12 @@ class Departamento {
         }
         return triangulos
     }
+    def getJefes(){
+        def jefes = []
+        Persona.findAllByDepartamentoAndJefe(this,1).each {
+            if(it.estaActivo)
+                jefes.add(it)
+        }
+        return jefes
+    }
 }
