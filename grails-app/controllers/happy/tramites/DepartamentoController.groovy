@@ -174,10 +174,10 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     def arbol() {
 
-        if(session.usuario.puedeAdmin) {
+        if (session.usuario.puedeAdmin) {
             return [params: params]
-        }else{
-            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
 
@@ -324,7 +324,6 @@ class DepartamentoController extends happy.seguridad.Shield {
 //                    if(hijo.login=="mmoya")
 //                    println "hijo!!!!!!!  "+hijo.login +"  "+hijo.esTriangulo
                     if (hijo.esTrianguloOff()) {
-
                         rel += "Triangulo"
 //                        println "++++++++++++++++++++++++++++"
 //                        println hijo
@@ -336,7 +335,8 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
 
                 }
-                if (hijo.activo == 1) {
+//                if (hijo.activo == 1) {
+                if (hijo.estaActivo) {
                     rel += "Activo"
                 } else {
                     rel += "Inactivo"

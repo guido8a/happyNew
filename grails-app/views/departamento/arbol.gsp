@@ -262,7 +262,7 @@
                     url     : "${createLink(action:'saveTipoDoc_ajax')}",
                     data    : data,
                     success : function (msg) {
-                        var parts = msg.split("_")
+                        var parts = msg.split("_");
                         log(parts[1], parts[0] == "OK" ? "success" : "error");
                     }
                 });

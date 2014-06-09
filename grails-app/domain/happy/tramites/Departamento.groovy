@@ -40,7 +40,7 @@ class Departamento {
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         codigo(size: 1..15, unique: false, blank: false, attributes: [title: 'codigo'])
         descripcion(size: 1..511, blank: false, attributes: [title: 'descripcion'])
-        telefono(size:1..62, blank: true, nullable: true, attributes: [title: 'telefono'])
+        telefono(size: 1..62, blank: true, nullable: true, attributes: [title: 'telefono'])
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
         estado(blank: true, nullable: true, size: 1..1)
@@ -50,10 +50,14 @@ class Departamento {
         return "${this.descripcion}"
     }
 
+    def getEstaActivo() {
+        return this.activo == 1
+    }
+
     def getTriangulos() {
         def triangulos = []
         Persona.findAllByDepartamento(this).each { pr ->
-            if(pr.estaActivo){
+            if (pr.estaActivo) {
                 def prm = PermisoUsuario.findAllByPersonaAndPermisoTramite(pr, PermisoTramite.findByCodigo("E001")).findAll {
                     it.estaActivo
                 }
