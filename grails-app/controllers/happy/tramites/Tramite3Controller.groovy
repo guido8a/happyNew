@@ -1131,38 +1131,39 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return strInfo
     }
 
-    private String makeLeaf(PersonaDocumentoTramite para) {
+    private String makeLeaf(PersonaDocumentoTramite pdt) {
         def html = "", clase = "", rel = "para", data = ""
-        if (para.rolPersonaTramite.codigo == "R002") {
+        if (pdt.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
         }
-        if (!para.tramite.padre) {
+        if (!pdt.tramite.padre) {
             rel = "principal"
         }
-        if (para.fechaAnulacion) {
+        if (pdt.fechaAnulacion) {
             rel = "anulado"
         }
-        def strInfo = tramiteInfo(para)
-        def hijos
-        if (para.departamento) {
-            hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
-        } else {
-            hijos = Tramite.withCriteria {
-                eq("padre", para.tramite)
-                eq("de", para.persona)
-                isNull("deDepartamento")
-            }
-        }
+        def strInfo = tramiteInfo(pdt)
+        def hijos = Tramite.findAllByAQuienContesta(pdt)
+//        def hijos
+//        if (para.departamento) {
+//            hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
+//        } else {
+//            hijos = Tramite.withCriteria {
+//                eq("padre", para.tramite)
+//                eq("de", para.persona)
+//                isNull("deDepartamento")
+//            }
+//        }
         if (hijos.size() > 0) {
             clase += " jstree-open"
         }
-        data += ',"tramite":"' + para.tramiteId + '"'
-        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
-        if (para.fechaAnulacion) {
+        data += ',"tramite":"' + pdt.tramiteId + '"'
+        html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+        if (pdt.fechaAnulacion) {
             html += "<span class='text-muted'>"
         }
         html += strInfo
-        if (para.fechaAnulacion) {
+        if (pdt.fechaAnulacion) {
             html += "</span>"
         }
         html += "\n"

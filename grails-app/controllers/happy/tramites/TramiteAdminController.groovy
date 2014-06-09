@@ -317,7 +317,6 @@ class TramiteAdminController {
     }
 
     private String makeTreeExtended(Tramite principal) {
-
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
@@ -335,79 +334,68 @@ class TramiteAdminController {
         ccs.each { para ->
             html += makeLeaf(para)
         }
-
         return html
     }
 
-    private String makeLeaf(PersonaDocumentoTramite para) {
+    private String makeLeaf(PersonaDocumentoTramite pdt) {
         def html = "", clase = "", rel = "para", data = ""
-        if (para.rolPersonaTramite.codigo == "R002") {
+        if (pdt.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
         }
-        def hijos
-        if (para.departamento) {
-            hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
-        } else {
-//            hijos = Tramite.findAllByPadreAndDe(para.tramite, para.persona)
-            hijos = Tramite.withCriteria {
-                eq("padre", para.tramite)
-                eq("de", para.persona)
-                isNull("deDepartamento")
-            }
-        }
+        def hijos = Tramite.findAllByAQuienContesta(pdt)
         if (hijos.size() > 0) {
             clase += " jstree-open"
         }
         def estado = ""
-        if (para.fechaEnvio) {
+        if (pdt.fechaEnvio) {
             clase += " enviado"
             estado = "Enviado"
         }
-        if (para.fechaRecepcion) {
+        if (pdt.fechaRecepcion) {
             clase += " recibido"
             estado = "Recibido"
         }
 
-        if (para.fechaArchivo) {
+        if (pdt.fechaArchivo) {
             clase += " archivado"
             estado = "Archivado"
         }
 
-        if (para.fechaAnulacion) {
+        if (pdt.fechaAnulacion) {
             clase += " anulado"
             estado = "Anulado"
         }
 
-        if (para.tramite.estadoTramiteExterno) {
+        if (pdt.tramite.estadoTramiteExterno) {
             clase += " externo"
         }
 
         rel += estado
 
-        def rol = para.rolPersonaTramite
-        def duenioPrsn = para.tramite.de.id
-        def duenioDpto = para.tramite.deDepartamento?.id
+        def rol = pdt.rolPersonaTramite
+        def duenioPrsn = pdt.tramite.de.id
+        def duenioDpto = pdt.tramite.deDepartamento?.id
         def paraStr = "Para: "
         if (rol.codigo == "R002") {
             paraStr = "CC: "
         }
-        paraStr += para.departamento ? para.departamento.descripcion : para.persona.departamento.codigo + ":" + para.persona.login
-        def deStr = "De: " + (para.tramite.deDepartamento ? para.tramite.deDepartamento.codigo : para.tramite.de.departamento.codigo + ":" + para.tramite.de.login)
+        paraStr += pdt.departamento ? pdt.departamento.descripcion : pdt.persona.departamento.codigo + ":" + pdt.persona.login
+        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite.de.departamento.codigo + ":" + pdt.tramite.de.login)
 
-        data += ',"tramite":"' + para.tramiteId + '"'
+        data += ',"tramite":"' + pdt.tramiteId + '"'
 //        data += ',"duenio":"' + duenio + '"'
-        data += ',"codigo":"' + para.tramite.codigo + '"'
+        data += ',"codigo":"' + pdt.tramite.codigo + '"'
         data += ',"de":"' + deStr + '"'
         data += ',"para":"' + paraStr + '"'
-        if (para.tramite.padre) {
-            data += ',"padre":"' + para.tramite.padreId + '"'
+        if (pdt.tramite.padre) {
+            data += ',"padre":"' + pdt.tramite.padreId + '"'
         }
-        if (tramitesService.verificaHijos(para, EstadoTramite.findByCodigo("E006"))) {
+        if (tramitesService.verificaHijos(pdt, EstadoTramite.findByCodigo("E006"))) {
             //false: no tiene hijos vivos
 //            println "tiene hijos"
             clase += " tieneHijos"
         }
-        if (para.tramite.padre) {
+        if (pdt.tramite.padre) {
             clase += " tienePadre"
         }
 
@@ -416,8 +404,8 @@ class TramiteAdminController {
         }
 
 
-        html += "<li id='${para.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
-        html += tramiteInfo(para)
+        html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+        html += tramiteInfo(pdt)
         html += "\n"
         if (hijos.size() > 0) {
             html += "<ul>" + "\n"
