@@ -388,6 +388,7 @@
 
                     } //action
                 };
+
                 var enviarDex = {
                     label  : 'Enviar y recibir',
                     icon   : "fa fa-check-square-o",

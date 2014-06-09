@@ -1,3 +1,4 @@
+<%@ page import="happy.tramites.Tramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: gato
@@ -15,16 +16,16 @@
                 <tr>
 
                     %{--<th class="cabecera">Asunto</th>--}%
-%{--
-                    <th class="alinear">Documento</th>
-                    <th class="alinear">Para</th>
-                    <th class="alinear">Envia</th>
-                    <th class="alinear">Asunto</th>
-                    <th class="alinear">Prioridad</th>
-                    <th class="alinear">De</th>
-                    <th class="alinear">Fecha Creación</th>
-                    <th class="alinear">Fecha Envio</th>
---}%
+                    %{--
+                                        <th class="alinear">Documento</th>
+                                        <th class="alinear">Para</th>
+                                        <th class="alinear">Envia</th>
+                                        <th class="alinear">Asunto</th>
+                                        <th class="alinear">Prioridad</th>
+                                        <th class="alinear">De</th>
+                                        <th class="alinear">Fecha Creación</th>
+                                        <th class="alinear">Fecha Envio</th>
+                    --}%
                     <th class="alinear">Documento</th>
                     <th class="alinear">Fecha Creación</th>
                     <th class="alinear">De</th>
@@ -42,10 +43,12 @@
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
 
-                    <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).de?.id == session.usuario.id}">
+                    <g:set var="tramiteActual" value="${Tramite.get(tramite?.trmt__id)}"/>
+
+                    <g:if test="${tramiteActual.de?.id == session.usuario.id || tramiteActual.deDepartamento?.id == session.usuario.departamentoId}">
                         <g:set var="clase" value="${'principal'}"/>
-                        <g:if test="${happy.tramites.Tramite.get(tramite?.trmt__id).padre}">
-                            <g:set var="padre" value="${happy.tramites.Tramite.get(tramite?.trmt__id).padre?.id}"/>
+                        <g:if test="${tramiteActual.padre}">
+                            <g:set var="padre" value="${tramiteActual.padre?.id}"/>
                             <g:set var="clase" value="${'padre'}"/>
                         </g:if>
                     </g:if>

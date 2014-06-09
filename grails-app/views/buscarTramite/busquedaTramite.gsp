@@ -154,11 +154,13 @@
                 var fecha = $("#fechaBusqueda_input").val();
                 var fechaRecepcion = $("#fechaRecepcion_input").val();
 
-                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
+                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion;
 
-                $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
-                    data      : datos,
-                    success   : function (msg) {
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
+                    data    : datos,
+                    success : function (msg) {
 //                clearInterval(interval)
                         $("#bandeja").html(msg);
                     }

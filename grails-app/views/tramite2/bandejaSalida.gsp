@@ -401,7 +401,7 @@
                         }); //ajax
 
                     } //action
-                }
+                };
 
                 var permisoImprimir = {
                     label  : "Permiso de Imprimir",
