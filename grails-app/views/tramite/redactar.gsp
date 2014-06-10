@@ -137,19 +137,20 @@
                     %{--</g:link>--}%
                     %{--</g:if>--}%
                 </div>
+
                 <div class="btn-group">
                     <g:if test="${tramite.deDepartamento}">
-                        %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
-                            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-                        %{--</g:link>--}%
+                    %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
+                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                    %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:if>
                     <g:else>
-                        %{--<g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
-                            %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-                        %{--</g:link>--}%
+                    %{--<g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
+                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
+                    %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
@@ -166,7 +167,6 @@
                     </g:else>
                 </div>
 
-
             </div>
             <elm:headerTramite tramite="${tramite}"/>
 
@@ -175,6 +175,7 @@
         <script>
 
             function arreglarTexto(texto) {
+                texto = $.trim(texto);
                 texto = texto.replace(/(?:\&)/g, "&amp;");
                 texto = texto.replace(/(?:<)/g, "&lt;");
                 texto = texto.replace(/(?:>)/g, "&gt;");
@@ -188,7 +189,7 @@
                 textoInicial = textoInicial.replace(/(?:\r\n|\r|\n)/g, '');
                 var textoActual = arreglarTexto($("#editorTramite").val());
                 var esIgual = textoInicial == textoActual;
-                if (esIgual) {
+                if (esIgual && textoActual != "") {
                     return null;
                 } else {
                     return "Alerta";
