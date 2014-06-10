@@ -87,8 +87,8 @@
                                 </li>
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="#" class="a" data-tipo="usuario">
-                                        <i class="fa fa-user text-info"></i> Activo
+                                    <a href="#" class="a" data-tipo="admin">
+                                        <i class="fa fa-user text-success"></i> Administrador
                                     </a>
                                 </li>
                                 <li>
@@ -97,8 +97,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="a" data-tipo="admin">
-                                        <i class="fa fa-user text-success"></i> Administrador
+                                    <a href="#" class="a" data-tipo="usuario">
+                                        <i class="fa fa-user text-info"></i> Activo
                                     </a>
                                 </li>
                             </ul>

@@ -1104,30 +1104,32 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
-        def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
-        def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
-        def rol = tramiteParaInfo.rolPersonaTramite
         def strInfo = ""
-        if (rol.codigo == "R002") {
-            strInfo += "[CC] "
+        if (tramiteParaInfo) {
+            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+            def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
+            def rol = tramiteParaInfo.rolPersonaTramite
+            if (rol.codigo == "R002") {
+                strInfo += "[CC] "
+            }
+            strInfo += "<strong>${tramiteParaInfo.tramite.codigo} </strong>"
+            strInfo += "<small>("
+            strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}"
+            strInfo += ", <strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
+            if (tramiteParaInfo.fechaEnvio) {
+                strInfo += ", <strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm")
+            }
+            if (tramiteParaInfo.fechaRecepcion) {
+                strInfo += ", <strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm")
+            }
+            if (tramiteParaInfo.fechaArchivo) {
+                strInfo += ", <strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm")
+            }
+            if (tramiteParaInfo.fechaAnulacion) {
+                strInfo += ", <strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm")
+            }
+            strInfo += ")</small>"
         }
-        strInfo += "<strong>${tramiteParaInfo.tramite.codigo} </strong>"
-        strInfo += "<small>("
-        strInfo += "<strong>DE</strong>: ${deStr}, <strong>${rol.descripcion}</strong>: ${paraStr}"
-        strInfo += ", <strong>creado</strong> el " + tramiteParaInfo.tramite.fechaCreacion.format("dd-MM-yyyy HH:mm")
-        if (tramiteParaInfo.fechaEnvio) {
-            strInfo += ", <strong>enviado</strong> el " + tramiteParaInfo.fechaEnvio.format("dd-MM-yyyy HH:mm")
-        }
-        if (tramiteParaInfo.fechaRecepcion) {
-            strInfo += ", <strong>recibido</strong> el " + tramiteParaInfo.fechaRecepcion.format("dd-MM-yyyy HH:mm")
-        }
-        if (tramiteParaInfo.fechaArchivo) {
-            strInfo += ", <strong>archivado</strong> el " + tramiteParaInfo.fechaArchivo.format("dd-MM-yyyy HH:mm")
-        }
-        if (tramiteParaInfo.fechaAnulacion) {
-            strInfo += ", <strong>anulado</strong> el " + tramiteParaInfo.fechaAnulacion.format("dd-MM-yyyy HH:mm")
-        }
-        strInfo += ")</small>"
         return strInfo
     }
 
