@@ -42,6 +42,11 @@ class TramiteAdminController {
             tramites.each { tr ->
                 def cod = tr.codigo
                 def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
+
+//                println "tramite: " + tr
+//                println "duenioDep: " + duenioDep
+//                println "duenioPer: " + duenioPer
+
                 def personas = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", tr)
                     or {
@@ -54,8 +59,7 @@ class TramiteAdminController {
                     }
                     if (duenioDep) {
                         eq("departamento", duenioDep)
-                    }
-                    if (duenioPer) {
+                    } else if (duenioPer) {
                         eq("persona", duenioPer)
                     }
                 }

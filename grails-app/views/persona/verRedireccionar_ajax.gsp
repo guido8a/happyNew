@@ -1,10 +1,10 @@
 <%@ page import="happy.seguridad.Persona" %>
 
-<p>¿Está seguro que desea desactivar a <strong>${persona.nombre} ${persona.apellido}</strong>?</p>
 <g:if test="${tramites > 0}">
     <p style="font-size: larger;">
         ${tramites} trámite${tramites == 1 ? '' : 's'} será${tramites == 1 ? '' : 'n'}
-        redireccionado${tramites == 1 ? '' : 's'} de su bandeja de entrada personal a la bandeja seleccionada.
+        redireccionado${tramites == 1 ? '' : 's'} de la bandeja de entrada personal
+        de <strong>${persona.nombre} ${persona.apellido}</strong> a la bandeja seleccionada.
     </p>
 
     <p>

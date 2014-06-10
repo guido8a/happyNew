@@ -591,6 +591,8 @@
 
                 var nodeTramites = $node.data("tramites");
 
+                var estaAusente = $node.hasClass("ausente");
+
                 if (nodeType == "root") {
                     var items = {
                         crear    : {
@@ -825,13 +827,100 @@
                     };
 
                     if (nodeType.contains('Inactivo')) {
-                        items.activar = {
-                            separator_before : true,
-                            label            : "Activar",
-                            icon             : "fa ${iconActivar} text-success",
-                            action           : function (obj) {
-                                cambiarEstadoRowPersona(nodeId, nodeStrId, true, nodeTramites);
-                            }
+                        if (!estaAusente) {
+                            items.activar = {
+                                separator_before : true,
+                                label            : "Activar",
+                                icon             : "fa ${iconActivar} text-success",
+                                action           : function (obj) {
+                                    cambiarEstadoRowPersona(nodeId, nodeStrId, true, nodeTramites);
+                                }
+                            };
+                        }
+                        if (parseInt(nodeTramites) > 0) {
+                            items.redireccionar = {
+                                separator_before : true,
+                                label            : "Redireccionar trámites",
+                                icon             : "fa fa-refresh",
+                                action           : function (obj) {
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(controller: 'persona', action:'verRedireccionar_ajax')}",
+                                        data    : {
+                                            id       : nodeId,
+                                            tramites : nodeTramites
+                                        },
+                                        success : function (msg) {
+                                            bootbox.dialog({
+                                                title   : "Alerta",
+                                                message : msg,
+                                                buttons : {
+                                                    cancelar : {
+                                                        label     : "Cancelar",
+                                                        className : "btn-primary",
+                                                        callback  : function () {
+                                                        }
+                                                    },
+                                                    redirect : {
+                                                        label     : "<i class='fa fa-refresh'></i> Redireccionar trámites",
+                                                        className : "btn-success",
+                                                        callback  : function () {
+                                                            openLoader("Redireccionando");
+                                                            $.ajax({
+                                                                type    : "POST",
+                                                                url     : "${createLink(controller: 'persona', action:'redireccionar_ajax')}",
+                                                                data    : {
+                                                                    id    : nodeId,
+                                                                    quien : $("#cmbRedirect").val()
+                                                                },
+                                                                success : function (msg) {
+                                                                    var parts = msg.split("_");
+                                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                                    if (parts[0] == "OK") {
+                                                                        location.reload(true);
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            };
+                        }
+                        if (estaAusente) {
+                            items.terminar = {
+                                separator_before : true,
+                                label            : "Terminar ausentismo",
+                                icon             : "fa ${iconActivar} text-success",
+                                action           : function (obj) {
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(controller: 'persona', action:'personalArbol')}",
+                                        data    : {
+                                            id : nodeId
+                                        },
+                                        success : function (msg) {
+                                            bootbox.dialog({
+                                                title   : "Terminar ausentismo",
+                                                message : msg,
+                                                buttons : {
+                                                    cancelar : {
+                                                        label     : "Terminar",
+                                                        className : "btn-primary",
+                                                        callback  : function () {
+                                                            openLoader("Guardando cambios");
+                                                            location.reload(true)
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            };
                         }
                     } else {
                         if (!node.data.triangulos || node.data.triangulos > 1) {
@@ -842,7 +931,7 @@
                                 action           : function (obj) {
                                     cambiarEstadoRowPersona(nodeId, nodeStrId, false, nodeTramites);
                                 }
-                            }
+                            };
                         }
                     }
 

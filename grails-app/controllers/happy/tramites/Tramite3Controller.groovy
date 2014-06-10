@@ -1105,7 +1105,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
         def strInfo = ""
+//        println "*****" + tramiteParaInfo
         if (tramiteParaInfo) {
+//            println "AQUI " + tramiteParaInfo
+//            println "AQUI2 " + tramiteParaInfo.departamento
+//            println "AQUI3 " + tramiteParaInfo.persona
             def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
             def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
             def rol = tramiteParaInfo.rolPersonaTramite
@@ -1135,17 +1139,18 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     private String makeLeaf(PersonaDocumentoTramite pdt) {
         def html = "", clase = "", rel = "para", data = ""
-        if (pdt.rolPersonaTramite.codigo == "R002") {
-            rel = "copia"
-        }
-        if (!pdt.tramite.padre) {
-            rel = "principal"
-        }
-        if (pdt.fechaAnulacion) {
-            rel = "anulado"
-        }
-        def strInfo = tramiteInfo(pdt)
-        def hijos = Tramite.findAllByAQuienContesta(pdt)
+        if (pdt) {
+            if (pdt.rolPersonaTramite.codigo == "R002") {
+                rel = "copia"
+            }
+            if (!pdt.tramite.padre) {
+                rel = "principal"
+            }
+            if (pdt.fechaAnulacion) {
+                rel = "anulado"
+            }
+            def strInfo = tramiteInfo(pdt)
+            def hijos = Tramite.findAllByAQuienContesta(pdt)
 //        def hijos
 //        if (para.departamento) {
 //            hijos = Tramite.findAllByPadreAndDeDepartamento(para.tramite, para.departamento)
@@ -1156,27 +1161,28 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                isNull("deDepartamento")
 //            }
 //        }
-        if (hijos.size() > 0) {
-            clase += " jstree-open"
-        }
-        data += ',"tramite":"' + pdt.tramiteId + '"'
-        html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
-        if (pdt.fechaAnulacion) {
-            html += "<span class='text-muted'>"
-        }
-        html += strInfo
-        if (pdt.fechaAnulacion) {
-            html += "</span>"
-        }
-        html += "\n"
-        if (hijos.size() > 0) {
-            html += "<ul>" + "\n"
-            hijos.each { hijo ->
-                html += makeTreeExtended(hijo)
+            if (hijos.size() > 0) {
+                clase += " jstree-open"
             }
-            html += "</ul>" + "\n"
+            data += ',"tramite":"' + pdt.tramiteId + '"'
+            html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+            if (pdt.fechaAnulacion) {
+                html += "<span class='text-muted'>"
+            }
+            html += strInfo
+            if (pdt.fechaAnulacion) {
+                html += "</span>"
+            }
+            html += "\n"
+            if (hijos.size() > 0) {
+                html += "<ul>" + "\n"
+                hijos.each { hijo ->
+                    html += makeTreeExtended(hijo)
+                }
+                html += "</ul>" + "\n"
+            }
+            html += "</li>"
         }
-        html += "</li>"
         return html
     }
 
@@ -1191,6 +1197,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def html = ""
 
         //esto muestra una hoja por destinatario
+//        println paras;
+//        println ccs;
+
         paras.each { para ->
             html += makeLeaf(para)
         }

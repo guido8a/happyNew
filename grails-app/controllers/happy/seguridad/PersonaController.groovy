@@ -93,10 +93,10 @@ class PersonaController extends happy.seguridad.Shield {
         }
 
 
-        if(params.estado=="usuario")
-            lista=lista.findAll{it.estaActivo}
-        if(params.estado=="inactivo")
-            lista=lista.findAll{!it.estaActivo}
+        if (params.estado == "usuario")
+            lista = lista.findAll { it.estaActivo }
+        if (params.estado == "inactivo")
+            lista = lista.findAll { !it.estaActivo }
 
 
 
@@ -643,7 +643,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     def terminarAcceso_ajax() {
         def accs = Accs.get(params.id)
-        def now = new Date().clearTime()
+        def now = new Date()
         if (accs.accsFechaFinal <= now) {
             render "INFO_La restricción ya ha terminado, no puede terminarla de nuevo."
         } else {
@@ -816,9 +816,14 @@ class PersonaController extends happy.seguridad.Shield {
         }
     }
 
+    def verRedireccionar_ajax() {
+        def persona = Persona.get(params.id)
+        return [persona: persona, tramites: params.tramites.toInteger()]
+    }
+
     def verDesactivar_ajax() {
         def persona = Persona.get(params.id)
-        return [persona: persona, tramites: params.tramites]
+        return [persona: persona, tramites: params.tramites.toInteger()]
     }
 
     def list() {
@@ -887,6 +892,57 @@ class PersonaController extends happy.seguridad.Shield {
         }
     }
 
+    def redireccionarTramites(params) {
+//        println "Redireccionando de ${params.id} a ${params.quien}..."
+        def persona = Persona.get(params.id)
+        def dpto = persona.departamento
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+        def errores = "", ok = 0
+        tramites.each { pr ->
+            if (pr.rolPersonaTramite.codigo == "I005") {
+                pr.delete(flush: true)
+            } else {
+                if (params.quien == "-") {
+                    pr.persona = null
+                    pr.departamento = dpto
+                } else {
+                    pr.persona = Persona.get(params.quien)
+                }
+                def tramite = pr.tramite
+                tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido + "; "
+                if (tramite.save(flush: true)) {
+//                        println "tr.save ok"
+                } else {
+                    errores += renderErrors(bean: tramite)
+                    println tramite.errors
+                }
+                if (pr.save(flush: true)) {
+//                        println "pr save ok"
+                    ok++
+                } else {
+                    println pr.errors
+                    errores += renderErrors(bean: pr)
+                }
+            }
+        }
+        if (errores != "") {
+            println "NOPE: " + errores
+            return "NO_" + errores
+        } else {
+//                println "OK"
+            return "OK_Cambio realizado exitosamente"
+        }
+    }
+
+    def redireccionar_ajax() {
+        render redireccionarTramites(params)
+    }
+
     def desactivar_ajax() {
 //        println "cambio dpto"
         def persona = Persona.get(params.id)
@@ -894,47 +950,48 @@ class PersonaController extends happy.seguridad.Shield {
         persona.activo = 0
         persona.fechaFin = new Date()
         if (persona.save(flush: true)) {
+            render redireccionarTramites(params)
 //            println "Persona.dpto save ok"
-            def rolPara = RolPersonaTramite.findByCodigo('R001');
-            def rolCopia = RolPersonaTramite.findByCodigo('R002');
-            def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-
-            def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
-            def errores = "", ok = 0
-            tramites.each { pr ->
-                if (pr.rolPersonaTramite.codigo == "I005") {
-                    pr.delete(flush: true)
-                } else {
-                    if (params.quien == "-") {
-                        pr.persona = null
-                        pr.departamento = dpto
-                    } else {
-                        pr.persona = Persona.get(params.quien)
-                    }
-                    def tramite = pr.tramite
-                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
-                    if (tramite.save(flush: true)) {
-//                        println "tr.save ok"
-                    } else {
-                        errores += renderErrors(bean: tramite)
-                        println tramite.errors
-                    }
-                    if (pr.save(flush: true)) {
-//                        println "pr save ok"
-                        ok++
-                    } else {
-                        println pr.errors
-                        errores += renderErrors(bean: pr)
-                    }
-                }
-            }
-            if (errores != "") {
-                println "NOPE: " + errores
-                render "NO_" + errores
-            } else {
-//                println "OK"
-                render "OK_Cambio realizado exitosamente"
-            }
+//            def rolPara = RolPersonaTramite.findByCodigo('R001');
+//            def rolCopia = RolPersonaTramite.findByCodigo('R002');
+//            def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//
+//            def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+//            def errores = "", ok = 0
+//            tramites.each { pr ->
+//                if (pr.rolPersonaTramite.codigo == "I005") {
+//                    pr.delete(flush: true)
+//                } else {
+//                    if (params.quien == "-") {
+//                        pr.persona = null
+//                        pr.departamento = dpto
+//                    } else {
+//                        pr.persona = Persona.get(params.quien)
+//                    }
+//                    def tramite = pr.tramite
+//                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+//                    if (tramite.save(flush: true)) {
+////                        println "tr.save ok"
+//                    } else {
+//                        errores += renderErrors(bean: tramite)
+//                        println tramite.errors
+//                    }
+//                    if (pr.save(flush: true)) {
+////                        println "pr save ok"
+//                        ok++
+//                    } else {
+//                        println pr.errors
+//                        errores += renderErrors(bean: pr)
+//                    }
+//                }
+//            }
+//            if (errores != "") {
+//                println "NOPE: " + errores
+//                render "NO_" + errores
+//            } else {
+////                println "OK"
+//                render "OK_Cambio realizado exitosamente"
+//            }
         } else {
             render "NO_Ha ocurrido un error al cambiar el departamento de la persona.<br/>" + renderErrors(bean: persona)
         }

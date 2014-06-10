@@ -1,41 +1,62 @@
 <g:if test="${accesos.size() > 0}">
     <h4>Historial</h4>
 
-    <div class="">
-        <div class="container-colsAcc">
-            <div class="header-columnas">
-                <div id="all"></div>
-                <table class=" table table-bordered table-condensed">
-                    <thead>
-                        <tr>
-                            <th class="col100">Desde</th>
-                            <th class="col100">Hasta</th>
-                            <th class="col300">Observaciones</th>
-                            <th class="col200">Asignado por</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+    <table class=" table table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th class="col100">Desde</th>
+                <th class="col100">Hasta</th>
+                <th class="col300">Observaciones</th>
+                <th class="col200">Asignado por</th>
+            </tr>
+        </thead>
+        <tbody>
+            <g:each in="${accesos}" var="acceso">
+                <tr data-id="${acceso.id}" class="rowAcc ${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">
+                    <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy HH:mm")}</td>
+                    <td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy HH:mm")}</td>
+                    <td class="col300">${acceso.accsObservaciones}</td>
+                    <td class="col200">${acceso.asignadoPor.nombre} ${acceso.asignadoPor.apellido}</td>
+                </tr>
+            </g:each>
+        </tbody>
+    </table>
 
-        <div class="container-celdasAcc">
-            <div id="celdas">
-                <table class=" table table-bordered table-condensed" id="tablaAcc">
-                    <tbody>
-                        <g:each in="${accesos}" var="acceso">
-                            <tr data-id="${acceso.id}" class="rowAcc ${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">
-                                <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy")}</td>
-                                <td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy")}</td>
-                                <td class="col300">${acceso.accsObservaciones}</td>
-                                <td class="col200">${acceso.asignadoPor.nombre} ${acceso.asignadoPor.apellido}</td>
-                            </tr>
-                        </g:each>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+%{--<div class="">--}%
+%{--<div class="container-colsAcc">--}%
+%{--<div class="header-columnas">--}%
+%{--<div id="all"></div>--}%
+%{--<table class=" table table-bordered table-condensed">--}%
+%{--<thead>--}%
+%{--<tr>--}%
+%{--<th class="col100">Desde</th>--}%
+%{--<th class="col100">Hasta</th>--}%
+%{--<th class="col300">Observaciones</th>--}%
+%{--<th class="col200">Asignado por</th>--}%
+%{--</tr>--}%
+%{--</thead>--}%
+%{--</table>--}%
+%{--</div>--}%
+%{--</div>--}%
 
-    </div>
+%{--<div class="container-celdasAcc">--}%
+%{--<div id="celdas">--}%
+%{--<table class=" table table-bordered table-condensed" id="tablaAcc">--}%
+%{--<tbody>--}%
+%{--<g:each in="${accesos}" var="acceso">--}%
+%{--<tr data-id="${acceso.id}" class="rowAcc ${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">--}%
+%{--<td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy")}</td>--}%
+%{--<td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy")}</td>--}%
+%{--<td class="col300">${acceso.accsObservaciones}</td>--}%
+%{--<td class="col200">${acceso.asignadoPor.nombre} ${acceso.asignadoPor.apellido}</td>--}%
+%{--</tr>--}%
+%{--</g:each>--}%
+%{--</tbody>--}%
+%{--</table>--}%
+%{--</div>--}%
+%{--</div>--}%
+
+%{--</div>--}%
 
 </g:if>
 

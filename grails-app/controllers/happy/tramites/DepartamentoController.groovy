@@ -318,9 +318,42 @@ class DepartamentoController extends happy.seguridad.Shield {
                     def rolCopia = RolPersonaTramite.findByCodigo('R002');
                     def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+                    def estadoEnviado = EstadoTramite.findByCodigo("E003")
+                    def estadoRecibido = EstadoTramite.findByCodigo("E004")
+//                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
-                    data = "data-tramites='${tramites.size()}'"
+                    def tramites = PersonaDocumentoTramite.withCriteria {
+                        eq("persona", hijo)
+                        or {
+                            eq("rolPersonaTramite", rolPara)
+                            eq("rolPersonaTramite", rolCopia)
+                        }
+                        or {
+                            eq("estado", estadoEnviado)
+                            eq("estado", estadoRecibido)
+                        }
+                    }
+                    def cantTram = 0
+                    tramites.each { tr ->
+                        if (Tramite.countByAQuienContesta(tr) == 0) {
+                            cantTram++
+                        }
+                    }
+
+//                    if (hijo.id == 4674) {
+//                        println tramites.tramite.codigo
+//                    }
+
+//                    lbl += " <${tramites.size()} trámites>"
+                    lbl += " <${cantTram} trámites>"
+
+                    if (hijo.activo == 1 && !hijo.estaActivo) {
+                        clase += " ausente"
+//                        rel += "Ausente"
+                    }
+
+//                    data = "data-tramites='${tramites.size()}'"
+                    data = "data-tramites='${cantTram}'"
 //                    if(hijo.login=="mmoya")
 //                    println "hijo!!!!!!!  "+hijo.login +"  "+hijo.esTriangulo
                     if (hijo.esTrianguloOff()) {
