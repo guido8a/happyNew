@@ -56,7 +56,7 @@
                     </g:else>
                 </g:if>
                 <g:else>
-                    <g:if test="${tramite.tramite.fechaLimite < now}">
+                    <g:if test="${tramite.fechaBloqueo < now}">
                         <g:set var="clase" value="sinRecepcion"/>
                     </g:if>
                     <g:else>
@@ -95,7 +95,7 @@
                     <g:else>
                         <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
                     </g:else>
-                    <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
+                    <td title="${tramite.fechaRecepcion?'':"El sistema se bloqueará el: "+tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm')+" si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                     <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
                         <td>EXT</td>

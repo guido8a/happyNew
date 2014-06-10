@@ -206,14 +206,15 @@ class Tramite {
         def limite = this.fechaEnvio
         if (limite) {
 //            def diaLaborableService
-            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
-
-            if (fechaLimite[0]) {
-                return fechaLimite[1]
-            } else {
-//                println fechaLimite[1]
-                return null
-            }
+//            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
+//
+//            if (fechaLimite[0]) {
+//                return fechaLimite[1]
+//            } else {
+////                println fechaLimite[1]
+//                return null
+//            }
+            return this.fechaEnvio
 //            use(TimeCategory) {
 //                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
 //                    limite = limite + 2.hours + 15.hours + 30.minutes

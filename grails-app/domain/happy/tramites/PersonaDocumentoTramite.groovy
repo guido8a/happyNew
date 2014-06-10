@@ -10,11 +10,11 @@ class PersonaDocumentoTramite {
     Departamento departamento               // departamento q recibe el tramite (para la bandeja de entrada de los triangulos)
 
     RolPersonaTramite rolPersonaTramite     // rol de la persona/departamento (para, envia, recibe, copia, imprimir)
-                                            //      envia    triangulo o circulo que envió
-                                            //      recibe   triangulo o circulo que recibió
-                                            //      para     triangulo o circulo que debe recibir, puede ser persona o dpto = debe salir en la bandeja de entrada
-                                            //      copia    triangulo o circulo que recibe copia puede ser persona o dpto = debe salir en la bandeja de entrada
-                                            //      imprimir circulo que puede ver, imprimir y enviar el tramite = debe salir en la bandeja de salida
+    //      envia    triangulo o circulo que envió
+    //      recibe   triangulo o circulo que recibió
+    //      para     triangulo o circulo que debe recibir, puede ser persona o dpto = debe salir en la bandeja de entrada
+    //      copia    triangulo o circulo que recibe copia puede ser persona o dpto = debe salir en la bandeja de entrada
+    //      imprimir circulo que puede ver, imprimir y enviar el tramite = debe salir en la bandeja de salida
 
     String observaciones                    // observaciones al momento de enviar o recibir
 
@@ -72,20 +72,20 @@ class PersonaDocumentoTramite {
         def limite = this.fechaEnvio
         if (limite) {
 //            def diaLaborableService
-            if(this.tramite.externo=="1")
-                return null
-            else{
-                def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
-//                println " fl "+fechaLimite
-                if (fechaLimite[0]) {
-                    return fechaLimite[1]
-                } else {
-//                println fechaLimite[1]
-                    return null
-                }
-            }
+//            if(this.tramite.externo=="1")
+//                return null
+//            else{
+//                def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 0)
+////                println " fl "+fechaLimite
+//                if (fechaLimite[0]) {
+//                    return fechaLimite[1]
+//                } else {
+////                println fechaLimite[1]
+//                    return null
+//                }
+//            }
 
-
+            return this.fechaEnvio
         }
         return null
     }
