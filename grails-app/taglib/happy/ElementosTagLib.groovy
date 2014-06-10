@@ -234,7 +234,7 @@ class ElementosTagLib {
 //                            users.remove(i)
 //                        }
 //                    }
-                    disponibles = disponibles.reverse()
+//                    disponibles = disponibles.reverse(
                 }
             }
 
