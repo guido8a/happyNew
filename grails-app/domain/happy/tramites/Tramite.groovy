@@ -270,21 +270,28 @@ class Tramite {
 
 
         def limite = this.getFechaLimite()
-        def par = Parametros.list([sort: "id", order: "desc"])
-        def tiempoBloqueo = 1
-        if (par.size() > 0) {
-            par = par.pop()
-            tiempoBloqueo = par.bloqueo
-        }
+//        println "limite "+limite
+        if(limite){
+            def par = Parametros.list([sort: "id", order: "desc"])
+            def tiempoBloqueo = 1
+            if (par.size() > 0) {
+                par = par.pop()
+                tiempoBloqueo = par.bloqueo
+            }
 
 //            println "tiempo Bloqueo "+tiempoBloqueo
-        def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
-        if (fechaLimite[0]) {
-            return fechaLimite[1]
-        } else {
+            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+//            println "fecha limite "+fechaLimite
+            if (fechaLimite[0]) {
+                return fechaLimite[1]
+            } else {
 //                println fechaLimite[1]
+                return null
+            }
+        }else{
             return null
         }
+
 //            use(TimeCategory) {
 //                limite = limite + 48.hours
 //            }

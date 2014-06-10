@@ -22,7 +22,7 @@
     <tbody id="tabla_salida">
         <g:each in="${tramites}" var="tramite">
 
-            <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+            <g:set var="limite" value="${tramite.getFechaBloqueo()}"/>
             <g:set var="padre" value=""/>
 
             <g:set var="para" value="${tramite.getPara()}"/>

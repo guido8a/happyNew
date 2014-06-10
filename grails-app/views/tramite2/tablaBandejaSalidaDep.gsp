@@ -23,7 +23,7 @@
         <g:each in="${tramites}" var="tramite">
 
             <g:if test="${tramite.tipoDocumento.codigo != 'DEX' || (tramite.tipoDocumento.codigo == 'DEX' && tramite.estadoTramite.codigo == 'E001')}">
-                <g:set var="limite" value="${tramite.getFechaLimite()}"/>
+                <g:set var="limite" value="${tramite.getFechaBloqueo()}"/>
                 <g:set var="padre" value=""/>
                 <g:set var="clase" value=""/>
 

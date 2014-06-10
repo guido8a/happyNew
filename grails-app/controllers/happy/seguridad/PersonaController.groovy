@@ -427,6 +427,15 @@ class PersonaController extends happy.seguridad.Shield {
         return [usuario: usuario, params: params,triangulos:triangulos,personas: personas]
     }
 
+    def personalArbol(){
+        def usuario = Persona.get(params.id)
+        def dep = usuario.departamento
+        def triangulos = dep.getTriangulos()
+        def personas = Persona.findAllByDepartamentoAndActivo(dep,1)
+        personas.remove(usuario)
+        return [usuario: usuario, params: params,triangulos:triangulos,personas: personas]
+    }
+
     def loadFoto() {
         def usuario = Persona.get(session.usuario.id)
         def path = servletContext.getRealPath("/") + "images/perfiles/" //web-app/archivos
@@ -549,7 +558,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def saveAccesos_ajax() {
-        println "asig acc "+params
+//        println "asig acc "+params
         params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
@@ -640,9 +649,23 @@ class PersonaController extends happy.seguridad.Shield {
         } else {
             if (accs.accsFechaInicial <= now && (accs.accsFechaFinal >= now || !accs.accsFechaFinal)) {
                 accs.accsFechaFinal = now
-                def perm = PermisoUsuario.findByAcceso(accs)
-                perm.fechaFin= now;
-                perm.save(flush: true)
+                accs.accsObservaciones+="; ausentismo terminado por ${session.usuario}"
+                def perm = PermisoUsuario.findAllByAcceso(accs)
+                def usu
+                perm.each {
+                    it.fechaFin= now;
+                    it.save(flush: true)
+                    if(!usu)
+                        usu=it.persona
+                }
+                if(usu){
+                    def sesn = Sesn.findByUsuarioAndFechaInicio(usu,accs.accsFechaInicial)
+                    if(sesn){
+                        sesn.fechaFin=now
+                        sesn.save(flush: true)
+                    }
+                }
+
                 if (!accs.save(flush: true)) {
                     render "NO_" + renderErrors(bean: accs)
                 } else {
