@@ -1,6 +1,6 @@
 <g:if test="${accesos.size() > 0}">
     <h4>Historial</h4>
-
+    <p class="text-info">Haga clic derecho sobre el registro a afectar, para acceder a las acciones</p>
     <table class=" table table-bordered table-condensed">
         <thead>
             <tr>
@@ -13,7 +13,7 @@
         <tbody>
             <g:each in="${accesos}" var="acceso">
                 <tr data-id="${acceso.id}" class="rowAcc ${acceso.estado == 'A' ? 'success' : acceso.estado == 'F' ? 'active' : 'danger'}">
-                    <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy HH:mm")}</td>
+                    <td class="col100">${acceso.accsFechaInicial.format("dd-MM-yyyy")}</td>
                     <td class="col100">${acceso.accsFechaFinal.format("dd-MM-yyyy HH:mm")}</td>
                     <td class="col300">${acceso.accsObservaciones}</td>
                     <td class="col200">${acceso.asignadoPor.nombre} ${acceso.asignadoPor.apellido}</td>
