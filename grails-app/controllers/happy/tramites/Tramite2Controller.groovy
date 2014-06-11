@@ -1078,16 +1078,60 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (params.pdt) {
             pdt = params.pdt
             def pdto = PersonaDocumentoTramite.get(pdt)
-            if (pdto.estado.codigo != "E004") {
+            if (pdto.estado?.codigo != "E004") {
                 flash.message = "No puede responder a este tramite puesto que ha sido anulado, archivado o no ha sido recibido"
                 response.sendError(403)
             }
         } else if (params.hermano) {
             def herm = Tramite.get(params.hermano)
-            pdt = herm.aQuienContesta.id
+//            pdt = herm.aQuienContesta.id
+            def p = herm
+            while(p.padre){
+                p=p.padre
+            }
+            padre=p
+            pdt = p.para
+            if(!pdt){
+                pdt = p.copias
+                if(pdt.size()==0){
+                    flash.message = "No puede agregar un documento a este tramite."
+                    response.sendError(403)
+                    return
+                }else{
+                    pdt=pdt[0]
+                }
+            }
+            if(pdt.estado?.codigo=="E006"){
+                flash.message = "No puede agregar un tramite a un documento anulado"
+                response.sendError(403)
+            }else{
+                pdt=pdt.id
+            }
+
         }
         if (params.buscar == '1') {
-            pdt = padre.para.id
+            def p = padre
+            while(p.padre){
+                p=p.padre
+            }
+            pdt = p.para
+            padre=p
+            if(!pdt){
+                pdt = p.copias
+                if(pdt.size()==0){
+                    flash.message = "No puede agregar un documento a este tramite."
+                    response.sendError(403)
+                    return
+                }else{
+                    pdt=pdt[0]
+                }
+            }
+            if(pdt.estado.codigo=="E006"){
+                flash.message = "No puede agregar un tramite a un documento anulado"
+                response.sendError(403)
+            }else{
+                pdt=pdt.id
+            }
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
