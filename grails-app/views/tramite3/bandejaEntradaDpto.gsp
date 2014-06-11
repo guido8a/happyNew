@@ -503,30 +503,41 @@
                 };
 
                 items.header.label = "Acciones";
+
+
+                <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles
                 items.arbol = arbol
+                </g:if>
+
 
                 if (conAnexo) {
                     items.anexo = anexos
                 }
                 if (retrasado) {
 
+                    <g:if test="${session.usuario.getPuedeVer()}">
                     items.arbol = arbol
+                    </g:if>
                     items.contestar = contestar
-                    <g:if test="${session.usuario.puedeArchivar}">
+                    <g:if test="${session.usuario.getPuedeArchivar()}">
                     items.archivar = archivar
                     </g:if>
                     items.observaciones = observaciones
                 }
                 if (porRecibir) {
                     items.recibir = recibir
+                    <g:if test="${session.usuario.getPuedeVer()}">
                     items.arbol = arbol
+                    </g:if>
 
                 }
 
                 if (sinRecepcion) {
                     items.recibir = recibir
+                    <g:if test="${session.usuario.getPuedeVer()}">
                     items.arbol = arbol
+                    </g:if>
 
                 }
 
@@ -609,9 +620,12 @@
                 }
 
                 if (jefe) {
-                    items.detalles = detalles
+
                     items.contestar = contestar
+                    <g:if test="${session.usuario.puedeVer}">
+                    items.detalles = detalles
                     items.arbol = arbol
+                    </g:if>
 
                 }
 

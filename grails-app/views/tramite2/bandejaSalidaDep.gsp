@@ -553,9 +553,6 @@
                 if (tienePadre) {
                     items.hermano = crearHermano;
                 }
-//                if (porEnviar) {
-//                    items.imprimir = permisoImprimir;
-//                }
                 if (tieneAnexo) {
                     items.anexos = anexos;
                 }
@@ -570,7 +567,9 @@
                     items.recibirExterno = recibirExterno
                 }
                 if (enviado || tieneAlerta) {
+                    <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
+                    </g:if>
                 }
 
                 if (esOficio) {

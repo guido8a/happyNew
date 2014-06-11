@@ -599,7 +599,9 @@
                     items.recibirExterno = recibirExterno
                 }
                 if (enviado || tieneAlerta) {
+                    <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
+                    </g:if>
                 }
 
                 if (esOficio) {
