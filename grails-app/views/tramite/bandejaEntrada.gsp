@@ -706,7 +706,7 @@
                     openLoader();
                     cargarBandeja(false);
                     closeLoader();
-
+                    $(".qtip").hide();
                 }, 1000 * 60 * 3);
 
                 $(".alertas").click(function () {
