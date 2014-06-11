@@ -908,7 +908,7 @@
                                                 message : msg,
                                                 buttons : {
                                                     cancelar : {
-                                                        label     : "Terminar",
+                                                        label     : "Cerrar",
                                                         className : "btn-primary",
                                                         callback  : function () {
                                                             openLoader("Guardando cambios");
