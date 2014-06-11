@@ -9,31 +9,48 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
-<div style="height: 450px" class="container-celdas">
+<div style="height: 70px"  class="container-celdas">
+    <span class="grupo">
+        <table class="table table-bordered table-condensed table-hover">
+            <thead>
+            <tr>
+                <th class="alinear" style="width: 110px">Documento</th>
+                <th class="alinear" style="width: 100px">Fecha Creación</th>
+                <th class="alinear" style="width: 150px">De</th>
+                <th class="alinear" style="width: 150px">Para</th>
+                <th class="alinear" style="width: 100px">Asunto</th>
+                <th class="alinear" style="width: 60px">Prioridad</th>
+                <th class="alinear" style="width: 90px">Envia</th>
+                <th class="alinear" style="width: 110px">Fecha Envio</th>
+                <th class="alinear" style="width: 110px">Fecha Recepción</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </span>
+
+</div>
+
+
+
+
+<div style="height: 350px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
                 <tr>
-
-                    %{--<th class="cabecera">Asunto</th>--}%
-                    %{--
-                                        <th class="alinear">Documento</th>
-                                        <th class="alinear">Para</th>
-                                        <th class="alinear">Envia</th>
-                                        <th class="alinear">Asunto</th>
-                                        <th class="alinear">Prioridad</th>
-                                        <th class="alinear">De</th>
-                                        <th class="alinear">Fecha Creación</th>
-                                        <th class="alinear">Fecha Envio</th>
-                    --}%
-                    <th class="alinear">Documento</th>
-                    <th class="alinear">Fecha Creación</th>
-                    <th class="alinear">De</th>
-                    <th class="alinear">Para</th>
-                    <th class="alinear">Asunto</th>
-                    <th class="alinear">Prioridad</th>
-                    <th class="alinear">Envia</th>
-                    <th class="alinear">Fecha Envio</th>
+                    %{--<th class="alinear">Documento</th>--}%
+                    %{--<th class="alinear">Fecha Creación</th>--}%
+                    %{--<th class="alinear">De</th>--}%
+                    %{--<th class="alinear">Para</th>--}%
+                    %{--<th class="alinear">Asunto</th>--}%
+                    %{--<th class="alinear">Prioridad</th>--}%
+                    %{--<th class="alinear">Envia</th>--}%
+                    %{--<th class="alinear">Fecha Envio</th>--}%
+                    %{--<th class="alinear">Fecha Recepción</th>--}%
                 </tr>
 
             </thead>
@@ -62,7 +79,7 @@
                     </g:if>
 
                     <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}">
-                        <td>
+                        <td style="width: 110px">
                             ${tramite?.trmtcdgo}
                             <g:if test="${tramite.trmtanxo == 1}">
                                 <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
@@ -71,37 +88,18 @@
                                 (ext)
                             </g:if>
                         </td>
-
-
-                        %{--<g:if test="${tramite?.es_extr == 1}">--}%
-                        %{--<td>--}%
-                        %{--${tramite?.pr_extr}--}%
-                        %{--</td>--}%
-                        %{--</g:if>--}%
-                        %{--<g:elseif test="${tramite?.pr_prsn}">--}%
-                        %{--<td>${tramite?.pr_prsn}</td>--}%
-                        %{--</g:elseif>--}%
-                        %{--<g:elseif test="${tramite?.pr_dpto}">--}%
-                        %{--<td>${tramite?.pr_dpto}</td>--}%
-                        %{--</g:elseif>--}%
-                        %{--<g:else>--}%
-                        %{--<td></td>--}%
-                        %{--</g:else>--}%
-
-                        <td>${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
-
-
+                        <td style="width: 100px">${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
                         <g:if test="${tramite?.de_prsn}">
-                            <td>${tramite?.de_prsn}</td>
+                            <td style="width: 150px">${tramite?.de_prsn}</td>
                         </g:if>
                         <g:elseif test="${tramite?.de_dpto}">
-                            <td>${tramite?.de_dpto}</td>
+                            <td style="width: 150px">${tramite?.de_dpto}</td>
                         </g:elseif>
                         <g:else>
-                            <td></td>
+                            <td style="width: 150px"></td>
                         </g:else>
 
-                        <td>
+                        <td style="width: 150px">
                             <g:if test="${tramite?.pr_prsn}">
                                 ${tramite?.pr_prsn}
                             </g:if>
@@ -114,17 +112,23 @@
                         </td>
 
 
-                        <td>${tramite?.trmtasnt}</td>
+                        <td style="width: 100px">${tramite?.trmtasnt}</td>
 
-                        <td>${tramite?.tppddscr}</td>
+                        <td style="width: 60px">${tramite?.tppddscr}</td>
 
-                        <td>${tramite?.en_prsn}</td>
+                        <td style="width: 90px">${tramite?.en_prsn}</td>
 
                         <g:if test="${tramite?.fc_envi}">
-                            <td>${tramite?.fc_envi?.format('dd-MM-yyyy HH:mm')}</td>
+                            <td style="width: 110px">${tramite?.fc_envi?.format('dd-MM-yyyy HH:mm')}</td>
                         </g:if>
                         <g:else>
-                            <td></td>
+                            <td style="width: 110px"></td>
+                        </g:else>
+                        <g:if test="${tramite?.fc_recp}">
+                            <td style="width: 110px">${tramite?.fc_recp?.format('dd-MM-yyyy HH:mm')}</td>
+                        </g:if>
+                        <g:else>
+                            <td style="width: 110px"></td>
                         </g:else>
                     </tr>
                 </g:each>

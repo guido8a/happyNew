@@ -428,6 +428,35 @@ class Persona {
 
     }
 
+    def getPuedeCopiar() {
+
+        if(this.permisos.size()>0) {
+            def perm = null
+            this.permisos.each {
+                if (!perm) {
+                    if (it.codigo == "P003") {
+                        perm = PermisoUsuario.findByPermisoTramite(it)
+                    }
+                }
+            }
+            if (perm) {
+                if (perm.estaActivo) {
+                    return true
+                }
+            } else {
+                return false
+            }
+        }else{
+            def perm = PermisoUsuario.withCriteria {
+                eq("persona", this)
+                eq("permisoTramite", PermisoTramite.findByCodigo("P003"))
+            }
+            def perms = perm.findAll { it.estaActivo }
+            return perms.size() > 0
+        }
+
+    }
+
 
     def getPuedeAdmin() {
 //        def perm = PermisoUsuario.withCriteria {

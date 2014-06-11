@@ -336,8 +336,10 @@
                 };
 
                 items.header.label = "Acciones";
+                <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
                 items.arbol = arbol;
+                </g:if>
                 <g:if test="${session.usuario.getPuedeAdmin()}">
                 items.administrar = administrar;
                 </g:if>

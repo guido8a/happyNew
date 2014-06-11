@@ -579,8 +579,11 @@
                 };
 
                 items.header.label = "Acciones";
+                <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
                 items.arbol = arbol;
+                </g:if>
+
 
                 if (conAnexo) {
                     items.anexo = anexos
@@ -604,7 +607,7 @@
 
                 if (recibido) {
                     items.contestar = contestar;
-                    <g:if test="${session.usuario.puedeArchivar}">
+                    <g:if test="${session.usuario.getPuedeArchivar()}">
                     items.archivar = archivar;
                     </g:if>
                     <g:else>
