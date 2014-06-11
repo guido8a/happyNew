@@ -631,6 +631,7 @@
                     openLoader();
                     cargarBandeja(false);
                     closeLoader()
+                    $(".qtip").hide();
                 }, 1000 * 60);
                 var id, codigo;
 
