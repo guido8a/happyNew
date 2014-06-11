@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.Tramite" %>
+<%@ page import="happy.seguridad.Persona; happy.tramites.Tramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: gato
@@ -9,21 +9,21 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
-<div style="height: 70px"  class="container-celdas">
+<div style="height: 70px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
-            <tr>
-                <th class="alinear" style="width: 110px">Documento</th>
-                <th class="alinear" style="width: 100px">Fecha Creación</th>
-                <th class="alinear" style="width: 150px">De</th>
-                <th class="alinear" style="width: 150px">Para</th>
-                <th class="alinear" style="width: 100px">Asunto</th>
-                <th class="alinear" style="width: 60px">Prioridad</th>
-                <th class="alinear" style="width: 90px">Envia</th>
-                <th class="alinear" style="width: 110px">Fecha Envio</th>
-                <th class="alinear" style="width: 110px">Fecha Recepción</th>
-            </tr>
+                <tr>
+                    <th class="alinear" style="width: 110px">Documento</th>
+                    <th class="alinear" style="width: 100px">Fecha Creación</th>
+                    <th class="alinear" style="width: 150px">De</th>
+                    <th class="alinear" style="width: 150px">Para</th>
+                    <th class="alinear" style="width: 100px">Asunto</th>
+                    <th class="alinear" style="width: 60px">Prioridad</th>
+                    <th class="alinear" style="width: 90px">Envia</th>
+                    <th class="alinear" style="width: 110px">Fecha Envio</th>
+                    <th class="alinear" style="width: 110px">Fecha Recepción</th>
+                </tr>
             </thead>
             <tbody>
 
@@ -33,8 +33,6 @@
     </span>
 
 </div>
-
-
 
 
 <div style="height: 350px" class="container-celdas">
@@ -59,10 +57,13 @@
 
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
+                    <g:set var="de" value="${tramite.dedp_id ?: Persona.get(tramite.depr_id).departamentoId}"/>
 
                     <g:set var="tramiteActual" value="${Tramite.get(tramite?.trmt__id)}"/>
 
-                    <g:if test="${tramiteActual.de?.id == session.usuario.id || tramiteActual.deDepartamento?.id == session.usuario.departamentoId}">
+                    <g:if test="${tramiteActual.de?.id == session.usuario.id ||
+                            tramiteActual.deDepartamento?.id == session.usuario.departamentoId ||
+                            (session.usuario.esTriangulo && de == session.usuario.departamentoId)}">
                         <g:set var="clase" value="${'principal'}"/>
                         <g:if test="${tramiteActual.padre}">
                             <g:set var="padre" value="${tramiteActual.padre?.id}"/>
@@ -81,6 +82,8 @@
                     <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}">
                         <td style="width: 110px">
                             ${tramite?.trmtcdgo}
+                        %{--<br/>--}%
+                        %{--${tramite}--}%
                             <g:if test="${tramite.trmtanxo == 1}">
                                 <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
                             </g:if>
