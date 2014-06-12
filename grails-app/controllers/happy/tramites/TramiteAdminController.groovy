@@ -346,7 +346,7 @@ class TramiteAdminController {
         if (pdt.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
         }
-        def hijos = Tramite.findAllByAQuienContesta(pdt)
+        def hijos = Tramite.findAllByAQuienContesta(pdt, [sort: "fechaCreacion", order: "asc"])
         if (hijos.size() > 0) {
             clase += " jstree-open"
         }

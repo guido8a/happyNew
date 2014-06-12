@@ -44,9 +44,25 @@ class BusquedaExternosController {
         }
 //        println("filtrados:" + filtrados)
         if (filtrados.size() >= 1) {
-            filtrados = filtrados.first()
+            Tramite externo = filtrados.first()
 
-            def tram = ultimoHijo(filtrados)
+            def principal = externo
+            while (principal.padre) {
+                principal = principal.padre
+            }
+
+            def todos = [principal] + todosHijos(principal)
+//            println todos.codigo
+//            println todos.fechaCreacion*.format("dd-MM-yyyy HH:mm")
+            todos = todos.sort { it.fechaCreacion }
+//            println todos.codigo
+//            println todos.fechaCreacion*.format("dd-MM-yyyy HH:mm")
+
+            def tram = todos.last()
+//            def todosHijos = Tramite.findAllByPadre(principal, [sort: "fechaCreacion", order: "desc"])
+//            println todosHijos.codigo
+//            def tram = ultimoHijo(hijoNuevo)
+//            def tram = ultimoHijo(externo)
 //            println "TRAM: " + tram.codigo
 
             def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " "
@@ -87,7 +103,7 @@ class BusquedaExternosController {
                         (director.nombre + " " + director.apellido)
             }
             def msg = "<div class='well well-lg text-left'>"
-            msg += "<h4>Trámite ${filtrados.codigo}</h4>"
+            msg += "<h4>Trámite ${externo.codigo}</h4>"
             if (tram.para.estado?.codigo == "E005") { //Archivado
                 msg += "<p>El estado de su trámite es: <strong><em>ARCHIVADO</em></strong></p>"
             } else {
@@ -119,12 +135,45 @@ class BusquedaExternosController {
 //        return [tramite: filtrados]
     }
 
+    def todosHijos(Tramite tramite) {
+//        println "*" + tramite.codigo
+//        def arreglo = [tramite]
+//        def todos = Tramite.findAllByPadre(tramite, [sort: "fechaCreacion", order: "desc"])
+
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+        def archivado = EstadoTramite.findByCodigo("E005")
+        def estadosOk = [enviado, recibido, archivado]
+        def arreglo = []
+        Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para, [sort: "fechaCreacion", order: "asc"]).each { tr ->
+            if (estadosOk.contains(tr.para.estado)) {
+                arreglo += tr
+                arreglo += todosHijos(tr)
+            }
+        }
+        return arreglo
+    }
+
     def ultimoHijo(Tramite tramite) {
+//        println tramite.codigo + "\t" + tramite.fechaCreacion
+        def ret = tramite
+        Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para).each { tr ->
+//            println "\t" + tr.codigo + "\t" + tr.fechaCreacion
+            ret = ultimoHijo(tr)
+            if (!ret) {
+                ret = tr
+            }
+        }
+//        println "RET=" + ret.codigo + "\t" + ret.fechaCreacion
+        return ret
+    }
+
+    def ultimoHijo_old(Tramite tramite) {
 //        println tramite.codigo
         def ret = tramite
         Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para).each { tr ->
 //            println "\t" + tr.codigo
-            ret = ultimoHijo(tr)
+            ret = ultimoHijo_old(tr)
             if (!ret) {
                 ret = tr
             }

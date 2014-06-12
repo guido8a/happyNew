@@ -7,7 +7,8 @@ class PersonaDocumentoTramite {
     Tramite tramite
 
     Persona persona                         // persona q envia/recibe el tramite
-    Departamento departamento               // departamento q recibe el tramite (para la bandeja de entrada de los triangulos)
+    Departamento departamento
+    // departamento q recibe el tramite (para la bandeja de entrada de los triangulos)
 
     RolPersonaTramite rolPersonaTramite     // rol de la persona/departamento (para, envia, recibe, copia, imprimir)
     //      envia    triangulo o circulo que envió
@@ -20,10 +21,13 @@ class PersonaDocumentoTramite {
 
     Date fechaEnvio                         // la misma fecha que fechaEnvio del tramite
     Date fechaRecepcion                     // fecha de recepcion del doc fisico
-    Date fechaLimiteRespuesta               // segun la prioridad, se setea el mismo rato que fechaRecepcion (fechaRecepcion + horas segun prioridad)
+    Date fechaLimiteRespuesta
+    // segun la prioridad, se setea el mismo rato que fechaRecepcion (fechaRecepcion + horas segun prioridad)
     Date fechaRespuesta                     // fecha en la q se crea el tramite hijo de respuesta
-    Date fechaArchivo                       // fecha en la q se archivo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
-    Date fechaAnulacion                     // fecha en la q se anulo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
+    Date fechaArchivo
+    // fecha en la q se archivo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
+    Date fechaAnulacion
+    // fecha en la q se anulo el doc fisico, no corre ningun timer, no necesita respuesta el tramite
 
     EstadoTramite estado
     def diasLaborablesService
@@ -89,19 +93,20 @@ class PersonaDocumentoTramite {
         }
         return null
     }
+
     def getFechaBloqueo() {
 
-        if(this.fechaRecepcion)
+        if (this.fechaRecepcion)
             return null
-        else{
-            if(this.tramite.externo=="1")
+        else {
+            if (this.tramite.externo == "1")
                 return null
             def limite = this.getFechaLimite()
-            def par = Parametros.list([sort: "id",order: "desc"])
-            def tiempoBloqueo=1
-            if(par.size()>0){
+            def par = Parametros.list([sort: "id", order: "desc"])
+            def tiempoBloqueo = 1
+            if (par.size() > 0) {
                 par = par.pop()
-                tiempoBloqueo=par.bloqueo
+                tiempoBloqueo = par.bloqueo
             }
 
 //            println "tiempo Bloqueo "+tiempoBloqueo
@@ -114,6 +119,9 @@ class PersonaDocumentoTramite {
         }
 
 
+    }
 
+    def getFechaCreacion() {
+        return this.tramite.fechaCreacion
     }
 }
