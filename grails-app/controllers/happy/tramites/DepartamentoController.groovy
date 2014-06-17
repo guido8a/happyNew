@@ -345,7 +345,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 //                    }
 
 //                    lbl += " <${tramites.size()} trámites>"
-                    lbl += " <${cantTram} trámites>"
+//                    lbl += " <${cantTram} trámites>"
 
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"
