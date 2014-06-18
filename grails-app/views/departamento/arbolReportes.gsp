@@ -356,11 +356,23 @@
                         padreInactivo            : {
                             icon : "fa fa-building-o text-muted"
                         },
+                        padreExternoActivo       : {
+                            icon : "fa fa-paper-plane text-info"
+                        },
+                        padreExternoInactivo     : {
+                            icon : "fa fa-paper-plane text-muted"
+                        },
                         hijoActivo               : {
                             icon : "fa fa-home text-success"
                         },
                         hijoInactivo             : {
                             icon : "fa fa-home text-muted"
+                        },
+                        hijoExternoActivo        : {
+                            icon : "fa fa-paper-plane-o text-success"
+                        },
+                        hijoExternoInactivo      : {
+                            icon : "fa fa-paper-plane-o text-muted"
                         },
                         usuarioActivo            : {
                             icon : "fa fa-user text-info"
