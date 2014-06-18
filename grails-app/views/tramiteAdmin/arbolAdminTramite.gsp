@@ -36,6 +36,10 @@
                     <i class="fa fa-arrow-left"></i> Regresar
                 </a>
 
+                <g:link controller="tramiteExport" action="arbolPdf" id="${tramite.id}" class="btn btn-default">
+                    <i class="fa fa-print"></i> Imprimir
+                </g:link>
+
             </div>
         </div>
 

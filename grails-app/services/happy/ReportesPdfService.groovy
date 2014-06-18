@@ -4,9 +4,12 @@ import com.lowagie.text.*
 import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable;
 
+import happy.UtilitariosTagLib
+
 class ReportesPdfService {
 
     Font fontTituloGad = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
+    Font fontSubtituloGad = new Font(Font.TIMES_ROMAN, 11, Font.BOLD)
     Font fontInfo = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
     Font fontFooter = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
     Font fontHeader = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
@@ -183,6 +186,20 @@ class ReportesPdfService {
      */
     def documentoHeader(Document documento, String header) {
         documentoHeader(documento, header, false)
+    }
+
+    def crearEncabezado(Document documento, String tituloReporte) {
+        def util = new UtilitariosTagLib()
+        Paragraph headersTitulo = new Paragraph();
+        headersTitulo.setAlignment(Element.ALIGN_CENTER);
+        headersTitulo.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", fontTituloGad));
+        headersTitulo.add(new Paragraph("SISTEMA DE ADMINISTRACIÓN DOCUMENTAL", fontSubtituloGad));
+        headersTitulo.add(new Paragraph(tituloReporte, fontSubtituloGad));
+        headersTitulo.add(new Paragraph("Generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontInfo));
+
+        headersTitulo.setSpacingAfter(20)
+
+        documento.add(headersTitulo)
     }
 
     /**

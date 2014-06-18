@@ -291,31 +291,8 @@ class TramiteAdminController {
                 html = "<ul>" + "\n"
                 html += makeTreeExtended(principal)
                 html += "</ul>" + "\n"
-
-//        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297))
             }
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-//        switch (params.b) {
-//            case "bep":
-//                url = createLink(controller: "tramite", action: "bandejaEntrada")
-//                break;
-//            case "bed":
-//                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
-//                break;
-//            case "bsp":
-//                url = createLink(controller: "tramite2", action: "bandejaSalida")
-//                break;
-//            case "bsd":
-//                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
-//                break;
-//            case "bqt":
-//                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-//                break;
-//            case "bqe":
-//                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
-//                break;
-//
-//        }
         }
         return [html2: html, url: url, tramite: tramite]
     }
