@@ -167,8 +167,10 @@
                 var items = {};
 
                 if (nodeType != "root" && !nodeType.match("inactivo") && !nodeType.match("Inactivo")) {
-                    items = {
-                        retrasados : {
+                    console.log("${session.usuario.puedeJefe}", "${session.usuario.puedeDirector}", "${session.usuario.departamentoId}");
+                    if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||
+                        "${session.usuario.puedeDirector}" == "true") {
+                        items.retrasados = {
                             label   : "Trámites retrasados",
                             icon    : "fa fa-rotate-left",
                             submenu : {
@@ -195,63 +197,24 @@
                                     }
                                 }
                             }
-                        }
-                    };
+                        };
 
-                    items.documentos = {
-                        label   : "Documentos generados",
-                        icon    : "fa fa-files-o",
-                        submenu : {
-                            detallado   : {
-                                label  : "Detallado",
-                                icon   : "fa fa-files-o",
-                                action : function () {
-                                    $('#modalFechas').modal('show');
-                                    $("#btnPrint").unbind("click").click(function () {
-                                        if ($("#formFechas").valid()) {
-                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                            } else {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                            }
-                                            $('#modalFechas').modal('hide');
-                                        }
-                                    });
-                                }
-                            },
-                            noDetallado : {
-                                label  : "Resumen",
-                                icon   : "fa fa-files-o",
-                                action : function () {
-                                    $('#modalFechas').modal('show');
-                                    $("#btnPrint").unbind("click").click(function () {
-                                        if ($("#formFechas").valid()) {
-                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                            } else {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                            }
-                                            $('#modalFechas').modal('hide');
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    };
-
-                    if (nodeType.match("usuario") || nodeType.match("jefe")) {
-                        items.gestion = {
-                            label   : "Gestión de trámites",
-                            icon    : "fa fa-file-text",
+                        items.documentos = {
+                            label   : "Documentos generados",
+                            icon    : "fa fa-files-o",
                             submenu : {
                                 detallado   : {
                                     label  : "Detallado",
-                                    icon   : "fa fa-file-text",
+                                    icon   : "fa fa-files-o",
                                     action : function () {
                                         $('#modalFechas').modal('show');
                                         $("#btnPrint").unbind("click").click(function () {
                                             if ($("#formFechas").valid()) {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                    location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                } else {
+                                                    location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                }
                                                 $('#modalFechas').modal('hide');
                                             }
                                         });
@@ -259,17 +222,37 @@
                                 },
                                 noDetallado : {
                                     label  : "Resumen",
-                                    icon   : "fa fa-file-text",
+                                    icon   : "fa fa-files-o",
                                     action : function () {
                                         $('#modalFechas').modal('show');
                                         $("#btnPrint").unbind("click").click(function () {
                                             if ($("#formFechas").valid()) {
-                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                    location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                } else {
+                                                    location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                }
                                                 $('#modalFechas').modal('hide');
                                             }
                                         });
                                     }
                                 }
+                            }
+                        };
+                    }
+
+                    if (nodeType.match("usuario") || nodeType.match("jefe")) {
+                        items.gestion = {
+                            label  : "Gestión de trámites",
+                            icon   : "fa fa-file-text",
+                            action : function () {
+                                $('#modalFechas').modal('show');
+                                $("#btnPrint").unbind("click").click(function () {
+                                    if ($("#formFechas").valid()) {
+                                        location.href = "${g.createLink(controller: 'reporteGestion',action: 'reporteGestion')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                        $('#modalFechas').modal('hide');
+                                    }
+                                });
                             }
                         };
                     }
