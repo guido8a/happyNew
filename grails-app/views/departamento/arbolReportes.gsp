@@ -102,6 +102,50 @@
         <elm:select name="selDptoOrig" from="${Departamento.findAllByActivo(1, [sort: 'descripcion'])}"
                     optionKey="id" optionValue="descripcion" optionClass="id" class="form-control hide"/>
 
+        <!-- Modal -->
+        <div class="modal fade" id="modalFechas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="modalFecha_title"></h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="formFechas">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <p class="form-control-static">
+                                        Desde
+                                    </p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <elm:datepicker name="desde" class="form-control required"/>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <p class="form-control-static">
+                                        Hasta
+                                    </p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <elm:datepicker name="hasta" class="form-control required"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnPrint"><i class="fa fa-print"></i> Generar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
 
             var index = 0;
@@ -154,23 +198,76 @@
                         }
                     };
 
+                    items.documentos = {
+                        label   : "Documentos generados",
+                        icon    : "fa fa-files-o",
+                        submenu : {
+                            detallado   : {
+                                label  : "Detallado",
+                                icon   : "fa fa-files-o",
+                                action : function () {
+                                    $('#modalFechas').modal('show');
+                                    $("#btnPrint").unbind("click").click(function () {
+                                        if ($("#formFechas").valid()) {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                            }
+                                            $('#modalFechas').modal('hide');
+                                        }
+                                    });
+                                }
+                            },
+                            noDetallado : {
+                                label  : "Resumen",
+                                icon   : "fa fa-files-o",
+                                action : function () {
+                                    $('#modalFechas').modal('show');
+                                    $("#btnPrint").unbind("click").click(function () {
+                                        if ($("#formFechas").valid()) {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                            }
+                                            $('#modalFechas').modal('hide');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    };
+
                     if (nodeType.match("usuario") || nodeType.match("jefe")) {
-                        items.documentos = {
-                            label   : "Documentos generados",
-                            icon    : "fa fa-files-o",
+                        items.gestion = {
+                            label   : "Gestión de trámites",
+                            icon    : "fa fa-file-text",
                             submenu : {
                                 detallado   : {
                                     label  : "Detallado",
-                                    icon   : "fa fa-files-o",
+                                    icon   : "fa fa-file-text",
                                     action : function () {
-                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId
+                                        $('#modalFechas').modal('show');
+                                        $("#btnPrint").unbind("click").click(function () {
+                                            if ($("#formFechas").valid()) {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetallado')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                                $('#modalFechas').modal('hide');
+                                            }
+                                        });
                                     }
                                 },
                                 noDetallado : {
                                     label  : "Resumen",
-                                    icon   : "fa fa-files-o",
+                                    icon   : "fa fa-file-text",
                                     action : function () {
-                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId
+                                        $('#modalFechas').modal('show');
+                                        $("#btnPrint").unbind("click").click(function () {
+                                            if ($("#formFechas").valid()) {
+                                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneral')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                                $('#modalFechas').modal('hide');
+                                            }
+                                        });
                                     }
                                 }
                             }
@@ -182,6 +279,25 @@
             }
 
             $(function () {
+
+                $("#formFechas").validate({
+                    errorClass     : "help-block",
+                    errorPlacement : function (error, element) {
+                        if (element.parent().hasClass("input-group")) {
+                            error.insertAfter(element.parent());
+                        } else {
+                            error.insertAfter(element);
+                        }
+                        element.parents(".grupo").addClass('has-error');
+                    },
+                    success        : function (label) {
+                        label.parents(".grupo").removeClass('has-error');
+                    }
+                });
+
+                $("#modalFechas").modal({
+                    show : false
+                });
 
                 $('#tree').on("loaded.jstree", function () {
                     $("#loading").hide();

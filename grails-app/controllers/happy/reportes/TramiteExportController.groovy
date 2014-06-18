@@ -1,39 +1,38 @@
 package happy.reportes
 
 import com.lowagie.text.Chunk
-import com.lowagie.text.Element
-import com.lowagie.text.Font
 import com.lowagie.text.HeaderFooter
 import com.lowagie.text.PageSize
-import com.lowagie.text.Paragraph
 import com.lowagie.text.Phrase
 import com.lowagie.text.Rectangle
 import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable
-import com.lowagie.text.pdf.PdfWriter
-import happy.seguridad.Persona
-import happy.tramites.Departamento
-import happy.tramites.PersonaDocumentoTramite
-import happy.tramites.RolPersonaTramite
-import happy.tramites.Tramite
-import org.xhtmlrenderer.extend.FontResolver
-
 import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
-import com.lowagie.text.DocumentException;
+
+import java.awt.Color
+import java.io.*;
+
+import happy.seguridad.Persona
+import happy.tramites.Departamento
+import happy.tramites.PersonaDocumentoTramite
+import happy.tramites.RolPersonaTramite
+import happy.tramites.Tramite
+
+//import org.xhtmlrenderer.extend.FontResolver
+
+//import com.lowagie.text.DocumentException;
 
 //import happy.tramites.PersonaDocumentoTramite
 //import happy.tramites.RolPersonaTramite
 //import happy.tramites.Tramite
 
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
-import java.awt.Color
-import java.io.*;
-import org.xhtmlrenderer.pdf.ITextRenderer;
+//import javax.xml.parsers.DocumentBuilder
+//import javax.xml.parsers.DocumentBuilderFactory
+//import org.xhtmlrenderer.pdf.ITextRenderer;
 
 class TramiteExportController {
 
@@ -54,7 +53,7 @@ class TramiteExportController {
             //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
             def pdfw = PdfWriter.getInstance(document, baos);
 
-            reportesPdfService.documentoFooter(document, "Reporte del trámite " + codigo, true)
+            reportesPdfService.documentoFooter(document, "Reporte del trámite " + codigo + "        pág. ", true)
             //pone en el footer el nombre de tramite q es y el numero de pagina
 
             document.open();
