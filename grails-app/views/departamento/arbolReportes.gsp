@@ -138,9 +138,9 @@
                     icon    : "fa fa-print",
                     action  : function(){
                         if(nodeType.match("padre") || nodeType.match("hijo")){
-                            location.href="${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?dpto="+nodeId
+                            location.href="${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto="+nodeId
                         }else{
-                            location.href="${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?prsn="+nodeId
+                            location.href="${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn="+nodeId
                         }
                     }
                 }

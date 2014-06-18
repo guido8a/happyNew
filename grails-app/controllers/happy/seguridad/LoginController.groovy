@@ -63,8 +63,8 @@ class LoginController {
     }
 
     def validarSesion() {
-        println session
-        println session.usuario
+//        println session
+//        println session.usuario
         if (session.usuario) {
             render "OK"
         } else {

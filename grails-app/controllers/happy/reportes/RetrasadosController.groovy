@@ -40,7 +40,7 @@ class RetrasadosController {
     def reporteRetrasadosDetalle(){
 //        params.detalle=1
 //        params.prsn=session.usuario.id
-        println "detallado "+params
+        println "detallado aaa    "+params
         def estadoR= EstadoTramite.findByCodigo("E004")
         def estadoE= EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -127,16 +127,20 @@ class RetrasadosController {
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("svt",[top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+
         def pdfw = PdfWriter.getInstance(document, baos);
         reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
         Paragraph headers = new Paragraph();
         headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph("Reporte de trámites retrasados", times18bold));
+        headers.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", times12bold));
+        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
+        headers.add(new Paragraph("Reporte de trámites retrasados", times12bold));
+        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
 //        headers.add(new Paragraph(""+session.departamento+"", times12bold));
-        headers.add(new Paragraph("Al: " + now.format("dd-MM-yyyy hh:mm"), times12bold));
+//        headers.add(new Paragraph("Al: " + now.format("dd-MM-yyyy hh:mm"), times12bold));
         headers.add(new Paragraph("\n", times12bold))
         def contenido = new Paragraph();
 //        contenido.add(new Paragraph("-"+datos["objeto"], times12bold))
@@ -172,41 +176,126 @@ class RetrasadosController {
                 par3.setSpacingBefore(4)
 //                println "wtf "+lvl["triangulos"]
 
-                    if(lvl["tramites"].size()>0){
+                if(lvl["tramites"].size()>0){
 //                        par = new Paragraph("Trámites:", times10bold)
 //                        par.setIndentationLeft(lvl["nivel"]*20+10)
 //                        document.add(par)
-                        lvl["triangulos"].each{t->
-                            par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
-                            par.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                            document.add(par)
+                    lvl["triangulos"].each{t->
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                        document.add(par)
+                    }
+
+                }
+                if(params.detalle){
+                    tablaTramites = new PdfPTable(7);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Nro.", times8bold)
+                    PdfPCell cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Creación", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("De", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Creado por", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+//                    par = new Paragraph("Para", times8bold)
+//                    cell = new PdfPCell(par);
+//                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Envío", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Recepcíon", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Límite", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    lvl["tramites"].each{t->
+                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                        par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        if(t.tramite.deDepartamento){
+                            par = new Paragraph("${t.tramite.deDepartamento.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                        }else{
+                            par = new Paragraph("${t.tramite.de.departamento.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
                         }
+                        par = new Paragraph("${t.tramite.de.login}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaRecepcion)?t.fechaRecepcion?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
 
                     }
+                    if(lvl["tramites"].size()>0){
+                        par2.add(tablaTramites)
+                        document.add(par2)
+                    }
+                }
+//                    if(lvl["personas"].size()>0){
+//                        par = new Paragraph("Usuarios:", times10bold)
+//                        par.setIndentationLeft(lvl["nivel"]*20+10)
+//                        document.add(par)
+//
+//                    }
+                lvl["personas"].each{p->
+//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
+                    par3=null
+                    par3= new Paragraph("", times8normal)
+                    par3.setSpacingBefore(4)
+                    par = new Paragraph("Usuario: ${p[ "objeto"].departamento.codigo}:"+p["objeto"]+" - ${p['objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
+                    document.add(par)
+                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
+
                     if(params.detalle){
-                        tablaTramites = new PdfPTable(5);
+                        tablaTramites = new PdfPTable(7);
                         tablaTramites.setWidthPercentage(100);
-                        par = new Paragraph("Número", times8bold)
+                        par = new Paragraph("Nro.", times8bold)
                         PdfPCell cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("F. Creación", times8bold)
+                        cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("De", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-//                    par = new Paragraph("Para", times8bold)
-//                    cell = new PdfPCell(par);
-//                    tablaTramites.addCell(cell);
-                        par = new Paragraph("Envío", times8bold)
+                        par = new Paragraph("Creado por", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        par = new Paragraph(" Recepcíon", times8bold)
+                        par = new Paragraph("F. Envío", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("Límite respuesta", times8bold)
+                        par = new Paragraph("F. Recepcíon", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        lvl["tramites"].each{t->
+                        par = new Paragraph("F. Límite", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        p["tramites"].each{t->
                             par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                            par = new Paragraph("${t.tramite.codigo}", times8normal)
+                            par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
                             if(t.tramite.deDepartamento){
@@ -214,13 +303,13 @@ class RetrasadosController {
                                 cell = new PdfPCell(par);
                                 tablaTramites.addCell(cell);
                             }else{
-                                par = new Paragraph("${t.tramite.de}", times8normal)
+                                par = new Paragraph("${t.tramite.de.departamento.codigo}", times8normal)
                                 cell = new PdfPCell(par);
                                 tablaTramites.addCell(cell);
                             }
-//                        par = new Paragraph("${t.departamento}", times8normal)
-//                        cell = new PdfPCell(par);
-//                        tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.de.login}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
                             par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
@@ -230,83 +319,13 @@ class RetrasadosController {
                             par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
-
                         }
-                        if(lvl["tramites"].size()>0){
-                            par2.add(tablaTramites)
-                            document.add(par2)
-                        }
-                    }
-//                    if(lvl["personas"].size()>0){
-//                        par = new Paragraph("Usuarios:", times10bold)
-//                        par.setIndentationLeft(lvl["nivel"]*20+10)
-//                        document.add(par)
-//
-//                    }
-                    lvl["personas"].each{p->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
-                        par3=null
-                        par3= new Paragraph("", times8normal)
-                        par3.setSpacingBefore(4)
-                        par = new Paragraph("Usuario: ${p[ "objeto"].departamento.codigo}:"+p["objeto"]+" - ${p['objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
-                        par.setIndentationLeft((lvl["nivel"]-1)*20+20)
-                        document.add(par)
-                        par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
-
-                        if(params.detalle){
-                            tablaTramites = null
-                            tablaTramites = new PdfPTable(5);
-                            tablaTramites.setWidthPercentage(100);
-                            par = new Paragraph("Número", times8bold)
-                            PdfPCell cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("De", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-//                        par = new Paragraph("Para", times8bold)
-//                        cell = new PdfPCell(par);
-//                        tablaTramites.addCell(cell);
-                            par = new Paragraph("Envío", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("Recepcíon", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("Límite respuesta", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            p["tramites"].each{t->
-                                par = new Paragraph("${t.tramite.codigo}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                if(t.tramite.deDepartamento){
-                                    par = new Paragraph("${t.tramite.deDepartamento.codigo}", times8normal)
-                                    cell = new PdfPCell(par);
-                                    tablaTramites.addCell(cell);
-                                }else{
-                                    par = new Paragraph("${t.tramite.de}", times8normal)
-                                    cell = new PdfPCell(par);
-                                    tablaTramites.addCell(cell);
-                                }
-//                            par = new Paragraph("${t.persona}", times8normal)
-//                            cell = new PdfPCell(par);
-//                            tablaTramites.addCell(cell);
-                                par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                par = new Paragraph("${(t.fechaRecepcion)?t.fechaRecepcion?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                            }
-                            if(p["tramites"].size()>0){
-                                par3.add(tablaTramites)
-                                document.add(par3)
-                            }
+                        if(p["tramites"].size()>0){
+                            par3.add(tablaTramites)
+                            document.add(par3)
                         }
                     }
+                }
 
 
 
@@ -336,7 +355,7 @@ class RetrasadosController {
 //            println "\t\t Tramites:"
 //            println "hijo funcion ${lvl['objeto']} "+lvl["objeto"].id+"    "+puedeVer.id
 
-                if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
+            if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
                 def par = new Paragraph("-"+lvl["objeto"], times12bold)
                 par.setIndentationLeft((lvl["nivel"]-1)*20)
                 contenido.add(par)
@@ -345,41 +364,126 @@ class RetrasadosController {
                 def par3= new Paragraph("", times8normal)
                 par3.setSpacingBefore(4)
 
-                    if(lvl["tramites"].size()>0){
+                if(lvl["tramites"].size()>0){
 //                        par = new Paragraph("Trámites:", times10bold)
 //                        par.setIndentationLeft(lvl["nivel"]*20+10)
 //                        contenido.add(par)
-                        lvl["triangulos"].each{t->
-                            par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
-                            par.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                            contenido.add(par)
+                    lvl["triangulos"].each{t->
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                        contenido.add(par)
+                    }
+
+                }
+                if(params.detalle){
+                    tablaTramites = new PdfPTable(7);
+                    tablaTramites.setWidthPercentage(100);
+                    par = new Paragraph("Nro.", times8bold)
+                    PdfPCell cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Creación", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("De", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Creado por", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+//                    par = new Paragraph("Para", times8bold)
+//                    cell = new PdfPCell(par);
+//                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Envío", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Recepcíon", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("F. Límite", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    lvl["tramites"].each{t->
+                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                        par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        if(t.tramite.deDepartamento){
+                            par = new Paragraph("${t.tramite.deDepartamento.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                        }else{
+                            par = new Paragraph("${t.tramite.de.departamento.codigo}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
                         }
+                        par = new Paragraph("${t.tramite.de.login}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaRecepcion)?t.fechaRecepcion?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
 
                     }
+                    if(lvl["tramites"].size()>0){
+                        par2.add(tablaTramites)
+                        contenido.add(par2)
+                    }
+                }
+//                    if(lvl["personas"].size()>0){
+//                        par = new Paragraph("Usuarios:", times10bold)
+//                        par.setIndentationLeft(lvl["nivel"]*20+10)
+//                        contenido.add(par)
+//
+//                    }
+                lvl["personas"].each{p->
+//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
+                    par3=null
+                    par3= new Paragraph("", times8normal)
+                    par3.setSpacingBefore(4)
+                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                    par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:"+p["objeto"]+" - ${p[ 'objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+                    contenido.add(par)
                     if(params.detalle){
-                        tablaTramites = new PdfPTable(5);
+                        tablaTramites=null
+                        tablaTramites = new PdfPTable(7);
                         tablaTramites.setWidthPercentage(100);
-                        par = new Paragraph("Número", times8bold)
-                        def cell = new PdfPCell(par);
+                        par = new Paragraph("Nro.", times8bold)
+                        PdfPCell cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("F. Creación", times8bold)
+                        cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("De", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-//                    par = new Paragraph("Para", times8bold)
-//                    cell = new PdfPCell(par);
-//                    tablaTramites.addCell(cell);
-                        par = new Paragraph("Envío", times8bold)
+                        par = new Paragraph("Creado por", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("Recepcíon", times8bold)
+                        par = new Paragraph("F. Envío", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("Límite respuesta", times8bold)
+                        par = new Paragraph("F. Recepcíon", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        lvl["tramites"].each{t->
+                        par = new Paragraph("F. Límite", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        p["tramites"].each{t->
                             par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                            par = new Paragraph("${t.tramite.codigo}", times8normal)
+                            par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
                             if(t.tramite.deDepartamento){
@@ -387,13 +491,13 @@ class RetrasadosController {
                                 cell = new PdfPCell(par);
                                 tablaTramites.addCell(cell);
                             }else{
-                                par = new Paragraph("${t.tramite.de}", times8normal)
+                                par = new Paragraph("${t.tramite.de.departamento.codigo}", times8normal)
                                 cell = new PdfPCell(par);
                                 tablaTramites.addCell(cell);
                             }
-//                        par = new Paragraph("${t.departamento}", times8normal)
-//                        cell = new PdfPCell(par);
-//                        tablaTramites.addCell(cell);
+                            par = new Paragraph("${t.tramite.de.login}", times8normal)
+                            cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
                             par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
@@ -403,92 +507,219 @@ class RetrasadosController {
                             par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
-
                         }
-                        if(lvl["tramites"].size()>0){
-                            par2.add(tablaTramites)
-                            contenido.add(par2)
-                        }
-                    }
-//                    if(lvl["personas"].size()>0){
-//                        par = new Paragraph("Usuarios:", times10bold)
-//                        par.setIndentationLeft(lvl["nivel"]*20+10)
-//                        contenido.add(par)
-//
-//                    }
-                    lvl["personas"].each{p->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
-                        par3=null
-                        par3= new Paragraph("", times8normal)
-                        par3.setSpacingBefore(4)
-                        par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                        par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:"+p["objeto"]+" - ${p[ 'objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
-                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                        contenido.add(par)
-                        if(params.detalle){
-                            tablaTramites=null
-                            tablaTramites = new PdfPTable(5);
-                            tablaTramites.setWidthPercentage(100);
-                            par = new Paragraph("Número", times8bold)
-                            PdfPCell cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("De", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-//                        par = new Paragraph("Para", times8bold)
-//                        cell = new PdfPCell(par);
-//                        tablaTramites.addCell(cell);
-                            par = new Paragraph("Envío", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("Recepcíon", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-                            par = new Paragraph("Límite respuesta", times8bold)
-                            cell = new PdfPCell(par);
-                            tablaTramites.addCell(cell);
-//                            par3.setIndentationLeft(lvl["nivel"]*20+30)
-                            p["tramites"].each{t->
-                                par = new Paragraph("${t.tramite.codigo}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                if(t.tramite.deDepartamento){
-                                    par = new Paragraph("${t.tramite.deDepartamento.codigo}", times8normal)
-                                    cell = new PdfPCell(par);
-                                    tablaTramites.addCell(cell);
-                                }else{
-                                    par = new Paragraph("${t.tramite.de}", times8normal)
-                                    cell = new PdfPCell(par);
-                                    tablaTramites.addCell(cell);
-                                }
-
-//                            par = new Paragraph("${t.persona}", times8normal)
-//                            cell = new PdfPCell(par);
-//                            tablaTramites.addCell(cell);
-                                par = new Paragraph("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                par = new Paragraph("${(t.fechaRecepcion)?t.fechaRecepcion?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                                par = new Paragraph("${(t.fechaLimiteRespuesta)?t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm'):''}", times8normal)
-                                cell = new PdfPCell(par);
-                                tablaTramites.addCell(cell);
-                            }
-                            if(p["tramites"].size()>0){
-                                par3.add(tablaTramites)
-                                contenido.add(par3)
-                            }
+                        if(p["tramites"].size()>0){
+                            par3.add(tablaTramites)
+                            contenido.add(par3)
                         }
                     }
                 }
+            }
 
 
 
             if(lvl["hijos"].size()>0)
-                imprimeHijos(lvl,contenido,tablaTramites)
+                imprimeHijosPdf(lvl,contenido,tablaTramites,params,usuario,deps,puedeVer)
         }
     }
+
+
+    def reporteRetrasadosConsolidado(){
+//        params.detalle=1
+//        params.prsn=session.usuario.id
+        println "con aaa    "+params
+        def estadoR= EstadoTramite.findByCodigo("E004")
+        def estadoE= EstadoTramite.findByCodigo("E003")
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def now = new Date()
+        now=now.plus(2)
+
+        def datos = [:]
+        def usuario = null
+        def deps = []
+        def puedeVer = []
+        def extraPersona ="and "
+        if(params.prsn){
+            usuario = Persona.get(params.prsn)
+            extraPersona+="persona="+usuario.id+" "
+            if(usuario.esTriangulo)
+                extraPersona="and (persona=${usuario.id} or departamento = ${usuario.departamento.id})"
+            def padre = usuario.departamento.padre
+            while(padre){
+                deps.add(padre)
+                padre=padre.padre
+            }
+            deps.add(usuario.departamento)
+            puedeVer.add(usuario.departamento)
+            def hi = Departamento.findAllByPadre(usuario.departamento)
+            while(hi.size()>0){
+                puedeVer +=hi
+                hi=Departamento.findAllByPadreInList(hi)
+            }
+
+        }
+        if(params.dpto){
+            def departamento = Departamento.get(params.dpto)
+            println "DPTO "+departamento.codigo+"  "+departamento.descripcion
+            def padre = departamento.padre
+            while(padre){
+                deps.add(padre)
+                padre=padre.padre
+            }
+            deps.add(departamento)
+            puedeVer.add(departamento)
+            def hi = Departamento.findAllByPadre(departamento)
+            while(hi.size()>0){
+                puedeVer +=hi
+                hi=Departamento.findAllByPadreInList(hi)
+            }
+        }
+//        println "deps "+deps+"  puede ver  "+puedeVer
+        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
+        tramites.each {t->
+            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and fechaRecepcion is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
+            if(pdt){
+                pdt.each {pd->
+                    def resp = Tramite.findAllByAQuienContesta(pd)
+                    if(resp.size()==0){
+                        if(pd.fechaLimite<now || (!pd.fechaRecepcion))
+                            datos=jerarquia(datos,pd)
+                    }
+
+                }
+            }
+
+        }
+        def baos = new ByteArrayOutputStream()
+        def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        def prmsHeaderHoja = [border: Color.WHITE]
+        def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
+        times8boldWhite.setColor(Color.WHITE)
+        times10boldWhite.setColor(Color.WHITE)
+        Document document = reportesPdfService.crearDocumento("vert",[top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+
+        def pdfw = PdfWriter.getInstance(document, baos);
+        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
+        Paragraph headers = new Paragraph();
+        headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", times12bold));
+        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
+        headers.add(new Paragraph("Reporte de trámites retrasados consolidado", times12bold));
+        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
+        headers.add(new Paragraph("\n", times12bold))
+        def contenido = new Paragraph();
+        def hijos = datos["hijos"]
+        document.add(headers);
+        PdfPTable tablaTramites
+        tablaTramites = new PdfPTable(3);
+        tablaTramites.setWidths(10,80,10)
+        tablaTramites.setWidthPercentage(100);
+        hijos.each{lvl->
+//            println "hijo ${lvl['objeto']}  ${lvl['objeto'].id}   "+puedeVer.id
+            if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
+//            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
+
+
+                def par = new Paragraph("Dirección", times8bold)
+                PdfPCell cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                def total =0
+                par = new Paragraph(""+lvl["objeto"], times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                par = new Paragraph(""+total, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                def usuarios =""
+                def totales =""
+                par = new Paragraph("Usuario:", times8bold)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                if(lvl["tramites"].size()>0){
+                    lvl["triangulos"].each{t->
+                        usuarios+="${t} (Oficina)\n"
+                        totales+="${lvl["tramites"].size()} \n"
+                    }
+                }
+                lvl["personas"].each{p->
+                    usuarios+="${p['objeto']} \n"
+                    totales+="${ p["tramites"].size()} \n"
+                }
+                par = new Paragraph(usuarios, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                par = new Paragraph(totales, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+
+
+
+            }
+            imprimeHijosPdfConsolidado(lvl,document,tablaTramites,params,usuario,deps,puedeVer)
+
+
+        }
+        contenido.add(tablaTramites)
+        document.add(contenido)
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+//        return  [tramites:tramites,datos:datos]
+    }
+
+
+
+    def imprimeHijosPdfConsolidado(arr,contenido,tablaTramites,params,usuario,deps,puedeVer){
+        def datos = arr["hijos"]
+        datos.each{lvl->
+            if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
+                def par = new Paragraph("Oficina", times8bold)
+                PdfPCell cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                def total =0
+                par = new Paragraph(""+lvl["objeto"], times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                par = new Paragraph(""+total, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                def usuarios =""
+                def totales =""
+                par = new Paragraph("Usuario:", times8bold)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                if(lvl["tramites"].size()>0){
+                    lvl["triangulos"].each{t->
+                        usuarios+="${t} (Oficina)\n"
+                        totales+="${lvl["tramites"].size()} \n"
+                    }
+                }
+                lvl["personas"].each{p->
+                    usuarios+="${p['objeto']} \n"
+                    totales+="${ p["tramites"].size()} \n"
+                }
+                par = new Paragraph(usuarios, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+                par = new Paragraph(totales, times8normal)
+                cell = new PdfPCell(par);
+                tablaTramites.addCell(cell);
+            }
+
+            if(lvl["hijos"].size()>0)
+                imprimeHijosPdfConsolidado(lvl,contenido,tablaTramites,params,usuario,deps,puedeVer)
+        }
+    }
+
+
     def imprimeHijos(arr){
         def datos = arr["hijos"]
         datos.each{lvl->
