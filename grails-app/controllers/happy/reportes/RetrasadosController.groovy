@@ -168,7 +168,7 @@ class RetrasadosController {
 
 
                 def par = new Paragraph("-"+lvl["objeto"], times12bold)
-                par.setIndentationLeft((lvl["nivel"]-1)*20)
+//                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 document.add(par)
                 def par2= new Paragraph("", times8normal)
                 par2.setSpacingBefore(4)
@@ -182,7 +182,7 @@ class RetrasadosController {
 //                        document.add(par)
                     lvl["triangulos"].each{t->
                         par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} (oficina) - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
-                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         document.add(par)
                     }
 
@@ -215,7 +215,7 @@ class RetrasadosController {
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each{t->
-                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
@@ -262,9 +262,9 @@ class RetrasadosController {
                     par3= new Paragraph("", times8normal)
                     par3.setSpacingBefore(4)
                     par = new Paragraph("Usuario: ${p[ "objeto"].departamento.codigo}:"+p["objeto"]+" - ${p['objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
-                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
+//                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
                     document.add(par)
-                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
+//                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
 
                     if(params.detalle){
                         tablaTramites = new PdfPTable(7);
@@ -291,7 +291,7 @@ class RetrasadosController {
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each{t->
-                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                             par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
@@ -357,7 +357,7 @@ class RetrasadosController {
 
             if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
                 def par = new Paragraph("-"+lvl["objeto"], times12bold)
-                par.setIndentationLeft((lvl["nivel"]-1)*20)
+//                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 contenido.add(par)
                 def par2= new Paragraph("", times8normal)
                 par2.setSpacingBefore(4)
@@ -367,7 +367,7 @@ class RetrasadosController {
                 if(lvl["tramites"].size()>0){
                     lvl["triangulos"].each{t->
                         par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} (oficina) - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
-                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         contenido.add(par)
                     }
 
@@ -400,7 +400,7 @@ class RetrasadosController {
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each{t->
-                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
@@ -446,9 +446,9 @@ class RetrasadosController {
                     par3=null
                     par3= new Paragraph("", times8normal)
                     par3.setSpacingBefore(4)
-                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:"+p["objeto"]+" - ${p[ 'objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
-                    par.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                    par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     contenido.add(par)
                     if(params.detalle){
                         tablaTramites=null
@@ -476,7 +476,7 @@ class RetrasadosController {
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each{t->
-                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
+//                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                             par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo=='R002'?'[CC]':''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
