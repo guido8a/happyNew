@@ -211,9 +211,9 @@
                                         icon   : "fa fa-rotate-left",
                                         action : function () {
                                             if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
                                             } else {
-                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
                                             }
                                         }
                                     },
@@ -222,9 +222,9 @@
                                         icon   : "fa fa-rotate-left",
                                         action : function () {
                                             if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
                                             } else {
-                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
                                             }
                                         }
                                     }
