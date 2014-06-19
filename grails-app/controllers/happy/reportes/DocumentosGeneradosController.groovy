@@ -17,18 +17,28 @@ import happy.tramites.Departamento
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
+import org.apache.poi.hssf.usermodel.HSSFFont
+import org.apache.poi.hssf.util.HSSFColor
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.CreationHelper
+import org.apache.poi.ss.usermodel.Font
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.Color
 import java.io.*;
 
 class DocumentosGeneradosController {
 
-    def reportesPdfService
+    def reportesPdfService, reportesXlsService
 
-    def reporteGeneral() {
-        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+    def reporteGeneralPdf() {
+        Font font = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+        Font fontBold = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font fontTh = new com.lowagie.text.Font(Font.TIMES_ROMAN, 11, Font.BOLD);
 
         def personas = []
 
@@ -153,11 +163,11 @@ class DocumentosGeneradosController {
         return arr
     }
 
-    def reporteDetallado() {
+    def reporteDetalladoPdf() {
 
-        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+        Font font = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+        Font fontBold = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font fontTh = new com.lowagie.text.Font(Font.TIMES_ROMAN, 11, Font.BOLD);
 
         def personas = []
 
@@ -280,4 +290,109 @@ class DocumentosGeneradosController {
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
     }
+
+    def reporteGeneralXlsx() {
+
+        def downloadName = "Reporte.xlsx"
+
+        def path = servletContext.getRealPath("/") + "xls/"
+        new File(path).mkdirs()
+        //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
+        String filename = path + "text.xlsx";
+        String sheetName = "Sheet1";
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet(sheetName);
+        CreationHelper createHelper = wb.getCreationHelper();
+        sheet.setAutobreaks(true);
+
+        XSSFRow rowHead = sheet.createRow((short) 0);
+
+        Font font = wb.createFont();
+        font.setFontHeightInPoints((short) 12);
+        font.setFontName(HSSFFont.FONT_ARIAL);
+        font.setItalic(true);
+        font.setBold(true);
+        font.setColor(HSSFColor.GREEN.index);
+
+        CellStyle style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        style.setFont(font)
+
+        rowHead.setHeightInPoints(14)
+
+        Cell cell = rowHead.createCell((int) 0)
+        cell.setCellValue("Index")
+        cell.setCellStyle(style)
+        sheet.setColumnWidth(0, 3000)
+
+        cell = rowHead.createCell((int) 1)
+        cell.setCellValue("Name")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 2)
+        cell.setCellValue("Code")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 3)
+        cell.setCellValue("Salary")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 4)
+        cell.setCellValue("City")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 5)
+        cell.setCellValue("State")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 6)
+        cell.setCellValue("Number")
+        cell.setCellStyle(style)
+
+        cell = rowHead.createCell((int) 7)
+        cell.setCellValue("Date")
+        cell.setCellStyle(style)
+        sheet.setColumnWidth(7, 5000)
+
+        int i = 0, index = 0;
+        for (i = 0; i < 6; i++) {
+            index++;
+            XSSFRow row = sheet.createRow((short) index);
+            row.createCell((int) 0).setCellValue(index);
+            row.createCell((int) 1).setCellValue("Name -- " + index);
+            row.createCell((int) 2).setCellValue(createHelper.createRichTextString("Name " + index));
+            row.createCell((int) 3).setCellValue("4500" + index);
+            row.createCell((int) 4).setCellValue("City -- " + index);
+            row.createCell((int) 5).setCellValue("State -- " + index);
+            row.createCell((int) 6).setCellValue(1.2);
+
+            CellStyle cellStyle = wb.createCellStyle();
+            cellStyle.setDataFormat(
+                    createHelper.createDataFormat().getFormat("dd-mm-yyyy h:mm"));
+            Cell c = row.createCell((int) 7);
+            c.setCellValue(new Date());
+            c.setCellStyle(cellStyle);
+        }
+
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        wb.write(fileOut);
+        fileOut.close();
+        String disHeader = "Attachment;Filename=\"${downloadName}\"";
+        response.setHeader("Content-Disposition", disHeader);
+        File desktopFile = new File(filename);
+        PrintWriter pw = response.getWriter();
+        FileInputStream fileInputStream = new FileInputStream(desktopFile);
+        int j;
+
+        while ((j = fileInputStream.read()) != -1) {
+            pw.write(j);
+        }
+        fileInputStream.close();
+        response.flushBuffer();
+        pw.flush();
+        pw.close();
+
+    }
+
 }
