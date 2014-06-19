@@ -1,15 +1,9 @@
 package happy.reportes
 
 import com.lowagie.text.Chunk
-import com.lowagie.text.HeaderFooter
-import com.lowagie.text.PageSize
 import com.lowagie.text.Phrase
-import com.lowagie.text.Rectangle
-import com.lowagie.text.pdf.PdfPCell
-import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.Document
 import com.lowagie.text.Element
-import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
 import happy.seguridad.Persona
@@ -23,7 +17,6 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.CreationHelper
 import org.apache.poi.ss.usermodel.Font
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -33,7 +26,7 @@ import java.io.*;
 
 class DocumentosGeneradosController {
 
-    def reportesPdfService, reportesXlsService
+    def reportesPdfService
 
     def reporteGeneralPdf() {
         Font font = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
