@@ -5,18 +5,24 @@ import com.lowagie.text.Phrase
 import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Paragraph
+import com.lowagie.text.Font
 import com.lowagie.text.pdf.PdfWriter
+
 import happy.seguridad.Persona
 import happy.tramites.Departamento
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
+
 import org.apache.poi.hssf.usermodel.HSSFFont
+import org.apache.poi.hssf.util.CellRangeAddress
 import org.apache.poi.hssf.util.HSSFColor
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.CreationHelper
-import org.apache.poi.ss.usermodel.Font
+import org.apache.poi.ss.usermodel.IndexedColors
+
+//import org.apache.poi.ss.usermodel.Font
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -29,9 +35,9 @@ class DocumentosGeneradosController {
     def reportesPdfService
 
     def reporteGeneralPdf() {
-        Font font = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new com.lowagie.text.Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
 
         def personas = []
 
@@ -158,9 +164,9 @@ class DocumentosGeneradosController {
 
     def reporteDetalladoPdf() {
 
-        Font font = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new com.lowagie.text.Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new com.lowagie.text.Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
 
         def personas = []
 
@@ -286,86 +292,367 @@ class DocumentosGeneradosController {
 
     def reporteGeneralXlsx() {
 
-        def downloadName = "Reporte.xlsx"
+        def personas = []
+
+        def fileName = "documentos_generados_"
+        def title = "Documentos generados de \n"
+
+        if (params.tipo == "prsn") {
+            personas = [Persona.get(params.id.toLong())]
+
+            fileName += personas[0].login
+            title += "${personas[0].nombre} ${personas[0].apellido}\n(de ${params.desde} a ${params.hasta})"
+        } else if (params.tipo == "dpto") {
+            def dep = Departamento.get(params.id.toLong())
+            def hijosDep = todosDep(dep)
+            fileName += dep.codigo
+            title += "${dep.descripcion}\n(de ${params.desde} a ${params.hasta})"
+            personas = Persona.withCriteria {
+                inList("departamento", hijosDep)
+                departamento {
+                    order("id", "asc")
+                }
+            }
+        }
+
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
 
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
         //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
         String filename = path + "text.xlsx";
-        String sheetName = "Sheet1";
+        String sheetName = "Resumen";
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
         CreationHelper createHelper = wb.getCreationHelper();
         sheet.setAutobreaks(true);
 
-        XSSFRow rowHead = sheet.createRow((short) 0);
+        org.apache.poi.ss.usermodel.Font fontTitle = wb.createFont();
+        fontTitle.setFontHeightInPoints((short) 18);
+        fontTitle.setFontName(HSSFFont.FONT_ARIAL);
+        fontTitle.setItalic(true);
+        fontTitle.setBold(true);
+        fontTitle.setColor(HSSFColor.DARK_RED.index);
 
-        Font font = wb.createFont();
-        font.setFontHeightInPoints((short) 12);
-        font.setFontName(HSSFFont.FONT_ARIAL);
-        font.setItalic(true);
-        font.setBold(true);
-        font.setColor(HSSFColor.GREEN.index);
+        CellStyle styleTitle = wb.createCellStyle();
+        styleTitle.setAlignment(CellStyle.ALIGN_CENTER);
+        styleTitle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleTitle.setFont(fontTitle)
+        styleTitle.setWrapText(true);
 
-        CellStyle style = wb.createCellStyle();
-        style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-        style.setFont(font)
+        org.apache.poi.ss.usermodel.Font fontHeaders = wb.createFont();
+        fontHeaders.setFontHeightInPoints((short) 12);
+        fontHeaders.setFontName(HSSFFont.FONT_ARIAL);
+        fontHeaders.setItalic(true);
+        fontHeaders.setBold(true);
 
+        CellStyle styleHeaders = wb.createCellStyle();
+        styleHeaders.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeaders.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleHeaders.setFont(fontHeaders)
+
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+        rowTitle.setHeightInPoints(40)
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title);
+        cellTitle.setCellStyle(styleTitle)
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                2, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+
+        XSSFRow rowHead = sheet.createRow((short) 3);
         rowHead.setHeightInPoints(14)
 
         Cell cell = rowHead.createCell((int) 0)
-        cell.setCellValue("Index")
-        cell.setCellStyle(style)
-        sheet.setColumnWidth(0, 3000)
+        cell.setCellValue("Departamento")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(0, 15000)
 
         cell = rowHead.createCell((int) 1)
-        cell.setCellValue("Name")
-        cell.setCellStyle(style)
+        cell.setCellValue("Usuario")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(1, 10000)
 
         cell = rowHead.createCell((int) 2)
-        cell.setCellValue("Code")
-        cell.setCellStyle(style)
+        cell.setCellValue("N. trámites")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(2, 3000)
+
+        def index = 4
+
+        personas.each { persona ->
+            if (persona.estaActivo) {
+                def tramites = Tramite.withCriteria {
+                    eq("de", persona)
+                    ge("fechaCreacion", desde)
+                    le("fechaCreacion", hasta)
+                    order("fechaCreacion", "asc")
+                }
+
+                if (tramites.size() > 0) {
+                    XSSFRow row = sheet.createRow((short) index)
+                    row.createCell((int) 0).setCellValue("${persona.departamento.descripcion} (${persona.departamento.codigo})")
+                    row.createCell((int) 1).setCellValue("${persona.nombre} ${persona.apellido} (${persona.login})")
+                    row.createCell((int) 2).setCellValue(tramites.size())
+                    index++
+                }
+            }
+        }
+
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        wb.write(fileOut);
+        fileOut.close();
+        String disHeader = "Attachment;Filename=\"${downloadName}\"";
+        response.setHeader("Content-Disposition", disHeader);
+        File desktopFile = new File(filename);
+        PrintWriter pw = response.getWriter();
+        FileInputStream fileInputStream = new FileInputStream(desktopFile);
+        int j;
+
+        while ((j = fileInputStream.read()) != -1) {
+            pw.write(j);
+        }
+        fileInputStream.close();
+        response.flushBuffer();
+        pw.flush();
+        pw.close();
+    }
+
+    def reporteDetalladoXls() {
+
+        def personas = []
+
+        def fileName = "detalle_documentos_generados_"
+        def title = "Detalle de los documentos generados de \n"
+
+        if (params.tipo == "prsn") {
+            personas = [Persona.get(params.id.toLong())]
+
+            fileName += personas[0].login
+            title += "${personas[0].nombre} ${personas[0].apellido}\n(de ${params.desde} a ${params.hasta})"
+        } else if (params.tipo == "dpto") {
+            def dep = Departamento.get(params.id.toLong())
+            def hijosDep = todosDep(dep)
+            fileName += dep.codigo
+            title += "${dep.descripcion}\n(de ${params.desde} a ${params.hasta})"
+            personas = Persona.withCriteria {
+                inList("departamento", hijosDep)
+                departamento {
+                    order("id", "asc")
+                }
+            }
+        }
+//        println "PERSONAS: " + personas
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
+
+        def path = servletContext.getRealPath("/") + "xls/"
+        new File(path).mkdirs()
+        //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
+        String filename = path + "text.xlsx";
+        String sheetName = "Resumen";
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet(sheetName);
+        CreationHelper createHelper = wb.getCreationHelper();
+        sheet.setAutobreaks(true);
+
+        org.apache.poi.ss.usermodel.Font fontUsuario = wb.createFont();
+        fontUsuario.setFontHeightInPoints((short) 12);
+        fontUsuario.setFontName(HSSFFont.FONT_ARIAL);
+        fontUsuario.setItalic(true);
+        fontUsuario.setBold(true);
+//        fontUsuario.setColor(HSSFColor.GREY_40_PERCENT.index);
+
+        org.apache.poi.ss.usermodel.Font fontDep = wb.createFont();
+        fontDep.setFontHeightInPoints((short) 14);
+        fontDep.setFontName(HSSFFont.FONT_ARIAL);
+        fontDep.setItalic(true);
+        fontDep.setBold(true);
+//        fontDep.setColor(HSSFColor.GREY_80_PERCENT.index);
+
+        org.apache.poi.ss.usermodel.Font fontTitle = wb.createFont();
+        fontTitle.setFontHeightInPoints((short) 18);
+        fontTitle.setFontName(HSSFFont.FONT_ARIAL);
+        fontTitle.setItalic(true);
+        fontTitle.setBold(true);
+        fontTitle.setColor(HSSFColor.DARK_RED.index);
+
+        org.apache.poi.ss.usermodel.Font fontHeaders = wb.createFont();
+        fontHeaders.setFontHeightInPoints((short) 12);
+        fontHeaders.setFontName(HSSFFont.FONT_ARIAL);
+        fontHeaders.setItalic(true);
+        fontHeaders.setBold(true);
+
+        CellStyle styleUsuario = wb.createCellStyle();
+        styleUsuario.setAlignment(CellStyle.ALIGN_CENTER);
+        styleUsuario.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleUsuario.setFont(fontUsuario)
+        styleUsuario.setFillBackgroundColor(IndexedColors.GREY_40_PERCENT.getIndex());
+        styleUsuario.setFillPattern(CellStyle.BIG_SPOTS);
+//        styleUsuario.setFillForegroundColor(HSSFColor.DARK_RED.index)
+//        styleUsuario.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        styleUsuario.setWrapText(true);
+
+        CellStyle styleDep = wb.createCellStyle();
+        styleDep.setAlignment(CellStyle.ALIGN_CENTER);
+        styleDep.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleDep.setFont(fontDep)
+        styleDep.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        styleDep.setFillPattern(CellStyle.SOLID_FOREGROUND);
+//        styleDep.setFillBackgroundColor(IndexedColors.GREY_80_PERCENT.getIndex())
+//        styleDep.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        styleDep.setWrapText(true);
+
+        CellStyle styleTitle = wb.createCellStyle();
+        styleTitle.setAlignment(CellStyle.ALIGN_CENTER);
+        styleTitle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleTitle.setFont(fontTitle)
+        styleTitle.setWrapText(true);
+
+        CellStyle styleHeaders = wb.createCellStyle();
+        styleHeaders.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeaders.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleHeaders.setFont(fontHeaders)
+
+        CellStyle styleDate = wb.createCellStyle();
+        styleDate.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy hh:mm"));
+
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+        rowTitle.setHeightInPoints(40)
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title);
+        cellTitle.setCellStyle(styleTitle)
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                2, //last row  (0-based)
+                0, //first column (0-based)
+                5  //last column  (0-based)
+        ));
+
+        def wFechas = 3000
+
+        XSSFRow rowHead = sheet.createRow((short) 3);
+        rowHead.setHeightInPoints(14)
+
+        Cell cell = rowHead.createCell((int) 0)
+        cell.setCellValue("No.")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(0, 4000)
+
+        cell = rowHead.createCell((int) 1)
+        cell.setCellValue("Fecha creación")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(1, wFechas)
+
+        cell = rowHead.createCell((int) 2)
+        cell.setCellValue("Para oficina")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(2, 15000)
 
         cell = rowHead.createCell((int) 3)
-        cell.setCellValue("Salary")
-        cell.setCellStyle(style)
+        cell.setCellValue("Destinatario")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(3, 10000)
 
         cell = rowHead.createCell((int) 4)
-        cell.setCellValue("City")
-        cell.setCellStyle(style)
+        cell.setCellValue("Fecha envío")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(4, wFechas)
 
         cell = rowHead.createCell((int) 5)
-        cell.setCellValue("State")
-        cell.setCellStyle(style)
+        cell.setCellValue("Fecha recepción")
+        cell.setCellStyle(styleHeaders)
+        sheet.setColumnWidth(5, wFechas)
 
-        cell = rowHead.createCell((int) 6)
-        cell.setCellValue("Number")
-        cell.setCellStyle(style)
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
-        cell = rowHead.createCell((int) 7)
-        cell.setCellValue("Date")
-        cell.setCellStyle(style)
-        sheet.setColumnWidth(7, 5000)
+        def depActual = null
+        def index = 4
 
-        int i = 0, index = 0;
-        for (i = 0; i < 6; i++) {
-            index++;
-            XSSFRow row = sheet.createRow((short) index);
-            row.createCell((int) 0).setCellValue(index);
-            row.createCell((int) 1).setCellValue("Name -- " + index);
-            row.createCell((int) 2).setCellValue(createHelper.createRichTextString("Name " + index));
-            row.createCell((int) 3).setCellValue("4500" + index);
-            row.createCell((int) 4).setCellValue("City -- " + index);
-            row.createCell((int) 5).setCellValue("State -- " + index);
-            row.createCell((int) 6).setCellValue(1.2);
+        personas.each { persona ->
+            def tramites = Tramite.withCriteria {
+                eq("de", persona)
+                ge("fechaCreacion", desde)
+                le("fechaCreacion", hasta)
+                order("fechaCreacion", "asc")
+            }
+            if (persona.estaActivo && tramites.size() > 0) {
+                if (params.tipo == "dpto" && persona.departamentoId != depActual) {
+                    depActual = persona.departamentoId
+                    def header = persona.departamento.descripcion
 
-            CellStyle cellStyle = wb.createCellStyle();
-            cellStyle.setDataFormat(
-                    createHelper.createDataFormat().getFormat("dd-mm-yyyy h:mm"));
-            Cell c = row.createCell((int) 7);
-            c.setCellValue(new Date());
-            c.setCellStyle(cellStyle);
+                    XSSFRow row = sheet.createRow((short) index)
+                    cell = row.createCell((int) 0)
+                    cell.setCellValue(header)
+                    cell.setCellStyle(styleDep)
+                    sheet.addMergedRegion(new CellRangeAddress(
+                            index, //first row (0-based)
+                            index, //last row  (0-based)
+                            0, //first column (0-based)
+                            5  //last column  (0-based)
+                    ));
+                    index++
+                }
+
+                if (params.tipo == "dpto") {
+                    def header = persona.nombre + " " + persona.apellido + " (" + persona.login + "): " +
+                            "${tramites.size()} documento${tramites.size() == 1 ? '' : 's'}"
+                    XSSFRow row = sheet.createRow((short) index)
+                    cell = row.createCell((int) 0)
+                    cell.setCellValue(header)
+                    cell.setCellStyle(styleUsuario)
+                    sheet.addMergedRegion(new CellRangeAddress(
+                            index, //first row (0-based)
+                            index, //last row  (0-based)
+                            0, //first column (0-based)
+                            5  //last column  (0-based)
+                    ));
+                    index++
+                }
+                tramites.each { tr ->
+                    def prtr = PersonaDocumentoTramite.withCriteria {
+                        eq("tramite", tr)
+                        inList("rolPersonaTramite", [rolPara, rolCopia])
+                        order("fechaEnvio", "asc")
+                    }
+                    prtr.each { persDoc ->
+                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
+                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
+                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
+
+                        XSSFRow row = sheet.createRow((short) index)
+                        row.createCell((int) 0).setCellValue(cod)
+
+                        cell = row.createCell((int) 1)
+                        cell.setCellValue(tr.fechaCreacion)
+                        cell.setCellStyle(styleDate)
+
+                        row.createCell((int) 2).setCellValue(paraOficina)
+                        row.createCell((int) 3).setCellValue(para)
+
+                        cell = row.createCell((int) 4)
+                        cell.setCellValue(persDoc.fechaEnvio)
+                        cell.setCellStyle(styleDate)
+
+                        cell = row.createCell((int) 5)
+                        cell.setCellValue(persDoc.fechaRecepcion)
+                        cell.setCellStyle(styleDate)
+
+                        index++
+                    }
+                }
+            }
         }
 
         FileOutputStream fileOut = new FileOutputStream(filename);
@@ -387,5 +674,6 @@ class DocumentosGeneradosController {
         pw.close();
 
     }
+
 
 }

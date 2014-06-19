@@ -15,9 +15,10 @@
     %{--<link href="${resource(dir: 'bootstrap-3.0.1/css', file: 'bootstrap.spacelab.css')}" rel="stylesheet">--}%
     <elm:bootstrapCss/>
 
-    <!-- FontAwsome y mFizz: las fuentes con dibujitos para los iconos -->
+    <!-- FontAwsome, mFizz y octicons: las fuentes con dibujitos para los iconos -->
     <link href="${resource(dir: 'font-awesome-4.1.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">
     <link href="${resource(dir: 'font-mfizz-1.2', file: 'font-mfizz.css')}" rel="stylesheet">
+    <link href="${resource(dir: 'octicons', file: 'octicons.css')}" rel="stylesheet">
 
     <!-- JQuery -->
     <script src="${resource(dir: 'js/jquery/js', file: 'jquery-1.9.1.js')}"></script>
