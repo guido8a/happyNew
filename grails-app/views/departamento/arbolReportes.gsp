@@ -222,7 +222,7 @@
                                             icon   : "fa fa-rotate-left",
                                             action : function () {
                                                 if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
+                                                    location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
                                                 } else {
                                                     location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
                                                 }
