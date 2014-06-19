@@ -352,6 +352,10 @@
                     items.contestar = contestar;
                 }
 
+                <g:if test="${session.usuario.getPuedeJefe()}">
+                items.plazo = ampliarPlazo;
+                </g:if>
+
                 return items
             }
 
