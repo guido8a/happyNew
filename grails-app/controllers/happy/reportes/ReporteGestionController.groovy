@@ -45,32 +45,19 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta= new Date().parse("dd-MM-yyyy", params.hasta)
-        def fecha = desde.format("dd-MM-yyyy")
-        def fecha2 = hasta.format("dd-MM-yyyy")
+        def fecha = desde.format("dd/MM/yyyy")
+        def fecha2 = hasta.format("dd/MM/yyyy")
 
-//        sql = 'select prtr__id from prtr where (prsn__id = (' + params.id + ') and (rltr__id=1 or rltr__id=2)) and ( between (' + fecha + ') and (' + fecha2 + ') )'
-        sql = 'select prtr__id from prtr where prsn__id = (' + params.id + ') and (rltr__id=1 or rltr__id=2)'
+//        sql = 'select prtr__id from prtr where prsn__id = (' + params.id + ') and (rltr__id=1 or rltr__id=2)'
 
 //        sql = 'select i.prtr__id\n' +
 //              'FROM prtr i INNER JOIN trmt j ON i.trmt__id = j.trmt__id \n'+
-//               'WHERE (i.prsn__id = (' + params.id + ' ) and (i.rltr__id=1 or i.rltr__id=2)) and (j.trmtfccr >= (' + desde + ') and j.trmtfccr <= (' + hasta + '))'
-
-
-
-
-//        def sql = "SELECT i.itemcdgo codigo, i.itemnmbr item, u.unddcdgo unidad, sum(v.voitcntd) cantidad, \n" +
-//                "v.voitpcun punitario, v.voittrnp transporte, v.voitpcun + v.voittrnp  costo, \n" +
-//                "sum((v.voitpcun + v.voittrnp) * v.voitcntd)  total, g.grpodscr grupo, g.grpo__id grid \n" +
-//                "FROM vlobitem v INNER JOIN item i ON v.item__id = i.item__id\n" +
-//                "INNER JOIN undd u ON i.undd__id = u.undd__id\n" +
-//                "INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
-//                "INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
-//                "INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.tipo}) \n" +
-//                "WHERE v.obra__id = ${params.id} and v.voitcntd >0 \n" + wsp +
-//                "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, \n" +
-//                "g.grpo__id, g.grpodscr " +
-//                "ORDER BY g.grpo__id ASC, i.itemcdgo"
+//               'WHERE (i.prsn__id = (' + params.id + ' ) and (i.rltr__id=1 or i.rltr__id=2)) and (j.trmtfccr >= (' + fecha + ') and j.trmtfccr <= (' + fecha2 + '))'
 //
+        sql = 'select i.prtr__id\n' +
+                'FROM prtr i INNER JOIN trmt j ON i.trmt__id = j.trmt__id \n'+
+                'WHERE (i.prsn__id = (' + params.id + ' ) and (i.rltr__id=1 or i.rltr__id=2)) and (j.trmtfccr between  ' + "'" + fecha + "'"  + '  and  ' + "'" + fecha2 + "'" + ' )'
+
 
         println("sql " + sql)
 
