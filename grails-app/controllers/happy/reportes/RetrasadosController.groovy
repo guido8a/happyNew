@@ -133,15 +133,16 @@ class RetrasadosController {
         reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-        Paragraph headers = new Paragraph();
-        headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", times12bold));
-        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
-        headers.add(new Paragraph("Reporte de trámites retrasados", times12bold));
-        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
+//        Paragraph headers = new Paragraph();
+//        headers.setAlignment(Element.ALIGN_CENTER);
+//        headers.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", times12bold));
+//        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
+//        headers.add(new Paragraph("Reporte de Trámites Retrasados", times12bold));
+//        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
+        reportesPdfService.crearEncabezado(document, "Reporte de Trámites Retrasados")
 //        headers.add(new Paragraph(""+session.departamento+"", times12bold));
 //        headers.add(new Paragraph("Al: " + now.format("dd-MM-yyyy hh:mm"), times12bold));
-        headers.add(new Paragraph("\n", times12bold))
+//        headers.add(new Paragraph("\n", times12bold))
         def contenido = new Paragraph();
 //        contenido.add(new Paragraph("-"+datos["objeto"], times12bold))
 //        if(datos["tramites"].size()>0){
@@ -157,7 +158,7 @@ class RetrasadosController {
 //        }
         def hijos = datos["hijos"]
         def profundidad = 0
-        document.add(headers);
+//        document.add(headers);
 //        document.add(contenido)
         PdfPTable tablaTramites
 
@@ -181,7 +182,7 @@ class RetrasadosController {
 //                        par.setIndentationLeft(lvl["nivel"]*20+10)
 //                        document.add(par)
                     lvl["triangulos"].each{t->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} (oficina) - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - Trámites de oficina  - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         document.add(par)
                     }
@@ -260,8 +261,9 @@ class RetrasadosController {
 //                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
                     par3=null
                     par3= new Paragraph("", times8normal)
-                    par3.setSpacingBefore(4)
+                    par3.setSpacingBefore(0.001)
                     par = new Paragraph("Usuario: ${p[ "objeto"].departamento.codigo}:"+p["objeto"]+" - ${p['objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par.setSpacingBefore(17)
 //                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
                     document.add(par)
 //                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
@@ -366,7 +368,7 @@ class RetrasadosController {
 
                 if(lvl["tramites"].size()>0){
                     lvl["triangulos"].each{t->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - ${t.login} (oficina) - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:"+t+" - Trámites de oficina - [ Sin Recepción: "+lvl["retrasados"]+" , Retrasados: ${lvl['rezagados']} ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         contenido.add(par)
                     }
@@ -445,9 +447,10 @@ class RetrasadosController {
 //                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
                     par3=null
                     par3= new Paragraph("", times8normal)
-                    par3.setSpacingBefore(4)
+                    par3.setSpacingBefore(0.001)
 //                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:"+p["objeto"]+" - ${p[ 'objeto'].login} - [ Sin Recepción: "+p["retrasados"]+" , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par.setSpacingBefore(17)
 //                    par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     contenido.add(par)
                     if(params.detalle){
@@ -575,7 +578,7 @@ class RetrasadosController {
 //        println "deps "+deps+"  puede ver  "+puedeVer
         def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
         tramites.each {t->
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and fechaRecepcion is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
+            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
             if(pdt){
                 pdt.each {pd->
                     def resp = Tramite.findAllByAQuienContesta(pd)
@@ -601,55 +604,80 @@ class RetrasadosController {
         reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-        Paragraph headers = new Paragraph();
-        headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", times12bold));
-        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
-        headers.add(new Paragraph("Reporte de trámites retrasados consolidado", times12bold));
-        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
-        headers.add(new Paragraph("\n", times12bold))
+        reportesPdfService.crearEncabezado(document, "Reporte de Trámites Retrasados")
         def contenido = new Paragraph();
         def total = 0
+        def totalSr = 0
         def hijos = datos["hijos"]
-        document.add(headers);
+
         PdfPTable tablaTramites
-        tablaTramites = new PdfPTable(3);
-        tablaTramites.setWidths(10,80,10)
+        tablaTramites = new PdfPTable(4);
+        tablaTramites.setWidths(10,66,12,12)
         tablaTramites.setWidthPercentage(100);
+        def parH = new Paragraph("", times8bold)
+        def cell = new PdfPCell(parH);
+        cell.setBorderColor(Color.WHITE)
+        tablaTramites.addCell(cell);
+        cell = new PdfPCell(parH);
+        cell.setBorderColor(Color.WHITE)
+        tablaTramites.addCell(cell);
+        parH = new Paragraph("Retrasados", times8bold)
+        cell = new PdfPCell(parH);
+        cell.setBorderColor(Color.WHITE)
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+        tablaTramites.addCell(cell);
+        parH = new Paragraph("Sin recepción", times8bold)
+        cell = new PdfPCell(parH);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+        cell.setBorderColor(Color.WHITE)
+        tablaTramites.addCell(cell);
         hijos.each{lvl->
             if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
                 if(lvl["tramites"].size()>0) {
                     def par = new Paragraph("Dirección", times8bold)
-                    PdfPCell cell = new PdfPCell(par);
+                    cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
                     tablaTramites.addCell(cell);
                     def totalNode = 0
+                    def totalNodeSr = 0
                     par = new Paragraph("" + lvl["objeto"], times8normal)
                     def cellNombre = new PdfPCell(par);
                     cellNombre.setBorderColor(Color.WHITE)
 
                     def usuarios = ""
                     def totales = ""
+                    def totalesSr =""
 
                     if (lvl["tramites"].size() > 0) {
                         lvl["triangulos"].each { t ->
                             usuarios += "${t} (Oficina)\n"
-                            totales += "${lvl["tramites"].size()} \n"
+                            totales += "${lvl["rezagados"]} \n"
+                            totalesSr+= ""+lvl["retrasados"]+" \n"
                             if (totalNode == 0)
-                                totalNode += lvl["tramites"].size()
+                                totalNode += lvl["rezagados"].toInteger()
+                            if (totalNodeSr == 0)
+                                totalNodeSr += lvl["retrasados"].toInteger()
                         }
                     }
                     lvl["personas"].each { p ->
                         usuarios += "${p['objeto']} \n"
-                        totales += "${p["tramites"].size()} \n"
-                        totalNode += p["tramites"].size()
+                        totales += "${p["rezagados"]} \n"
+                        totalesSr += ""+p["retrasados"]+" \n"
+                        totalNode += p["rezagados"].toInteger()
+                        totalNodeSr += p["retrasados"].toInteger()
                     }
 
                     tablaTramites.addCell(cellNombre);
                     par = new Paragraph("" + totalNode, times8bold)
                     def cellTotal = new PdfPCell(par);
                     cellTotal.setBorderColor(Color.WHITE)
+                    cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT)
                     tablaTramites.addCell(cellTotal);
+                    par = new Paragraph("" + totalNodeSr, times8bold)
+                    def cellTotalSr = new PdfPCell(par);
+                    cellTotalSr.setBorderColor(Color.WHITE)
+                    cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
+                    tablaTramites.addCell(cellTotalSr);
                     par = new Paragraph("Usuario:", times8bold)
                     cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
@@ -661,15 +689,24 @@ class RetrasadosController {
                     par = new Paragraph(totales, times8normal)
                     cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph(totalesSr, times8normal)
+                    cell = new PdfPCell(par);
+                    cell.setBorderColor(Color.WHITE)
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
                     tablaTramites.addCell(cell);
                     total += totalNode
+                    totalSr += totalNodeSr
                 }
             }
-            total+= imprimeHijosPdfConsolidado(lvl,document,tablaTramites,params,usuario,deps,puedeVer,total)
+            def res = imprimeHijosPdfConsolidado(lvl,document,tablaTramites,params,usuario,deps,puedeVer,total,totalSr)
+            total+= res[0]
+            totalSr+= res[1]
 
         }
         def par = new Paragraph("", times8bold)
-        def cell = new PdfPCell(par);
+        cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
         par = new Paragraph("TOTAL", times8bold)
@@ -679,6 +716,12 @@ class RetrasadosController {
         par = new Paragraph(""+total, times8bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+        tablaTramites.addCell(cell);
+        par = new Paragraph(""+totalSr, times8bold)
+        cell = new PdfPCell(par);
+        cell.setBorderColor(Color.WHITE)
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
         tablaTramites.addCell(cell);
         contenido.add(tablaTramites)
         document.add(contenido)
@@ -694,43 +737,55 @@ class RetrasadosController {
 
 
 
-    def imprimeHijosPdfConsolidado(arr,contenido,tablaTramites,params,usuario,deps,puedeVer,total){
+    def imprimeHijosPdfConsolidado(arr,contenido,tablaTramites,params,usuario,deps,puedeVer,total,totalSr){
         total = 0
         def datos = arr["hijos"]
         datos.each{lvl->
             if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
-                def par = new Paragraph("Oficina:", times8bold)
+                def par = new Paragraph("Dirección", times8bold)
                 PdfPCell cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
-                def totalNode =0
-                par = new Paragraph(""+lvl["objeto"], times8normal)
+                def totalNode = 0
+                def totalNodeSr = 0
+                par = new Paragraph("" + lvl["objeto"], times8normal)
                 def cellNombre = new PdfPCell(par);
                 cellNombre.setBorderColor(Color.WHITE)
 
+                def usuarios = ""
+                def totales = ""
+                def totalesSr =""
 
-                def usuarios =""
-                def totales =""
-
-                if(lvl["tramites"].size()>0){
-                    lvl["triangulos"].each{t->
-                        usuarios+="${t} (Oficina)\n"
-                        totales+="${lvl["tramites"].size()} \n"
-                        if(totalNode==0)
-                            totalNode+=lvl["tramites"].size()
+                if (lvl["tramites"].size() > 0) {
+                    lvl["triangulos"].each { t ->
+                        usuarios += "${t} (Oficina)\n"
+                        totales += "${lvl["rezagados"]} \n"
+                        totalesSr+= ""+lvl["retrasados"]+" \n"
+                        if (totalNode == 0)
+                            totalNode += lvl["rezagados"].toInteger()
+                        if (totalNodeSr == 0)
+                            totalNodeSr += lvl["retrasados"].toInteger()
                     }
                 }
-                lvl["personas"].each{p->
-                    usuarios+="${p['objeto']} \n"
-                    totales+="${ p["tramites"].size()} \n"
-                    totalNode+=p["tramites"].size()
+                lvl["personas"].each { p ->
+                    usuarios += "${p['objeto']} \n"
+                    totales += "${p["rezagados"]} \n"
+                    totalesSr += ""+p["retrasados"]+" \n"
+                    totalNode += p["rezagados"].toInteger()
+                    totalNodeSr += p["retrasados"].toInteger()
                 }
 
                 tablaTramites.addCell(cellNombre);
-                par = new Paragraph(""+totalNode, times8bold)
+                par = new Paragraph("" + totalNode, times8bold)
                 def cellTotal = new PdfPCell(par);
                 cellTotal.setBorderColor(Color.WHITE)
+                cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT)
                 tablaTramites.addCell(cellTotal);
+                par = new Paragraph("" + totalNodeSr, times8bold)
+                def cellTotalSr = new PdfPCell(par);
+                cellTotalSr.setBorderColor(Color.WHITE)
+                cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
+                tablaTramites.addCell(cellTotalSr);
                 par = new Paragraph("Usuario:", times8bold)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
@@ -742,16 +797,26 @@ class RetrasadosController {
                 par = new Paragraph(totales, times8normal)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
                 tablaTramites.addCell(cell);
-                total+=totalNode
+                par = new Paragraph(totalesSr, times8normal)
+                cell = new PdfPCell(par);
+                cell.setBorderColor(Color.WHITE)
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+                tablaTramites.addCell(cell);
+                total += totalNode
+                totalSr += totalNodeSr
 //                println "total "+total+"   "+totalNode
             }
 
-            if(lvl["hijos"].size()>0)
-                total+=imprimeHijosPdfConsolidado(lvl,contenido,tablaTramites,params,usuario,deps,puedeVer)
+            if(lvl["hijos"].size()>0) {
+                def res = imprimeHijosPdfConsolidado(lvl, contenido, tablaTramites, params, usuario, deps, puedeVer,total,totalSr)
+                total += res[0]
+                totalSr += res[1]
+            }
 //            println "total des dentro "+total+"   "
         }
-        return total
+        return [total,totalSr]
     }
 
 
