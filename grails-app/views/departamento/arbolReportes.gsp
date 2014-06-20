@@ -172,8 +172,8 @@
 
                 if (nodeType != "root" && !nodeType.match("inactivo") && !nodeType.match("Inactivo")) {
                     %{--console.log("${session.usuario.puedeJefe}", "${session.usuario.puedeDirector}", "${session.usuario.departamentoId}");--}%
-                    if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||
-                        "${session.usuario.puedeDirector}" == "true") {
+                    %{--if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||--}%
+                        %{--"${session.usuario.puedeDirector}" == "true") {--}%
                         items.retrasados = {
                             label   : "Trámites retrasados",
                             icon    : "fa fa-rotate-left",
@@ -323,7 +323,7 @@
                                 }
                             }
                         };
-                    }
+//                    }
 
                     if (nodeType.match("usuario") || nodeType.match("jefe")) {
                         items.gestion = {

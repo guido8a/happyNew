@@ -1,11 +1,19 @@
 package happy.reportes
 
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator
+import org.jfree.chart.plot.PiePlot
+import org.jfree.data.general.DefaultPieDataset
+
+import java.awt.geom.Rectangle2D
 import com.lowagie.text.Chunk
 import com.lowagie.text.Phrase
 import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Paragraph
 import com.lowagie.text.Font
+import com.lowagie.text.pdf.DefaultFontMapper
+import com.lowagie.text.pdf.PdfContentByte
+import com.lowagie.text.pdf.PdfTemplate
 import com.lowagie.text.pdf.PdfWriter
 
 import happy.seguridad.Persona
@@ -25,9 +33,14 @@ import org.apache.poi.ss.usermodel.IndexedColors
 //import org.apache.poi.ss.usermodel.Font
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.jfree.chart.ChartFactory
+import org.jfree.chart.JFreeChart
+import org.jfree.chart.plot.PlotOrientation
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import java.awt.Color
+import java.awt.Graphics2D
 import java.io.*;
 
 class DocumentosGeneradosController {
@@ -99,6 +112,10 @@ class DocumentosGeneradosController {
             paragraph.add(new Phrase(title2, fontBold));
             document.add(paragraph)
 
+            def total = [:]
+            def depActual = personas.first().departamentoId
+            def dep = personas.first().departamento
+
             personas.each { persona ->
                 if (persona.estaActivo) {
                     def tramites = Tramite.withCriteria {
@@ -109,13 +126,105 @@ class DocumentosGeneradosController {
                     }
 
                     if (tramites.size() > 0) {
+                        if (!total[persona.departamento]) {
+                            total[persona.departamento] = 0
+                        }
+                        total[persona.departamento] += tramites.size()
+                        if (persona.departamentoId != depActual) {
+                            reportesPdfService.addCellTabla(tabla, new Paragraph("${dep.descripcion} (${dep.codigo})", fontBold), paramsCenter)
+                            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
+                            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep]}", fontBold), paramsCenter)
+                            depActual = persona.departamentoId
+                            dep = persona.departamento
+                        }
                         reportesPdfService.addCellTabla(tabla, new Paragraph("${persona.departamento.descripcion} (${persona.departamento.codigo})", font), paramsLeft)
                         reportesPdfService.addCellTabla(tabla, new Paragraph("${persona.nombre} ${persona.apellido} (${persona.login})", font), paramsLeft)
                         reportesPdfService.addCellTabla(tabla, new Paragraph("${tramites.size()}", font), paramsCenter)
                     }
                 }
             }
+            reportesPdfService.addCellTabla(tabla, new Paragraph("${dep.descripcion} (${dep.codigo})", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep]}", fontBold), paramsCenter)
+
+            def tot = 0
+            total.each { k, v ->
+                tot += v
+            }
+
+            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("${tot}", fontBold), paramsCenter)
             document.add(tabla)
+
+            try {
+                def width = 550
+                def height = 250
+                PdfContentByte contentByte = pdfw.getDirectContent();
+                PdfTemplate template = contentByte.createTemplate(width, height);
+                Graphics2D graphics2d = template.createGraphics(width, height, new DefaultFontMapper());
+                Rectangle2D rectangle2d = new Rectangle2D.Double(0, 0, width, height);
+//
+////        PARA GRAFICO BARRAS
+////            DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+////            dataSet.setValue(791, "Population", "1750 AD");
+////            dataSet.setValue(978, "Population", "1800 AD");
+////            dataSet.setValue(1262, "Population", "1850 AD");
+////            dataSet.setValue(1650, "Population", "1900 AD");
+////            dataSet.setValue(2519, "Population", "1950 AD");
+////            dataSet.setValue(6070, "Population", "2000 AD");
+////
+////        PARA GRAFICO PASTEL
+////            JFreeChart chart = ChartFactory.createBarChart(
+////                    "World Population growth", "Year", "Population in millions",
+////                    dataSet, PlotOrientation.VERTICAL, false, true, false);
+//
+                DefaultPieDataset dataSet = new DefaultPieDataset();
+                total.each { k, v ->
+                    dataSet.setValue(k.codigo, v);
+                }
+//            dataSet.setValue("China", 19.64);
+//            dataSet.setValue("India", 17.3);
+//            dataSet.setValue("United States", 4.54);
+//            dataSet.setValue("Indonesia", 3.4);
+//            dataSet.setValue("Brazil", 2.83);
+//            dataSet.setValue("Pakistan", 2.48);
+//            dataSet.setValue("Bangladesh", 2.38);
+
+                JFreeChart chart = ChartFactory.createPieChart("Documentos generados por departamento", dataSet, true, true, false);
+                chart.setTitle(
+                        new org.jfree.chart.title.TextTitle("Documentos generados por departamento",
+                                new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
+                        )
+                );
+
+                /* getPlot method of JFreeChart class returns the PiePlot object back to us */
+                PiePlot ColorConfigurator = (PiePlot) chart.getPlot(); /* get PiePlot object for changing */
+                /* We can now use setSectionPaint method to change the color of our chart */
+//                ColorConfigurator.setSectionPaint("Java", new Color(160, 160, 255));
+//                ColorConfigurator.setSectionPaint("C++", Color.RED);
+//                ColorConfigurator.setSectionPaint("C", Color.BLUE);
+//                ColorConfigurator.setSectionPaint("VB", Color.GREEN);
+//                ColorConfigurator.setSectionPaint("Shell Script", Color.YELLOW);
+//                /* We specify explode option for the Pie chart using setExplodePercent method */
+//                /* This method takes a percentage value and offsets the section of Pie Chart, a percentage value of radius */
+//                ColorConfigurator.setExplodePercent("Shell Script", 0.30);
+                /* A format mask specified to display labels. Here {0} is the section name, and {1} is the value.
+                We can also use {2} which will display a percent value */
+                ColorConfigurator.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
+                /* Set color of the label background on the pie chart */
+                ColorConfigurator.setLabelBackgroundPaint(new Color(220, 220, 220));
+
+                chart.draw(graphics2d, rectangle2d);
+
+                graphics2d.dispose();
+                contentByte.addTemplate(template, 30, 110);
+
+            } catch (Exception e) {
+                println "ERROR GRAFICOS::::::: "
+                e.printStackTrace();
+            }
+
         } else {
             def tramites = Tramite.withCriteria {
                 eq("de", personas[0])
