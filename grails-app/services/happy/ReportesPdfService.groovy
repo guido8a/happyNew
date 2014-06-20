@@ -11,6 +11,7 @@ class ReportesPdfService {
     Font fontTituloGad = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
     Font fontSubtituloGad = new Font(Font.TIMES_ROMAN, 11, Font.BOLD)
     Font fontInfo = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
+    Font fontFecha = new Font(Font.TIMES_ROMAN, 9, Font.NORMAL)
     Font fontFooter = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
     Font fontHeader = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
 
@@ -195,11 +196,11 @@ class ReportesPdfService {
         headersTitulo.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", fontTituloGad));
         headersTitulo.add(new Paragraph("SISTEMA DE ADMINISTRACIÓN DOCUMENTAL", fontSubtituloGad));
         headersTitulo.add(new Paragraph(tituloReporte, fontSubtituloGad));
-        headersTitulo.add(new Paragraph("Generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontInfo));
-
-        headersTitulo.setSpacingAfter(20)
-
+        def parFecha = new Paragraph("Reporte generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontFecha)
+        parFecha.setAlignment(Element.ALIGN_RIGHT)
+        parFecha.setSpacingAfter(15)
         documento.add(headersTitulo)
+        documento.add(parFecha)
     }
 
     /**

@@ -48,12 +48,16 @@
 
             <!-- botones -->
             <div class="btn-toolbar toolbar">
+%{--
                 <div class="btn-group">
                     <g:link controller="inicio" action="parametros" class="btn btn-default">
                         <i class="fa fa-arrow-left"></i> Regresar
                     </g:link>
                 </div>
-
+--}%
+                <div class="btn-group" style="margin-top: 4px;">
+                <p style="font-size: 18px; font-weight: bold; margin-right: 40px;">Reportes del Sistema</p>
+                </div>
                 <div class="btn-group" style="margin-top: 4px;">
                     <g:link action="arbol" params="[sort: 'nombre']" class="btn btn-sm btn-info">
                         <i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre
@@ -168,8 +172,8 @@
 
                 if (nodeType != "root" && !nodeType.match("inactivo") && !nodeType.match("Inactivo")) {
                     %{--console.log("${session.usuario.puedeJefe}", "${session.usuario.puedeDirector}", "${session.usuario.departamentoId}");--}%
-                    if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||
-                        "${session.usuario.puedeDirector}" == "true") {
+                    %{--if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||--}%
+                        %{--"${session.usuario.puedeDirector}" == "true") {--}%
                         items.retrasados = {
                             label   : "Trámites retrasados",
                             icon    : "fa fa-rotate-left",
@@ -319,7 +323,7 @@
                                 }
                             }
                         };
-                    }
+//                    }
 
                     if (nodeType.match("usuario") || nodeType.match("jefe")) {
                         items.gestion = {

@@ -183,7 +183,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
             addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja)
 
-            addCellTabla(tablaTramites, new Paragraph("TRÁMITE NRO", times8bold), prmsHeaderHoja1)
+            addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("FECHA CREACIÓN", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("DE OFICINA", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("CREADO POR", times8bold), prmsHeaderHoja1)
@@ -212,7 +212,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
             addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja)
 
 
-            addCellTabla(tablaTramites, new Paragraph("TRÁMITE CONTEST NRO", times8bold), prmsHeaderHoja1)
+            addCellTabla(tablaTramites, new Paragraph("TRÁMITE CONTEST N°.", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("FECHA CREACIÓN", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("DE OFICINA", times8bold), prmsHeaderHoja1)
             addCellTabla(tablaTramites, new Paragraph("CREADO POR", times8bold), prmsHeaderHoja1)
