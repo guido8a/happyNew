@@ -500,7 +500,7 @@ class RetrasadosExcelController {
 //        println "deps "+deps+"  puede ver  "+puedeVer
         def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
         tramites.each {t->
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and fechaRecepcion is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
+            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
             if(pdt){
                 pdt.each {pd->
                     def resp = Tramite.findAllByAQuienContesta(pd)
@@ -539,6 +539,7 @@ class RetrasadosExcelController {
 
         sheet.setAutobreaks(true);
         def total = 0
+        def totalSr = 0
         def hijos = datos["hijos"]
 
         XSSFRow rowHead = sheet.createRow((short) 0);
@@ -552,15 +553,17 @@ class RetrasadosExcelController {
         rowHead=sheet.createRow((short) 1);
         cell = rowHead.createCell((int) 1).setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL")
         rowHead=sheet.createRow((short) 2);
-        cell = rowHead.createCell((int) 1).setCellValue("Reporte de trámites retrasados")
+        cell = rowHead.createCell((int) 1).setCellValue("Reporte de Trámites Retrasados")
         rowHead=sheet.createRow((short) 3);
         cell = rowHead.createCell((int) 1).setCellValue(""+new Date().format('dd-MM-yyyy HH:mm'))
+        def row = sheet.createRow((short) 4);
 
 
-
-        def rowNode = sheet.createRow((short) 4);
-        def num = 5
-        def row = sheet.createRow((short) num);
+        def rowNode = sheet.createRow((short) 5);
+        row.createCell((int) 2).setCellValue("Retrasados");
+        row.createCell((int) 3).setCellValue("Sin recepción");
+        def num = 6
+        row = sheet.createRow((short) num);
         row.setHeightInPoints(14)
         rowNode.setHeightInPoints(14)
         hijos.each{lvl->
@@ -569,39 +572,47 @@ class RetrasadosExcelController {
                     rowNode.createCell((int) 0).setCellValue("Dirección:");
                     rowNode.createCell((int) 1).setCellValue(""+lvl["objeto"]);
                     def totalNode = 0
-                    def usuarios = ""
-                    def totales = ""
+                    def totalNodeSr
 
                     if (lvl["tramites"].size() > 0) {
                         row.createCell((int) 0).setCellValue("Usuarios");
                         lvl["triangulos"].each { t ->
                             row.createCell((int) 1).setCellValue("${t} (Oficina)");
-                            row.createCell((int) 2).setCellValue(lvl["tramites"].size());
+                            row.createCell((int) 2).setCellValue(lvl["rezagados"]);
+                            row.createCell((int) 3).setCellValue(lvl["retrasados"]);
                             num++
                             row=sheet.createRow((short) num);
                             if (totalNode == 0)
-                                totalNode += lvl["tramites"].size()
+                                totalNode += lvl["rezagados"]
+                            if (totalNodeSr == 0)
+                                totalNodeSr += lvl["retrasados"]
+
                         }
                     }
                     lvl["personas"].each { p ->
                         row.createCell((int) 1).setCellValue("${p['objeto']}");
-                        row.createCell((int) 2).setCellValue(p['tramites'].size());
+                        row.createCell((int) 2).setCellValue(p['rezagados']);
+                        row.createCell((int) 3).setCellValue(p['retrasados']);
                         num++
                         row=sheet.createRow((short) num);
-                        totalNode += p["tramites"].size()
+                        totalNode += p["rezagados"]
+                        totalNodeSr += p["retrasados"]
                     }
                     rowNode.createCell((int) 2).setCellValue(totalNode);
+                    rowNode.createCell((int) 3).setCellValue(totalNodeSr);
                     total += totalNode
                 }
             }
             def res = imprimeHijosXlsConsolidado(lvl,sheet,num,params,usuario,deps,puedeVer,total)
             total+= res[0]
+            totalSr+= res[2]
             num=res[1]
         }
 
         row=sheet.createRow((short) num);
         row.createCell((int) 1).setCellValue("TOTAL");
         row.createCell((int) 2).setCellValue(total);
+        row.createCell((int) 3).setCellValue(totalSr);
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();
@@ -626,6 +637,7 @@ class RetrasadosExcelController {
 
     def imprimeHijosXlsConsolidado(arr,sheet,num,params,usuario,deps,puedeVer,total){
         total = 0
+        def totalSr = 0
         def datos = arr["hijos"]
         def rowNode = sheet.createRow((short) num);
         num++
@@ -638,40 +650,47 @@ class RetrasadosExcelController {
                     rowNode.createCell((int) 0).setCellValue("Oficina:");
                     rowNode.createCell((int) 1).setCellValue("" + lvl["objeto"]);
                     def totalNode = 0
-                    def usuarios = ""
-                    def totales = ""
+                    def totalNodeSr = 0
 
                     if (lvl["tramites"].size() > 0) {
                         row.createCell((int) 0).setCellValue("Usuarios");
                         lvl["triangulos"].each { t ->
                             row.createCell((int) 1).setCellValue("${t} (Oficina)");
-                            row.createCell((int) 2).setCellValue(lvl["tramites"].size());
+                            row.createCell((int) 2).setCellValue(lvl["rezagados"]);
+                            row.createCell((int) 3).setCellValue(lvl["retrasados"]);
                             num++
                             row = sheet.createRow((short) num);
                             if (totalNode == 0)
-                                totalNode += lvl["tramites"].size()
+                                totalNode += lvl["rezagados"]
+                            if (totalNodeSr == 0)
+                                totalNodeSr += lvl["retrasados"]
                         }
                     }
                     lvl["personas"].each { p ->
                         row.createCell((int) 1).setCellValue("${p['objeto']}");
-                        row.createCell((int) 2).setCellValue(p['tramites'].size());
+                        row.createCell((int) 2).setCellValue(p['rezagados']);
+                        row.createCell((int) 3).setCellValue(p['retrasados']);
                         num++
                         row = sheet.createRow((short) num);
-                        totalNode += p["tramites"].size()
+                        totalNode += p["rezagados"]
+                        totalNodeSr += p["retrasados"]
                     }
                     rowNode.createCell((int) 2).setCellValue(totalNode);
+                    rowNode.createCell((int) 3).setCellValue(totalNodeSr);
                     total += totalNode
+                    totalSr +=totalNodeSr
                 }
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosXlsConsolidado(lvl, sheet, num, params, usuario, deps, puedeVer)
+                def res = imprimeHijosXlsConsolidado(lvl, sheet, num, params, usuario, deps, puedeVer,total)
                 total += res[0]
+                totalSr += res[2]
                 num = res[1]
             }
 //            println "total des dentro "+total+"   "
         }
-        return [total,num]
+        return [total,num,totalSr]
     }
 
 
