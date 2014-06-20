@@ -226,19 +226,19 @@ class DocumentosGeneradosController {
         document.add(paragraph)
 
         def tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
+//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
-        def depActual = null
+//        def depActual = null
 
-        personas.each { persona ->
+        personas.eachWithIndex { persona, i ->
 
             def tramites = Tramite.withCriteria {
                 eq("de", persona)
@@ -247,16 +247,36 @@ class DocumentosGeneradosController {
                 order("fechaCreacion", "asc")
             }
             if (persona.estaActivo && tramites.size() > 0) {
-                if (params.tipo == "dpto" && persona.departamentoId != depActual) {
-                    depActual = persona.departamentoId
+                if (params.tipo == "dpto" /*&& persona.departamentoId != depActual*/) {
+                    if (i > 0) {
+                        document.add(tabla)
+                    }
+//                    depActual = persona.departamentoId
                     def header = persona.departamento.descripcion
-                    reportesPdfService.addCellTabla(tabla, new Paragraph(header, fontBold), paramsDpto)
+//                    reportesPdfService.addCellTabla(tabla, new Paragraph(header, fontBold), paramsDpto)
+                    Paragraph paragraphDep = new Paragraph();
+                    paragraphDep.setAlignment(Element.ALIGN_LEFT);
+                    paragraphDep.add(new Phrase(header, fontBold));
+                    paragraphDep.setSpacingBefore(15)
+                    document.add(paragraphDep)
                 }
 
                 if (params.tipo == "dpto") {
                     def header = persona.nombre + " " + persona.apellido + " (" + persona.login + "): " +
                             "${tramites.size()} documento${tramites.size() == 1 ? '' : 's'}"
-                    reportesPdfService.addCellTabla(tabla, new Paragraph(header, fontBold), paramsUsuario)
+                    Paragraph paragraphUsu = new Paragraph();
+                    paragraphUsu.setAlignment(Element.ALIGN_LEFT);
+                    paragraphUsu.add(new Phrase(header, fontBold));
+                    document.add(paragraphUsu)
+
+                    tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
+                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+//                    reportesPdfService.addCellTabla(tabla, new Paragraph(header, fontBold), paramsUsuario)
                 }
                 tramites.each { tr ->
                     def prtr = PersonaDocumentoTramite.withCriteria {
