@@ -77,8 +77,8 @@ class Persona {
     static constraints = {
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
         cedula(maxSize: 10, nullable: true, unique: true, blank: true, attributes: [title: 'cedula'])
-        nombre(maxSize: 31, blank: false,nullable: false, attributes: [title: 'nombre'])
-        apellido(maxSize: 31, blank: false,nullable: false, attributes: [title: 'apellido'])
+        nombre(maxSize: 31, blank: false, nullable: false, attributes: [title: 'nombre'])
+        apellido(maxSize: 31, blank: false, nullable: false, attributes: [title: 'apellido'])
         fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])
         fechaInicio(blank: true, nullable: true, attributes: [title: 'fechaInicio'])
         fechaFin(blank: true, nullable: true, attributes: [title: 'fechaFin'])
@@ -100,8 +100,49 @@ class Persona {
         estado(nullable: true, blank: true, size: 1..1)
     }
 
-    def vaciarPermisos(){
-        this.permisos=[]
+    def vaciarPermisos() {
+        this.permisos = []
+    }
+
+    def puedePermiso(String codigoPermiso) {
+        if (this.permisos.size() > 0) {
+            def perm = null
+            this.permisos.each {
+                if (!perm) {
+                    if (it.codigo == codigoPermiso) {
+                        perm = PermisoUsuario.findAllByPermisoTramiteAndPersona(it, this)
+                        def perm2 = null
+                        perm.each { pr ->
+//                            println "${pr.id} "+pr.permisoTramite.descripcion + "   " + pr.estaActivo
+                            if (!pr.estaActivo) {
+                                perm2 = null
+                            } else {
+                                perm2 = pr
+                            }
+                        }
+                        if (perm2) {
+                            perm = perm2
+                        }
+                    }
+                }
+            }
+            if (perm) {
+                if (perm.estaActivo) {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        } else {
+            def perm = PermisoUsuario.withCriteria {
+                eq("persona", this)
+                eq("permisoTramite", PermisoTramite.findByCodigo(codigoPermiso))
+            }
+            def perms = perm.findAll { it.estaActivo }
+            return perms.size() > 0
+        }
     }
 
     def getEstaActivo() {
@@ -113,10 +154,10 @@ class Persona {
         def res = true
         accs.each {
 //            println "it  "+it.accsFechaInicial.format('dd-MM-yyyy')+"  "+(it.accsFechaInicial >= now)+"  "+now.format('dd-MM-yyyy')
-            if(res){
+            if (res) {
                 if (it.accsFechaInicial <= now) {
 //                println "ret false"
-                    res =  false
+                    res = false
                 }
             }
 
@@ -125,466 +166,56 @@ class Persona {
     }
 
     def getPuedeRecibir() {
-
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P010"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P010") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P010"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
-
-
+        return this.puedePermiso("P010")
     }
 
     def getPuedeTramitar() {
-//        println "puede trami "+this.permisos
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P006") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P006"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
+        return this.puedePermiso("P006")
     }
 
     def getPuedeArchivar() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P011"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P011") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P011"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P011")
     }
 
     def getPuedeAnular() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P009"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P009") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P009"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P009")
     }
 
     def getPuedeReactivar() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P012"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P012") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P012"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
-
+        return this.puedePermiso("P012")
     }
 
     def getPuedeRedireccionar() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P008"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P008") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P008"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P008")
     }
 
     def getPuedeExternos() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P015"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P015") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P015"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P015")
     }
 
     def getPuedeVer() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P004"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P004") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P004"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
-
+        return this.puedePermiso("P004")
     }
 
     def getPuedeCopiar() {
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P003") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P003"))
-            }
-            def perms = perm.findAll { it.estaActivo }
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P003")
     }
 
     def getPuedeJefe() {
-        println "????"
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P002") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P002"))
-            }
-            def perms = perm.findAll { it.estaActivo }
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P002")
     }
 
     def getPuedeDirector() {
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P001") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P001"))
-            }
-            def perms = perm.findAll { it.estaActivo }
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P001")
     }
 
 
     def getPuedeAdmin() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P013"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-//        println "puede admin "+this.permisos
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "P013") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("P013"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("P013")
     }
 
     def getPuedeCopia() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("P013"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-//        println "puede admin "+this.permisos
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "C001") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("C001"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("C001")
     }
 
 
@@ -620,52 +251,19 @@ class Persona {
     }
 
     def esTriangulo() {
-//        def perm = PermisoUsuario.withCriteria {
-//            eq("persona", this)
-//            eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
-//        }
-//        def permisos = perm.findAll { it.estaActivo }
-//        return permisos.size() > 0
-//        println "perm "+this.permisos
-        if(this.permisos.size()>0) {
-            def perm = null
-            this.permisos.each {
-                if (!perm) {
-                    if (it.codigo == "E001") {
-                        perm = PermisoUsuario.findByPermisoTramite(it)
-//                    println "prus "+perm+" "+perm.estaActivo
-                    }
-                }
-            }
-            if (perm) {
-                if (perm.estaActivo) {
-                    return true
-                }
-            } else {
-                return false
-            }
-        }else{
-//            println "else111  "
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
-            }
-//            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
-//            println "perms "+perms
-            return perms.size() > 0
-        }
+        return this.puedePermiso("E001")
     }
+
     def esTrianguloOff() {
 
-            def perm = PermisoUsuario.withCriteria {
-                eq("persona", this)
-                eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
-            }
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
+        }
 //            println "perm "+perm
-            def perms = perm.findAll { it.estaActivo }
+        def perms = perm.findAll { it.estaActivo }
 //            println "perms "+perms
-            return perms.size() > 0
+        return perms.size() > 0
 
     }
 

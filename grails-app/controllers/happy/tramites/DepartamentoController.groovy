@@ -204,12 +204,32 @@ class DepartamentoController extends happy.seguridad.Shield {
             def hh = Departamento.countByPadreIsNull([sort: "descripcion"])
             if (hh > 0) {
                 clase = "hasChildren jstree-closed"
+                if (session.usuario.puedeDirector) {
+//                    clase += "jstree-opened"
+                } else if (session.usuario.puedeJefe) {
+//                    clase += "jstree-opened"
+                } else {
+                    clase = ""
+                }
             }
+//            println "director: " + session.usuario.puedeDirector
+//            println "jefe: " + session.usuario.puedeJefe
             tree = "<li id='root' class='root ${clase}' data-jstree='{\"type\":\"root\"}' level='0' >" +
                     "<a href='#' class='label_arbol'>Estructura</a>" +
                     "</li>"
+            if (clase == "") {
+                tree = ""
+            }
         } else if (id == "root") {
-            hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+//            println "director: " + session.usuario.puedeDirector
+//            println "jefe: " + session.usuario.puedeJefe
+            if (session.usuario.puedeDirector) {
+                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+            } else if (session.usuario.puedeJefe) {
+                hijos = [session.usuario.departamento]
+            } else {
+                hijos = []
+            }
         } else {
             def parts = id.split("_")
             def node_id = parts[1].toLong()
