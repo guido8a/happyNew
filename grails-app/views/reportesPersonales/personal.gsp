@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-primary active toggle" data-tipo="tipo" data-valor="general" data-reporte="${reporte}">
+                                <label class="btn btn-primary toggle" data-tipo="tipo" data-valor="general" data-reporte="${reporte}">
                                     <input type="radio" name="options" id="${reporte}_general"> General
                                 </label>
                                 <label class="btn btn-primary toggle" data-tipo="tipo" data-valor="detallado" data-reporte="${reporte}">
@@ -49,7 +49,7 @@
                             </div>
 
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-primary active toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
+                                <label class="btn btn-primary toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
                                     <input type="radio" name="options" id="${reporte}_pdf"><i class="fa fa-file-pdf-o"></i> PDF
                                 </label>
                                 <label class="btn btn-primary toggle" data-tipo="formato" data-valor="Excel" data-reporte="${reporte}">
@@ -109,7 +109,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-primary active toggle" data-tipo="tipo" data-valor="general" data-reporte="${reporte}">
+                                        <label class="btn btn-primary toggle" data-tipo="tipo" data-valor="general" data-reporte="${reporte}">
                                             <input type="radio" name="options" id="${reporte}_general"> General
                                         </label>
                                         <label class="btn btn-primary toggle" data-tipo="tipo" data-valor="detallado" data-reporte="${reporte}">
@@ -118,7 +118,7 @@
                                     </div>
 
                                     <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-primary active toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
+                                        <label class="btn btn-primary toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
                                             <input type="radio" name="options" id="${reporte}_pdf"><i class="fa fa-file-pdf-o"></i> PDF
                                         </label>
                                         <label class="btn btn-primary toggle" data-tipo="formato" data-valor="Excel" data-reporte="${reporte}">
@@ -189,7 +189,7 @@
                                     %{--</div>--}%
 
                                     <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-primary active toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
+                                        <label class="btn btn-primary toggle" data-tipo="formato" data-valor="PDF" data-reporte="${reporte}">
                                             <input type="radio" name="options" id="${reporte}_pdf"><i class="fa fa-file-pdf-o"></i> PDF
                                         </label>
                                         <label class="btn btn-primary toggle" data-tipo="formato" data-valor="Excel" data-reporte="${reporte}">
