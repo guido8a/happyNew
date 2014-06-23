@@ -350,7 +350,7 @@
                                         $('#modalFechas').modal('show');
                                         $("#btnPrint").unbind("click").click(function () {
                                             if ($("#formFechas").valid()) {
-                                                location.href = "${g.createLink(controller: 'reporteGestion',action: 'reporteGestion')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                                location.href = "${g.createLink(controller: 'reporteGestion',action: 'reporteGestionXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
                                                 $('#modalFechas').modal('hide');
                                             }
                                         });

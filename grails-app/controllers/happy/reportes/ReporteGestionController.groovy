@@ -15,6 +15,15 @@ import happy.tramites.EstadoTramite
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
+import org.apache.poi.hssf.usermodel.HSSFFont
+import org.apache.poi.hssf.util.CellRangeAddress
+import org.apache.poi.hssf.util.HSSFColor
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.CreationHelper
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
 import java.awt.Color
 
@@ -29,7 +38,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
     def reporteGestion () {
 
-        println("params " + params)
+//        println("params " + params)
 
 
         def persona = Persona.get(params.id)
@@ -257,6 +266,223 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
 
 
+
+    }
+
+
+    def reporteGestionXlsx () {
+
+
+        def downloadName = "reporteGestion" + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
+
+        def path = servletContext.getRealPath("/") + "xls/"
+        new File(path).mkdirs()
+
+        String filename = path + "text.xlsx";
+        String sheetName = "Resumen";
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet(sheetName);
+        CreationHelper createHelper = wb.getCreationHelper();
+        sheet.setAutobreaks(true);
+
+        org.apache.poi.ss.usermodel.Font fontTitle = wb.createFont();
+        fontTitle.setFontHeightInPoints((short) 18);
+        fontTitle.setFontName(HSSFFont.FONT_ARIAL);
+        fontTitle.setItalic(true);
+        fontTitle.setBold(true);
+        fontTitle.setColor(HSSFColor.DARK_RED.index);
+
+        CellStyle styleTitle = wb.createCellStyle();
+        styleTitle.setAlignment(CellStyle.ALIGN_CENTER);
+        styleTitle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleTitle.setFont(fontTitle)
+        styleTitle.setWrapText(true);
+
+        org.apache.poi.ss.usermodel.Font fontHeaders = wb.createFont();
+        fontHeaders.setFontHeightInPoints((short) 12);
+        fontHeaders.setFontName(HSSFFont.FONT_ARIAL);
+        fontHeaders.setItalic(true);
+        fontHeaders.setBold(true);
+
+        CellStyle styleHeaders = wb.createCellStyle();
+        styleHeaders.setAlignment(CellStyle.ALIGN_CENTER);
+        styleHeaders.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        styleHeaders.setFont(fontHeaders)
+
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+        rowTitle.setHeightInPoints(40)
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue('Reporte Gestión del usuario' + ' ' + "${Persona?.get(params.id)}" );
+        cellTitle.setCellStyle(styleTitle)
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                2, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+
+        def persona = Persona.get(params.id)
+        def sql = ''
+        def result = []
+        def cn = dbConnectionService.getConnection();
+        def tramite
+        def tramiteContes
+        def prtr
+        def prtrContes
+        def principal
+
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta= new Date().parse("dd-MM-yyyy", params.hasta)
+        def fecha = desde.format("dd/MM/yyyy")
+        def fecha2 = hasta.format("dd/MM/yyyy")
+
+        sql = 'select i.prtr__id\n' +
+                'FROM prtr i INNER JOIN trmt j ON i.trmt__id = j.trmt__id \n'+
+                'WHERE (i.prsn__id = (' + params.id + ' ) and (i.rltr__id=1 or i.rltr__id=2)) and (j.trmtfccr between  ' + "'" + fecha + "'"  + '  and  ' + "'" + fecha2 + "'" + ' )'
+
+        cn.eachRow(sql) { r ->
+            result.add(r.toRowResult())
+        }
+
+        def index = 4
+        def indexHead = 3
+
+        result.each {
+            tramite = PersonaDocumentoTramite.get(it.prtr__id).tramite
+            tramiteContes = PersonaDocumentoTramite.get(it.prtr__id)?.tramite?.aQuienContesta?.tramite
+            prtrContes = PersonaDocumentoTramite.get(it.prtr__id).tramite.aQuienContesta
+            prtr = PersonaDocumentoTramite.get(it.prtr__id)
+            if (tramite) {
+                principal = tramite
+                if (tramite.padre) {
+                    principal = tramite.padre
+                    while (true) {
+                        if (!principal.padre)
+                            break
+                        else {
+                            principal = principal.padre
+                        }
+                    }
+                }
+            }
+
+
+
+
+
+
+//tramite
+            XSSFRow rowHead = sheet.createRow((short) indexHead);
+            rowHead.setHeightInPoints(14)
+
+            Cell cell = rowHead.createCell((int) 0)
+            cell.setCellValue("Trámite")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(0, 6000)
+
+            cell = rowHead.createCell((int) 1)
+            cell.setCellValue("Fecha de Recepción")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(1, 6000)
+
+            cell = rowHead.createCell((int) 2)
+            cell.setCellValue("De oficina")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(2, 10000)
+
+            cell = rowHead.createCell((int) 3)
+            cell.setCellValue("Creado Por")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(3, 3000)
+
+            cell = rowHead.createCell((int) 4)
+            cell.setCellValue("Asunto")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(4, 5000)
+
+            cell = rowHead.createCell((int) 5)
+            cell.setCellValue("")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(5, 5000)
+
+
+
+
+            XSSFRow row = sheet.createRow((short) index)
+
+            row.createCell((int) 0).setCellValue("${tramite?.codigo}")
+            row.createCell((int) 1).setCellValue("${prtr?.fechaRecepcion?.format("dd-MM-yyyy")}")
+            if(tramite?.deDepartamento){
+                row.createCell((int) 2).setCellValue("${tramite?.deDepartamento}")
+            }else{
+                row.createCell((int) 2).setCellValue("${tramite?.de?.nombre + ' ' + tramite?.de?.apellido}")
+            }
+            row.createCell((int) 3).setCellValue("${tramite?.de?.login}")
+            row.createCell((int) 4).setCellValue("${tramite?.asunto}")
+            row.createCell((int) 5).setCellValue("${''}")
+            index= index + 2
+            indexHead = indexHead + 2
+
+
+            //trámite de contestación
+
+
+            XSSFRow rowHeadC = sheet.createRow((short) indexHead);
+            rowHead.setHeightInPoints(14)
+
+            Cell cellC = rowHeadC.createCell((int) 0)
+            cellC.setCellValue("Trámite")
+            cellC.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(0, 6000)
+
+            cellC = rowHeadC.createCell((int) 1)
+            cellC.setCellValue("Fecha de Recepción")
+            cellC.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(1, 6000)
+
+            cellC = rowHeadC.createCell((int) 2)
+            cellC.setCellValue("De oficina")
+            cellC.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(2, 10000)
+
+            cellC = rowHeadC.createCell((int) 3)
+            cellC.setCellValue("Creado Por")
+            cellC.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(3, 3000)
+
+            cellC = rowHeadC.createCell((int) 4)
+            cellC.setCellValue("Asunto")
+            cellC.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(4, 5000)
+
+            cell = rowHead.createCell((int) 5)
+            cell.setCellValue("Fecha de Envio")
+            cell.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(5, 5000)
+
+
+
+        }
+
+
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        wb.write(fileOut);
+        fileOut.close();
+        String disHeader = "Attachment;Filename=\"${downloadName}\"";
+        response.setHeader("Content-Disposition", disHeader);
+        File desktopFile = new File(filename);
+        PrintWriter pw = response.getWriter();
+        FileInputStream fileInputStream = new FileInputStream(desktopFile);
+        int j;
+
+        while ((j = fileInputStream.read()) != -1) {
+            pw.write(j);
+        }
+        fileInputStream.close();
+        response.flushBuffer();
+        pw.flush();
+        pw.close();
 
     }
 
