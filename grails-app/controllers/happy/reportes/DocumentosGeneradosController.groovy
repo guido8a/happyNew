@@ -127,13 +127,17 @@ class DocumentosGeneradosController {
 
                     if (tramites.size() > 0) {
                         if (!total[persona.departamento]) {
-                            total[persona.departamento] = 0
+                            total[persona.departamento] = [:]
+                            total[persona.departamento].total = 0
+                            total[persona.departamento].detalle = [:]
                         }
-                        total[persona.departamento] += tramites.size()
+                        total[persona.departamento].total += tramites.size()
+                        total[persona.departamento].detalle[persona] = tramites.size()
+
                         if (persona.departamentoId != depActual) {
                             reportesPdfService.addCellTabla(tabla, new Paragraph("${dep.descripcion} (${dep.codigo})", fontBold), paramsCenter)
                             reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
-                            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep]}", fontBold), paramsCenter)
+                            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep].total}", fontBold), paramsCenter)
                             depActual = persona.departamentoId
                             dep = persona.departamento
                         }
@@ -145,11 +149,13 @@ class DocumentosGeneradosController {
             }
             reportesPdfService.addCellTabla(tabla, new Paragraph("${dep.descripcion} (${dep.codigo})", fontBold), paramsCenter)
             reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
-            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep]}", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("${total[dep].total}", fontBold), paramsCenter)
 
+//            println total
+//            println total.size()
             def tot = 0
             total.each { k, v ->
-                tot += v
+                tot += v.total
             }
 
             reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
@@ -158,6 +164,7 @@ class DocumentosGeneradosController {
             document.add(tabla)
 
             try {
+                document.newPage()
                 def width = 550
                 def height = 250
                 PdfContentByte contentByte = pdfw.getDirectContent();
@@ -179,9 +186,17 @@ class DocumentosGeneradosController {
 ////                    "World Population growth", "Year", "Population in millions",
 ////                    dataSet, PlotOrientation.VERTICAL, false, true, false);
 //
+                def ttl = " por departamento"
                 DefaultPieDataset dataSet = new DefaultPieDataset();
                 total.each { k, v ->
-                    dataSet.setValue(k.codigo, v);
+                    if (total.size() > 1) {
+                        dataSet.setValue(k.codigo, v.total);
+                    } else {
+                        ttl = " de " + k.descripcion
+                        v.detalle.each { kk, vv ->
+                            dataSet.setValue(kk.login, vv);
+                        }
+                    }
                 }
 //            dataSet.setValue("China", 19.64);
 //            dataSet.setValue("India", 17.3);
@@ -191,9 +206,9 @@ class DocumentosGeneradosController {
 //            dataSet.setValue("Pakistan", 2.48);
 //            dataSet.setValue("Bangladesh", 2.38);
 
-                JFreeChart chart = ChartFactory.createPieChart("Documentos generados por departamento", dataSet, true, true, false);
+                JFreeChart chart = ChartFactory.createPieChart("Documentos generados" + ttl, dataSet, true, true, false);
                 chart.setTitle(
-                        new org.jfree.chart.title.TextTitle("Documentos generados por departamento",
+                        new org.jfree.chart.title.TextTitle("Documentos generados" + ttl,
                                 new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
                         )
                 );
@@ -218,7 +233,7 @@ class DocumentosGeneradosController {
                 chart.draw(graphics2d, rectangle2d);
 
                 graphics2d.dispose();
-                contentByte.addTemplate(template, 30, 110);
+                contentByte.addTemplate(template, 30, 500);
 
             } catch (Exception e) {
                 println "ERROR GRAFICOS::::::: "

@@ -233,6 +233,7 @@
                     var reporte = $(this).data("reporte");
                     $("#generar_" + reporte).data(tipo, valor);
                     $("#" + reporte + "_" + tipo).text(valor);
+                    return false;
                 });
 
                 $(".generar").click(function () {
@@ -279,7 +280,7 @@
                             }
                             break;
                     }
-
+                    return false;
                 });
             });
         </script>
