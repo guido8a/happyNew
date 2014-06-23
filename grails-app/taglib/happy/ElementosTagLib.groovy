@@ -650,6 +650,8 @@ class ElementosTagLib {
 
         def clase = attrs["class"]
 
+        def extra = attrs.extra ?: ""
+
         def format = attrs.format ?: "dd-MM-yyyy"
         def formatJS = attrs.formatJS ?: format.replaceAll("M", "m")
 
@@ -685,7 +687,7 @@ class ElementosTagLib {
 
         def br = "\n"
 
-        def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") + " value='${value}' class='${clase}' />"
+        def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") + " value='${value}' class='${clase}' ${extra} />"
         def hiddenDay = "<input type='hidden' name='${nameHiddenDay}' id='${nameHiddenDay}' value='${valueDay}'/>"
         def hiddenMonth = "<input type='hidden' name='${nameHiddenMonth}' id='${nameHiddenMonth}' value='${valueMonth}'/>"
         def hiddenYear = "<input type='hidden' name='${nameHiddenYear}' id='${nameHiddenYear}' value='${valueYear}'/>"
