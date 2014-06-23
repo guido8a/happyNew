@@ -747,7 +747,7 @@ class RetrasadosController {
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
-        println "datos grafico "+datosGrafico
+//        println "datos grafico "+datosGrafico
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
