@@ -38,7 +38,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
     def reporteGestion () {
 
-//        println("params " + params)
+        println("params " + params)
 
 
         def persona = Persona.get(params.id)
@@ -213,7 +213,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
             addCellTabla(tablaTramites, new Paragraph(tramiteContes?.codigo, times8normal), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph(tramiteContes?.fechaCreacion?.format("dd-MM-yyyy"), times8normal), prmsHeaderHoja)
-            if(tramite?.deDepartamento){
+            if(tramiteContes?.deDepartamento){
                 addCellTabla(tablaTramites, new Paragraph(tramiteContes?.deDepartamento?.descripcion, times8normal), prmsHeaderHoja)
             }else{
                 addCellTabla(tablaTramites, new Paragraph((tramiteContes?.de?.nombre + ' ' + tramiteContes?.de?.apellido) ?: '', times8normal), prmsHeaderHoja)
@@ -312,7 +312,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
         XSSFRow rowTitle = sheet.createRow((short) 0);
         rowTitle.setHeightInPoints(40)
         Cell cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue('Reporte Gestión del usuario' + ' ' + "${Persona?.get(params.id)}" );
+        cellTitle.setCellValue('Reporte Gestión del usuario: ' + ' ' + "${Persona?.get(params.id)}" );
         cellTitle.setCellStyle(styleTitle)
 
         sheet.addMergedRegion(new CellRangeAddress(
@@ -345,8 +345,18 @@ class ReporteGestionController extends happy.seguridad.Shield {
             result.add(r.toRowResult())
         }
 
-        def index = 4
-        def indexHead = 3
+
+        def indexHeadP = 3
+        def indexP = 4
+
+        def indexHead = 5
+        def index = 6
+
+        def indexC = 7
+        def indexHeadC = 8
+
+        def indexD = 9
+        def indexHeadD = 9
 
         result.each {
             tramite = PersonaDocumentoTramite.get(it.prtr__id).tramite
@@ -369,17 +379,37 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
 
 
+            //trámite principal
+
+            XSSFRow rowHeadP = sheet.createRow((short) indexHeadP);
+            rowHeadP.setHeightInPoints(14)
+
+            Cell cellP = rowHeadP.createCell((int) 0)
+            cellP.setCellValue("Doc. Principal")
+            cellP.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(0, 6000)
+
+            cellP = rowHeadP.createCell((int) 1)
+            cellP.setCellValue("Asunto")
+            cellP.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(1, 6000)
+
+
+            XSSFRow rowP = sheet.createRow((short) indexP)
+
+            rowP.createCell((int) 0).setCellValue("${Tramite.get(principal?.id).codigo}")
+            rowP.createCell((int) 1).setCellValue("${Tramite.get(principal?.id).asunto}")
 
 
 
-//tramite
+            //trámite
             XSSFRow rowHead = sheet.createRow((short) indexHead);
             rowHead.setHeightInPoints(14)
 
             Cell cell = rowHead.createCell((int) 0)
-            cell.setCellValue("Trámite")
+            cell.setCellValue("Trámite N°.")
             cell.setCellStyle(styleHeaders)
-            sheet.setColumnWidth(0, 6000)
+            sheet.setColumnWidth(0, 12000)
 
             cell = rowHead.createCell((int) 1)
             cell.setCellValue("Fecha de Recepción")
@@ -394,7 +424,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
             cell = rowHead.createCell((int) 3)
             cell.setCellValue("Creado Por")
             cell.setCellStyle(styleHeaders)
-            sheet.setColumnWidth(3, 3000)
+            sheet.setColumnWidth(3, 5000)
 
             cell = rowHead.createCell((int) 4)
             cell.setCellValue("Asunto")
@@ -405,9 +435,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
             cell.setCellValue("")
             cell.setCellStyle(styleHeaders)
             sheet.setColumnWidth(5, 5000)
-
-
-
 
             XSSFRow row = sheet.createRow((short) index)
 
@@ -421,23 +448,20 @@ class ReporteGestionController extends happy.seguridad.Shield {
             row.createCell((int) 3).setCellValue("${tramite?.de?.login}")
             row.createCell((int) 4).setCellValue("${tramite?.asunto}")
             row.createCell((int) 5).setCellValue("${''}")
-            index= index + 2
-            indexHead = indexHead + 2
 
 
             //trámite de contestación
 
-
-            XSSFRow rowHeadC = sheet.createRow((short) indexHead);
-            rowHead.setHeightInPoints(14)
+            XSSFRow rowHeadC = sheet.createRow((short) indexC);
+            rowHeadC.setHeightInPoints(14)
 
             Cell cellC = rowHeadC.createCell((int) 0)
-            cellC.setCellValue("Trámite")
+            cellC.setCellValue("Trámite Contestación N°.")
             cellC.setCellStyle(styleHeaders)
-            sheet.setColumnWidth(0, 6000)
+            sheet.setColumnWidth(0, 12000)
 
             cellC = rowHeadC.createCell((int) 1)
-            cellC.setCellValue("Fecha de Recepción")
+            cellC.setCellValue("Fecha de Creación")
             cellC.setCellStyle(styleHeaders)
             sheet.setColumnWidth(1, 6000)
 
@@ -449,18 +473,65 @@ class ReporteGestionController extends happy.seguridad.Shield {
             cellC = rowHeadC.createCell((int) 3)
             cellC.setCellValue("Creado Por")
             cellC.setCellStyle(styleHeaders)
-            sheet.setColumnWidth(3, 3000)
+            sheet.setColumnWidth(3, 5000)
 
             cellC = rowHeadC.createCell((int) 4)
             cellC.setCellValue("Asunto")
             cellC.setCellStyle(styleHeaders)
             sheet.setColumnWidth(4, 5000)
 
-            cell = rowHead.createCell((int) 5)
+            cell = rowHeadC.createCell((int) 5)
             cell.setCellValue("Fecha de Envio")
             cell.setCellStyle(styleHeaders)
             sheet.setColumnWidth(5, 5000)
 
+
+            XSSFRow rowC = sheet.createRow((short) indexHeadC)
+
+                rowC.createCell((int) 0).setCellValue("${tramiteContes?.codigo ?: ''}")
+
+
+            rowC.createCell((int) 1).setCellValue("${tramiteContes?.fechaCreacion?.format("dd-MM-yyyy") ?: ''}")
+            if(tramiteContes?.deDepartamento){
+                rowC.createCell((int) 2).setCellValue("${tramiteContes?.deDepartamento ?: ''}")
+            }else{
+                rowC.createCell((int) 2).setCellValue("${(tramiteContes?.de?.nombre ?: '') + ' ' + (tramiteContes?.de?.apellido ?: '')}")
+            }
+            rowC.createCell((int) 3).setCellValue("${tramiteContes?.de?.login ?: ''}")
+            rowC.createCell((int) 4).setCellValue("${tramiteContes?.asunto ?: ''}")
+            rowC.createCell((int) 5).setCellValue("${prtrContes?.fechaEnvio?.format('dd-MM-yyyy') ?: ''}")
+
+            //Días
+
+            XSSFRow rowHeadD = sheet.createRow((short) indexHeadD);
+            rowHeadD.setHeightInPoints(14)
+
+            Cell cellD = rowHeadD.createCell((int) 0)
+            cellD.setCellValue("Días transcurridos hasta la contestación")
+            cellD.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(0, 12000)
+
+            cellD = rowHeadD.createCell((int) 1)
+            if(prtrContes?.fechaEnvio && prtr?.fechaRecepcion){
+            cellD.setCellValue("${prtr?.fechaRecepcion - prtrContes?.fechaEnvio}")
+            }else{
+            cellD.setCellValue("0")
+            }
+            cellD.setCellStyle(styleHeaders)
+            sheet.setColumnWidth(1, 6000)
+
+
+            index= index + 9
+            indexHead = indexHead + 9
+
+            indexC= indexC + 9
+            indexHeadC = indexHeadC + 9
+
+            indexP= indexP + 9
+            indexHeadP = indexHeadP + 9
+
+            indexD= indexD + 9
+            indexHeadD = indexHeadD + 9
 
 
         }
