@@ -36,6 +36,8 @@ class RetrasadosController {
     Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
     Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
     Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+    def datosGrafico =[:]
+
 
     def reporteRetrasadosDetalle(){
 //        params.detalle=1
@@ -528,6 +530,7 @@ class RetrasadosController {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
         println "con aaa    "+params
+        datosGrafico=[:]
         def estadoR= EstadoTramite.findByCodigo("E004")
         def estadoE= EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -631,9 +634,17 @@ class RetrasadosController {
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
+
         hijos.each{lvl->
             if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
-                if(lvl["tramites"].size()>0) {
+                if(lvl["tramites"].size()>0 || lvl["personas"].size()>0) {
+                    datosGrafico.put(lvl["objeto"].toString(),[:])
+                    def dg = datosGrafico[lvl["objeto"].toString()]
+                    dg.put("rezagados",[])
+                    dg.put("retrasados",[])
+                    dg.put("totalRz",0)
+                    dg.put("totalRs",0)
+                    dg.put("objeto",lvl["objeto"])
                     def par = new Paragraph("Dirección", times8bold)
                     cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
@@ -653,16 +664,22 @@ class RetrasadosController {
                             usuarios += "${t} (Oficina)\n"
                             totales += "${lvl["rezagados"]} \n"
                             totalesSr+= ""+lvl["retrasados"]+" \n"
-                            if (totalNode == 0)
+                            if (totalNode == 0) {
                                 totalNode += lvl["rezagados"].toInteger()
-                            if (totalNodeSr == 0)
+                                dg["rezagados"].add(lvl["rezagados"].toInteger())
+                            }
+                            if (totalNodeSr == 0) {
                                 totalNodeSr += lvl["retrasados"].toInteger()
+                                dg["retrasados"].add(lvl["retrasados"].toInteger())
+                            }
                         }
                     }
                     lvl["personas"].each { p ->
                         usuarios += "${p['objeto']} \n"
                         totales += "${p["rezagados"]} \n"
                         totalesSr += ""+p["retrasados"]+" \n"
+                        dg["rezagados"].add(p["rezagados"].toInteger())
+                        dg["retrasados"].add(p["retrasados"].toInteger())
                         totalNode += p["rezagados"].toInteger()
                         totalNodeSr += p["retrasados"].toInteger()
                     }
@@ -678,6 +695,8 @@ class RetrasadosController {
                     cellTotalSr.setBorderColor(Color.WHITE)
                     cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
                     tablaTramites.addCell(cellTotalSr);
+                    dg["totalRz"]=totalNode
+                    dg["totalRs"]=totalNodeSr
                     par = new Paragraph("Usuario:", times8bold)
                     cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
@@ -700,7 +719,7 @@ class RetrasadosController {
                     totalSr += totalNodeSr
                 }
             }
-            def res = imprimeHijosPdfConsolidado(lvl,document,tablaTramites,params,usuario,deps,puedeVer,total,totalSr)
+            def res = imprimeHijosPdfConsolidado(lvl,document,tablaTramites,params,usuario,deps,puedeVer,total,totalSr,datosGrafico)
             total+= res[0]
             totalSr+= res[1]
 
@@ -728,6 +747,7 @@ class RetrasadosController {
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
+        println "datos grafico "+datosGrafico
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
@@ -737,11 +757,18 @@ class RetrasadosController {
 
 
 
-    def imprimeHijosPdfConsolidado(arr,contenido,tablaTramites,params,usuario,deps,puedeVer,total,totalSr){
+    def imprimeHijosPdfConsolidado(arr,contenido,tablaTramites,params,usuario,deps,puedeVer,total,totalSr,datosGrafico){
         total = 0
         def datos = arr["hijos"]
         datos.each{lvl->
             if(puedeVer.size()==0 || (puedeVer.id.contains(lvl["objeto"].id))){
+                datosGrafico.put(lvl["objeto"].toString(),[:])
+                def dg = datosGrafico[lvl["objeto"].toString()]
+                dg.put("rezagados",[])
+                dg.put("retrasados",[])
+                dg.put("totalRz",0)
+                dg.put("totalRs",0)
+                dg.put("objeto",lvl["objeto"])
                 def par = new Paragraph("Dirección", times8bold)
                 PdfPCell cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
@@ -761,16 +788,22 @@ class RetrasadosController {
                         usuarios += "${t} (Oficina)\n"
                         totales += "${lvl["rezagados"]} \n"
                         totalesSr+= ""+lvl["retrasados"]+" \n"
-                        if (totalNode == 0)
+                        if (totalNode == 0) {
                             totalNode += lvl["rezagados"].toInteger()
-                        if (totalNodeSr == 0)
+                            dg["rezagados"].add(lvl["rezagados"].toInteger())
+                        }
+                        if (totalNodeSr == 0) {
                             totalNodeSr += lvl["retrasados"].toInteger()
+                            dg["retrasados"].add(lvl["retrasados"].toInteger())
+                        }
                     }
                 }
                 lvl["personas"].each { p ->
                     usuarios += "${p['objeto']} \n"
                     totales += "${p["rezagados"]} \n"
                     totalesSr += ""+p["retrasados"]+" \n"
+                    dg["rezagados"].add(p["rezagados"].toInteger())
+                    dg["retrasados"].add(p["retrasados"].toInteger())
                     totalNode += p["rezagados"].toInteger()
                     totalNodeSr += p["retrasados"].toInteger()
                 }
@@ -785,6 +818,8 @@ class RetrasadosController {
                 def cellTotalSr = new PdfPCell(par);
                 cellTotalSr.setBorderColor(Color.WHITE)
                 cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
+                dg["totalRz"]=totalNode
+                dg["totalRs"]=totalNodeSr
                 tablaTramites.addCell(cellTotalSr);
                 par = new Paragraph("Usuario:", times8bold)
                 cell = new PdfPCell(par);

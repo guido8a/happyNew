@@ -21,6 +21,8 @@ class RetrasadosExcelController {
 
 
 
+
+
     def reporteRetrasadosDetalle(){
 //        params.detalle=1
 //        params.prsn=session.usuario.id
