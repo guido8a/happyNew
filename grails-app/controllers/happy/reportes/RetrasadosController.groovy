@@ -142,7 +142,7 @@ class RetrasadosController {
         Document document = reportesPdfService.crearDocumento("svt", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
-        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
+        reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
 //        Paragraph headers = new Paragraph();
@@ -611,7 +611,7 @@ class RetrasadosController {
         Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
-        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
+        reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
         reportesPdfService.crearEncabezado(document, "Reporte de Trámites Retrasados")
@@ -750,21 +750,22 @@ class RetrasadosController {
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
         tablaTramites.addCell(cell);
         contenido.add(tablaTramites)
-        document.add(contenido)
 
-        println datosGrafico
-        println datosGrafico.size()
-        datosGrafico.each { dep, valores ->
-            println dep
-            println "Retrasados"
-            valores.retrasados.each { k, v ->
-                println "\t" + k + "   " + v
-            }
-            println "Rezagados"
-            valores.rezagados.each { k, v ->
-                println "\t" + k + "   " + v
-            }
-        }
+        document.add(contenido)
+//
+//        println datosGrafico
+//        println datosGrafico.size()
+//        datosGrafico.each { dep, valores ->
+//            println dep
+//            println "Retrasados"
+//            valores.retrasados.each { k, v ->
+//                println "\t" + k + "   " + v
+//            }
+//            println "Rezagados"
+//            valores.rezagados.each { k, v ->
+//                println "\t" + k + "   " + v
+//            }
+//        }
 
         try {
             document.newPage()

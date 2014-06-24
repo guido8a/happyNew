@@ -641,12 +641,12 @@
 
             $(function () {
 
-                intervalBandeja = setInterval(function () {
-                    openLoader();
-                    cargarBandeja(false);
-                    closeLoader()
-                    $(".qtip").hide();
-                }, 1000 * 60);
+//                intervalBandeja = setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader()
+//                    $(".qtip").hide();
+//                }, 1000 * 60);
                 var id, codigo;
 
                 $(".alertas").click(function () {
@@ -667,12 +667,12 @@
                 $(".btnActualizar").click(function () {
 
                     cargarBandeja();
-                    clearInterval(intervalBandeja);
-                    intervalBandeja = setInterval(function () {
-                        openLoader();
-                        cargarBandeja();
-                        closeLoader()
-                    }, 1000 * 60 * 5);
+//                    clearInterval(intervalBandeja);
+//                    intervalBandeja = setInterval(function () {
+//                        openLoader();
+//                        cargarBandeja();
+//                        closeLoader()
+//                    }, 1000 * 60 * 5);
                     log('Tabla de trámites y alertas actualizadas!', "success");
 
                     return false;

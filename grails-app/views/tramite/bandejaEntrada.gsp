@@ -705,12 +705,12 @@
 
                 cargarBandeja();
 
-                setInterval(function () {
-                    openLoader();
-                    cargarBandeja(false);
-                    closeLoader();
-                    $(".qtip").hide();
-                }, 1000 * 60 * 3);
+//                setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader();
+//                    $(".qtip").hide();
+//                }, 1000 * 60 * 3);
 
                 $(".alertas").click(function () {
                     var clase = $(this).attr("clase");

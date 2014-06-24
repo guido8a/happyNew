@@ -201,7 +201,8 @@
 
     function resetTimer() {
         var ahora = new Date();
-        var fin = ahora.clone().add(20).minute();
+        var fin = ahora.clone().add(5).minute();
+        fin.add(30).second()
         $("#countdown").countdown('option', {
             until : fin
         });
@@ -223,10 +224,10 @@
     }
 
     function highlight(periods) {
-        if ((periods[5] == 5 && periods[6] == 0) || (periods[5] < 5)) {
-            document.title = "Fin de sesión en " + (periods[5].toString().lpad('0', 2)) + ":" + (periods[6].toString().lpad('0', 2)) + " - " + ot;
-            $(".countdown_amount").addClass("highlight");
-        }
+//        if ((periods[5] == 5 && periods[6] == 0) || (periods[5] < 5)) {
+//            document.title = "Fin de sesión en " + (periods[5].toString().lpad('0', 2)) + ":" + (periods[6].toString().lpad('0', 2)) + " - " + ot;
+//            $(".countdown_amount").addClass("highlight");
+//        }
     }
 
     $(function () {
@@ -287,7 +288,8 @@
         }, 60000);
 
         var ahora = new Date();
-        var fin = ahora.clone().add(20).minute();
+        var fin = ahora.clone().add(5).minute();
+        fin.add(30).second()
 
         $('#countdown').countdown({
             until    : fin,
