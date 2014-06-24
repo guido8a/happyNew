@@ -88,12 +88,15 @@ class DocumentosGeneradosController {
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
-        reportesPdfService.documentoFooter(document, "${title}        pág. ", true)
+//        reportesPdfService.documentoFooter(document, "${title}        pág. ", true)
         //pone en el footer el nombre de tramite q es y el numero de pagina
+
+        reportesPdfService.membrete(document)
 
         document.open();
         reportesPdfService.propiedadesDocumento(document, "trámite")
         //pone las propiedades: title, subject, keywords, author, creator
+
 
         reportesPdfService.crearEncabezado(document, title)
         //crea el encabezado que quieren estos manes con el titulo que se le mande
@@ -328,7 +331,9 @@ class DocumentosGeneradosController {
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
-        reportesPdfService.documentoFooter(document, "${title}        pág. ", true)
+        reportesPdfService.membrete(document)
+
+//        reportesPdfService.documentoFooter(document, "${title}        pág. ", true)
         //pone en el footer el nombre de tramite q es y el numero de pagina
 
         document.open();

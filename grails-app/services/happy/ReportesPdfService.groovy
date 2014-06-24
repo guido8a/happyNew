@@ -1,10 +1,14 @@
 package happy
 
 import com.lowagie.text.*
+import com.lowagie.text.pdf.ColumnText
+import com.lowagie.text.pdf.PdfContentByte
 import com.lowagie.text.pdf.PdfPCell
-import com.lowagie.text.pdf.PdfPTable;
-
+import com.lowagie.text.pdf.PdfPTable
+import com.lowagie.text.pdf.PdfWriter;
 import happy.UtilitariosTagLib
+import happy.utilitarios.Parametros
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class ReportesPdfService {
 
@@ -14,6 +18,10 @@ class ReportesPdfService {
     Font fontFecha = new Font(Font.TIMES_ROMAN, 9, Font.NORMAL)
     Font fontFooter = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
     Font fontHeader = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+
+    Font fontEncabezado = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
+    Font fontPiePagina = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+    Font fontPiePaginaBold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
 
     Font fontTh = new Font(Font.TIMES_ROMAN, 10, Font.BOLD)
     Font fontTd = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
@@ -193,7 +201,7 @@ class ReportesPdfService {
         def util = new UtilitariosTagLib()
         Paragraph headersTitulo = new Paragraph();
         headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", fontTituloGad));
+//        headersTitulo.add(new Paragraph("GAD DE LA PROVINCIA DE PICHINCHA", fontTituloGad));
         headersTitulo.add(new Paragraph("SISTEMA DE ADMINISTRACIÓN DOCUMENTAL", fontSubtituloGad));
         headersTitulo.add(new Paragraph(tituloReporte, fontSubtituloGad));
         def parFecha = new Paragraph("Reporte generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontFecha)
@@ -201,6 +209,105 @@ class ReportesPdfService {
         parFecha.setSpacingAfter(15)
         documento.add(headersTitulo)
         documento.add(parFecha)
+
+    }
+
+    def crearEncabezado(PdfWriter writer, Document documento, String tituloReporte) {
+        crearEncabezado(documento, tituloReporte)
+
+        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
+        def absolutePath = layoutFolder.absolutePath
+//        println "Absolute Path to Layout Folder: ${absolutePath}"
+
+//        def imagen = "/home/luz/logo_gadpp_reportes.png"
+        def imagen = absolutePath
+
+        def aux = Parametros.list([sort: "id", order: "asc"])
+        def leyenda = ""
+        if (aux.size() == 1) {
+            leyenda = aux.first().institucion
+        } else if (aux.size() > 1) {
+            println "Hay ${aux.size()} parametros!!: " + aux
+            leyenda = aux.first().institucion
+        }
+        def chunkPieDireccion = new Chunk("Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • ", fontPiePagina)
+        def chunkPieWeb = new Chunk("www.pichincha.gob.ec", fontPiePaginaBold)
+
+        Image image = Image.getInstance(imagen);
+        image.setAbsolutePosition(30f, 770f);
+        documento.add(image);
+
+        Phrase phraseLeyenda = new Phrase(leyenda, fontEncabezado);
+        PdfContentByte cb = writer.directContent;
+        ColumnText ct = new ColumnText(cb);
+        ct.setSimpleColumn(phraseLeyenda, 210, 770, 410, 810, 15, Element.ALIGN_LEFT);
+        // the phrase,
+        // lower-left-x,
+        // lower-left-y,
+        // upper-right-x (llx + width),
+        // upper-right-y (lly + height),
+        // leading (The amount of blank space between lines of print),
+        // alignment
+        ct.go();
+
+        Phrase phrasePiePagina = new Phrase();
+        phrasePiePagina.add(chunkPieDireccion)
+        phrasePiePagina.add(chunkPieWeb)
+        ct = new ColumnText(cb);
+        ct.setSimpleColumn(phrasePiePagina, 900, 2, 100, 42, 15, Element.ALIGN_LEFT);
+        ct.go();
+    }
+
+    def membrete(Document document) {
+        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
+        def absolutePath = layoutFolder.absolutePath
+//        println "Absolute Path to Layout Folder: ${absolutePath}"
+
+//        def imagen = "/home/luz/logo_gadpp_reportes.png"
+        def imagen = absolutePath
+
+        def aux = Parametros.list([sort: "id", order: "asc"])
+        def leyenda = ""
+        if (aux.size() == 1) {
+            leyenda = aux.first().institucion
+        } else if (aux.size() > 1) {
+            println "Hay ${aux.size()} parametros!!: " + aux
+            leyenda = aux.first().institucion
+        }
+        def chunkLeyenda = new Chunk(leyenda, fontEncabezado)
+        def chunkPieDireccion = new Chunk("Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • ", fontPiePagina)
+        def chunkPieWeb = new Chunk("www.pichincha.gob.ec", fontPiePaginaBold)
+
+        Image logo = Image.getInstance(imagen);
+        logo.setAlignment(Image.LEFT);
+//        logo.scaleAbsoluteHeight(20);
+//        logo.scaleAbsoluteWidth(20);
+//        logo.scalePercent(100);
+        def page = document.getPageSize()
+        def rot = page.getRotation()
+        def x = -140
+        if (rot == 90) {
+            x = -270
+        }
+        Chunk chunkLogo = new Chunk(logo, x, -10);
+
+        Phrase phraseHeader = new Phrase()
+        phraseHeader.add(chunkLogo)
+        phraseHeader.add(chunkLeyenda)
+
+        HeaderFooter header = new HeaderFooter(phraseHeader, false);
+        header.setAlignment(Element.ALIGN_CENTER);
+        header.setBorder(Rectangle.NO_BORDER);
+        document.setHeader(header);
+
+        Phrase phrasePiePagina = new Phrase();
+        phrasePiePagina.add(chunkPieDireccion)
+        phrasePiePagina.add(chunkPieWeb)
+
+        HeaderFooter footer = new HeaderFooter(phrasePiePagina, false);
+        footer.setAlignment(Element.ALIGN_CENTER);
+        footer.setBorder(Rectangle.NO_BORDER);
+        document.setFooter(footer);
     }
 
     /**
