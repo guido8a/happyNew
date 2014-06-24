@@ -28,7 +28,9 @@ class EnviarService {
      *  mensaje         : mandar message(code: 'pathImages').toString()
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
-        println "CREAR PDF"
+//        println "CREAR PDF: " + conMembrete
+
+        def conMembrete = tramite.conMembrete ?: "0"
 
         def parametros = Parametros.list()
         if (parametros.size() == 0) {
@@ -40,29 +42,39 @@ class EnviarService {
         } else {
             mensaje = parametros.first().imagenes
         }
+        def leyenda = "GAD de la provincia de Pichincha"
+        def aux = Parametros.list([sort: "id", order: "asc"])
+        if (aux.size() == 1) {
+            leyenda = aux.first().institucion
+        } else if (aux.size() > 1) {
+            println "Hay ${aux.size()} parametros!!!"
+            leyenda = aux.first().institucion
+        }
 
         tramite.refresh()
 
         def pathImages = realPath + "images/"
         def path = pathImages + "redactar/" + usuario.id + "/"
 
+        def membrete = pathImages + "logo_gadpp_reportes.png"
+
         new File(path).mkdirs()
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ITextRenderer renderer = new ITextRenderer();
-        FontResolver resolver = renderer.getFontResolver();
 
-        renderer.getFontResolver().addFont(realPath + "fontsPdf/comic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Bold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-BoldItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBoldItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Italic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Light.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-LightItalic.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Regular.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-Semibold.ttf", true);
-        resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
+//        FontResolver resolver = renderer.getFontResolver();
+//
+//        renderer.getFontResolver().addFont(realPath + "fontsPdf/comic.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-Bold.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-BoldItalic.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBold.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBoldItalic.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-Italic.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-Light.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-LightItalic.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-Regular.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-Semibold.ttf", true);
+//        resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
 
         def text = (tramite?.texto ?: '')
 //        println "--------------------------------------------------------------"
@@ -84,20 +96,47 @@ class EnviarService {
 //        println text
 //        println "--------------------------------------------------------------"
 
+        def marginTop = "4.5cm"
+        if (conMembrete == "1") {
+            marginTop = "2.5cm"
+        }
+
         def content = "<!DOCTYPE HTML>\n<html>\n"
         content += "<head>\n"
-        content += "<link href=\"${realPath + 'font/open/stylesheet.css'}\" rel=\"stylesheet\"/>"
+//        content += "<link href=\"${realPath + 'font/open/stylesheet.css'}\" rel=\"stylesheet\"/>"
         content += "<style language='text/css'>\n"
-        content += "  @page {\n" +
-                "            size   : 21cm 29.7cm;  /*width height */\n" +
-                "            margin : 4.5cm 2.5cm 2.5cm 3cm;\n" +
-                "        }\n" +
+        content += "" +
+                " div.header {\n" +
+                "   display    : block;\n" +
+                "   text-align : center;\n" +
+                "   position   : running(header);\n" +
+                "}\n" +
+                "div.footer {\n" +
+                "   display    : block;\n" +
+                "   text-align : center;\n" +
+                "   font-size  : 9pt;\n" +
+                "   position   : running(footer);\n" +
+                "} " +
+                " @page {\n" +
+                "   size   : 21cm 29.7cm;  /*width height */\n" +
+                "   margin : ${marginTop} 2.5cm 2.5cm 3cm;\n" +
+                "}\n" +
+                "@page {\n" +
+                "   @top-center {\n" +
+                "       content : element(header)\n" +
+                "   }\n" +
+                "}" +
+                "@page {\n" +
+                "   @bottom-center {\n" +
+                "       content : element(footer)\n" +
+                "   }\n" +
+                "}" +
                 ".hoja {\n" +
 //                "            background  : #123456;\n" +
-//                "            width       : 15.5cm; /*21-2.5-3*/\n" +
-                "            font-family : arial;\n" +
-                "            font-size   : 12pt;\n" +
-                "        }\n" +
+                "   width       : 15.5cm; /*21-2.5-3*/\n" +
+                "   font-family : arial;\n" +
+                "   font-size   : 12pt;\n" +
+                "}\n" +
                 ".titulo-horizontal {\n" +
                 "    padding-bottom : 15px;\n" +
                 "    border-bottom  : 1px solid #000000;\n" +
@@ -111,7 +150,7 @@ class EnviarService {
                 "    display     : block;\n" +
                 "    width       : 98%;\n" +
                 "    height      : 30px;\n" +
-                "    font-family : 'open sans condensed';\n" +
+//                "    font-family : 'open sans condensed';\n" +
                 "    font-weight : bold;\n" +
                 "    font-size   : 25px;\n" +
                 "    margin-top  : 10px;\n" +
@@ -123,29 +162,73 @@ class EnviarService {
                 "}\n" +
                 "p{\n" +
                 "   text-align: justify;\n" +
+                "}\n" +
+                "\n" +
+                ".membrete {\n" +
+//                "    height    : 2cm;\n" +
+//                "    background: red;" +
+//                "    margin-top: -2cm;" +
+                "    line-height : 2cm;\n" +
+                "    text-align  : center;\n" +
+                "    font-size   : 25px;\n" +
+                "    font-weight : bold;\n" +
+//                "    margin-top: 1cm;" +
                 "}\n"
         content += "</style>\n"
         content += "</head>\n"
         content += "<body>\n"
+        if (conMembrete == "1") {
+            content += "<div class=\"header membrete\">"
+            content += "<table border='0'>"
+            content += "<tr>"
+            content += "<td width='15%'>"
+            content += "<img alt='' src='${membrete}'/>"
+            content += "</td>"
+            content += "<td width='85%' style='text-align:center'>"
+            content += leyenda
+            content += "</td>"
+            content += "</tr>"
+            content += "</table>"
+            content += "</div>"
+
+            content += "<div class='footer'>" +
+                    "Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • " +
+                    "<strong>www.pichincha.gob.ec</strong>" +
+                    "</div>"
+        }
         content += "<div class='hoja'>\n"
         content += new ElementosTagLib().headerTramite(tramite: tramite, pdf: true)
-
         content += text
         content += "</div>\n"
         content += "</body>\n"
         content += "</html>"
 
-        def file = new File(path + tramite.tipoDocumento.descripcion + "_" + tramite.codigo + "_source_" + (new Date().format("yyyyMMdd_HH:mm:ss")) + ".html")
-        file.write(content)
+        String content2 = "<html><head><style>\n" +
+                "div.header {\n" +
+                "display: block; text-align: center;\n" +
+                "position: running(header);}\n" +
+                "div.footer {\n" +
+                "display: block; text-align: center;\n" +
+                "position: running(footer);}\n" +
+                "div.content {page-break-after: always;}" +
+                "@page { @top-center { content: element(header) }}\n " +
+                "@page { @bottom-center { content: element(footer) }}\n" +
+                "</style></head>\n" +
+                "<body><div class='header'>Header</div><div class='footer'>Footer</div><div class='content'>Page1</div><div>Page2</div></body></html>";
 
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = builder.parse(file);
-        renderer.setDocument(doc, null);
+//        def file = new File(path + tramite.tipoDocumento.descripcion + "_" + tramite.codigo + "_source_" + (new Date().format("yyyyMMdd_HH:mm:ss")) + ".html")
+//        file.write(content)
+//        println file.absolutePath
+//        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+//        Document doc = builder.parse(file);
+        ITextRenderer renderer = new ITextRenderer();
+//        renderer.setDocument(doc, null);
+        renderer.setDocumentFromString(content);
         renderer.layout();
         renderer.createPDF(baos);
         byte[] b = baos.toByteArray();
 
-        file.delete()
+//        file.delete()
 
         def dpto = ""
         def anio = tramite.fechaCreacion.format("yyyy")

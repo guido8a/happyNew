@@ -363,7 +363,7 @@
                     });
                     return false;
                 });
-                $(".btnPrint").click(function () {
+                function imprimir(conMembrete) {
                     openLoader("Generando PDF");
                     var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
                     var data = {
@@ -372,7 +372,8 @@
                         para          : $("#para").val(),
                         asunto        : $("#asunto").val(),
                         type          : "download",
-                        enviar        : 1
+                        enviar        : 1,
+                        membrete      : conMembrete
                     };
                     $.ajax({
                         type    : "POST",
@@ -384,6 +385,35 @@
                                 textoInicial = arreglarTexto($("#editorTramite").val());
                                 closeLoader();
                                 window.open("${resource(dir:'tramites')}/" + parts[1]);
+                            }
+                        }
+                    });
+                }
+
+                $(".btnPrint").click(function () {
+                    bootbox.dialog({
+                        title   : "Alerta",
+                        message : "¿Desea generar el PDF con membrete?",
+                        buttons : {
+                            cancelar : {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            },
+                            si       : {
+                                label     : "Con membrete",
+                                className : "btn-default",
+                                callback  : function () {
+                                    imprimir(1);
+                                }
+                            },
+                            no       : {
+                                label     : "Sin membrete",
+                                className : "btn-default",
+                                callback  : function () {
+                                    imprimir(0);
+                                }
                             }
                         }
                     });

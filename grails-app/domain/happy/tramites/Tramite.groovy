@@ -46,6 +46,8 @@ class Tramite {
 
     Integer esRespuesta = 0
 
+    String conMembrete
+
     def diasLaborablesService
 
 
@@ -92,6 +94,8 @@ class Tramite {
             estadoTramiteExterno column: 'edtx__id'
 
             esRespuesta column: 'trmtesrs'
+
+            conMembrete column: 'trmtcnmm'
         }
     }
     static constraints = {
@@ -127,6 +131,8 @@ class Tramite {
         telefono(blank: true, nullable: true, maxSize: 15)
         numeroDocExterno(blank: true, nullable: true, maxSize: 35)
         estadoTramiteExterno(blank: true, nullable: true)
+
+        conMembrete(blank: true, nullable: true, maxSize: 1)
     }
 
     def getHermanos() {
@@ -271,7 +277,7 @@ class Tramite {
 
         def limite = this.getFechaLimite()
 //        println "limite "+limite
-        if(limite){
+        if (limite) {
             def par = Parametros.list([sort: "id", order: "desc"])
             def tiempoBloqueo = 1
             if (par.size() > 0) {
@@ -288,7 +294,7 @@ class Tramite {
 //                println fechaLimite[1]
                 return null
             }
-        }else{
+        } else {
             return null
         }
 
