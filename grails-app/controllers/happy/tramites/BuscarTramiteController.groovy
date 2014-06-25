@@ -70,6 +70,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         def persona = session.usuario.id
 
+
+
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
@@ -80,31 +82,59 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
         }
 
-        def res = PersonaDocumentoTramite.withCriteria {
+        def res
 
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
+        if(Persona.get(session.usuario.id).esTriangulo()){
+
+            res = PersonaDocumentoTramite.withCriteria {
+
+                eq("departamento", Persona.get(session.usuario.id).departamento)
+
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
+                }
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+                    if (params.fechaRecepcion) {
+                        gt('fechaCreacion', params.fechaIniR)
+                        lt('fechaCreacion', params.fechaFinR)
+                    }
+                }
             }
 
-//            if(params.fechaRecepcion){
-//                gt('fechaRecepcion', params.fechaIniR)
-//                lt('fechaRecepcion', params.fechaFinR)
-//            }
+        }else{
 
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
+            res = PersonaDocumentoTramite.withCriteria {
+
+                eq("persona", Persona.get(session.usuario.id))
+
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
                 }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
-                }
-                if (params.fechaRecepcion) {
-                    gt('fechaCreacion', params.fechaIniR)
-                    lt('fechaCreacion', params.fechaFinR)
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+                    if (params.fechaRecepcion) {
+                        gt('fechaCreacion', params.fechaIniR)
+                        lt('fechaCreacion', params.fechaFinR)
+                    }
                 }
             }
         }
+
+
+
 
         def filtro = []
         def unicos = []
