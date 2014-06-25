@@ -63,8 +63,10 @@ class LoginController {
     }
 
     def validarSesion() {
-//        println session
-//        println session.usuario
+        println "sesion creada el:" + new Date(session.getCreationTime()) + " hora actual: " + new Date()
+        println "último acceso:" + new Date(session.getLastAccessedTime()) + " hora actual: " + new Date()
+
+        println session.usuario
         if (session.usuario) {
             render "OK"
         } else {

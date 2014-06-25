@@ -211,6 +211,7 @@
     }
 
     function validarSesion() {
+/*
         $.ajax({
             url     : '${createLink(controller: "login", action: "validarSesion")}',
             success : function (msg) {
@@ -221,6 +222,7 @@
                 }
             }
         });
+*/
     }
 
     function highlight(periods) {
