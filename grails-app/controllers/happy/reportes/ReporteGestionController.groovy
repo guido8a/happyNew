@@ -1,5 +1,6 @@
 package happy.reportes
 
+import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.HeaderFooter
@@ -171,8 +172,9 @@ class ReporteGestionController extends happy.seguridad.Shield {
         def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
                 times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
 
-        com.lowagie.text.Document document
-        document = new com.lowagie.text.Document(PageSize.A4);
+//        com.lowagie.text.Document document
+//        document = new com.lowagie.text.Document(PageSize.A4);
+        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         def pdfw = PdfWriter.getInstance(document, baos);
 //        HeaderFooter footer1 = new HeaderFooter(new Phrase('', times8normal), true);
 //        footer1.setBorder(Rectangle.NO_BORDER);
