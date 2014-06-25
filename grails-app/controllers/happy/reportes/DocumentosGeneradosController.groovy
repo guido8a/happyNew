@@ -84,7 +84,7 @@ class DocumentosGeneradosController {
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
@@ -115,9 +115,13 @@ class DocumentosGeneradosController {
             paragraph.add(new Phrase(title2, fontBold));
             document.add(paragraph)
 
-            def total = [:]
             def depActual = personas.first().departamentoId
             def dep = personas.first().departamento
+
+            def total = [:]
+            total[dep] = [:]
+            total[dep].total = 0
+            total[dep].detalle = [:]
 
             personas.each { persona ->
                 if (persona.estaActivo) {
@@ -193,11 +197,15 @@ class DocumentosGeneradosController {
                 DefaultPieDataset dataSet = new DefaultPieDataset();
                 total.each { k, v ->
                     if (total.size() > 1) {
-                        dataSet.setValue(k.codigo, v.total);
+                        if (v.total > 0) {
+                            dataSet.setValue(k.codigo, v.total);
+                        }
                     } else {
                         ttl = " de " + k.descripcion
                         v.detalle.each { kk, vv ->
-                            dataSet.setValue(kk.login, vv);
+                            if (vv > 0) {
+                                dataSet.setValue(kk.login, vv);
+                            }
                         }
                     }
                 }
@@ -327,7 +335,7 @@ class DocumentosGeneradosController {
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
