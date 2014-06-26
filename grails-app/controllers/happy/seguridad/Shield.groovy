@@ -30,12 +30,29 @@ class Shield {
             return false
 //            return true
         } else {
+            def now = new Date()
+            def band = true
+            use(groovy.time.TimeCategory) {
+                def duration = now - session.time
+                if(duration.minutes>4){
+                    session.usuario=null
+                    session.finalize();
+                    band= false
+                }else{
+                    session.time=now;
+                }
+            }
+            if(!band) {
+                redirect(controller: 'login', action: 'login')
+                return false
+            }
             def usu = Persona.get(session.usuario.id)
             if (usu.estaActivo) {
                 session.departamento = Departamento.get(session.departamento.id).refresh()
                 def perms = session.usuario.permisos
                 session.usuario = Persona.get(session.usuario.id).refresh()
                 session.usuario.permisos=perms
+
                 return true
             } else {
 //                println "session.flag shield "+session.flag

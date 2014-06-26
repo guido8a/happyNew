@@ -140,6 +140,7 @@ class LoginController {
                 return
             } else {
                 session.usuario = user
+                session.time = new Date()
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
                 def perf = Sesn.findAllByUsuario(user)
