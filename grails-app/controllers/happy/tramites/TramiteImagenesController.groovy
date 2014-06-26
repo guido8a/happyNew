@@ -15,7 +15,7 @@ class TramiteImagenesController extends happy.seguridad.Shield {
     def index() {}
 
     def uploader() {
-        println params
+//        println params
         def usuario = Persona.get(session.usuario.id)
         def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
         new File(path).mkdirs()
