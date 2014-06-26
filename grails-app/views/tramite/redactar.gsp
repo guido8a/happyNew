@@ -93,7 +93,22 @@
             position : absolute;
             right    : 10px;
             top      : 32px;
+        }
 
+        .membrete {
+            cursor                : pointer;
+            margin-top            : 2px;
+            margin-left           : 15px !important;
+            font-size             : 15px;
+            padding               : 3px 8px;
+
+            -webkit-border-radius : 5px;
+            -moz-border-radius    : 5px;
+            border-radius         : 5px;
+        }
+
+        .cambiado {
+            background : #A0BF99;
         }
         </style>
     </head>
@@ -167,6 +182,15 @@
                     </g:else>
                 </div>
 
+                <div class="btn-group membrete" data-con="${tramite.conMembrete ?: '0'}">
+                    <g:if test="${tramite.conMembrete == '1'}">
+                        <i class="fa fa-check-square-o"></i> Con membrete
+                    </g:if>
+                    <g:else>
+                        <i class="fa fa-square-o"></i> Sin membrete
+                    </g:else>
+                </div>
+
             </div>
             <elm:headerTramite tramite="${tramite}"/>
 
@@ -227,6 +251,32 @@
 //                    validaTexto(textoInicial, $(this).attr("href"));
 //                    return false;
 //                });
+
+                $(".membrete").click(function () {
+                    var esto = $(this);
+                    if (esto.data("con") == '0') {
+                        esto.data("con", '1').html('<i class="fa fa-check-square-o"></i> Con membrete');
+                    } else {
+                        esto.data("con", '0').html('<i class="fa fa-square-o"></i> Sin membrete');
+                    }
+                    %{--if (esto.data("con") != "${tramite.conMembrete ?: '0'}") {--}%
+                    %{--esto.addClass("cambiado");--}%
+                    %{--} else {--}%
+                    %{--esto.removeClass("cambiado");--}%
+                    %{--}--}%
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${createLink(controller:'tramite',action:'cambiarMembrete')}",
+                        data    : {
+                            id       : "${tramite.id}",
+                            membrete : esto.data("con")
+                        },
+                        success : function (msg) {
+                            var parts = msg.split("*");
+                            log(parts[1], parts[0] == "OK" ? 'success' : "error");
+                        }
+                    });
+                });
 
                 $(".header-tramite").append($(".btn-editar"));
 
@@ -344,26 +394,29 @@
                 $(".btnSave").click(function () {
                     openLoader("Guardando");
                     $.ajax({
-                        type    : "POST",
-                        url     : '${createLink(controller:"tramite", action: "saveTramite")}',
-                        data    : {
+                        type     : "POST",
+                        url      : '${createLink(controller:"tramite", action: "saveTramite")}',
+                        data     : {
                             id            : "${tramite.id}",
                             editorTramite : $("#editorTramite").val(),
                             para          : $("#para").val(),
                             asunto        : $("#asunto").val()
                         },
-                        success : function (msg) {
+                        success  : function (msg) {
                             closeLoader();
                             var parts = msg.split("_");
                             if (parts[0] == "OK") {
                                 textoInicial = arreglarTexto($("#editorTramite").val());
                             }
                             log(parts[1], parts[0] == "NO" ? "error" : "success");
+                        },
+                        complete : function () {
+                            resetTimer();
                         }
                     });
                     return false;
                 });
-                function imprimir(conMembrete) {
+                function imprimir() {
                     openLoader("Generando PDF");
                     var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
                     var data = {
@@ -372,51 +425,54 @@
                         para          : $("#para").val(),
                         asunto        : $("#asunto").val(),
                         type          : "download",
-                        enviar        : 1,
-                        membrete      : conMembrete
+                        enviar        : 1
                     };
                     $.ajax({
-                        type    : "POST",
-                        url     : url,
-                        data    : data,
-                        success : function (msg) {
+                        type     : "POST",
+                        url      : url,
+                        data     : data,
+                        success  : function (msg) {
                             var parts = msg.split("*");
                             if (parts[0] == "OK") {
                                 textoInicial = arreglarTexto($("#editorTramite").val());
                                 closeLoader();
                                 window.open("${resource(dir:'tramites')}/" + parts[1]);
                             }
+                        },
+                        complete : function () {
+                            resetTimer();
                         }
                     });
                 }
 
                 $(".btnPrint").click(function () {
-                    bootbox.dialog({
-                        title   : "Alerta",
-                        message : "¿Desea generar el PDF con membrete?",
-                        buttons : {
-                            cancelar : {
-                                label     : "Cancelar",
-                                className : "btn-primary",
-                                callback  : function () {
-                                }
-                            },
-                            si       : {
-                                label     : "Con membrete",
-                                className : "btn-default",
-                                callback  : function () {
-                                    imprimir(1);
-                                }
-                            },
-                            no       : {
-                                label     : "Sin membrete",
-                                className : "btn-default",
-                                callback  : function () {
-                                    imprimir(0);
-                                }
-                            }
-                        }
-                    });
+                    imprimir();
+//                    bootbox.dialog({
+//                        title   : "Alerta",
+//                        message : "¿Desea generar el PDF con membrete?",
+//                        buttons : {
+//                            cancelar : {
+//                                label     : "Cancelar",
+//                                className : "btn-primary",
+//                                callback  : function () {
+//                                }
+//                            },
+//                            si       : {
+//                                label     : "Con membrete",
+//                                className : "btn-default",
+//                                callback  : function () {
+//                                    imprimir(1);
+//                                }
+//                            },
+//                            no       : {
+//                                label     : "Sin membrete",
+//                                className : "btn-default",
+//                                callback  : function () {
+//                                    imprimir(0);
+//                                }
+//                            }
+//                        }
+//                    });
 //                    location.href = url + "?" + $.param(data);
                     return false;
                 });

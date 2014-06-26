@@ -93,6 +93,8 @@
         <script type="text/javascript">
             $(function () {
 
+                window.opener.resetTimer();
+
                 $('.row').magnificPopup({
                     delegate : '.img', // child items selector, by clicking on it popup will open
                     type     : 'image',
