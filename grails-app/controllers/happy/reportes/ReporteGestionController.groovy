@@ -146,6 +146,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsHeaderHoja6 = [border: Color.WHITE, colspan: 6]
+        def prmsHeaderHoja8 = [border: Color.WHITE, colspan: 6, bordeBot: "1"]
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
         def prmsHeaderHoja2 = [border: Color.WHITE, bordeBot: "1"]
         def prmsHeaderHoja3 = [border: Color.WHITE, bordeBot: "1", colspan: 3]
@@ -204,6 +205,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
 //            }
 
 
+
+
             if (tramite2) {
                 principal = tramite2
                 if (tramite2.padre) {
@@ -217,6 +220,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
                     }
                 }
             }
+
+            if(it?.fechaRecepcion){
 
             addCellTabla(tablaTramites, new Paragraph("DOC PRINCIPAL :", times8bold), prmsHeaderHoja2)
             addCellTabla(tablaTramites, new Paragraph(Tramite.get(principal?.id).codigo, times8normal), prmsHeaderHoja2)
@@ -280,10 +285,13 @@ class ReporteGestionController extends happy.seguridad.Shield {
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
 
-                    addCellTabla(tablaTramites, new Paragraph("Días transcurridos hasta contestación: ", times8bold), prmsHeaderHoja4)
+
 
 
                 if(it?.fechaCreacion  && prtr?.fechaRecepcion){
+
+                    addCellTabla(tablaTramites, new Paragraph("Días transcurridos hasta contestación: ", times8bold), prmsHeaderHoja4)
+
 //                    addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: (prtr?.fechaRecepcion - filtrado?.fechaEnvio), format: "###.##", locale: "ec") + " Días",times8bold), prmsHeaderHoja7)
 
                    def diasTrans = diasLaborablesService.diasLaborablesEntre((prtr?.fechaRecepcion).clearTime(), (it?.fechaCreacion).clearTime())
@@ -296,19 +304,21 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
                     addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasC, format: "###.##", locale: "ec") + " Día${diasC == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
                 }else{
-                    if(prtr?.fechaRecepcion){
-                        def diasCero1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
-                        def diasS1 = 0
-                        if(diasCero1[0]){
-                            diasS1 = diasCero1[1]
-                        }else{
-                            println("error dias " +  diasCero1[1])
-                        }
 
-                        addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS1, format: "###.##", locale: "ec") + " Día${diasS1 == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
-                    }else{
-                        addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
-                    }
+                    addCellTabla(tablaTramites, new Paragraph("Sin contestación ", times8bold), prmsHeaderHoja8)
+//                    if(prtr?.fechaRecepcion){
+//                        def diasCero1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+//                        def diasS1 = 0
+//                        if(diasCero1[0]){
+//                            diasS1 = diasCero1[1]
+//                        }else{
+//                            println("error dias " +  diasCero1[1])
+//                        }
+//
+//                        addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS1, format: "###.##", locale: "ec") + " Día${diasS1 == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
+//                    }else{
+//                        addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+//                    }
                 }
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
@@ -341,21 +351,22 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
 
-                addCellTabla(tablaTramites, new Paragraph("Días transcurridos hasta contestación: ", times8bold), prmsHeaderHoja4)
-                if(prtr?.fechaRecepcion){
-                    def diasCero = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
-                    def diasS = 0
-                    if(diasCero[0]){
-                        diasS = diasCero[1]
-                    }else{
-                        println("error dias " +  diasCero[1])
-                    }
+//                addCellTabla(tablaTramites, new Paragraph("Días transcurridos hasta contestación: ", times8bold), prmsHeaderHoja4)
+                addCellTabla(tablaTramites, new Paragraph("Sin contestación", times8bold), prmsHeaderHoja8)
+//                if(prtr?.fechaRecepcion){
+//                    def diasCero = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+//                    def diasS = 0
+//                    if(diasCero[0]){
+//                        diasS = diasCero[1]
+//                    }else{
+//                        println("error dias " +  diasCero[1])
+//                    }
+//
+//                    addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS, format: "###.##", locale: "ec") + " Día${diasS == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
+//                }else{
+//                    addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+//                }
 
-                    addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS, format: "###.##", locale: "ec") + " Día${diasS == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
-                }else{
-                    addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
-                }
-
 
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
@@ -364,6 +375,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+            }
+
             }
 
         }
@@ -523,6 +536,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
             //trámite principal
 
+            if(it?.fechaRecepcion){
+
             XSSFRow rowHeadP = sheet.createRow((short) indexHeadP);
             rowHeadP.setHeightInPoints(14)
 
@@ -649,17 +664,23 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
                     //Días
 
-                    XSSFRow rowHeadD = sheet.createRow((short) indexHeadD);
-                    rowHeadD.setHeightInPoints(14)
 
-                    Cell cellD = rowHeadD.createCell((int) 0)
-                    cellD.setCellValue("Días transcurridos hasta la contestación")
-//                    cellD.setCellStyle(styleHeaders)
-                    sheet.setColumnWidth(0, 12000)
-
-                    cellD = rowHeadD.createCell((int) 1)
 
                     if(it?.fechaCreacion && prtr?.fechaRecepcion){
+
+
+                        XSSFRow rowHeadD = sheet.createRow((short) indexHeadD);
+                        rowHeadD.setHeightInPoints(14)
+
+                        Cell cellD = rowHeadD.createCell((int) 0)
+                        cellD.setCellValue("Días transcurridos hasta la contestación")
+//                    cellD.setCellStyle(styleHeaders)
+                        sheet.setColumnWidth(0, 12000)
+
+                        cellD = rowHeadD.createCell((int) 1)
+
+
+
                         def diasTrans = diasLaborablesService.diasLaborablesEntre((prtr?.fechaRecepcion).clearTime(), (it?.fechaCreacion).clearTime())
                         def diasC = 0
                         if(diasTrans[0]){
@@ -669,18 +690,20 @@ class ReporteGestionController extends happy.seguridad.Shield {
                         }
                         cellD.setCellValue("${diasC}")
                     }else{
-                        if(prtr?.fechaRecepcion){
-                            def diasTrans1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
-                            def diasS = 0
-                            if(diasTrans1[0]){
-                                diasS = diasTrans1[1]
-                            }else{
-                                println("error dias " +  diasTrans1[1])
-                            }
-                            cellD.setCellValue("${diasS}")
-                        }else{
-                            cellD.setCellValue("0 Días")
-                        }
+//                        if(prtr?.fechaRecepcion){
+//                            def diasTrans1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+//                            def diasS = 0
+//                            if(diasTrans1[0]){
+//                                diasS = diasTrans1[1]
+//                            }else{
+//                                println("error dias " +  diasTrans1[1])
+//                            }
+//                            cellD.setCellValue("${diasS}")
+//                        }else{
+//                            cellD.setCellValue("0 Días")
+//                        }
+
+                        cellD.setCellValue("Sin contestación")
 
                     }
 //                    cellD.setCellStyle(styleHeaders)
@@ -749,25 +772,25 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 rowHeadD.setHeightInPoints(14)
 
                 Cell cellD = rowHeadD.createCell((int) 0)
-                cellD.setCellValue("Días transcurridos hasta la contestación")
+                cellD.setCellValue("Sin contestación")
 //                cellD.setCellStyle(styleHeaders)
                 sheet.setColumnWidth(0, 12000)
 
                 cellD = rowHeadD.createCell((int) 1)
 
 
-                if(prtr?.fechaRecepcion){
-                    def diasTrans2 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
-                    def diasS1 = 0
-                    if(diasTrans2[0]){
-                        diasS1 = diasTrans2[1]
-                    }else{
-                        println("error dias " +  diasTrans2[1])
-                    }
-                    cellD.setCellValue("${diasS1}")
-                }else{
-                    cellD.setCellValue("0 Días")
-                }
+//                if(prtr?.fechaRecepcion){
+//                    def diasTrans2 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+//                    def diasS1 = 0
+//                    if(diasTrans2[0]){
+//                        diasS1 = diasTrans2[1]
+//                    }else{
+//                        println("error dias " +  diasTrans2[1])
+//                    }
+//                    cellD.setCellValue("${diasS1}")
+//                }else{
+//                    cellD.setCellValue("0 Días")
+//                }
 
 //                cellD.setCellValue("0 Días")
 
@@ -791,7 +814,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
             }
 
 
-
+            }
 
         }
 
