@@ -225,8 +225,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
             addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
             addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-            addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-            addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
 
             addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", times8bold), prmsHeaderHoja2)
             addCellTabla(tablaTramites, new Paragraph("FECHA DE RECEPCIÓN", times8bold), prmsHeaderHoja2)
@@ -298,15 +296,26 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
                     addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasC, format: "###.##", locale: "ec") + " Día${diasC == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
                 }else{
-                    addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+                    if(prtr?.fechaRecepcion){
+                        def diasCero1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+                        def diasS1 = 0
+                        if(diasCero1[0]){
+                            diasS1 = diasCero1[1]
+                        }else{
+                            println("error dias " +  diasCero1[1])
+                        }
+
+                        addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS1, format: "###.##", locale: "ec") + " Día${diasS1 == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
+                    }else{
+                        addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+                    }
                 }
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                     addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-                    addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-                    addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+
                 }
 
             }else{
@@ -333,7 +342,20 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
 
                 addCellTabla(tablaTramites, new Paragraph("Días transcurridos hasta contestación: ", times8bold), prmsHeaderHoja4)
-                addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+                if(prtr?.fechaRecepcion){
+                    def diasCero = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+                    def diasS = 0
+                    if(diasCero[0]){
+                        diasS = diasCero[1]
+                    }else{
+                        println("error dias " +  diasCero[1])
+                    }
+
+                    addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: diasS, format: "###.##", locale: "ec") + " Día${diasS == 1 ?'': 's'}",times8bold), prmsHeaderHoja7)
+                }else{
+                    addCellTabla(tablaTramites, new Paragraph('0 Días', times8bold), prmsHeaderHoja7)
+                }
+
 
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
                 addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
@@ -556,7 +578,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
             XSSFRow row = sheet.createRow((short) index)
 
             row.createCell((int) 0).setCellValue("${tramite2?.codigo}")
-            row.createCell((int) 1).setCellValue("${prtr?.fechaRecepcion?.format("dd-MM-yyyy")}")
+
+            row.createCell((int) 1).setCellValue("${prtr?.fechaRecepcion?.format("dd-MM-yyyy") ?: ' '}")
             if(tramite2?.deDepartamento){
                 row.createCell((int) 2).setCellValue("${tramite2?.deDepartamento}")
             }else{
@@ -646,7 +669,19 @@ class ReporteGestionController extends happy.seguridad.Shield {
                         }
                         cellD.setCellValue("${diasC}")
                     }else{
-                        cellD.setCellValue("0")
+                        if(prtr?.fechaRecepcion){
+                            def diasTrans1 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+                            def diasS = 0
+                            if(diasTrans1[0]){
+                                diasS = diasTrans1[1]
+                            }else{
+                                println("error dias " +  diasTrans1[1])
+                            }
+                            cellD.setCellValue("${diasS}")
+                        }else{
+                            cellD.setCellValue("0 Días")
+                        }
+
                     }
 //                    cellD.setCellStyle(styleHeaders)
                     sheet.setColumnWidth(1, 6000)
@@ -719,7 +754,22 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 sheet.setColumnWidth(0, 12000)
 
                 cellD = rowHeadD.createCell((int) 1)
-                cellD.setCellValue("0 Días")
+
+
+                if(prtr?.fechaRecepcion){
+                    def diasTrans2 = diasLaborablesService.diasLaborablesEntre((new Date()).clearTime(), (prtr?.fechaRecepcion).clearTime())
+                    def diasS1 = 0
+                    if(diasTrans2[0]){
+                        diasS1 = diasTrans2[1]
+                    }else{
+                        println("error dias " +  diasTrans2[1])
+                    }
+                    cellD.setCellValue("${diasS1}")
+                }else{
+                    cellD.setCellValue("0 Días")
+                }
+
+//                cellD.setCellValue("0 Días")
 
 //                cellD.setCellStyle(styleHeaders)
                 sheet.setColumnWidth(1, 6000)
