@@ -70,14 +70,16 @@ class DepartamentoExportController {
             fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
         }
 
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
 //        reportesPdfService.documentoFooter(document, "", true)
-        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
-        reportesPdfService.documentoHeader(document, strHeader, false, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
+//        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
+//        reportesPdfService.documentoHeader(document, strHeader, false, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         //pone en el footer el tipo de tramite q es y el numero de pagina
+
+        reportesPdfService.membrete(document)
 
         document.open();
         reportesPdfService.propiedadesDocumento(document, "departamentos")

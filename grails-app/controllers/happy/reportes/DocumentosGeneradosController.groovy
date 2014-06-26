@@ -84,7 +84,7 @@ class DocumentosGeneradosController {
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
@@ -115,9 +115,13 @@ class DocumentosGeneradosController {
             paragraph.add(new Phrase(title2, fontBold));
             document.add(paragraph)
 
-            def total = [:]
             def depActual = personas.first().departamentoId
             def dep = personas.first().departamento
+
+            def total = [:]
+            total[dep] = [:]
+            total[dep].total = 0
+            total[dep].detalle = [:]
 
             personas.each { persona ->
                 if (persona.estaActivo) {
@@ -193,11 +197,15 @@ class DocumentosGeneradosController {
                 DefaultPieDataset dataSet = new DefaultPieDataset();
                 total.each { k, v ->
                     if (total.size() > 1) {
-                        dataSet.setValue(k.codigo, v.total);
+                        if (v.total > 0) {
+                            dataSet.setValue(k.codigo, v.total);
+                        }
                     } else {
                         ttl = " de " + k.descripcion
                         v.detalle.each { kk, vv ->
-                            dataSet.setValue(kk.login, vv);
+                            if (vv > 0) {
+                                dataSet.setValue(kk.login, vv);
+                            }
                         }
                     }
                 }
@@ -327,7 +335,7 @@ class DocumentosGeneradosController {
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
@@ -444,18 +452,20 @@ class DocumentosGeneradosController {
         def personas = []
 
         def fileName = "documentos_generados_"
-        def title = "Documentos generados de \n"
+        def title = ["Reporte de documentos generados"]
 
         if (params.tipo == "prsn") {
             personas = [Persona.get(params.id.toLong())]
 
             fileName += personas[0].login
-            title += "${personas[0].nombre} ${personas[0].apellido}\n(de ${params.desde} a ${params.hasta})"
+            title += ["${personas[0].nombre} ${personas[0].apellido}"]
+            title += ["de ${params.desde} a ${params.hasta}"]
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
             def hijosDep = todosDep(dep)
             fileName += dep.codigo
-            title += "${dep.descripcion}\n(de ${params.desde} a ${params.hasta})"
+            title += ["${dep.descripcion}"]
+            title += ["de ${params.desde} a ${params.hasta}"]
             personas = Persona.withCriteria {
                 inList("departamento", hijosDep)
                 departamento {
@@ -480,11 +490,11 @@ class DocumentosGeneradosController {
         sheet.setAutobreaks(true);
 
         org.apache.poi.ss.usermodel.Font fontTitle = wb.createFont();
-        fontTitle.setFontHeightInPoints((short) 18);
+        fontTitle.setFontHeightInPoints((short) 12);
         fontTitle.setFontName(HSSFFont.FONT_ARIAL);
         fontTitle.setItalic(true);
         fontTitle.setBold(true);
-        fontTitle.setColor(HSSFColor.DARK_RED.index);
+//        fontTitle.setColor(HSSFColor.DARK_RED.index);
 
         CellStyle styleTitle = wb.createCellStyle();
         styleTitle.setAlignment(CellStyle.ALIGN_CENTER);
@@ -504,37 +514,57 @@ class DocumentosGeneradosController {
         styleHeaders.setFont(fontHeaders)
 
         XSSFRow rowTitle = sheet.createRow((short) 0);
-        rowTitle.setHeightInPoints(40)
+//        rowTitle.setHeightInPoints(40)
         Cell cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue(title);
-        cellTitle.setCellStyle(styleTitle)
+        cellTitle.setCellValue("GAD DE LA PROVINCIA DE PICHINCHA");
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 1);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL");
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 2);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[0]);
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 3);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[1]);
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 4);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[2]);
+//        cellTitle.setCellStyle(styleTitle)
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                0, //first row (0-based)
-                2, //last row  (0-based)
-                0, //first column (0-based)
-                3  //last column  (0-based)
-        ));
+//        sheet.addMergedRegion(new CellRangeAddress(
+//                0, //first row (0-based)
+//                2, //last row  (0-based)
+//                0, //first column (0-based)
+//                3  //last column  (0-based)
+//        ));
 
-        XSSFRow rowHead = sheet.createRow((short) 3);
+        def index = 6
+        XSSFRow rowHead = sheet.createRow((short) index);
         rowHead.setHeightInPoints(14)
 
         Cell cell = rowHead.createCell((int) 0)
         cell.setCellValue("Departamento")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(0, 15000)
 
         cell = rowHead.createCell((int) 1)
         cell.setCellValue("Usuario")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(1, 10000)
 
         cell = rowHead.createCell((int) 2)
         cell.setCellValue("N. trámites")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(2, 3000)
-
-        def index = 4
+        index++
 
         personas.each { persona ->
             if (persona.estaActivo) {
@@ -579,18 +609,20 @@ class DocumentosGeneradosController {
         def personas = []
 
         def fileName = "detalle_documentos_generados_"
-        def title = "Detalle de los documentos generados de \n"
+        def title = ["Reporte detallado de los documentos generados"]
 
         if (params.tipo == "prsn") {
             personas = [Persona.get(params.id.toLong())]
 
             fileName += personas[0].login
-            title += "${personas[0].nombre} ${personas[0].apellido}\n(de ${params.desde} a ${params.hasta})"
+            title += ["${personas[0].nombre} ${personas[0].apellido}"]
+            title += ["de ${params.desde} a ${params.hasta}"]
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
             def hijosDep = todosDep(dep)
             fileName += dep.codigo
-            title += "${dep.descripcion}\n(de ${params.desde} a ${params.hasta})"
+            title += ["${dep.descripcion}"]
+            title += ["de ${params.desde} a ${params.hasta}"]
             personas = Persona.withCriteria {
                 inList("departamento", hijosDep)
                 departamento {
@@ -675,59 +707,82 @@ class DocumentosGeneradosController {
         CellStyle styleDate = wb.createCellStyle();
         styleDate.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy hh:mm"));
 
-        XSSFRow rowTitle = sheet.createRow((short) 0);
-        rowTitle.setHeightInPoints(40)
-        Cell cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue(title);
-        cellTitle.setCellStyle(styleTitle)
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                0, //first row (0-based)
-                2, //last row  (0-based)
-                0, //first column (0-based)
-                5  //last column  (0-based)
-        ));
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+//        rowTitle.setHeightInPoints(40)
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("GAD DE LA PROVINCIA DE PICHINCHA");
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 1);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL");
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 2);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[0]);
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 3);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[1]);
+//        cellTitle.setCellStyle(styleTitle)
+        rowTitle = sheet.createRow((short) 4);
+//        rowTitle.setHeightInPoints(40)
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[2]);
+//        cellTitle.setCellStyle(styleTitle)
+
+//        sheet.addMergedRegion(new CellRangeAddress(
+//                0, //first row (0-based)
+//                2, //last row  (0-based)
+//                0, //first column (0-based)
+//                3  //last column  (0-based)
+//        ));
+
+        def index = 6
 
         def wFechas = 3000
 
-        XSSFRow rowHead = sheet.createRow((short) 3);
+        XSSFRow rowHead = sheet.createRow((short) index);
         rowHead.setHeightInPoints(14)
 
         Cell cell = rowHead.createCell((int) 0)
         cell.setCellValue("No.")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(0, 4000)
 
         cell = rowHead.createCell((int) 1)
         cell.setCellValue("Fecha creación")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(1, wFechas)
 
         cell = rowHead.createCell((int) 2)
         cell.setCellValue("Para oficina")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(2, 15000)
 
         cell = rowHead.createCell((int) 3)
         cell.setCellValue("Destinatario")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(3, 10000)
 
         cell = rowHead.createCell((int) 4)
         cell.setCellValue("Fecha envío")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(4, wFechas)
 
         cell = rowHead.createCell((int) 5)
         cell.setCellValue("Fecha recepción")
-        cell.setCellStyle(styleHeaders)
+//        cell.setCellStyle(styleHeaders)
         sheet.setColumnWidth(5, wFechas)
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
         def depActual = null
-        def index = 4
+        index++
 
         personas.each { persona ->
             def tramites = Tramite.withCriteria {

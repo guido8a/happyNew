@@ -139,7 +139,7 @@ class RetrasadosController {
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
-        Document document = reportesPdfService.crearDocumento("svt", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("svt", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
         reportesPdfService.membrete(document)
@@ -608,7 +608,7 @@ class RetrasadosController {
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
-        Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
         reportesPdfService.membrete(document)

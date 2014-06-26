@@ -217,6 +217,7 @@ class TramiteExportController {
         def mensaje = message(code: 'pathImages').toString()
 
         if (params.editorTramite) {
+            tramite.conMembrete = params.membrete
             tramite.texto = (params.editorTramite).replaceAll("\\n", "")
 //            tramite.asunto = params.asunto
             tramite.fechaModificacion = new Date()
