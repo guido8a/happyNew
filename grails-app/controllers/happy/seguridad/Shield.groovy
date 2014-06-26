@@ -37,7 +37,7 @@ class Shield {
                 if(duration.minutes>4){
                     session.usuario=null
                     session.finalize();
-                    band= false
+                    band = false
                 }else{
                     session.time=now;
                 }

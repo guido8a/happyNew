@@ -202,7 +202,7 @@
     function resetTimer() {
         var ahora = new Date();
         var fin = ahora.clone().add(5).minute();
-        fin.add(30).second()
+        fin.add(1).second()
         $("#countdown").countdown('option', {
             until : fin
         });
@@ -291,7 +291,7 @@
 
         var ahora = new Date();
         var fin = ahora.clone().add(5).minute();
-        fin.add(30).second()
+        fin.add(1).second()
 
         $('#countdown').countdown({
             until    : fin,
