@@ -100,7 +100,7 @@
 
 </div>
 
-<div> * La búsqueda retornará un máximo de 20 resultados </div>
+<div> <strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna como máximo 20</div>
 
 <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

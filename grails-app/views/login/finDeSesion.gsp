@@ -13,7 +13,7 @@
 
 <body>
 <h1>Su Sesión ha finalizado</h1>
-<p class="alert alert-dismissable alert-warning">Vuelva a ingresar al sistema para que pueda seguir trabando</p>
+<p class="alert alert-dismissable alert-warning">EL sistema finaliza la sesión del usuario una vez transcurridos 5 minutos Vuelva a ingresar al sistema para que pueda seguir trabajando</p>
 
 
 <div class="btn-toolbar toolbar">
