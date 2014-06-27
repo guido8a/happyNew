@@ -90,6 +90,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 //                eq("departamento", Persona.get(session.usuario.id).departamento)
 
+                eq('estado', EstadoTramite.findByCodigoNotEqual("E006"))
+
+
                 if (params.fecha) {
                     gt('fechaEnvio', params.fechaIni)
                     lt('fechaEnvio', params.fechaFin)
@@ -118,6 +121,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             res = PersonaDocumentoTramite.withCriteria {
 
                 eq("persona", Persona.get(session.usuario.id))
+
+                eq('estado', EstadoTramite.findByCodigoNotEqual("E006"))
 
                 if (params.fecha) {
                     gt('fechaEnvio', params.fechaIni)
@@ -208,10 +213,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         def pers = Persona.get(session.usuario.id)
 
+        def res
 
-
-
-        def res = Tramite.withCriteria {
+        res = Tramite.withCriteria {
             if (params.fecha) {
                 ge('fechaEnvio', params.fechaIni)
                 le('fechaEnvio', params.fechaFin)
