@@ -319,4 +319,8 @@ class LoginController {
         redirect(controller: 'login', action: 'login')
     }
 
+    def finDeSesion() {
+
+    }
+
 }

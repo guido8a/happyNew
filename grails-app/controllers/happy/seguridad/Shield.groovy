@@ -14,7 +14,7 @@ class Shield {
      */
     def auth() {
 //        println "an " + actionName + " cn " + controllerName + "  "
-        println "sesión:" + session
+//        println "sesión:" + session
         session.an = actionName
         session.cn = controllerName
         session.pr = params
@@ -43,7 +43,9 @@ class Shield {
                 }
             }
             if(!band) {
-                redirect(controller: 'login', action: 'login')
+//                redirect(controller: 'login', action: 'logout')
+//                render "<script type='text/javascript'> window.location.href = " + createLink(controller: "login", action: "login") + "; location.reload(true); </script>"
+                redirect(controller: 'login', action: 'finDeSesion')
                 return false
             }
             def usu = Persona.get(session.usuario.id)
