@@ -304,6 +304,17 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 lt('fechaEnvio', params.fechaFin)
             }
 
+
+//            eq("departamento", departamento)
+
+            eq('estado', EstadoTramite.findByCodigo("E005"))
+            isNotNull("fechaEnvio")
+
+            or{
+                eq("rolPersonaTramite", rolPara)
+            }
+
+
             tramite {
                 if (params.asunto) {
                     ilike('asunto', '%' + params.asunto + '%')
@@ -341,6 +352,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 
+//        println("departamento" + departamento)
+
 
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
@@ -352,13 +365,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             eq('estado', EstadoTramite.findByCodigo("E006"))
             isNotNull("fechaEnvio")
 
-//            or {
-//                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
-//                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-//                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
-//                eq('estado', EstadoTramite.findByCodigo("E005"))
-//            }
-
             maxResults(20);
 
         }
@@ -368,18 +374,15 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             eq('estado', EstadoTramite.findByCodigo("E006"))
             isNotNull("fechaEnvio")
 
-//            or {
-//                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
-//                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-//                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
-//                eq('estado', EstadoTramite.findByCodigo("E005"))
-//            }
 
             maxResults(20);
         }
 
         pxtPara += pxtCopia
 
+//        println("---" + pxtPara)
+
+        def res
 
 
         if (params.fecha) {
@@ -391,33 +394,126 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         }
 
 
+        if(Persona.get(session.usuario.id).esTriangulo()){
 
-        def res = PersonaDocumentoTramite.withCriteria {
+            res = PersonaDocumentoTramite.withCriteria {
 
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
-            }
-
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
                 }
 
-                eq('de', persona)
-                order ('codigo', 'desc')
-                order ('estadoTramite', 'desc')
+//                eq("departamento", departamento)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+
+                isNotNull("fechaEnvio")
+
+                or{
+                    eq("rolPersonaTramite", rolPara)
+                    eq("rolPersonaTramite", rolCopia)
+                }
+
+
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+
+                    eq('deDepartamento', departamento)
+                    order ('codigo', 'desc')
+                    order ('estadoTramite', 'desc')
+
+                }
+
+                maxResults(20);
 
             }
 
-            maxResults(20);
+
+        }else{
+
+            res = PersonaDocumentoTramite.withCriteria {
+
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
+                }
+
+//                eq("departamento", departamento)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+
+                isNotNull("fechaEnvio")
+
+                or{
+                    eq("rolPersonaTramite", rolPara)
+                    eq("rolPersonaTramite", rolCopia)
+                }
+
+
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+
+                    eq('de', persona)
+                    order ('codigo', 'desc')
+                    order ('estadoTramite', 'desc')
+
+                }
+
+                maxResults(20);
+
+            }
+
 
         }
 
-        return [tramites: res, pxtTramites: pxtPara]
+
+//       res = PersonaDocumentoTramite.withCriteria {
+//
+//            if (params.fecha) {
+//                gt('fechaEnvio', params.fechaIni)
+//                lt('fechaEnvio', params.fechaFin)
+//            }
+//
+//            eq("departamento", departamento)
+//            eq('estado', EstadoTramite.findByCodigo("E006"))
+//
+//            isNotNull("fechaEnvio")
+//
+//            or{
+//                eq("rolPersonaTramite", rolPara)
+//                eq("rolPersonaTramite", rolCopia)
+//            }
+//
+//
+//            tramite {
+//                if (params.asunto) {
+//                    ilike('asunto', '%' + params.asunto + '%')
+//                }
+//                if (params.memorando) {
+//                    ilike('codigo', '%' + params.memorando + '%')
+//                }
+//
+//                eq('de', persona)
+//                order ('codigo', 'desc')
+//                order ('estadoTramite', 'desc')
+//
+//            }
+//
+//            maxResults(20);
+//
+//        }
+
+        println("res" + res + ' ' + res.unique())
+
+        return [tramites: res.unique(), pxtTramites: pxtPara]
 
 
     }

@@ -87,7 +87,7 @@
 
 %{--//bandeja--}%
 
-<div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
+<div style="margin-top: 30px; min-height: 510px" class="vertical-container" id="divBandeja">
 
     <p class="css-vertical-text">Resultado</p>
 
