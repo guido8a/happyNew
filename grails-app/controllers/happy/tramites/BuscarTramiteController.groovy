@@ -296,42 +296,89 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         }
 
 
+       def res
 
-        def res = PersonaDocumentoTramite.withCriteria {
+        if(Persona.get(session.usuario.id).esTriangulo()){
 
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
-            }
+            res = PersonaDocumentoTramite.withCriteria {
+
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
+                }
 
 
 //            eq("departamento", departamento)
 
-            eq('estado', EstadoTramite.findByCodigo("E005"))
-            isNotNull("fechaEnvio")
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+                isNotNull("fechaEnvio")
 
-            or{
-                eq("rolPersonaTramite", rolPara)
+                or{
+                    eq("rolPersonaTramite", rolPara)
+                    eq("rolPersonaTramite", rolCopia)
+                }
+
+
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+
+                    eq('deDepartamento', departamento)
+                    order ('codigo', 'desc')
+                    order ('estadoTramite', 'desc')
+
+                }
+
+                maxResults(20);
+
             }
 
 
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
+        }else{
+            res = PersonaDocumentoTramite.withCriteria {
+
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
                 }
 
-                eq('de', persona)
-                order ('codigo', 'desc')
-                order ('estadoTramite', 'desc')
+
+//            eq("departamento", departamento)
+
+                eq('estado', EstadoTramite.findByCodigo("E005"))
+                isNotNull("fechaEnvio")
+
+                or{
+                    eq("rolPersonaTramite", rolPara)
+                    eq("rolPersonaTramite", rolCopia)
+                }
+
+
+                tramite {
+                    if (params.asunto) {
+                        ilike('asunto', '%' + params.asunto + '%')
+                    }
+                    if (params.memorando) {
+                        ilike('codigo', '%' + params.memorando + '%')
+                    }
+
+                    eq('de', persona)
+                    order ('codigo', 'desc')
+                    order ('estadoTramite', 'desc')
+
+                }
+
+                maxResults(20);
 
             }
-
-            maxResults(20);
-
         }
+
+
+
 
 //        println("filtrados" + res)
 

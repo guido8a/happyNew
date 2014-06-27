@@ -49,9 +49,9 @@
             </tr>
             </thead>
             <tbody>
-            <g:each in="${pxtTramites}" var="pxt">
+            %{--<g:each in="${pxtTramites}" var="pxt">--}%
                 <g:each in="${tramites}" var="tramite">
-                    <g:if test="${pxt?.id == tramite?.id}">
+                    %{--<g:if test="${pxt?.id == tramite?.id}">--}%
                         <tr id="${tramite?.tramite?.id}" data-id="${tramite?.tramite?.id}">
                             <td style="width: 110px">${tramite?.tramite?.codigo}</td>
                             <g:if test="${tramite?.tramite?.deDepartamento}">
@@ -78,9 +78,9 @@
                             %{--<td>${tramite?.rolPersonaTramite?.descripcion}</td>--}%
                             %{--<td>${tramite?.tramite?.observaciones}</td>--}%
                         </tr>
-                    </g:if>
+                    %{--</g:if>--}%
                 </g:each>
-            </g:each>
+            %{--</g:each>--}%
             </tbody>
         </table>
     </span>
