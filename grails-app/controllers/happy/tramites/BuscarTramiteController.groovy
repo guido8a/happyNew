@@ -106,6 +106,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                         lt('fechaCreacion', params.fechaFinR)
                     }
                 }
+                maxResults(20);
+
+
             }
 
         }else{
@@ -130,11 +133,16 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                         lt('fechaCreacion', params.fechaFinR)
                     }
                 }
+
+                maxResults(20);
+
             }
+
+
         }
 
 
-
+//println("res" + res)
 
         def filtro = []
         def unicos = []
@@ -218,7 +226,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 eq('de', pers)
                 inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
             }
-
+            maxResults(20);
             order("estadoTramite", 'desc')
             order('codigo', 'desc')
         }
@@ -255,6 +263,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 eq('estado', EstadoTramite.findByCodigo("E005"))
             }
 
+            maxResults(20);
+
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
@@ -268,6 +278,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
                 eq('estado', EstadoTramite.findByCodigo("E005"))
             }
+
+            maxResults(20);
 
         }
 
@@ -306,6 +318,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             }
 
+            maxResults(20);
 
         }
 
@@ -346,6 +359,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //                eq('estado', EstadoTramite.findByCodigo("E005"))
 //            }
 
+            maxResults(20);
+
         }
         def pxtCopia = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
@@ -360,6 +375,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //                eq('estado', EstadoTramite.findByCodigo("E005"))
 //            }
 
+            maxResults(20);
         }
 
         pxtPara += pxtCopia
@@ -397,6 +413,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             }
 
+            maxResults(20);
 
         }
 

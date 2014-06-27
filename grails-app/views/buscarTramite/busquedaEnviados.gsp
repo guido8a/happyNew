@@ -68,7 +68,7 @@
                 </div>
 
                 <div style="padding-top: 25px">
-                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda"><i
+                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax"><i
                             class="fa fa-check-square-o"></i> Buscar</a>
 
                     <a href="#" name="borrar" class="btn btn-primary btnBorrar"><i
@@ -93,6 +93,8 @@
             </div>
 
         </div>
+
+        <div> * La búsqueda retornará un máximo de 20 resultados </div>
 
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
