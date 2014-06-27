@@ -60,7 +60,7 @@ class DepartamentoExportController {
 //            println "name "+name
 //        Font titleFont = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
 //        Font titleFont3 = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
-        Font titleFont2 = new Font(Font.TIMES_ROMAN, 16, Font.BOLD);
+        Font titleFont2 = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
 //        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL);
 
         Font fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
@@ -70,7 +70,7 @@ class DepartamentoExportController {
             fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
         }
 
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 1.5, left: 3])
+        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2, bottom: 1.5, left: 2.5])
         //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
