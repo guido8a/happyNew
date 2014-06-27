@@ -120,7 +120,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             res = PersonaDocumentoTramite.withCriteria {
 
-                eq("persona", Persona.get(session.usuario.id))
+//                eq("persona", Persona.get(session.usuario.id))
 
                 ne('estado', EstadoTramite.findByCodigo("E006"))
 
