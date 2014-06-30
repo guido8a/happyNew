@@ -1242,6 +1242,7 @@ class PersonaController extends happy.seguridad.Shield {
 
 //        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
         LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, prmt.textoCn, prmt.passAdm)
+        priintln "'ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster'"
         println "LADP: " + "'ldap://' ${prmt.ipLDAP}, ${prmt.textoCn}, ${prmt.passAdm}"
         println "conectado " + ldap.class
         println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
