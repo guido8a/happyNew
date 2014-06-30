@@ -288,7 +288,7 @@
                     textBtn = "Activar";
                     textLoader = "Activando";
                     url = "${createLink(action:'activar_ajax')}";
-                    bootbox.dialog({
+                   var b= bootbox.dialog({
                         title   : "Alerta",
                         message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
                         buttons : {
@@ -298,7 +298,7 @@
                                 callback  : function () {
                                 }
                             },
-                            eliminar : {
+                            cambiarEstado : {
                                 label     : "<i class='fa " + icon + "'></i> " + textBtn,
                                 className : "btn-" + clase,
                                 callback  : function () {
@@ -314,6 +314,8 @@
                                             log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                             if (parts[0] == "OK") {
                                                 location.reload(true);
+                                            } else {
+                                                closeLoader();
                                             }
                                         }
                                     });

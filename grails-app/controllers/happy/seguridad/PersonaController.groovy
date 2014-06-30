@@ -888,7 +888,7 @@ class PersonaController extends happy.seguridad.Shield {
         if (persona.save(flush: true)) {
             render "OK_Persona activada exitosamente"
         } else {
-            "NO_Ha ocurrido un error: " + renderErrors(bean: persona)
+            render "NO_Ha ocurrido un error: " + renderErrors(bean: persona)
         }
     }
 
