@@ -111,11 +111,12 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def descargarDoc() {
         def doc = DocumentoTramite.get(params.id)
         def departamento = doc.tramite.deDepartamento
+        def anio =doc.fecha.format("yyyy")
         if (!departamento)
             departamento = doc.tramite.de.departamento
         if (session.key == (doc.path.size() + doc.descripcion?.encodeAsMD5().substring(0, 10))) {
             session.key = null
-            def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
+            def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
 //            println "path " + doc.path + " " + doc.path.split("\\.")
             def tipo = doc.path.split("\\.")
             tipo = tipo[1]
@@ -159,7 +160,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def uploadSvt() {
         println "updaload svt " + params
         def tramite = Tramite.get(params.id)
-        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/" + tramite.codigo + "/"
+        def anio = new Date().format("yyyy")
+        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/"+anio+"/"+ tramite.codigo + "/"
         //web-app/archivos
         new File(path).mkdirs()
         def f = request.getFile('file')  //archivo = name del input type file
