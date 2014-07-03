@@ -184,10 +184,10 @@
 
                 <div class="btn-group membrete" data-con="${tramite.conMembrete ?: '0'}">
                     <g:if test="${tramite.conMembrete == '1'}">
-                        <i class="fa fa-check-square-o"></i> Con membrete
+                        <i class="fa fa-check-square-o"></i> Membrete
                     </g:if>
                     <g:else>
-                        <i class="fa fa-square-o"></i> Sin membrete
+                        <i class="fa fa-square-o"></i> Membrete
                     </g:else>
                 </div>
 
@@ -255,9 +255,9 @@
                 $(".membrete").click(function () {
                     var esto = $(this);
                     if (esto.data("con") == '0') {
-                        esto.data("con", '1').html('<i class="fa fa-check-square-o"></i> Con membrete');
+                        esto.data("con", '1').html('<i class="fa fa-check-square-o"></i> Membrete');
                     } else {
-                        esto.data("con", '0').html('<i class="fa fa-square-o"></i> Sin membrete');
+                        esto.data("con", '0').html('<i class="fa fa-square-o"></i> Membrete');
                     }
                     %{--if (esto.data("con") != "${tramite.conMembrete ?: '0'}") {--}%
                     %{--esto.addClass("cambiado");--}%

@@ -28,9 +28,10 @@ class EnviarService {
      *  mensaje         : mandar message(code: 'pathImages').toString()
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
-//        println "CREAR PDF: " + conMembrete
+//        println "CREAR PDF: "
 
         def conMembrete = tramite.conMembrete ?: "0"
+//        println "con/sin: " + conMembrete
 
         def parametros = Parametros.list()
         if (parametros.size() == 0) {
@@ -133,7 +134,7 @@ class EnviarService {
                 "}" +
                 ".hoja {\n" +
 //                "            background  : #123456;\n" +
-                "   width       : 15.5cm; /*21-2.5-3*/\n" +
+                "   width       : 15.3cm; /*21-2.5-3*/\n" +
                 "   font-family : arial;\n" +
                 "   font-size   : 12pt;\n" +
                 "}\n" +
@@ -168,9 +169,9 @@ class EnviarService {
 //                "    height    : 2cm;\n" +
 //                "    background: red;" +
 //                "    margin-top: -2cm;" +
-                "    line-height : 2cm;\n" +
+//                "    line-height : 2cm;\n" +
                 "    text-align  : center;\n" +
-                "    font-size   : 25px;\n" +
+                "    font-size   : 14pt;\n" +
                 "    font-weight : bold;\n" +
 //                "    margin-top: 1cm;" +
                 "}\n"
@@ -203,18 +204,20 @@ class EnviarService {
         content += "</body>\n"
         content += "</html>"
 
-        String content2 = "<html><head><style>\n" +
-                "div.header {\n" +
-                "display: block; text-align: center;\n" +
-                "position: running(header);}\n" +
-                "div.footer {\n" +
-                "display: block; text-align: center;\n" +
-                "position: running(footer);}\n" +
-                "div.content {page-break-after: always;}" +
-                "@page { @top-center { content: element(header) }}\n " +
-                "@page { @bottom-center { content: element(footer) }}\n" +
-                "</style></head>\n" +
-                "<body><div class='header'>Header</div><div class='footer'>Footer</div><div class='content'>Page1</div><div>Page2</div></body></html>";
+        println content
+
+//        String content2 = "<html><head><style>\n" +
+//                "div.header {\n" +
+//                "display: block; text-align: center;\n" +
+//                "position: running(header);}\n" +
+//                "div.footer {\n" +
+//                "display: block; text-align: center;\n" +
+//                "position: running(footer);}\n" +
+//                "div.content {page-break-after: always;}" +
+//                "@page { @top-center { content: element(header) }}\n " +
+//                "@page { @bottom-center { content: element(footer) }}\n" +
+//                "</style></head>\n" +
+//                "<body><div class='header'>Header</div><div class='footer'>Footer</div><div class='content'>Page1</div><div>Page2</div></body></html>";
 
 //        def file = new File(path + tramite.tipoDocumento.descripcion + "_" + tramite.codigo + "_source_" + (new Date().format("yyyyMMdd_HH:mm:ss")) + ".html")
 //        file.write(content)

@@ -91,7 +91,7 @@ class MenuTagLib {
         html += strItems
         html += '</ul>'
 
-        html += '<p  class="navbar-text navbar-right" id="countdown">20</p>'
+//        html += '<p  class="navbar-text navbar-right" id="countdown">20</p>'
         html += '<ul class="nav navbar-nav navbar-right">'
         html += '<li><a href="' + g.createLink(controller: 'alertas', action: 'list') + '" '+((count>0)?' style="color:#FFAB19" class="annoying"':"")+'><i class="fa fa-exclamation-triangle"></i> Alertas '+alertas+'</a></li>'
 
