@@ -266,7 +266,8 @@
                     <div class="col-xs-3" style="margin-top: -25px">
                         <b>Tipo de documento:</b>
                         <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                          value="${tramite.tipoDocumentoId}" tramite="${tramite}"/>
+                                          value="${tramite.tipoDocumentoId ?: happy.tramites.TipoDocumento.findByCodigo('MEM').id}"
+                                          tramite="${tramite}"/>
                     </div>
 
                     <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px;">
