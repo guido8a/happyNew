@@ -62,6 +62,16 @@ grails {
             //'text/html' = 'html'
         }
     }
+    mail {
+        host = "smtp.gmail.com"
+        port = 465
+        username = "tedeinecuador@gmail.com"
+        password = "tedein2579"
+        props = ["mail.smtp.auth":"true",
+                 "mail.smtp.socketFactory.port":"465",
+                 "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+                 "mail.smtp.socketFactory.fallback":"false"]
+    }
 }
 
 grails.converters.encoding = "UTF-8"
