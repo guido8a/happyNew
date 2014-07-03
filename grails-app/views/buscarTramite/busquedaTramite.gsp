@@ -89,7 +89,8 @@
 
         </div>
 
-        <div> <strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna como máximo 20</div>
+        <div><strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna como máximo 20
+        </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -281,19 +282,17 @@
                 };
 
                 var anexos = {
-                    text   : 'Anexos',
-                    icon   : "<i class='fa fa-paperclip'></i>",
+                    label  : 'Anexos',
+                    icon   : "fa fa-paperclip",
                     action : function (e) {
                         location.href = '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                     }
                 };
 
                 var ampliarPlazo = {
-                    text   : "Ampliar plazo",
-                    icon   : "<i class='fa fa-arrows-h'></i>",
+                    label  : "Ampliar plazo",
+                    icon   : "fa fa-arrows-h",
                     action : function (e) {
-                        $("tr.trHighlight").removeClass("trHighlight");
-                        e.preventDefault();
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'buscarTramite', action: 'ampliarPlazoUI_ajax')}',
@@ -302,7 +301,7 @@
                             },
                             success : function (msg) {
                                 bootbox.dialog({
-                                    title   : "Ampmliar plazo",
+                                    title   : "Ampliar plazo",
                                     message : msg,
                                     class   : "long",
                                     buttons : {
