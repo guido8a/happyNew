@@ -199,7 +199,7 @@ class LoginController {
                         session.perfil = perfiles.first().perfil
                         def cn = "inicio"
                         def an = "index"
-                        def count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+                        def count = 0
                         def permisos = Prpf.findAllByPerfil(session.perfil)
                         permisos.each {
                             def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario, it.permiso)
@@ -209,23 +209,16 @@ class LoginController {
                                 }
                             }
                         }
-//                    println "add "+session.usuario.permisos
-//                    println "puede tramite "+session.usuario.getPuedeRecibir()
+                        if (session.usuario.esTriangulo()) {
+                            count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+                        }else{
+                            count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+                        }
+
                         if (count > 0)
                             redirect(controller: 'alertas', action: 'list')
-                        else {
-//                        println "count = 0 "+session.usuario.esTriangulo()
-                            if (session.usuario.esTriangulo()) {
-                                count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-//                            println "count "+count
-                                if (count > 0)
-                                    redirect(controller: 'alertas', action: 'list')
-                                else
-                                    redirect(controller: "inicio", action: "index")
-                            } else {
-                                redirect(controller: "inicio", action: "index")
-                            }
-
+                        else {//
+                            redirect(controller: "inicio", action: "index")
                         }
 //                    redirect(controller: cn, action: an)
                         return
@@ -285,22 +278,17 @@ class LoginController {
 //                    redirect(controller: session.cn, action: session.an, params: session.pr)
 //                }
 //            } else {
-            def count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+            def count = 0
+            if (session.usuario.esTriangulo()) {
+                count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+            }else{
+                count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+            }
+
             if (count > 0)
                 redirect(controller: 'alertas', action: 'list')
-            else {
-//                println "count = 0 "+session.usuario.esTriangulo()
-                if (session.usuario.esTriangulo()) {
-                    count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-//                    println "count "+count
-                    if (count > 0)
-                        redirect(controller: 'alertas', action: 'list')
-                    else
-                        redirect(controller: "inicio", action: "index")
-                } else {
-                    redirect(controller: "inicio", action: "index")
-                }
-
+            else {//
+                redirect(controller: "inicio", action: "index")
             }
 //            }
         } else {

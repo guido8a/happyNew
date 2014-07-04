@@ -59,22 +59,14 @@ class ShieldController {
 
         def msn = "No autorizado"
 
-//        def tramitePasado = alertaNoRecibidos().idTramitesPasados
-//
-//        def tram
-//
-//        def tramitesPasados = []
-//
-//        tramitePasado.each {
-//
-//        tram = Tramite.get(it)
-//            tramitesPasados.add(tram)
-//
-//        }
-////        println("-->" + tramitesPasados)
-//
-//        return [tramitesPasados: tramitesPasados]
 
+
+    }
+    def bloqueo = {
+
+        if(params.dep){
+            return [dep:session.departamento]
+        }
 
     }
 

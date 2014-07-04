@@ -5,17 +5,14 @@ import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
-import com.lowagie.text.DocumentException
 import happy.seguridad.Persona
 import happy.tramites.Departamento;
-import happy.tramites.PersonaDocumentoTramite
-import happy.tramites.RolPersonaTramite
-import happy.tramites.Tramite
 import org.apache.commons.lang.WordUtils
+import happy.seguridad.Shield;
 
 import java.awt.Color
 
-class DepartamentoExportController {
+class DepartamentoExportController extends Shield {
 
     def reportesPdfService
 

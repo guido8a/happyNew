@@ -20,17 +20,17 @@ class MailJob {
 //            subject "Dame tus datos battle net"
 //            body 'this is some text'
 //        }
-        def estadoR = EstadoTramite.findByCodigo("E004")
-        def estadoE = EstadoTramite.findByCodigo("E003")
-        def rolPara = RolPersonaTramite.findByCodigo("R001")
-        def rolCopia = RolPersonaTramite.findByCodigo("R002")
-        def now = new Date()
-        def datos = []
-        def deps = Departamento.findAllByPadreIsNull()
-        deps.each {dep->
-            println "dep "+dep+" !!!!!!!!!!!!!!!!!!!!!!!!!   "
-           procesaDep(dep,estadoR,estadoE,rolPara,rolCopia,now)
-        }
+//        def estadoR = EstadoTramite.findByCodigo("E004")
+//        def estadoE = EstadoTramite.findByCodigo("E003")
+//        def rolPara = RolPersonaTramite.findByCodigo("R001")
+//        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+//        def now = new Date()
+//        def datos = []
+//        def deps = Departamento.findAllByPadreIsNull()
+//        deps.each {dep->
+//            println "dep "+dep+" !!!!!!!!!!!!!!!!!!!!!!!!!   "
+//           procesaDep(dep,estadoR,estadoE,rolPara,rolCopia,now)
+//        }
     }
 
     def procesaDep(dep,estadoR,estadoE,rolPara,rolCopia,now){

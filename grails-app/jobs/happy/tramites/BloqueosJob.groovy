@@ -22,29 +22,31 @@ class BloqueosJob {
         def rolRecibe = RolPersonaTramite.findByCodigo("I005")
         def anulado = EstadoTramite.findByCodigo("E006")
 //        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull()
-
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and fechaRecepcion is null and (estado is null or estado!=${anulado.id}) and rolPersonaTramite not in (${rolEnvia.id},${rolRecibe.id})").each {pdt->
-//            println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}  ${pdt.tramite.externo}   "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
+            //println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}  ${pdt.tramite.externo}   "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
             if(pdt.tramite.externo!="1"){
 //                println "no es externo"
+                if(!pdt.persona && !pdt.departamento)
+//                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                 def fechaBloqueo = pdt.fechaBloqueo
                 if(fechaBloqueo && fechaBloqueo<ahora){
 
                     if(pdt.tramite.deDepartamento){
-                        if(!warning.id.contains(pdt.tramite.deDepartamento.id))
+                        if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
                             warning.add(pdt.tramite.deDepartamento)
                     }else{
-                        if(!warningUsu.id.contains(pdt.tramite.de.id))
+                        if(!warningUsu?.id?.contains(pdt.tramite.de.id))
                             warningUsu.add(pdt.tramite.de)
                     }
 
                     if(pdt.persona){
 //                        println "add bloquear "+pdt.persona+"  "+pdt.persona.login
-                        if(!bloquearUsu.id.contains(pdt.persona.id))
+                        if(!bloquearUsu?.id?.contains(pdt.persona.id))
                             bloquearUsu.add(pdt.persona)
                     }else{
-//                        println "add bloquear dep "+pdt.departamento
-                        if(!bloquear.id.contains(pdt.departamento.id))
+//                        println "add bloquear dep "+pdt.departamento+" "+pdt.id
+//                        println "bloquear ???"+bloquear+" "+bloquear?.id
+                        if(!bloquear?.id?.contains(pdt.departamento?.id))
                             bloquear.add(pdt.departamento)
                     }
 //                    println "---------------------"
@@ -120,20 +122,20 @@ class BloqueosJob {
 //                    println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
 
                         if(pdt.tramite.deDepartamento){
-                            if(!warning.id.contains(pdt.tramite.deDepartamento.id))
+                            if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
                                 warning.add(pdt.tramite.deDepartamento)
                         }else{
-                            if(!warningUsu.id.contains(pdt.tramite.de.id))
+                            if(!warningUsu?.id?.contains(pdt.tramite.de.id))
                                 warningUsu.add(pdt.tramite.de)
                         }
 
                         if(pdt.persona){
 //                        println "add bloquear "+pdt.persona
-                            if(!bloquearUsu.id.contains(pdt.persona.id))
+                            if(!bloquearUsu?.id?.contains(pdt.persona.id))
                                 bloquearUsu.add(pdt.persona)
                         }else{
 //                        println "add bloquear "+pdt.departamento
-                            if(!bloquear.id.contains(pdt.departamento.id))
+                            if(!bloquear?.id?.contains(pdt.departamento.id))
                                 bloquear.add(pdt.departamento)
                         }
                     }

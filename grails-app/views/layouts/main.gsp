@@ -147,7 +147,7 @@
         </g:if>
         <g:if test="${!session.usuario.esTriangulo()}">
             <g:if test="${session.usuario.estado == 'B'}">
-                <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 170px;">
+                <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 190px;">
                     <div class="titulo-bloqueo">
                         <i class="fa fa-exclamation-circle"></i>
                         Alerta de bloqueo

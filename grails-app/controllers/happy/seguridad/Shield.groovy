@@ -1,13 +1,14 @@
 package happy.seguridad
 
-import com.sun.java.swing.plaf.windows.resources.windows
+
 import happy.tramites.Departamento
-import happy.tramites.EstadoTramite
-import happy.tramites.Tramite
-import org.h2.api.DatabaseEventListener
+
+
 
 class Shield {
     def beforeInterceptor = [action: this.&auth, except: 'login']
+
+
     /**
      * Verifica si se ha iniciado una sesión
      * Verifica si el usuario actual tiene los permisos para ejecutar una acción
@@ -32,28 +33,48 @@ class Shield {
         } else {
             def now = new Date()
             def band = true
-            use(groovy.time.TimeCategory) {
-                def duration = now - session.time
-                if(duration.minutes>4){
-                    session.usuario=null
-                    session.finalize();
-                    band = false
-                }else{
-                    session.time=now;
-                }
-            }
-            if(!band) {
-//                redirect(controller: 'login', action: 'logout')
-//                render "<script type='text/javascript'> window.location.href = " + createLink(controller: "login", action: "login") + "; location.reload(true); </script>"
-                redirect(controller: 'login', action: 'finDeSesion')
-                return false
-            }
+//            use(groovy.time.TimeCategory) {
+//                def duration = now - session.time
+//                if(duration.minutes>4){
+//                    session.usuario=null
+//                    session.finalize();
+//                    band = false
+//                }else{
+//                    session.time=now;
+//                }
+//            }
+//            if(!band) {
+////                redirect(controller: 'login', action: 'logout')
+////                render "<script type='text/javascript'> window.location.href = " + createLink(controller: "login", action: "login") + "; location.reload(true); </script>"
+//                redirect(controller: 'login', action: 'finDeSesion')
+//                return false
+//            }
             def usu = Persona.get(session.usuario.id)
             if (usu.estaActivo) {
                 session.departamento = Departamento.get(session.departamento.id).refresh()
                 def perms = session.usuario.permisos
                 session.usuario = Persona.get(session.usuario.id).refresh()
                 session.usuario.permisos=perms
+                if(session.usuario.esTriangulo()){
+                    if(session.departamento.estado=="B"){
+                        if(isAllowedBloqueo()){
+                            return true
+                        }else{
+                            redirect(controller: 'shield', action: 'bloqueo',params:["dep":true])
+                            return false
+                        }
+                    }
+                }else{
+                    if(session.usuario.estado=="B"){
+                        if(isAllowedBloqueo()){
+                            return true
+                        }else{
+                            redirect(controller: 'shield', action: 'bloqueo')
+                            return false
+                        }
+                    }
+                }
+
 
                 return true
             } else {
@@ -92,6 +113,21 @@ class Shield {
 //        }
 //        return true
         return true
+    }
+    boolean isAllowedBloqueo() {
+        def permitidas = ["inicio":["index"],"tramite":["bandejaEntrada","tablaBandeja","busquedaBandeja","revisarConfidencial","revisarHijos"],"tramite3":["detalles","arbolTramite","recibirTramite","bandejaEntradaDpto","tablaBandejaEntradaDpto","enviarTramiteJefe"],"documentoTramite":["verAnexos"],"alertas":["list","revisar"]]
+        try {
+
+            if(!permitidas[controllerName])
+                return false
+            if (permitidas[controllerName].contains(actionName))
+                return true
+        } catch (e) {
+            println "Shield execption e: " + e
+            return false
+        }
+
+        return false
     }
 
 
