@@ -283,7 +283,8 @@
                         %{--<g:else>--}%
                         ${tramite.tipoDocumentoId}
                         <elm:comboTipoDoc id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"
-                                          value="${tramite.tipoDocumentoId}" tramite="${tramite}" tipo="pers"/>
+                                          value="${tramite.tipoDocumentoId ?: happy.tramites.TipoDocumento.findByCodigo('MEM').id}"
+                                          tramite="${tramite}" tipo="pers"/>
                         %{--</g:else>--}%
                     </div>
 

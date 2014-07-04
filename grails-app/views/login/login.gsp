@@ -13,6 +13,10 @@
             margin-top : 30px;
             text-align : center;
         }
+
+        .creditos p {
+            text-align : justify;
+        }
         </style>
 
     </head>
@@ -53,13 +57,17 @@
 
 
                 %{--<div style="text-align: center ; color:#004060; margin-top:120px; font-size: 10px;">Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '1.1.0x')}</div>--}%
-                <p class="text-info"
-                   style="font-size: 10px; float: right">Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '1.1.0x')}
+                <p class="pull-left" style="font-size: 10px;">
+                    <a href="#" id="aCreditos">
+                        Créditos
+                    </a>
+                </p>
 
+                <p class="text-info pull-right" style="font-size: 10px;">
+                    Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '1.1.0x')}
                 </p>
             </div>
         </div>
-
 
         <div class="modal fade" id="modal-ingreso" tabindex="-1" role="dialog" aria-labelledby=""
              aria-hidden="true">
@@ -151,6 +159,22 @@
             </div>
         </div>
 
+        <div id="divCreditos" class="hidden">
+            <div class="creditos">
+                <p>
+                    El Sistema de Administración de Documentos plataforma Web (SADW) es propiedad del
+                    Gobierno de la Provincia de Pichincha, contratado bajo consultoría con la empresa TEDEIN S.A.
+                    Sistema Desarrollado en base a la primera versión del SAD y con la asesoría técnica de la Gestión
+                    de Sistemas y Tecnologías de Información del GADPP.
+                </p>
+
+                <p>
+                    Los derechos de Autor de este software y los programas fuentes son de propiedad del Gobierno
+                    de la Provincia de Pichincha por lo que toda reproducción parcial o total del mismo está
+                    prohibida para el contratista y/o terceras personas ajenas.
+                </p>
+            </div>
+        </div>
 
         <script type="text/javascript">
             var $frm = $("#frmLogin");
@@ -169,6 +193,22 @@
             }
 
             $(function () {
+
+                $("#aCreditos").click(function () {
+                    bootbox.dialog({
+                        title   : "Créditos",
+                        message : $("#divCreditos").html(),
+                        buttons : {
+                            aceptar : {
+                                label     : "Aceptar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                });
 
                 $("#ingresar").click(function () {
                     var initModalHeight = $('#modal-ingreso').outerHeight();
