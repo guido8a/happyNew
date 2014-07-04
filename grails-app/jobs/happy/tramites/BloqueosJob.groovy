@@ -26,7 +26,7 @@ class BloqueosJob {
             //println "PDT "+pdt.id+" tramite   ${pdt.departamento?pdt.departamento.codigo:pdt.persona.login}  ${pdt.tramite.externo}   "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.fechaBloqueo?.format("dd-MM-yyyy hh:mm")+"   "+pdt.rolPersonaTramite.codigo
             if(pdt.tramite.externo!="1"){
 //                println "no es externo"
-                if(!pdt.persona && !pdt.departamento)
+              //  if(!pdt.persona && !pdt.departamento)
 //                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                 def fechaBloqueo = pdt.fechaBloqueo
                 if(fechaBloqueo && fechaBloqueo<ahora){
