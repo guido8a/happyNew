@@ -411,6 +411,8 @@
                         }
                     });
                 } else {
+                    url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
+
                     clase = "danger";
                     icon = "${iconDesactivar}";
                     textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
@@ -503,7 +505,6 @@
                             }
                         });
                     }
-                    url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
                 }
             } //cambiar estado row persona
 
@@ -839,6 +840,7 @@
                                 }
                             };
                         }
+
                         if (parseInt(nodeTramites) > 0) {
                             items.redireccionar = {
                                 separator_before : true,

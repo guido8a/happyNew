@@ -78,6 +78,7 @@ class Tramite {
             nota column: 'trmtnota'
             estado column: 'trmtetdo'
             observaciones column: 'trmtobsr'
+            observaciones type: 'text'
             fechaCreacion column: 'trmtfccr'
             fechaModificacion column: 'trmtfcmd'
             fechaRevision column: 'trmtfcrv'

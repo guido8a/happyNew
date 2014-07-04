@@ -45,8 +45,8 @@ td {
             <g:each in="${[paras] + ccs}" var="para">
                 <g:if test="${para}">
                     <tr>
-                        <td>${para.rolPersonaTramite.descripcion}</td>
-                        <td>${para.departamento ? para.departamento.descripcion : para.persona.login}</td>
+                        <td>${para.rolPersonaTramite?.descripcion}</td>
+                        <td>${para.departamento ? para.departamento.descripcion : para.persona?.login}</td>
                         <td class="text-center">
                             <g:if test="${para.fechaEnvio}">
                                 <g:if test="${para.fechaRecepcion}">

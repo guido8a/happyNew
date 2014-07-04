@@ -89,12 +89,12 @@
                         <g:if test="${infoExtra != ''}">
                             <g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>
                         </g:if>
-                        <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>
+                        <g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite?.descripcion}: "/>
                         <g:if test="${pdt.departamento}">
-                            <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
+                            <g:set var="infoExtra" value="${infoExtra + pdt.departamento?.codigo}"/>
                         </g:if>
                         <g:else>
-                            <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
+                            <g:set var="infoExtra" value="${infoExtra + pdt.persona?.login}"/>
                         </g:else>
                         <g:if test="${pdt.fechaEnvio}">
                             <g:if test="${pdt.fechaRecepcion}">
@@ -137,7 +137,7 @@
                             <g:each in="${copias}" var="copia" status="i">
                                 <g:set var="dest" value="${dest + 1}"/>
                             %{--/${dest}/--}%
-                                [CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}
+                                [CC] ${copia.persona ? copia.persona.login : copia.departamento?.codigo}
                                 <g:if test="${i < copias.size() - 1}">
                                     ,
                                 </g:if>

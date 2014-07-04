@@ -591,7 +591,7 @@
                 if (tieneAnexo) {
                     items.anexos = anexos;
                 }
-                if (enviado && puedeDesenviar) {
+                if ((enviado || tieneAlerta) && puedeDesenviar) {
                     items.desenviar = desenviar;
                 }
 //                }
