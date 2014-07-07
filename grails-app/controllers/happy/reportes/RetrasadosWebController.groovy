@@ -142,7 +142,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                         totalNodeSr += p["retrasados"].toInteger()
                     }
 
-                    tabla += "<tr data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
+                    tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
                     tabla += "<td class='titulo'>Dirección</td>"
                     tabla += "<td class='titulo'>${lvl.objeto}</td>"
                     tabla += "<td class='titulo numero'>${totalNode}</td>"
@@ -159,7 +159,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                     tabla += "</tr>"
                     datosLuz.each { d ->
-                        tabla += "<tr data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
+                        tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
                         tabla += "<td>${d[0]}</td>"
                         tabla += "<td class='numero'>${d[1]}</td>"
                         tabla += "<td class='numero'>${d[2]}</td>"
@@ -246,6 +246,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
     def imprimeHijosPdfConsolidado(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
         def tabla = ""
         total = 0
+        totalSr = 0
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
@@ -292,7 +293,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     totalNodeSr += p["retrasados"].toInteger()
                 }
 
-                tabla += "<tr  data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
+                tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
                 tabla += "<td class='titulo'>Dirección</td>"
                 tabla += "<td class='titulo'>${lvl.objeto}</td>"
                 tabla += "<td class='titulo numero'>${totalNode}</td>"
@@ -309,7 +310,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                 tabla += "</tr>"
                 datosLuz.each { d ->
-                    tabla += "<tr data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
+                    tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
                     tabla += "<td>${d[0]}</td>"
                     tabla += "<td class='numero'>${d[1]}</td>"
                     tabla += "<td class='numero'>${d[2]}</td>"

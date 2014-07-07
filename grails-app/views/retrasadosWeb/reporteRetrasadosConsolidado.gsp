@@ -57,18 +57,37 @@
         <script type="text/javascript">
 
             function getData(tipo) {
-                var deps = 0;
+                var data = [], arr = [];
+                var deps = $(".data.dep." + tipo).size();
+
+                var title = tipo == "rs" ? "Documentos sin recepción " : "Documentos retrasados";
+                title += (deps > 1 ? "por departamento" : "");
+
                 $("tr").each(function () {
                     var $tr = $(this);
-                    var tipo = $tr.data(tipo);
-                    if (tipo) {
-                        if ($tr.data("tipo") == "dep") {
-                            deps++;
+                    var valor = $tr.data(tipo);
+                    if (valor) {
+
+                        if (deps == 1) {
+                            if ($tr.data("tipo") == "per") {
+                                arr = [ $tr.data("value"), valor];
+                                data.push(arr);
+                            } else {
+                                title += "de " + $tr.data("value");
+                            }
+                        } else {
+                            if ($tr.data("tipo") == "dep") {
+                                arr = [ $tr.data("value"), valor];
+                                data.push(arr);
+                            }
                         }
-                        console.log($tr.data("tipo"), tipo, $tr.data("value"));
                     }
                 });
-                console.log("Hay " + deps + " deps");
+
+                return {
+                    data  : data,
+                    title : title
+                }
             }
 
             $(function () {
@@ -79,15 +98,6 @@
 
                 getData("rz");
 
-//                var a = $("#rzData").text();
-                %{--var a = ${grafRzData.encodeAsHTML()};--}%
-                %{--console.log(a);--}%
-                %{--console.log("${util.renderHTML(html: grafRzData)}");--}%
-                %{--console.log("${util.renderJson(obj: grafRzData)}");--}%
-                %{--<g:each in="${grafRzData}" var="d">--}%
-                %{--console.log("${d}", "${d.toString()}");--}%
-                %{--</g:each>--}%
-
                 var data = [
                     ['Heavy Industry', 12],
                     ['Retail', 9],
@@ -96,24 +106,24 @@
                     ['Commuting', 7],
                     ['Orientation', 9]
                 ];
-                %{--var chartRs = $.jqplot('chartRs', [${grafRzData.decodeHTML()}],--}%
-                %{--{--}%
-                %{--title          : '${util.renderHTML(html: tituloRs)}',--}%
-                %{--seriesDefaults : {--}%
-                %{--// Make this a pie chart.--}%
-                %{--renderer        : jQuery.jqplot.PieRenderer,--}%
-                %{--rendererOptions : {--}%
-                %{--// Put data labels on the pie slices.--}%
-                %{--// By default, labels show the percentage of the slice.--}%
-                %{--showDataLabels : true--}%
-                %{--}--}%
-                %{--},--}%
-                %{--legend         : {--}%
-                %{--show     : true,--}%
-                %{--location : 'e'--}%
-                %{--}--}%
-                %{--}--}%
-                %{--);--}%
+                var chartRs = $.jqplot('chartRs', [getData("rs").data],
+                        {
+                            title          : getData("rs").title,
+                            seriesDefaults : {
+                                // Make this a pie chart.
+                                renderer        : $.jqplot.PieRenderer,
+                                rendererOptions : {
+                                    // Put data labels on the pie slices.
+                                    // By default, labels show the percentage of the slice.
+                                    showDataLabels : true
+                                }
+                            },
+                            legend         : {
+                                show     : true,
+                                location : 'e'
+                            }
+                        }
+                );
             });
         </script>
     </body>
