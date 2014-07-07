@@ -1,7 +1,7 @@
 package happy.seguridad
 
 class Sistema {
-    static auditable = true
+    static auditable = false
     String nombre
     String descripcion
 

@@ -2,7 +2,7 @@ package happy.seguridad
 
 
 class ErrorLog {
-    static auditable = true
+    static auditable = false
     Date fecha
     String error
     String causa

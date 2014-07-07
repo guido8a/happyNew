@@ -30,7 +30,7 @@
             <g:if test="${tramite.fechaRecepcion}">
                 <g:if test="${tramite.fechaLimiteRespuesta < now}">
                     <g:set var="clase" value="retrasado"/>
-                    <g:if test="${happy.tramites.Tramite.countByPadre(tramite.tramite) > 0}">
+                    <g:if test="${happy.tramites.Tramite.countByAQuienContesta(tramite) > 0}">
                         <g:set var="clase" value="recibido"/>
                     </g:if>
                 </g:if>

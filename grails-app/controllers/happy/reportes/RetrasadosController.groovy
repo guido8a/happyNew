@@ -864,6 +864,7 @@ class RetrasadosController {
 
     def imprimeHijosPdfConsolidado(arr, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
         total = 0
+        totalSr=0
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {

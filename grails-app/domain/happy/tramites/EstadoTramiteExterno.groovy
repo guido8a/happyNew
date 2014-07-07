@@ -1,7 +1,7 @@
 package happy.tramites
 
 class EstadoTramiteExterno {
-    static auditable = true
+    static auditable=true
     String codigo
     String descripcion
     static mapping = {
