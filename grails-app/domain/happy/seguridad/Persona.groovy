@@ -39,6 +39,7 @@ class Persona {
 
     def permisos = []
     static transients = ['permisos']
+    static auditable=false
     /*Fin*/
 
     static mapping = {

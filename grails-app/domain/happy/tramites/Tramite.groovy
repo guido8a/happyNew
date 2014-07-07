@@ -49,6 +49,7 @@ class Tramite {
     String conMembrete
 
     def diasLaborablesService
+    static auditable =true
 
 
     static mapping = {

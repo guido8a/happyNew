@@ -142,6 +142,7 @@ class LoginController {
                 return
             } else {
                 session.usuario = user
+                session.usuarioKerberos=user.login
                 session.time = new Date()
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
