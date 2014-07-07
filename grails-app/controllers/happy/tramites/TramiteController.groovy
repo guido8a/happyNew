@@ -1074,7 +1074,7 @@ class TramiteController extends happy.seguridad.Shield {
             return
         }
         if (!session.usuario.puedeRecibir) {
-            flash.message = "Su perfil no tiene acceso a la bandeja de entrada pesonal"
+            flash.message = "Su perfil no tiene acceso a la bandeja de entrada personal"
             response.sendError(403)
         }
 

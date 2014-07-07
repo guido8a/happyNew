@@ -330,7 +330,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
 //                println "es COPIA: delete"
                     try {
-                        def copiaA = persDoc.persona ? persDoc.persona.login : persDoc.departamento.codigo
+                        def copiaA = persDoc.persona ? persDoc.persona.login : persDoc.departamento?.codigo
                         tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
                                 "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
                                 "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}); "
