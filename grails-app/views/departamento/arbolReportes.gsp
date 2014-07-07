@@ -48,16 +48,17 @@
 
             <!-- botones -->
             <div class="btn-toolbar toolbar">
-%{--
-                <div class="btn-group">
-                    <g:link controller="inicio" action="parametros" class="btn btn-default">
-                        <i class="fa fa-arrow-left"></i> Regresar
-                    </g:link>
-                </div>
---}%
+                %{--
+                                <div class="btn-group">
+                                    <g:link controller="inicio" action="parametros" class="btn btn-default">
+                                        <i class="fa fa-arrow-left"></i> Regresar
+                                    </g:link>
+                                </div>
+                --}%
                 <div class="btn-group" style="margin-top: 4px;">
-                <p style="font-size: 18px; font-weight: bold; margin-right: 40px;">Reportes del Sistema</p>
+                    <p style="font-size: 18px; font-weight: bold; margin-right: 40px;">Reportes del Sistema</p>
                 </div>
+
                 <div class="btn-group" style="margin-top: 4px;">
                     <g:link action="arbol" params="[sort: 'nombre']" class="btn btn-sm btn-info">
                         <i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre
@@ -173,156 +174,167 @@
                 if (nodeType != "root" && !nodeType.match("inactivo") && !nodeType.match("Inactivo")) {
                     %{--console.log("${session.usuario.puedeJefe}", "${session.usuario.puedeDirector}", "${session.usuario.departamentoId}");--}%
                     %{--if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||--}%
-                        %{--"${session.usuario.puedeDirector}" == "true") {--}%
-                        items.retrasados = {
-                            label   : "Trámites retrasados",
-                            icon    : "fa fa-rotate-left",
-                            submenu : {
-                                pdf : {
-                                    label   : "PDF",
-                                    icon    : "fa fa-file-pdf-o",
-                                    submenu : {
-                                        detallado   : {
-                                            label  : "Detallado",
-                                            icon   : "fa fa-rotate-left",
-                                            action : function () {
-                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
-                                                } else {
-                                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
-                                                }
+                    %{--"${session.usuario.puedeDirector}" == "true") {--}%
+                    items.retrasadosWeb = {
+                        label  : "Trámites retrasados Web",
+                        icon   : " fa fa-globe",
+                        action : function (e, e2) {
+                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                window.open("${g.createLink(controller: 'retrasadosWeb',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId);
+                            } else {
+                                window.open("${g.createLink(controller: 'retrasadosWeb',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId);
+                            }
+                        }
+                    };
+                    items.retrasados = {
+                        label   : "Trámites retrasados",
+                        icon    : "fa fa-rotate-left",
+                        submenu : {
+                            pdf : {
+                                label   : "PDF",
+                                icon    : "fa fa-file-pdf-o",
+                                submenu : {
+                                    detallado   : {
+                                        label  : "Detallado",
+                                        icon   : "fa fa-rotate-left",
+                                        action : function () {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
                                             }
-                                        },
-                                        noDetallado : {
-                                            label  : "Resumen",
-                                            icon   : "fa fa-rotate-left",
-                                            action : function () {
-                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
-                                                } else {
-                                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
-                                                }
+                                        }
+                                    },
+                                    noDetallado : {
+                                        label  : "Resumen",
+                                        icon   : "fa fa-rotate-left",
+                                        action : function () {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
                                             }
                                         }
                                     }
-                                },
-                                xls : {
-                                    label   : "Excel",
-                                    icon    : "fa fa-file-excel-o",
-                                    submenu : {
-                                        detallado   : {
-                                            label  : "Detallado",
-                                            icon   : "fa fa-rotate-left",
-                                            action : function () {
-                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                    location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
-                                                } else {
-                                                    location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
-                                                }
+                                }
+                            },
+                            xls : {
+                                label   : "Excel",
+                                icon    : "fa fa-file-excel-o",
+                                submenu : {
+                                    detallado   : {
+                                        label  : "Detallado",
+                                        icon   : "fa fa-rotate-left",
+                                        action : function () {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"
                                             }
-                                        },
-                                        noDetallado : {
-                                            label  : "Resumen",
-                                            icon   : "fa fa-rotate-left",
-                                            action : function () {
-                                                if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                    location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
-                                                } else {
-                                                    location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
-                                                }
+                                        }
+                                    },
+                                    noDetallado : {
+                                        label  : "Resumen",
+                                        icon   : "fa fa-rotate-left",
+                                        action : function () {
+                                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId
+                                            } else {
+                                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId
                                             }
                                         }
                                     }
                                 }
                             }
-                        };
+                        }
+                    };
 
-                        items.documentos = {
-                            label   : "Documentos generados",
-                            icon    : "fa fa-files-o",
-                            submenu : {
-                                pdf : {
-                                    label   : "PDF",
-                                    icon    : "fa fa-file-pdf-o",
-                                    submenu : {
-                                        detallado   : {
-                                            label  : "Detallado",
-                                            icon   : "fa fa-files-o",
-                                            action : function () {
-                                                $('#modalFechas').modal('show');
-                                                $("#btnPrint").unbind("click").click(function () {
-                                                    if ($("#formFechas").valid()) {
-                                                        if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                                        } else {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                                        }
-                                                        $('#modalFechas').modal('hide');
+                    items.documentos = {
+                        label   : "Documentos generados",
+                        icon    : "fa fa-files-o",
+                        submenu : {
+                            pdf : {
+                                label   : "PDF",
+                                icon    : "fa fa-file-pdf-o",
+                                submenu : {
+                                    detallado   : {
+                                        label  : "Detallado",
+                                        icon   : "fa fa-files-o",
+                                        action : function () {
+                                            $('#modalFechas').modal('show');
+                                            $("#btnPrint").unbind("click").click(function () {
+                                                if ($("#formFechas").valid()) {
+                                                    if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                    } else {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
                                                     }
-                                                });
-                                            }
-                                        },
-                                        noDetallado : {
-                                            label  : "Resumen",
-                                            icon   : "fa fa-files-o",
-                                            action : function () {
-                                                $('#modalFechas').modal('show');
-                                                $("#btnPrint").unbind("click").click(function () {
-                                                    if ($("#formFechas").valid()) {
-                                                        if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                                        } else {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                                        }
-                                                        $('#modalFechas').modal('hide');
+                                                    $('#modalFechas').modal('hide');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    noDetallado : {
+                                        label  : "Resumen",
+                                        icon   : "fa fa-files-o",
+                                        action : function () {
+                                            $('#modalFechas').modal('show');
+                                            $("#btnPrint").unbind("click").click(function () {
+                                                if ($("#formFechas").valid()) {
+                                                    if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                    } else {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
                                                     }
-                                                });
-                                            }
+                                                    $('#modalFechas').modal('hide');
+                                                }
+                                            });
                                         }
                                     }
-                                },
-                                xls : {
-                                    label   : "Excel",
-                                    icon    : "fa fa-file-excel-o",
-                                    submenu : {
-                                        detallado   : {
-                                            label  : "Detallado",
-                                            icon   : "fa fa-files-o",
-                                            action : function () {
-                                                $('#modalFechas').modal('show');
-                                                $("#btnPrint").unbind("click").click(function () {
-                                                    if ($("#formFechas").valid()) {
-                                                        if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                                        } else {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                                        }
-                                                        $('#modalFechas').modal('hide');
+                                }
+                            },
+                            xls : {
+                                label   : "Excel",
+                                icon    : "fa fa-file-excel-o",
+                                submenu : {
+                                    detallado   : {
+                                        label  : "Detallado",
+                                        icon   : "fa fa-files-o",
+                                        action : function () {
+                                            $('#modalFechas').modal('show');
+                                            $("#btnPrint").unbind("click").click(function () {
+                                                if ($("#formFechas").valid()) {
+                                                    if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                    } else {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
                                                     }
-                                                });
-                                            }
-                                        },
-                                        noDetallado : {
-                                            label  : "Resumen",
-                                            icon   : "fa fa-files-o",
-                                            action : function () {
-                                                $('#modalFechas').modal('show');
-                                                $("#btnPrint").unbind("click").click(function () {
-                                                    if ($("#formFechas").valid()) {
-                                                        if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
-                                                        } else {
-                                                            location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
-                                                        }
-                                                        $('#modalFechas').modal('hide');
+                                                    $('#modalFechas').modal('hide');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    noDetallado : {
+                                        label  : "Resumen",
+                                        icon   : "fa fa-files-o",
+                                        action : function () {
+                                            $('#modalFechas').modal('show');
+                                            $("#btnPrint").unbind("click").click(function () {
+                                                if ($("#formFechas").valid()) {
+                                                    if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                    } else {
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
                                                     }
-                                                });
-                                            }
+                                                    $('#modalFechas').modal('hide');
+                                                }
+                                            });
                                         }
                                     }
                                 }
                             }
-                        };
+                        }
+                    };
 //                    }
 
                     if (nodeType.match("usuario") || nodeType.match("jefe")) {

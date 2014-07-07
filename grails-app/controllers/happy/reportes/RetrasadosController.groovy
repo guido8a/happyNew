@@ -785,8 +785,12 @@ class RetrasadosController {
             def ttl = " por departamento"
             datosGrafico.each { dep, valores ->
                 if (datosGrafico.size() > 1) {
-                    dataSetRs.setValue(valores.objeto.codigo, valores.totalRs);
-                    dataSetRz.setValue(valores.objeto.codigo, valores.totalRz);
+                    if (valores.totalRs > 0) {
+                        dataSetRs.setValue(valores.objeto.codigo, valores.totalRs);
+                    }
+                    if (valores.totalRz > 0) {
+                        dataSetRz.setValue(valores.objeto.codigo, valores.totalRz);
+                    }
                 } else {
                     ttl = " de " + valores.objeto.descripcion
                     valores.rezagados.each { k, v ->
