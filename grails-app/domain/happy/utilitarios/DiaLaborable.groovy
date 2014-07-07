@@ -3,6 +3,7 @@ package happy.utilitarios
 import happy.tramites.Anio
 
 class DiaLaborable {
+    static auditable = true
     Date fecha
     String dia              //lun:1, mar:2, mie:3, jue:4, vie:5, sab:6, dom:0
     Anio anio            //anio de la fecha (para facilitar las busquedas)

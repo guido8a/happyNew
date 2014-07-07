@@ -1,7 +1,8 @@
 package happy.seguridad
 
 
-class Audt implements Serializable {
+class Audt {
+    static auditable = true
     Persona usuario
     Prfl perfil
     String accion

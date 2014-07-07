@@ -3,6 +3,7 @@ package happy.tramites
 import happy.seguridad.Persona
 
 class ObservacionTramite {
+    static auditable = true
     Tramite tramite
     Persona persona
     Date fecha
@@ -28,6 +29,6 @@ class ObservacionTramite {
         persona(blank: true, nullable: true, attributes: [title: 'persona'])
         fecha(blank: false, attributes: [title: 'fecha'])
         observaciones(maxSize: 1023, blank: false, attributes: [title: 'observaciones'])
-        tipo(maxSize: 10, blank:  true, nullable: true, attributes: [title: 'tipo'])
+        tipo(maxSize: 10, blank: true, nullable: true, attributes: [title: 'tipo'])
     }
 }

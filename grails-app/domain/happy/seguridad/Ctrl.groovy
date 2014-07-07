@@ -1,7 +1,7 @@
 package happy.seguridad
 
 class Ctrl {
-
+    static auditable = true
     String ctrlNombre
     static hasMany = [acciones: Accn]
 

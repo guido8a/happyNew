@@ -1,7 +1,7 @@
 package happy.seguridad
 
-class Accs implements Serializable {
-
+class Accs {
+    static auditable = true
     Date accsFechaInicial
     Date accsFechaFinal
     String accsObservaciones

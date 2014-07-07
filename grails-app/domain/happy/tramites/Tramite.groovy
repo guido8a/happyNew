@@ -7,6 +7,7 @@ import happy.utilitarios.Parametros
 //import happy.utilitarios.DiasLaborablesService
 
 class Tramite {
+    static auditable = true
     Anio anio
     Tramite padre
     TipoDocumento tipoDocumento
@@ -49,8 +50,6 @@ class Tramite {
     String conMembrete
 
     def diasLaborablesService
-    static auditable =true
-
 
     static mapping = {
         table 'trmt'

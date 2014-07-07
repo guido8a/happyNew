@@ -1,7 +1,7 @@
 package happy.tramites
 
 class Numero {
-    Departamento departamento
+    static auditable=true    Departamento departamento
     TipoDocumento tipoDocumento
     int valor                       //se utiliza este valor+1, es el ultimo valor utilizado: debe iniciar en 0
     static mapping = {

@@ -1,6 +1,6 @@
 package happy.seguridad
 
-class Modulo implements Serializable {
+class Modulo {
     String nombre
     String descripcion
     int orden

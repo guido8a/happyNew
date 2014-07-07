@@ -1,10 +1,9 @@
 package happy.seguridad
 
 class Prpf {
-
+    static auditable = true
     happy.tramites.PermisoTramite permiso
     Prfl perfil
-    static auditable = [ignore: []]
 
     static mapping = {
         table 'prpf'

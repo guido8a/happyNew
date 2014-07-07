@@ -1,6 +1,7 @@
 package happy.tramites
 
 class OrigenTramite {
+    static auditable = true
     TipoPersona tipoPersona
     String cedula
     Date fecha

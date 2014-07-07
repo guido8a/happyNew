@@ -1,6 +1,7 @@
 package happy.tramites
 
 class TipoPrioridad {
+    static auditable = true
     String codigo
     String descripcion
     int tiempo

@@ -1,6 +1,7 @@
 package happy.tramites
 
 class Anio {
+    static auditable = true
     String numero
     Integer estado          //1-> activo, 0-> no activo
     static mapping = {

@@ -1,6 +1,7 @@
 package happy.tramites
 
 class PermisoTramite {
+    static auditable = true
     String codigo
     String descripcion
     String texto
@@ -22,7 +23,8 @@ class PermisoTramite {
         descripcion(maxSize: 63, blank: false, attributes: [title: 'descripcion'])
         texto(maxSize: 255, blank: false, attributes: [title: 'descripcion del permiso'])
     }
-    String toString(){
+
+    String toString() {
         return "${this.descripcion}"
     }
 }

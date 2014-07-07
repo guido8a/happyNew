@@ -4,6 +4,7 @@ import happy.seguridad.Accs
 import happy.seguridad.Persona
 
 class PermisoUsuario {
+    static auditable = true
     Persona persona
     PermisoTramite permisoTramite
     Date fechaInicio
@@ -41,7 +42,7 @@ class PermisoUsuario {
 
         asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el permiso'])
         modificadoPor(blank: true, nullable: true, attributes: [title: 'modificado por'])
-        acceso(blank:true,nullable: true)
+        acceso(blank: true, nullable: true)
     }
 
     boolean getEstaActivo() {

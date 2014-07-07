@@ -1,7 +1,7 @@
 package happy.seguridad
 
 class Accn {
-
+    static auditable = true
     String accnNombre
     String accnDescripcion
     int accnAuditable

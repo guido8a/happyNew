@@ -4,6 +4,7 @@ import happy.seguridad.Persona
 import happy.utilitarios.Parametros
 
 class PersonaDocumentoTramite {
+    static auditable = true
     Tramite tramite
 
     Persona persona                         // persona q envia/recibe el tramite

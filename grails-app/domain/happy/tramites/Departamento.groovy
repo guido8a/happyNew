@@ -3,6 +3,7 @@ package happy.tramites
 import happy.seguridad.Persona
 
 class Departamento {
+    static auditable = true
     TipoDepartamento tipoDepartamento
     Departamento padre
     String codigo
@@ -69,10 +70,11 @@ class Departamento {
         }
         return triangulos
     }
-    def getJefes(){
+
+    def getJefes() {
         def jefes = []
-        Persona.findAllByDepartamentoAndJefe(this,1).each {
-            if(it.estaActivo)
+        Persona.findAllByDepartamentoAndJefe(this, 1).each {
+            if (it.estaActivo)
                 jefes.add(it)
         }
         return jefes

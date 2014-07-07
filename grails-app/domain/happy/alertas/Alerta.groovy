@@ -5,14 +5,14 @@ import happy.tramites.Departamento
 import happy.tramites.Tramite
 
 class Alerta {
-
+    static auditable = true
     Persona persona
     Departamento departamento
     String mensaje
     String datos
     String accion
     String controlador
-    Date fechaCreacion =  new Date()
+    Date fechaCreacion = new Date()
     Date fechaRecibido
     Tramite tramite
 
@@ -36,15 +36,15 @@ class Alerta {
     }
 
     static constraints = {
-        persona(nullable: true,blank:true)
-        departamento(nullable: true,blank:true)
-        mensaje(size:1..512,nullable: false,blank: false)
-        datos(size: 1..20,nullable: true,blank: true)
-        accion(size: 1..50,nullable: true,blank: true)
-        controlador(size: 1..30,nullable: true,blank: true)
-        fechaRecibido(nullable: true,blank:true)
-        fechaCreacion(nullable: false,blank:false)
-        tramite(nullable: true,blank:true)
+        persona(nullable: true, blank: true)
+        departamento(nullable: true, blank: true)
+        mensaje(size: 1..512, nullable: false, blank: false)
+        datos(size: 1..20, nullable: true, blank: true)
+        accion(size: 1..50, nullable: true, blank: true)
+        controlador(size: 1..30, nullable: true, blank: true)
+        fechaRecibido(nullable: true, blank: true)
+        fechaCreacion(nullable: false, blank: false)
+        tramite(nullable: true, blank: true)
 
     }
 

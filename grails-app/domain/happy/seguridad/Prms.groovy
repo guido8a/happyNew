@@ -1,10 +1,9 @@
 package happy.seguridad
 
-class Prms implements Serializable {
-
+class Prms {
+    static auditable = true
     Accn accion
     Prfl perfil
-    static auditable = [ignore: []]
 
     static mapping = {
         table 'prms'

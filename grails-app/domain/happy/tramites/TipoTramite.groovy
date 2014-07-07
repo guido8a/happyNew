@@ -1,6 +1,7 @@
 package happy.tramites
 
 class TipoTramite {
+    static auditable = true
     String codigo
     String descripcion
     static mapping = {

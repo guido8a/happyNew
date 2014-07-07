@@ -1,12 +1,12 @@
 package happy.seguridad
 
-class Prfl implements Serializable {
+class Prfl {
+    static auditable = true
     String nombre
     String descripcion
     Prfl padre
     String observaciones
     String codigo
-    static auditable = [ignore: []]
 
     static hasMany = [permisos: Prms, perfiles: Prfl]
 

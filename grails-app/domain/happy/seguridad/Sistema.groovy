@@ -1,10 +1,10 @@
 package happy.seguridad
 
-class Sistema implements Serializable {
+class Sistema {
+    static auditable = true
     String nombre
     String descripcion
 
-    static auditable = [ignore: []]
     static mapping = {
         table 'sstm'
         cache usage: 'read-write', include: 'non-lazy'

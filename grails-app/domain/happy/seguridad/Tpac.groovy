@@ -1,7 +1,7 @@
 package happy.seguridad
 
 class Tpac {
-
+    static auditable = true
     String tipo
 
     static mapping = {

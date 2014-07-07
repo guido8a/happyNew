@@ -1,6 +1,7 @@
 package happy.tramites
 
 class TipoDocumentoDepartamento {
+    static auditable = true
     Departamento departamento
     TipoDocumento tipo
     Integer estado
@@ -13,8 +14,8 @@ class TipoDocumentoDepartamento {
         columns {
             id column: 'tddp__id'
             departamento column: 'dpto__id'
-            tipo         column: 'tpdc__id'
-            estado       column: 'tddpetdo'
+            tipo column: 'tpdc__id'
+            estado column: 'tddpetdo'
         }
     }
     static constraints = {

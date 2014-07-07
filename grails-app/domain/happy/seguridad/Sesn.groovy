@@ -1,12 +1,12 @@
 package happy.seguridad
 
 
-class Sesn implements Serializable {
+class Sesn {
+    static auditable = true
     Persona usuario
     Prfl perfil
     Date fechaInicio
     Date fechaFin
-    static auditable = [ignore: []]
 
     static mapping = {
         table 'sesn'
@@ -25,21 +25,21 @@ class Sesn implements Serializable {
 
 
     static constraints = {
-       fechaInicio(blank:true,nullable: true)
-       fechaFin(blank:true,nullable: true)
+        fechaInicio(blank: true, nullable: true)
+        fechaFin(blank: true, nullable: true)
     }
 
     boolean getEstaActivo() {
         def now = new Date()
 //        now = now.plus(5)
 //        println " ${this.perfil} now "+now+" inicio  "+fechaInicio+" fin "+fechaFin
-        if(fechaInicio == null)
+        if (fechaInicio == null)
             return true
-        else{
-          if(fechaFin>=now)
-              return true
+        else {
+            if (fechaFin >= now)
+                return true
             else
-              return false
+                return false
         }
 
     }
