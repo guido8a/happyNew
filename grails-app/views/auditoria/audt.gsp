@@ -1,0 +1,96 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: fabricio
+  Date: 1/16/14
+  Time: 11:31 AM
+--%>
+
+<%@ page import="happy.seguridad.Persona" contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+    <meta name="layout" content="main">
+    <title>Auditoria</title>
+</head>
+<body>
+<elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
+<div class="btn-toolbar toolbar">
+    <div class="btn-group">
+        <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
+        <g:link action="" class="btn btn-success btnActualizar">
+            <i class="fa fa-refresh"></i> Actualizar
+        </g:link>
+        <g:link action="crearTramite" class="btn btn-default btnCrearTramite" style="margin-left: 10px">
+            <i class="fa fa-edit"></i> Crear Trámite Principal
+        </g:link>
+
+    </div>
+</div>
+<div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
+    <p class="css-vertical-text" style="bottom: -10px">Parámetros</p>
+    <div class="linea"></div>
+    <div class="row">
+        <div class="col-xs-1 negrilla">Desde:</div>
+        <div class="col-xs-2">
+            <elm:datepicker name="desde" value="${new Date()}" class="datepicker form-control required"></elm:datepicker>
+        </div>
+        <div class="col-xs-1 negrilla">Hasta:</div>
+        <div class="col-xs-2">
+            <elm:datepicker name="hasta" value="${new Date()}" class="datepicker form-control required"></elm:datepicker>
+        </div>
+        <div class="col-xs-1 negrilla">Operacion:</div>
+        <div class="col-xs-2">
+            <g:select name="operacion" id="operacion" from="${operaciones}" optionKey="key" optionValue="value" class="form-control required"></g:select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-1 negrilla">Tabla:</div>
+        <div class="col-xs-2">
+            <g:select name="domains" id="domains" from="${domains}" optionKey="key" optionValue="value" class="form-control required"></g:select>
+        </div>
+        <div class="col-xs-1 negrilla">Usuario:</div>
+        <div class="col-xs-2">
+            <g:textField name="usuario" id="usuario" class="form-control required"></g:textField>
+        </div>
+        <div class="col-xs-1 negrilla">
+            <a href="#" id="buscar" class="btn btn-azul">
+                <i class="fa fa-search"></i>
+                Buscar
+            </a>
+        </div>
+    </div>
+</div>
+<div style="margin-top: 30px; min-height: 100px;font-size: 11px;margin-bottom: 15px" class="vertical-container">
+    <p class="css-vertical-text">Busqueda</p>
+    <div class="linea"></div>
+    <div class="tablaAudt" >
+
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $("#buscar").click(function(){
+        $.ajax({
+            type    : "POST",
+            url     : "${createLink(controller:'auditoria', action:'tablaAudt')}",
+            data    : {
+                desde : $("#desde_input").val(),
+                hasta    : $("#hasta_input").val(),
+                operacion     : $("#operacion").val(),
+                domain     : $("#domains").val(),
+                usuario     : $("#usuario").val()
+            },
+            success : function (msg) {
+
+                $(".tablaAudt").html(msg)
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

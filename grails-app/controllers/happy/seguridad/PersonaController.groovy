@@ -905,6 +905,10 @@ class PersonaController extends happy.seguridad.Shield {
                 pr.delete(flush: true)
             } else {
                 def obs = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido + ", ${params.razon}"
+
+                def personaAntes = pr.persona
+                def dptoAntes = pr.departamento
+
                 if (params.quien == "-") {
                     pr.persona = null
                     pr.departamento = dpto
@@ -922,6 +926,12 @@ class PersonaController extends happy.seguridad.Shield {
                 } else {
                     errores += renderErrors(bean: tramite)
                     println tramite.errors
+                }
+                if(!pr.persona && !pr.departamento) {
+                    pr.persona = personaAntes
+                    pr.departamento = dptoAntes
+                    pr.observaciones += " Ha ocurrido un error al redireccionar. "
+                    errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
                 }
                 if (pr.save(flush: true)) {
 //                        println "pr save ok"
