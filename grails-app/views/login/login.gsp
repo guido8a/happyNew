@@ -200,7 +200,7 @@
                         message : $("#divCreditos").html(),
                         buttons : {
                             aceptar : {
-                                label     : "Aceptar",
+                                label     : "Cerrar",
                                 className : "btn-primary",
                                 callback  : function () {
                                 }
