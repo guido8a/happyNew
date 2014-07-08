@@ -1131,7 +1131,7 @@ class TramiteController extends happy.seguridad.Shield {
         tramites.each { tr ->
             if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                 band = tramitesService.verificaHijos(tr, anulado)
-                println "estado!!! " + band + "   " + tr.id+"  "+tr.tramite.codigo
+//                println "estado!!! " + band + "   " + tr.id+"  "+tr.tramite.codigo
                 if (!band) {
                     tramitesSinHijos += tr
                 }
