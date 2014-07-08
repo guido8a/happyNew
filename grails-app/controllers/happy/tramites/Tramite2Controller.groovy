@@ -218,7 +218,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def desenviar_ajax() {
 
-        println("params des" + params)
+        //println("params des" + params)
 
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
