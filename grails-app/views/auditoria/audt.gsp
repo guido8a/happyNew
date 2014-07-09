@@ -71,7 +71,7 @@
     </div>
 </div>
 <div style="margin-top: 30px; min-height: 100px;font-size: 11px;margin-bottom: 15px" class="vertical-container">
-    <p class="css-vertical-text">Busqueda</p>
+    <p class="css-vertical-text">Búsqueda</p>
     <div class="linea"></div>
     <div class="tablaAudt" >
 
