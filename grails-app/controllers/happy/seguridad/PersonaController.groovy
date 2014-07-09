@@ -209,9 +209,9 @@ class PersonaController extends happy.seguridad.Shield {
                 def w = img.width
                 def h = img.height
 
-                println "minW=" + minW + "   minH=" + minH
-                println "maxW=" + maxW + "   maxH=" + maxH
-                println "w=" + w + "   h=" + h
+//                println "minW=" + minW + "   minH=" + minH
+//                println "maxW=" + maxW + "   maxH=" + maxH
+//                println "w=" + w + "   h=" + h
 
                 if (w > maxW || h > maxH || w < minW || h < minH) {
                     def newW = w * scale

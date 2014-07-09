@@ -10,6 +10,17 @@
 <head>
     <meta name="layout" content="main">
     <title>Auditoria</title>
+    <style>
+        .pg-btn{
+            height:35px;width: 35px;border: 1px solid #999;margin-right: 3px;line-height: 35px;font-weight: bold;color:#000000 ;cursor: pointer;
+            float: left;
+            margin-top: 3px;;
+        }
+        .pg-active{
+            border: 1px solid #0088CF;
+            cursor: default;
+        }
+    </style>
 </head>
 <body>
 <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
@@ -72,6 +83,7 @@
 
 <script type="text/javascript">
     $("#buscar").click(function(){
+        openLoader("Buscando")
         $.ajax({
             type    : "POST",
             url     : "${createLink(controller:'auditoria', action:'tablaAudt')}",
@@ -83,7 +95,7 @@
                 usuario     : $("#usuario").val()
             },
             success : function (msg) {
-
+                closeLoader()
                 $(".tablaAudt").html(msg)
             }
         });
