@@ -11,9 +11,9 @@
         <div class="form-group ${hasErrors(bean: estadoTramiteExternoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
-                    Codigo
+                    Código
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-2">
                     <g:textField name="codigo" maxlength="4" required="" class="allCaps form-control required" value="${estadoTramiteExternoInstance?.codigo}"/>
                 </div>
                  *
@@ -23,9 +23,9 @@
         <div class="form-group ${hasErrors(bean: estadoTramiteExternoInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
-                    Descripcion
+                    Descripción
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <g:textField name="descripcion" maxlength="31" required="" class="allCaps form-control required" value="${estadoTramiteExternoInstance?.descripcion}"/>
                 </div>
                  *
