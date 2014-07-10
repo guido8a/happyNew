@@ -47,12 +47,15 @@
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <!-- botones -->
+        <h3>Trámites retrasados y sin recepción</h3>
         <div class="btn-toolbar toolbar">
+%{--
             <div class="btn-group">
                 <a href="#" class="btn btn-default" id="btnCerrar">
                     <i class="fa fa-times"></i> Cerrar esta ventana
                 </a>
             </div>
+--}%
 
             <div class="btn-group">
                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
@@ -166,10 +169,12 @@
             }
 
             $(function () {
+/*
                 $("#btnCerrar").click(function () {
                     window.close();
                     return false;
                 });
+*/
 
                 makeChart("rs");
                 makeChart("rz");
