@@ -35,14 +35,25 @@
 
                     <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
+                            <g:if test="${pdt.estado.codigo=='E003'}">
+                                <g:set var="fecha" value="${pdt.fechaEnvio.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+                            <g:if test="${pdt.estado.codigo=='E004'}">
+                                <g:set var="fecha" value="${pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+                            <g:if test="${pdt.estado.codigo=='E006'}">
+                                <g:set var="fecha" value="${pdt.fechaAnulacion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                             <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
                                 ${t.paraExterno} (EXT)
                             </g:if>
                             <g:else>
-                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona.login}
                             </g:else>
-                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b><br>
+                            <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b> el ${fecha} <br>
+                            %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
                         </g:each>
                     </div>
                 </div>
@@ -122,14 +133,25 @@
 
                     <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
+                            <g:if test="${pdt.estado.codigo=='E003'}">
+                                <g:set var="fecha" value="${pdt.fechaEnvio.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+                            <g:if test="${pdt.estado.codigo=='E004'}">
+                                <g:set var="fecha" value="${pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+                            <g:if test="${pdt.estado.codigo=='E006'}">
+                                <g:set var="fecha" value="${pdt.fechaAnulacion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                             <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
                                 ${t.paraExterno} (EXT)
                             </g:if>
                             <g:else>
-                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                                ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona.login}
                             </g:else>
-                            ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""} <b>${pdt.estado?.descripcion}</b><br>
+                            <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b> el ${fecha} <br>
+                        %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
                         </g:each>
                     </div>
                 </div>
