@@ -104,7 +104,31 @@ class RetrasadosController {
 //        println "deps "+deps+"  puede ver  "+puedeVer
         def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
         tramites.each { t ->
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} " +
+                    "and fechaEnvio is not null " +
+                    "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
+                    "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+//            def pdt = PersonaDocumentoTramite.withCriteria {
+//                eq("tramite", t)
+//                isNotNull("fechaEnvio")
+//                inList("rolPersonaTramite", [rolPara, rolCopia])
+//                inList("estado", [estadoR, estadoE])
+//                if (usuario) {
+//                    if (usuario.esTriangulo) {
+//                        or {
+//                            eq("persona", usuario)
+//                            eq("departamento", usuario.departamento)
+//                        }
+//                    } else {
+//                        eq("persona", usuario)
+//                    }
+//                }
+//                persona {
+//                    order("apellido", "asc")
+//                }
+//            }
+//            println pdt.id
+//            println pdt.persona?.apellido
             if (pdt) {
                 pdt.each { pd ->
                     def resp = Tramite.findAllByAQuienContesta(pd)
@@ -175,7 +199,7 @@ class RetrasadosController {
         PdfPTable tablaTramites
 
         hijos.each { lvl ->
-//            println "hijo ${lvl['objeto']}  ${lvl['objeto'].id}   "+puedeVer.id
+//            println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "+puedeVer.id
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
 //            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
 
@@ -864,7 +888,7 @@ class RetrasadosController {
 
     def imprimeHijosPdfConsolidado(arr, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
         total = 0
-        totalSr=0
+        totalSr = 0
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
@@ -1050,6 +1074,7 @@ class RetrasadosController {
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                             else
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
 //                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                         } else {
                             def per = null
@@ -1070,6 +1095,8 @@ class RetrasadosController {
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                                 else
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
+                                //println actual["personas"]
 //                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                             }
                         }
@@ -1101,6 +1128,7 @@ class RetrasadosController {
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                         else
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
 //                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                     }
                 }

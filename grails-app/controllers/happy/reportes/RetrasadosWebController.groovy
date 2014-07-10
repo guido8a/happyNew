@@ -187,6 +187,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         tabla += "</table>"
 
+        params.detalle = 1
+
         return [tabla: tabla, params: params]
     }
 
@@ -349,6 +351,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                             else
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
 //                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                         } else {
                             def per = null
@@ -369,6 +372,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                                 else
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
 //                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                             }
                         }
@@ -400,6 +404,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
                         else
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
 //                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                     }
                 }
