@@ -54,6 +54,23 @@
                 </a>
             </div>
 
+            <div class="btn-group">
+                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
+                    <i class="fa fa-file-pdf-o"></i> PDF detallado
+                </g:link>
+                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
+                    <i class="fa fa-file-pdf-o"></i> PDF resumido
+                </g:link>
+            </div>
+
+            <div class="btn-group">
+                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
+                    <i class="fa fa-file-excel-o"></i> Excel detallado
+                </g:link>
+                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
+                    <i class="fa fa-file-excel-o"></i> Excel resumido
+                </g:link>
+            </div>
         </div>
 
         <div class="chartContainer">
@@ -133,7 +150,7 @@
                     var $this = $(this);
                     $this.qtip({
                         show     : {
-                            ready  : true
+                            ready : true
                         },
                         position : {
                             my     : 'bottom center',  // Position my top left...

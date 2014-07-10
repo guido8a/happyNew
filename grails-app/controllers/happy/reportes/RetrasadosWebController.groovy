@@ -11,9 +11,6 @@ import happy.tramites.Tramite
 class RetrasadosWebController extends happy.seguridad.Shield {
 
     def reporteRetrasadosConsolidado() {
-//        params.detalle=1
-//        params.prsn=session.usuario.id
-//        println "con aaa    " + params
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -188,59 +185,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "</tr>"
         tabla += "</tfoot>"
 
-//        def comilla = "\""
-//        def ttl = " por departamento"
-//        def grafRsData = "", grafRzData = ""
-//        def grafRsJson = [], grafRzJson = []
-//        datosGrafico.each { dep, valores ->
-//            if (datosGrafico.size() > 1) {
-//                if (valores.totalRs > 0) {
-//                    grafRsData += "[${comilla}${valores.objeto.codigo}${comilla}, ${valores.totalRs}],"
-//                    grafRsJson.add(["${valores.objeto.codigo}": valores.totalRs])
-//                }
-//                if (valores.totalRz > 0) {
-//                    grafRzData += "[${comilla}${valores.objeto.codigo}${comilla}, ${valores.totalRz}],"
-//                    grafRzJson.add(["${valores.objeto.codigo}": valores.totalRz])
-//                }
-//            } else {
-//                ttl = " de " + valores.objeto.descripcion
-//                valores.rezagados.each { k, v ->
-//                    if (v > 0) {
-//                        if (k instanceof java.lang.String) {
-//                            grafRsData += "[${comilla}${k}${comilla}, ${v}],"
-//                            grafRsJson.add(["${k}": v])
-//                        } else {
-//                            grafRzData += "[${comilla}${k.login}${comilla}, ${v}],"
-//                            grafRzJson.add(["${k.login}": v])
-//                        }
-//                    }
-//                }
-//                valores.retrasados.each { k, v ->
-//                    if (v > 0) {
-//                        if (k instanceof java.lang.String) {
-//                            grafRsData += "[${comilla}${k}${comilla}, ${v}],"
-//                            grafRsJson.add(["${k}": v])
-//                        } else {
-//                            grafRzData += "[${comilla}${k.login}${comilla}, ${v}],"
-//                            grafRzJson.add(["${k.login}": v])
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        def jsonRs = new JsonBuilder(grafRsJson)
-//        def jsonRz = new JsonBuilder(grafRzJson)
-//
-//        grafRsData = "[" + grafRsData[0..grafRsData.size() - 2] + "]"
-//        grafRzData = "[" + grafRzData[0..grafRzData.size() - 2] + "]"
-//
-//        def tituloRs = "Documentos sin recepción" + ttl
-//        def tituloRz = "Documentos retrasados" + ttl
-
         tabla += "</table>"
 
-        return [tabla: tabla]//, grafRsData: grafRsJson, grafRzData: grafRzData, tituloRs: tituloRs, tituloRz: tituloRz]
+        return [tabla: tabla, params: params]
     }
 
     def imprimeHijosPdfConsolidado(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
