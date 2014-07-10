@@ -14,6 +14,11 @@
         <style type="text/css">
         .info {
             font-weight : bold;
+            font-size   : larger;
+        }
+
+        .alert-info {
+            font-size : larger;
         }
         </style>
     </head>
@@ -36,7 +41,7 @@
                         <form class="form-horizontal">
                             <div class="alert alert-info">
                                 Se generará un reporte <span class="info" id="${reporte}_tipo">general</span>
-                                de sus trámites retrasados en formato <span class="info" id="${reporte}_formato">PDF</span>.
+                                de sus <span class="info">trámites retrasados</span> en formato <span class="info" id="${reporte}_formato">PDF</span>.
                             </div>
 
                             <div class="btn-group" data-toggle="buttons">
@@ -82,7 +87,7 @@
                         <form class="form-horizontal">
                             <div class="alert alert-info">
                                 Se generará un reporte <span class="info" id="${reporte}_tipo">general</span>
-                                de sus documentos generados en formato <span class="info" id="${reporte}_formato">PDF</span>
+                                de sus <span class="info">documentos generados</span> en formato <span class="info" id="${reporte}_formato">PDF</span>
                                 desde <span class="info" id="${reporte}_desde"></span> hasta  <span class="info" id="${reporte}_hasta"></span>.
                             </div>
 
@@ -152,8 +157,8 @@
                     <div class="panel-body">
                         <form class="form-horizontal">
                             <div class="alert alert-info">
-                                Se generará un reporte
-                                de la gestión de sus trámites en formato <span class="info" id="${reporte}_formato">PDF</span>
+                                Se generará un reporte de la <span class="info">gestión de sus trámites</span>
+                                en formato <span class="info" id="${reporte}_formato">PDF</span>
                                 desde <span class="info" id="${reporte}_desde"></span> hasta  <span class="info" id="${reporte}_hasta"></span>.
                             </div>
 
