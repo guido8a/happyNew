@@ -4,7 +4,7 @@
 <table class="table table-bordered table-condensed table-hover" style="margin-bottom: 5px">
     <thead>
     <tr>
-        <th>id</th>
+        %{--<th>id</th>--}%
         <th>Fecha</th>
         <th>Usuario</th>
         <th>Tabla</th>
@@ -19,7 +19,7 @@
     <tbody>
     <g:each in="${res}" var="r">
         <tr>
-            <td>${r.id}</td>
+            %{--<td>${r.id}</td>--}%
             <td>${r.fecha.format("dd-MM-yyyy HH:mm:ss")}</td>
             <td>${r.usuario}</td>
             <g:if test="${dominio}">
