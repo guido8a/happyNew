@@ -242,7 +242,7 @@
                         <li>
                             <i class="fa-li ${iconTrmt}"></i>
                             <span id="nmro">
-                                <g:link controller="numero" action="config">Fijar números consecutivos por tipo documento</g:link> sirve para
+                                <g:link controller="numero" action="config">Fijar números consecutivos por tipo de documento</g:link> sirve para
                                 fijar los números consecutivos que se aplican por departamento y tipo de documento
                             </span>
 
