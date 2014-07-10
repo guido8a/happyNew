@@ -14,7 +14,7 @@
             <th class="cabecera">Destinatario</th>
             <th class="cabecera">Prioridad</th>
             <th class="cabecera">Fecha Envio</th>
-            <th class="cabecera">F Límite Recepción</th>
+            <th class="cabecera">F. Límite Recepción</th>
             <th class="cabecera">Estado</th>
             <th class="cabecera">Enviar</th>
         </tr>
@@ -73,12 +73,25 @@
                     </g:else>
 
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
-                    <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
-                        <td>EXT</td>
-                    </g:if>
-                    <g:else>
-                        <td>${para?.departamento?.codigo}%{--//${todos}--}%</td>
-                    </g:else>
+                    %{--<g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">--}%
+                        %{--<td>EXT</td>--}%
+                    %{--</g:if>--}%
+                    %{--<g:else>--}%
+                        %{--<td>${para?.departamento?.codigo}--}%%{--//${todos}--}%%{--</td>--}%
+                    %{--</g:else>--}%
+                    <td>
+                        <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
+                            EXT
+                        </g:if>
+                        <g:else>
+                            <g:if test="${para?.departamento}">
+                                ${para?.departamento?.codigo}
+                            </g:if>
+                            <g:else>
+                                ${para?.persona?.departamento?.codigo}
+                            </g:else>
+                        </g:else>
+                    </td>
                     <g:set var="infoExtra" value=""/>
                 %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
                     <g:each in="${[para] + copias}" var="pdt">
