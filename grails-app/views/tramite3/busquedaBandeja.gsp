@@ -52,7 +52,7 @@
 
            <g:each in="${pxtTramites}" var="pxt">
                <g:if test="${tramite?.id == pxt?.id}">
-                   <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
+                   <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" prtr="${tramite?.id}"
                        class="${clase} ${type}">
                        <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
                        <td>${tramite?.tramite?.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
