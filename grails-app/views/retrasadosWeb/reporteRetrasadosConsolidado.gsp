@@ -47,7 +47,7 @@
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <!-- botones -->
-        <h3>Trámites retrasados y sin recepción</h3>
+        <h3>Trámites sin Recepción y Retrasados</h3>
         <div class="btn-toolbar toolbar">
 %{--
             <div class="btn-group">
@@ -59,19 +59,19 @@
 
             <div class="btn-group">
                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
-                    <i class="fa fa-file-pdf-o"></i> PDF detallado
+                    <i class="fa fa-file-pdf-o"></i> Reporte detallado pdf
                 </g:link>
                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
-                    <i class="fa fa-file-pdf-o"></i> PDF resumido
+                    <i class="fa fa-file-pdf-o"></i> Reporte resumido pdf
                 </g:link>
             </div>
 
             <div class="btn-group">
                 <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
-                    <i class="fa fa-file-excel-o"></i> Excel detallado
+                    <i class="fa fa-file-excel-o"></i> Reporte detallado Excel
                 </g:link>
                 <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
-                    <i class="fa fa-file-excel-o"></i> Excel resumido
+                    <i class="fa fa-file-excel-o"></i> Reporte resumido Excel
                 </g:link>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 var data = [], arr = [];
                 var deps = $(".data.dep." + tipo).size();
 
-                var title = tipo == "rs" ? "Documentos sin recepción " : "Documentos retrasados";
+                var title = tipo == "rs" ? "Trámites sin recepción " : "Trámites retrasados";
                 title += (deps > 1 ? " por departamento" : "");
 
                 $("tr").each(function () {
