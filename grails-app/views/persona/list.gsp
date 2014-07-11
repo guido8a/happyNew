@@ -532,7 +532,7 @@
                 };
 
                 var ausentismo = {
-                    label           : 'Ausentismo',
+                    label           : 'Absentismo',
                     icon            : "fa fa-gears",
                     separator_after : true,
                     url             : "${createLink(action: 'ausentismo')}/" + id

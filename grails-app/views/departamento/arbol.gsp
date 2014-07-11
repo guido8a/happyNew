@@ -897,7 +897,7 @@
                         if (estaAusente) {
                             items.terminar = {
                                 separator_before : true,
-                                label            : "Terminar ausentismo",
+                                label            : "Terminar absentismo",
                                 icon             : "fa ${iconActivar} text-success",
                                 action           : function (obj) {
                                     $.ajax({
@@ -908,7 +908,7 @@
                                         },
                                         success : function (msg) {
                                             bootbox.dialog({
-                                                title   : "Terminar ausentismo",
+                                                title   : "Terminar absentismo",
                                                 message : msg,
                                                 buttons : {
                                                     cancelar : {

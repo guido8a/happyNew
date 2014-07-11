@@ -194,14 +194,14 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseAcceso">
-                            Ausentismo: permisos y vacaciones
+                            Absentismo: permisos y vacaciones
                         </a>
                     </h4>
                 </div>
 
                 <div id="collapseAcceso" class="panel-collapse collapse" style="padding: 10px">
                     <div class="panel-body">
-                        <h4>Agregar ausentismo</h4>
+                        <h4>Agregar absentismo</h4>
 
                         <p style="margin-bottom: 0px">
                             El usuario se hallará ausente entre las fechas seleccionadas (inclusive).
