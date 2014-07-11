@@ -21,9 +21,9 @@
 
     <body>
         <div class="alert alert-info">
-            El número indicado es el último utilizado, es decir, el siguiente documento generado tendrá el número siguiente
-            al indicado<br/>
-            Se muestran únicamente los departamentos que tienen asignado al menos un tipo de documento.
+            El valor indicado en cada casilla es el último número utilizado, de modo que el siguiente
+            documento se generará con el indicado más 1 (el siguiente).<br/>
+            En la pantalla se muestran únicamente los departamentos que tienen asignado al menos un tipo de documento.
         </div>
         <!-- botones -->
         <div class="btn-toolbar toolbar">

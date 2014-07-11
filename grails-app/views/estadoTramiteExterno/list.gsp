@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Lista de EstadoTramiteExterno</title>
+        <title>Lista de Estado del Trámite Externo</title>
     </head>
     <body>
 
@@ -29,15 +29,12 @@
                 </div><!-- /input-group -->
             </div>
         </div>
-
+    <h3>Lista de Estado del Trámite Externo</h3>
         <table class="table table-condensed table-bordered table-striped">
             <thead>
                 <tr>
-                    
-                    <g:sortableColumn property="codigo" title="Codigo" />
-                    
-                    <g:sortableColumn property="descripcion" title="Descripcion" />
-                    
+                    <g:sortableColumn property="codigo" title="Código" />
+                    <g:sortableColumn property="descripcion" title="Descripción" />
                 </tr>
             </thead>
             <tbody>
