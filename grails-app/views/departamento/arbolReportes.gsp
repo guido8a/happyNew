@@ -176,7 +176,7 @@
                     %{--if (("${session.usuario.puedeJefe}" == "true" && "${session.usuario.departamentoId}" == nodeId.toString()) ||--}%
                     %{--"${session.usuario.puedeDirector}" == "true") {--}%
                     items.retrasadosWeb = {
-                        label  : "Trámites retrasados Web",
+                        label  : "Trámites retrasados",
                         icon   : " fa fa-globe",
                         action : function (e, e2) {
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
@@ -186,6 +186,8 @@
                             }
                         }
                     };
+
+
                     %{--items.retrasados = {--}%
                     %{--label   : "Trámites retrasados",--}%
                     %{--icon    : "fa fa-rotate-left",--}%
@@ -337,7 +339,7 @@
                     };
 //                    }
 
-                    if (nodeType.match("usuario") || nodeType.match("jefe")) {
+                    if (!nodeType.match("usuario") && !nodeType.match("jefe")) {
                         items.gestion = {
                             label   : "Gestión de trámites",
                             icon    : "fa fa-file-text",
