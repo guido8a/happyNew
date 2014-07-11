@@ -13,6 +13,7 @@ class Tramite {
     TipoDocumento tipoDocumento
     Persona de
     Departamento deDepartamento
+    Departamento departamento
     String paraExterno
     TipoPrioridad prioridad
     EstadoTramite estadoTramite
@@ -97,6 +98,7 @@ class Tramite {
             esRespuesta column: 'trmtesrs'
 
             conMembrete column: 'trmtcnmm'
+            departamento column: 'dpto__id'
         }
     }
     static constraints = {
@@ -125,7 +127,7 @@ class Tramite {
         fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
         guia(blank: true, nullable: true, attributes: [title: 'guia'])
-
+        departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
         aQuienContesta(blank: true, nullable: true)
 
         contacto(blank: true, nullable: true, maxSize: 63)

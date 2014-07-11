@@ -1273,7 +1273,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (externos.contains(tramite.tipoDocumento.codigo)) {
             tramite.externo = '1'
         }
-
+        tramite.departamento=tramite.de.departamento
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"

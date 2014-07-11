@@ -166,4 +166,13 @@ class TestBeforeController {
         return texto
 
     }
+
+    def fixTramites(){
+        Tramite.list().each {t->
+            t.departamento=t.de.departamento
+            t.save(flush: true)
+        }
+    }
+
+
 }
