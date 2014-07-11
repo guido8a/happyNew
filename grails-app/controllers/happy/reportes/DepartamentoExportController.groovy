@@ -16,12 +16,19 @@ class DepartamentoExportController extends Shield {
 
     def reportesPdfService
 
+    Font fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+    Font fontUsu = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+
     def reporteSinUsuarios() {
         redirect(action: "crearPdf", params: [usu: false])
     }
 
     def reporteConUsuarios() {
-        redirect(action: "crearPdf", params: [usu: true])
+        redirect(action: "crearPdf", params: [usu: true, inactivos: true])
+    }
+
+    def reporteUsuariosActivos() {
+        redirect(action: "crearPdf", params: [usu: true, inactivos: false])
     }
 
     def crearPdf() {
@@ -37,6 +44,9 @@ class DepartamentoExportController extends Shield {
                 strTitulo = "Departamentos y Usuarios"
             } else {
                 strTitulo = "Usuarios"
+            }
+            if (params.inactivos.toBoolean() == false) {
+                strTitulo += " activos"
             }
         } else {
             strTitulo = "Departamentos"
@@ -55,19 +65,12 @@ class DepartamentoExportController extends Shield {
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 //            println "name "+name
-//        Font titleFont = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
-//        Font titleFont3 = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
-        Font titleFont2 = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
-//        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL);
-
-        Font fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontUsu = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
 
         if (!conUsuarios) {
             fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
         }
 
-        Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2, bottom: 1.5, left: 2.5])
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2])
         //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
@@ -82,15 +85,16 @@ class DepartamentoExportController extends Shield {
         reportesPdfService.propiedadesDocumento(document, "departamentos")
         //pone las propiedades: title, subject, keywords, author, creator
 
+        reportesPdfService.crearEncabezado(document, strTitulo)
 //        println titulo
-        Paragraph headersTitulo = new Paragraph();
-        headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph(strTitulo, titleFont2));
-        headersTitulo.setSpacingAfter(10f)
+//        Paragraph headersTitulo = new Paragraph();
+//        headersTitulo.setAlignment(Element.ALIGN_CENTER);
+//        headersTitulo.add(new Paragraph(strTitulo, titleFont2));
+//        headersTitulo.setSpacingAfter(10f)
+//
+//        document.add(headersTitulo)
 
-        document.add(headersTitulo)
-
-        arbolDpto(document, fontDpto, fontUsu, departamentoInicial, "", conUsuarios, params.sort)
+        arbolDpto(document, departamentoInicial, "", conUsuarios, params.inactivos, params.sort)
 
         document.close();
         pdfw.close()
@@ -101,7 +105,8 @@ class DepartamentoExportController extends Shield {
         response.getOutputStream().write(b)
     }
 
-    def arbolDpto(document, fontDpto, fontUsu, padre, esp, conUsuarios, sort) {
+    def arbolDpto(document, padre, esp, conUsuarios, inactivos, sort) {
+        inactivos = inactivos.toBoolean()
         def departamentos = Departamento.withCriteria {
             eq("activo", 1)
             if (padre == null) {
@@ -118,47 +123,55 @@ class DepartamentoExportController extends Shield {
                 eq("departamento", padre)
                 order(sort, "asc")
             }.each { pers ->
-                def esp2 = esp
-                if (esp2 != "") {
-                    esp2 += " "
-                }
-                esp2 = esp
-                if (!padre) {
-                    esp2 = esp + "" + esp + "    "
-                }
-                def descP = esp2
-                if (pers.activo == 0) {
-                    fontUsu.setColor(Color.GRAY);
-                    descP += " Inactivo - "
-                } else {
-                    fontUsu.setColor(Color.BLACK);
-                }
-                if (sort == "nombre") {
-                    descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.nombre} ${pers.apellido}")
-                } else {
-                    descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.apellido} ${pers.nombre}")
-                }
-                if (pers.login || pers.telefono || pers.mail) {
-                    descP += " ("
-                    if (pers.login) {
-                        descP += ("usuario: ${pers.login}").toLowerCase()
+//                println "login:" + pers.login + "   inactivos:" + inactivos + "   pers.estaActivo:" + pers.estaActivo +
+//                        "  inactivos:" + inactivos + "  " +
+//                        "  0:" + (!inactivos) + "  " +
+//                        "  1:" + (!inactivos && pers.estaActivo) +
+//                        "  inactivos || 1:" + (inactivos || (!inactivos && pers.estaActivo))
+                if (inactivos || (!inactivos && pers.estaActivo)) {
+                    def esp2 = esp
+                    if (esp2 != "") {
+                        esp2 += " "
                     }
-                    if (pers.telefono) {
-                        if (descP != " (") {
-                            descP += ", "
+                    esp2 = esp
+                    if (!padre) {
+                        esp2 = esp + "" + esp + "    "
+                    }
+                    def descP = esp2
+//                    if (pers.activo == 0) {
+                    if (!pers.estaActivo) {
+                        fontUsu.setColor(Color.GRAY);
+                        descP += " Inactivo - "
+                    } else {
+                        fontUsu.setColor(Color.BLACK);
+                    }
+                    if (sort == "nombre") {
+                        descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.nombre} ${pers.apellido}")
+                    } else {
+                        descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.apellido} ${pers.nombre}")
+                    }
+                    if (pers.login || pers.telefono || pers.mail) {
+                        descP += " ("
+                        if (pers.login) {
+                            descP += ("usuario: ${pers.login}").toLowerCase()
                         }
-                        descP += "teléfono: ${pers.telefono}"
-                    }
-                    if (pers.mail) {
-                        if (descP != " (") {
-                            descP += ", "
+                        if (pers.telefono) {
+                            if (descP != " (") {
+                                descP += ", "
+                            }
+                            descP += "teléfono: ${pers.telefono}"
                         }
-                        descP += ("e-mail: ${pers.mail}").toLowerCase()
+                        if (pers.mail) {
+                            if (descP != " (") {
+                                descP += ", "
+                            }
+                            descP += ("e-mail: ${pers.mail}").toLowerCase()
+                        }
+                        descP += ")"
                     }
-                    descP += ")"
-                }
 //                descP = WordUtils.capitalizeFully(descP)
-                document.add(new Paragraph(descP, fontUsu));
+                    document.add(new Paragraph(descP, fontUsu));
+                }
             }
         }
         departamentos.each { dpto ->
@@ -167,7 +180,7 @@ class DepartamentoExportController extends Shield {
                 esp2 += " "
             }
 //            def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
-            def desc = esp2 + "${dpto.descripcion}"
+            def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
             if (dpto.telefono || dpto.extension || dpto.direccion) {
                 desc += ": "
                 if (dpto.telefono) {
@@ -185,7 +198,7 @@ class DepartamentoExportController extends Shield {
             }
             document.add(new Paragraph(desc, fontDpto));
             if (Departamento.countByPadre(dpto) > 0 || Persona.countByDepartamento(dpto) > 0) {
-                arbolDpto(document, fontDpto, fontUsu, dpto, esp + "    ", conUsuarios, sort)
+                arbolDpto(document, dpto, esp + "    ", conUsuarios, inactivos, sort)
             }
         }
     }

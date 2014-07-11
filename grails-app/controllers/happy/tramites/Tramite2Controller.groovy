@@ -667,7 +667,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def enviarVarios() {
 //        println "method "+request.getMethod()
-        println "PARAMS " + params
+//        println "PARAMS " + params
+
+        def noPDF = ["DEX", "SUM"]
+
         def usuario = Persona.get(session.usuario.id)
 
         if (request.getMethod() == "POST") {
@@ -736,7 +739,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (tramite.save(flush: true)) {
                         def realPath = servletContext.getRealPath("/")
                         def mensaje = message(code: 'pathImages').toString();
-                        enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
+                        if (!noPDF.contains(tramite.tipoDocumento.codigo)) {
+                            enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
+                        }
                     } else {
                         println tramite.errors
                         error += renderErrors(bean: tramite)
@@ -1086,51 +1091,51 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def herm = Tramite.get(params.hermano)
 //            pdt = herm.aQuienContesta.id
             def p = herm
-            while(p.padre){
-                p=p.padre
+            while (p.padre) {
+                p = p.padre
             }
-            padre=p
+            padre = p
             pdt = p.para
-            if(!pdt){
+            if (!pdt) {
                 pdt = p.copias
-                if(pdt.size()==0){
+                if (pdt.size() == 0) {
                     flash.message = "No puede agregar un documento a este tramite."
                     response.sendError(403)
                     return
-                }else{
-                    pdt=pdt[0]
+                } else {
+                    pdt = pdt[0]
                 }
             }
-            if(pdt.estado?.codigo=="E006"){
+            if (pdt.estado?.codigo == "E006") {
                 flash.message = "No puede agregar un tramite a un documento anulado"
                 response.sendError(403)
-            }else{
-                pdt=pdt.id
+            } else {
+                pdt = pdt.id
             }
 
         }
         if (params.buscar == '1') {
             def p = padre
-            while(p.padre){
-                p=p.padre
+            while (p.padre) {
+                p = p.padre
             }
             pdt = p.para
-            padre=p
-            if(!pdt){
+            padre = p
+            if (!pdt) {
                 pdt = p.copias
-                if(pdt.size()==0){
+                if (pdt.size() == 0) {
                     flash.message = "No puede agregar un documento a este tramite."
                     response.sendError(403)
                     return
-                }else{
-                    pdt=pdt[0]
+                } else {
+                    pdt = pdt[0]
                 }
             }
-            if(pdt.estado.codigo=="E006"){
+            if (pdt.estado.codigo == "E006") {
                 flash.message = "No puede agregar un tramite a un documento anulado"
                 response.sendError(403)
-            }else{
-                pdt=pdt.id
+            } else {
+                pdt = pdt.id
             }
         }
 

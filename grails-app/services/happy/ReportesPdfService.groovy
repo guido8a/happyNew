@@ -285,11 +285,11 @@ class ReportesPdfService {
 //        logo.scalePercent(100);
         def page = document.getPageSize()
         def rot = page.getRotation()
-        def x = -140
+        def x = -100
         if (rot == 90) {
-            x = -270
+            x = -230
         }
-        Chunk chunkLogo = new Chunk(logo, x, -10);
+        Chunk chunkLogo = new Chunk(logo, x, -20);
 
         Phrase phraseHeader = new Phrase()
         phraseHeader.add(chunkLogo)

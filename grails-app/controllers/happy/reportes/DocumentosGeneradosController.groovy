@@ -47,11 +47,12 @@ class DocumentosGeneradosController {
 
     def reportesPdfService
 
-    def reporteGeneralPdf() {
-        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+    Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+    Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+    Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
+    Font fontGranTotal = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
 
+    def reporteGeneralPdf() {
         def personas = []
 
         def fileName = "documentos_generados_"
@@ -62,13 +63,13 @@ class DocumentosGeneradosController {
             personas = [Persona.get(params.id.toLong())]
 
             fileName += personas[0].login
-            title += "${personas[0].nombre} ${personas[0].apellido} (de ${params.desde} a ${params.hasta})"
+            title += "${personas[0].nombre} ${personas[0].apellido}\nde ${params.desde} a ${params.hasta}"
             title2 += "el usuario ${personas[0].nombre} ${personas[0].apellido} (${personas[0].login}) entre ${params.desde} y ${params.hasta}"
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
             def hijosDep = todosDep(dep)
             fileName += dep.codigo
-            title += "${dep.descripcion} (de ${params.desde} a ${params.hasta})"
+            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
             title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
             personas = Persona.withCriteria {
                 inList("departamento", hijosDep)
@@ -165,8 +166,7 @@ class DocumentosGeneradosController {
                 tot += v.total
             }
 
-            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
-            reportesPdfService.addCellTabla(tabla, new Paragraph("TOTAL", fontBold), paramsCenter)
+            reportesPdfService.addCellTabla(tabla, new Paragraph("GRAN TOTAL", fontBold), [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, colspan: 2])
             reportesPdfService.addCellTabla(tabla, new Paragraph("${tot}", fontBold), paramsCenter)
             document.add(tabla)
 
@@ -298,11 +298,6 @@ class DocumentosGeneradosController {
     }
 
     def reporteDetalladoPdf() {
-
-        Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-        Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-        Font fontTh = new Font(Font.TIMES_ROMAN, 11, Font.BOLD);
-
         def personas = []
 
         def fileName = "detalle_documentos_generados_"
@@ -313,19 +308,20 @@ class DocumentosGeneradosController {
             personas = [Persona.get(params.id.toLong())]
 
             fileName += personas[0].login
-            title += "${personas[0].nombre} ${personas[0].apellido} (de ${params.desde} a ${params.hasta})"
+            title += "${personas[0].nombre} ${personas[0].apellido}\nde ${params.desde} a ${params.hasta}"
             title2 += "el usuario ${personas[0].nombre} ${personas[0].apellido} (${personas[0].login}) entre ${params.desde} y ${params.hasta}"
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
             def hijosDep = todosDep(dep)
             fileName += dep.codigo
-            title += "${dep.descripcion} (de ${params.desde} a ${params.hasta})"
+            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
             title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
             personas = Persona.withCriteria {
                 inList("departamento", hijosDep)
                 departamento {
                     order("id", "asc")
                 }
+                order("apellido", "asc")
             }
         }
 //        println "PERSONAS: " + personas
@@ -351,11 +347,8 @@ class DocumentosGeneradosController {
         reportesPdfService.crearEncabezado(document, title)
         //crea el encabezado que quieren estos manes con el titulo que se le mande
 
-        def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-
-        def paramsDpto = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.GRAY, colspan: 6, height: 20]
-        def paramsUsuario = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.LIGHT_GRAY, colspan: 6, height: 20]
+        def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
+        def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
 
         Paragraph paragraph = new Paragraph();
         paragraph.setAlignment(Element.ALIGN_LEFT);
@@ -363,17 +356,13 @@ class DocumentosGeneradosController {
         document.add(paragraph)
 
         def tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
 //        def depActual = null
+
+        def granTotal = 0
 
         personas.eachWithIndex { persona, i ->
 
@@ -398,28 +387,37 @@ class DocumentosGeneradosController {
                     document.add(paragraphDep)
                 }
 
-                if (params.tipo == "dpto") {
-                    def header = persona.nombre + " " + persona.apellido + " (" + persona.login + "): " +
-                            "${tramites.size()} documento${tramites.size() == 1 ? '' : 's'}"
-                    Paragraph paragraphUsu = new Paragraph();
-                    paragraphUsu.setAlignment(Element.ALIGN_LEFT);
-                    paragraphUsu.add(new Phrase(header, fontBold));
-                    document.add(paragraphUsu)
+//                if (params.tipo == "dpto") {
+                granTotal += tramites.size()
+                def header = persona.nombre + " " + persona.apellido + " (" + persona.login + "): " +
+                        "${tramites.size()} documento${tramites.size() == 1 ? '' : 's'}"
+                Paragraph paragraphUsu = new Paragraph();
+                paragraphUsu.setAlignment(Element.ALIGN_LEFT);
+                paragraphUsu.add(new Phrase(header, fontBold));
+                document.add(paragraphUsu)
 
-                    tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
-                    reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
+                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 //                    reportesPdfService.addCellTabla(tabla, new Paragraph(header, fontBold), paramsUsuario)
-                }
-                tramites.each { tr ->
+//                }
+                tramites.eachWithIndex { tr, j ->
+                    if (j % 2 == 0) {
+                        paramsLeft.bg = Color.WHITE
+                        paramsCenter.bg = Color.WHITE
+                    } else {
+                        paramsLeft.bg = Color.LIGHT_GRAY
+                        paramsCenter.bg = Color.LIGHT_GRAY
+                    }
                     def prtr = PersonaDocumentoTramite.withCriteria {
                         eq("tramite", tr)
                         inList("rolPersonaTramite", [rolPara, rolCopia])
                         order("fechaEnvio", "asc")
+                        order("rolPersonaTramite", "asc")
                     }
                     prtr.each { persDoc ->
                         def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
@@ -437,6 +435,8 @@ class DocumentosGeneradosController {
         }
 
         document.add(tabla)
+
+        document.add(new Paragraph("GRAN TOTAL: ${granTotal} documento${granTotal == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontGranTotal))
 
         document.close();
         pdfw.close()
