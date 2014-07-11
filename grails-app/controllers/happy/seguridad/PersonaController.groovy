@@ -1473,10 +1473,10 @@ class PersonaController extends happy.seguridad.Shield {
 //                                println "departamento " + dpto[0] + "   " + datos[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
                             if (prsn.departamento != dpto) {
-                                prsn.departamento = dpto
+                               // prsn.departamento = dpto
                                 prsn.activo = 0
                             }
-                            println "update " + prsn.apellido
+                           // println "update " + prsn.apellido
                             if (!prsn.save(flush: true)) {
 
                                 println "error save prns " + prsn.errors
