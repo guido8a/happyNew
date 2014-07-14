@@ -360,10 +360,10 @@ class DepartamentoController extends happy.seguridad.Shield {
                         }
                     }
 
-                    if (hijo.id == 4675) {
-//                        println tramites.tramite.codigo
-                        println tramites.tramite.id
-                    }
+//                    if (hijo.id == 4675) {
+////                        println tramites.tramite.codigo
+//                        println tramites.tramite.id
+//                    }
 
 //                    lbl += " <${tramites.size()} trámites>"
 //                    lbl += " <${cantTram} trámites>"

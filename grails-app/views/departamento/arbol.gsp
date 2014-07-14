@@ -367,25 +367,37 @@
             } //createEditPersona
 
             function cambiarEstadoRowPersona(itemId, strId, activar, tramites) {
-                var icon, textMsg, textBtn, textLoader, url, clase;
-                if (activar) {
-                    clase = "success";
-                    icon = "${iconActivar}";
-                    textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
-                    textBtn = "Activar";
-                    textLoader = "Activando";
-                    url = "${createLink(controller: 'persona', action:'activar_ajax')}";
-                    bootbox.dialog({
-                        title   : "Alerta",
-                        message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
-                        buttons : {
+                var icon, textMsg, textBtn, textLoader, url, clase, botones;
+                if (tramites > 0) {
+                    clase = "default";
+                    icon = "";
+                    textMsg = "<p>No puede " + (activar ? 'activar' : 'desactivar') + " la persona seleccionada pues tiene" +
+                              tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada.</p>" +
+                              "<p>Por favor redireccione los trámites para continuar</p>";
+                    botones = {
+                        aceptar : {
+                            label     : "Aceptar",
+                            className : "btn-default",
+                            callback  : function () {
+                            }
+                        }
+                    };
+                } else {
+                    if (activar) {
+                        clase = "success";
+                        icon = "${iconActivar}";
+                        textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
+                        textBtn = "Activar";
+                        textLoader = "Activando";
+                        url = "${createLink(controller: 'persona', action:'activar_ajax')}";
+                        botones = {
                             cancelar : {
                                 label     : "Cancelar",
                                 className : "btn-primary",
                                 callback  : function () {
                                 }
                             },
-                            eliminar : {
+                            activar  : {
                                 label     : "<i class='fa " + icon + "'></i> " + textBtn,
                                 className : "btn-" + clase,
                                 callback  : function () {
@@ -409,103 +421,50 @@
                                 }
                             }
                         }
-                    });
-                } else {
-                    url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
-
-                    clase = "danger";
-                    icon = "${iconDesactivar}";
-                    textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
-                    textBtn = "Desactivar";
-                    textLoader = "Desactivando";
-                    if (tramites > 0) {
-//                        textMsg += "<p>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
-//                                   "redireccionados de su bandeja de entrada personal a la bandeja de entrada de la oficina.</p>";
-                        $.ajax({
-                            type    : "POST",
-                            url     : "${createLink(controller: 'persona', action:'verDesactivar_ajax')}",
-                            data    : {
-                                id       : itemId,
-                                tramites : tramites
-                            },
-                            success : function (msg) {
-                                bootbox.dialog({
-                                    title   : "Alerta",
-                                    message : msg,
-                                    buttons : {
-                                        cancelar : {
-                                            label     : "Cancelar",
-                                            className : "btn-primary",
-                                            callback  : function () {
-                                            }
-                                        },
-                                        eliminar : {
-                                            label     : "<i class='fa " + icon + "'></i> " + textBtn,
-                                            className : "btn-" + clase,
-                                            callback  : function () {
-                                                openLoader(textLoader);
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : url,
-                                                    data    : {
-                                                        id    : itemId,
-                                                        quien : $("#cmbRedirect").val()
-                                                    },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        if (parts[0] == "OK") {
-                                                            location.reload(true);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
                     } else {
+                        clase = "danger";
+                        icon = "${iconDesactivar}";
+                        textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
                         textBtn = "Desactivar";
                         textLoader = "Desactivando";
-
-                        textMsg += "<p>No tiene trámites en su bandeja de entrada personal.</p>";
-
-                        bootbox.dialog({
-                            title   : "Alerta",
-                            message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
-                            buttons : {
-                                cancelar : {
-                                    label     : "Cancelar",
-                                    className : "btn-primary",
-                                    callback  : function () {
-                                    }
-                                },
-                                eliminar : {
-                                    label     : "<i class='fa " + icon + "'></i> " + textBtn,
-                                    className : "btn-" + clase,
-                                    callback  : function () {
-                                        openLoader(textLoader);
-                                        $.ajax({
-                                            type    : "POST",
-                                            url     : url,
-                                            data    : {
-                                                id : itemId
-                                            },
-                                            success : function (msg) {
-                                                var parts = msg.split("_");
-                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                if (parts[0] == "OK") {
-                                                    location.reload(true);
-                                                }
+                        url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
+                        botones = {
+                            cancelar : {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            },
+                            eliminar : {
+                                label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                className : "btn-" + clase,
+                                callback  : function () {
+                                    openLoader(textLoader);
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : url,
+                                        data    : {
+                                            id    : itemId,
+                                            quien : $("#cmbRedirect").val()
+                                        },
+                                        success : function (msg) {
+                                            var parts = msg.split("_");
+                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                            if (parts[0] == "OK") {
+                                                location.reload(true);
                                             }
-                                        });
-                                    }
+                                        }
+                                    });
                                 }
                             }
-                        });
+                        }
                     }
                 }
+                bootbox.dialog({
+                    title   : "Alerta",
+                    message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                    buttons : botones
+                });
             } //cambiar estado row persona
 
             function cambiarEstadoRow(itemId, strId, activar, tramites) {
@@ -829,6 +788,17 @@
                         }
                     };
 
+                    if (nodeTramites > 0) {
+                        items.redireccionar = {
+                            separator_before : true,
+                            label            : "Redireccionar trámites",
+                            icon             : "fa fa-refresh",
+                            action           : function () {
+                                location.href = "${createLink(controller: 'tramiteAdmin', action: 'redireccionarTramites')}/" + nodeId;
+                            }
+                        };
+                    }
+
                     if (nodeType.contains('Inactivo')) {
                         if (!estaAusente) {
                             items.activar = {
@@ -837,60 +807,6 @@
                                 icon             : "fa ${iconActivar} text-success",
                                 action           : function (obj) {
                                     cambiarEstadoRowPersona(nodeId, nodeStrId, true, nodeTramites);
-                                }
-                            };
-                        }
-
-                        if (parseInt(nodeTramites) > 0) {
-                            items.redireccionar = {
-                                separator_before : true,
-                                label            : "Redireccionar trámites",
-                                icon             : "fa fa-refresh",
-                                action           : function (obj) {
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : "${createLink(controller: 'persona', action:'verRedireccionar_ajax')}",
-                                        data    : {
-                                            id       : nodeId,
-                                            tramites : nodeTramites
-                                        },
-                                        success : function (msg) {
-                                            bootbox.dialog({
-                                                title   : "Alerta",
-                                                message : msg,
-                                                buttons : {
-                                                    cancelar : {
-                                                        label     : "Cancelar",
-                                                        className : "btn-primary",
-                                                        callback  : function () {
-                                                        }
-                                                    },
-                                                    redirect : {
-                                                        label     : "<i class='fa fa-refresh'></i> Redireccionar trámites",
-                                                        className : "btn-success",
-                                                        callback  : function () {
-                                                            openLoader("Redireccionando");
-                                                            $.ajax({
-                                                                type    : "POST",
-                                                                url     : "${createLink(controller: 'persona', action:'redireccionar_ajax')}",
-                                                                data    : {
-                                                                    id    : nodeId,
-                                                                    quien : $("#cmbRedirect").val()
-                                                                },
-                                                                success : function (msg) {
-                                                                    var parts = msg.split("_");
-                                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                                    if (parts[0] == "OK") {
-                                                                        location.reload(true);
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
                                 }
                             };
                         }

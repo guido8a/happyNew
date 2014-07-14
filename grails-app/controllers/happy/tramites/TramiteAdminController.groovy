@@ -267,6 +267,101 @@ class TramiteAdminController {
         }
     }
 
+    def redireccionarTramites() {
+        def persona = Persona.get(params.id)
+
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def estadoEnviado = EstadoTramite.findByCodigo("E003")
+        def estadoRecibido = EstadoTramite.findByCodigo("E004")
+//                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+
+        def tramites = PersonaDocumentoTramite.withCriteria {
+            eq("persona", persona)
+            or {
+                eq("rolPersonaTramite", rolPara)
+                eq("rolPersonaTramite", rolCopia)
+            }
+            or {
+                eq("estado", estadoEnviado)
+                eq("estado", estadoRecibido)
+            }
+            order("fechaEnvio", "desc")
+        }
+        tramites = tramites.findAll { Tramite.countByAQuienContesta(it) == 0 }
+        return [persona: persona, tramites: tramites]
+    }
+
+    def redireccionarTramite_ajax() {
+        def persona = Persona.get(params.id)
+//        def dpto = persona.departamento
+        def redDpto = null, redPrsn = null
+        if (params.quien.toString().startsWith("-")) {
+            redDpto = Departamento.get(params.quien.toInteger() * -1)
+        } else {
+            redPrsn = Persona.get(params.quien)
+        }
+        def pr = PersonaDocumentoTramite.get(params.pr)
+
+        def errores = ""
+
+        println "redireccionar!! " + params
+        println persona
+        println pr
+        println redDpto
+        println redPrsn
+
+        if (pr.rolPersonaTramite.codigo == "I005") {
+            pr.delete(flush: true)
+        } else {
+            def obs = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido + ", redireccionado"
+
+            def personaAntes = pr.persona
+            def dptoAntes = pr.departamento
+
+            if (redDpto) {
+                pr.persona = null
+                pr.departamento = redDpto
+                obs += " al departamento ${pr.departamento.descripcion}"
+            } else {
+                pr.persona = redPrsn
+                obs += " al usuario ${pr.persona.login}"
+            }
+            obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}; "
+            def tramite = pr.tramite
+            tramite.observaciones = (tramite.observaciones ?: "") + obs
+            pr.observaciones = (pr.observaciones ?: "") + obs
+            if (tramite.save(flush: true)) {
+//                        println "tr.save ok"
+            } else {
+                errores += renderErrors(bean: tramite)
+                println tramite.errors
+            }
+            if (!pr.persona && !pr.departamento) {
+                pr.persona = personaAntes
+                pr.departamento = dptoAntes
+                pr.observaciones += " Ha ocurrido un error al redireccionar. "
+                tramite.observaciones += " Ha ocurrido un error al redireccionar. "
+                if (tramite.save(flush: true)) {
+//                    println "ok"
+                }
+                errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
+            }
+            if (pr.save(flush: true)) {
+//                        println "pr save ok"
+            } else {
+                println pr.errors
+                errores += renderErrors(bean: pr)
+            }
+        }
+        if (errores == "") {
+            render "OK"
+        } else {
+            render errores
+        }
+    }
 
     def arbolAdminTramite() {
         def html = "", url = "", tramite = null

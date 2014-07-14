@@ -38,3 +38,7 @@ tr.trHighlight, tr.trHighlight td, td.trHighlight, .trHighlight {
     background : #72cb8e !important;
 }
 
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+    background-color : #abcdef;
+}
