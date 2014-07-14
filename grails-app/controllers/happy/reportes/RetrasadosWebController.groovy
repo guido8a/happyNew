@@ -141,7 +141,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
                     tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
                     tabla += "<td class='titulo'>Dirección</td>"
-                    tabla += "<td class='titulo'>${lvl.objeto}</td>"
+                    tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                     tabla += "<td class='titulo numero'>${totalNode}</td>"
                     tabla += "<td class='titulo numero'>${totalNodeSr}</td>"
                     tabla += "</tr>"
@@ -244,7 +244,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
                 tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
                 tabla += "<td class='titulo'>Dirección</td>"
-                tabla += "<td class='titulo'>${lvl.objeto}</td>"
+                tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${totalNode}</td>"
                 tabla += "<td class='titulo numero'>${totalNodeSr}</td>"
                 tabla += "</tr>"

@@ -48,14 +48,15 @@
 
         <!-- botones -->
         <h3>Trámites sin Recepción y Retrasados</h3>
+
         <div class="btn-toolbar toolbar">
-%{--
-            <div class="btn-group">
-                <a href="#" class="btn btn-default" id="btnCerrar">
-                    <i class="fa fa-times"></i> Cerrar esta ventana
-                </a>
-            </div>
---}%
+            %{--
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-default" id="btnCerrar">
+                                <i class="fa fa-times"></i> Cerrar esta ventana
+                            </a>
+                        </div>
+            --}%
 
             <div class="btn-group">
                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
@@ -76,10 +77,10 @@
             </div>
         </div>
 
-        <div class="chartContainer">
-            <div id="chart_rs" class="divChart"></div>
+        <div class="chartContainer hidden">
+            <div id="chart_rs" class="divChart hidden"></div>
 
-            <div id="chart_rz" class="divChart"></div>
+            <div id="chart_rz" class="divChart hidden"></div>
         </div>
 
         <div class="tableContainer ">
@@ -124,57 +125,61 @@
 
             function makeChart(tipo) {
                 var data = getData(tipo);
-                var plot = $.jqplot('chart_' + tipo, [data.data],
-                        {
-                            title          : data.title,
-                            seriesDefaults : {
-                                // Make this a pie chart.
-                                renderer        : $.jqplot.PieRenderer,
-                                rendererOptions : {
-                                    // Put data labels on the pie slices.
-                                    // By default, labels show the percentage of the slice.
-                                    showDataLabels : true,
-                                    sliceMargin    : 5
+                if (data.data.length > 1) {
+                    $(".chartContainer").removeClass("hidden");
+                    $("#chart_" + tipo).removeClass("hidden");
+                    var plot = $.jqplot('chart_' + tipo, [data.data],
+                            {
+                                title          : data.title,
+                                seriesDefaults : {
+                                    // Make this a pie chart.
+                                    renderer        : $.jqplot.PieRenderer,
+                                    rendererOptions : {
+                                        // Put data labels on the pie slices.
+                                        // By default, labels show the percentage of the slice.
+                                        showDataLabels : true,
+                                        sliceMargin    : 5
+                                    },
+                                    highlighter     : {
+                                        show              : true,
+                                        formatString      : '%s',
+                                        tooltipLocation   : 'sw',
+                                        useAxesFormatters : false
+                                    }
                                 },
-                                highlighter     : {
-                                    show              : true,
-                                    formatString      : '%s',
-                                    tooltipLocation   : 'sw',
-                                    useAxesFormatters : false
+                                legend         : {
+                                    show     : true,
+                                    location : 'e'
+                                }
+                            }
+                    );
+                    $("#chart_" + tipo).bind('jqplotDataHighlight', function (ev, seriesIndex, pointIndex, data) {
+                        var $this = $(this);
+                        $this.qtip({
+                            show     : {
+                                ready : true
+                            },
+                            position : {
+                                my     : 'bottom center',  // Position my top left...
+                                at     : 'top center', // at the bottom right of...
+                                target : "mouse",
+                                adjust : {
+                                    mouse : false
                                 }
                             },
-                            legend         : {
-                                show     : true,
-                                location : 'e'
-                            }
-                        }
-                );
-                $("#chart_" + tipo).bind('jqplotDataHighlight', function (ev, seriesIndex, pointIndex, data) {
-                    var $this = $(this);
-                    $this.qtip({
-                        show     : {
-                            ready : true
-                        },
-                        position : {
-                            my     : 'bottom center',  // Position my top left...
-                            at     : 'top center', // at the bottom right of...
-                            target : "mouse",
-                            adjust : {
-                                mouse : false
-                            }
-                        },
-                        content  : data[0] + ": " + data[1] + " doc" + (data[1] == 1 ? '' : 's') + "."
+                            content  : data[0] + ": " + data[1] + " doc" + (data[1] == 1 ? '' : 's') + "."
+                        });
                     });
-                });
+                }
             }
 
             $(function () {
-/*
-                $("#btnCerrar").click(function () {
-                    window.close();
-                    return false;
-                });
-*/
+                /*
+                 $("#btnCerrar").click(function () {
+                 window.close();
+                 return false;
+                 });
+                 */
 
                 makeChart("rs");
                 makeChart("rz");
