@@ -90,7 +90,7 @@ class PersonaDocumentoTramite {
 //                }
 //            }
 
-            return this.fechaEnvio
+            return this.fechaLimiteRespuesta
         }
         return null
     }
@@ -102,7 +102,7 @@ class PersonaDocumentoTramite {
         else {
             if (this.tramite.externo == "1")
                 return null
-            def limite = this.getFechaLimite()
+            def limite = this.fechaEnvio
             def par = Parametros.list([sort: "id", order: "desc"])
             def tiempoBloqueo = 1
             if (par.size() > 0) {

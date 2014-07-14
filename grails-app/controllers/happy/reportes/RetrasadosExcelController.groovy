@@ -33,7 +33,6 @@ class RetrasadosExcelController {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        now=now.plus(2)
 
         def datos = [:]
         def usuario = null
@@ -59,9 +58,10 @@ class RetrasadosExcelController {
             }
 
         }
-        if(params.dpto){
+        def depStr=""
+        if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            println "DPTO "+departamento.codigo+"  "+departamento.descripcion
+           // depStr=" and departamento = ${departamento.id}"
             def padre = departamento.padre
             while(padre){
                 deps.add(padre)
@@ -76,7 +76,7 @@ class RetrasadosExcelController {
             }
         }
 //        println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
+        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
         tramites.each {t->
             def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
             if(pdt){
@@ -129,7 +129,7 @@ class RetrasadosExcelController {
         rowHead=sheet.createRow((short) 1);
         cell = rowHead.createCell((int) 0).setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL")
         rowHead=sheet.createRow((short) 2);
-        cell = rowHead.createCell((int) 0).setCellValue("Reporte de Trámites Retrasados")
+        cell = rowHead.createCell((int) 0).setCellValue("Reporte detallado de Trámites Retrasados y sin recepción")
         rowHead=sheet.createRow((short) 3);
         cell = rowHead.createCell((int) 0).setCellValue(""+new Date().format('dd-MM-yyyy HH:mm'))
         def num = 5
@@ -346,7 +346,6 @@ class RetrasadosExcelController {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        now=now.plus(2)
 
         def datos = [:]
         def usuario = null
@@ -372,9 +371,10 @@ class RetrasadosExcelController {
             }
 
         }
-        if(params.dpto){
+        def depStr=""
+        if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            println "DPTO "+departamento.codigo+"  "+departamento.descripcion
+            //depStr=" and departamento = ${departamento.id}"
             def padre = departamento.padre
             while(padre){
                 deps.add(padre)
@@ -389,7 +389,7 @@ class RetrasadosExcelController {
             }
         }
 //        println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
+        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
         tramites.each {t->
             def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario?extraPersona:''} ")
             if(pdt){
@@ -444,7 +444,7 @@ class RetrasadosExcelController {
         rowHead=sheet.createRow((short) 1);
         cell = rowHead.createCell((int) 1).setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL")
         rowHead=sheet.createRow((short) 2);
-        cell = rowHead.createCell((int) 1).setCellValue("Reporte de Trámites Retrasados")
+        cell = rowHead.createCell((int) 1).setCellValue("Reporte resumido de Trámites Retrasados y sin recepción")
         rowHead=sheet.createRow((short) 3);
         cell = rowHead.createCell((int) 1).setCellValue(""+new Date().format('dd-MM-yyyy HH:mm'))
         def row = sheet.createRow((short) 4);

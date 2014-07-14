@@ -53,19 +53,19 @@ class RetrasadosController {
     def reporteRetrasadosDetalle() {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
-        println "detallado aaa    " + params
+//        println "detallado aaa    " + params
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        now = now.plus(2)
 
         def datos = [:]
         def usuario = null
         def deps = []
         def puedeVer = []
         def extraPersona = "and "
+        def depStr=""
         if (params.prsn) {
             usuario = Persona.get(params.prsn)
             extraPersona += "persona=" + usuario.id + " "
@@ -85,9 +85,10 @@ class RetrasadosController {
             }
 
         }
+
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            println "DPTO " + departamento.codigo + "  " + departamento.descripcion
+            // println "DPTO " + departamento.codigo + "  " + departamento.descripcion
             def padre = departamento.padre
             while (padre) {
                 deps.add(padre)
@@ -102,7 +103,7 @@ class RetrasadosController {
             }
         }
 //        println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
+        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
         tramites.each { t ->
             def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} " +
                     "and fechaEnvio is not null " +
@@ -175,7 +176,7 @@ class RetrasadosController {
 //        headers.add(new Paragraph("SISTEMA DE ADMINISTRACION DOCUMENTAL", times12bold));
 //        headers.add(new Paragraph("Reporte de Trámites Retrasados", times12bold));
 //        headers.add(new Paragraph(""+new Date().format('dd-MM-yyyy HH:mm'), times12bold));
-        reportesPdfService.crearEncabezado(document, "Reporte de Trámites Retrasados")
+        reportesPdfService.crearEncabezado(document, "Reporte detallado de Trámites Retrasados y sin recepción")
 //        headers.add(new Paragraph(""+session.departamento+"", times12bold));
 //        headers.add(new Paragraph("Al: " + now.format("dd-MM-yyyy hh:mm"), times12bold));
 //        headers.add(new Paragraph("\n", times12bold))
@@ -225,7 +226,7 @@ class RetrasadosController {
 
                 }
                 if (params.detalle) {
-                    tablaTramites = new PdfPTable(7);
+                    tablaTramites = new PdfPTable(8);
                     tablaTramites.setWidthPercentage(100);
                     par = new Paragraph("Nro.", times8bold)
                     PdfPCell cell = new PdfPCell(par);
@@ -249,6 +250,9 @@ class RetrasadosController {
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     par = new Paragraph("F. Límite", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Retraso (días)", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
@@ -280,6 +284,10 @@ class RetrasadosController {
                         par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setHorizontalAlignment(1)
+                        tablaTramites.addCell(cell);
 
                     }
                     if (lvl["tramites"].size() > 0) {
@@ -305,7 +313,7 @@ class RetrasadosController {
 //                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
 
                     if (params.detalle) {
-                        tablaTramites = new PdfPTable(7);
+                        tablaTramites = new PdfPTable(8);
                         tablaTramites.setWidthPercentage(100);
                         par = new Paragraph("Nro.", times8bold)
                         PdfPCell cell = new PdfPCell(par);
@@ -326,6 +334,9 @@ class RetrasadosController {
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("F. Límite", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("Retraso (días)", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
@@ -356,6 +367,10 @@ class RetrasadosController {
                             tablaTramites.addCell(cell);
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                             cell = new PdfPCell(par);
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now -t.fechaLimiteRespuesta): ''}", times8normal)
+                            cell = new PdfPCell(par);
+                            cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
                         }
                         if (p["tramites"].size() > 0) {
@@ -385,6 +400,7 @@ class RetrasadosController {
 
     def imprimeHijosPdf(arr, contenido, tablaTramites, params, usuario, deps, puedeVer) {
         def datos = arr["hijos"]
+        def now = new Date()
         datos.each { lvl ->
 //            println  "\t "+lvl["objeto"]
 //            println "\t\t Tramites:"
@@ -408,7 +424,7 @@ class RetrasadosController {
 
                 }
                 if (params.detalle) {
-                    tablaTramites = new PdfPTable(7);
+                    tablaTramites = new PdfPTable(8);
                     tablaTramites.setWidthPercentage(100);
                     par = new Paragraph("Nro.", times8bold)
                     PdfPCell cell = new PdfPCell(par);
@@ -432,6 +448,9 @@ class RetrasadosController {
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     par = new Paragraph("F. Límite", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Retraso (días)", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
@@ -463,6 +482,10 @@ class RetrasadosController {
                         par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ?(now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setHorizontalAlignment(1)
+                        tablaTramites.addCell(cell);
 
                     }
                     if (lvl["tramites"].size() > 0) {
@@ -488,7 +511,7 @@ class RetrasadosController {
                     contenido.add(par)
                     if (params.detalle) {
                         tablaTramites = null
-                        tablaTramites = new PdfPTable(7);
+                        tablaTramites = new PdfPTable(8);
                         tablaTramites.setWidthPercentage(100);
                         par = new Paragraph("Nro.", times8bold)
                         PdfPCell cell = new PdfPCell(par);
@@ -509,6 +532,9 @@ class RetrasadosController {
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("F. Límite", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("Retraso (días)", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
@@ -540,6 +566,10 @@ class RetrasadosController {
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ?(now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                            cell = new PdfPCell(par);
+                            cell.setHorizontalAlignment(1)
+                            tablaTramites.addCell(cell);
                         }
                         if (p["tramites"].size() > 0) {
                             par3.add(tablaTramites)
@@ -567,8 +597,6 @@ class RetrasadosController {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        now = now.plus(2)
-
         def datos = [:]
         def usuario = null
         def deps = []
@@ -593,8 +621,10 @@ class RetrasadosController {
             }
 
         }
+        def depStr=""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
+            //depStr=" and departamento = ${departamento.id}"
 //            println "DPTO " + departamento.codigo + "  " + departamento.descripcion
             def padre = departamento.padre
             while (padre) {
@@ -610,15 +640,17 @@ class RetrasadosController {
             }
         }
 //        println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null")
+        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
         tramites.each { t ->
             def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
             if (pdt) {
                 pdt.each { pd ->
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
-                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
+                        if (pd.fechaLimite < now || (!pd.fechaRecepcion)){
+
                             datos = jerarquia(datos, pd)
+                        }
                     }
 
                 }
@@ -638,7 +670,7 @@ class RetrasadosController {
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-        reportesPdfService.crearEncabezado(document, "Reporte de Trámites Retrasados")
+        reportesPdfService.crearEncabezado(document, "Reporte resumido de Trámites Retrasados  y sin recepción")
         def contenido = new Paragraph();
         def total = 0
         def totalSr = 0

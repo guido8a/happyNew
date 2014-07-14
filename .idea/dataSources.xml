@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="352089106">
-    <data-source source="LOCAL" name="PostgreSQL - happy@localhost" uuid="e626e224-cfba-4687-8720-5827b6bdd56f">
+  <component name="DataSourceManagerImpl" format="xml" hash="3236486519">
+    <data-source source="LOCAL" name="PostgreSQL - happy@10.0.0.2 [2]" uuid="e626e224-cfba-4687-8720-5827b6bdd56f">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
@@ -16,6 +16,18 @@
       <driver-ref>postgresql</driver-ref>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://10.0.0.2:5432/happy</jdbc-url>
+      <user-name>postgres</user-name>
+      <user-password>dfdadfc5dfd9dfdedfcddfd8dfcfdfd9</user-password>
+      <libraries>
+        <library>
+          <url>file://$PROJECT_DIR$/lib/postgresql-9.1-903.jdbc4.jar</url>
+        </library>
+      </libraries>
+    </data-source>
+    <data-source source="LOCAL" name="happy dev" uuid="c8a5a0c4-3af6-48dd-9813-d22e09b7f90f">
+      <driver-ref>postgresql</driver-ref>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://10.0.0.2:5432/happy_g</jdbc-url>
       <user-name>postgres</user-name>
       <user-password>dfdadfc5dfd9dfdedfcddfd8dfcfdfd9</user-password>
       <libraries>
