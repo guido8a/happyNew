@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Reporte web de trámites retrasados</title>
+        <title>Reporte de trámites retrasados y sin recepción</title>
 
         <script src="${resource(dir: 'js/plugins/jquery.jqplot.1.0.8r1250', file: 'jquery.jqplot.min.js')}"></script>
         <script src="${resource(dir: 'js/plugins/jquery.jqplot.1.0.8r1250/plugins', file: 'jqplot.pieRenderer.min.js')}"></script>
@@ -47,7 +47,7 @@
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <!-- botones -->
-        <h3>Trámites sin Recepción y Retrasados</h3>
+        <h3>Trámites Retrasados y Sin Recepción</h3>
 
         <div class="btn-toolbar toolbar">
             %{--
@@ -78,9 +78,9 @@
         </div>
 
         <div class="chartContainer hidden">
-            <div id="chart_rs" class="divChart hidden"></div>
-
             <div id="chart_rz" class="divChart hidden"></div>
+
+            <div id="chart_rs" class="divChart hidden"></div>
         </div>
 
         <div class="tableContainer ">
@@ -125,7 +125,7 @@
 
             function makeChart(tipo) {
                 var data = getData(tipo);
-                if (data.data.length > 1) {
+                if (data.data.length > 0) {
                     $(".chartContainer").removeClass("hidden");
                     $("#chart_" + tipo).removeClass("hidden");
                     var plot = $.jqplot('chart_' + tipo, [data.data],

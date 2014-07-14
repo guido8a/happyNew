@@ -38,8 +38,8 @@
 <div style="height: 350px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
-            <thead>
-                <tr>
+            %{--<thead>--}%
+                %{--<tr>--}%
                     %{--<th class="alinear">Documento</th>--}%
                     %{--<th class="alinear">Fecha Creación</th>--}%
                     %{--<th class="alinear">De</th>--}%
@@ -49,9 +49,8 @@
                     %{--<th class="alinear">Envia</th>--}%
                     %{--<th class="alinear">Fecha Envio</th>--}%
                     %{--<th class="alinear">Fecha Recepción</th>--}%
-                </tr>
-
-            </thead>
+                %{--</tr>--}%
+            %{--</thead>--}%
             <tbody>
                 <g:each in="${tramites}" var="tramite">
 
