@@ -1297,13 +1297,13 @@ class PersonaController extends happy.seguridad.Shield {
                         println "errores dep " + dep.errors
 
                 }
-               // println "*********************************\n"
+                // println "*********************************\n"
 //                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
                 def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
                 println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
-                   println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
+                    println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
                     def ou2 = e2["ou"]
                     def gn = e2["givenname"]
                     if (gn) {
@@ -1317,10 +1317,10 @@ class PersonaController extends happy.seguridad.Shield {
                         if (!mail || mail == "") {
                             noMail.add(["nombre": logn])
                         }
-                       println "buscando e2 " + logn
+                        println "buscando e2 " + logn
                         def prsn = Persona.findByLogin(logn)
                         if (!prsn) {
-                           // println "no encontro nuevo usuario"
+                            // println "no encontro nuevo usuario"
                             def nombres = WordUtils.capitalizeFully(e2["givenname"])
 
                             def apellido = WordUtils.capitalizeFully(e2["sn"])
@@ -1340,12 +1340,15 @@ class PersonaController extends happy.seguridad.Shield {
                             prsn.password = "123".encodeAsMD5()
                             prsn.connect = e2["dn"]
                             def datos = e2["dn"].split(",")
-                           // println "datos  dep " + datos
+                            // println "datos  dep " + datos
                             def dpto = null
-                            if (datos)
+                            if (datos.size()>1) {
                                 dpto = datos[1].split("=")
-                            //println "departamento " + dpto[0] + "   " + datos[1]
-                            dpto = Departamento.findByDescripcion(dpto[1])
+                                dpto = Departamento.findByDescripcion(dpto[1])
+                            }else{
+                                dpto=null
+                            }
+
                             if (!dpto)
                                 dpto = sinDep
                             prsn.departamento = dpto
@@ -1372,15 +1375,23 @@ class PersonaController extends happy.seguridad.Shield {
                                 }
                                 def datos = e2["dn"].split(",")
                                 def dpto = null
-                                if (datos)
-                                    dpto = datos[1].split("=")
+                                if(datos.size()>1){
+                                    if (datos)
+                                        dpto = datos[1].split("=")
+                                    dpto = Departamento.findByDescripcion(dpto[1])
+                                    println "departamento " + dpto[1] + "   "+dpto
 
-                                dpto = Departamento.findByDescripcion(dpto[1])
-                                println "departamento " + dpto[1] + "   "+dpto
+                                }else{
+                                    dpto=null
+                                }
+                                if (!dpto)
+                                    dpto = sinDep
                                 if (prsn.departamento != dpto) {
                                     prsn.departamento = dpto
                                     prsn.activo = 0
                                 }
+
+
                                 if (!prsn.apellido)
                                     prsn.apellido = "N.A."
                                 println "update " + prsn.apellido
@@ -1395,19 +1406,19 @@ class PersonaController extends happy.seguridad.Shield {
                         cont++
                     }
                     if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
-                       // println "ou2--> " + ou2
+                        // println "ou2--> " + ou2
                         dep = Departamento.findByDescripcion(ou2)
                         if (!dep) {
-                           // println "new Dep " + ou2
+                            // println "new Dep " + ou2
                             def sec = new Date().format("ss")
                             def datos = e2["dn"].split(",")
-                           // println "datos  dep " + datos
+                            // println "datos  dep " + datos
                             def padre = null
                             if (datos)
                                 padre = datos[1].split("=")
-                           // println "padre " + padre[1] + "   " + datos[0]
+                            // println "padre " + padre[1] + "   " + datos[0]
                             padre = Departamento.findByDescripcion(padre[1])
-                           // println "padre? " + padre
+                            // println "padre? " + padre
                             if (!padre)
                                 padre = n1
                             dep = new Departamento()
@@ -1496,7 +1507,7 @@ class PersonaController extends happy.seguridad.Shield {
                             def dpto = null
                             if (datos)
                                 dpto = datos[1].split("=")
-                                println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto[1]
+                            println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
                             println "depto "+dpto
                             if (prsn.departamento != dpto) {
