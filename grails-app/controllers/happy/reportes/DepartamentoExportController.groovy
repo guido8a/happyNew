@@ -32,7 +32,7 @@ class DepartamentoExportController extends Shield {
     }
 
     def crearPdf() {
-
+        params.inactivos=params.inactivos?:true
         params.sort = params.sort ?: "apellido"
 
         def conUsuarios = params.usu ? (params.usu == "true") : "true"

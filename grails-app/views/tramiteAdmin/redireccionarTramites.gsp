@@ -105,16 +105,8 @@
                         <td class="text-center">${tr?.rolPersonaTramite?.descripcion}</td>
                         <td class="text-center">${estado}</td>
                         <td class="text-center">
-                            <g:select class="form-control input-sm" name="cmbRedirect_${tr.id}" from="${Persona.withCriteria {
-                                eq("departamento", persona.departamento)
-                                ne("id", persona.id)
-                                order("apellido", "asc")
-                            }.findAll {
-                                it.estaActivo
-                            }}" optionKey="id" optionValue="${{
-                                it.apellido + ' ' + it.nombre
-                            }}"
-                                      noSelection="[('-' + persona.departamentoId): persona.departamento.descripcion]"/>
+                            <g:select class="form-control input-sm" name="cmbRedirect_${tr.id}" from="${personas}" optionKey="id"
+                                      noSelection="[('-' + dep.id): dep.descripcion]"/>
                         </td>
                         <td class="text-center">
                             <a href="#" class="btn btn-xs btn-success btn-move"

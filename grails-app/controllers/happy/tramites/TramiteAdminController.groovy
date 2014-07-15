@@ -291,7 +291,36 @@ class TramiteAdminController {
             order("fechaEnvio", "desc")
         }
         tramites = tramites.findAll { Tramite.countByAQuienContesta(it) == 0 }
-        return [persona: persona, tramites: tramites]
+        def personas
+        def dep = persona.departamento
+        if(persona.estaActivo){
+            personas = Persona.withCriteria {
+                eq("departamento", persona.departamento)
+                ne("id", persona.id)
+                order("apellido", "asc")
+            }.findAll {
+                it.estaActivo
+            }
+        }else{
+            def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+            if(deps.size()>0){
+                dep=deps.departamento.first()
+            }
+            personas = Persona.withCriteria {
+                eq("departamento", dep)
+                ne("id", persona.id)
+                order("apellido", "asc")
+            }.findAll {
+                it.estaActivo
+            }
+
+        }
+
+
+       
+
+
+        return [persona: persona, tramites: tramites,personas:personas,dep:dep]
     }
 
     def redireccionarTramite_ajax() {
@@ -307,11 +336,11 @@ class TramiteAdminController {
 
         def errores = ""
 
-        println "redireccionar!! " + params
-        println persona
-        println pr
-        println redDpto
-        println redPrsn
+//        println "redireccionar!! " + params
+//        println persona
+//        println pr
+//        println redDpto
+//        println redPrsn
 
         if (pr.rolPersonaTramite.codigo == "I005") {
             pr.delete(flush: true)
