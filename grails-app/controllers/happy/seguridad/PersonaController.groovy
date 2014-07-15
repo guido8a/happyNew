@@ -1470,7 +1470,7 @@ class PersonaController extends happy.seguridad.Shield {
                     }
                 } else {
                     println "encontro"
-                    if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != mail || prsn.connect != entry["dn"]) {
+                    if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != mail || prsn.connect != entry["dn"] || prsn.departamento==null) {
                         println "paso el if"
                         if (entry["sn"] && entry["sn"] != "") {
                             prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
@@ -1486,8 +1486,9 @@ class PersonaController extends happy.seguridad.Shield {
                             def dpto = null
                             if (datos)
                                 dpto = datos[1].split("=")
-//                                println "departamento " + dpto[0] + "   " + datos[1]
+                                println "departamento " + dpto[0] + "   " + datos[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
+                            println "depto "+dpto
                             if (prsn.departamento != dpto) {
                                 prsn.departamento = dpto
                                 prsn.activo = 0
