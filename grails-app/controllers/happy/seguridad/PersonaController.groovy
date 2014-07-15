@@ -1311,13 +1311,15 @@ class PersonaController extends happy.seguridad.Shield {
                         def mail = entry["mail"]
                         if(!mail){
                             mail=entry["userprincipalname"]
+                            println "mail alterno "+mail
                             if(!(mail=~"@"))
                                 mail=null
+                            println "le cambio "+mail
                         }
                         if (!mail || mail == "") {
                             noMail.add(["nombre": logn])
                         }
-                        println "buscando e2 " + logn
+                        println "buscando e2 " + logn+"  mail "+mail
                         def prsn = Persona.findByLogin(logn)
                         if (!prsn) {
                             // println "no encontro nuevo usuario"
@@ -1434,7 +1436,21 @@ class PersonaController extends happy.seguridad.Shield {
                                 println "errores dep " + dep.errors
 
                         }else{
-
+                            println "encontro.. update padre"
+                            def datos = e2["dn"].split(",")
+                            // println "datos  dep " + datos
+                            def padre = null
+                            if (datos)
+                                padre = datos[1].split("=")
+                            // println "padre " + padre[1] + "   " + datos[0]
+                            padre = Departamento.findByDescripcion(padre[1])
+                            if (!padre)
+                                padre = n1
+                            if(dep.padre.id!=padre.id) {
+                                println "nuevo padre para "+dep+"   "+padre
+                                dep.padre = padre
+                                dep.save(flush: true)
+                            }
                         }
                     }
                 }
