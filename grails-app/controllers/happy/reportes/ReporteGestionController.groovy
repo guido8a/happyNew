@@ -116,17 +116,17 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
                     reportesPdfService.addCellTabla(tablaTramites, new Paragraph("", fontBold), prmsHeaderHoja9)
 
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN ", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", fontBold), prmsHeaderHoja)
-                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN ", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", fontBold), prmsHeaderHoja)
+//                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", fontBold), prmsHeaderHoja)
 
-                    makeTableExtended(tablaTramites, principal)
+                    makeTableExtended(tablaTramites, principal, departamento,0)
 
                     document.add(tablaTramites)
 
@@ -147,7 +147,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
     }
 
-    def makeTableExtended(PdfPTable tabla, Tramite principal) {
+    def makeTableExtended(PdfPTable tabla, Tramite principal, Departamento departamento, int s) {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
@@ -156,70 +156,121 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
         //esto muestra una hoja por destinatario
         paras.each { para ->
-            makeRow(tabla, para)
+            makeRow(tabla, para, departamento,s)
         }
 
         //el para y las copias son hermanos
         ccs.each { para ->
-            makeRow(tabla, para)
+            makeRow(tabla, para, departamento,s)
         }
     }
 
 
-    def makeRow(PdfPTable tablaTramites, PersonaDocumentoTramite pdt) {
+    def makeRow(PdfPTable tablaTramites, PersonaDocumentoTramite pdt, Departamento departamento, int s) {
+
         def hijos = Tramite.findAllByAQuienContesta(pdt, [sort: "fechaCreacion", order: "asc"])
 
-//        Paragraph paragraphTramite = new Paragraph();
+        def diasTrans = ''
 
-//        def phraseInfo = tramiteInfo(pdt)
-//
-//        paragraphTramite.add(phraseInfo)
-//        document.add(paragraphTramite)
-def diasTrans = ''
-        if(pdt?.fechaRecepcion && pdt?.fechaEnvio){
-            def diasTrans2 = diasLaborablesService.diasLaborablesEntre((pdt?.fechaRecepcion).clearTime(), (pdt?.fechaEnvio).clearTime())
-            def diasC2 = 0
-            if(diasTrans2[0]){
-                diasC2 = diasTrans2[1]
-            }else{
-                println("error dias " +  diasTrans2[1])
-            }
+        if((pdt?.departamento?.codigo == departamento?.codigo) || (Persona.get(pdt?.persona?.id)?.departamento?.codigo == departamento?.codigo)){
+            if(pdt?.fechaRecepcion && pdt?.fechaEnvio){
+                def diasTrans2 = diasLaborablesService.diasLaborablesEntre((pdt?.fechaRecepcion).clearTime(), (pdt?.fechaEnvio).clearTime())
+                def diasC2 = 0
+                if(diasTrans2[0]){
+                    diasC2 = diasTrans2[1]
+                }else{
+                    println("error dias " +  diasTrans2[1])
+                }
 //                addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: (prtr?.fechaRecepcion - prtr?.fechaEnvio)*24, format: "###.##", locale: "ec") + " horas",times7bold), prmsHeaderHoja)
 //            addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: (diasC2)*24, format: "###.##", locale: "ec") + " horas",times7bold), prmsHeaderHoja)
-            diasTrans = g.formatNumber(number: (diasC2)*24, format: "###.##", locale: "ec") + " horas"
-        }else{
-            if(pdt?.fechaEnvio){
-                def diasTrans3 = diasLaborablesService.diasLaborablesEntre((pdt?.fechaEnvio).clearTime(), new Date().clearTime())
-                def diasC3 = 0
-                if(diasTrans3[0]){
-                    diasC3 = diasTrans3[1]
-                }else{
-                    println("error dias " +  diasTrans3[1])
-                }
-//                addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: (diasC3)*24, format: "###.##", locale: "ec") + " horas",times7bold), prmsHeaderHoja)
-                diasTrans = g.formatNumber(number: (diasC3)*24, format: "###.##", locale: "ec") + " horas"
+                diasTrans = g.formatNumber(number: (diasC2)*24, format: "###.##", locale: "ec") + " horas"
             }else{
+                if(pdt?.fechaEnvio){
+                    def diasTrans3 = diasLaborablesService.diasLaborablesEntre((pdt?.fechaEnvio).clearTime(), new Date().clearTime())
+                    def diasC3 = 0
+                    if(diasTrans3[0]){
+                        diasC3 = diasTrans3[1]
+                    }else{
+                        println("error dias " +  diasTrans3[1])
+                    }
+//                addCellTabla(tablaTramites, new Paragraph(g.formatNumber(number: (diasC3)*24, format: "###.##", locale: "ec") + " horas",times7bold), prmsHeaderHoja)
+                    diasTrans = g.formatNumber(number: (diasC3)*24, format: "###.##", locale: "ec") + " horas"
+                }else{
 //                addCellTabla(tablaTramites, new Paragraph("No enviado",times7bold), prmsHeaderHoja)
-                diasTrans = "No enviado"
+                    diasTrans = "No enviado"
+                }
+            }
+
+
+            if(s == 1){
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTADO CON", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN ", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(" ", fontBold), prmsHeaderHoja)
+
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.tramite.codigo, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaCreacion?pdt.fechaCreacion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaEnvio?pdt.fechaEnvio.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaRecepcion?pdt.fechaRecepcion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(diasTrans, fontBold), prmsHeaderHoja)
+                if(pdt?.tramite?.deDepartamento){
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph((pdt?.tramite?.deDepartamento?.codigo ?: ''), font), prmsHeaderHoja)
+                }else{
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph((pdt?.tramite?.de?.nombre ?: '') + ' ' + (pdt?.tramite?.de?.apellido ?: ''), font), prmsHeaderHoja)
+                }
+
+//                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.tramite.asunto, font), prmsHeaderHoja)
+                if(pdt?.departamento){
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt?.departamento?.codigo, font), prmsHeaderHoja)
+                }else{
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph((pdt?.persona?.departamento?.codigo) + ' - ' + pdt?.persona?.login, font), prmsHeaderHoja)
+                }
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("", font), prmsHeaderHoja)
+
+            }else{
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN ", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", fontBold), prmsHeaderHoja)
+
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.tramite.codigo, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaCreacion?pdt.fechaCreacion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaEnvio?pdt.fechaEnvio.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaRecepcion?pdt.fechaRecepcion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(diasTrans, fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.tramite.asunto, font), prmsHeaderHoja)
+                if(pdt?.departamento){
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt?.departamento?.codigo, font), prmsHeaderHoja)
+                }else{
+                    reportesPdfService.addCellTabla(tablaTramites, new Paragraph((pdt?.persona?.departamento?.codigo) + ' - ' + pdt?.persona?.login, font), prmsHeaderHoja)
+                }
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("", font), prmsHeaderHoja)
+
+            }
+
+
+
+            if (hijos.size() > 0) {
+                hijos.each { hijo ->
+                    makeTableExtended(tablaTramites, hijo, departamento,1)
+                }
             }
         }
 
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.tramite.codigo, font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaCreacion?pdt.fechaCreacion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaEnvio?pdt.fechaEnvio.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph(pdt.fechaRecepcion?pdt.fechaRecepcion.format("dd-MM-yyyy HH:mm"):"", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph(diasTrans, fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", font), prmsHeaderHoja)
-
-
-        if (hijos.size() > 0) {
-            hijos.each { hijo ->
-                makeTableExtended(tablaTramites, hijo)
-            }
-        }
     }
 
     private Phrase tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
@@ -296,14 +347,115 @@ def diasTrans = ''
         return phraseInfo
     }
 
+
+    def reporteGestion4 () {
+        def departamento = Departamento.get(params.id)
+
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta= new Date().parse("dd-MM-yyyy", params.hasta)
+
+        def baos = new ByteArrayOutputStream()
+        def name = "gestion_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        Document document = reportesPdfService.crearDocumento('h', [top: 2, right: 2, bottom: 1.5, left: 2.5])
+        def pdfw = PdfWriter.getInstance(document, baos);
+        reportesPdfService.membrete(document)
+        document.open();
+
+        reportesPdfService.crearEncabezado(document, "REPORTE DE GESTIÓN DE TRÁMITES DEL DPTO:  ${departamento?.descripcion}")
+
+        //los tramites dirigidos al dpto (para y copia)
+        if (departamento) {
+            PersonaDocumentoTramite.withCriteria {
+//                isNotNull('fechaEnvio')
+                eq("departamento", departamento)
+                or{
+                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
+                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
+                }
+                tramite {
+                    ge('fechaCreacion', desde)
+                    le('fechaCreacion', hasta)
+                }
+            }.each { tram->
+                def tramite = tram.tramite
+
+                def principal = tramite
+                if (tramite.padre) {
+                    principal = tramite.padre
+                    while (true) {
+                        if (!principal.padre)
+                            break
+                        else {
+                            principal = principal.padre
+                        }
+                    }
+                }
+
+                PdfPTable tablaTramites = new PdfPTable(9);
+                tablaTramites.setWidthPercentage(100);
+                tablaTramites.setWidths(arregloEnteros([22, 20, 18, 20, 15, 15, 15, 15, 15]))
+                tablaTramites.setSpacingBefore(5)
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja2)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(Tramite.get(principal?.id).codigo, font), prmsHeaderHoja2)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja2)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(Tramite.get(principal?.id).asunto, font), prmsHeaderHoja3)
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("", fontBold), prmsHeaderHoja9)
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("TRÁMITE N°.", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN ", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("DE", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("ASUNTO", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", fontBold), prmsHeaderHoja)
+
+                def de = ""
+                if(tramite.deDepartamento) {
+                    de = tramite.deDepartamento.codigo
+                } else {
+                    de = tramite.de.login
+                }
+
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(tramite.codigo, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(tramite.fechaCreacion?tramite.fechaCreacion.format('dd-MM-yyyy HH:mm'):"", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.ENVIO", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(de, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph(tramite.asunto, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("PARA", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramites, new Paragraph("CONTESTACIÓN-RETRASO", font), prmsHeaderHoja)
+
+
+
+                document.add(tablaTramites)
+            }
+        }
+
+
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+    }
+
+
+
     def reporteGestion () {
 
 //        println("params " + params)
-
-
 //        def persona = Persona.get(params.id)
         def departamento = Departamento.get(params.id)
-
 //        println("triangulo " + Persona.get(params.id).esTriangulo())
 
         def sql = ''
@@ -355,44 +507,7 @@ def diasTrans = ''
 //
 //        }
 
-
-
-
-
-//        println("sql " + sql)
-
-//        cn.eachRow(sql) { r ->
-//            result.add(r.toRowResult())
-//        }
-
 //        println("result" + result)
-
-
-//        def tramiteC
-//
-//
-//        result.each {
-//            tramite = PersonaDocumentoTramite.get(it.prtr__id).tramite
-//            tramiteC = Tramite.findAllByPadreAndEstadoTramiteNotEqual(tramite,EstadoTramite.findByCodigo('E006'))
-//
-//            if (tramite) {
-//               principal = tramite
-//                if (tramite.padre) {
-//                    principal = tramite.padre
-//                    while (true) {
-//                        if (!principal.padre)
-//                            break
-//                        else {
-//                            principal = principal.padre
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
-
-
-        println("result" + result)
 
         //pdf
 
@@ -632,30 +747,37 @@ def diasTrans = ''
 
                                 rec.each{r ->
                                     if(r){
-                                        addCellTabla(tablaTramites, new Paragraph("TRAMITE", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("F.ENVIO", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", times6bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("DE", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("ASUNTO", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("PARA", times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph("", times7bold), prmsHeaderHoja)
+                                        if((r?.departamento?.codigo == departamento?.codigo) || (Persona.get(r?.persona?.id)?.departamento?.codigo == departamento?.codigo)){
+                                            addCellTabla(tablaTramites, new Paragraph("TRAMITE", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("F.CREACIÓN", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("F.ENVIO", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("F.RECEPCIÓN", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("T.TRANSCURRIDO", times6bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("DE", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("ASUNTO", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("PARA", times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph("", times7bold), prmsHeaderHoja)
 
 
-                                        addCellTabla(tablaTramites, new Paragraph(r?.tramite?.codigo, times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
-                                        addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph(r?.tramite?.codigo, times7normal), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            addCellTabla(tablaTramites, new Paragraph('', times7bold), prmsHeaderHoja)
+                                            if(r?.departamento){
+                                                addCellTabla(tablaTramites, new Paragraph(r?.departamento?.codigo, times7normal), prmsHeaderHoja)
+                                            }else{
+                                                addCellTabla(tablaTramites, new Paragraph(r?.persona?.login, times7normal), prmsHeaderHoja)
+                                            }
 
-                                        addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-                                        addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
-                                        addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+                                            addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+                                            addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+                                            addCellTabla(tablaTramites, new Paragraph("", times10bold), prmsHeaderHoja6)
+                                        }
+
 
 
                                         res=false
