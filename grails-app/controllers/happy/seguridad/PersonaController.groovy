@@ -1375,10 +1375,13 @@ class PersonaController extends happy.seguridad.Shield {
                                 }
                                 def datos = e2["dn"].split(",")
                                 def dpto = null
+                                println "datos "+datos
                                 if(datos.size()>1){
                                     if (datos)
                                         dpto = datos[1].split("=")
-                                    dpto = Departamento.findByDescripcion(dpto[1])
+                                    println "dpto "+dpto
+                                    if(dpto.size()>1)
+                                        dpto = Departamento.findByDescripcion(dpto[1])
                                     println "departamento " + dpto[1] + "   "+dpto
 
                                 }else{
