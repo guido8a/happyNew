@@ -1418,7 +1418,7 @@ class PersonaController extends happy.seguridad.Shield {
                 //println "*********************************\n"
             }
             if (entry["givenname"]) {
-                println "E1 " + entry["givenname"]
+
 
                 def logn = entry["samaccountname"]
                 def mail = entry["mail"]
@@ -1430,6 +1430,7 @@ class PersonaController extends happy.seguridad.Shield {
                 if (!mail || mail == "") {
                     noMail.add(["nombre": logn])
                 }
+                println "E1 " + entry["givenname"]+"  "+entry["samaccountname"]+"  "+mail
 //                println "buscando " + logn
                 def prsn = Persona.findByLogin(logn)
                 if (!prsn) {
