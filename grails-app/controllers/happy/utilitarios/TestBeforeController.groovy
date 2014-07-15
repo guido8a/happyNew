@@ -169,8 +169,22 @@ class TestBeforeController {
 
     def fixTramites(){
         Tramite.list().each {t->
-            t.departamento=t.de.departamento
+            def codigo = t.codigo
+            def parts = codigo.split("-")
+            //println "parts 2 "+parts[2]+" "+t.codigo
+            def dep = Departamento.findByCodigo(parts[2])
+            //println "encontro "+dep
+            t.departamento=dep
             t.save(flush: true)
+        }
+    }
+
+    def fixDepartamentos(){
+        def deps = Departamento.list([sort:"id"])
+        deps.eachWithIndex {d,i->
+            if(d.codigo=~"N.A" || d.codigo=~"COD")
+            d.codigo="COD-"+i
+            d.save(flush: true)
         }
     }
 

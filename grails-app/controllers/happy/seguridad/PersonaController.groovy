@@ -1276,7 +1276,7 @@ class PersonaController extends happy.seguridad.Shield {
         def noApellido = []
         def noMail = []
         for (entry in results) {
-            println "__==> " + entry["ou"]
+            println "__==> " + entry["ou"]+"  "+entry["givenname"]
             println "----------------------------"
             def ou = entry["ou"]
             if (ou) {
@@ -1387,6 +1387,7 @@ class PersonaController extends happy.seguridad.Shield {
                         dep = Departamento.findByDescripcion(ou2)
                         if (!dep) {
                             println "new Dep " + ou2
+                            def sec = new Date().format("ss")
                             def datos = e2["dn"].split(",")
                             println "datos  dep " + datos
                             def padre = null
@@ -1400,11 +1401,13 @@ class PersonaController extends happy.seguridad.Shield {
                             dep = new Departamento()
                             dep.descripcion = ou2
 //                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
-                            dep.codigo = "NA-" + secuencia++
+                            dep.codigo = "NUEVO-"+sec+ secuencia++
                             dep.activo = 1
                             dep.padre = padre
                             if (!dep.save(flush: true))
                                 println "errores dep " + dep.errors
+
+                        }else{
 
                         }
                     }
