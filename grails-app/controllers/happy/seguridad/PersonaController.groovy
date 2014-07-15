@@ -1421,20 +1421,21 @@ class PersonaController extends happy.seguridad.Shield {
                 println "E1 " + entry["givenname"]
 
                 def logn = entry["samaccountname"]
+                def mail = entry["mail"]
+                if(!mail){
+                    mail=entry["userprincipalname"]
+                    if(!(mail=~"@"))
+                        mail=null
+                }
+                if (!mail || mail == "") {
+                    noMail.add(["nombre": logn])
+                }
 //                println "buscando " + logn
                 def prsn = Persona.findByLogin(logn)
                 if (!prsn) {
                     println "no encontro nuevo usuario"
                     def nombres = WordUtils.capitalizeFully(entry["givenname"])
-                    def mail = entry["mail"]
-                    if(!mail){
-                        mail=entry["userprincipalname"]
-                        if(!(mail=~"@"))
-                            mail=null
-                    }
-                    if (!mail || mail == "") {
-                        noMail.add(["nombre": logn])
-                    }
+
 
                     def apellido = WordUtils.capitalizeFully(entry["sn"])
                     if (!apellido)
@@ -1457,7 +1458,6 @@ class PersonaController extends happy.seguridad.Shield {
                         dpto = sinDep
                     prsn.departamento = dpto
                     if (!prsn.save(flush: true)) {
-
                         println "error save prns " + prsn.errors
                     } else {
                         nuevos.add(prsn)
@@ -1468,8 +1468,9 @@ class PersonaController extends happy.seguridad.Shield {
                         sesn.save(flush: true)
                     }
                 } else {
-//                    println "encontro"
-                    if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != entry["mail"] || prsn.connect != entry["dn"]) {
+                    println "encontro"
+                    if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != mail || prsn.connect != entry["dn"]) {
+                        println "paso el if"
                         if (entry["sn"] && entry["sn"] != "") {
                             prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
                             prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
@@ -1493,7 +1494,7 @@ class PersonaController extends happy.seguridad.Shield {
                             // println "update " + prsn.apellido
                             if (!prsn.save(flush: true)) {
 
-                                println "error save prns " + prsn.errors
+                                println "error save prns update " + prsn.errors
                             } else {
                                 mod.add(prsn)
                             }
