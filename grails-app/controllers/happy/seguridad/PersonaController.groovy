@@ -1259,7 +1259,7 @@ class PersonaController extends happy.seguridad.Shield {
         println "'ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster'"
         println "LADP: " + "ldap://${prmt.ipLDAP}, ${prmt.textoCn}, ${prmt.passAdm}"
         println "conectado " + ldap.class
-        println "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+        println "!!!!!!!######3&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&######!!!!!"
 
         def registrados = Persona.list()
         def users = []
@@ -1487,7 +1487,7 @@ class PersonaController extends happy.seguridad.Shield {
                             def dpto = null
                             if (datos)
                                 dpto = datos[1].split("=")
-                                println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto
+                                println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto[1]
                             dpto = Departamento.findByDescripcion(dpto[1])
                             println "depto "+dpto
                             if (prsn.departamento != dpto) {
