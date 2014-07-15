@@ -1382,7 +1382,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     println "dpto "+dpto
                                     if(dpto.size()>1)
                                         dpto = Departamento.findByDescripcion(dpto[1])
-                                    println "departamento " + dpto[1] + "   "+dpto
+                                    println "departamento   "+dpto
 
                                 }else{
                                     dpto=null
