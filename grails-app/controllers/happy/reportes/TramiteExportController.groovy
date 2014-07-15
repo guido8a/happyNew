@@ -49,19 +49,20 @@ class TramiteExportController {
             def baos = new ByteArrayOutputStream()
             def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-            Document document = reportesPdfService.crearDocumento([top: 2.5, right: 2.5, bottom: 2.5, left: 3])
+            Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 2, left: 2.5])
             //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
             def pdfw = PdfWriter.getInstance(document, baos);
 
-            reportesPdfService.documentoFooter(document, "Reporte del trámite " + codigo + "        pág. ", true)
+//            reportesPdfService.documentoFooter(document, "Reporte del trámite " + codigo + "        pág. ", true)
             //pone en el footer el nombre de tramite q es y el numero de pagina
-
+            reportesPdfService.membrete(document)
             document.open();
             reportesPdfService.propiedadesDocumento(document, "trámite")
             //pone las propiedades: title, subject, keywords, author, creator
 
-            reportesPdfService.crearEncabezado(document, "Reporte del trámite ${codigo}")
+//            reportesPdfService.crearEncabezado(document, "Reporte del trámite ${codigo}")
             //crea el encabezado que quieren estos manes con el titulo que se le mande
+            reportesPdfService.crearEncabezado(document, "Reporte del trámite ${codigo}")
 
             if (tramite) {
                 def principal = tramite
