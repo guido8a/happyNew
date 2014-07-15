@@ -1358,7 +1358,7 @@ class PersonaController extends happy.seguridad.Shield {
                             prsn.departamento = dpto
                             if (!prsn.save(flush: true)) {
 
-                                println "error save prns " + prsn.errors
+                               // println "error save prns " + prsn.errors
                             } else {
                                 nuevos.add(prsn)
                                 def sesn = new Sesn()
