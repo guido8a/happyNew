@@ -1282,14 +1282,15 @@ class PersonaController extends happy.seguridad.Shield {
             println "----------------------------"
             def ou = entry["ou"]
             if (ou) {
-                println "es ot "+ou
+                println "es ou "+ou
                 def dep = Departamento.findByDescripcion(ou)
                 if (!dep) {
                     println "new Dep " + ou
+                    def sec = new Date().format("ss")
                     dep = new Departamento()
                     dep.descripcion = ou
 //                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
-                    dep.codigo = "NA-" + secuencia++
+                    dep.codigo = "NUEVO-"+sec+ secuencia++
                     dep.activo = 1
                     dep.padre = n1
                     if (!dep.save(flush: true))
@@ -1299,20 +1300,29 @@ class PersonaController extends happy.seguridad.Shield {
                // println "*********************************\n"
 //                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
                 def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
-               // println "search String " + searchString
+                println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
-//                    println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
+                   println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
                     def ou2 = e2["ou"]
                     def gn = e2["givenname"]
                     if (gn) {
                         def logn = e2["samaccountname"]
-//                        println "buscando e2 " + logn
+                        def mail = entry["mail"]
+                        if(!mail){
+                            mail=entry["userprincipalname"]
+                            if(!(mail=~"@"))
+                                mail=null
+                        }
+                        if (!mail || mail == "") {
+                            noMail.add(["nombre": logn])
+                        }
+                       println "buscando e2 " + logn
                         def prsn = Persona.findByLogin(logn)
                         if (!prsn) {
                            // println "no encontro nuevo usuario"
                             def nombres = WordUtils.capitalizeFully(e2["givenname"])
-                            def mail = e2["mail"]
+
                             def apellido = WordUtils.capitalizeFully(e2["sn"])
                             if (!apellido) {
 //                                apellido = "sin apellido"
@@ -1320,9 +1330,6 @@ class PersonaController extends happy.seguridad.Shield {
                             }
                             if (!nombres) {
                                 noNombre.add(["nombre": logn])
-                            }
-                            if (!mail || mail == "") {
-                                noMail.add(["nombre": logn])
                             }
 
                             prsn = new Persona()
@@ -1353,11 +1360,12 @@ class PersonaController extends happy.seguridad.Shield {
                                 sesn.save(flush: true)
                             }
                         } else {
-//                            println "encontro"
-                            if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"]) {
+                            println "encontro"
+                            if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento==null) {
+                                println "update"
                                 prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                 prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
-                                prsn.mail = e2["mail"]
+                                prsn.mail = mail
                                 if (prsn.connect != e2["dn"]) {
                                     prsn.connect = e2["dn"]
                                     prsn.activo = 0
@@ -1366,8 +1374,9 @@ class PersonaController extends happy.seguridad.Shield {
                                 def dpto = null
                                 if (datos)
                                     dpto = datos[1].split("=")
-//                                println "departamento " + dpto[0] + "   " + datos[1]
+
                                 dpto = Departamento.findByDescripcion(dpto[1])
+                                println "departamento " + dpto[1] + "   "+dpto
                                 if (prsn.departamento != dpto) {
                                     prsn.departamento = dpto
                                     prsn.activo = 0
