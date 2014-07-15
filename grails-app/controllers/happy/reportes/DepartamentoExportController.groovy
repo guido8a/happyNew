@@ -70,7 +70,7 @@ class DepartamentoExportController extends Shield {
             fontDpto = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
         }
 
-        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2])
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
         //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
 
