@@ -38,7 +38,7 @@ environments {
     pruebasvt {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:postgresql://127.0.0.1:5432/pruebasvt"
+            url = "jdbc:postgresql://127.0.0.1:5432/pruebasvt2"
             username = "postgres"
             password = "janus"
         }
