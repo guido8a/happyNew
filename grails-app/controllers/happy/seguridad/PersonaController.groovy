@@ -1285,7 +1285,7 @@ class PersonaController extends happy.seguridad.Shield {
                 println "es ou "+ou
                 def dep = Departamento.findByDescripcion(ou)
                 if (!dep) {
-                    println "new Dep " + ou
+                    //println "new Dep " + ou
                     def sec = new Date().format("ss")
                     dep = new Departamento()
                     dep.descripcion = ou
@@ -1300,7 +1300,7 @@ class PersonaController extends happy.seguridad.Shield {
                 // println "*********************************\n"
 //                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
                 def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
-                println "search String " + searchString
+                //println "search String " + searchString
                 def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
                 for (e2 in res2) {
                     println "E2--> "+e2["ou"]+"  -  "+e2["givenname"]
@@ -1314,12 +1314,12 @@ class PersonaController extends happy.seguridad.Shield {
                             println "mail alterno "+mail
                             if(!(mail=~"@"))
                                 mail=null
-                            println "le cambio "+mail
+                            println "le cambio?? "+mail
                         }
                         if (!mail || mail == "") {
                             noMail.add(["nombre": logn])
                         }
-                        println "buscando e2 " + logn+"  mail "+mail
+                        println "buscando e2 " + logn+"  mail "+mail+"     campo mail  "+entry["mail"]
                         def prsn = Persona.findByLogin(logn)
                         if (!prsn) {
                             // println "no encontro nuevo usuario"
@@ -1365,7 +1365,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 sesn.save(flush: true)
                             }
                         } else {
-                            println "encontro"
+                            //println "encontro"
                             if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento==null) {
                                 println "update"
                                 prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
@@ -1377,11 +1377,11 @@ class PersonaController extends happy.seguridad.Shield {
                                 }
                                 def datos = e2["dn"].split(",")
                                 def dpto = null
-                                println "datos "+datos
+                               // println "datos "+datos
                                 if(datos.size()>1){
                                     if (datos)
                                         dpto = datos[1].split("=")
-                                    println "dpto "+dpto
+                                    //println "dpto "+dpto
                                     if(dpto.size()>1)
                                         dpto = Departamento.findByDescripcion(dpto[1])
                                     println "departamento   "+dpto
@@ -1436,7 +1436,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 println "errores dep " + dep.errors
 
                         }else{
-                            println "encontro.. update padre"
+                            //println "encontro.. update padre"
                             def datos = e2["dn"].split(",")
                             // println "datos  dep " + datos
                             def padre = null
@@ -1447,7 +1447,7 @@ class PersonaController extends happy.seguridad.Shield {
                             if (!padre)
                                 padre = n1
                             if(dep.padre.id!=padre.id) {
-                                println "nuevo padre para "+dep+"   "+padre
+                              //  println "nuevo padre para "+dep+"   "+padre
                                 dep.padre = padre
                                 dep.save(flush: true)
                             }
