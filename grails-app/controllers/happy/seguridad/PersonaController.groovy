@@ -1427,6 +1427,15 @@ class PersonaController extends happy.seguridad.Shield {
                     println "no encontro nuevo usuario"
                     def nombres = WordUtils.capitalizeFully(entry["givenname"])
                     def mail = entry["mail"]
+                    if(!mail){
+                        mail=entry["userprincipalname"]
+                        if(!(mail=~"@"))
+                            mail=null
+                    }
+                    if (!mail || mail == "") {
+                        noMail.add(["nombre": logn])
+                    }
+
                     def apellido = WordUtils.capitalizeFully(entry["sn"])
                     if (!apellido)
                         apellido = "sin apellido"
