@@ -136,7 +136,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <elm:datepicker name="hasta" class="form-control required"/>
+                                    <elm:datepicker name="hasta" class="form-control required" maxDate="+0"/>
                                 </div>
                             </div>
                         </form>
@@ -163,6 +163,9 @@
                 var $node = $("#" + nodeStrId);
                 var nodeId = nodeStrId.split("_")[1];
                 var nodeType = $node.data("jstree").type;
+                var $parent = $node.parent().parent();
+                var parentStrId = $parent.attr("id");
+                var parentId = parentStrId.split("_")[1];
 
                 var nodeHasChildren = $node.hasClass("hasChildren");
                 var nodeOcupado = $node.hasClass("ocupado");
@@ -187,70 +190,6 @@
                         }
                     };
 
-
-                    %{--items.retrasados = {--}%
-                    %{--label   : "Trámites retrasados",--}%
-                    %{--icon    : "fa fa-rotate-left",--}%
-                    %{--submenu : {--}%
-                    %{--pdf : {--}%
-                    %{--label   : "PDF",--}%
-                    %{--icon    : "fa fa-file-pdf-o",--}%
-                    %{--submenu : {--}%
-                    %{--detallado   : {--}%
-                    %{--label  : "Detallado",--}%
-                    %{--icon   : "fa fa-rotate-left",--}%
-                    %{--action : function () {--}%
-                    %{--if (nodeType.match("padre") || nodeType.match("hijo")) {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"--}%
-                    %{--} else {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--},--}%
-                    %{--noDetallado : {--}%
-                    %{--label  : "Resumen",--}%
-                    %{--icon   : "fa fa-rotate-left",--}%
-                    %{--action : function () {--}%
-                    %{--if (nodeType.match("padre") || nodeType.match("hijo")) {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId--}%
-                    %{--} else {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--},--}%
-                    %{--xls : {--}%
-                    %{--label   : "Excel",--}%
-                    %{--icon    : "fa fa-file-excel-o",--}%
-                    %{--submenu : {--}%
-                    %{--detallado   : {--}%
-                    %{--label  : "Detallado",--}%
-                    %{--icon   : "fa fa-rotate-left",--}%
-                    %{--action : function () {--}%
-                    %{--if (nodeType.match("padre") || nodeType.match("hijo")) {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?dpto=" + nodeId + "&detalle=1"--}%
-                    %{--} else {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosDetalle')}?prsn=" + nodeId + "&detalle=1"--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--},--}%
-                    %{--noDetallado : {--}%
-                    %{--label  : "Resumen",--}%
-                    %{--icon   : "fa fa-rotate-left",--}%
-                    %{--action : function () {--}%
-                    %{--if (nodeType.match("padre") || nodeType.match("hijo")) {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?dpto=" + nodeId--}%
-                    %{--} else {--}%
-                    %{--location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosConsolidado')}?prsn=" + nodeId--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--};--}%
-
                     items.documentos = {
                         label   : "Documentos generados",
                         icon    : "fa fa-files-o",
@@ -269,7 +208,7 @@
                                                     if (nodeType.match("padre") || nodeType.match("hijo")) {
                                                         location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
                                                     } else {
-                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
                                                     }
                                                     $('#modalFechas').modal('hide');
                                                 }
@@ -286,7 +225,7 @@
                                                     if (nodeType.match("padre") || nodeType.match("hijo")) {
                                                         location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
                                                     } else {
-                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
                                                     }
                                                     $('#modalFechas').modal('hide');
                                                 }
@@ -307,9 +246,9 @@
                                             $("#btnPrint").unbind("click").click(function () {
                                                 if ($("#formFechas").valid()) {
                                                     if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
                                                     } else {
-                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXls')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
                                                     }
                                                     $('#modalFechas').modal('hide');
                                                 }
@@ -326,7 +265,7 @@
                                                     if (nodeType.match("padre") || nodeType.match("hijo")) {
                                                         location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
                                                     } else {
-                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn";
+                                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteGeneralXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
                                                     }
                                                     $('#modalFechas').modal('hide');
                                                 }
