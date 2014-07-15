@@ -49,7 +49,7 @@ class TramiteExportController {
             def baos = new ByteArrayOutputStream()
             def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-            Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 2, left: 2.5])
+            Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
             //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
             def pdfw = PdfWriter.getInstance(document, baos);
 
