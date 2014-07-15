@@ -1308,11 +1308,11 @@ class PersonaController extends happy.seguridad.Shield {
                     def gn = e2["givenname"]
                     if (gn) {
                         def logn = e2["samaccountname"]
-                        def mail = entry["mail"]
+                        def mail = e2["mail"]
                         println "buscando e2 " + logn+"  mail "+mail+"     campo mail  "+entry["mail"]
                         if(!mail){
                             println "------>no mail!! "+e2
-                            mail=entry["userprincipalname"]
+                            mail=e2["userprincipalname"]
                             println "mail alterno "+mail
                             if(!(mail=~"@"))
                                 mail=null
