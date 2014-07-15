@@ -128,6 +128,7 @@
                 if (data.data.length > 0) {
                     $(".chartContainer").removeClass("hidden");
                     $("#chart_" + tipo).removeClass("hidden");
+
                     var plot = $.jqplot('chart_' + tipo, [data.data],
                             {
                                 title          : data.title,
