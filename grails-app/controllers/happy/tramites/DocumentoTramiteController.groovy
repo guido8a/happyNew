@@ -50,11 +50,11 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def cargaDocs() {
 
         def tramite = Tramite.get(params.id)
-        println "carga docs " + params + " " + tramite.anexo
+        //println "carga docs " + params + " " + tramite.anexo
         if (tramite) {
             if (tramite.anexo == 1) {
                 def docs = DocumentoTramite.findAllByTramite(tramite)
-                println "dosc " + docs
+                //println "dosc " + docs
                 def editable = false
                 if (tramite.estadoTramite.codigo == "E001" || tramite.estadoTramite.codigo == "E002")
                     editable = true
@@ -67,8 +67,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
 
     def borrarDoc() {
-        if (request.getMethod() == "POST") {
 
+        if (request.getMethod() == "POST") {
 
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
@@ -96,13 +96,34 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         }
 
     }
+    def borrarDocNoFile() {
+//        println "borrar docs NF " +params
+        if (request.getMethod() == "POST") {
+            def doc = DocumentoTramite.get(params.id)
+            doc.delete(flush: true)
+            render "ok"
+        } else {
+            response.sendError(403)
+        }
+
+    }
 
     def generateKey() {
         if (request.getMethod() == "POST") {
 //            println "generate key "+params
             def doc = DocumentoTramite.get(params.id)
-            session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
-            render "ok"
+            def departamento = doc.tramite.deDepartamento
+            def anio =doc.fecha.format("yyyy")
+            try{
+                def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
+                def file = new File(path)
+                def b = file.getBytes()
+                session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
+                render "ok"
+            }catch(e){
+                render "error"
+            }
+
         } else {
             response.sendError(403)
         }
@@ -145,12 +166,17 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                     tipo = "application/pdf"
                     break;
             }
-            def file = new File(path)
-            def b = file.getBytes()
-            response.setContentType(tipo)
-            response.setHeader("Content-disposition", "attachment; filename=" + (doc.path))
-            response.setContentLength(b.length)
-            response.getOutputStream().write(b)
+            try {
+                def file = new File(path)
+                def b = file.getBytes()
+                response.setContentType(tipo)
+                response.setHeader("Content-disposition", "attachment; filename=" + (doc.path))
+                response.setContentLength(b.length)
+                response.getOutputStream().write(b)
+            }catch(e){
+                println "error en download"
+                response.sendError(404)
+            }
         } else {
             response.sendError(403)
         }
@@ -158,7 +184,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
 
     def uploadSvt() {
-        println "updaload svt " + params
+        //println "updaload svt " + params
         def tramite = Tramite.get(params.id)
         def anio = new Date().format("yyyy")
         def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/"+anio+"/"+ tramite.codigo + "/"

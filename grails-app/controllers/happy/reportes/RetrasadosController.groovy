@@ -103,25 +103,26 @@ class RetrasadosController {
             }
         }
         //println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
-        tramites.each { t ->
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} " +
-                    "and fechaEnvio is not null " +
+       // def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
+
+            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
+                    " fechaEnvio is not null " +
                     "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
                     "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
 
             if (pdt) {
                 pdt.each { pd ->
-                    def resp = Tramite.findAllByAQuienContesta(pd)
-                    if (resp.size() == 0) {
-                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                            datos = jerarquia(datos, pd)
+                    if(pd.tramite.externo!="1" || pd.tramite==null){
+                        def resp = Tramite.findAllByAQuienContesta(pd)
+                        if (resp.size() == 0) {
+                            if (pd.fechaLimite < now || (!pd.fechaRecepcion))
+                                datos = jerarquia(datos, pd)
+                        }
                     }
-
                 }
             }
 
-        }
+
 
 //        println "tramites "+datos
 //        jerarquia(datos)
@@ -630,23 +631,23 @@ class RetrasadosController {
             }
         }
 //        println "deps "+deps+"  puede ver  "+puedeVer
-        def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
-        tramites.each { t ->
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite=${t.id} and fechaEnvio is not null and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
-            if (pdt) {
-                pdt.each { pd ->
+        def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
+                " fechaEnvio is not null " +
+                "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
+                "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+
+        if (pdt) {
+            pdt.each { pd ->
+                if(pd.tramite.externo!="1" || pd.tramite==null){
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
-                        if (pd.fechaLimite < now || (!pd.fechaRecepcion)){
-
+                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
                             datos = jerarquia(datos, pd)
-                        }
                     }
-
                 }
             }
-
         }
+
         def baos = new ByteArrayOutputStream()
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 

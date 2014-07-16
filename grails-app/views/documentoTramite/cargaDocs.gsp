@@ -136,6 +136,29 @@
                     closeLoader()
                     if (msg == "ok") {
                         location.href = "${g.createLink(action: 'descargarDoc')}/" + id
+                    }else{
+                        bootbox.confirm("El archivo solicitado no se encuentra en el servidor. Desea borrar el anexo?", function (result) {
+                            if (result) {
+//                    openLoader("Borrando")
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${g.createLink(controller: 'documentoTramite',action: 'borrarDocNoFile')}",
+                                    data    : "id=" + id,
+                                    success : function (msg) {
+//                            closeLoader()
+                                        if (msg == "ok") {
+                                            cargaDocs();
+//                                closeLoader()
+                                        } else {
+                                            var mensaje = msg.split("_")
+                                            mensaje = mensaje[1]
+                                            bootbox.alert(mensaje)
+                                        }
+                                    }
+                                });
+                            }
+
+                        });
                     }
                 }
             });
