@@ -135,16 +135,22 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         println session.usuario.puedeAdmin
 
         res = PersonaDocumentoTramite.withCriteria {
-//            if (Persona.get(session.usuario.id).esTriangulo()) {
-//            if (session.usuario.esTriangulo) {
-//                eq("departamento", Persona.get(session.usuario.id).departamento)
-//            } else {
-//                eq("persona", Persona.get(session.usuario.id))
-//            }
-            ne('estado', estadoAnulado)
+
             if (!session.usuario.puedeAdmin) {
                 isNotNull("fechaEnvio")
+                and{
+                    ne('estado', EstadoTramite.findByCodigo('E005'))
+                    ne('estado', EstadoTramite.findByCodigo('E006'))
+                }
+            }else{
+
+                or{
+                    ne('estado', estadoAnulado)
+                    ne('estado', EstadoTramite.findByCodigo('E005'))
+                }
+
             }
+
             if (params.fecha) {
                 gt('fechaEnvio', params.fechaIni)
                 lt('fechaEnvio', params.fechaFin)
@@ -172,7 +178,16 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def tramitesFiltrados = []
 
         res.each {
-            filtro += it.tramite
+            println("-->" + it?.estado?.codigo)
+//            if(!session.usuario.puedeAdmin){
+//                if(it?.estado?.codigo == 'E005' || it?.estado?.codigo == 'E006'){
+//
+//                }
+//            else{
+                filtro += it.tramite
+//            }
+//            }
+
         }
 
         filtro.unique().each {
