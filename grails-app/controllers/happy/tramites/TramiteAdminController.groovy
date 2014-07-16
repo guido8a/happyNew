@@ -293,7 +293,7 @@ class TramiteAdminController {
         tramites = tramites.findAll { Tramite.countByAQuienContesta(it) == 0 }
         def personas
         def dep = persona.departamento
-        if(persona.estaActivo){
+        if (persona.estaActivo) {
             personas = Persona.withCriteria {
                 eq("departamento", persona.departamento)
                 ne("id", persona.id)
@@ -301,10 +301,10 @@ class TramiteAdminController {
             }.findAll {
                 it.estaActivo
             }
-        }else{
+        } else {
             def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
-            if(deps.size()>0){
-                dep=deps.departamento.first()
+            if (deps.size() > 0) {
+                dep = deps.departamento.first()
             }
             personas = Persona.withCriteria {
                 eq("departamento", dep)
@@ -317,10 +317,10 @@ class TramiteAdminController {
         }
 
 
-       
 
 
-        return [persona: persona, tramites: tramites,personas:personas,dep:dep]
+
+        return [persona: persona, tramites: tramites, personas: personas, dep: dep]
     }
 
     def redireccionarTramite_ajax() {
@@ -484,7 +484,13 @@ class TramiteAdminController {
         if (rol.codigo == "R002") {
             paraStr = "CC: "
         }
-        paraStr += pdt.departamento ? pdt.departamento.descripcion : pdt.persona.departamento.codigo + ":" + pdt.persona.login
+//        paraStr += pdt.departamento ? pdt.departamento.descripcion : pdt.persona.departamento.codigo + ":" + pdt.persona.login
+        if (pdt.departamento) {
+            paraStr += pdt.departamento.descripcion
+        } else if (pdt.persona) {
+            paraStr += pdt.persona.departamento.codigo + ":" + pdt.persona.login
+        }
+
         def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite.de.departamento.codigo + ":" + pdt.tramite.de.login)
 
         data += ',"tramite":"' + pdt.tramiteId + '"'
@@ -550,9 +556,13 @@ class TramiteAdminController {
         if (tramiteParaInfo.tramite.tipoDocumento.codigo == "OFI") {
             paraStr = tramiteParaInfo.tramite.paraExterno + " (EXT)"
         } else {
-            paraStr = tramiteParaInfo.departamento ?
-                    tramiteParaInfo.departamento.descripcion :
-                    tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+            if (tramiteParaInfo.departamento) {
+                paraStr = tramiteParaInfo.departamento.descripcion
+            } else if (tramiteParaInfo.persona) {
+                paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+            } else {
+                paraStr = ""
+            }
         }
         if (tramiteParaInfo.tramite.tipoDocumento.codigo == "DEX") {
             deStr = tramiteParaInfo.tramite.paraExterno + " (EXT)"

@@ -413,7 +413,7 @@ class ReportesPdfService {
      *          pb              float               padding inferior
      *          pl              float               padding izquierdo
      */
-    private static void addCellTabla(PdfPTable table, contenido, params) {
+    def addCellTabla(PdfPTable table, contenido, params) {
         PdfPCell cell = new PdfPCell(contenido);
         if (params.height) {
             cell.setFixedHeight(params.height.toFloat());
