@@ -69,105 +69,110 @@
 <body>
 <div class="dialog">
     <div style="text-align: center;"><h2 class="titl"
-                                         >S.A.D. Web<br>
+    >S.A.D. Web<br>
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA<br/>
         Sistema de Administración de Documentos</h2></div>
 
-    <div class="body ui-corner-all" style="width: 850px;position: relative;margin: auto;margin-top: 0px;height: 510px;
-    background: #40709a;">
+    <div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; ">
+    %{--<div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; background: #40709a;">--}%
 
-        <g:if test="${prms.contains('bandejaEntrada')}">
-            <a href="${createLink(controller: 'tramite', action: 'bandejaEntrada')}" style="text-decoration: none">
+        <g:if test="${session.usuario.esTriangulo()}">
+            <a href= "${createLink(controller:'tramite3', action: 'bandejaEntradaDpto')}" style="text-decoration: none">
         </g:if>
+        <g:else>
+            <a href= "${createLink(controller:'tramite', action: 'bandejaEntrada')}" style="text-decoration: none">
+        </g:else>
         <div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
                     <img src="${resource(dir: 'images', file: 'personales.png')}" width="100%" height="100%"/>
                 </div>
 
-                <div class="texto"><b>Bandeja Personal</b>: trámites que se han enviado al ususario, recibidos y pendientes</div>
+                <div class="texto"><b>Bandeja de entrada</b>: trámites que se han enviado al ususario, recibidos y pendientes</div>
             </div>
         </div>
         <g:if test="${prms.contains('bandejaEntrada')}">
             </a>
         </g:if>
 
-        <g:if test="${prms.contains('bandejaEntradaDpto')}">
-            <a href= "${createLink(controller:'tramite3', action: 'bandejaEntradaDpto')}" style="text-decoration: none">
+        <g:if test="${session.usuario.esTriangulo()}">
+            <a href= "${createLink(controller:'tramite2', action: 'bandejaSalidaDep')}" style="text-decoration: none">
         </g:if>
+        <g:else>
+            <a href= "${createLink(controller:'tramite2', action: 'bandejaSalida')}" style="text-decoration: none">
+        </g:else>
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'oficina.png')}" width="100%" height="100%"/>
+                    <img src="${resource(dir: 'images', file: 'bandejaSalida.jpg')}" width="100%" height="100%"/>
                 </div>
 
-                <div class="texto"><b>Bandeja de la Oficina</b>: recepción y envío de trámites a otras oficinas</div>
+                <div class="texto"><b>Bandeja de salida</b>: Envío de tramites</div>
             </div>
         </div>
-        <g:if test="${prms.contains('bandejaEntradaDpto')}">
-            </a>
-        </g:if>
+    </a>
 
-        <g:if test="${prms.contains('seguimientoExternos')}">
-            <a href= "${createLink(controller:'busquedaExternos', action: 'seguimientoExternos')}" style="text-decoration: none">
-        </g:if>
-        <div class="ui-corner-all item fuera">
-            <div class="ui-corner-all ui-widget-content item">
-                <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'ingreso.jpeg')}" width="100%" height="100%"/>
-                </div>
 
-                <div class="texto"><b>Trámites externos</b>: recepción de documentos externos</div>
-            </div>
-        </div>
-        <g:if test="${prms.contains('seguimientoExternos')}">
-            </a>
-        </g:if>
+        %{--<g:if test="${prms.contains('seguimientoExternos')}">--}%
+        %{--<a href= "${createLink(controller:'busquedaExternos', action: 'seguimientoExternos')}" style="text-decoration: none">--}%
+        %{--</g:if>--}%
+        %{--<div class="ui-corner-all item fuera">--}%
+        %{--<div class="ui-corner-all ui-widget-content item">--}%
+        %{--<div class="imagen">--}%
+        %{--<img src="${resource(dir: 'images', file: 'ingreso.jpeg')}" width="100%" height="100%"/>--}%
+        %{--</div>--}%
 
-        <g:if test="${prms.contains('archivadosDpto')}">
-            <a href= "${createLink(controller:'tramite3', action: 'archivadosDpto')}" style="text-decoration: none">
-        </g:if>
-        <div class="ui-corner-all  item fuera">
-            <div class="ui-corner-all ui-widget-content item">
-                <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'archivo.jpeg')}" width="100%" height="100%"/>
-                </div>
+        %{--<div class="texto"><b>Trámites externos</b>: recepción de documentos externos</div>--}%
+        %{--</div>--}%
+        %{--</div>--}%
+        %{--<g:if test="${prms.contains('seguimientoExternos')}">--}%
+        %{--</a>--}%
+        %{--</g:if>--}%
 
-                <div class="texto"><b>Archivo</b>: trámites archivados...</div>
-            </div>
-        </div>
-        <g:if test="${prms.contains('archivadosDpto')}">
-            </a>
-        </g:if>
+        %{--<g:if test="${prms.contains('archivadosDpto')}">--}%
+        %{--<a href= "${createLink(controller:'tramite3', action: 'archivadosDpto')}" style="text-decoration: none">--}%
+        %{--</g:if>--}%
+        %{--<div class="ui-corner-all  item fuera">--}%
+        %{--<div class="ui-corner-all ui-widget-content item">--}%
+        %{--<div class="imagen">--}%
+        %{--<img src="${resource(dir: 'images', file: 'archivo.jpeg')}" width="100%" height="100%"/>--}%
+        %{--</div>--}%
 
-        <g:link controller="reportes" action="index" style="text-decoration: none">
-            <div class="ui-corner-all  item fuera">
-                <div class="ui-corner-all ui-widget-content item">
-                    <div class="imagen">
-                        <img src="${resource(dir: 'images', file: 'reporte.jpeg')}" width="100%" height="100%"/>
-                    </div>
+        %{--<div class="texto"><b>Archivo</b>: trámites archivados...</div>--}%
+        %{--</div>--}%
+        %{--</div>--}%
+        %{--<g:if test="${prms.contains('archivadosDpto')}">--}%
+        %{--</a>--}%
+        %{--</g:if>--}%
 
-                    <div class="texto"><b>Reportes</b>: formatos pdf, hoja de cálculo, texto plano y html.
-                    trámites resagados, tiempos de respuesta...</div>
-                </div>
-            </div>
-        </g:link>
-    %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
-        <div class="ui-corner-all  item fuera">
-            <div class="ui-corner-all ui-widget-content item">
-                <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'manuales1.png')}" width="100%" height="100%"/>
-                </div>
+        %{--<g:link controller="reportes" action="index" style="text-decoration: none">--}%
+        %{--<div class="ui-corner-all  item fuera">--}%
+        %{--<div class="ui-corner-all ui-widget-content item">--}%
+        %{--<div class="imagen">--}%
+        %{--<img src="${resource(dir: 'images', file: 'reporte.jpeg')}" width="100%" height="100%"/>--}%
+        %{--</div>--}%
 
-                <div class="texto"><b>Manuales del sistema:</b>
-                    <g:link controller="manual" action="manualIngreso" target="_blank">Uso del sistema</g:link>,
-                    <g:link controller="manual" action="manualIngreso" target="_blank">Trámites externos</g:link>
-                    <g:link controller="manual" action="manualIngreso" target="_blank">Reportes</g:link>,
-                </div>
-            </div>
-        </div>
+        %{--<div class="texto"><b>Reportes</b>: formatos pdf, hoja de cálculo, texto plano y html.--}%
+        %{--trámites resagados, tiempos de respuesta...</div>--}%
+        %{--</div>--}%
+        %{--</div>--}%
+        %{--</g:link>--}%
+        %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
+        %{--<div class="ui-corner-all  item fuera">--}%
+        %{--<div class="ui-corner-all ui-widget-content item">--}%
+        %{--<div class="imagen">--}%
+        %{--<img src="${resource(dir: 'images', file: 'manuales1.png')}" width="100%" height="100%"/>--}%
+        %{--</div>--}%
 
-        <div style="text-align: center ; color:#002040">Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '0.1.0x')}</div>
+        %{--<div class="texto"><b>Manuales del sistema:</b>--}%
+        %{--<g:link controller="manual" action="manualIngreso" target="_blank">Uso del sistema</g:link>,--}%
+        %{--<g:link controller="manual" action="manualIngreso" target="_blank">Trámites externos</g:link>--}%
+        %{--<g:link controller="manual" action="manualIngreso" target="_blank">Reportes</g:link>,--}%
+        %{--</div>--}%
+        %{--</div>--}%
+        %{--</div>--}%
+
+        %{--<div style="text-align: center ; color:#002040">Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '0.1.0x')}</div>--}%
 
     </div>
     <script type="text/javascript">
