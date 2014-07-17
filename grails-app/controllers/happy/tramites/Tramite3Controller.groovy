@@ -1110,7 +1110,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            println "AQUI " + tramiteParaInfo
 //            println "AQUI2 " + tramiteParaInfo.departamento
 //            println "AQUI3 " + tramiteParaInfo.persona
-            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+//            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+
+            def paraStr = ""
+            if(tramiteParaInfo.departamento) {
+                paraStr = tramiteParaInfo.departamento.codigo
+            } else if(tramiteParaInfo.persona) {
+                paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+            }
+
             def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
             def rol = tramiteParaInfo.rolPersonaTramite
             if (rol.codigo == "R002") {
