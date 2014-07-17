@@ -178,7 +178,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def tramitesFiltrados = []
 
         res.each {
-            println("-->" + it?.estado?.codigo)
+//            println("-->" + it?.estado?.codigo)
 //            if(!session.usuario.puedeAdmin){
 //                if(it?.estado?.codigo == 'E005' || it?.estado?.codigo == 'E006'){
 //
