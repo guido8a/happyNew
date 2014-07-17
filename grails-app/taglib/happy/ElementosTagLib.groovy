@@ -79,7 +79,7 @@ class ElementosTagLib {
 //                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"114x114\" href=\"${resource(dir: 'images/ico', file: 'janus_114.png')}\">\n" +
 //                "        <link rel=\"apple-touch-icon-precomposed\" sizes=\"72x72\" href=\"${resource(dir: 'images/ico', file: 'janus_72.png')}\">\n" +
 //                "        <link rel=\"apple-touch-icon-precomposed\" href=\"${resource(dir: 'images/ico', file: 'janus_57.png')}\">"
-        def html = "     <link rel=\"shortcut icon\" href=\"${resource(dir: 'images/ico', file: 'emoticon_smile.png')}\">"
+        def html = "     <link rel=\"shortcut icon\" href=\"${resource(dir: 'images/ico', file: 'gadpp.png')}\">"
         out << html
     }
 
