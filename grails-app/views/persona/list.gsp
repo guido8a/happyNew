@@ -528,16 +528,20 @@
                 var config = {
                     label : 'Perfiles',
                     icon  : "fa fa-gears",
+                    separator_after : true,
                     url   : "${createLink(action: 'config')}/" + id
                 };
 
+/*
                 var ausentismo = {
                     label           : 'Absentismo',
                     icon            : "fa fa-gears",
                     separator_after : true,
                     url             : "${createLink(action: 'ausentismo')}/" + id
                 };
+*/
 
+/*
                 var desactivar = {
                     label  : 'Desactivar',
                     icon   : "fa ${iconDesactivar}'",
@@ -553,6 +557,7 @@
                         cambiarEstadoRow(id, true, tramites);
                     }
                 };
+*/
 
                 var eliminar = {
                     label            : 'Eliminar',
@@ -603,12 +608,14 @@
                 items.editar = editar;
                 if (estaActivo) {
                     items.config = config;
-                    items.ausentismo = ausentismo;
-                    items.desactivar = desactivar;
+//                    items.ausentismo = ausentismo;
+//                    items.desactivar = desactivar;
                 }
+/*
                 if (estaInactivo) {
                     items.activar = activar;
                 }
+*/
                 if (puedeEliminar) {
                     items.eliminar = eliminar;
                 }
