@@ -135,7 +135,7 @@
     <span class="grupo">
         <label class="well well-sm"
                style="text-align: center; float: left">Usuario: ${(persona?.titulo ?: '') + " " + persona?.nombre + " " + persona?.apellido + " - " +
-               persona?.departamento?.descripcion}</label>
+                persona?.departamento?.descripcion}</label>
     </span>
 </div>
 
@@ -255,34 +255,34 @@
 
 <script type="text/javascript">
 
-//    $(function () {
+    //    $(function () {
 
 
-        function createContextMenu (node){
-            var $tr = $(node);
+    function createContextMenu (node){
+        var $tr = $(node);
 
-            var items = {
-                header : {
-                    label : "Sin Acciones",
-                    header: true
-                }
-            };
+        var items = {
+            header : {
+                label : "Sin Acciones",
+                header: true
+            }
+        };
 
-            var id = $tr.data("id");
-            var codigo = $tr.attr("codigo");
-            var estado = $tr.attr("estado");
-            var padre = $tr.attr("padre");
-            var de = $tr.attr("de");
-            var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
-            var idPxt = $tr.attr("prtr");
-            var valAnexo = $tr.attr("anexo");
+        var id = $tr.data("id");
+        var codigo = $tr.attr("codigo");
+        var estado = $tr.attr("estado");
+        var padre = $tr.attr("padre");
+        var de = $tr.attr("de");
+        var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
+        var idPxt = $tr.attr("prtr");
+        var valAnexo = $tr.attr("anexo");
 
-            var porRecibir = $tr.hasClass("porRecibir");
-            var sinRecepcion = $tr.hasClass("sinRecepcion");
-            var recibido = $tr.hasClass("recibido");
-            var retrasado = $tr.hasClass("retrasado");
-            var conAnexo = $tr.hasClass("conAnexo")
-            var conPadre = $tr.hasClass("padre")
+        var porRecibir = $tr.hasClass("porRecibir");
+        var sinRecepcion = $tr.hasClass("sinRecepcion");
+        var recibido = $tr.hasClass("recibido");
+        var retrasado = $tr.hasClass("retrasado");
+        var conAnexo = $tr.hasClass("conAnexo")
+        var conPadre = $tr.hasClass("padre")
 
         var detalles = {
             label   : 'Detalles',
@@ -327,7 +327,7 @@
         items.header.label = "Acciones";
 
         items.ver = ver
-            items.detalles = detalles
+        items.detalles = detalles
         return items
 
 

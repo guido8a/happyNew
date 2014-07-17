@@ -339,8 +339,10 @@
 
 
         items.header.label = "Acciones";
+        <g:if test="${session.usuario.getPuedeVer()}">
         items.detalles = detalles
         items.arbol = arbol
+        </g:if>
 
 
         return items

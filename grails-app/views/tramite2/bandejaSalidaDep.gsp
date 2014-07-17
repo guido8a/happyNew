@@ -541,8 +541,10 @@
                 if (!esSumilla) {
                     items.ver = ver;
                 }
-                items.detalles = detalles;
-                items.arbol = arbol;
+                <g:if test="${session.usuario.getPuedeVer()}">
+                items.detalles = detalles
+                items.arbol = arbol
+                </g:if>
                 if (porEnviar) {
                     if (esSumilla || esDex) {
                         items.editar = editarSumilla;
