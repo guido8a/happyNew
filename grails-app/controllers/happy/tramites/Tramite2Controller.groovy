@@ -1278,7 +1278,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (externos.contains(tramite.tipoDocumento.codigo)) {
             tramite.externo = '1'
         }
-        tramite.departamento=tramite.de.departamento
+        tramite.departamento = tramite.de.departamento
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -1412,12 +1412,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
             } else {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
-            def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite,RolPersonaTramite.findByCodigo('R001'))
-            if(paraFinal){
-                if(paraFinal.departamento){
-                    if(paraFinal.departamento.externo==1){
-                        paraFinal.tramite.externo="1"
+            def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R001'))
+            if (paraFinal) {
+                if (paraFinal.departamento) {
+                    if (paraFinal.departamento.externo == 1) {
+                        paraFinal.tramite.externo = "1"
                         paraFinal.tramite.save(flush: true)
+                    } else {
+                        paraFinal.tramite.externo = "0"
+                        paraFinal.tramite.save(flush: true)
+                    }
+                } else {
+                    if (paraFinal.persona) {
+                        if (paraFinal.persona.departamento.externo == 1) {
+                            paraFinal.tramite.externo = "1"
+                            paraFinal.tramite.save(flush: true)
+                        } else {
+                            paraFinal.tramite.externo = "0"
+                            paraFinal.tramite.save(flush: true)
+                        }
                     }
                 }
             }

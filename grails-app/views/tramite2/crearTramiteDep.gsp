@@ -700,7 +700,9 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
-                        $divExterno.addClass("hide");
+//                        $divExterno.addClass("hide");
+//                        $chkExterno.prop("checked", false);
+                        $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", false);
                         break;
                     default :
@@ -850,19 +852,19 @@
             }
 
             function validarExterno(remove) {
-                if (remove) {
-                    removeAll();
-                }
-                if ($("#externo").is(":checked")) {
-//                    //console.log("externo");
-                    $(".externo").show();
-                    $(".interno").hide();
-                    $("#para").val($("#para option:visible:first").val());
-                } else {
-//                    //console.log("interno");
-                    $(".externo").show();
-                    $(".interno").show();
-                }
+//                if (remove) {
+//                    removeAll();
+//                }
+//                if ($("#externo").is(":checked")) {
+////                    //console.log("externo");
+//                    $(".externo").show();
+//                    $(".interno").hide();
+//                    $("#para").val($("#para option:visible:first").val());
+//                } else {
+////                    //console.log("interno");
+//                    $(".externo").show();
+//                    $(".interno").show();
+//                }
 
             }
 
