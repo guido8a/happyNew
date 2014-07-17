@@ -21,7 +21,8 @@ class DiasLaborablesService {
      *                                  2: si hubo algun mensaje aunque haya hecho el calculo
      *                                     si hubo error (no hay los dias laborables), el año para configurar los días laborables
      */
-    def fechaMasTiempo(Date fecha, int horas, int minutos, boolean noLaborables) {
+    def fechaMasTiempo(Date paramsFecha, int horas, int minutos, boolean noLaborables) {
+        def fecha = paramsFecha.clone().clearTime()
 //        println "****"
 //        println "params.fecha " + fecha
 //        println "params.horas " + horas
@@ -257,7 +258,9 @@ class DiasLaborablesService {
      *                                  2: si hubo algun mensaje aunque haya hecho el calculo
      *                                     si hubo error (no hay los dias laborables), el año para configurar los días laborables
      */
-    def diasLaborablesEntre(Date fecha1, Date fecha2, boolean noLaborables) {
+    def diasLaborablesEntre(Date paramsFecha1, Date paramsFecha2, boolean noLaborables) {
+        def fecha1 = paramsFecha1.clone().clearTime()
+        def fecha2 = paramsFecha2.clone().clearTime()
 //        println "****"
 //        println fecha1
 //        println fecha2
@@ -341,7 +344,8 @@ class DiasLaborablesService {
      *                                     si hubo error (no hay los dias laborables), el año para configurar los días laborables
      *                                  3: si hubo algun mensaje aunque haya hecho el calculo
      */
-    def diasLaborablesDesde(Date fecha, int dias, boolean noLaborables) {
+    def diasLaborablesDesde(Date paramsFecha, int dias, boolean noLaborables) {
+        def fecha = paramsFecha.clone().clearTime()
         def mensaje = ""
         def dl = DiaLaborable.findAllByFecha(fecha)
         if (dl.size() == 1) {

@@ -7,6 +7,7 @@ import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfWriter;
 import happy.UtilitariosTagLib
+import happy.tramites.Departamento
 import happy.utilitarios.Parametros
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
@@ -497,5 +498,22 @@ class ReportesPdfService {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
         }
+    }
+
+    /* ************** funciones que uso en varios controllers para reportes ****************************************** */
+
+    /**
+     * todosDep
+     * recibe un departamento y retorna un arreglo con todos los decendientes del departamento
+     * @param departamento
+     * @return
+     */
+    def todosDep(Departamento departamento) {
+        def arr = []
+        arr += departamento
+        Departamento.findAllByPadre(departamento).each { dep ->
+            arr += todosDep(dep)
+        }
+        return arr
     }
 }
