@@ -53,16 +53,7 @@ class DocumentosGeneradosController {
     Font fontTotalDep = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font fontGranTotal = new Font(Font.TIMES_ROMAN, 14, Font.BOLD);
 
-    def todosDep(Departamento departamento) {
-        def arr = []
-        arr += departamento
-        Departamento.findAllByPadre(departamento).each { dep ->
-            arr += todosDep(dep)
-        }
-        return arr
-    }
-
-    def reporteGeneralPdf() {
+      def reporteGeneralPdf() {
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
 
@@ -130,7 +121,7 @@ class DocumentosGeneradosController {
             document.add(paragraph)
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
-            def hijosDep = todosDep(dep)
+            def hijosDep = reportesPdfService.todosDep(dep)
             def tramites = [:]
 
             Tramite.withCriteria {
@@ -287,7 +278,7 @@ class DocumentosGeneradosController {
 
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
-            def hijosDep = todosDep(dep)
+            def hijosDep = reportesPdfService.todosDep(dep)
             fileName += dep.codigo
             title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
             title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
@@ -461,7 +452,7 @@ class DocumentosGeneradosController {
         } else {
             def dep = Departamento.get(params.id.toLong())
             fileName += dep.codigo
-            def hijosDep = todosDep(dep)
+            def hijosDep = reportesPdfService.todosDep(dep)
             title += ["${dep.descripcion}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
             title2 += dep.descripcion
@@ -520,7 +511,7 @@ class DocumentosGeneradosController {
         index++
 
         def dep = Departamento.get(params.id.toLong())
-        def hijosDep = todosDep(dep)
+        def hijosDep = reportesPdfService.todosDep(dep)
         def tramites = [:]
 
         trams.each { tr ->
@@ -634,7 +625,7 @@ class DocumentosGeneradosController {
 
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
-            def hijosDep = todosDep(dep)
+            def hijosDep = reportesPdfService.todosDep(dep)
             fileName += dep.codigo
             title += ["${dep.descripcion}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
