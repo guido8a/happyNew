@@ -60,7 +60,7 @@
                         <g:set var="clase" value="sinRecepcion"/>
                     </g:if>
                     <g:else>
-                        <g:set var="clase" value="porRecibir"/>
+                        <g:set var="clase" value="blanco porRecibir"/>
                     </g:else>
                 </g:else>
 

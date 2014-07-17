@@ -21,8 +21,8 @@ class DiasLaborablesService {
      *                                  2: si hubo algun mensaje aunque haya hecho el calculo
      *                                     si hubo error (no hay los dias laborables), el año para configurar los días laborables
      */
-    def fechaMasTiempo(Date paramsFecha, int horas, int minutos, boolean noLaborables) {
-        def fecha = paramsFecha.clone().clearTime()
+    def fechaMasTiempo(Date fecha, int horas, int minutos, boolean noLaborables) {
+//        def fecha = paramsFecha.clone().clearTime()
 //        println "****"
 //        println "params.fecha " + fecha
 //        println "params.horas " + horas

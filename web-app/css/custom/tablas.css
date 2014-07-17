@@ -42,3 +42,18 @@ tr.trHighlight, tr.trHighlight td, td.trHighlight, .trHighlight {
 .table-hover > tbody > tr:hover > th {
     background-color : #abcdef;
 }
+
+.table > thead > tr > td.blanco,
+.table > tbody > tr > td.blanco,
+.table > tfoot > tr > td.blanco,
+.table > thead > tr > th.blanco,
+.table > tbody > tr > th.blanco,
+.table > tfoot > tr > th.blanco,
+.table > thead > tr.blanco > td,
+.table > tbody > tr.blanco > td,
+.table > tfoot > tr.blanco > td,
+.table > thead > tr.blanco > th,
+.table > tbody > tr.blanco > th,
+.table > tfoot > tr.blanco > th {
+    background-color : #ffffff;
+}

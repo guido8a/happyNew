@@ -109,9 +109,9 @@ class PersonaDocumentoTramite {
                 par = par.pop()
                 tiempoBloqueo = par.bloqueo
             }
-
-//            println "tiempo Bloqueo "+tiempoBloqueo
+//            println "tiempo Bloqueo " + tiempoBloqueo
             def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+//            println fechaLimite
             if (fechaLimite[0]) {
                 return fechaLimite[1]
             } else {
