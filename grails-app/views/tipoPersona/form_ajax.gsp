@@ -2,36 +2,46 @@
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!tipoPersonaInstance}">
-    <elm:notFound elem="TipoPersona" genero="o" />
+    <elm:notFound elem="TipoPersona" genero="o"/>
 </g:if>
 <g:else>
     <g:form class="form-horizontal" name="frmTipoPersona" role="form" action="save" method="POST">
-        <g:hiddenField name="id" value="${tipoPersonaInstance?.id}" />
-        
+        <g:hiddenField name="id" value="${tipoPersonaInstance?.id}"/>
+
         <div class="form-group ${hasErrors(bean: tipoPersonaInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Código
                 </label>
+
                 <div class="col-md-2">
-                    <g:textField name="codigo" maxlength="1" required="" class="form-control required allCaps" value="${tipoPersonaInstance?.codigo}"/>
+                    <g:if test="${!tipoPersonaInstance?.codigo}">
+                        <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoPersonaInstance?.codigo}"/>
+                    </g:if>
+                    <g:else>
+                        <span class="uneditable-input">
+                            ${tipoPersonaInstance?.codigo}
+                            <g:hiddenField name="codigo" value="${tipoPersonaInstance?.codigo}"/>
+                        </span>
+                    </g:else>
                 </div>
-                 *
+                *
             </span>
         </div>
-        
+
         <div class="form-group ${hasErrors(bean: tipoPersonaInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
                     Descripción
                 </label>
+
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="15" required="" class="form-control required allCaps" value="${tipoPersonaInstance?.descripcion}"/>
                 </div>
-                 *
+                *
             </span>
         </div>
-        
+
     </g:form>
 
     <script type="text/javascript">
@@ -49,7 +59,7 @@
                 label.parents(".grupo").removeClass('has-error');
             },
 
-            rules          : {
+            rules    : {
                 codigo : {
                     remote : {
                         url  : "${createLink(action: 'validarCodigo_ajax')}",
@@ -60,7 +70,7 @@
                     }
                 }
             },
-            messages       : {
+            messages : {
                 codigo : {
                     remote : "Código ya ingresado"
                 }
