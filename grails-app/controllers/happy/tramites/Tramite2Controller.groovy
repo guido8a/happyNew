@@ -1412,6 +1412,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
             } else {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
+            def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite,RolPersonaTramite.findByCodigo('R001'))
+            if(paraFinal){
+                if(paraFinal.departamento){
+                    if(paraFinal.departamento.externo==1){
+                        paraFinal.tramite.externo="1"
+                        paraFinal.tramite.save(flush: true)
+                    }
+                }
+            }
             if (tipoDoc.codigo == "DEX") {
                 //aqui envia y recibe automaticamente el tramite
                 def ahora = new Date();
