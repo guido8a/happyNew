@@ -29,9 +29,11 @@
                         <td>${pers.estado?.descripcion}</td>
                         <td>
                             <div class="col-md-9">
-                                <elm:datepicker minDate="${pers.fechaLimiteRespuesta?.format('dd-MM-yyyy')}"
-                                                class="form-control input-sm required" name="fecha_${pers.id}"
-                                                value="${pers.fechaLimiteRespuesta}"/>
+                                <g:if test="${pers.fechaLimiteRespuesta}">
+                                    <elm:datepicker minDate="${pers.fechaLimiteRespuesta?.format('dd-MM-yyyy')}"
+                                                    class="form-control input-sm required" name="fecha_${pers.id}"
+                                                    value="${pers.fechaLimiteRespuesta}"/>
+                                </g:if>
                             </div>
 
                             <div class="col-md-3">

@@ -44,8 +44,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
-        println "****************************"
-        println dpto.id
+//        println "****************************"
+//        println dpto.id
 
         def personas = PersonaDocumentoTramite.withCriteria {
             eq("tramite", tramite)
