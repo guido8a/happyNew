@@ -87,7 +87,6 @@
                                 </td>
                             </g:else>
 
-                            <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
                             <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                             <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
