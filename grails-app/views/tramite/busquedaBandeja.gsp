@@ -1,9 +1,14 @@
+<%@ page import="happy.tramites.DocumentoTramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: fabricio
   Date: 1/21/14
   Time: 1:01 PM
 --%>
+<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
+
+<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
 
 <div style="height: 450px"  class="container-celdas">
@@ -43,13 +48,22 @@
                     </g:else>
                 </g:if>
                 <g:else>
-                    <g:if test="${tramite.tramite.fechaLimite < now}">
+                    <g:if test="${tramite.fechaBloqueo < now}">
                         <g:set var="clase" value="sinRecepcion"/>
                     </g:if>
                     <g:else>
-                        <g:set var="clase" value="porRecibir"/>
+                        <g:set var="clase" value="blanco porRecibir"/>
                     </g:else>
                 </g:else>
+
+                <g:if test="${tramite?.tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite.tramite) > 0}">
+                    <g:set var="clase" value="${clase + ' conAnexo'}"/>
+                </g:if>
+                <g:else>
+                    <g:set var="clase" value="${clase + ' sinAnexo'}"/>
+                </g:else>
+
+                <g:set var="clase" value="${clase + ' ' + tramite.rolPersonaTramite.codigo}"/>
 
 
                <g:each in="${pxtTramites}" var="pxt">
@@ -57,6 +71,21 @@
                         <tr data-id="${tramite?.tramite?.id}"
                             class="${clase}"
                             codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" prtr="${tramite?.id}">
+
+
+                            <g:if test="${tramite?.tramite?.anexo == 1}">
+                                <td title="${tramite?.tramite?.asunto}">
+                                    ${tramite?.tramite?.codigo}
+                                    <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
+                                        <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
+                                    </g:if>
+                                </td>
+                            </g:if>
+                            <g:else>
+                                <td title="${tramite?.tramite?.asunto}">
+                                    ${tramite?.tramite?.codigo}
+                                </td>
+                            </g:else>
 
                             <td title="${tramite?.tramite?.asunto}">${tramite?.tramite?.codigo}</td>
                             <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>

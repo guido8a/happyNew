@@ -1334,22 +1334,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
                     para = session.usuario.departamento.id.toInteger() * -1
                 }
-                println "PARA: " + para
+//                println "PARA: " + para
                 def paraDocumentoTramite = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", tramite)
                     eq("rolPersonaTramite", rolPara)
                 }
-                println "paraDocTram: " + paraDocumentoTramite
+//                println "paraDocTram: " + paraDocumentoTramite
                 if (paraDocumentoTramite.size() == 0) {
-                    println "pdt.size == 0"
+//                    println "pdt.size == 0"
                     paraDocumentoTramite = new PersonaDocumentoTramite()
                     paraDocumentoTramite.tramite = tramite //******
                     paraDocumentoTramite.rolPersonaTramite = rolPara
                 } else if (paraDocumentoTramite.size() == 1) {
-                    println "pdt.size == 1"
+//                    println "pdt.size == 1"
                     paraDocumentoTramite = paraDocumentoTramite.first()
                 } else {
-                    println "pdt.size > 1"
+//                    println "pdt.size > 1"
                     paraDocumentoTramite.each {
                         it.delete(flush: true)
                     }
@@ -1358,12 +1358,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     paraDocumentoTramite.rolPersonaTramite = rolPara
                 }
                 if (para > 0) {
-                    println "para>0"
+//                    println "para>0"
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
                     paraDocumentoTramite.departamento = null
                 } else {
-                    println "para<=0"
+//                    println "para<=0"
                     //departamento
                     paraDocumentoTramite.persona = null
                     paraDocumentoTramite.departamento = Departamento.get(para * -1)
@@ -1601,7 +1601,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def busquedaBandejaSalidaDep() {
-
+//        println "buscar......." + params
         def persona = Persona.get(session.usuario.id)
         def tramites = []
 //        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
@@ -1639,13 +1639,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
+        println params
+//        println params.fecha
+//        println params.fechaIni
+//        println params.fechaFin
+
         def res = PersonaDocumentoTramite.withCriteria {
-
             if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
+                ge('fechaEnvio', params.fechaIni)
+                le('fechaEnvio', params.fechaFin)
             }
-
             tramite {
                 if (params.asunto) {
                     ilike('asunto', '%' + params.asunto + '%')

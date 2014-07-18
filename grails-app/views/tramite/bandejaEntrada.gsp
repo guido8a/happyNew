@@ -185,7 +185,7 @@
                     </div>
 
                     <div class="col-md-2" style="margin-left: 130px">
-                        <label>Fecha Envio</label>
+                        <label>Fecha Envío</label>
                         <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                     </div>
 
@@ -584,7 +584,6 @@
                 items.arbol = arbol;
                 </g:if>
 
-
                 if (conAnexo) {
                     items.anexo = anexos
                 }
@@ -692,6 +691,12 @@
 
                 $(".btnSalir").click(function () {
                     $(".buscar").attr("hidden", true);
+                    $("#memorando").val("");
+                    $("#asunto").val("");
+                    $("#fechaBusqueda_input").val("");
+                    $("#fechaBusqueda_day").val("");
+                    $("#fechaBusqueda_month").val("");
+                    $("#fechaBusqueda_year").val("");
                     cargarBandeja();
 
                 });

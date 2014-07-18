@@ -18,7 +18,7 @@
         </div>
         <g:if test="${t.tipoTramite.codigo=='C'}">
             <div class="row">
-                <div class="col-xs-2 negrilla">Confidencial</div>>
+                <div class="col-xs-2 negrilla">Confidencial</div>
             </div>
         </g:if>
         <div class="row">
@@ -121,7 +121,7 @@
         </div>
         <g:if test="${t.tipoTramite.codigo=='C'}">
             <div class="row">
-                <div class="col-xs-2 negrilla">Confidencial</div>>
+                <div class="col-xs-2 negrilla">Confidencial</div>
             </div>
         </g:if>
         <div class="row">
@@ -192,7 +192,7 @@
             </div>
         </g:if>
         <g:if test="${t.anexo == 1}">
-            <g:if test="${t.personaPuedeLeer(session.usuario.id)}">
+            <g:if test="${t.personaPuedeLeer(session.usuario)}">
                 <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                     <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
                         <span style='color: #327BBA'>Archivo:</span>
@@ -214,8 +214,8 @@
 </div>
 <script type="text/javascript">
     $(".bajar").click(function () {
-        var id = $(this).attr("iden")
-        openLoader()
+        var id = $(this).attr("iden");
+        openLoader();
         $.ajax({
             type    : "POST",
             url     : "${g.createLink(controller: 'documentoTramite',action: 'generateKey')}",

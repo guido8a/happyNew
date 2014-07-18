@@ -178,7 +178,7 @@
                     </div>
 
                     <div class="col-md-2" style="margin-left: 130px">
-                        <label>Fecha</label>
+                        <label>Fecha envío</label>
                         <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                     </div>
 
@@ -245,7 +245,7 @@
                     datos = {};
                 }
                 if (band) {
-                    openLoader();
+                    openLoader("Cargando");
                 }
                 $.ajax({
                     type    : "POST",
@@ -689,8 +689,8 @@
             $(".btnSalir").click(function () {
                 $(".buscar").attr("hidden", true);
                 openLoader();
-                cargarBandeja();
-                closeLoader()
+                cargarBandeja(true);
+                closeLoader();
             });
 
             $(".btnBusqueda").click(function () {
