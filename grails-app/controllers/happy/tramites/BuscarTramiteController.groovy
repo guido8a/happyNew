@@ -184,7 +184,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //
 //                }
 //            else{
-                filtro += it.tramite
+            filtro += it.tramite
 //            }
 //            }
 
@@ -200,7 +200,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //        println("filtrados:" + tramitesFiltrados)
 
         tramitesFiltrados.sort { it.trmtcdgo }
-
+        //println " tramites "+tramitesFiltrados
 //        return [tramites: res, resTramites: filtro]
         return [tramites: tramitesFiltrados, persona: persona]
 
