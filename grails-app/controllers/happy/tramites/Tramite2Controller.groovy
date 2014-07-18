@@ -1274,10 +1274,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (tramite.tipoDocumento.codigo == "DEX")
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
 
-        def externos = ["DEX", "OFI"]
-        if (externos.contains(tramite.tipoDocumento.codigo)) {
-            tramite.externo = '1'
-        }
         tramite.departamento = tramite.de.departamento
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
@@ -1338,17 +1334,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
                     para = session.usuario.departamento.id.toInteger() * -1
                 }
+                println "PARA: " + para
                 def paraDocumentoTramite = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", tramite)
                     eq("rolPersonaTramite", rolPara)
                 }
+                println "paraDocTram: " + paraDocumentoTramite
                 if (paraDocumentoTramite.size() == 0) {
+                    println "pdt.size == 0"
                     paraDocumentoTramite = new PersonaDocumentoTramite()
                     paraDocumentoTramite.tramite = tramite //******
                     paraDocumentoTramite.rolPersonaTramite = rolPara
                 } else if (paraDocumentoTramite.size() == 1) {
+                    println "pdt.size == 1"
                     paraDocumentoTramite = paraDocumentoTramite.first()
                 } else {
+                    println "pdt.size > 1"
                     paraDocumentoTramite.each {
                         it.delete(flush: true)
                     }
@@ -1357,10 +1358,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     paraDocumentoTramite.rolPersonaTramite = rolPara
                 }
                 if (para > 0) {
+                    println "para>0"
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
                     paraDocumentoTramite.departamento = null
                 } else {
+                    println "para<=0"
                     //departamento
                     paraDocumentoTramite.persona = null
                     paraDocumentoTramite.departamento = Departamento.get(para * -1)
@@ -1412,24 +1415,30 @@ class Tramite2Controller extends happy.seguridad.Shield {
             } else {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
-            def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R001'))
-            if (paraFinal) {
-                if (paraFinal.departamento) {
-                    if (paraFinal.departamento.externo == 1) {
-                        paraFinal.tramite.externo = "1"
-                        paraFinal.tramite.save(flush: true)
-                    } else {
-                        paraFinal.tramite.externo = "0"
-                        paraFinal.tramite.save(flush: true)
-                    }
-                } else {
-                    if (paraFinal.persona) {
-                        if (paraFinal.persona.departamento.externo == 1) {
+
+            def externos = ["DEX", "OFI"]
+            if (externos.contains(tramite.tipoDocumento.codigo)) {
+                tramite.externo = '1'
+            } else {
+                def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R001'))
+                if (paraFinal) {
+                    if (paraFinal.departamento) {
+                        if (paraFinal.departamento.externo == 1) {
                             paraFinal.tramite.externo = "1"
                             paraFinal.tramite.save(flush: true)
                         } else {
                             paraFinal.tramite.externo = "0"
                             paraFinal.tramite.save(flush: true)
+                        }
+                    } else {
+                        if (paraFinal.persona) {
+                            if (paraFinal.persona.departamento.externo == 1) {
+                                paraFinal.tramite.externo = "1"
+                                paraFinal.tramite.save(flush: true)
+                            } else {
+                                paraFinal.tramite.externo = "0"
+                                paraFinal.tramite.save(flush: true)
+                            }
                         }
                     }
                 }

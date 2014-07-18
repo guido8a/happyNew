@@ -578,7 +578,7 @@
                             %{--<li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">--}%
                             %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
                             %{--</li>--}%
-                                <li data-id="${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
+                                <li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
                                     <i class="fa fa-li ${disp.departamento.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.departamento.descripcion}
                                 </li>
                             </g:else>

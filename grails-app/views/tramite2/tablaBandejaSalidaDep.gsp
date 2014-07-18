@@ -74,10 +74,10 @@
 
                     <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
                     %{--<g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">--}%
-                        %{--<td>EXT</td>--}%
+                    %{--<td>EXT</td>--}%
                     %{--</g:if>--}%
                     %{--<g:else>--}%
-                        %{--<td>${para?.departamento?.codigo}--}%%{--//${todos}--}%%{--</td>--}%
+                    %{--<td>${para?.departamento?.codigo}--}%%{--//${todos}--}%%{--</td>--}%
                     %{--</g:else>--}%
                     <td>
                         <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
@@ -93,7 +93,7 @@
                         </g:else>
                     </td>
                     <g:set var="infoExtra" value=""/>
-                %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
+                    %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
                     <g:each in="${[para] + copias}" var="pdt">
                         <g:if test="${pdt}">
                         %{--<g:set var="infoExtra" value="${pdt.toString() + '<br/>'}"/>--}%
@@ -105,7 +105,9 @@
                                 <g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>
                             </g:if>
                             <g:else>
-                                <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
+                                <g:if test="${pdt.persona}">
+                                    <g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>
+                                </g:if>
                             </g:else>
                             <g:if test="${pdt.fechaEnvio}">
                                 <g:if test="${pdt.fechaRecepcion}">
@@ -147,7 +149,14 @@
                             <span class="small">
                                 <g:each in="${copias}" var="copia" status="i">
                                     <g:set var="dest" value="${dest + 1}"/>
-                                    [CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}
+                                    [CC]
+                                    <g:if test="${copia.departamento}">
+                                        ${copia.departamento.codigo}
+                                    </g:if>
+                                    <g:elseif test="${copia.persona}">
+                                        ${copia.persona.login}
+                                    </g:elseif>
+                                    %{--[CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}--}%
                                     <g:if test="${i < copias.size() - 1}">
                                         ,
                                     </g:if>
