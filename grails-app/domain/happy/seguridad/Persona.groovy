@@ -219,6 +219,10 @@ class Persona {
         return this.puedePermiso("C001")
     }
 
+    def getPuedePlazo(){
+        return this.puedePermiso("P007")
+    }
+
 
     def getJefePersona() {
         def personas = Persona.withCriteria {

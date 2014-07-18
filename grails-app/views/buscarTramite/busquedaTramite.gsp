@@ -220,6 +220,10 @@
                 var conAnexo = $tr.hasClass("conAnexo");
                 var conPadre = $tr.hasClass("padre");
                 var esPrincipal = $tr.hasClass("principal");
+                var anulado = $tr.hasClass("estado")
+
+
+
 
                 var arbol = {
                     label  : 'Cadena del trámite',
@@ -353,9 +357,14 @@
                     items.contestar = contestar;
                 }
 
-                <g:if test="${session.usuario.getPuedeJefe()}">
-                items.plazo = ampliarPlazo;
-                </g:if>
+                %{--<g:if test="${session.usuario.getPuedeJefe()}">--}%
+              %{----}%
+                    %{--items.plazo = ampliarPlazo;--}%
+                             %{--</g:if>--}%
+
+              if(!estado && ${session.usuario.getPuedePlazo()}){
+                  items.plazo = ampliarPlazo;
+              }
 
                 return items
             }
