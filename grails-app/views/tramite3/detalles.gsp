@@ -50,7 +50,7 @@
                         ${t.paraExterno} (EXT)
                     </g:if>
                     <g:else>
-                        ${(pdt.departamento) ? pdt.departamento.codigo : "" + pdt.persona.departamento.codigo + ":" + pdt.persona.login}
+                        ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
                     </g:else>
                     <g:if test="${pdt.estado}">
                         <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b> el ${fecha} <br>

@@ -73,6 +73,25 @@ class PersonaDocumentoTramite {
         estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
     }
 
+    def beforeValidate(List propertiesBeingValidated) {
+        // do pre validation work based on propertiesBeingValidated
+       // println "before validate"
+        if(this.departamento==null && this.persona==null){
+            println "dos nulos "+this.id
+            this.departamento=this.getPersistentValue("departamento")
+            this.persona=this.getPersistentValue("persona")
+          //  println "como quedo ? "
+            println "-->fin "+this.persona+"  "+this.departamento
+            if(this.departamento==null && this.persona==null){
+                this.tramite=null;
+                this.rolPersonaTramite=null
+                return false
+            }
+
+        }
+        return true
+    }
+
     def getFechaLimite() {
         def limite = this.fechaEnvio
         if (limite) {

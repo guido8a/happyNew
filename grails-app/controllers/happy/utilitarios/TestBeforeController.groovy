@@ -189,4 +189,19 @@ class TestBeforeController {
     }
 
 
+    def testValidate(){
+        def pdt = PersonaDocumentoTramite.get(968)
+        pdt.persona=null
+        pdt.departamento=null
+        println "validate " +pdt.validate()
+        println "errors "+pdt.errors
+        pdt.save(flush: true)
+        println "-----------------------------"
+        pdt=new PersonaDocumentoTramite()
+        pdt.tramite=Tramite.get(282)
+        pdt.rolPersonaTramite=RolPersonaTramite.get(1)
+        pdt.save(flush: true)
+
+    }
+
 }
