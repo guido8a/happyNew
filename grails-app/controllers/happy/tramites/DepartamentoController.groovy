@@ -340,9 +340,12 @@ class DepartamentoController extends happy.seguridad.Shield {
 
                     def estadoEnviado = EstadoTramite.findByCodigo("E003")
                     def estadoRecibido = EstadoTramite.findByCodigo("E004")
+                    def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
+                    def estadoRevisado = EstadoTramite.findByCodigo("E002")
+
 //                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
-                    def tramites = PersonaDocumentoTramite.withCriteria {
+                    def tramitesEntrada = PersonaDocumentoTramite.withCriteria {
                         eq("persona", hijo)
                         or {
                             eq("rolPersonaTramite", rolPara)
@@ -353,12 +356,34 @@ class DepartamentoController extends happy.seguridad.Shield {
                             eq("estado", estadoRecibido)
                         }
                     }
-                    def cantTram = 0
-                    tramites.each { tr ->
+                    def cantTramEntrada = 0, cantTramSalida = 0
+                    tramitesEntrada.each { tr ->
                         if (Tramite.countByAQuienContesta(tr) == 0) {
-                            cantTram++
+                            cantTramEntrada++
                         }
                     }
+
+                    def tramitesSalida = Tramite.withCriteria {
+                        eq("de", hijo)
+                        isNull("deDepartamento")
+                        inList("estadoTramite", [estadoPorEnviar, estadoRevisado, estadoEnviado, estadoRecibido])
+                        order("fechaCreacion", "desc")
+                    }
+                    def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(hijo, rolImprimir).tramite
+                    if (t.size() > 0) {
+                        tramitesSalida += t
+                    }
+                    def tramsSalida = []
+                    tramitesSalida.each { tr ->
+                        def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [rolPara, rolCopia])
+                        pdt.each { pd ->
+                            if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+                                if (!tramsSalida.contains(tr))
+                                    tramsSalida += tr
+                            }
+                        }
+                    }
+                    cantTramSalida = tramsSalida.size()
 
 //                    if (hijo.id == 4675) {
 ////                        println tramites.tramite.codigo
@@ -366,7 +391,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 //                    }
 
 //                    lbl += " <${tramites.size()} trámites>"
-//                    lbl += " <${cantTram} trámites>"
+//                    lbl += " <${cantTramEntrada} trámites entrada> <${cantTramSalida} trámites salida>"
 
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"
@@ -374,7 +399,8 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
 
 //                    data = "data-tramites='${tramites.size()}'"
-                    data = "data-tramites='${cantTram}'"
+                    data = "data-tramites='${cantTramEntrada}' data-tramitess='${cantTramSalida}'"
+                    data += "data-usuario='${hijo.login}'"
 //                    if(hijo.login=="mmoya")
 //                    println "hijo!!!!!!!  "+hijo.login +"  "+hijo.esTriangulo
                     if (hijo.esTrianguloOff()) {

@@ -36,6 +36,19 @@
             padding-left  : 5px;
             padding-right : 5px;
         }
+
+        .infoCambioEstado {
+            font-size   : larger;
+            font-weight : bold;
+        }
+
+        .entrada {
+            color : #83C483;
+        }
+
+        .salida {
+            color : #7676E2;
+        }
         </style>
 
     </head>
@@ -366,18 +379,77 @@
                 }); //ajax
             } //createEditPersona
 
-            function cambiarEstadoRowPersona(itemId, strId, activar, tramites) {
+            function cambiarEstadoRowPersonaAjax(itemId, activar) {
+                var textLoader, url;
+                if (activar) {
+                    textLoader = "Activando";
+                    url = "${createLink(controller: 'persona', action:'activar_ajax')}";
+                } else {
+                    textLoader = "Desactivando";
+                    url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
+                }
+                openLoader(textLoader);
+                $.ajax({
+                    type    : "POST",
+                    url     : url,
+                    data    : {
+                        id : itemId
+                    },
+                    success : function (msg) {
+                        var parts = msg.split("_");
+                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                        if (parts[0] == "OK") {
+                            location.reload(true);
+                        }
+                    }
+                });
+            }
+
+            function cambiarEstadoRowPersona(itemId, strUsuario, activar, tramites, tramitess) {
                 var icon, textMsg, textBtn, textLoader, url, clase, botones;
                 if (tramites > 0) {
                     clase = "default";
                     icon = "";
-                    textMsg = "<p>No puede " + (activar ? 'activar' : 'desactivar') + " la persona seleccionada pues tiene" +
-                              tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada.</p>" +
-                              "<p>Por favor redireccione los trámites para continuar</p>";
+//                    textMsg = "<p>No puede " + (activar ? 'activar' : 'desactivar') + " la persona seleccionada pues tiene" +
+//                              tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada.</p>" +
+//                              "<p>Por favor redireccione los trámites para continuar</p>";
+                    textMsg = "<p>" +
+                              "El usuario <span class='infoCambioEstado'>" + strUsuario + "</span> que desea " +
+                              "<span class='infoCambioEstado'>"+(activar ? 'activar' : 'desactivar') + "</span> tiene " +
+                              "<span class='infoCambioEstado entrada'>" + tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada</span> y " +
+                              "<span class='infoCambioEstado salida'>" + tramitess + " trámite" + (tramitess == 1 ? '' : "s") + " en su bandeja de salida" +
+                              ".</p>" +
+                              "<p>" +
+                              "Puede <span class='infoCambioEstado'> redireccionar los trámites de la bandeja de entrada</span> " +
+                              "o <span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') +
+                              " la persona dejando sus trámites intactos.</span>" +
+                              "</p>";
+//                    botones = {
+//                        aceptar : {
+//                            label     : "Aceptar",
+//                            className : "btn-default",
+//                            callback  : function () {
+//                            }
+//                        }
+//                    };
                     botones = {
-                        aceptar : {
-                            label     : "Aceptar",
-                            className : "btn-default",
+                        redireccionar : {
+                            label     : "<i class='fa fa-refresh'></i> Redireccionar trámites",
+                            className : "btn-success",
+                            callback  : function () {
+                                location.href = "${createLink(controller: 'tramiteAdmin', action: 'redireccionarTramites')}/" + itemId;
+                            }
+                        },
+                        cambiarEstado : {
+                            label     : "<i class='fa fa-power-off'></i> " + (activar ? 'Activar' : 'Desactivar'),
+                            className : "btn-danger",
+                            callback  : function () {
+                                cambiarEstadoRowPersonaAjax(itemId, activar);
+                            }
+                        },
+                        cancelar      : {
+                            label     : "Cancelar",
+                            className : "btn-primary",
                             callback  : function () {
                             }
                         }
@@ -388,8 +460,6 @@
                         icon = "${iconActivar}";
                         textMsg = "<p>¿Está seguro que desea activar la persona seleccionada?</p>";
                         textBtn = "Activar";
-                        textLoader = "Activando";
-                        url = "${createLink(controller: 'persona', action:'activar_ajax')}";
                         botones = {
                             cancelar : {
                                 label     : "Cancelar",
@@ -401,60 +471,61 @@
                                 label     : "<i class='fa " + icon + "'></i> " + textBtn,
                                 className : "btn-" + clase,
                                 callback  : function () {
-                                    openLoader(textLoader);
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : url,
-                                        data    : {
-                                            id : itemId
-                                        },
-                                        success : function (msg) {
-                                            var parts = msg.split("_");
-                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                            if (parts[0] == "OK") {
-                                                location.reload(true);
-                                            } else {
-                                                closeLoader();
-                                            }
-                                        }
-                                    });
+                                    cambiarEstadoRowPersonaAjax(itemId, true);
+//                                    openLoader(textLoader);
+//                                    $.ajax({
+//                                        type    : "POST",
+//                                        url     : url,
+//                                        data    : {
+//                                            id : itemId
+//                                        },
+//                                        success : function (msg) {
+//                                            var parts = msg.split("_");
+//                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+//                                            if (parts[0] == "OK") {
+//                                                location.reload(true);
+//                                            } else {
+//                                                closeLoader();
+//                                            }
+//                                        }
+//                                    });
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         clase = "danger";
                         icon = "${iconDesactivar}";
                         textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
                         textBtn = "Desactivar";
-                        textLoader = "Desactivando";
-                        url = "${createLink(controller: 'persona', action:'desactivar_ajax')}";
                         botones = {
-                            cancelar : {
+                            cancelar   : {
                                 label     : "Cancelar",
                                 className : "btn-primary",
                                 callback  : function () {
                                 }
                             },
-                            eliminar : {
+                            desactivar : {
                                 label     : "<i class='fa " + icon + "'></i> " + textBtn,
                                 className : "btn-" + clase,
                                 callback  : function () {
-                                    openLoader(textLoader);
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : url,
-                                        data    : {
-                                            id    : itemId,
-                                            quien : $("#cmbRedirect").val()
-                                        },
-                                        success : function (msg) {
-                                            var parts = msg.split("_");
-                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                            if (parts[0] == "OK") {
-                                                location.reload(true);
-                                            }
-                                        }
-                                    });
+                                    cambiarEstadoRowPersonaAjax(itemId, false);
+//                                    openLoader(textLoader);
+//                                    $.ajax({
+//                                        type    : "POST",
+//                                        url     : url,
+//                                        data    : {
+//                                            id    : itemId,
+//                                            quien : $("#cmbRedirect").val()
+//                                        },
+//                                        success : function (msg) {
+//                                            var parts = msg.split("_");
+//                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+//                                            if (parts[0] == "OK") {
+//                                                location.reload(true);
+//                                            }
+//                                        }
+//                                    });
                                 }
                             }
                         }
@@ -543,6 +614,7 @@
                 var $node = $("#" + nodeStrId);
                 var nodeId = nodeStrId.split("_")[1];
                 var nodeType = $node.data("jstree").type;
+                var nodeUsu = $node.data("usuario");
 
 //                var parentStrId = node.parent;
 //                var $parent = $("#" + parentStrId);
@@ -552,6 +624,7 @@
                 var nodeOcupado = $node.hasClass("ocupado");
 
                 var nodeTramites = $node.data("tramites");
+                var nodeTramitess = $node.data("tramitess");
 
                 var estaAusente = $node.hasClass("ausente");
 
@@ -806,7 +879,7 @@
                                 label            : "Activar",
                                 icon             : "fa ${iconActivar} text-success",
                                 action           : function (obj) {
-                                    cambiarEstadoRowPersona(nodeId, nodeStrId, true, nodeTramites);
+                                    cambiarEstadoRowPersona(nodeId, nodeUsu, true, nodeTramites, nodeTramitess);
                                 }
                             };
                         }
@@ -849,7 +922,7 @@
                                 label            : "Desctivar",
                                 icon             : "fa ${iconDesactivar}",
                                 action           : function (obj) {
-                                    cambiarEstadoRowPersona(nodeId, nodeStrId, false, nodeTramites);
+                                    cambiarEstadoRowPersona(nodeId, nodeUsu, false, nodeTramites, nodeTramitess);
                                 }
                             };
                         }
