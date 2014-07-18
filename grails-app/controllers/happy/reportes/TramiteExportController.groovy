@@ -160,9 +160,15 @@ class TramiteExportController {
         if (tramiteParaInfo.tramite.tipoDocumento.codigo == "OFI") {
             paraStr = tramiteParaInfo.tramite.paraExterno + " (EXT), "
         } else {
-            paraStr = tramiteParaInfo.departamento ?
-                    tramiteParaInfo.departamento.descripcion + ", " :
-                    tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login + ", "
+            paraStr = ""
+            if (tramiteParaInfo.departamento) {
+                paraStr = tramiteParaInfo.departamento.descripcion + ", "
+            } else if (tramiteParaInfo.persona) {
+                paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login + ", "
+            }
+//            paraStr = tramiteParaInfo.departamento ?
+//                    tramiteParaInfo.departamento.descripcion + ", " :
+//                    tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login + ", "
         }
         def phraseInfo = new Phrase()
         phraseInfo.add(new Chunk("<${nivel}> ", fontSmallBold))
