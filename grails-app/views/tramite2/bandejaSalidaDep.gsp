@@ -155,7 +155,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps"/>
                     </div>
 
                     <div class="col-md-2">
@@ -164,7 +164,7 @@
                     </div>
 
                     <div class="col-md-2" style="margin-left: 130px">
-                        <label>Fecha</label>
+                        <label>Fecha envío</label>
                         <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                     </div>
 
@@ -607,7 +607,14 @@
                 });
 
                 $(".btnSalir").click(function () {
-                    $(".buscar").attr("hidden", true)
+                    $(".buscar").attr("hidden", true);
+                    $("#memorando").val("");
+                    $("#asunto").val("");
+                    $("#fechaBusqueda_input").val("");
+                    $("#fechaBusqueda_day").val("");
+                    $("#fechaBusqueda_month").val("");
+                    $("#fechaBusqueda_year").val("");
+
                     cargarBandeja();
                 });
 
@@ -701,7 +708,7 @@
                     openLoader();
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
-                    var fecha = $("#fechaBusqueda").val();
+                    var fecha = $("#fechaBusqueda_input").val();
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
                     $.ajax({
                         type    : "POST",

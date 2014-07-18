@@ -72,7 +72,7 @@
                         <td title="${tramite.deTexto.codigo}">${tramite.deTexto.codigo}</td>
                     </g:else>
 
-                    <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
+                    <td>${tramite.fechaCreacion?.format("dd-MM-yyyy HH:mm")}</td>
                     %{--<g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">--}%
                     %{--<td>EXT</td>--}%
                     %{--</g:if>--}%
