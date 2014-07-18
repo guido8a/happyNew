@@ -1,4 +1,4 @@
-<%@ page import="happy.seguridad.Persona; happy.tramites.Tramite" %>
+<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.EstadoTramite; happy.tramites.PersonaDocumentoTramite; happy.seguridad.Persona; happy.tramites.Tramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: gato
@@ -52,13 +52,17 @@
                 %{--</tr>--}%
             %{--</thead>--}%
             <tbody>
-                <g:each in="${tramites}" var="tramite">
+                <g:each in="${tramites}" var="tramite" status="z">
+
+                    <g:set var="estado" value="${EstadoTramite.findByCodigo('E006')}"/>
 
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
                     <g:set var="de" value="${tramite.dedp_id ?: Persona.get(tramite.depr_id).departamentoId}"/>
 
                     <g:set var="tramiteActual" value="${Tramite.get(tramite?.trmt__id)}"/>
+
+                    <g:set var="anulado" value="${PersonaDocumentoTramite.findByTramiteAndEstadoAndRolPersonaTramite(tramiteActual,estado, RolPersonaTramite.findByCodigo('R001'))}"/>
 
                     <g:if test="${tramiteActual.de?.id == session.usuario.id ||
                             tramiteActual.deDepartamento?.id == session.usuario.departamentoId ||
@@ -78,7 +82,7 @@
                         <g:set var="clase" value="${clase + ' recibido'}"/>
                     </g:if>
 
-                    <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}">
+                    <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}" estado="${anulado}">
                         <td style="width: 110px">
                             ${tramite?.trmtcdgo}
                         %{--<br/>--}%

@@ -2,37 +2,46 @@
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!tipoDepartamentoInstance}">
-    <elm:notFound elem="TipoDepartamento" genero="o" />
+    <elm:notFound elem="TipoDepartamento" genero="o"/>
 </g:if>
 <g:else>
     <g:form class="form-horizontal" name="frmTipoDepartamento" role="form" action="save" method="POST">
-        <g:hiddenField name="id" value="${tipoDepartamentoInstance?.id}" />
-        
+        <g:hiddenField name="id" value="${tipoDepartamentoInstance?.id}"/>
+
         <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'codigo', 'error')} required">
             <span class="grupo">
                 <label for="codigo" class="col-md-2 control-label text-info">
                     Código
                 </label>
-                <div class="col-md-6" style="width: 100px;">
-                    <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps"
-                                 value="${tipoDepartamentoInstance?.codigo}" />
+
+                <div class="col-md-2">
+                    <g:if test="${!tipoDepartamentoInstance?.codigo}">
+                        <g:textField name="codigo" maxlength="4" required="" class="form-control required allCaps" value="${tipoDepartamentoInstance?.codigo}"/>
+                    </g:if>
+                    <g:else>
+                        <span class="uneditable-input">
+                            ${tipoDepartamentoInstance?.codigo}
+                            <g:hiddenField name="codigo" value="${tipoDepartamentoInstance?.codigo}"/>
+                        </span>
+                    </g:else>
                 </div>
-                 *
+                *
             </span>
         </div>
-        
+
         <div class="form-group ${hasErrors(bean: tipoDepartamentoInstance, field: 'descripcion', 'error')} required">
             <span class="grupo">
                 <label for="descripcion" class="col-md-2 control-label text-info">
                     Descripción
                 </label>
+
                 <div class="col-md-6">
                     <g:textField name="descripcion" maxlength="31" required="" class="form-control required allCaps" value="${tipoDepartamentoInstance?.descripcion}"/>
                 </div>
-                 *
+                *
             </span>
         </div>
-        
+
     </g:form>
 
     <script type="text/javascript">

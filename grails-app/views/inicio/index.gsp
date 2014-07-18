@@ -11,7 +11,7 @@
 
     .item {
         width: 260px;
-        height: 220px;
+        height: 260px;
         float: left;
         margin: 4px;
         font-family: 'open sans condensed';
@@ -21,7 +21,7 @@
 
     .imagen {
         width: 160px;
-        height: 120px;
+        height: 160px;
         margin: auto;
         margin-top: 10px;
     }
@@ -73,7 +73,7 @@
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA<br/>
         Sistema de Administración de Documentos</h2></div>
 
-    <div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; ">
+    <div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 40px;height: 280px; ">
     %{--<div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; background: #40709a;">--}%
 
         <g:if test="${session.usuario.esTriangulo()}">
@@ -85,7 +85,7 @@
         <div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'personales.png')}" width="100%" height="100%"/>
+                    <img src="${resource(dir: 'images', file: 'personales1.png')}" width="100%" height="100%"/>
                 </div>
 
                 <div class="texto"><b>Bandeja de entrada</b>: trámites que se han enviado al ususario, recibidos y pendientes</div>
@@ -104,7 +104,7 @@
         <div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'bandejaSalida.jpg')}" width="100%" height="100%"/>
+                    <img src="${resource(dir: 'images', file: 'salida1.png')}" width="100%" height="100%"/>
                 </div>
 
                 <div class="texto"><b>Bandeja de salida</b>: Envío de tramites</div>
