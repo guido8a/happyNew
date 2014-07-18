@@ -13,7 +13,7 @@
             <th class="cabecera">Para</th>
             <th class="cabecera">Destinatario</th>
             <th class="cabecera">Prioridad</th>
-            <th class="cabecera">Fecha Envio</th>
+            <th class="cabecera">Fecha Envío</th>
             <th class="cabecera">F. Límite Recepción</th>
             <th class="cabecera">Estado</th>
             <th class="cabecera">Enviar</th>
