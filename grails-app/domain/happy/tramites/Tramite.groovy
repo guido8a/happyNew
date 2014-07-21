@@ -161,7 +161,9 @@ class Tramite {
     }
 
     def getHermanos() {
+        println "get getHermanos is deprecated"
         if (this.padre) {
+
             return Tramite.findAllByPadre(this.padre)
         } else {
             return []
@@ -169,6 +171,7 @@ class Tramite {
     }
 
     def getHermanosRespuesta() {
+        println "get hermanosRespuesta is deprecated"
         if (this.padre) {
             return Tramite.findAllByPadreAndEsRespuesta(this.padre, 1)
         } else {
@@ -177,7 +180,19 @@ class Tramite {
     }
 
     def getRespuestas() {
-        return Tramite.findAllByPadreAndEsRespuesta(this, 1)
+        def hijos = Tramite.findAllByPadreAndEsRespuesta(this, 1)
+        def res =[]
+        hijos.each {t->
+            if(t.para){
+                if(!para.estado)
+                    res.add(t)
+                else {
+                    if (t.para.estado?.codigo != "E006")
+                        res.add(t)
+                }
+            }
+        }
+        return res
     }
 
     def getPara() {
