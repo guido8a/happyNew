@@ -51,14 +51,6 @@ environments {
             password = "janus"
         }
     }
-    testLdap {
-        dataSource {
-            dbCreate = "update"
-            url = "jdbc:postgresql://127.0.0.1:5432/ldap"
-            username = "postgres"
-            password = "janus"
-        }
-    }
 
 }
 

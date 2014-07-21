@@ -92,6 +92,23 @@ th, td {
                 }
             });
         });
+
+
+        $("#cambia").click(function() {
+                if (confirm("Cambiar las acciones señaladas de Menú a Proceso o Viceversa ??")) {
+                    var data = armarAccn()
+                    alert('datos armados:' + data)
+                    $.ajax({
+                        type: "POST", url: "${createLink(controller:'acciones', action:'cambiaAccn')}",
+                        data: "&ids=" + data + "&mdlo=" + $('#mdlo__id').val() + "&tipo=" + $(".tipo.active").find("input").val(),
+                        success: function(msg) {
+                            $("#ajx").html(msg)
+                        }
+                    });
+                }
+        });
+
+
         $(".ok").click(function () {
             //var datos = armar()
             var id = $(this).attr('id');
