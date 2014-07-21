@@ -1286,10 +1286,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def getCadenaDown(pdt, funcion) {
-        println "get cade down " + pdt
+        //println "get cade down " + pdt
         def res = []
         def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "tramite " + tramite
+        //println "tramite " + tramite
         def roles = [RolPersonaTramite.findByCodigo("R002"), RolPersonaTramite.findByCodigo("R001")]
         def lvl
         funcion pdt
