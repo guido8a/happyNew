@@ -155,7 +155,9 @@ class ElementosTagLib {
         if (!attrs.tramite || !attrs.tramite.padre) {
             tipos.remove(TipoDocumento.findByCodigo("SUM"))
         } else {
-            tipos.remove(TipoDocumento.findByCodigo("DEX"))
+            if (attrs.esRespuesta.toInteger() == 1) {
+                tipos.remove(TipoDocumento.findByCodigo("DEX"))
+            }
         }
 
         if (attrs.tipo && (attrs.tipo.toLowerCase() == "pers" || attrs.tipo.toLowerCase() == "personal")) {
