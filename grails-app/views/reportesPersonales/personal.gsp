@@ -121,7 +121,7 @@
                                         <g:link class="btn btn-success generar" controller="documentosGenerados" action="reporteGeneralXlsx" params="[id: persona.id]">
                                             <i class="fa fa-file-excel-o"></i> Excel resumen
                                         </g:link>
-                                        <g:link class="btn btn-success generar" controller="documentosGenerados" action="reporteDetalladoXls" params="[id: persona.id]">
+                                        <g:link class="btn btn-success generar" controller="documentosGenerados" action="reporteDetalladoXlsx" params="[id: persona.id]">
                                             <i class="fa fa-file-excel-o"></i> Excel detallado
                                         </g:link>
                                     </div>

@@ -651,7 +651,7 @@
                     },
                     success : function (msg) {
                         $divPara.replaceWith(msg);
-                        validarExterno(true);
+                        validarExterno(false);
                     }
                 });
 
@@ -859,11 +859,13 @@
             }
 
             function removeAll() {
+//                console.log("removeAll");
                 var $ul = $("#ulSeleccionados");
                 $ul.find("li").addClass("selected");
                 moveSelected($ul, $("#ulDisponibles"), true);
             }
             function validarExterno(remove) {
+//                console.log("validarExterno(" + remove + ")");
                 if (remove) {
                     removeAll();
                 }

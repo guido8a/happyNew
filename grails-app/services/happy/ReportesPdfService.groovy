@@ -267,6 +267,15 @@ class ReportesPdfService {
 //        def imagen = "/home/luz/logo_gadpp_reportes.png"
         def imagen = absolutePath
 
+        def page = document.getPageSize()
+        def rot = page.getRotation()
+        def x = -100
+        def espacio = "                    "
+        if (rot == 90) {
+            x = -230
+            espacio += espacio + espacio + espacio + "    "
+        }
+
         def aux = Parametros.list([sort: "id", order: "asc"])
         def leyenda = ""
         if (aux.size() == 1) {
@@ -278,18 +287,13 @@ class ReportesPdfService {
         def chunkLeyenda = new Chunk(leyenda, fontEncabezado)
         def chunkPieDireccion = new Chunk("Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • ", fontPiePagina)
         def chunkPieWeb = new Chunk("www.pichincha.gob.ec", fontPiePaginaBold)
+        def chunkNumPag = new Chunk(espacio + "pág. ")
 
         Image logo = Image.getInstance(imagen);
         logo.setAlignment(Image.LEFT);
 //        logo.scaleAbsoluteHeight(20);
 //        logo.scaleAbsoluteWidth(20);
 //        logo.scalePercent(100);
-        def page = document.getPageSize()
-        def rot = page.getRotation()
-        def x = -100
-        if (rot == 90) {
-            x = -230
-        }
         Chunk chunkLogo = new Chunk(logo, x, -20);
 
         Phrase phraseHeader = new Phrase()
@@ -304,8 +308,9 @@ class ReportesPdfService {
         Phrase phrasePiePagina = new Phrase();
         phrasePiePagina.add(chunkPieDireccion)
         phrasePiePagina.add(chunkPieWeb)
+        phrasePiePagina.add(chunkNumPag)
 
-        HeaderFooter footer = new HeaderFooter(phrasePiePagina, false);
+        HeaderFooter footer = new HeaderFooter(phrasePiePagina, true);
         footer.setAlignment(Element.ALIGN_CENTER);
         footer.setBorder(Rectangle.NO_BORDER);
         document.setFooter(footer);

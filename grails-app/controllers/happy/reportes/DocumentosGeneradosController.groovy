@@ -53,7 +53,7 @@ class DocumentosGeneradosController {
     Font fontTotalDep = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font fontGranTotal = new Font(Font.TIMES_ROMAN, 14, Font.BOLD);
 
-      def reporteGeneralPdf() {
+    def reporteGeneralPdf() {
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
 
@@ -64,6 +64,9 @@ class DocumentosGeneradosController {
         if (params.tipo == "prsn") {
             def pers = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
             fileName += pers.login + "_" + dpto.codigo
             title += "${pers.nombre} ${pers.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
             title2 += "el usuario ${pers.nombre} ${pers.apellido} (${pers.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
@@ -90,6 +93,9 @@ class DocumentosGeneradosController {
         if (params.tipo == "prsn") {
             def pers = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
             def tramites = 0
             if (pers.estaActivo) {
                 def trams = Tramite.withCriteria {
@@ -112,7 +118,7 @@ class DocumentosGeneradosController {
             }
             phrase.add(new Chunk("entre el ", font))
             phrase.add(new Chunk("${params.desde} y el ${params.hasta}", fontBold))
-            phrase.add(new Chunk("en el departamento ", font))
+            phrase.add(new Chunk(" en el departamento ", font))
             phrase.add(new Chunk(dpto.descripcion + ".", fontBold))
 
             Paragraph paragraph = new Paragraph();
@@ -264,6 +270,9 @@ class DocumentosGeneradosController {
         if (params.tipo == "prsn") {
             def persona = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = persona.departamento
+            }
             fileName += persona.login
             title += "${persona.nombre} ${persona.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
             title2 += "el usuario ${persona.nombre} ${persona.apellido} (${persona.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
@@ -438,6 +447,9 @@ class DocumentosGeneradosController {
         if (params.tipo == "prsn") {
             def pers = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
             fileName += pers.login + "_" + dpto.codigo
             title += ["${pers.nombre} ${pers.apellido}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
@@ -611,6 +623,9 @@ class DocumentosGeneradosController {
         if (params.tipo == "prsn") {
             def pers = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
             fileName += pers.login + "_" + dpto.codigo
             title += ["${pers.nombre} ${pers.apellido}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
