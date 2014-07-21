@@ -88,7 +88,7 @@
                     <img src="${resource(dir: 'images', file: 'personales1.png')}" width="100%" height="100%"/>
                 </div>
 
-                <div class="texto"><b>Bandeja de entrada</b>: trámites que se han enviado al ususario, recibidos y pendientes</div>
+                <div class="texto"><span class="text-success"><strong>Bandeja de entrada</strong></span>: trámites que le han enviado y pendientes de contestación</div>
             </div>
         </div>
         <g:if test="${prms.contains('bandejaEntrada')}">
@@ -107,7 +107,7 @@
                     <img src="${resource(dir: 'images', file: 'salida1.png')}" width="100%" height="100%"/>
                 </div>
 
-                <div class="texto"><b>Bandeja de salida</b>: Envío de tramites</div>
+                <div class="texto"><span class="text-info"><strong>Bandeja de salida</strong></span>: Documentos por enviar y trámites que no le han recibido</div>
             </div>
         </div>
     </a>
