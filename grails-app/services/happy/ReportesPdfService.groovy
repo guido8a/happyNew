@@ -27,6 +27,8 @@ class ReportesPdfService {
     Font fontTh = new Font(Font.TIMES_ROMAN, 10, Font.BOLD)
     Font fontTd = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
 
+    def grailsApplication
+
     /**
      * crearDocumento: crea el Documento para hacer pdfs
      * @param orientacion : horizontal o vertical: v, vert, vertical para vertical, cualquier otra cosa para horizontal
@@ -260,7 +262,8 @@ class ReportesPdfService {
     }
 
     def membrete(Document document) {
-        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
+//        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
+        File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp_reportes.png").file
         def absolutePath = layoutFolder.absolutePath
 //        println "Absolute Path to Layout Folder: ${absolutePath}"
 
@@ -270,7 +273,7 @@ class ReportesPdfService {
         def page = document.getPageSize()
         def rot = page.getRotation()
         def x = -100
-        def espacio = "                    "
+        def espacio = "            "
         if (rot == 90) {
             x = -230
             espacio += espacio + espacio + espacio + "    "

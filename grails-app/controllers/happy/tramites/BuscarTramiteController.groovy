@@ -68,7 +68,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //        println("params tablaBusquedaTramite:" + params)
 
         def persona = session.usuario.id
-        def estadoAnulado = EstadoTramite.findByCodigo("E006")
 
         if (params.fecha) {
             params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
@@ -132,25 +131,24 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //            }
 //        }
 
-        println session.usuario.puedeAdmin
+//        println "session.usuario.puedeAdmin: " + session.usuario.puedeAdmin
+
+        def estadoArchivado = EstadoTramite.findByCodigo('E005')
+        def estadoAnulado = EstadoTramite.findByCodigo('E006')
 
         res = PersonaDocumentoTramite.withCriteria {
-
             if (!session.usuario.puedeAdmin) {
                 isNotNull("fechaEnvio")
-                and{
-                    ne('estado', EstadoTramite.findByCodigo('E005'))
-                    ne('estado', EstadoTramite.findByCodigo('E006'))
-                }
-            }else{
-
-                or{
+                and {
+                    ne('estado', estadoArchivado)
                     ne('estado', estadoAnulado)
-                    ne('estado', EstadoTramite.findByCodigo('E005'))
                 }
-
-            }
-
+            }/* else {
+                or {
+                    ne('estado', estadoAnulado)
+                    ne('estado', estadoArchivado)
+                }
+            }*/
             if (params.fecha) {
                 gt('fechaEnvio', params.fechaIni)
                 lt('fechaEnvio', params.fechaFin)
