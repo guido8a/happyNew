@@ -155,7 +155,7 @@ class ElementosTagLib {
         if (!attrs.tramite || !attrs.tramite.padre) {
             tipos.remove(TipoDocumento.findByCodigo("SUM"))
         } else {
-            if (attrs.esRespuesta.toInteger() == 1) {
+            if (attrs.esRespuesta?.toInteger() == 1) {
                 tipos.remove(TipoDocumento.findByCodigo("DEX"))
             }
         }
