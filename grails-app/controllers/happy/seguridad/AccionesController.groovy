@@ -116,7 +116,7 @@ class AccionesController extends happy.seguridad.Shield {
     }
 
     def cambiaAccn = {
-//        println "cambia---------parametros: ${params}"
+//        println "cambia-parametros: ${params}"
         def ids = params.ids
         def tipo = params.tipo
         def tp = 0
@@ -127,7 +127,7 @@ class AccionesController extends happy.seguridad.Shield {
         }
         if (params.ids?.size() > 0) ids = params.ids; else ids = "null"
         def cn = dbConnectionService.getConnection()
-        def modulo = Modulo.findByDescripcionLike("no%asignado")
+        def modulo = Modulo.findByDescripcionLike("noAsignado")
         def tx = "update accn set mdlo__id = " + modulo.id + ", tpac__id = " + tp + " where accn__id in (" + ids + ")"
 //        println "modificado.... ${tx}"
         try {
