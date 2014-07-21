@@ -141,12 +141,19 @@ class Tramite {
     def beforeValidate(List propertiesBeingValidated) {
         // do pre validation work based on propertiesBeingValidated
        // println "before validate"
-        if(this.aQuienContesta==null){
-            def oldValue = this.getPersistentValue("departamento")
-           // println "old Value "+oldValue.class
-            if(!oldValue!=null && oldValue!="") {
-                println "es diferente wtf "+this.id
-                this.aQuienContesta = PersonaDocumentoTramite.get(oldValue.id)
+        if(this){
+            if(this.aQuienContesta==null){
+                def oldValue = this.getPersistentValue("departamento")
+                // println "old Value "+oldValue.class
+                if(!oldValue!=null && oldValue!="") {
+                    //println "es diferente aQuienConstesta wtf "
+                    try {
+                        this.aQuienContesta = PersonaDocumentoTramite.get(oldValue?.id)
+                    }catch(e){
+                        println "error before validate tramite"
+                    }
+                }
+
             }
 
         }
