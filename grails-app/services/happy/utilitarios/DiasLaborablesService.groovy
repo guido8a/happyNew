@@ -4,6 +4,25 @@ import groovy.time.TimeCategory
 
 class DiasLaborablesService {
 
+    def getParametros() {
+        def parametros = Parametros.list()
+        if (parametros.size() == 0) {
+            parametros = new Parametros([
+                    horaInicio  : 8,
+                    minutoInicio: 00,
+                    horaFin     : 16,
+                    minutoFin   : 30
+            ])
+            if (!parametros.save(flush: true)) {
+                println "error al guardar params: " + parametros.errors
+                return null
+            }
+        } else {
+            parametros = parametros.first()
+            return parametros
+        }
+    }
+
     /**
      * fechaMasTiempo
      *      retorna una fecha con horas de la fecha enviada mas el tiempo enviado
@@ -465,4 +484,191 @@ class DiasLaborablesService {
     def diasLaborablesDesde(Date fecha, int dias) {
         return diasLaborablesDesde(fecha, dias, true)
     }
+
+
+    def tiempoLaborableEntre(Date fecha1, Date fecha2, boolean noLaborables) {
+
+        if (fecha2 < fecha1) {
+            def fechaTemp = fecha1
+            fecha1 = fecha2
+            fecha2 = fechaTemp
+        }
+
+        def soloFecha1 = fecha1.clone().clearTime()
+        def soloFecha2 = fecha2.clone().clearTime()
+
+        def soloHora1 = fecha1.format("HH").toInteger()
+        def soloMin1 = fecha1.format("mm").toInteger()
+        def soloSec1 = fecha1.format("ss").toInteger()
+        def soloHora2 = fecha2.format("HH").toInteger()
+        def soloMin2 = fecha2.format("mm").toInteger()
+        def soloSec2 = fecha2.format("ss").toInteger()
+
+        def dl1 = DiaLaborable.findAllByFecha(soloFecha1)
+        def dl2 = DiaLaborable.findAllByFecha(soloFecha2)
+
+        def parametros = getParametros()
+
+//        println fecha1
+//        println soloFecha1
+//        println fecha2
+//        println soloFecha2
+
+        def dias = 0, difHoras = 0, difMins = 0
+
+        if (dl1.size() == 1 && dl2.size() == 1) {
+            dl1 = dl1.first()
+            def validar = validarLaborable(dl1, noLaborables)
+            if (validar[0]) {
+                if (validar.size() == 3) {
+                    println validar[2]
+                }
+                dl1 = validar[1]
+                fecha1 = dl1.fecha.clone()
+                fecha1.set(second: soloSec1, minute: soloMin1, hourOfDay: soloHora1)
+                soloFecha1 = fecha1.clone().clearTime()
+            } else {
+                return validar
+            }
+
+            dl2 = dl2.first()
+            validar = validarLaborable(dl2, noLaborables)
+            if (validar[0]) {
+                if (validar.size() == 3) {
+                    println validar[2]
+                }
+                dl2 = validar[1]
+                fecha2 = dl2.fecha.clone()
+                fecha2.set(second: soloSec2, minute: soloMin2, hourOfDay: soloHora2)
+                soloFecha2 = fecha2.clone().clearTime()
+            } else {
+                return validar
+            }
+
+//            println "*" + fecha1
+//            println "*" + fecha2
+
+            //1ro saco los dias laborables entre las fechas
+            def diasEntre = diasLaborablesEntre(fecha1, fecha2)
+            if (diasEntre[0]) {
+                dias = diasEntre[1]
+                if (diasEntre.size() == 3) {
+                    println diasEntre[2]
+                }
+//                println "DIAS: " + dias
+                def hoy1 = new Date()
+                hoy1.set(second: soloSec1, minute: soloMin1, hourOfDay: soloHora1)
+                def hoy2 = new Date()
+                hoy2.set(second: soloSec2, minute: soloMin2, hourOfDay: soloHora2)
+
+                if (hoy2 < hoy1) {
+                    /* si hoy2 es menor q hoy1:
+                 *      reducir un dia
+                 *      calcular el tiempo entre la hora de fecha1 y el final de la jornada laboral de dl1
+                 *      calcular el tiempo entre el inicio de la jornada laboral de dl2 y la hora de fecha2
+                 */
+                    dias -= 1
+                    def horaFinDl1 = dl1.horaFin > -1 ?: parametros.horaFin
+                    def minFinDl1 = dl1.minutoFin > -1 ?: parametros.minutoFin
+
+                    def horaIniDl2 = dl2.horaInicio > -1 ?: parametros.horaInicio
+                    def minIniDl2 = dl2.minutoInicio > -1 ?: parametros.minutoInicio
+
+                    def dif1 = diferenciaHoras(soloHora1, soloMin1, horaFinDl1, minFinDl1)
+                    def dif2 = diferenciaHoras(horaIniDl2, minIniDl2, soloHora2, soloMin2)
+
+                    difHoras = dif1.horas + dif2.horas
+                    difMins = dif1.minutos + dif2.minutos
+                    if (difMins >= 60) {
+                        difMins -= 60
+                        difHoras += 1
+                    }
+                } else {
+                    /* si hoy2 es mayor que hoy1:
+                     *      calcular la diferencia de tiempo entre las horas de hoy2 y de hoy1 (hoy2 - hoy1)
+                     */
+                    def dif = diferenciaHoras(soloHora1, soloMin1, soloHora2, soloMin2)
+                    difHoras = dif.horas
+                    difMins = dif.minutos
+//                    println ">>>> " + difHoras
+//                    println ">>>> " + difMins
+                }
+
+//                println "\tDIAS FINAL: " + dias
+//                println "\tHORAS FINAL: " + difHoras
+//                println "\tMINUTOS FINAL: " + difMins
+                return [true, [dias: dias, horas: difHoras, minutos: difMins]]
+            } else {
+                return diasEntre
+            }
+        } else if (dl1.size() == 0 || dl2.size() == 0) {
+            if (dl1.size() == 0) {
+                return [false, "No se encontró el registro de días laborables para la fecha " + soloFecha1.format("dd-MM-yyyy"), soloFecha1.format("yyyy")]
+            }
+            if (dl2.size() == 0) {
+                return [false, "No se encontró el registro de días laborables para la fecha " + soloFecha2.format("dd-MM-yyyy"), soloFecha2.format("yyyy")]
+            }
+        } else if (dl1.size() > 1 || dl2.size() > 1) {
+            if (dl1.size() > 1) {
+                return [false, "Se encontraron varios registros de días laborables para la fecha " + soloFecha1.format("dd-MM-yyyy"), soloFecha1.format("yyyy")]
+            }
+            if (dl2.size() > 1) {
+                return [false, "Se encontraron varios registros de días laborables para la fecha " + soloFecha2.format("dd-MM-yyyy"), soloFecha2.format("yyyy")]
+            }
+        }
+
+    }
+
+    def tiempoLaborableEntre(Date fecha1, Date fecha2) {
+        return tiempoLaborableEntre(fecha1, fecha2, true)
+    }
+
+    def validarLaborable(DiaLaborable diaLaborable, boolean noLaborables) {
+//        println "**" + diaLaborable
+        def mensaje = ""
+        def fecha = diaLaborable.fecha
+        def ordinal = diaLaborable.ordinal
+        if (ordinal == 0) {
+            if (noLaborables) {
+                def nuevaFecha = fecha
+                while (ordinal == 0) {
+                    println "while1"
+                    nuevaFecha++
+//                    println "\t" + nuevaFecha
+                    diaLaborable = DiaLaborable.findByFecha(nuevaFecha)
+//                    println "\t\t" + diaLaborable
+                    ordinal = diaLaborable.ordinal
+                }
+                mensaje += "<li>La fecha " + fecha.format("dd-MM-yyyy") + " no es un día laborable. Se utilizó " + nuevaFecha.format("dd-MM-yyyy") + "</li>"
+                return [true, diaLaborable, mensaje]
+            } else {
+                return [false, "La fecha " + fecha.format("dd-MM-yyyy") + " no es un día laborable. Para calcular con el siguiente dia laborable pasar true como 3r parametro"]
+//                    return false
+            }
+        } else {
+            return [true, diaLaborable]
+        }
+    }
+
+    /**
+     * diferenciahoras
+     *      retorna un objeto con el resultado de restar las horas ingresadas
+     *              hace hora2 - hora1
+     * @param hora1 (int)
+     * @param min1 (int)
+     * @param hora2 (int)
+     * @param min2 (int)
+     * @return objeto [horas:h, minutos:m]
+     */
+    def diferenciaHoras(int hora1, int min1, int hora2, int min2) {
+//        println "---- " + hora1 + ":" + min1
+//        println "---- " + hora2 + ":" + min2
+        def horas1 = hora1 + (min1 / 60)
+        def horas2 = hora2 + (min2 / 60)
+        def difTiempo = horas2 - horas1
+        def difHoras = (int) difTiempo
+        def difMins = ((difTiempo - difHoras) * 60).toInteger()
+        return [horas: difHoras, minutos: difMins]
+    }
+
 }

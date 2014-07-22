@@ -41,7 +41,9 @@ class ReporteGestionController extends happy.seguridad.Shield {
         reportesPdfService.membrete(document)
         document.open();
 
-        reportesPdfService.crearEncabezado(document, "REPORTE DE GESTIÓN DE TRÁMITES DEL DPTO:  ${departamento?.descripcion}")
+        def titulo = "Reporte de gestión de trámites del dpto. ${departamento.descripcion} del ${params.desde} al ${params.hasta}"
+
+        reportesPdfService.crearEncabezado(document, titulo)
 
         //los tramites dirigidos al dpto (para y copia)
         if (departamento) {
@@ -184,29 +186,52 @@ class ReporteGestionController extends happy.seguridad.Shield {
             de = tramite.de.login + " (${tramite.de.departamento.codigo})"
         }
 
-        if (pdt.fechaRecepcion && pdt.fechaEnvio) {
-            def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, pdt?.fechaEnvio)
-            def diasC2 = 0
-            if (diasTrans2[0]) {
-                diasC2 = diasTrans2[1]
+//        if (pdt.fechaRecepcion && pdt.fechaEnvio) {
+//            def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, pdt?.fechaEnvio)
+//            def diasC2 = 0
+//            if (diasTrans2[0]) {
+//                diasC2 = diasTrans2[1]
+//            } else {
+//                println("error dias " + diasTrans2[1])
+//            }
+//            dias = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
+//        } else {
+//            if (pdt.fechaEnvio) {
+//                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaEnvio, new Date())
+//                def diasC3 = 0
+//                if (diasTrans3[0]) {
+//                    diasC3 = diasTrans3[1]
+//                } else {
+//                    println("error dias " + diasTrans3[1])
+//                }
+//                dias = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
+//            } else {
+//                dias = "No enviado"
+//            }
+//        }
+
+        def dif
+        if (pdt.fechaEnvio) {
+            if (pdt.fechaRecepcion) {
+                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
             } else {
-                println("error dias " + diasTrans2[1])
+                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaEnvio, new Date())
             }
-            dias = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
-        } else {
-            if (pdt.fechaEnvio) {
-                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaEnvio, new Date())
-                def diasC3 = 0
-                if (diasTrans3[0]) {
-                    diasC3 = diasTrans3[1]
+            if (dif[0]) {
+                def d = dif[1]
+                if (d.dias > 0) {
+                    dias = "${d.dias} día${d.dias == 1 ? '' : 's'}, "
                 } else {
-                    println("error dias " + diasTrans3[1])
+                    dias = ""
                 }
-                dias = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
+                dias += "${d.horas} hora${d.horas == 1 ? '' : 's'}, ${d.minutos} minuto${d.minutos == 1 ? '' : 's'}"
             } else {
-                dias = "No enviado"
+                println "error: " + dif
             }
+        } else {
+            dias = "No enviado"
         }
+
 
         if (pdt.departamento) {
             para = pdt.departamento.codigo
@@ -225,31 +250,58 @@ class ReporteGestionController extends happy.seguridad.Shield {
             eq("aQuienContesta", pdt)
             order("fechaCreacion", "asc")
         }
+        def dif2
+//        if (respuestas.size() > 0) {
+//            def respuesta = respuestas.last()
+//            if (pdt.fechaRecepcion && respuesta.fechaCreacion) {
+//                def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
+//                def diasC2 = 0
+//                if (diasTrans2[0]) {
+//                    diasC2 = diasTrans2[1]
+//                } else {
+//                    println("error dias " + diasTrans2[1])
+//                }
+//                contestacionRetraso = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
+//            }
+//        } else {
+//            if (pdt.fechaRecepcion) {
+//                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaRecepcion, new Date())
+//                def diasC3 = 0
+//                if (diasTrans3[0]) {
+//                    diasC3 = diasTrans3[1]
+//                } else {
+//                    println("error dias " + diasTrans3[1])
+//                }
+//                contestacionRetraso = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
+//            } else {
+//                contestacionRetraso = "No recibido"
+//            }
+//        }
+
         if (respuestas.size() > 0) {
             def respuesta = respuestas.last()
             if (pdt.fechaRecepcion && respuesta.fechaCreacion) {
-                def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
-                def diasC2 = 0
-                if (diasTrans2[0]) {
-                    diasC2 = diasTrans2[1]
-                } else {
-                    println("error dias " + diasTrans2[1])
-                }
-                contestacionRetraso = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
+                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
             }
         } else {
             if (pdt.fechaRecepcion) {
-                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaRecepcion, new Date())
-                def diasC3 = 0
-                if (diasTrans3[0]) {
-                    diasC3 = diasTrans3[1]
-                } else {
-                    println("error dias " + diasTrans3[1])
-                }
-                contestacionRetraso = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
-            } else {
-                contestacionRetraso = "No recibido"
+                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, new Date())
             }
+        }
+        if (dif2) {
+            if (dif2[0]) {
+                def d = dif2[1]
+                if (d.dias > 0) {
+                    contestacionRetraso = "${d.dias} día${d.dias == 1 ? '' : 's'}, "
+                } else {
+                    contestacionRetraso = ""
+                }
+                contestacionRetraso += "${d.horas} hora${d.horas == 1 ? '' : 's'}, ${d.minutos} minuto${d.minutos == 1 ? '' : 's'}"
+            } else {
+                println "error: " + dif2
+            }
+        } else {
+            contestacionRetraso = "No recibido"
         }
 
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(codigo, font), prmsTablaHoja)

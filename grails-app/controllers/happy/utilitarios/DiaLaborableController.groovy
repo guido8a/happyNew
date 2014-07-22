@@ -14,10 +14,27 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
     def pruebas() {
 
-        def tramite = Tramite.get(31)
-        tramite.fechaEnvio = new Date()
-        println tramite.fechaLimite
-        println tramite.fechaBloqueo
+        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 14:15")
+        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
+        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
+         fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
+         fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
+        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
+
+//        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
+//        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "29-07-2014 14:15")
+//
+//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
+
+//        fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 15:00")
+//        fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "23-07-2014 11:00")
+//
+//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
+
+//        def tramite = Tramite.get(31)
+//        tramite.fechaEnvio = new Date()
+//        println tramite.fechaLimite
+//        println tramite.fechaBloqueo
 
 //        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "31-03-2014 11:00")
 //        println "fecha: "
@@ -195,7 +212,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def calendario() {
-        if(session.usuario.puedeAdmin) {
+        if (session.usuario.puedeAdmin) {
             def parametros = Parametros.list()
             if (parametros.size() == 0) {
                 parametros = new Parametros([
@@ -258,8 +275,8 @@ class DiaLaborableController extends happy.seguridad.Shield {
             def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
             return [anio: anio, dias: dias, meses: meses, params: params]
-        }else{
-            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
 
