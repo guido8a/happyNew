@@ -697,12 +697,12 @@
 
                 cargarBandeja(false);
 
-                setInterval(function () {
-                    openLoader();
-                    cargarBandeja(false);
-                    closeLoader();
-                    $(".qtip").hide();
-                }, 300000);
+//                setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader();
+//                    $(".qtip").hide();
+//                }, 300000);
 
                 $(".btnBusqueda").click(function () {
                     openLoader();

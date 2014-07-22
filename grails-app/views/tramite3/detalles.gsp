@@ -35,15 +35,30 @@
 
             <div class="col-xs-6">
                 <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
-                    <g:if test="${pdt?.estado?.codigo=='E003'}">
-                        <g:set var="fecha" value="${pdt.fechaEnvio.format('dd-MM-yyyy HH:mm')}"></g:set>
-                    </g:if>
-                    <g:if test="${pdt?.estado?.codigo=='E004'}">
-                        <g:set var="fecha" value="${pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm')}"></g:set>
-                    </g:if>
+                    %{--${pdt.estado.descripcion}${pdt.id}--}%
+                    <g:set var="fecha" value=""></g:set>
+                    <g:set var="estado" value=""></g:set>
                     <g:if test="${pdt?.estado?.codigo=='E006'}">
-                        <g:set var="fecha" value="${pdt.fechaAnulacion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                        <g:set var="estado" value="ANULADO"></g:set>
+                        <g:set var="fecha" value="${pdt.fechaAnulacion?.format('dd-MM-yyyy HH:mm')}"></g:set>
                     </g:if>
+                    <g:else>
+                        <g:if test="${pdt?.estado?.codigo=='E003' && pdt.fechaEnvio}">
+                            <g:set var="estado" value="ENVIADO"></g:set>
+                            <g:set var="fecha" value="${pdt.fechaEnvio?.format('dd-MM-yyyy HH:mm')}"></g:set>
+                        </g:if>
+                        <g:else>
+                            <g:if test="${pdt?.estado?.codigo=='E004' && pdt.fechaRecepcion}">
+                                <g:set var="estado" value="RECIBIDO"></g:set>
+                                <g:set var="fecha" value="${pdt.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:if>
+                            <g:else>
+                                <g:set var="estado" value="CREADO"></g:set>
+                                <g:set var="fecha" value="${pdt.tramite.fechaCreacion?.format('dd-MM-yyyy HH:mm')}"></g:set>
+                            </g:else>
+                        </g:else>
+
+                    </g:else>
 
                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                     <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
@@ -52,7 +67,7 @@
                     <g:else>
                         ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
                     </g:else>
-                    <g:if test="${pdt.estado}">
+                    <g:if test="${estado}">
                         <b><span style="${pdt?.estado?.codigo=='E006'?'color:red':''}">${pdt.estado?.descripcion}</span></b> el ${fecha} <br>
                     </g:if>
                     <g:else>
@@ -138,15 +153,21 @@
 
             <div class="col-xs-6">
                 <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
-                    <g:if test="${pdt?.estado?.codigo=='E003'}">
-                        <g:set var="fecha" value="${pdt.fechaEnvio.format('dd-MM-yyyy HH:mm')}"></g:set>
-                    </g:if>
-                    <g:if test="${pdt?.estado?.codigo=='E004'}">
-                        <g:set var="fecha" value="${pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm')}"></g:set>
-                    </g:if>
+                    <g:set var="fecha" value=""></g:set>
                     <g:if test="${pdt?.estado?.codigo=='E006'}">
-                        <g:set var="fecha" value="${pdt.fechaAnulacion.format('dd-MM-yyyy HH:mm')}"></g:set>
+                        <g:set var="fecha" value="${pdt.fechaAnulacion?.format('dd-MM-yyyy HH:mm')}"></g:set>
                     </g:if>
+                    <g:else>
+                        <g:if test="${pdt?.estado?.codigo=='E003' && pdt.fechaEnvio}">
+                            <g:set var="fecha" value="${pdt.fechaEnvio?.format('dd-MM-yyyy HH:mm')}"></g:set>
+                        </g:if>
+                        <g:else>
+
+                        </g:else>
+                        <g:if test="${pdt?.estado?.codigo=='E004' && pdt.fechaRecepcion}">
+                            <g:set var="fecha" value="${pdt.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}"></g:set>
+                        </g:if>
+                    </g:else>
 
                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                     <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">

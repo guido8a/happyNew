@@ -751,12 +751,12 @@
 
                 cargarBandeja(false);
 
-                setInterval(function () {
-                    openLoader();
-                    cargarBandeja(false);
-                    closeLoader();
-                    $(".qtip").hide();
-                }, 300000);
+//                setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader();
+//                    $(".qtip").hide();
+//                }, 300000);
 
                 $(".btnBusqueda").click(function () {
                     $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
