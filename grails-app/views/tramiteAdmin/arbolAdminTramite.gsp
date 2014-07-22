@@ -531,7 +531,7 @@
                         }
                     };
                 }
-                if (estaArchivado) {
+                if (estaArchivado && !estaAnulado) {
                     items.desArchivar = {
                         separator_before : true,
                         label            : "Quitar archivado",
@@ -577,7 +577,10 @@
                                                         }, 500);
                                                     } else if (parts[0] == 'NO') {
                                                         closeLoader();
-                                                        log("Error al quitar el archivado del trámite el trámite", 'error');
+                                                        log("Error al quitar el archivado del trámite", 'error');
+                                                        setTimeout(function () {
+                                                            location.reload(true);
+                                                        }, 500);
                                                     }
                                                 }
                                             });
@@ -633,8 +636,12 @@
                                                             location.reload(true);
                                                         }, 500);
                                                     } else if (parts[0] == 'NO') {
-                                                        closeLoader();
                                                         log("Error al quitar el recibido del trámite el trámite: " + parts[1], 'error')
+                                                        closeLoader();
+                                                        setTimeout(function () {
+                                                            location.reload(true);
+                                                        }, 500);
+
                                                     }
                                                 }
                                             });

@@ -603,56 +603,76 @@ class TramiteAdminController {
 
     def desarchivar() {
         def persDocTram = PersonaDocumentoTramite.get(params.id)
-        def obs = " Quitado el archivado por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                "(originalmente archivado el ${persDocTram.fechaArchivo.format('dd-MM-yyyy HH:mm')}): " + params.texto
-        persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
-        if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
-            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
-        } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
-            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
-        }
-        persDocTram.fechaArchivo = null
-        persDocTram.estado = EstadoTramite.findByCodigo("E004")  // RECIBIDO
-        if (persDocTram.save(flush: true)) {
-            if (!persDocTram.tramite.save(flush: true)) {
-                println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
+
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+//        def estados = [estadoAnulado, estadoArchivado]
+        def estados = [estadoAnulado]
+
+
+        if(estados.contains(persDocTram.estado)){
+            render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede quitar el archivado"
+        }else{
+            def obs = " Quitado el archivado por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                    "(originalmente archivado el ${persDocTram.fechaArchivo.format('dd-MM-yyyy HH:mm')}): " + params.texto
+            persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
+            if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
+                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
+            } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
+                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
             }
-            render "OK"
-        } else {
-            render "NO*" + renderErrors(bean: persDocTram)
+            persDocTram.fechaArchivo = null
+            persDocTram.estado = EstadoTramite.findByCodigo("E004")  // RECIBIDO
+            if (persDocTram.save(flush: true)) {
+                if (!persDocTram.tramite.save(flush: true)) {
+                    println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
+                }
+                render "OK"
+            } else {
+                render "NO*" + renderErrors(bean: persDocTram)
+            }
         }
+
     }
 
     def desrecibir() {
         def persDocTram = PersonaDocumentoTramite.get(params.id)
 
-        def obs = " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-                "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.texto
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estados = [estadoAnulado, estadoArchivado]
+        if(estados.contains(persDocTram.estado)){
+            render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede quitar el recibido"
+        }else {
 
-        persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
+            def obs = " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
+                    "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.texto
 
-        if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
-            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
-        } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
-            persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
-        }
-        persDocTram.fechaRecepcion = null
-        persDocTram.fechaLimiteRespuesta = null
-        persDocTram.estado = EstadoTramite.findByCodigo("E003")  // ENVIADO
-        if (persDocTram.save(flush: true)) {
-            if (!persDocTram.tramite.save(flush: true)) {
-                println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
-            }
+            persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
+
             if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
-                def estadoEnviado = EstadoTramite.findByCodigo("E003")
-                persDocTram.tramite.estadoTramite = estadoEnviado
-                if (!persDocTram.tramite.save(flush: true)) {
-                    println "Error al cambiar el estado del tramite: " + persDocTram.tramite.errors
-                }
+                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
+            } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
+                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
             }
-            render "OK"
-        } else {
-            render "NO*" + renderErrors(bean: persDocTram)
+            persDocTram.fechaRecepcion = null
+            persDocTram.fechaLimiteRespuesta = null
+            persDocTram.estado = EstadoTramite.findByCodigo("E003")  // ENVIADO
+            if (persDocTram.save(flush: true)) {
+                if (!persDocTram.tramite.save(flush: true)) {
+                    println "error al guardar observaciones del tramite: " + persDocTram.tramite.errors
+                }
+                if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
+                    def estadoEnviado = EstadoTramite.findByCodigo("E003")
+                    persDocTram.tramite.estadoTramite = estadoEnviado
+                    if (!persDocTram.tramite.save(flush: true)) {
+                        println "Error al cambiar el estado del tramite: " + persDocTram.tramite.errors
+                    }
+                }
+                render "OK"
+            } else {
+                render "NO*" + renderErrors(bean: persDocTram)
+            }
         }
     }
 
