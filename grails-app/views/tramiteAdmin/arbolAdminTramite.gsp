@@ -498,8 +498,8 @@
                                         callback  : function () {
                                         }
                                     },
-                                    archivar : {
-                                        id        : 'btnArchivar',
+                                    desanular : {
+                                        id        : 'btnDesanular',
                                         label     : '<i class="fa fa-check"></i> Quitar anulado',
                                         className : "btn-success",
                                         callback  : function () {

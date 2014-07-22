@@ -695,7 +695,27 @@ class TramiteAdminController {
 
     def desanular() {
         def pdt = PersonaDocumentoTramite.get(params.id)
-        pdt.estado = EstadoTramite.findByCodigo("E004")
+
+        def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
+        def estadoEnviado = EstadoTramite.findByCodigo("E003")
+        def estadoRecibido = EstadoTramite.findByCodigo("E004")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+
+//        pdt.estado = EstadoTramite.findByCodigo("E004")
+
+        if (!pdt.fechaEnvio) {
+            pdt.estado = estadoPorEnviar
+        }
+        if (pdt.fechaEnvio) {
+            pdt.estado = estadoEnviado
+        }
+        if (pdt.fechaRecepcion) {
+            pdt.estado = estadoRecibido
+        }
+        if (pdt.fechaArchivo) {
+            pdt.estado = estadoArchivado
+        }
+
         pdt.observaciones = (pdt.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
         pdt.fechaAnulacion = null
         if (pdt.rolPersonaTramite.codigo == "R002")
