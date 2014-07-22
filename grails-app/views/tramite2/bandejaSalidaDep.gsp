@@ -525,7 +525,9 @@
                                                         }
                                                     });
                                                 } else {
-                                                    log('No seleccionó ninguna persona ', 'error')
+//                                                    log('No seleccionó ninguna persona', 'error')
+                                                    openLoader("Por favor espere");
+                                                    location.reload(true);
                                                 }
                                             }
                                         }

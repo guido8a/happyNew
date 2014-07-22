@@ -438,7 +438,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        }
 
 //        return [tramite: tramite, paras: paras, ccs: ccs]
-        return [tramite: tramite, paras: tramite.para, ccs: tramite.copias]
+
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadosNo = [estadoAnulado, estadoArchivado]
+
+        return [tramite: tramite, paras: tramite.para, ccs: tramite.copias, estadosNo: estadosNo]
     }
 
     def bandejaSalida() {

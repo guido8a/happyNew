@@ -142,56 +142,64 @@ class TramiteAdminController {
         } else if (params.tramite) {
             tramite = Tramite.get(params.tramite)
         }
-        def de = tramite.de
-        def deDep = tramite.deDepartamento
-        def para = tramite.para
-        def persona = Persona.get(session.usuario.id)
+        def paraTramite = tramite.para
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadosNo = [estadoAnulado, estadoArchivado]
 
-        def disp, disponibles = [], users = [], disp2 = [], todos = []
-
-        if (session.usuario.puedeTramitar) {
-            disp = Departamento.list([sort: 'descripcion'])
+        if (estadosNo.contains(paraTramite.estado)) {
+            return [tramite: tramite, error: "El trámite se encuentra <strong>${paraTramite.estado.descripcion}</strong>, no puede crear copias"]
         } else {
-            disp = [persona.departamento]
-        }
-        disp.each { dep ->
+            def de = tramite.de
+            def deDep = tramite.deDepartamento
+            def para = tramite.para
+            def persona = Persona.get(session.usuario.id)
+
+            def disp, disponibles = [], users = [], disp2 = [], todos = []
+
+            if (session.usuario.puedeTramitar) {
+                disp = Departamento.list([sort: 'descripcion'])
+            } else {
+                disp = [persona.departamento]
+            }
+            disp.each { dep ->
 //            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
-            if (dep.id == persona.departamento.id) {
+                if (dep.id == persona.departamento.id) {
 //                def users = Persona.findAllByDepartamento(dep)
-                def usuarios = Persona.findAllByDepartamento(dep)
-                usuarios.each {
-                    if (it.id != de.id) {
-                        if (!para.persona || (para.persona && para.personaId != it.id)) {
-                            users += it
+                    def usuarios = Persona.findAllByDepartamento(dep)
+                    usuarios.each {
+                        if (it.id != de.id) {
+                            if (!para.persona || (para.persona && para.personaId != it.id)) {
+                                users += it
+                            }
                         }
                     }
-                }
-                for (int i = users.size() - 1; i > -1; i--) {
-                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
-                        users.remove(i)
-                    } else {
-                        if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                            disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
-                        }
-                    }
-                }
-            }
-        }
-
-        disp.each { dep ->
-            if (!deDep || (deDep && deDep.id != dep.id)) {
-                if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
-                    if (dep.triangulos.size() > 0) {
-                        if (!para.departamento || (para.departamento && para.departamentoId != dep.id)) {
-                            disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                    for (int i = users.size() - 1; i > -1; i--) {
+                        if (!(users[i].estaActivo && users[i].puedeRecibir)) {
+                            users.remove(i)
+                        } else {
+                            if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
+                                disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
+                            }
                         }
                     }
                 }
             }
-        }
-        todos = disponibles + disp2
 
-        return [tramite: tramite, disponibles: todos]
+            disp.each { dep ->
+                if (!deDep || (deDep && deDep.id != dep.id)) {
+                    if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
+                        if (dep.triangulos.size() > 0) {
+                            if (!para.departamento || (para.departamento && para.departamentoId != dep.id)) {
+                                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
+                            }
+                        }
+                    }
+                }
+            }
+            todos = disponibles + disp2
+            return [tramite: tramite, disponibles: todos]
+        }
     }
 
     def enviarCopias_ajax() {
