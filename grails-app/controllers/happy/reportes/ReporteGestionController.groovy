@@ -1,6 +1,7 @@
 package happy.reportes
 
 import com.lowagie.text.Document
+import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
@@ -20,8 +21,10 @@ class ReporteGestionController extends happy.seguridad.Shield {
     Font fontBold = new Font(Font.TIMES_ROMAN, 9, Font.BOLD);
 
     def prmsTablaHoja = []
+    def prmsTablaHojaCenter = [align: Element.ALIGN_CENTER]
     def prmsHeaderHoja = []
-    def prmsHeaderHoja2 = []
+    def prmsHeaderHoja2 = [colspan: 2]
+    def prmsHeaderHoja5 = [colspan: 5]
     def prmsHeaderHoja6 = [colspan: 6]
     def prmsHeaderHoja9 = [colspan: 9]
 
@@ -90,12 +93,13 @@ class ReporteGestionController extends happy.seguridad.Shield {
                         eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
                     }
                 }
-                def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([22, 20, 18, 20, 15, 15, 15, 15, 15]), 15, 0)
+//t. numero, f creacion, f envio, f recepcion, t env-rec, de, asnto, para, t rec-resp
+                def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
 
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja2)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.codigo, font), prmsHeaderHoja2)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja2)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.asunto, font), prmsHeaderHoja6)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.asunto, font), prmsHeaderHoja5)
 
                 pdts.each { prtr ->
 //                    if (principal.id != prtr.tramite.id) {
@@ -169,11 +173,11 @@ class ReporteGestionController extends happy.seguridad.Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. creación", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. envío", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. recepción", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("T. transcurrido", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("T. envío-recepción", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("De", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Asunto", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Para", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Contestación-retraso", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("T. recepción-respuesta", fontBold), prmsHeaderHoja)
     }
 
     def rowTramite(PersonaDocumentoTramite pdt, tablaTramite) {
@@ -185,30 +189,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
         } else {
             de = tramite.de.login + " (${tramite.de.departamento.codigo})"
         }
-
-//        if (pdt.fechaRecepcion && pdt.fechaEnvio) {
-//            def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, pdt?.fechaEnvio)
-//            def diasC2 = 0
-//            if (diasTrans2[0]) {
-//                diasC2 = diasTrans2[1]
-//            } else {
-//                println("error dias " + diasTrans2[1])
-//            }
-//            dias = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
-//        } else {
-//            if (pdt.fechaEnvio) {
-//                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaEnvio, new Date())
-//                def diasC3 = 0
-//                if (diasTrans3[0]) {
-//                    diasC3 = diasTrans3[1]
-//                } else {
-//                    println("error dias " + diasTrans3[1])
-//                }
-//                dias = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
-//            } else {
-//                dias = "No enviado"
-//            }
-//        }
 
         def dif
         if (pdt.fechaEnvio) {
@@ -251,33 +231,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
             order("fechaCreacion", "asc")
         }
         def dif2
-//        if (respuestas.size() > 0) {
-//            def respuesta = respuestas.last()
-//            if (pdt.fechaRecepcion && respuesta.fechaCreacion) {
-//                def diasTrans2 = diasLaborablesService.diasLaborablesEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
-//                def diasC2 = 0
-//                if (diasTrans2[0]) {
-//                    diasC2 = diasTrans2[1]
-//                } else {
-//                    println("error dias " + diasTrans2[1])
-//                }
-//                contestacionRetraso = g.formatNumber(number: (diasC2) * 24, format: "###.##", locale: "ec") + " horas"
-//            }
-//        } else {
-//            if (pdt.fechaRecepcion) {
-//                def diasTrans3 = diasLaborablesService.diasLaborablesEntre(pdt?.fechaRecepcion, new Date())
-//                def diasC3 = 0
-//                if (diasTrans3[0]) {
-//                    diasC3 = diasTrans3[1]
-//                } else {
-//                    println("error dias " + diasTrans3[1])
-//                }
-//                contestacionRetraso = g.formatNumber(number: (diasC3) * 24, format: "###.##", locale: "ec") + " horas"
-//            } else {
-//                contestacionRetraso = "No recibido"
-//            }
-//        }
-
         if (respuestas.size() > 0) {
             def respuesta = respuestas.last()
             if (pdt.fechaRecepcion && respuesta.fechaCreacion) {
@@ -305,9 +258,9 @@ class ReporteGestionController extends happy.seguridad.Shield {
         }
 
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(codigo, font), prmsTablaHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(tramite.fechaCreacion ? tramite.fechaCreacion.format('dd-MM-yyyy HH:mm') : "", font), prmsTablaHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(pdt.fechaEnvio ? pdt.fechaEnvio.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(pdt.fechaRecepcion ? pdt.fechaRecepcion.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(tramite.fechaCreacion ? tramite.fechaCreacion.format('dd-MM-yyyy HH:mm') : "", font), prmsTablaHojaCenter)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(pdt.fechaEnvio ? pdt.fechaEnvio.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(pdt.fechaRecepcion ? pdt.fechaRecepcion.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(dias, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(de, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(tramite.asunto, font), prmsTablaHoja)

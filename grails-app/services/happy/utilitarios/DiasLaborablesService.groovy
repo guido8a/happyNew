@@ -661,13 +661,25 @@ class DiasLaborablesService {
      * @return objeto [horas:h, minutos:m]
      */
     def diferenciaHoras(int hora1, int min1, int hora2, int min2) {
-//        println "---- " + hora1 + ":" + min1
-//        println "---- " + hora2 + ":" + min2
-        def horas1 = hora1 + (min1 / 60)
-        def horas2 = hora2 + (min2 / 60)
-        def difTiempo = horas2 - horas1
-        def difHoras = (int) difTiempo
-        def difMins = ((difTiempo - difHoras) * 60).toInteger()
+//        println "----1 " + hora1 + ":" + min1
+//        println "----2 " + hora2 + ":" + min2
+
+        def difHoras = hora2 - hora1
+        def difMins = min2 - min1
+        if (difMins < 0) {
+            difHoras -= 1
+            difMins = 60 + difMins
+        }
+
+//        def horas1 = hora1 + (min1 / 60)
+//        def horas2 = hora2 + (min2 / 60)
+//        def difTiempo = horas2 - horas1
+//        def difHoras = (int) difTiempo
+//        def difMins = ((difTiempo - difHoras) * 60).toInteger()
+//        println "----------dt " + difTiempo
+//        println "----------dh " + difHoras
+//        println "----------dh " + (difTiempo - difHoras)
+//        println "----------dm " + difMins
         return [horas: difHoras, minutos: difMins]
     }
 

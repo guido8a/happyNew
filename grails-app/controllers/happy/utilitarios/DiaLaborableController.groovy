@@ -14,12 +14,12 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
     def pruebas() {
 
-        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 14:15")
-        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
+        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "02-07-2014 09:05")
+        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "02-07-2014 00:00")
         println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
-         fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
-         fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
-        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
+//         fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
+//         fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
+//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
 
 //        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
 //        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "29-07-2014 14:15")

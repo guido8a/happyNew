@@ -297,7 +297,8 @@ class ReportesPdfService {
 //        logo.scaleAbsoluteHeight(20);
 //        logo.scaleAbsoluteWidth(20);
 //        logo.scalePercent(100);
-        Chunk chunkLogo = new Chunk(logo, x, -20);
+//        Chunk chunkLogo = new Chunk(logo, x, -20);
+        Chunk chunkLogo = new Chunk(logo, x, -10);
 
         Phrase phraseHeader = new Phrase()
         phraseHeader.add(chunkLogo)
