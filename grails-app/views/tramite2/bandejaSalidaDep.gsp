@@ -14,7 +14,7 @@
 
         <style type="text/css">
         body {
-            background-color : #DDF;
+            background-color : #D1DDE8;
         }
 
         .etiqueta {
@@ -333,27 +333,33 @@
                                                 $("#ulSeleccionados li").not(".disabled").each(function () {
                                                     cc += $(this).data("id") + "_";
                                                 });
-                                                openLoader("Enviando copias");
-                                                $.ajax({
-                                                    type    : "POST",
-                                                    url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
-                                                    data    : {
-                                                        tramite : id,
-                                                        copias  : cc
-                                                    },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("*");
-                                                        if (parts[0] == 'OK') {
-                                                            log("Copias enviadas exitosamente", 'success');
-                                                            setTimeout(function () {
-                                                                location.reload(true);
-                                                            }, 500);
-                                                        } else if (msg == 'NO') {
-                                                            closeLoader();
-                                                            log(parts[1], 'error');
+                                                if (cc == "") {
+                                                    log("No ha seleccionado a quien enviar las copias", "error");
+//                                                    openLoader("Por favor espere");
+//                                                    location.reload(true);
+                                                } else {
+                                                    openLoader("Enviando copias");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
+                                                        data    : {
+                                                            tramite : id,
+                                                            copias  : cc
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("*");
+                                                            if (parts[0] == 'OK') {
+                                                                log("Copias enviadas exitosamente", 'success');
+                                                                setTimeout(function () {
+                                                                    location.reload(true);
+                                                                }, 500);
+                                                            } else if (msg == 'NO') {
+                                                                closeLoader();
+                                                                log(parts[1], 'error');
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
                                         }
                                     }
@@ -525,7 +531,9 @@
                                                         }
                                                     });
                                                 } else {
-                                                    log('No seleccionó ninguna persona ', 'error')
+                                                    log('No seleccionó ninguna persona', 'error')
+//                                                    openLoader("Por favor espere");
+//                                                    location.reload(true);
                                                 }
                                             }
                                         }
