@@ -14,7 +14,7 @@
 
         <style type="text/css">
         body {
-            background-color : #DDF;
+            background-color : #D1DDE8;
         }
 
         .etiqueta {
