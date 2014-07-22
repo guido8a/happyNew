@@ -45,7 +45,7 @@ class PersonaDocumentoTramite {
             departamento column: 'dpto__id'
             tramite column: 'trmt__id'
             observaciones column: 'prtrobsr'
-
+            observaciones type: "text"
             fechaEnvio column: 'prtrfcen'
             fechaRecepcion column: 'prtrfcrc'
             fechaLimiteRespuesta column: 'prtrfclr'
@@ -61,7 +61,7 @@ class PersonaDocumentoTramite {
         persona(blank: true, nullable: true, attributes: [title: 'persona'])
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
         tramite(blank: false, nullable: false, attributes: [title: 'Tramite'])
-        observaciones(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'observaciones'])
+        observaciones(blank: true, nullable: true, attributes: [title: 'observaciones'])
 
         fechaEnvio(nullable: true, blank: true)
         fechaRecepcion(nullable: true, blank: true)

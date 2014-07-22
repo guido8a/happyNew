@@ -503,7 +503,7 @@
                                         label     : '<i class="fa fa-check"></i> Quitar anulado',
                                         className : "btn-success",
                                         callback  : function () {
-                                            openLoader("Quitando el anulado");
+                                            openLoader("Procesando");
                                             $.ajax({
                                                 type    : 'POST',
                                                 url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',
@@ -520,7 +520,7 @@
                                                         }, 500);
                                                     } else if (parts[0] == 'NO') {
                                                         closeLoader();
-                                                        log("Error al quitar el recibido del trámite el trámite", 'error')
+                                                        log("Error al quitar el anulado del trámite el trámite", 'error')
                                                     }
                                                 }
                                             });

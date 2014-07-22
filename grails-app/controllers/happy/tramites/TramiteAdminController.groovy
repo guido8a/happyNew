@@ -679,6 +679,7 @@ class TramiteAdminController {
     def anular() {
 
         def funcion = { objeto ->
+            println "anulando "+objeto.id+" "+objeto.rolPersonaTramite.descripcion+"  "+objeto.tramite
             def anulado = EstadoTramite.findByCodigo("E006")
             objeto.estado = anulado
             objeto.fechaAnulacion = new Date()
@@ -688,7 +689,9 @@ class TramiteAdminController {
             if (objeto.rolPersonaTramite.codigo == "R001")
                 objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             objeto.tramite.save(flush: true)
-            objeto.save(flush: true)
+            if(!objeto.save(flush: true)){
+                println "error en el save anular "+objeto.errors
+            }
         }
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def pdt = PersonaDocumentoTramite.get(params.id)
@@ -746,6 +749,7 @@ class TramiteAdminController {
         if (pdt.save(flush: true)) {
             render "OK"
         } else {
+            println "erros "+pdt.errors
             render "NO"
         }
     }
