@@ -270,11 +270,11 @@
                                           tramite="${tramite}" esRespuesta="${params.esRespuesta}"/>
                     </div>
 
-                    <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px;">
-                        <label for="externo"><input type="checkbox" name="externo" id="externo">
-                            Externo
-                        </label>
-                    </div>
+                    %{--<div class="col-xs-2 negrilla" id="divExterno" style="width: 100px;">--}%
+                    %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                    %{--Externo--}%
+                    %{--</label>--}%
+                    %{--</div>--}%
 
 
                     <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">
