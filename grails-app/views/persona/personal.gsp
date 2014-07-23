@@ -218,7 +218,7 @@
                                         </label>
 
                                         <div class="col-md-2">
-                                            <elm:datepicker name="accsFechaInicial" title="desde"
+                                            <elm:datepicker name="accsFechaInicial" title="desde" minDate="+0"
                                                             class="datepicker form-control required" daysOfWeekDisabled="0,6"/>
                                         </div>
                                     </span>
@@ -229,7 +229,7 @@
                                         </label>
 
                                         <div class="col-md-2">
-                                            <elm:datepicker name="accsFechaFinal" title="hasta"
+                                            <elm:datepicker name="accsFechaFinal" title="hasta"   minDate="+0"
                                                             class="datepicker form-control required" daysOfWeekDisabled="0,6"/>
                                         </div>
                                     </span>
