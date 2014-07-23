@@ -1455,7 +1455,7 @@ class PersonaController extends happy.seguridad.Shield {
                             if (!padre)
                                 padre = n1
 
-                            if (dep.padre.id != padre.id) {
+                            if (dep.padre?.id != padre.id) {
                                 //  println "nuevo padre para "+dep+"   "+padre
                                 dep.padre = padre
                                 dep.save(flush: true)
