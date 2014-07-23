@@ -236,6 +236,7 @@
         <script type="text/javascript">
 
             function cargarBandeja(band) {
+                $(".qtip").hide();
                 $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 $.ajax({
                     type    : "POST",

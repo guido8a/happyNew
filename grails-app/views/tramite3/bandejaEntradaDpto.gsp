@@ -241,6 +241,7 @@
             var intervalBandeja;
 
             function cargarBandeja(band, datos) {
+                $(".qtip").hide();
                 if (!datos) {
                     datos = {};
                 }

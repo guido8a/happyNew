@@ -653,7 +653,7 @@ class DiasLaborablesService {
     /**
      * diferenciahoras
      *      retorna un objeto con el resultado de restar las horas ingresadas
-     *              hace hora2 - hora1
+     *              hace hora2 - hora1 y min2 - min1
      * @param hora1 (int)
      * @param min1 (int)
      * @param hora2 (int)

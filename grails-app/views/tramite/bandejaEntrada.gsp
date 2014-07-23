@@ -254,6 +254,7 @@
             });
 
             function cargarBandeja(band, datos) {
+                $(".qtip").hide();
                 $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 if (!datos) {
                     datos = {};
