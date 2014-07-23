@@ -27,7 +27,7 @@
             </table>
         </div>
     </g:if>
-    <input id="aceptaAJX" type="button" class="btn btn-info grabaPrms" value="Fijar permisos del Menú">
+    <input id="aceptaAJX" type="button" class="btn btn-info grabaPrms" value="Fijar permisos del Perfil">
 </g:form>
 
 <script type="text/javascript">

@@ -53,7 +53,7 @@
         <div class="btn-group" data-toggle="buttons">
             <label class="btn btn-primary modulo">
                 <input type="radio" id="check${i}" name="modulo" value="1000"
-                       nombre="Permisos"> Gestionar los permisos consedidos sobre los trámites
+                       nombre="Permisos"> Gestionar los permisos concedidos sobre los trámites
             </label>
         </div>
     </g:form>
