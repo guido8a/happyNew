@@ -852,9 +852,13 @@ class PersonaController extends happy.seguridad.Shield {
             def w = 0, h = 0
             if (personaInstance.foto) {
                 def path = servletContext.getRealPath("/") + "images/perfiles/" //web-app/archivos
-                def img = ImageIO.read(new File(path + personaInstance.foto));
-                w = img.getWidth()
-                h = img.getHeight()
+                try {
+                    def img = ImageIO.read(new File(path + personaInstance.foto));
+                    w = img.getWidth()
+                    h = img.getHeight()
+                } catch (e) {
+//                    render "NO_No se pudo encontrar el archivo de la foto."
+                }
             }
 //            println params
 //            println personaInstance
