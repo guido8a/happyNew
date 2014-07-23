@@ -294,17 +294,19 @@
             }
 
             function validaFechas($elm, e) {
-                var $ini = $("#accsFechaInicial_input");
+//                var $ini = $("#accsFechaInicial_input");
+                var $ini = $elm;
                 var $fin = $("#accsFechaFinal_input");
-                var ini = $ini.datepicker('getDate');
+//                var ini = $ini.datepicker('getDate');
+                var ini = e.date;
                 var fin = $fin.datepicker('getDate');
 
                 //si la fecha de fin es anterior a la de inicio se cambia a la de inicio
                 if (fin.compareTo(ini) == -1) {
-                    setDatepicker($fin, e.date);
+                    setDatepicker($fin, ini);
                 }
                 // cambio el min date de la fecha final para q sea la fecha de inicio
-                $fin.datepicker('setStartDate', e.date);
+                $fin.datepicker('setStartDate', ini);
             }
 
             function loadAccesos() {
