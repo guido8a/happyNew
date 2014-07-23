@@ -1298,7 +1298,7 @@ class PersonaController extends happy.seguridad.Shield {
 //                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
                     dep.codigo = "NUEVO-" + sec + secuencia++
                     dep.activo = 1
-                    dep.padre = n1
+                    //dep.padre = n1
                     if (!dep.save(flush: true))
                         println "errores dep " + dep.errors
 
