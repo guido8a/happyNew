@@ -125,7 +125,7 @@
                                     </p>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-4" style="z-index: 1500">
                                     <elm:datepicker name="desde" class="form-control required"/>
                                 </div>
 
@@ -135,7 +135,7 @@
                                     </p>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-4" style="z-index: 1500">
                                     <elm:datepicker name="hasta" class="form-control required" maxDate="+0"/>
                                 </div>
                             </div>
