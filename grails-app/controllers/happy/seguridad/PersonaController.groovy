@@ -1284,7 +1284,7 @@ class PersonaController extends happy.seguridad.Shield {
             println "----------------------------"
             def ou = entry["ou"]
             if (ou) {
-                //println "es ou "+ou
+                println "es ou lvl1 "+ou
                 def dep = Departamento.findByDescripcion(ou)
                 if (!dep) {
                     //println "new Dep " + ou
