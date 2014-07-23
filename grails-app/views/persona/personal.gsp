@@ -218,7 +218,7 @@
                                         </label>
 
                                         <div class="col-md-2">
-                                            <elm:datepicker name="accsFechaInicial" title="desde" minDate="+0"
+                                            <elm:datepicker name="accsFechaInicial" title="desde" minDate="+0" onChangeDate="validaFechas"
                                                             class="datepicker form-control required" daysOfWeekDisabled="0,6"/>
                                         </div>
                                     </span>
@@ -229,7 +229,7 @@
                                         </label>
 
                                         <div class="col-md-2">
-                                            <elm:datepicker name="accsFechaFinal" title="hasta"   minDate="+0"
+                                            <elm:datepicker name="accsFechaFinal" title="hasta" minDate="+0"
                                                             class="datepicker form-control required" daysOfWeekDisabled="0,6"/>
                                         </div>
                                     </span>
@@ -283,6 +283,29 @@
 
 
         <script type="text/javascript">
+
+            function setDatepicker($datepicker, date) {
+                var id = $datepicker.attr("id").split("_")[0];
+                $datepicker.datepicker('setDate', date);
+                $datepicker.val(date.toString("dd-MM-yyyy"));
+                $("#" + id + "_day").val(date.toString("dd"));
+                $("#" + id + "_month").val(date.toString("MM"));
+                $("#" + id + "_year").val(date.toString("yyyy"));
+            }
+
+            function validaFechas($elm, e) {
+                var $ini = $("#accsFechaInicial_input");
+                var $fin = $("#accsFechaFinal_input");
+                var ini = $ini.datepicker('getDate');
+                var fin = $fin.datepicker('getDate');
+
+                //si la fecha de fin es anterior a la de inicio se cambia a la de inicio
+                if (fin.compareTo(ini) == -1) {
+                    setDatepicker($fin, e.date);
+                }
+                // cambio el min date de la fecha final para q sea la fecha de inicio
+                $fin.datepicker('setStartDate', e.date);
+            }
 
             function loadAccesos() {
                 var $div = $("#divAccesos");
