@@ -158,7 +158,7 @@
                     %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
-                        <g:link controller="tramite2" action="bandejaSalidaDep" class="leave btn btn-sm btn-azul btnRegresar">
+                        <g:link controller="tramite2" action="bandejaSalidaDep" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:if>
@@ -166,7 +166,7 @@
                     %{--<g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
-                        <g:link controller="tramite2" action="bandejaSalida" class="leave btn btn-sm btn-azul btnRegresar">
+                        <g:link controller="tramite2" action="bandejaSalida" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
                             <i class="fa fa-list-ul"></i> Bandeja de Salida
                         </g:link>
                     </g:else>
@@ -240,6 +240,34 @@
 //                    return "Alerta";
 //                }
             };
+
+            function doSave(url) {
+                openLoader("Guardando");
+                $.ajax({
+                    type     : "POST",
+                    url      : '${createLink(controller:"tramite", action: "saveTramite")}',
+                    data     : {
+                        id            : "${tramite.id}",
+                        editorTramite : $("#editorTramite").val(),
+                        para          : $("#para").val(),
+                        asunto        : $("#asunto").val()
+                    },
+                    success  : function (msg) {
+                        closeLoader();
+                        var parts = msg.split("_");
+                        if (parts[0] == "OK") {
+                            textoInicial = arreglarTexto($("#editorTramite").val());
+                        }
+                        log(parts[1], parts[0] == "NO" ? "error" : "success");
+                        if (url) {
+                            location.href = url;
+                        }
+                    },
+                    complete : function () {
+                        resetTimer();
+                    }
+                });
+            }
 
             $(function () {
 
@@ -392,30 +420,16 @@
                 });
 
                 $(".btnSave").click(function () {
-                    openLoader("Guardando");
-                    $.ajax({
-                        type     : "POST",
-                        url      : '${createLink(controller:"tramite", action: "saveTramite")}',
-                        data     : {
-                            id            : "${tramite.id}",
-                            editorTramite : $("#editorTramite").val(),
-                            para          : $("#para").val(),
-                            asunto        : $("#asunto").val()
-                        },
-                        success  : function (msg) {
-                            closeLoader();
-                            var parts = msg.split("_");
-                            if (parts[0] == "OK") {
-                                textoInicial = arreglarTexto($("#editorTramite").val());
-                            }
-                            log(parts[1], parts[0] == "NO" ? "error" : "success");
-                        },
-                        complete : function () {
-                            resetTimer();
-                        }
-                    });
+                    doSave();
                     return false;
                 });
+
+                $(".btnBandeja").click(function () {
+                    var url = $(this).attr("href");
+                    doSave(url);
+                    return false;
+                });
+
                 function imprimir() {
                     openLoader("Generando PDF");
                     var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
