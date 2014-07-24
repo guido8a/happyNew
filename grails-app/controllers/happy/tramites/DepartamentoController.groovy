@@ -7,6 +7,8 @@ import org.apache.commons.lang.WordUtils
 
 class DepartamentoController extends happy.seguridad.Shield {
 
+    def tramitesService
+
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
     def activar_ajax() {
@@ -76,7 +78,10 @@ class DepartamentoController extends happy.seguridad.Shield {
                 } else {
                     pr.departamento = dptoNuevo
                     def tramite = pr.tramite
-                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
+//                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
+                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion+
+                            ". Redirigido por desactivación del departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
+                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObs)
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                     } else {

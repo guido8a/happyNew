@@ -1179,7 +1179,8 @@ class TramiteController extends happy.seguridad.Shield {
     def guardarObservacion() {
 
         def tramite = Tramite.get(params.id)
-        tramite.observaciones = params.texto
+        tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, params.texto)
+//        tramite.observaciones = params.texto
 
         if (!tramite.save(flush: true)) {
             render "Ocurrió un error al guardar"
@@ -1601,12 +1602,17 @@ class TramiteController extends happy.seguridad.Shield {
         def estadoTramite = EstadoTramite.findByCodigo('E005')
         pdt.estado = estadoTramite
         pdt.fechaArchivo = new Date();
-        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+        def nuevaObs = " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
+//        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
         if (pdt.rolPersonaTramite.codigo == "R001") {
-            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+//            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
             pdt.tramite.save()
         } else {
-            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+            def nuevaObs2 = " COPIA archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
+            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
+//            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
             pdt.tramite.save()
         }
         if (!pdt.save(flush: true)) {
@@ -1631,7 +1637,8 @@ class TramiteController extends happy.seguridad.Shield {
         observacion.persona = persona
         observacion.tramite = tramite
         observacion.fecha = new Date()
-        observacion.observaciones = params.texto
+//        observacion.observaciones = params.texto
+        observacion.observaciones = tramitesService.modificaObservaciones(observacion.observaciones, params.texto + " (${new Date().format('dd-MM-yyyy HH:mm')})")
         observacion.tipo = 'anular'
         observacion.save(flush: true)
 
@@ -1648,7 +1655,8 @@ class TramiteController extends happy.seguridad.Shield {
                 observacionHijos.persona = persona
                 observacionHijos.tramite = tramite
                 observacionHijos.fecha = new Date()
-                observacionHijos.observaciones = "Trámite padre anulado:" + tramite?.codigo + "observaciones originales:" + params.texto
+//                observacionHijos.observaciones = "Trámite padre anulado:" + tramite?.codigo + "observaciones originales:" + params.texto
+                observacionHijos.observaciones = tramitesService.modificaObservaciones(observacionHijos.observaciones, "Trámite padre anulado:" + tramite?.codigo + "observaciones originales:" + params.texto + " (${new Date().format('dd-MM-yyyy HH:mm')})")
                 observacion.tipo = 'anular'
                 observacionHijos.save(flush: true)
             }

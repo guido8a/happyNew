@@ -18,6 +18,8 @@ import org.apache.directory.groovyldap.SearchScope
 
 class PersonaController extends happy.seguridad.Shield {
 
+    def tramitesService
+
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
     def index() {
@@ -921,10 +923,12 @@ class PersonaController extends happy.seguridad.Shield {
                     pr.persona = Persona.get(params.quien)
                     obs += " al usuario ${pr.persona.login}"
                 }
-                obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}; "
+                obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}"
                 def tramite = pr.tramite
-                tramite.observaciones = (tramite.observaciones ?: "") + obs
-                pr.observaciones = (pr.observaciones ?: "") + obs
+//                tramite.observaciones = (tramite.observaciones ?: "") + obs
+                tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obs)
+//                pr.observaciones = (pr.observaciones ?: "") + obs
+                pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, obs)
                 if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                 } else {
@@ -934,7 +938,8 @@ class PersonaController extends happy.seguridad.Shield {
                 if (!pr.persona && !pr.departamento) {
                     pr.persona = personaAntes
                     pr.departamento = dptoAntes
-                    pr.observaciones += " Ha ocurrido un error al redireccionar. "
+//                    pr.observaciones += " Ha ocurrido un error al redireccionar. "
+                    pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, "Ocurrió un error al redireccionar (${new Date().format('dd-MM-yyyy HH:mm')}).")
                     errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
                 }
                 if (pr.save(flush: true)) {
@@ -1204,7 +1209,10 @@ class PersonaController extends happy.seguridad.Shield {
                     pr.persona = null
                     pr.departamento = dptoOld
                     def tramite = pr.tramite
-                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+//                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+                    def obsNueva = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido +
+                            ". Redirigido por cambio de departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
+                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obsNueva)
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                     } else {
@@ -1288,7 +1296,7 @@ class PersonaController extends happy.seguridad.Shield {
             println "----------------------------"
             def ou = entry["ou"]
             if (ou) {
-                println "es ou lvl1 "+ou
+                println "es ou lvl1 " + ou
                 def dep = Departamento.findByDescripcion(ou)
                 if (!dep) {
                     //println "new Dep " + ou

@@ -115,7 +115,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (externos.contains(tramite.tipoDocumento.codigo)) {
             tramite.externo = '1'
         }
-        tramite.departamento=tramite.de.departamento
+        tramite.departamento = tramite.de.departamento
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -842,7 +842,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def persona = Persona.get(session.usuario.id)
 
-        tramite.observaciones = (tramite.observaciones ? tramite.observaciones + "; " : "") + persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
+//        tramite.observaciones = (tramite.observaciones ? tramite.observaciones + "; " : "") + persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
+        def nuevaObsTram = persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
+        tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObsTram)
 //        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
 
         if (tramite.save(flush: true)) {
@@ -1113,9 +1115,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            def paraStr = tramiteParaInfo.departamento ? tramiteParaInfo.departamento.codigo : tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
 
             def paraStr = ""
-            if(tramiteParaInfo.departamento) {
+            if (tramiteParaInfo.departamento) {
                 paraStr = tramiteParaInfo.departamento.codigo
-            } else if(tramiteParaInfo.persona) {
+            } else if (tramiteParaInfo.persona) {
                 paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
             }
 
