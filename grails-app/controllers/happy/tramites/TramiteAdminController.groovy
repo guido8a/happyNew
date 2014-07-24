@@ -27,7 +27,8 @@ class TramiteAdminController {
             def estadoEnviado = EstadoTramite.findByCodigo("E003")
             def estadoRecibido = EstadoTramite.findByCodigo("E004")
 
-            msg = "<p>Seleccione el trámite al que se asociará ${original.tramite.codigo}</p>"
+            msg = "<p>Seleccione el trámite al que se asociará <strong>${original.tramite.codigo}</strong> "
+            msg += "(creado el ${original.fechaCreacion.format('dd-MM-yyyy HH:mm')})</p>"
             msg += "<table class='table table-condensed table-bordered'>"
             msg += "<thead>"
             msg += "<tr>"
@@ -55,7 +56,8 @@ class TramiteAdminController {
                     }
                     eq("estado", estadoRecibido)
                     tramite {
-                        lt("fechaCreacion", original.tramite.fechaCreacion)
+//                        lt("fechaCreacion", original.tramite.fechaCreacion)
+                        lt("fechaEnvio", original.tramite.fechaCreacion)
                     }
                     if (duenioDep) {
                         eq("departamento", duenioDep)
@@ -98,7 +100,7 @@ class TramiteAdminController {
 
             if (!algo) {
                 msg = "<div class='alert alert-danger'>"
-                msg += "No se encontró un trámite disponible con código " + codigo.toUpperCase()
+                msg += "No se encontró un trámite con código " + codigo.toUpperCase() + " que cumpla las condiciones necesarias."
                 msg += "</div>"
             }
         }
@@ -117,6 +119,7 @@ class TramiteAdminController {
         def nuevaObs = " Trámite asociado al trámite ${nuevoPadre.tramite.codigo} por " +
                 "${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')}"
         original.observaciones = tramitesService.modificaObservaciones(original.observaciones, nuevaObs)
+        original.tramite.observaciones = tramitesService.modificaObservaciones(original.tramite.observaciones, nuevaObs)
 
         nuevoPadre.tramite.estado = "C"
         def msg = ""
