@@ -423,10 +423,22 @@
                 };
 
                 var ver = {
-                    label  : "Ver",
+                    label  : "Ver - Imprimir",
                     icon   : "fa fa-search",
                     action : function () {
-                        window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite3', action: 'verificarEstado')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if(msg=="ok")
+                                    window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
+                                else
+                                    bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")
+                            }
+                        });
                     }
                 }; //ver
 

@@ -667,6 +667,26 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        return [tramite: tramite]
 //    }
 
+    def verificarEstado(){
+        //println "verifica estado "+params
+        def tramite = Tramite.get(params.id)
+        def para = tramite.para
+        //println "para "+para+"  "+para?.estado?.codigo
+        if(!para){
+            render "ok"
+            return
+        }else{
+            if(para.estado?.codigo!="E006"){
+                render "ok"
+                return
+            }else{
+                render "error"
+                return
+            }
+        }
+    }
+
+
     def recibirTramite() {
        // println "recibir tramite " + params
         if (request.getMethod() == "POST") {

@@ -137,7 +137,7 @@
         %{--</span>--}%
         <span class="btn btn-default fileinput-button" id="reset-files" style="position: relative;height: 40px;margin-top: 10px">
             <i class="glyphicon glyphicon-refresh"></i>
-            <span>Resetear</span>
+            <span>Limpiar</span>
         </span>
 
 
