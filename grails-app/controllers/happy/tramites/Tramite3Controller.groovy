@@ -657,7 +657,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //    }
 
     def recibirTramite() {
-        println "recibir tramite " + params
+       // println "recibir tramite " + params
         if (request.getMethod() == "POST") {
             def persona = Persona.get(session.usuario.id)
 
@@ -666,7 +666,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-            println tramite.estadoTramite.descripcion
+           // println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
                 render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return

@@ -143,7 +143,7 @@ class Tramite {
        // println "before validate"
         if(this){
             if(this.aQuienContesta==null){
-                def oldValue = this.getPersistentValue("departamento")
+                def oldValue = this.getPersistentValue("aQuienContesta")
                 // println "old Value "+oldValue.class
                 if(!oldValue!=null && oldValue!="") {
                     //println "es diferente aQuienConstesta wtf "
