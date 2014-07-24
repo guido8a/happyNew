@@ -97,8 +97,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
         def tramite
         def error = false
+        def aqc
         if (paramsTramite.id) {
             tramite = Tramite.get(paramsTramite.id)
+            aqc=tramite.aQuienContesta
 //            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
 //                tramite.tipoTramite = TipoTramite.findByCodigo("C")
 //            }
@@ -116,6 +118,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tramite.externo = '1'
         }
         tramite.departamento = tramite.de.departamento
+        if(tramite.aQuienContesta==null)
+            tramite.aQuienContesta=aqc
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -155,6 +159,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (tramite.padre) {
                 tramite.padre.estado = "C"
                 tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                if(tramite.aQuienContesta==null)
+                    tramite.aQuienContesta=aqc
+                else{
+                    aqc=tramite.aQuienContesta
+                }
                 tramite.padre.save(flush: true)
                 if (tramite.padre.estadoTramiteExterno) {
                     tramite.estadoTramiteExterno = tramite.padre.estadoTramiteExterno
@@ -331,6 +340,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 tramite.fechaEnvio = ahora
                 tramite.estadoTramite = estadoRecibido
+                if(tramite.aQuienContesta==null)
+                    tramite.aQuienContesta=aqc
                 if (tramite.save(flush: true)) {
 //                    def realPath = servletContext.getRealPath("/")
 //                    def mensaje = message(code: 'pathImages').toString();
