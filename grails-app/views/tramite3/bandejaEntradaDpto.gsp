@@ -505,45 +505,15 @@
 
                 items.header.label = "Acciones";
 
-
                 <g:if test="${session.usuario.getPuedeVer()}">
-                items.detalles = detalles
-                items.arbol = arbol
+                items.detalles = detalles;
+                items.arbol = arbol;
                 </g:if>
-
 
                 if (conAnexo) {
                     items.anexo = anexos
                 }
-                if (retrasado) {
-
-                    <g:if test="${session.usuario.getPuedeVer()}">
-                    items.arbol = arbol
-                    </g:if>
-                    items.contestar = contestar
-                    <g:if test="${session.usuario.getPuedeArchivar()}">
-                    items.archivar = archivar
-                    </g:if>
-                    items.observaciones = observaciones
-                }
-                if (porRecibir) {
-                    items.recibir = recibir
-                    <g:if test="${session.usuario.getPuedeVer()}">
-                    items.arbol = arbol
-                    </g:if>
-
-                }
-
-                if (sinRecepcion) {
-                    items.recibir = recibir
-                    <g:if test="${session.usuario.getPuedeVer()}">
-                    items.arbol = arbol
-                    </g:if>
-
-                }
-
-                if (recibido) {
-
+                if (retrasado || recibido) {
                     if (esExterno) {
                         items.externo = {
                             label  : "Cambiar estado",
@@ -604,34 +574,45 @@
                             }
                         };
                     }
-                }
 
-                if (recibido) {
-
-                    items.contestar = contestar
+                    <g:if test="${session.usuario.getPuedeVer()}">
+                    items.arbol = arbol;
+                    </g:if>
+                    items.contestar = contestar;
                     <g:if test="${session.usuario.puedeArchivar}">
-                    items.archivar = archivar
+                    items.archivar = archivar;
                     </g:if>
                     <g:else>
                     if (esCopia) {
                         items.archivar = archivar;
                     }
                     </g:else>
-                    items.observaciones = observaciones
+                    items.observaciones = observaciones;
+                }
+                if (porRecibir) {
+                    items.recibir = recibir;
+                    <g:if test="${session.usuario.getPuedeVer()}">
+                    items.arbol = arbol;
+                    </g:if>
+
+                }
+
+                if (sinRecepcion) {
+                    items.recibir = recibir;
+                    <g:if test="${session.usuario.getPuedeVer()}">
+                    items.arbol = arbol;
+                    </g:if>
+
                 }
 
                 if (jefe) {
-
                     items.contestar = contestar
                     <g:if test="${session.usuario.puedeVer}">
                     items.detalles = detalles
                     items.arbol = arbol
                     </g:if>
-
                 }
-
                 return items
-
             }
 
             //old contextMenu

@@ -690,7 +690,7 @@
                             icon : "fa fa-file-o text-warning"
                         },
                         paraAnulado   : {
-                            icon : "fa fa-circle-o text-muted"
+                            icon : "fa fa-ban text-muted"
                         },
                         paraRecibido  : {
                             icon : "fa fa-file-o text-success"
@@ -706,7 +706,7 @@
                             icon : "fa fa-files-o text-warning"
                         },
                         copiaAnulado   : {
-                            icon : "fa fa-circle-o text-muted"
+                            icon : "fa fa-ban text-muted"
                         },
                         copiaRecibido  : {
                             icon : "fa fa-files-o text-success"

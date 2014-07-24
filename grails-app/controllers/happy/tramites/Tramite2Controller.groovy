@@ -1176,6 +1176,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
+        def aqc
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
@@ -1339,6 +1340,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (tramite.padre) {
                 tramite.padre.estado = "C"
                 tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                if(tramite.aQuienContesta==null)
+                    tramite.aQuienContesta=aqc
+                else{
+                    aqc=tramite.aQuienContesta
+                }
                 tramite.padre.save(flush: true)
                 if (tramite.padre.estadoTramiteExterno) {
                     tramite.estadoTramiteExterno = tramite.padre.estadoTramiteExterno
@@ -1535,6 +1541,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 tramite.fechaEnvio = ahora
                 tramite.estadoTramite = estadoRecibido
+                if(tramite.aQuienContesta==null)
+                    tramite.aQuienContesta=aqc
                 if (tramite.save(flush: true)) {
 //                    def realPath = servletContext.getRealPath("/")
 //                    def mensaje = message(code: 'pathImages').toString();
