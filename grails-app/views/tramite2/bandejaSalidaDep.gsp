@@ -307,64 +307,72 @@
                     icon             : "fa fa-files-o",
                     action           : function () {
                         $.ajax({
-                            type    : "POST",
-                            url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite3', action: 'verificarEstado')}',
                             data    : {
-                                tramite : id
+                                id : id
                             },
                             success : function (msg) {
-                                bootbox.dialog({
-                                    id      : "dlgCopiaPara",
-                                    title   : '<i class="fa fa-files-o"></i> Copia para',
-                                    class   : "long",
-                                    message : msg,
-                                    buttons : {
-                                        cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
-                                            callback  : function () {
-                                            }
+                                if(msg=="ok") {
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
+                                        data    : {
+                                            tramite : id
                                         },
-                                        enviar   : {
-                                            id        : 'btnEnviarCopia',
-                                            label     : '<i class="fa fa-check"></i> Enviar copias',
-                                            className : "btn-success",
-                                            callback  : function () {
-                                                var cc = "";
-                                                $("#ulSeleccionados li").not(".disabled").each(function () {
-                                                    cc += $(this).data("id") + "_";
-                                                });
-                                                if (cc == "") {
-                                                    log("No ha seleccionado a quien enviar las copias", "error");
-//                                                    openLoader("Por favor espere");
-//                                                    location.reload(true);
-                                                } else {
-                                                    openLoader("Enviando copias");
-                                                    $.ajax({
-                                                        type    : "POST",
-                                                        url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
-                                                        data    : {
-                                                            tramite : id,
-                                                            copias  : cc
-                                                        },
-                                                        success : function (msg) {
-                                                            var parts = msg.split("*");
-                                                            if (parts[0] == 'OK') {
-                                                                log("Copias enviadas exitosamente", 'success');
-                                                                setTimeout(function () {
-                                                                    location.reload(true);
-                                                                }, 500);
-                                                            } else if (msg == 'NO') {
-                                                                closeLoader();
-                                                                log(parts[1], 'error');
-                                                            }
+                                        success : function (msg) {
+                                            bootbox.dialog({
+                                                id      : "dlgCopiaPara",
+                                                title   : '<i class="fa fa-files-o"></i> Copia para',
+                                                class   : "long",
+                                                message : msg,
+                                                buttons : {
+                                                    cancelar : {
+                                                        label     : '<i class="fa fa-times"></i> Cancelar',
+                                                        className : 'btn-danger',
+                                                        callback  : function () {
                                                         }
-                                                    });
+                                                    },
+                                                    enviar   : {
+                                                        id        : 'btnEnviarCopia',
+                                                        label     : '<i class="fa fa-check"></i> Enviar copias',
+                                                        className : "btn-success",
+                                                        callback  : function () {
+                                                            var cc = "";
+                                                            $("#ulSeleccionados li").not(".disabled").each(function () {
+                                                                cc += $(this).data("id") + "_";
+                                                            });
+                                                            openLoader("Enviando copias");
+                                                            $.ajax({
+                                                                type    : "POST",
+                                                                url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
+                                                                data    : {
+                                                                    tramite : id,
+                                                                    copias  : cc
+                                                                },
+                                                                success : function (msg) {
+                                                                    var parts = msg.split("*");
+                                                                    if (parts[0] == 'OK') {
+                                                                        log("Copias enviadas exitosamente", 'success');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
+                                                                    } else if (msg == 'NO') {
+                                                                        closeLoader();
+                                                                        log(parts[1], 'error');
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
                                                 }
-                                            }
+                                            });
                                         }
-                                    }
-                                });
+                                    });
+
+
+                                }else
+                                    bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")
                             }
                         });
                     }
