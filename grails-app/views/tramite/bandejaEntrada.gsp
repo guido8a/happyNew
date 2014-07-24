@@ -306,7 +306,7 @@
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
                 var externo = $tr.hasClass("1");
-                var esExterno = $tr.hasClass("estadoExterno")
+                var esExterno = $tr.hasClass("estadoExterno");
                 var esCopia = $tr.hasClass("R002");
 
                 var porRecibir = $tr.hasClass("porRecibir");
@@ -547,7 +547,7 @@
 
                                             }
                                         },
-                                        archivar : {
+                                        anular   : {
                                             id        : 'btnAnular',
                                             label     : '<i class="fa fa-check"></i> Anular',
                                             className : "btn-success",
@@ -605,7 +605,7 @@
 //                    items.recibirExt = recibirExt
 //                }
 
-                if (recibido) {
+                if (recibido || retrasado) {
                     items.contestar = contestar;
                     <g:if test="${session.usuario.getPuedeArchivar()}">
                     items.archivar = archivar;

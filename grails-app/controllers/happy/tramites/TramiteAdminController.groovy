@@ -387,7 +387,7 @@ class TramiteAdminController {
 //                pr.observaciones += " Ha ocurrido un error al redireccionar. "
 //                tramite.observaciones += " Ha ocurrido un error al redireccionar. "
                 pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, "Ha ocurrido un error al redireccionar (${new Date().format('dd-MM-yyyy HH:mm')}).")
-                tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, "Ha ocurrido un error al redireccionar (${new Date().format('dd-MM-yyyy HH:mm')}).")
+                tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, "Ha ocurrido un error al redireccionar.")
                 if (tramite.save(flush: true)) {
 //                    println "ok"
                 }
@@ -662,10 +662,10 @@ class TramiteAdminController {
             persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, obs)
             if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
 //                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
-                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, obs)
+                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, obs)
             } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
 //                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
-                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, "COPIA " + obs)
+                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, "COPIA " + obs)
             }
             persDocTram.fechaRecepcion = null
             persDocTram.fechaLimiteRespuesta = null
