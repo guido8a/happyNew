@@ -225,6 +225,17 @@
                                 var $p = $("<p class='lead'>");
                                 $p.html("Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>");
                                 $container.append($p);
+
+                                var $alert = $("<div class='alert alert-info'>");
+                                $alert.html("Para poder asociar un trámite a otro se deben cumplir las siguientes condiciones:");
+                                var $ul = $("<ul>");
+                                $ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +
+                                             "a la fecha de envío del trámite al que se lo quiere asociar.</li>"));
+                                $ul.append($("<li>El creador del trámite "+tramiteCodigo+" debe ser el destinatario del " +
+                                             "trámite al que se lo quiere asociar.</li>"));
+                                $alert.append($ul);
+                                $container.append($alert);
+
                                 var $row = $("<div class='row'>");
                                 var $col = $("<div class='col-md-6'>");
                                 $col.append("<label for='nuevoPadre'>Código trámite padre:</label>");
@@ -354,7 +365,7 @@
                     %{--};--}%
 //                    }
                 }
-                if (!estaAnulado) {
+                if (!estaAnulado && !estaArchivado) {
                     items.anular = {
                         label  : "Anular",
                         icon   : "fa fa-ban",
@@ -396,14 +407,15 @@
                                                     texto : $("#observacionAnular").val()
                                                 },
                                                 success : function (msg) {
-                                                    if (msg == 'OK') {
+                                                    var parts = msg.split("*");
+                                                    if (parts[0] == 'OK') {
                                                         log("Trámite anulado correctamente", 'success');
                                                         setTimeout(function () {
                                                             location.reload(true);
                                                         }, 500);
-                                                    } else if (msg == 'NO') {
+                                                    } else if (parts[0] == 'NO') {
                                                         closeLoader();
-                                                        log("Error al anular el trámite el trámite", 'error');
+                                                        log("Error al anular el trámite!", 'error');
                                                     }
                                                 }
                                             });
@@ -492,7 +504,7 @@
                                 title   : '<i class="fa fa-magic"></i> Quitar anulado del Trámite',
                                 message : msg,
                                 buttons : {
-                                    cancelar : {
+                                    cancelar  : {
                                         label     : '<i class="fa fa-times"></i> Cancelar',
                                         className : 'btn-danger',
                                         callback  : function () {
