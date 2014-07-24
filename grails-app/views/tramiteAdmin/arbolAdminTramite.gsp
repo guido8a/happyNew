@@ -354,7 +354,7 @@
                     %{--};--}%
 //                    }
                 }
-                if (!estaAnulado) {
+                if (!estaAnulado && !estaArchivado) {
                     items.anular = {
                         label  : "Anular",
                         icon   : "fa fa-ban",
@@ -396,14 +396,15 @@
                                                     texto : $("#observacionAnular").val()
                                                 },
                                                 success : function (msg) {
-                                                    if (msg == 'OK') {
+                                                    var parts = msg.split("*");
+                                                    if (parts[0] == 'OK') {
                                                         log("Trámite anulado correctamente", 'success');
                                                         setTimeout(function () {
                                                             location.reload(true);
                                                         }, 500);
-                                                    } else if (msg == 'NO') {
+                                                    } else if (parts[0] == 'NO') {
                                                         closeLoader();
-                                                        log("Error al anular el trámite el trámite", 'error');
+                                                        log("Error al anular el trámite!", 'error');
                                                     }
                                                 }
                                             });
