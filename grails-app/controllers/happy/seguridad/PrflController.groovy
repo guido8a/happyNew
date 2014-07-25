@@ -14,15 +14,20 @@ class PrflController extends happy.seguridad.Shield {
     }
 
     def modulos = {
+        if (session.usuario.puedeAdmin) {
 //       println "recibe de parametros: ${params.id}"
-        def prflInstance = Prfl.get(params.id)
-        if (!prflInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
-            redirect(action: "list")
-        } else {
-            def lstacmbo = lstaModulos(params.id)
+            def prflInstance = Prfl.get(params.id)
+            if (!prflInstance) {
+                flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
+                redirect(action: "list")
+            } else {
+                def lstacmbo = lstaModulos(params.id)
 //          println "modulos:----- " + lstacmbo
-            render(view: "modulos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+                render(view: "modulos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+            }
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
     }
 
