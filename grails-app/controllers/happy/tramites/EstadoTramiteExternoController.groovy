@@ -32,6 +32,7 @@ class EstadoTramiteExternoController extends happy.seguridad.Shield {
     }
 
     def list() {
+        if (session.usuario.puedeAdmin) {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def estadoTramiteExternoInstanceList = getLista(params, false)
         def estadoTramiteExternoInstanceCount = getLista(params, true).size()
@@ -40,6 +41,10 @@ class EstadoTramiteExternoController extends happy.seguridad.Shield {
         }
         estadoTramiteExternoInstanceList = getLista(params, false)
         return [estadoTramiteExternoInstanceList: estadoTramiteExternoInstanceList, estadoTramiteExternoInstanceCount: estadoTramiteExternoInstanceCount, params: params]
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
     } //list
 
     def show_ajax() {
