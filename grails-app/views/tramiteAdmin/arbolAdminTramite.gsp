@@ -231,7 +231,7 @@
                                 var $ul = $("<ul>");
                                 $ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +
                                              "a la fecha de envío del trámite al que se lo quiere asociar.</li>"));
-                                $ul.append($("<li>El creador del trámite "+tramiteCodigo+" debe ser el destinatario del " +
+                                $ul.append($("<li>El creador del trámite " + tramiteCodigo + " debe ser el destinatario del " +
                                              "trámite al que se lo quiere asociar.</li>"));
                                 $alert.append($ul);
                                 $container.append($alert);
