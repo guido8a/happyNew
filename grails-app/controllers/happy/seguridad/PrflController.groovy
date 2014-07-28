@@ -399,7 +399,7 @@ class PrflController extends happy.seguridad.Shield {
             tx2 = "insert into prus(prsn__id, perm__id, prusfcin, prsnasgn) select ${it}, perm__id, '${fcha}', " +
                     "${session.usuario.id} from prpf where prfl__id = ${prfl} and perm__id not in " +
                     "(select perm__id from prus where prsn__id = ${it} and prusfcfn is null);"
-            println "-- update: $tx2"
+//            println "-- update: $tx2"
             try {
                 cn.execute(tx2.toString())  /* añade permisos nuevos */
             }
