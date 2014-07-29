@@ -183,7 +183,7 @@
                                 closeLoader();
                                 bootbox.dialog({
                                     title   : "Alerta",
-                                    message : "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" + parts[1],
+                                    message : parts[1],
                                     buttons : {
                                         cancelar : {
                                             label     : "Cancelar",
@@ -196,25 +196,32 @@
                                             className : "btn-success",
                                             callback  : function () {
                                                 var $sel = $("#selWarning");
+                                                var $txt = $("#txtWarning");
                                                 var resp = $sel.val();
                                                 var dpto = $sel.data("dpto");
+                                                var autoriza = $.trim($txt.val());
                                                 if (resp == 1 || resp == "1") {
-                                                    openLoader("Cambiando");
-                                                    $.ajax({
-                                                        type    : "POST",
-                                                        url     : '${createLink(controller: 'persona', action:'cambioDpto_ajax')}',
-                                                        data    : {
-                                                            id   : id,
-                                                            dpto : dpto
-                                                        },
-                                                        success : function (msg) {
-                                                            var parts = msg.split("_");
-                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                            if (parts[0] == "OK") {
-                                                                location.reload(true);
+                                                    if (validaAutorizacion($txt)) {
+                                                        openLoader("Cambiando");
+                                                        $.ajax({
+                                                            type    : "POST",
+                                                            url     : '${createLink(controller: 'persona', action:'cambioDpto_ajax')}',
+                                                            data    : {
+                                                                id   : id,
+                                                                dpto : dpto,
+                                                                aut  : autoriza
+                                                            },
+                                                            success : function (msg) {
+                                                                var parts = msg.split("_");
+                                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                                if (parts[0] == "OK") {
+                                                                    location.reload(true);
+                                                                }
                                                             }
-                                                        }
-                                                    });
+                                                        });
+                                                    } else {
+                                                        return false;
+                                                    }
                                                 }
                                             }
                                         }
@@ -415,7 +422,7 @@
 //                              "<p>Por favor redireccione los trámites para continuar</p>";
                     textMsg = "<p>" +
                               "El usuario <span class='infoCambioEstado'>" + strUsuario + "</span> que desea " +
-                              "<span class='infoCambioEstado'>"+(activar ? 'activar' : 'desactivar') + "</span> tiene " +
+                              "<span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') + "</span> tiene " +
                               "<span class='infoCambioEstado entrada'>" + tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada</span> y " +
                               "<span class='infoCambioEstado salida'>" + tramitess + " trámite" + (tramitess == 1 ? '' : "s") + " en su bandeja de salida" +
                               ".</p>" +
@@ -554,7 +561,12 @@
                     if (tramites > 0) {
                         textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
                                    "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
-
+//                        textMsg += "<div class='row'>";
+//                        textMsg += "<div class='col-md-3'>Autorizado por</div>";
+//                        textMsg += "<div class='col-md-8'>";
+//                        textMsg += "<input type='text' name='aut' class='form-control' />";
+//                        textMsg += "</div>";
+//                        textMsg += "</div>";
                     } else {
                         textMsg += "<p>No tiene trámites en su bandeja de entrada.</p>"
                     }
@@ -580,6 +592,8 @@
                             label     : "<i class='fa " + icon + "'></i> " + textBtn,
                             className : "btn-" + clase,
                             callback  : function () {
+                                var $txt = $("#aut");
+//                                if (validaAutorizacion($txt)) {
                                 openLoader(textLoader);
                                 $.ajax({
                                     type    : "POST",
@@ -596,6 +610,9 @@
                                         closeLoader();
                                     }
                                 });
+//                                } else {
+//                                    return false;
+//                                }
                             }
                         }
                     }

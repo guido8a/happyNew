@@ -32,6 +32,7 @@
                                 <g:if test="${pers.fechaLimiteRespuesta}">
                                     <elm:datepicker minDate="${pers.fechaLimiteRespuesta?.format('dd-MM-yyyy')}"
                                                     class="form-control input-sm required" name="fecha_${pers.id}"
+                                                    daysOfWeekDisabled="0,6"
                                                     value="${pers.fechaLimiteRespuesta}"/>
                                 </g:if>
                             </div>
@@ -45,6 +46,12 @@
             </g:each>
         </tbody>
     </table>
+
+    <div class="row">
+        <div class="col-md-2">Autorizado por</div>
+
+        <div class="col-md-4"><g:textField name="aut" class="form-control"/></div>
+    </div>
 </g:form>
 <script type="text/javascript">
     $(function () {

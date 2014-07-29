@@ -24,24 +24,28 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 def persDocTram = PersonaDocumentoTramite.get(persDocId)
                 def fecha = new Date().parse("dd-MM-yyyy HH:mm", v.toString() + " " + persDocTram.fechaLimiteRespuesta.format("HH:mm"))
 
-                def para = ""
-                if (persDocTram.departamento) {
-                    para = "para el dpto. " + persDocTram.departamento.codigo
-                } else if (persDocTram.persona) {
-                    para = "para el usuario " + persDocTram.persona.login
-                }
-                para += " (${persDocTram.rolPersonaTramite.descripcion})"
+                if (fecha != persDocTram.fechaLimiteRespuesta) {
+                    def para = ""
+                    if (persDocTram.departamento) {
+                        para = "para el dpto. " + persDocTram.departamento.codigo
+                    } else if (persDocTram.persona) {
+                        para = "para el usuario " + persDocTram.persona.login
+                    }
+                    para += " (${persDocTram.rolPersonaTramite.descripcion})"
 
-                def l = " por ${session.usuario} hasta ${fecha.format('dd-MM-yyyy HH:mm')}, " +
-                        "plazo anterior ${persDocTram.fechaLimiteRespuesta.format('dd-MM-yyyy HH:mm')}"
-                def log = "Ampliado el plazo" + l
-                def log2 = "Ampliado el plazo ${para}" + l
-                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, log)
-                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, log2)
-                persDocTram.fechaLimiteRespuesta = fecha
-                println persDocTram.id
-                if (!persDocTram.save(flush: true)) {
-                    error += renderErrors(bean: persDocTram)
+                    def l = " hasta: ${fecha.format('dd-MM-yyyy HH:mm')}, " +
+                            "plazo anterior: ${persDocTram.fechaLimiteRespuesta.format('dd-MM-yyyy HH:mm')}"
+                    def log = "Ampliado el plazo" + l
+                    def log2 = "Ampliado el plazo ${para}" + l
+                    persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, log, params.aut, session.usuario.login)
+                    persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, log2, params.aut, session.usuario.login)
+//                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, log)
+//                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, log2)
+                    persDocTram.fechaLimiteRespuesta = fecha
+//                    println persDocTram.id
+                    if (!persDocTram.save(flush: true)) {
+                        error += renderErrors(bean: persDocTram)
+                    }
                 }
             }
         }

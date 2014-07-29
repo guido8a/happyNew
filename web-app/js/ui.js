@@ -9,6 +9,20 @@
 //hace q todos los elementos con un atributo title tengan el title bonito de twitter bootstrap
 //$('[title!=]').tooltip({});
 
+//valida la autorizacion y muestra error cuando no se ingresa
+function validaAutorizacion($textField) {
+    console.log($textField);
+    var autorizadoPor = $.trim($textField.val());
+    if ($.trim(autorizadoPor) == "") {
+        $textField.addClass("errorAutorizacion").effect("pulsate", 1000, function () {
+            $textField.removeClass("errorAutorizacion");
+        });
+        return false;
+    } else {
+        return true;
+    }
+}
+
 //hace q todos los elementos con un atributo title tengan el title bonito de qtip2
 $('[title!=""]').qtip({
     style    : {

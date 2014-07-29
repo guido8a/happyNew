@@ -926,6 +926,7 @@ class PersonaController extends happy.seguridad.Shield {
                 obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}"
                 def tramite = pr.tramite
 //                tramite.observaciones = (tramite.observaciones ?: "") + obs
+                println "NO DEBERIA IMPRIMIR ESTO NUNCA"
                 tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obs)
 //                pr.observaciones = (pr.observaciones ?: "") + obs
                 pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, obs)
@@ -939,6 +940,7 @@ class PersonaController extends happy.seguridad.Shield {
                     pr.persona = personaAntes
                     pr.departamento = dptoAntes
 //                    pr.observaciones += " Ha ocurrido un error al redireccionar. "
+                    println "NO DEBERIA IMPRIMIR ESTO NUNCA"
                     pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, "Ocurrió un error al redireccionar (${new Date().format('dd-MM-yyyy HH:mm')}).")
                     errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
                 }
@@ -1114,14 +1116,23 @@ class PersonaController extends happy.seguridad.Shield {
                 def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
                 def cantTramites = tramites.size()
                 if (params.departamento.id != personaInstance.departamentoId)
-                    msgDpto = "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
+                    msgDpto = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
+                            "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
                             "de ${WordUtils.capitalizeFully(personaInstance.departamento.descripcion)} a " +
                             "${WordUtils.capitalizeFully(Departamento.get(params.departamento.id.toLong()).descripcion)}</h4>" +
                             "<p style='font-size:larger;'>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
                             "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observación de " +
                             "notificación de esta acción.</p>" +
+                            "<div class='row'>" +
+                            "<div class='col-md-3 control-label' style='padding-top:8px; font-weight:bold;'>Autorizado por</div>" +
+                            "<div class='col-md-9'>" + g.textField(name: "txtWarning", class: "form-control") + "</div>" +
+                            "</div>" +
+                            "<div class='row'>" +
+                            "<div class='col-md-12'>" +
                             g.select("data-dpto": params.departamento.id, name: "selWarning", class: 'form-control', optionKey: "key", optionValue: "value",
-                                    from: [0: "Cancelar el cambio", 1: "Cambiar y efectuar el redireccionamiento"])
+                                    from: [0: "Cancelar el cambio", 1: "Cambiar y efectuar el redireccionamiento"]) +
+                            "</div>" +
+                            "</div>"
                 params.departamento.id = personaInstance.departamentoId
             }
         } //update
@@ -1210,9 +1221,16 @@ class PersonaController extends happy.seguridad.Shield {
                     pr.departamento = dptoOld
                     def tramite = pr.tramite
 //                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+//                    def obsNueva = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido +
+//                            ". Redirigido por cambio de departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
+//                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obsNueva)
+
                     def obsNueva = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido +
-                            ". Redirigido por cambio de departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
-                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obsNueva)
+                            ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
+                    ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
+                    pr.observaciones = tramitesService.makeObservaciones(pr.observaciones, obsNueva, params.aut, session.usuario.login)
+                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obsNueva, params.aut, session.usuario.login)
+
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                     } else {
@@ -1268,323 +1286,323 @@ class PersonaController extends happy.seguridad.Shield {
 //        def file = new File(pathImages+"/users")
 
 
-        if(session.usuario.puedeAdmin){
+        if (session.usuario.puedeAdmin) {
 
-        def prmt = Parametros.findAll()[0]
+            def prmt = Parametros.findAll()[0]
 
 //        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
-        LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, prmt.textoCn, prmt.passAdm)
-        println "'ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster'"
-        println "LADP: " + "ldap://${prmt.ipLDAP}, ${prmt.textoCn}, ${prmt.passAdm}"
-        println "conectado " + ldap.class
-        println "!!!!!!!######3&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&######!!!!!"
+            LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, prmt.textoCn, prmt.passAdm)
+            println "'ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster'"
+            println "LADP: " + "ldap://${prmt.ipLDAP}, ${prmt.textoCn}, ${prmt.passAdm}"
+            println "conectado " + ldap.class
+            println "!!!!!!!######3&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&######!!!!!"
 
-        def registrados = Persona.list()
-        def users = []
-        def nuevos = []
-        def mod = []
+            def registrados = Persona.list()
+            def users = []
+            def nuevos = []
+            def mod = []
 //        def results = ldap.search('(objectClass=*)', 'ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', SearchScope.ONE)
-        def results = ldap.search('(objectClass=*)', prmt.ouPrincipal, SearchScope.ONE)
-        def band = true
-        def cont = 0
-        def n1 = Departamento.get(11)
-        def sinDep = Departamento.get(20)
-        def secuencia = 1
-        def noNombre = []
-        def noApellido = []
-        def noMail = []
-        for (entry in results) {
-            // println "__==> " + entry["ou"]+"  "+entry["givenname"]
+            def results = ldap.search('(objectClass=*)', prmt.ouPrincipal, SearchScope.ONE)
+            def band = true
+            def cont = 0
+            def n1 = Departamento.get(11)
+            def sinDep = Departamento.get(20)
+            def secuencia = 1
+            def noNombre = []
+            def noApellido = []
+            def noMail = []
+            for (entry in results) {
+                // println "__==> " + entry["ou"]+"  "+entry["givenname"]
 //            if(entry["givenname"])
 //                println "ES PERSONA LVL 0 "+entry
-            println "----------------------------"
-            def ou = entry["ou"]
-            if (ou) {
-                println "es ou lvl1 " + ou
-                def dep = Departamento.findByDescripcion(ou)
-                if (!dep) {
-                    //println "new Dep " + ou
-                    def sec = new Date().format("ss")
-                    dep = new Departamento()
-                    dep.descripcion = ou
+                println "----------------------------"
+                def ou = entry["ou"]
+                if (ou) {
+                    println "es ou lvl1 " + ou
+                    def dep = Departamento.findByDescripcion(ou)
+                    if (!dep) {
+                        //println "new Dep " + ou
+                        def sec = new Date().format("ss")
+                        dep = new Departamento()
+                        dep.descripcion = ou
 //                    dep.codigo = "COD-"+(new Date().format("mm-ss"))
-                    dep.codigo = "NUEVO-" + sec + secuencia++
-                    dep.activo = 1
-                    dep.padre = n1
-                    if (!dep.save(flush: true))
-                        println "errores dep " + dep.errors
+                        dep.codigo = "NUEVO-" + sec + secuencia++
+                        dep.activo = 1
+                        dep.padre = n1
+                        if (!dep.save(flush: true))
+                            println "errores dep " + dep.errors
 //                    if(!n1)
 //                        n1=dep
 
-                }
-                // println "*********************************\n"
+                    }
+                    // println "*********************************\n"
 //                def searchString = 'ou=' + ou + ',ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local'
-                def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
-                //println "search String " + searchString
-                def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
-                for (e2 in res2) {
+                    def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
+                    //println "search String " + searchString
+                    def res2 = ldap.search('(objectClass=*)', searchString, SearchScope.SUB)
+                    for (e2 in res2) {
 //                    println "E2--> "+e2
-                    def ou2 = e2["ou"]
-                    def gn = e2["givenname"]
-                    if (gn) {
-                        def logn = e2["samaccountname"]
-                        def mail = e2["mail"]
-                        println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
-                        if (!mail) {
-                            println "------>no mail!! " + e2
-                            mail = e2["userprincipalname"]
-                            println "mail alterno " + mail
-                            if (!(mail =~ "@"))
-                                mail = null
-                            println "le cambio?? " + mail
-                        }
-                        if (!mail || mail == "") {
-                            noMail.add(["nombre": logn])
-                        }
+                        def ou2 = e2["ou"]
+                        def gn = e2["givenname"]
+                        if (gn) {
+                            def logn = e2["samaccountname"]
+                            def mail = e2["mail"]
+                            println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
+                            if (!mail) {
+                                println "------>no mail!! " + e2
+                                mail = e2["userprincipalname"]
+                                println "mail alterno " + mail
+                                if (!(mail =~ "@"))
+                                    mail = null
+                                println "le cambio?? " + mail
+                            }
+                            if (!mail || mail == "") {
+                                noMail.add(["nombre": logn])
+                            }
 
-                        def prsn = Persona.findByLogin(logn)
-                        if (!prsn) {
-                            // println "no encontro nuevo usuario"
-                            def nombres = WordUtils.capitalizeFully(e2["givenname"])
+                            def prsn = Persona.findByLogin(logn)
+                            if (!prsn) {
+                                // println "no encontro nuevo usuario"
+                                def nombres = WordUtils.capitalizeFully(e2["givenname"])
 
-                            def apellido = WordUtils.capitalizeFully(e2["sn"])
-                            if (!apellido) {
+                                def apellido = WordUtils.capitalizeFully(e2["sn"])
+                                if (!apellido) {
 //                                apellido = "sin apellido"
-                                noApellido.add(["nombre": logn])
-                            }
-                            if (!nombres) {
-                                noNombre.add(["nombre": logn])
-                            }
-
-                            prsn = new Persona()
-                            prsn.nombre = nombres
-                            prsn.apellido = apellido
-                            prsn.mail = mail
-                            prsn.login = logn
-                            prsn.password = "123".encodeAsMD5()
-                            prsn.connect = e2["dn"]
-                            def datos = e2["dn"].split(",")
-                            // println "datos  dep " + datos
-                            def dpto = null
-                            if (datos.size() > 1) {
-                                dpto = datos[1].split("=")
-                                dpto = Departamento.findByDescripcion(dpto[1])
-                            } else {
-                                dpto = null
-                            }
-
-                            if (!dpto)
-                                dpto = sinDep
-                            prsn.departamento = dpto
-                            if (!prsn.save(flush: true)) {
-
-                                // println "error save prns " + prsn.errors
-                            } else {
-                                nuevos.add(prsn)
-                                def sesn = new Sesn()
-                                sesn.perfil = Prfl.findByCodigo("USU")
-                                sesn.usuario = prsn
-                                sesn.save(flush: true)
-                            }
-                        } else {
-                            //println "encontro"
-                            if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento == null) {
-                                println "update"
-                                prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
-                                prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
-                                prsn.mail = mail
-                                if (prsn.connect != e2["dn"]) {
-                                    prsn.connect = e2["dn"]
-                                    prsn.activo = 0
+                                    noApellido.add(["nombre": logn])
                                 }
-                                def datos = e2["dn"].split(",")
-                                def dpto = null
-                                // println "datos "+datos
-                                if (datos.size() > 1) {
-                                    if (datos)
-                                        dpto = datos[1].split("=")
-                                    //println "dpto "+dpto
-                                    if (dpto.size() > 1)
-                                        dpto = Departamento.findByDescripcion(dpto[1])
-                                    println "departamento   " + dpto
+                                if (!nombres) {
+                                    noNombre.add(["nombre": logn])
+                                }
 
+                                prsn = new Persona()
+                                prsn.nombre = nombres
+                                prsn.apellido = apellido
+                                prsn.mail = mail
+                                prsn.login = logn
+                                prsn.password = "123".encodeAsMD5()
+                                prsn.connect = e2["dn"]
+                                def datos = e2["dn"].split(",")
+                                // println "datos  dep " + datos
+                                def dpto = null
+                                if (datos.size() > 1) {
+                                    dpto = datos[1].split("=")
+                                    dpto = Departamento.findByDescripcion(dpto[1])
                                 } else {
                                     dpto = null
                                 }
+
                                 if (!dpto)
                                     dpto = sinDep
+                                prsn.departamento = dpto
+                                if (!prsn.save(flush: true)) {
+
+                                    // println "error save prns " + prsn.errors
+                                } else {
+                                    nuevos.add(prsn)
+                                    def sesn = new Sesn()
+                                    sesn.perfil = Prfl.findByCodigo("USU")
+                                    sesn.usuario = prsn
+                                    sesn.save(flush: true)
+                                }
+                            } else {
+                                //println "encontro"
+                                if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento == null) {
+                                    println "update"
+                                    prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
+                                    prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
+                                    prsn.mail = mail
+                                    if (prsn.connect != e2["dn"]) {
+                                        prsn.connect = e2["dn"]
+                                        prsn.activo = 0
+                                    }
+                                    def datos = e2["dn"].split(",")
+                                    def dpto = null
+                                    // println "datos "+datos
+                                    if (datos.size() > 1) {
+                                        if (datos)
+                                            dpto = datos[1].split("=")
+                                        //println "dpto "+dpto
+                                        if (dpto.size() > 1)
+                                            dpto = Departamento.findByDescripcion(dpto[1])
+                                        println "departamento   " + dpto
+
+                                    } else {
+                                        dpto = null
+                                    }
+                                    if (!dpto)
+                                        dpto = sinDep
+                                    if (prsn.departamento != dpto) {
+                                        prsn.departamento = dpto
+                                        prsn.activo = 0
+                                    }
+
+
+                                    if (!prsn.apellido)
+                                        prsn.apellido = "N.A."
+                                    // println "update " + prsn.apellido
+                                    if (!prsn.save(flush: true)) {
+                                        println "error save prns " + prsn.errors
+                                    } else {
+                                        mod.add(prsn)
+                                    }
+                                }
+                            }
+                            users.add(prsn)
+                            cont++
+                        }
+                        if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
+                            // println "ou2--> " + ou2
+                            dep = Departamento.findByDescripcion(ou2)
+                            if (!dep) {
+                                // println "new Dep " + ou2
+                                def sec = new Date().format("ss")
+                                def datos = e2["dn"].split(",")
+                                // println "datos  dep " + datos
+                                def padre = null
+                                if (datos)
+                                    padre = datos[1].split("=")
+                                // println "padre " + padre[1] + "   " + datos[0]
+                                padre = Departamento.findByDescripcion(padre[1])
+                                // println "padre? " + padre
+                                if (!padre)
+                                    padre = n1
+                                dep = new Departamento()
+                                dep.descripcion = ou2
+//                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
+                                dep.codigo = "NUEVO-" + sec + secuencia++
+                                dep.activo = 1
+                                dep.padre = padre
+                                if (!dep.save(flush: true))
+                                    println "errores dep " + dep.errors
+
+                            } else {
+                                //println "encontro.. update padre"
+                                def datos = e2["dn"].split(",")
+                                // println "datos  dep " + datos
+                                def padre = null
+                                if (datos)
+                                    padre = datos[1].split("=")
+                                // println "padre " + padre[1] + "   " + datos[0]
+                                padre = Departamento.findByDescripcion(padre[1])
+                                if (!padre)
+                                    padre = n1
+
+                                if (dep.padre?.id != padre.id) {
+                                    //  println "nuevo padre para "+dep+"   "+padre
+                                    dep.padre = padre
+                                    dep.save(flush: true)
+                                }
+                            }
+                        }
+                    }
+
+                    //println "*********************************\n"
+                }
+                if (entry["givenname"]) {
+
+
+                    def logn = entry["samaccountname"]
+                    def mail = entry["mail"]
+                    if (!mail) {
+                        mail = entry["userprincipalname"]
+                        if (!(mail =~ "@"))
+                            mail = null
+                    }
+                    if (!mail || mail == "") {
+                        noMail.add(["nombre": logn])
+                    }
+                    //println "E1 " + entry["givenname"]+"  "+entry["samaccountname"]+"  "+mail
+//                println "buscando " + logn
+                    def prsn = Persona.findByLogin(logn)
+                    if (!prsn) {
+                        // println "no encontro nuevo usuario"
+                        def nombres = WordUtils.capitalizeFully(entry["givenname"])
+
+
+                        def apellido = WordUtils.capitalizeFully(entry["sn"])
+                        if (!apellido)
+                            apellido = "sin apellido"
+                        prsn = new Persona()
+                        prsn.nombre = nombres
+                        prsn.apellido = apellido
+                        prsn.mail = mail
+                        prsn.login = logn
+                        prsn.password = "123".encodeAsMD5()
+                        prsn.connect = entry["dn"]
+                        def datos = entry["dn"].split(",")
+                        // println "datos  dep " + datos
+                        def dpto = null
+                        if (datos)
+                            dpto = datos[1].split("=")
+                        // println "departamento " + dpto[1] + "   " + datos[1]
+                        dpto = Departamento.findByDescripcion(dpto[1])
+                        if (!dpto)
+                            dpto = sinDep
+                        prsn.departamento = dpto
+                        if (!prsn.save(flush: true)) {
+                            println "error save prns " + prsn.errors
+                        } else {
+                            nuevos.add(prsn)
+                            users.add(prsn)
+                            def sesn = new Sesn()
+                            sesn.perfil = Prfl.findByCodigo("USU")
+                            sesn.usuario = prsn
+                            sesn.save(flush: true)
+                        }
+                    } else {
+                        // println "encontro"
+                        if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != mail || prsn.connect != entry["dn"] || prsn.departamento == null) {
+                            // println "paso el if"
+                            if (entry["sn"] && entry["sn"] != "") {
+                                prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
+                                prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
+                                if (!prsn.apellido)
+                                    prsn.apellido = "N.A."
+                                prsn.mail = entry["mail"]
+                                if (prsn.connect != entry["dn"]) {
+                                    prsn.connect = entry["dn"]
+                                    prsn.activo = 0
+                                }
+                                def datos = entry["dn"].split(",")
+                                def dpto = null
+                                if (datos)
+                                    dpto = datos[1].split("=")
+                                // println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto[1]
+                                dpto = Departamento.findByDescripcion(dpto[1])
+                                // println "depto "+dpto
                                 if (prsn.departamento != dpto) {
                                     prsn.departamento = dpto
                                     prsn.activo = 0
                                 }
-
-
-                                if (!prsn.apellido)
-                                    prsn.apellido = "N.A."
                                 // println "update " + prsn.apellido
                                 if (!prsn.save(flush: true)) {
-                                    println "error save prns " + prsn.errors
+
+                                    println "error save prns update " + prsn.errors
                                 } else {
                                     mod.add(prsn)
                                 }
                             }
-                        }
-                        users.add(prsn)
-                        cont++
-                    }
-                    if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
-                        // println "ou2--> " + ou2
-                        dep = Departamento.findByDescripcion(ou2)
-                        if (!dep) {
-                            // println "new Dep " + ou2
-                            def sec = new Date().format("ss")
-                            def datos = e2["dn"].split(",")
-                            // println "datos  dep " + datos
-                            def padre = null
-                            if (datos)
-                                padre = datos[1].split("=")
-                            // println "padre " + padre[1] + "   " + datos[0]
-                            padre = Departamento.findByDescripcion(padre[1])
-                            // println "padre? " + padre
-                            if (!padre)
-                                padre = n1
-                            dep = new Departamento()
-                            dep.descripcion = ou2
-//                            dep.codigo = "COD-"+(new Date().format("mm-ss"))
-                            dep.codigo = "NUEVO-" + sec + secuencia++
-                            dep.activo = 1
-                            dep.padre = padre
-                            if (!dep.save(flush: true))
-                                println "errores dep " + dep.errors
 
-                        } else {
-                            //println "encontro.. update padre"
-                            def datos = e2["dn"].split(",")
-                            // println "datos  dep " + datos
-                            def padre = null
-                            if (datos)
-                                padre = datos[1].split("=")
-                            // println "padre " + padre[1] + "   " + datos[0]
-                            padre = Departamento.findByDescripcion(padre[1])
-                            if (!padre)
-                                padre = n1
-
-                            if (dep.padre?.id != padre.id) {
-                                //  println "nuevo padre para "+dep+"   "+padre
-                                dep.padre = padre
-                                dep.save(flush: true)
-                            }
                         }
                     }
+
+                    users.add(prsn)
+                    cont++
                 }
 
-                //println "*********************************\n"
+                println "-------------------------- \n"
             }
-            if (entry["givenname"]) {
+            println "--------------------"
+
+            println "hay " + cont + " usuarios"
+
+            return [users: users, reg: registrados, nuevos: nuevos, mod: mod, noNombre: noNombre, noMail: noMail, noApellido: noApellido]
 
 
-                def logn = entry["samaccountname"]
-                def mail = entry["mail"]
-                if (!mail) {
-                    mail = entry["userprincipalname"]
-                    if (!(mail =~ "@"))
-                        mail = null
-                }
-                if (!mail || mail == "") {
-                    noMail.add(["nombre": logn])
-                }
-                //println "E1 " + entry["givenname"]+"  "+entry["samaccountname"]+"  "+mail
-//                println "buscando " + logn
-                def prsn = Persona.findByLogin(logn)
-                if (!prsn) {
-                    // println "no encontro nuevo usuario"
-                    def nombres = WordUtils.capitalizeFully(entry["givenname"])
-
-
-                    def apellido = WordUtils.capitalizeFully(entry["sn"])
-                    if (!apellido)
-                        apellido = "sin apellido"
-                    prsn = new Persona()
-                    prsn.nombre = nombres
-                    prsn.apellido = apellido
-                    prsn.mail = mail
-                    prsn.login = logn
-                    prsn.password = "123".encodeAsMD5()
-                    prsn.connect = entry["dn"]
-                    def datos = entry["dn"].split(",")
-                    // println "datos  dep " + datos
-                    def dpto = null
-                    if (datos)
-                        dpto = datos[1].split("=")
-                    // println "departamento " + dpto[1] + "   " + datos[1]
-                    dpto = Departamento.findByDescripcion(dpto[1])
-                    if (!dpto)
-                        dpto = sinDep
-                    prsn.departamento = dpto
-                    if (!prsn.save(flush: true)) {
-                        println "error save prns " + prsn.errors
-                    } else {
-                        nuevos.add(prsn)
-                        users.add(prsn)
-                        def sesn = new Sesn()
-                        sesn.perfil = Prfl.findByCodigo("USU")
-                        sesn.usuario = prsn
-                        sesn.save(flush: true)
-                    }
-                } else {
-                    // println "encontro"
-                    if (prsn.nombre != WordUtils.capitalizeFully(entry["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(entry["sn"]) || prsn.mail != mail || prsn.connect != entry["dn"] || prsn.departamento == null) {
-                        // println "paso el if"
-                        if (entry["sn"] && entry["sn"] != "") {
-                            prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
-                            prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
-                            if (!prsn.apellido)
-                                prsn.apellido = "N.A."
-                            prsn.mail = entry["mail"]
-                            if (prsn.connect != entry["dn"]) {
-                                prsn.connect = entry["dn"]
-                                prsn.activo = 0
-                            }
-                            def datos = entry["dn"].split(",")
-                            def dpto = null
-                            if (datos)
-                                dpto = datos[1].split("=")
-                            // println "departamento " + dpto[0] + "   " + datos[1]+" "+dpto[1]
-                            dpto = Departamento.findByDescripcion(dpto[1])
-                            // println "depto "+dpto
-                            if (prsn.departamento != dpto) {
-                                prsn.departamento = dpto
-                                prsn.activo = 0
-                            }
-                            // println "update " + prsn.apellido
-                            if (!prsn.save(flush: true)) {
-
-                                println "error save prns update " + prsn.errors
-                            } else {
-                                mod.add(prsn)
-                            }
-                        }
-
-                    }
-                }
-
-                users.add(prsn)
-                cont++
-            }
-
-            println "-------------------------- \n"
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
-        println "--------------------"
-
-        println "hay " + cont + " usuarios"
-
-        return [users: users, reg: registrados, nuevos: nuevos, mod: mod, noNombre: noNombre, noMail: noMail, noApellido: noApellido]
-
-
-    } else {
-        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
-        response.sendError(403)
-    }
 
     }
 
