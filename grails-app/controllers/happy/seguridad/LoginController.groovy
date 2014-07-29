@@ -289,7 +289,12 @@ class LoginController {
             if (count > 0)
                 redirect(controller: 'alertas', action: 'list')
             else {//
-                redirect(controller: "inicio", action: "index")
+
+                if(session.usuario.getPuedeJefe()){
+                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id])
+                }else{
+                    redirect(controller: "inicio", action: "index")
+                }
             }
 //            }
         } else {

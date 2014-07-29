@@ -11,6 +11,7 @@ import happy.tramites.Tramite
 class RetrasadosWebController extends happy.seguridad.Shield {
 
     def reporteRetrasadosConsolidado() {
+        println("params retra " + params)
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
