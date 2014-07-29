@@ -16,18 +16,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
+        println "aaa "+paramsTramite.aQuienContesta.id
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
 
-            if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
-                if (padre.respuestas.size() > 0) {
-                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
-                            "'Agregar documento al trámite' de la bandeja de salida."
-                    redirect(action: "errores")
-                    return
-                }
-            }
+
         }
 
 //        println params
@@ -106,6 +100,23 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            }
         } else {
             tramite = new Tramite()
+            /*aqui validaciones de numero de hijos*/
+            if(paramsTramite.aQuienContesta.id){
+                if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
+                    //println "entro aqui"
+                    def pdt = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                    //println "dpt "+pdt
+                    def hijos = Tramite.findAllByAQuienContesta(pdt)
+                    if (hijos.size() > 0) {
+                        flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                                "'Agregar documento al trámite' de la bandeja de salida."
+                        redirect(controller: 'tramite', action: "errores")
+                        return
+                    }
+                }
+            }
+
+
         }
 //        println "ANTES DEL SAVE " + paramsTramite
 

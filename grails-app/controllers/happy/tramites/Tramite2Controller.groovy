@@ -973,15 +973,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     principal = principal.padre
                 }
             }
-
-            if (params.esRespuesta == 1 || params.esRespuesta == '1') {
-                if (padre.respuestas.size() > 0) {
-                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
-                            "'Agregar documento al trámite' de la bandeja de salida."
-                    redirect(controller: 'tramite', action: "errores")
-                    return
+            if(params.pdt){
+                if (params.esRespuesta == 1 || params.esRespuesta == '1') {
+                    def pdt = PersonaDocumentoTramite.get(params.pdt)
+                    def hijos = Tramite.findAllByAQuienContesta(pdt)
+                    if (hijos.size() > 0) {
+                        flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                                "'Agregar documento al trámite' de la bandeja de salida."
+                        redirect(controller: 'tramite', action: "errores")
+                        return
+                    }
                 }
             }
+
         }
         if (params.id) {
             tramite = Tramite.get(params.id)
@@ -1184,14 +1188,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
 
-            if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
-                if (padre.respuestas.size() > 0) {
-                    flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
-                            "'Agregar documento al trámite' de la bandeja de salida."
-                    redirect(controller: "tramite", action: "errores")
-                    return
-                }
-            }
+
         }
 
         def tipoTramite
@@ -1293,6 +1290,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            }
         } else {
             tramite = new Tramite()
+            if(paramsTramite.aQuienContesta.id){
+                if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
+                    //println "entro aqui"
+                    def pdt = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                    //println "dpt "+pdt
+                    def hijos = Tramite.findAllByAQuienContesta(pdt)
+                    if (hijos.size() > 0) {
+                        flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
+                                "'Agregar documento al trámite' de la bandeja de salida."
+                        redirect(controller: 'tramite', action: "errores")
+                        return
+                    }
+                }
+            }
         }
 //        println "ANTES DEL SAVE " + paramsTramite
 
