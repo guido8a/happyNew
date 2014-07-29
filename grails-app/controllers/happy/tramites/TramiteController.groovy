@@ -341,7 +341,7 @@ class TramiteController extends happy.seguridad.Shield {
             return
         }
 
-//        println("params " + params)
+        println("params " + params)
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
@@ -358,7 +358,7 @@ class TramiteController extends happy.seguridad.Shield {
                     principal = principal.padre
                 }
             }
-
+            println "respuestas: + ${padre.respuestas}"
             if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                 if (padre.respuestas.size() > 0) {
                     flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
