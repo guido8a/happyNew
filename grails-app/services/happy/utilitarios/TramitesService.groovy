@@ -53,9 +53,9 @@ class TramitesService {
             }
             if (autorizadoPor != "") {
                 obs += ", autorizado por " + autorizadoPor
-            } else {
+            } /*else {
                 obs += ", sin autorización"
-            }
+            }*/
             if (nuevaObservacion != "") {
                 obs += ": " + nuevaObservacion
             }

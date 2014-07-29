@@ -79,9 +79,11 @@ class DepartamentoController extends happy.seguridad.Shield {
                     pr.departamento = dptoNuevo
                     def tramite = pr.tramite
 //                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
-                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion+
-                            ". Redirigido por desactivación del departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
-                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObs)
+                    //AQUI NO SE PONE AUTORIZACION?
+                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion +
+                            ". Redirigido por desactivación del departamento."
+//                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObs)
+                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObs, "", session.usuario.login)
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                     } else {
