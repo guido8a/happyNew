@@ -113,6 +113,8 @@
                 var padreEstaArchivado = $padre.hasClass("archivado");
                 var padreEstaAnulado = $padre.hasClass("anulado");
 
+
+
 //        console.log(padreEstaAnulado);
 
                 var items = {};
@@ -215,7 +217,8 @@
                         %{--};--}%
                         %{--}--}%
                     }
-                    if (!tienePadre) {
+                    if (!tienePadre && ${session.usuario.getPuedeAsociar()}) {
+
                         items.agregarPadre = {
                             label  : "Asociar trámite",
                             icon   : "fa fa-gift",
@@ -231,8 +234,10 @@
                                 var $ul = $("<ul>");
                                 $ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +
                                              "a la fecha de envío del trámite al que se lo quiere asociar.</li>"));
-                                $ul.append($("<li>El creador del trámite "+tramiteCodigo+" debe ser el destinatario del " +
+                                $ul.append($("<li>El creador del trámite " + tramiteCodigo + " debe ser el destinatario del " +
                                              "trámite al que se lo quiere asociar.</li>"));
+                                $ul.append($("<li>El trámite " + tramiteCodigo + " debe estar recibido. </li>"));
+                                $ul.append($("<li>El trámite " + tramiteCodigo + " NO debe tener hijos. </li>"));
                                 $alert.append($ul);
                                 $container.append($alert);
 
@@ -289,27 +294,28 @@
                                     message : $container,
                                     buttons : {
                                         cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
+                                            label     : '<i class="fa fa-times"></i> Aceptar',
+                                            className : 'btn-default',
                                             callback  : function () {
-                                            }
-                                        },
-                                        asociar  : {
-                                            id        : 'btnAsociar',
-                                            label     : '<i class="fa fa-check"></i> Asociar',
-                                            className : "btn-success",
-                                            callback  : function () {
-
                                             }
                                         }
+//                                        asociar  : {
+//                                            id        : 'btnAsociar',
+//                                            label     : '<i class="fa fa-check"></i> Asociar',
+//                                            className : "btn-success",
+//                                            callback  : function () {
+//
+//                                            }
+//                                        }
                                     }
                                 });
                             }
                         };
                     }
-                    if (!esMio && !tienePadre) {
+                    if (!esMio && !tienePadre && ${session.usuario.getPuedeAsociar()}) {
                         items.agregarPadre.separator_before = true;
                     }
+
 //                    if (!tieneHijos && estaRecibido) {
                     %{--items.archivar = {--}%
                     %{--separator_before : true,--}%

@@ -41,39 +41,41 @@ class TramiteAdminController {
             msg += "</thead>"
             def algo = false
             tramites.each { tr ->
-                def cod = tr.codigo
-                def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
+                if (Tramite.countByPadre(tr) == 0) {
+                    def cod = tr.codigo
+                    def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
 
 //                println "tramite: " + tr
 //                println "duenioDep: " + duenioDep
 //                println "duenioPer: " + duenioPer
 
-                def personas = PersonaDocumentoTramite.withCriteria {
-                    eq("tramite", tr)
-                    or {
-                        eq("rolPersonaTramite", rolPara)
-                        eq("rolPersonaTramite", rolCc)
-                    }
-                    eq("estado", estadoRecibido)
-                    tramite {
+                    def personas = PersonaDocumentoTramite.withCriteria {
+                        eq("tramite", tr)
+                        or {
+                            eq("rolPersonaTramite", rolPara)
+                            eq("rolPersonaTramite", rolCc)
+                        }
+                        eq("estado", estadoRecibido)
+                        tramite {
 //                        lt("fechaCreacion", original.tramite.fechaCreacion)
-                        lt("fechaEnvio", original.tramite.fechaCreacion)
+                            lt("fechaEnvio", original.tramite.fechaCreacion)
+                        }
+                        if (duenioDep) {
+                            eq("departamento", duenioDep)
+                        } else if (duenioPer) {
+                            eq("persona", duenioPer)
+                        }
                     }
-                    if (duenioDep) {
-                        eq("departamento", duenioDep)
-                    } else if (duenioPer) {
-                        eq("persona", duenioPer)
+                    personas.each { cc ->
+                        algo = true
+                        msg += "<tr>"
+                        msg += "<td>${cod}</td>"
+                        msg += "<td>${de}</td>"
+                        msg += "<td>${cc.rolPersonaTramite.descripcion} ${cc.departamento ? cc.departamento.codigo : cc.persona.login}</td>"
+                        msg += "<td>${tramiteFechas(cc)}</td>"
+                        msg += "<td><a href='#' class='btn btn-success select' id='${cc.id}'><i class='fa fa-check'></i></a></td>"
+                        msg += "</tr>"
                     }
-                }
-                personas.each { cc ->
-                    algo = true
-                    msg += "<tr>"
-                    msg += "<td>${cod}</td>"
-                    msg += "<td>${de}</td>"
-                    msg += "<td>${cc.rolPersonaTramite.descripcion} ${cc.departamento ? cc.departamento.codigo : cc.persona.login}</td>"
-                    msg += "<td>${tramiteFechas(cc)}</td>"
-                    msg += "<td><a href='#' class='btn btn-success select' id='${cc.id}'><i class='fa fa-check'></i></a></td>"
-                    msg += "</tr>"
                 }
             }
             msg += "</table>"
@@ -533,6 +535,7 @@ class TramiteAdminController {
         }
 
 
+
         html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
         html += tramiteInfo(pdt)
         html += "\n"
@@ -698,10 +701,10 @@ class TramiteAdminController {
         def estados = [estadoArchivado]
 
 
-        if(estados.contains(persDocTram.estado)){
+        if (estados.contains(persDocTram.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede anular el trámite archivado"
 
-        }else{
+        } else {
             def funcion = { objeto ->
                 println "anulando " + objeto.id + " " + objeto.rolPersonaTramite.descripcion + "  " + objeto.tramite
                 def anulado = EstadoTramite.findByCodigo("E006")
@@ -748,7 +751,6 @@ class TramiteAdminController {
 
             render "OK"
         }
-
 
 
     }

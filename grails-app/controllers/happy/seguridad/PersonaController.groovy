@@ -1266,6 +1266,10 @@ class PersonaController extends happy.seguridad.Shield {
 //        def realPath = servletContext.getRealPath("/")
 //        def pathImages = realPath + "images/"
 //        def file = new File(pathImages+"/users")
+
+
+        if(session.usuario.puedeAdmin){
+
         def prmt = Parametros.findAll()[0]
 
 //        LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389', 'cn=AdminSAD SAD,OU=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,OU=DIRECCION DE GESTION DE TALENTO HUMANO Y ADMINISTRACION,ou=PREFECTURA,ou=GADPP,dc=pichincha,dc=local', 'SADmaster')
@@ -1575,6 +1579,12 @@ class PersonaController extends happy.seguridad.Shield {
         println "hay " + cont + " usuarios"
 
         return [users: users, reg: registrados, nuevos: nuevos, mod: mod, noNombre: noNombre, noMail: noMail, noApellido: noApellido]
+
+
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
 
     }
 

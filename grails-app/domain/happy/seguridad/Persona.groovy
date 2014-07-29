@@ -223,6 +223,10 @@ class Persona {
         return this.puedePermiso("P007")
     }
 
+    def getPuedeAsociar(){
+        return this.puedePermiso("P014")
+    }
+
 
     def getJefePersona() {
         def personas = Persona.withCriteria {

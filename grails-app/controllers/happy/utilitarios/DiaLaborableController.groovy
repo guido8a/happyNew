@@ -232,7 +232,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
                 params.anio = new Date().format('yyyy').toInteger()
             }
 
-            def anio = Anio.findAllByNumero(params.anio, [sort: "id"])
+            def anio = Anio.findAllByNumeroAndEstado(params.anio, 1, [sort: "id"])
             if (anio.size() > 1) {
                 flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
                 redirect(action: "error")
@@ -245,7 +245,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
             anio = anio.first()
 
             if (anio.estado == 0) {
-                flash.message = "El año ${params.anio} se emcuentra desactivado. Por favor póngase en contacto con el administrador."
+                flash.message = "El año ${params.anio} se encuentra desactivado. Por favor póngase en contacto con el administrador."
                 redirect(action: "error")
                 return
             }
@@ -256,13 +256,18 @@ class DiaLaborableController extends happy.seguridad.Shield {
             }
 
             if (dias.size() < 365) {
-                if (DiaLaborable.count() == 0) {
+                if (DiaLaborable.countByAnio(anio) == 0) {
+                    def js = "<script type='text/javascript'>"
+                    js += '$(".btnInit").click(function() {' +
+                            'openLoader("Inicializando ' + anio.numero + '");' +
+                            '});'
+                    js += "</script>"
                     flash.message = "<p>No se encontraron registros de días laborables. Para inicializar el calendario haga click en el botón Inicializar.</p>" +
                             "<p>" +
-                            g.link(action: "inicializar", class: "btn btn-success") {
+                            g.link(action: "inicializar", class: "btn btn-success btnInit", params: [anio: anio.numero]) {
                                 "<i class='fa fa-check'></i> Inicializar"
                             } +
-                            "</p>"
+                            "</p>" + js
                     redirect(action: "error")
                     return
                 } else {

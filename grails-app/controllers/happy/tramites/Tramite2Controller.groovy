@@ -935,9 +935,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             return
         }
 
-        def anio = Anio.findAllByNumero(new Date().format("yyyy"), [sort: "id"])
+        def anio = Anio.findAllByNumeroAndEstado(new Date().format("yyyy"),1, [sort: "id"])
+        println anio
         if (anio.size() == 0) {
-            flash.message = "El año ${new Date().format('yyyy')} no está creado, no puede crear trámites nuevos. Contáctese con el administrador."
+            flash.message = "El año ${new Date().format('yyyy')} no está activo, no puede crear trámites nuevos. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
             return
         } else if (anio.size() > 1) {

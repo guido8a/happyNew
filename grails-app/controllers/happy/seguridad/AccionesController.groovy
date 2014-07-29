@@ -143,6 +143,7 @@ class AccionesController extends happy.seguridad.Shield {
 
 
     def configurarAcciones = {
+        if (session.usuario.puedeAdmin) {
         def modulos = Modulo.list([sort: "orden"])
         def controladores = []
         def cn = dbConnectionService.getConnection()
@@ -156,9 +157,14 @@ class AccionesController extends happy.seguridad.Shield {
 //        println tp
 
         [modulos: modulos, controladores: controladores, tipo_tpac: tp, titulo: 'Men&uacute;s por M&oacute;dulo']
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
     }
 
     def procesos = {
+        if (session.usuario.puedeAdmin) {
         def modulos = Modulo.list([sort: "orden"])
         def controladores = []
         def cn = dbConnectionService.getConnection()
@@ -171,12 +177,21 @@ class AccionesController extends happy.seguridad.Shield {
         }
         render(view: "configurarAcciones", model: [modulos: modulos, controladores: controladores, tipo_tpac: tp,
                 titulo: 'Procesos por M&oacute;dulo'])
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
+        }
     }
 
 
     def perfiles = {
+        if (session.usuario.puedeAdmin) {
         def modulos = Modulo.list([sort: "orden"])
         [modulos: modulos]
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
     }
 
 
@@ -269,6 +284,7 @@ class AccionesController extends happy.seguridad.Shield {
     }
 
     def cargarAcciones = {
+        if (session.usuario.puedeAdmin) {
 //
 //        println "cargar acciones"
         def ac = []
@@ -312,6 +328,12 @@ class AccionesController extends happy.seguridad.Shield {
             t = null
         }
         render("Se han agregado ${i} acciones")
+
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
+        }
+
     }
 
     def poneSQL(tipo, mdlo) {

@@ -141,6 +141,7 @@ class ModuloController extends happy.seguridad.Shield  {
 
 
     def list() {
+        if (session.usuario.puedeAdmin) {
         params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
         def moduloInstanceList = Modulo.list(params)
         def moduloInstanceCount = Modulo.count()
@@ -149,6 +150,10 @@ class ModuloController extends happy.seguridad.Shield  {
         }
         moduloInstanceList = Modulo.list(params)
         return [moduloInstanceList: moduloInstanceList, moduloInstanceCount: moduloInstanceCount]
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
     } //list
     def show_ajax() {
         if (params.id) {

@@ -14,15 +14,20 @@ class PrflController extends happy.seguridad.Shield {
     }
 
     def modulos = {
+        if (session.usuario.puedeAdmin) {
 //       println "recibe de parametros: ${params.id}"
-        def prflInstance = Prfl.get(params.id)
-        if (!prflInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
-            redirect(action: "list")
-        } else {
-            def lstacmbo = lstaModulos(params.id)
+            def prflInstance = Prfl.get(params.id)
+            if (!prflInstance) {
+                flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
+                redirect(action: "list")
+            } else {
+                def lstacmbo = lstaModulos(params.id)
 //          println "modulos:----- " + lstacmbo
-            render(view: "modulos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+                render(view: "modulos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+            }
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
     }
 
@@ -152,7 +157,16 @@ class PrflController extends happy.seguridad.Shield {
 
     def borraMdlo = {
 //      println "------borrarMdlo: " + params
-        Modulo.get(params.id).delete()
+
+
+
+   if(session.usuario.puedeAdmin){
+       Modulo.get(params.id).delete()
+    } else {
+        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+        response.sendError(403)
+    }
+
 /*
       params.controllerName = controllerName
       params.actionName = "delete"
@@ -385,7 +399,7 @@ class PrflController extends happy.seguridad.Shield {
             tx2 = "insert into prus(prsn__id, perm__id, prusfcin, prsnasgn) select ${it}, perm__id, '${fcha}', " +
                     "${session.usuario.id} from prpf where prfl__id = ${prfl} and perm__id not in " +
                     "(select perm__id from prus where prsn__id = ${it} and prusfcfn is null);"
-            println "-- update: $tx2"
+//            println "-- update: $tx2"
             try {
                 cn.execute(tx2.toString())  /* añade permisos nuevos */
             }
@@ -412,14 +426,20 @@ class PrflController extends happy.seguridad.Shield {
     //---------------------------------
 
     def list() {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def prflInstanceList = Prfl.list(params)
-        def prflInstanceCount = Prfl.count()
-        if (prflInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
+        if (session.usuario.puedeAdmin) {
+            params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+            def prflInstanceList = Prfl.list(params)
+            def prflInstanceCount = Prfl.count()
+            if (prflInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+            }
+            prflInstanceList = Prfl.list(params)
+            return [prflInstanceList: prflInstanceList, prflInstanceCount: prflInstanceCount]
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
-        prflInstanceList = Prfl.list(params)
-        return [prflInstanceList: prflInstanceList, prflInstanceCount: prflInstanceCount]
+
     } //list
     def show_ajax() {
         if (params.id) {
@@ -493,23 +513,33 @@ class PrflController extends happy.seguridad.Shield {
     } //notFound para ajax
 
     def form = {
-        def title
-        def prflInstance
 
-        if (params.source == "create") {
-            prflInstance = new Prfl()
-            prflInstance.properties = params
-            title = g.message(code: "prfl.create", default: "Create Prfl")
-        } else if (params.source == "edit") {
-            prflInstance = Prfl.get(params.id)
-            if (!prflInstance) {
-                flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Prfl'), params.id])}"
-                redirect(action: "list")
+        if (session.usuario.puedeAdmin) {
+
+            def title
+            def prflInstance
+
+            if (params.source == "create") {
+                prflInstance = new Prfl()
+                prflInstance.properties = params
+                title = g.message(code: "prfl.create", default: "Create Prfl")
+            } else if (params.source == "edit") {
+                prflInstance = Prfl.get(params.id)
+                if (!prflInstance) {
+                    flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Prfl'), params.id])}"
+                    redirect(action: "list")
+                }
+                title = g.message(code: "prfl.edit", default: "Edit Prfl")
             }
-            title = g.message(code: "prfl.edit", default: "Edit Prfl")
+
+            return [prflInstance: prflInstance, title: title, source: params.source]
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
 
-        return [prflInstance: prflInstance, title: title, source: params.source]
+
+
     }
 
     def create = {
