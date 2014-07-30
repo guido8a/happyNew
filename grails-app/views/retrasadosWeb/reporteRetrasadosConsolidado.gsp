@@ -19,15 +19,24 @@
         <style type="text/css">
         .titulo {
             font-weight : bold;
+            color: #222;
         }
+        .titl {
+            font-family: 'open sans condensed';
+            font-weight: bold;
+            text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);
+            color: #0070B0;
+            margin-top: 20px;
+        }
+
 
         .numero {
             text-align : right;
         }
 
         .divChart {
-            height       : 450px;
-            width        : 450px;
+            height       : 360px;
+            width        : 360px;
             float        : left;
             margin-right : 10px;
         }
@@ -37,19 +46,20 @@
         }
 
         .chartContainer {
-            height : 450px;
+            height : 360px;
+        }
+
+        th {
+            border-color: #444;
+            background-color: #e4e4e8;
         }
         </style>
     </head>
 
     <body>
-
-        <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
-
-        <!-- botones -->
-        <h3>Trámites Retrasados y Sin Recepción</h3>
-
-        <div class="btn-toolbar toolbar">
+    <div style="margin-left:230px;"><h2 class="titl">S.A.D. Web - Trámites Retrasados y Sin Recepción</h2>
+    </div>
+        <div class="btn-toolbar toolbar" style="margin-left: 100px; margin-top: 20px;">
             %{--
                         <div class="btn-group">
                             <a href="#" class="btn btn-default" id="btnCerrar">
@@ -59,25 +69,25 @@
             --}%
 
             <div class="btn-group">
-                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
+                <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
                     <i class="fa fa-file-pdf-o"></i> Reporte detallado pdf
                 </g:link>
-                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
+                <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
                     <i class="fa fa-file-pdf-o"></i> Reporte resumido pdf
                 </g:link>
             </div>
 
             <div class="btn-group">
-                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
+                <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
                     <i class="fa fa-file-excel-o"></i> Reporte detallado Excel
                 </g:link>
-                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
+                <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
                     <i class="fa fa-file-excel-o"></i> Reporte resumido Excel
                 </g:link>
             </div>
         </div>
 
-        <div class="chartContainer hidden">
+        <div class="chartContainer hidden" style="margin-left: 130px;">
             <div id="chart_rz" class="divChart hidden"></div>
 
             <div id="chart_rs" class="divChart hidden"></div>
@@ -93,8 +103,8 @@
                 var data = [], arr = [];
                 var deps = $(".data.dep." + tipo).size();
 
-                var title = tipo == "rs" ? "Trámites sin recepción " : "Trámites retrasados";
-                title += (deps > 1 ? " por departamento" : "");
+                var title = tipo == "rs" ? "<p class='text-danger'><strong> Trámites sin recepción " : "<p class='text-warning'><strong>Trámites retrasados";
+                title += (deps > 1 ? " por departamento </strong></p>" : "");
 
                 $("tr").each(function () {
                     var $tr = $(this);

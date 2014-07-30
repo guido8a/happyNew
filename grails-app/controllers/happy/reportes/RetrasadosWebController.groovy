@@ -87,8 +87,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tr>"
         tabla += "<th width='10%'></th>"
         tabla += "<th width='66%'></th>"
-        tabla += "<th width='12%'>Retrasados</th>"
-        tabla += "<th width='12%'>Sin recepción</th>"
+        tabla += "<th width='12%' class='text-warning'>Retrasados</th>"
+        tabla += "<th width='12%' class='text-danger'>Sin recepción</th>"
         tabla += "</tr>"
         tabla += "</thead>"
 

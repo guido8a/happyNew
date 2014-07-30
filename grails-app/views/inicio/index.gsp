@@ -71,7 +71,8 @@
     <div style="text-align: center;"><h2 class="titl"
     >S.A.D. Web<br>
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA<br/>
-        Sistema de Administración de Documentos</h2></div>
+        Sistema de Administración de Documentos</h2>
+    </div>
 
     <div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 40px;height: 280px; ">
     %{--<div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; background: #40709a;">--}%
