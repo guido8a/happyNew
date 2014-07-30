@@ -1,31 +1,26 @@
 package happy.reportes
 
-import com.lowagie.text.HeaderFooter
-import com.lowagie.text.PageSize
-import com.lowagie.text.Phrase
-import com.lowagie.text.Rectangle
+
 import com.lowagie.text.pdf.DefaultFontMapper
 import com.lowagie.text.pdf.PdfContentByte
 import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfTemplate
-import happy.tramites.Departamento
+
 import happy.tramites.EstadoTramite
-import happy.tramites.PersonaDocumentoTramite
-import happy.tramites.RolPersonaTramite
-import happy.tramites.Tramite
+
 import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
-import com.lowagie.text.DocumentException
+
 import happy.seguridad.Persona
 import happy.tramites.Departamento;
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
-import org.apache.commons.lang.WordUtils
+
 import org.jfree.chart.ChartFactory
 import org.jfree.chart.JFreeChart
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator
@@ -998,7 +993,7 @@ class RetrasadosController {
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosPdfConsolidado(lvl, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr)
+                def res = imprimeHijosPdfConsolidado(lvl, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
                 total += res[0]
                 totalSr += res[1]
             }

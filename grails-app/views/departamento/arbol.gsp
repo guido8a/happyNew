@@ -599,7 +599,8 @@
                                     type    : "POST",
                                     url     : url,
                                     data    : {
-                                        id : itemId
+                                        id : itemId,
+                                        nuevo: $sel.val()
                                     },
                                     success : function (msg) {
                                         var parts = msg.split("_");
