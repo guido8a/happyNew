@@ -290,7 +290,7 @@ class LoginController {
                 redirect(controller: 'alertas', action: 'list')
             else {//
 
-                if(session.usuario.getPuedeJefe()){
+                if(Persona.get(session.usuario.id).jefe == 1){
                     redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id])
                 }else{
                     redirect(controller: "inicio", action: "index")
