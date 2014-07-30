@@ -9,15 +9,15 @@ import org.apache.commons.lang.WordUtils
 
 class Persona {
     Departamento departamento
-    String cedula
+//    String cedula
     String nombre
     String apellido
-    Date fechaNacimiento
+//    Date fechaNacimiento
     Date fechaInicio
     Date fechaFin
-    String sigla
-    String titulo
-    String cargo
+//    String sigla
+//    String titulo
+//    String cargo
     String mail
     String login
     String password
@@ -26,9 +26,9 @@ class Persona {
     Date fechaCambioPass
     String telefono
     int jefe
-    String celular
+//    String celular
     String foto
-    String codigo
+//    String codigo
     String connect
     String estado
     static hasMany = [perfiles: Sesn]
@@ -51,15 +51,15 @@ class Persona {
         columns {
             id column: 'prsn__id'
             departamento column: 'dpto__id'
-            cedula column: 'prsncdla'
+//            cedula column: 'prsncdla'
             nombre column: 'prsnnmbr'
             apellido column: 'prsnapll'
-            fechaNacimiento column: 'prsnfcna'
+//            fechaNacimiento column: 'prsnfcna'
             fechaInicio column: 'prsnfcin'
             fechaFin column: 'prsnfcfn'
-            sigla column: 'prsnsgla'
-            titulo column: 'prsntitl'
-            cargo column: 'prsncrgo'
+//            sigla column: 'prsnsgla'
+//            titulo column: 'prsntitl'
+//            cargo column: 'prsncrgo'
             mail column: 'prsnmail'
             login column: 'prsnlogn'
             password column: 'prsnpass'
@@ -68,24 +68,24 @@ class Persona {
             fechaCambioPass column: 'prsnfcps'
             telefono column: 'prsntelf'
             jefe column: 'prsnjefe'
-            celular column: 'prsntfcl'
+//            celular column: 'prsntfcl'
             foto column: 'prsnfoto'
-            codigo column: 'prsncdgo'
+//            codigo column: 'prsncdgo'
             connect column: 'prsncnec'
             estado column: 'prsnetdo'
         }
     }
     static constraints = {
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
-        cedula(maxSize: 10, nullable: true, unique: true, blank: true, attributes: [title: 'cedula'])
+//        cedula(maxSize: 10, nullable: true, unique: true, blank: true, attributes: [title: 'cedula'])
         nombre(maxSize: 31, blank: false, nullable: false, attributes: [title: 'nombre'])
         apellido(maxSize: 31, blank: false, nullable: false, attributes: [title: 'apellido'])
-        fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])
+//        fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])
         fechaInicio(blank: true, nullable: true, attributes: [title: 'fechaInicio'])
         fechaFin(blank: true, nullable: true, attributes: [title: 'fechaFin'])
-        sigla(maxSize: 4, blank: true, nullable: true, attributes: [title: 'sigla'])
-        titulo(maxSize: 4, blank: true, nullable: true, attributes: [title: 'titulo'])
-        cargo(maxSize: 127, blank: true, nullable: true, attributes: [title: 'cargo'])
+//        sigla(maxSize: 4, blank: true, nullable: true, attributes: [title: 'sigla'])
+//        titulo(maxSize: 4, blank: true, nullable: true, attributes: [title: 'titulo'])
+//        cargo(maxSize: 127, blank: true, nullable: true, attributes: [title: 'cargo'])
         mail(maxSize: 63, unique: true, blank: false, nullable: false, attributes: [title: 'mail'])
         login(size: 1..30, unique: true, blank: true, nullable: true, attributes: [title: 'login'])
         password(maxSize: 63, blank: true, nullable: true, attributes: [title: 'password'])
@@ -94,9 +94,9 @@ class Persona {
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
         telefono(size: 1..63, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
-        celular(size: 1..63, blank: true, nullable: true, attributes: [title: 'celular'])
+//        celular(size: 1..63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
-        codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
+//        codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
         connect(nullable: true, blank: true, size: 1..512)
         estado(nullable: true, blank: true, size: 1..1)
     }

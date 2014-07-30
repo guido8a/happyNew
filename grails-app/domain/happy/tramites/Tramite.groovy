@@ -33,7 +33,7 @@ class Tramite {
     Date fechaModificacion              //ultima modificacion realizada
     Date fechaRevision                  //ultima revision realizada --> estado cambiado a revisado
     Date fechaEnvio                     //ultimo envio realizado --> estado cambiado a enviado
-    Integer guia
+//    Integer guia
     PersonaDocumentoTramite aQuienContesta      //el per doc tram q contesto
 
     /* Para los tramites externos dex:
@@ -85,7 +85,7 @@ class Tramite {
             fechaRevision column: 'trmtfcrv'
             fechaEnvio column: 'trmtfcen'
             deDepartamento column: 'dpto__de'
-            guia column: 'trmtguia'
+//            guia column: 'trmtguia'
 
             aQuienContesta column: 'prtrcnts'
 
@@ -126,7 +126,7 @@ class Tramite {
         fechaModificacion(blank: true, nullable: true, attributes: [title: 'fechaModificacion'])
         fechaRevision(blank: true, nullable: true, attributes: [title: 'fechaRevision'])
         fechaEnvio(blank: true, nullable: true, attributes: [title: 'fechaEnvio'])
-        guia(blank: true, nullable: true, attributes: [title: 'guia'])
+//        guia(blank: true, nullable: true, attributes: [title: 'guia'])
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
         aQuienContesta(blank: true, nullable: true)
 
