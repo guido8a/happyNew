@@ -419,24 +419,27 @@
                                             label     : '<i class="fa fa-check"></i> Archivar',
                                             className : "btn-success",
                                             callback  : function () {
-
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    url     : '${createLink(controller:'tramite',action: 'archivar')}/' + idPxt,
-                                                    data    : {
-                                                        texto : $("#observacionArchivar").val()
-                                                    },
-                                                    success : function (msg) {
-                                                        openLoader();
-                                                        cargarBandeja();
-                                                        closeLoader();
-                                                        if (msg == 'ok') {
-                                                            log("Trámite archivado correctamente", 'success')
-                                                        } else if (msg == 'no') {
-                                                            log("Error al archivar el trámite", 'error')
+                                                var $txt = $("#aut");
+                                                if (validaAutorizacion($txt)) {
+                                                    $.ajax({
+                                                        type    : 'POST',
+                                                        url     : '${createLink(controller:'tramite',action: 'archivar')}/' + idPxt,
+                                                        data    : {
+                                                            texto : $("#observacionArchivar").val(),
+                                                            aut   : $txt.val()
+                                                        },
+                                                        success : function (msg) {
+                                                            openLoader();
+                                                            cargarBandeja();
+                                                            closeLoader();
+                                                            if (msg == 'ok') {
+                                                                log("Trámite archivado correctamente", 'success')
+                                                            } else if (msg == 'no') {
+                                                                log("Error al archivar el trámite", 'error')
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
                                         }
                                     }

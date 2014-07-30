@@ -926,6 +926,13 @@ class PersonaController extends happy.seguridad.Shield {
                 obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}"
                 def tramite = pr.tramite
 //                tramite.observaciones = (tramite.observaciones ?: "") + obs
+
+                def alerta = new Alerta()
+                alerta.mensaje = "entro a redireccionar tramite deprecated!!!!!!"
+                alerta.controlador = "personaController"
+                alerta.accion = "redireccionarTramites"
+                alerta.save(flush: true)
+
                 println "NO DEBERIA IMPRIMIR ESTO NUNCA"
                 tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obs)
 //                pr.observaciones = (pr.observaciones ?: "") + obs

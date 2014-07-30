@@ -16,7 +16,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
-        println "aaa "+paramsTramite.aQuienContesta.id
+        println "aaa " + paramsTramite.aQuienContesta.id
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
@@ -94,14 +94,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def aqc
         if (paramsTramite.id) {
             tramite = Tramite.get(paramsTramite.id)
-            aqc=tramite.aQuienContesta
+            aqc = tramite.aQuienContesta
 //            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
 //                tramite.tipoTramite = TipoTramite.findByCodigo("C")
 //            }
         } else {
             tramite = new Tramite()
             /*aqui validaciones de numero de hijos*/
-            if(paramsTramite.aQuienContesta.id){
+            if (paramsTramite.aQuienContesta.id) {
                 if (paramsTramite.esRespuesta == 1 || paramsTramite.esRespuesta == '1') {
                     //println "entro aqui"
                     def pdt = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
@@ -129,8 +129,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tramite.externo = '1'
         }
         tramite.departamento = tramite.de.departamento
-        if(tramite.aQuienContesta==null)
-            tramite.aQuienContesta=aqc
+        if (tramite.aQuienContesta == null)
+            tramite.aQuienContesta = aqc
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -170,10 +170,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (tramite.padre) {
                 tramite.padre.estado = "C"
                 tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
-                if(tramite.aQuienContesta==null)
-                    tramite.aQuienContesta=aqc
-                else{
-                    aqc=tramite.aQuienContesta
+                if (tramite.aQuienContesta == null)
+                    tramite.aQuienContesta = aqc
+                else {
+                    aqc = tramite.aQuienContesta
                 }
                 tramite.padre.save(flush: true)
                 if (tramite.padre.estadoTramiteExterno) {
@@ -351,8 +351,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 tramite.fechaEnvio = ahora
                 tramite.estadoTramite = estadoRecibido
-                if(tramite.aQuienContesta==null)
-                    tramite.aQuienContesta=aqc
+                if (tramite.aQuienContesta == null)
+                    tramite.aQuienContesta = aqc
                 if (tramite.save(flush: true)) {
 //                    def realPath = servletContext.getRealPath("/")
 //                    def mensaje = message(code: 'pathImages').toString();
@@ -678,19 +678,19 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        return [tramite: tramite]
 //    }
 
-    def verificarEstado(){
+    def verificarEstado() {
         //println "verifica estado "+params
         def tramite = Tramite.get(params.id)
         def para = tramite.para
         //println "para "+para+"  "+para?.estado?.codigo
-        if(!para){
+        if (!para) {
             render "ok"
             return
-        }else{
-            if(para.estado?.codigo!="E006"){
+        } else {
+            if (para.estado?.codigo != "E006") {
                 render "ok"
                 return
-            }else{
+            } else {
                 render "error"
                 return
             }
@@ -699,7 +699,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-       // println "recibir tramite " + params
+        // println "recibir tramite " + params
         if (request.getMethod() == "POST") {
             def persona = Persona.get(session.usuario.id)
 
@@ -708,7 +708,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-           // println tramite.estadoTramite.descripcion
+            // println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
                 render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return
@@ -885,8 +885,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
 
 //        tramite.observaciones = (tramite.observaciones ? tramite.observaciones + "; " : "") + persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
-        def nuevaObsTram = persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
-        tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObsTram)
+//        def nuevaObsTram = persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
+//        tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObsTram)
+        tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obs, "", session.usuario.login)
 //        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
 
         if (tramite.save(flush: true)) {

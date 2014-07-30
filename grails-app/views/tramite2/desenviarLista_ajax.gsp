@@ -78,6 +78,12 @@ td {
     </table>
 </div>
 
+%{--<div class="row">--}%
+    %{--<div class="col-md-3">Autorizado por</div>--}%
+
+    %{--<div class="col-md-9"><g:textField name="aut" class="form-control"/></div>--}%
+%{--</div>--}%
+
 <script type="text/javascript">
     $(function () {
         $(".chkAll").click(function () {

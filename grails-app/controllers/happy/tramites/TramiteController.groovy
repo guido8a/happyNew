@@ -359,7 +359,7 @@ class TramiteController extends happy.seguridad.Shield {
                 }
             }
 
-            if(params.pdt){
+            if (params.pdt) {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
                     def hijos = Tramite.findAllByAQuienContesta(pdt)
@@ -1183,6 +1183,13 @@ class TramiteController extends happy.seguridad.Shield {
     def guardarObservacion() {
 
         def tramite = Tramite.get(params.id)
+        println "NO DEBERIA IMPRIMIR ESTO NUNCA"
+
+        def alerta = new Alerta()
+        alerta.mensaje = "entro a guardar observacion deprecated!!!!!!"
+        alerta.controlador = "tramiteController"
+        alerta.accion = "guardarObservacion"
+        alerta.save(flush: true)
         tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, params.texto)
 //        tramite.observaciones = params.texto
 
@@ -1606,17 +1613,42 @@ class TramiteController extends happy.seguridad.Shield {
         def estadoTramite = EstadoTramite.findByCodigo('E005')
         pdt.estado = estadoTramite
         pdt.fechaArchivo = new Date();
-        def nuevaObs = " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
+//        def nuevaObs = " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
 //        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
-        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
+//        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
+
+        def nuevaObs = "Trámite archivado"
+        def obs = ""
+        if (params.texto.trim() != "") {
+            obs += ", " + params.texto
+        }
+        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+
         if (pdt.rolPersonaTramite.codigo == "R001") {
 //            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
-            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
+//            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
+            nuevaObs = "Trámite PARA "
+            if (pdt.departamento) {
+                nuevaObs += "el dpto. ${pdt.departamento.codigo}"
+            } else if (pdt.persona) {
+                nuevaObs += "el usuario ${pdt.persona.login}"
+            }
+            nuevaObs += " archivado"
+            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
             pdt.tramite.save()
         } else {
-            def nuevaObs2 = " COPIA archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
-            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
+//            def nuevaObs2 = " COPIA archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
+//            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
 //            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
+//            pdt.tramite.save()
+            nuevaObs = "COPIA para "
+            if (pdt.departamento) {
+                nuevaObs += "el dpto. ${pdt.departamento.codigo}"
+            } else if (pdt.persona) {
+                nuevaObs += "el usuario ${pdt.persona.login}"
+            }
+            nuevaObs += " archivado"
+            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
             pdt.tramite.save()
         }
         if (!pdt.save(flush: true)) {
@@ -1642,6 +1674,13 @@ class TramiteController extends happy.seguridad.Shield {
         observacion.tramite = tramite
         observacion.fecha = new Date()
 //        observacion.observaciones = params.texto
+        println "NO DEBERIA IMPRIMIR ESTO NUNCA"
+
+        def alerta = new Alerta()
+        alerta.mensaje = "entro a anular deprecated!!!!!!"
+        alerta.controlador = "tramiteController"
+        alerta.accion = "anular"
+        alerta.save(flush: true)
         observacion.observaciones = tramitesService.modificaObservaciones(observacion.observaciones, params.texto + " (${new Date().format('dd-MM-yyyy HH:mm')})")
         observacion.tipo = 'anular'
         observacion.save(flush: true)

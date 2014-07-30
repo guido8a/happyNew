@@ -35,10 +35,10 @@ class TramitesService {
      * @return : String      la observacion lista para ser insertada en el objeto
      */
     String makeObservaciones(String observacionOriginal, String nuevaObservacion, String autorizadoPor, String usuario) {
-        println "observacion original: " + observacionOriginal
-        println "observacion nueva: " + nuevaObservacion
-        println "autorizado: " + autorizadoPor
-        println "usuario: " + usuario
+//        println "observacion original: " + observacionOriginal
+//        println "observacion nueva: " + nuevaObservacion
+//        println "autorizado: " + autorizadoPor
+//        println "usuario: " + usuario
 
         observacionOriginal = observacionOriginal ? observacionOriginal.trim() : ""
         nuevaObservacion = nuevaObservacion ? nuevaObservacion.trim() : ""
