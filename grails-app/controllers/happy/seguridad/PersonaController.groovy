@@ -62,12 +62,12 @@ class PersonaController extends happy.seguridad.Shield {
             and {
                 if (prms.search) {
                     or {
-                        ilike("cedula", "%" + prms.search + "%")
+//                        ilike("cedula", "%" + prms.search + "%")
                         ilike("nombre", "%" + prms.search + "%")
                         ilike("apellido", "%" + prms.search + "%")
-                        ilike("cargo", "%" + prms.search + "%")
+//                        ilike("cargo", "%" + prms.search + "%")
                         ilike("login", "%" + prms.search + "%")
-                        ilike("codigo", "%" + prms.search + "%")
+//                        ilike("codigo", "%" + prms.search + "%")
                         departamento {
                             or {
                                 ilike("descripcion", "%" + prms.search + "%")
@@ -1043,22 +1043,22 @@ class PersonaController extends happy.seguridad.Shield {
         return [personaInstance: personaInstance]
     }
 
-    def validarCedula_ajax() {
-        params.cedula = params.cedula.toString().trim()
-        if (params.id) {
-            def prsn = Persona.get(params.id)
-            if (prsn.cedula == params.cedula) {
-                render true
-                return
-            } else {
-                render Persona.countByCedula(params.cedula) == 0
-                return
-            }
-        } else {
-            render Persona.countByCedula(params.cedula) == 0
-            return
-        }
-    }
+//    def validarCedula_ajax() {
+//        params.cedula = params.cedula.toString().trim()
+//        if (params.id) {
+//            def prsn = Persona.get(params.id)
+//            if (prsn.cedula == params.cedula) {
+//                render true
+//                return
+//            } else {
+//                render Persona.countByCedula(params.cedula) == 0
+//                return
+//            }
+//        } else {
+//            render Persona.countByCedula(params.cedula) == 0
+//            return
+//        }
+//    }
 
     def validarMail_ajax() {
         params.mail = params.mail.toString().trim()
@@ -1166,11 +1166,11 @@ class PersonaController extends happy.seguridad.Shield {
 //                i++
 //            }
 
-            params.password = params.cedula.toString().encodeAsMD5()
+//            params.password = params.cedula.toString().encodeAsMD5()
             params.activo = 0
 //            params.fechaCambioPass = new Date() + 30
             params.jefe = 0
-            params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
+//            params.codigo = Departamento.get(params.departamento.id).codigo + "_" + params.login
         } //create
         personaInstance.properties = params
 

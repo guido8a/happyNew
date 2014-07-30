@@ -19,13 +19,15 @@ class InicioController extends happy.seguridad.Shield {
 
             def usu = Persona.get(session.usuario?.id)
 //        println "get tri " +usu.departamento.getTriangulos()
-            if (usu) {
-                def now = new Date().clearTime()
-                if ((usu.password == usu.cedula.encodeAsMD5()) /*|| usu.fechaCambioPass <= now*/) {
-                    redirect(controller: "login", action: "cambiarPass")
-                    return
-                }
-            }
+
+//            if (usu) {
+//                def now = new Date().clearTime()
+//                if ((usu.password == usu.cedula.encodeAsMD5()) /*|| usu.fechaCambioPass <= now*/) {
+//                    redirect(controller: "login", action: "cambiarPass")
+//                    return
+//                }
+//            }
+
             return  [prms: prms]
         }
 
