@@ -22,7 +22,7 @@ class Persona {
     String login
     String password
     int activo
-    String autorizacion
+//    String autorizacion
     Date fechaCambioPass
     String telefono
     int jefe
@@ -64,7 +64,7 @@ class Persona {
             login column: 'prsnlogn'
             password column: 'prsnpass'
             activo column: 'prsnactv'
-            autorizacion column: 'prsnatrz'
+//            autorizacion column: 'prsnatrz'
             fechaCambioPass column: 'prsnfcps'
             telefono column: 'prsntelf'
             jefe column: 'prsnjefe'
@@ -90,7 +90,7 @@ class Persona {
         login(size: 1..30, unique: true, blank: true, nullable: true, attributes: [title: 'login'])
         password(maxSize: 63, blank: true, nullable: true, attributes: [title: 'password'])
         activo(blank: false, attributes: [title: 'activo'])
-        autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
+//        autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
         telefono(size: 1..63, blank: true, nullable: true, attributes: [title: 'telefono'])
         jefe(blank: false, attributes: [title: 'jefe'])
