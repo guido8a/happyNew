@@ -219,7 +219,16 @@ class LoginController {
                         if (count > 0)
                             redirect(controller: 'alertas', action: 'list')
                         else {//
-                            redirect(controller: "inicio", action: "index")
+                            if(session.usuario.getPuedeJefe()){
+                                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id],inicio:"1")
+                            }else{
+                                if(session.usuario.getPuedeDirector()){
+                                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
+                                }else{
+                                    redirect(controller: "inicio", action: "index")
+                                }
+
+                            }
                         }
 //                    redirect(controller: cn, action: an)
                         return
@@ -289,12 +298,17 @@ class LoginController {
             if (count > 0)
                 redirect(controller: 'alertas', action: 'list')
             else {//
-
-                if(Persona.get(session.usuario.id).jefe == 1){
-                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id])
-                }else{
-                    redirect(controller: "inicio", action: "index")
-                }
+                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1",dir:"1"])
+//                if(session.usuario.getPuedeDirector()){
+//                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1",dir:"1"])
+//                }else{
+//                    if(session.usuario.getPuedeJefe()){
+//                        redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
+//                    }else{
+//                        redirect(controller: "inicio", action: "index")
+//                    }
+//
+//                }
             }
 //            }
         } else {

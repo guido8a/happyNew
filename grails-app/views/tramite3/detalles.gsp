@@ -34,7 +34,7 @@
             </div>
 
             <div class="col-xs-6">
-                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
+                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
                     %{--${pdt.estado.descripcion}${pdt.id}${pdt.estado?.codigo}--}%
                     <g:set var="fecha" value=""></g:set>
                     <g:set var="estado" value=""></g:set>
@@ -150,7 +150,7 @@
             </div>
 
             <div class="col-xs-6">
-                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo)}" var="pdt" status="j">
+                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
                 %{--${pdt.estado.descripcion}${pdt.id}${pdt.estado?.codigo}--}%
                     <g:set var="fecha" value=""></g:set>
                     <g:set var="estado" value=""></g:set>

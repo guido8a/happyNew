@@ -10,8 +10,273 @@ import happy.tramites.Tramite
 
 class RetrasadosWebController extends happy.seguridad.Shield {
 
+
+    def reporteRetrasadosConsolidadoDir(){
+        def datosGrafico = [:]
+        def estadoR = EstadoTramite.findByCodigo("E004")
+        def estadoE = EstadoTramite.findByCodigo("E003")
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def now = new Date()
+
+        def datos = [:]
+        def usuario = null
+        def deps = []
+        def puedeVer = []
+        def extraPersona = "and "
+
+        def depStr=""
+        if (params.dpto) {
+            def departamento = Departamento.get(params.dpto)
+            def padre
+            padre = departamento.padre
+            while (padre) {
+                deps.add(padre)
+                padre = padre.padre
+            }
+            deps.add(departamento)
+            puedeVer.add(departamento)
+            def hi = Departamento.findAllByPadre(padre)
+            while (hi.size() > 0) {
+                puedeVer += hi
+                hi = Departamento.findAllByPadreInList(hi)
+            }
+        }
+//        println "deps "+deps+"  puede ver  "+puedeVer
+        def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
+                " fechaEnvio is not null " +
+                "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
+                "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+
+        if (pdt) {
+            pdt.each { pd ->
+                if(pd.tramite.externo!="1" || pd.tramite==null){
+                    def resp = Tramite.findAllByAQuienContesta(pd)
+                    if (resp.size() == 0) {
+                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
+                            datos = jerarquia(datos, pd)
+                    }
+                }
+            }
+        }
+
+        def total = 0
+        def totalSr = 0
+        def hijos = datos["hijos"]
+
+        def tabla = "<table class='table table-bordered table-condensed table-hover'>"
+        tabla += "<thead>"
+        tabla += "<tr>"
+        tabla += "<th width='10%'></th>"
+        tabla += "<th width='66%'></th>"
+        tabla += "<th width='12%' class='text-warning'>Retrasados</th>"
+        tabla += "<th width='12%' class='text-danger'>Sin recepción</th>"
+        tabla += "</tr>"
+        tabla += "</thead>"
+
+        tabla += "<tbody>"
+
+        hijos.each { lvl ->
+            println "hijo "+lvl["objeto"]+"  "+lvl["retrasados"]+"  "+lvl["rezagados"]
+            if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                println "primer if"
+//                if (lvl["rezagados"]>0 || lvl["retrasados"]>0) {
+                println "segundo if"
+                datosGrafico.put(lvl["objeto"].toString(), [:])
+                def dg = datosGrafico[lvl["objeto"].toString()]
+                dg.put("rezagados", [:])
+                dg.put("retrasados", [:])
+                dg.put("totalRz", 0)
+                dg.put("totalRs", 0)
+                dg.put("objeto", lvl["objeto"])
+
+                def totalNode = 0
+                def totalNodeSr = 0
+
+                def usuarios = ""
+                def totales = ""
+                def totalesSr = ""
+                def datosLuz = []
+
+                if (lvl["tramites"].size() > 0) {
+                    lvl["triangulos"].each { t ->
+                        usuarios += "${t} (Oficina)<br/>"
+                        totales += "${lvl["rezagados"]} <br/>"
+                        totalesSr += "" + lvl["retrasados"] + " <br/>"
+                        datosLuz.add(["${t} (Oficina)", "${lvl.rezagados}", "${lvl.retrasados}", "Oficina"])
+                        if (totalNode == 0) {
+                            totalNode += lvl["rezagados"].toInteger()
+                            dg["rezagados"].put("Oficina", lvl["rezagados"].toInteger())
+                        }
+                        if (totalNodeSr == 0) {
+                            totalNodeSr += lvl["retrasados"].toInteger()
+                            dg["retrasados"].put("Oficina", lvl["retrasados"].toInteger())
+                        }
+                    }
+                }
+                lvl["personas"].each { p ->
+                    usuarios += "${p['objeto']} <br/>"
+                    totales += "${p["rezagados"]} <br/>"
+                    totalesSr += "" + p["retrasados"] + " <br/>"
+                    dg["rezagados"].put(p['objeto'], p["rezagados"].toInteger())
+                    datosLuz.add(["${p.objeto}", "${p.rezagados}", "${p.retrasados}", "${p.objeto.login}"])
+                    dg["retrasados"].put(p['objeto'], p["retrasados"].toInteger())
+                    totalNode += p["rezagados"].toInteger()
+                    totalNodeSr += p["retrasados"].toInteger()
+                }
+
+                tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
+                tabla += "<td class='titulo'>Dirección</td>"
+                tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
+                tabla += "<td class='titulo numero'>${lvl["rezagados"]}</td>"
+                tabla += "<td class='titulo numero'>${lvl["retrasados"]}</td>"
+                tabla += "</tr>"
+
+//                    tabla += "<tr>"
+//                    tabla += "<td class='titulo'>Usuario</td>"
+//                    tabla += "<td>${usuarios}</td>"
+//                    tabla += "<td class='numero'>${totales}</td>"
+//                    tabla += "<td class='numero'>${totalesSr}</td>"
+//                    tabla += "</tr>"
+//                    tabla += "<tr>"
+//                    tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
+//                    tabla += "</tr>"
+//                    datosLuz.each { d ->
+//                        tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
+//                        tabla += "<td>${d[0]}</td>"
+//                        tabla += "<td class='numero'>${d[1]}</td>"
+//                        tabla += "<td class='numero'>${d[2]}</td>"
+//                        tabla += "</tr>"
+//                    }
+
+                dg["totalRz"] = totalNode
+                dg["totalRs"] = totalNodeSr
+
+                total += totalNode
+                totalSr += totalNodeSr
+//                }
+            }
+            def res = imprimeHijosPdfConsolidadoDir(lvl, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
+            total += res[0]
+            totalSr += res[1]
+            tabla += res[2]
+        }
+        tabla += "</tbody>"
+
+        tabla += "<tfoot>"
+        tabla += "<tr>"
+        tabla += "<th colspan='2' class='titulo'>TOTAL</th>"
+        tabla += "<th class='titulo numero'>${total}</th>"
+        tabla += "<th class='titulo numero'>${totalSr}</th>"
+        tabla += "</tr>"
+        tabla += "</tfoot>"
+
+        tabla += "</table>"
+
+        params.detalle = 1
+        def inicio = false
+        if(params.inicio)
+            inicio=true
+
+        print("inicio "+inicio+" "+params)
+        return [tabla: tabla, params: params,inicio:inicio]
+    }
+
+    def imprimeHijosPdfConsolidadoDir(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico){
+        def tabla = ""
+        total = 0
+        totalSr = 0
+        def datos = arr["hijos"]
+        datos.each { lvl ->
+            if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                datosGrafico.put(lvl["objeto"].toString(), [:])
+                def dg = datosGrafico[lvl["objeto"].toString()]
+                dg.put("rezagados", [:])
+                dg.put("retrasados", [:])
+                dg.put("totalRz", 0)
+                dg.put("totalRs", 0)
+                dg.put("objeto", lvl["objeto"])
+
+                def totalNode = 0
+                def totalNodeSr = 0
+
+                def usuarios = ""
+                def totales = ""
+                def totalesSr = ""
+                def datosLuz = []
+
+                if (lvl["tramites"].size() > 0) {
+                    lvl["triangulos"].each { t ->
+                        usuarios += "${t} (Oficina)<br/>"
+                        totales += "${lvl["rezagados"]} <br/>"
+                        totalesSr += "" + lvl["retrasados"] + " <br/>"
+                        datosLuz.add(["${t} (Oficina)", "${lvl.rezagados}", "${lvl.retrasados}", "Oficina"])
+                        if (totalNode == 0) {
+                            totalNode += lvl["rezagados"].toInteger()
+                            dg["rezagados"].put("Oficina", lvl["rezagados"].toInteger())
+                        }
+                        if (totalNodeSr == 0) {
+                            totalNodeSr += lvl["retrasados"].toInteger()
+                            dg["retrasados"].put("Oficina", lvl["retrasados"].toInteger())
+                        }
+                    }
+                }
+                lvl["personas"].each { p ->
+                    usuarios += "${p['objeto']} <br/>"
+                    totales += "${p["rezagados"]} <br/>"
+                    totalesSr += "" + p["retrasados"] + " <br/>"
+                    datosLuz.add(["${p.objeto}", "${p.rezagados}", "${p.retrasados}", "${p.objeto.login}"])
+                    dg["rezagados"].put(p['objeto'], p["rezagados"].toInteger())
+                    dg["retrasados"].put(p['objeto'], p["retrasados"].toInteger())
+                    totalNode += p["rezagados"].toInteger()
+                    totalNodeSr += p["retrasados"].toInteger()
+                }
+
+                if(totalNode>0 || totalNodeSr>0){
+                    tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
+                    tabla += "<td class='titulo'>Departamento</td>"
+                    tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
+                    tabla += "<td class='titulo numero'>${totalNode}</td>"
+                    tabla += "<td class='titulo numero'>${totalNodeSr}</td>"
+                    tabla += "</tr>"
+                }
+
+
+//                tabla += "<tr>"
+//                tabla += "<td class='titulo'>Usuario</td>"
+//                tabla += "<td>${usuarios}</td>"
+//                tabla += "<td class='numero'>${totales}</td>"
+//                tabla += "<td class='numero'>${totalesSr}</td>"
+//                tabla += "</tr>"
+//                tabla += "<tr>"
+//                tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
+//                tabla += "</tr>"
+//                datosLuz.each { d ->
+//                    tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
+//                    tabla += "<td>${d[0]}</td>"
+//                    tabla += "<td class='numero'>${d[1]}</td>"
+//                    tabla += "<td class='numero'>${d[2]}</td>"
+//                    tabla += "</tr>"
+//                }
+
+                total += totalNode
+                totalSr += totalNodeSr
+//                println "total "+total+"   "+totalNode
+            }
+
+            if (lvl["hijos"].size() > 0) {
+                def res = imprimeHijosPdfConsolidadoDir(lvl, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
+                total += res[0]
+                totalSr += res[1]
+                tabla += res[2]
+            }
+//            println "total des dentro "+total+"   "
+        }
+        return [total, totalSr, tabla]
+    }
+
     def reporteRetrasadosConsolidado() {
-        println("params retra " + params)
+        //println("params retra " + params)
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -46,12 +311,16 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def depStr=""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            //depStr="and departamento = ${departamento.id}"
-            def padre = departamento.padre
+            def padre
+
+
+            padre = departamento.padre
             while (padre) {
                 deps.add(padre)
                 padre = padre.padre
             }
+
+
             deps.add(departamento)
             puedeVer.add(departamento)
             def hi = Departamento.findAllByPadre(departamento)
@@ -95,9 +364,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tbody>"
 
         hijos.each { lvl ->
+            println "lvl "+lvl["objeto"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (lvl["tramites"].size() > 0 || lvl["personas"].size() > 0) {
-
+                      println "paso ambos if"
                     datosGrafico.put(lvl["objeto"].toString(), [:])
                     def dg = datosGrafico[lvl["objeto"].toString()]
                     dg.put("rezagados", [:])
@@ -190,8 +460,12 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "</table>"
 
         params.detalle = 1
+        def inicio = false
+        if(params.inicio)
+            inicio=true
 
-        return [tabla: tabla, params: params]
+        print("inicio "+inicio+" "+params)
+        return [tabla: tabla, params: params,inicio:inicio]
     }
 
     def imprimeHijosPdfConsolidado(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
@@ -201,6 +475,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                println "hijos "+lvl["objeto"]
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -245,7 +520,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 }
 
                 tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
-                tabla += "<td class='titulo'>Dirección</td>"
+                tabla += "<td class='titulo'>Departamento</td>"
                 tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${totalNode}</td>"
                 tabla += "<td class='titulo numero'>${totalNodeSr}</td>"
@@ -257,9 +532,11 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 //                tabla += "<td class='numero'>${totales}</td>"
 //                tabla += "<td class='numero'>${totalesSr}</td>"
 //                tabla += "</tr>"
+
                 tabla += "<tr>"
                 tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                 tabla += "</tr>"
+                println "imprime data"
                 datosLuz.each { d ->
                     tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
                     tabla += "<td>${d[0]}</td>"
@@ -274,7 +551,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr)
+                println "tiene hijos ? "
+                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
                 total += res[0]
                 totalSr += res[1]
                 tabla += res[2]
@@ -285,8 +563,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
     }
 
     def jerarquia(arr, pdt) {
-//        println "______________jerarquia______________"
-//        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
+        //println "______________jerarquia______________"
+        //println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona+"  - "+pdt.persona?.departamento
         def datos = arr
         def dep
         if (pdt.departamento) {
@@ -318,12 +596,13 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             datos.put("rezagados", 0)
         }
         lvl = datos["hijos"]
+        def padreData = datos
         def cod = ""
         def actual = null
 //        println "padres each "+padres
         padres.each { p ->
 //            println "p.each "+p+"  nivel  "+nivel
-//            println "buscando........"
+           // println "buscando........ "+p
             lvl.each { l ->
 //                println "\t lvl each --> "+l
                 if (l["id"] == p.id.toString()) {
@@ -334,6 +613,13 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 //            println "actual --> "+actual
             if (actual) {
 //                println "p--> "+p
+
+                if (!pdt.fechaRecepcion) {
+                    padreData["retrasados"]++
+                }else{
+                    padreData["rezagados"]++
+                }
+              //  println "padre actual!!!!! "+padreData["objeto"]+" !!!-----!!!!   "+padreData["retrasados"]+"  "+padreData["rezagados"]
                 if (pdt.departamento) {
 
                     if (actual["id"] == pdt.departamento.id.toString()) {
@@ -380,9 +666,19 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                         }
                     }
                 }
+                padreData=actual
+                //println "nuevo padre actual "+padreData["objeto"]+" --- "+padreData["retrasados"]+"  "+padreData["rezagados"]
                 lvl = actual["hijos"]
             } else {
 //                println "no actual add lvl "+lvl
+
+                if (!pdt.fechaRecepcion) {
+                    padreData["retrasados"]++
+                } else {
+                    padreData["rezagados"]++
+                }
+
+               // println "padre no actual "+padreData["objeto"]+" !!!-----!!!!  "+padreData["retrasados"]+"  "+padreData["rezagados"]
                 def temp = [:]
                 temp.put("id", p.id.toString())
                 temp.put("objeto", p)
@@ -392,15 +688,21 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 temp.put("triangulos", p.getTriangulos())
                 temp.put("retrasados", 0)
                 temp.put("rezagados", 0)
+
                 def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
                 if (depto == p) {
+
+
                     if (pdt.departamento) {
                         temp["tramites"].add(pdt)
                         temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
-                        if (!pdt.fechaRecepcion)
+                        if (!pdt.fechaRecepcion) {
                             temp["retrasados"]++
-                        else
+
+                        }else {
                             temp["rezagados"]++
+
+                        }
                     } else {
                         if (!pdt.fechaRecepcion)
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
@@ -414,12 +716,16 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 temp.put("nivel", nivel)
 
                 lvl.add(temp)
+                padreData= temp
+                //println "padre nuevo "+padreData["objeto"]+" -- "+padreData["retrasados"]+"  "+padreData["rezagados"]
 //                println "fin add actual "+temp+"  nivel "+nivel
 //                println "asi quedo lvl "+lvl
 //                println "######################"
                 if (lvl.size() == 1) {
+
                     lvl = lvl[0]["hijos"]
                 } else {
+                    //padre = lvl[lvl.size() - 1]
                     lvl = lvl[lvl.size() - 1]["hijos"]
                 }
 //                println "lvl ? "+lvl
