@@ -534,7 +534,7 @@
 
 /*
                 var ausentismo = {
-                    label           : 'Absentismo',
+                    label           : 'Ausentismo',
                     icon            : "fa fa-gears",
                     separator_after : true,
                     url             : "${createLink(action: 'ausentismo')}/" + id

@@ -68,7 +68,7 @@ class UtilitariosTagLib {
         def persona = attrs.persona
         def str = ""
         if (persona instanceof happy.seguridad.Persona) {
-            str = capitalize(string: (persona.titulo ? persona.titulo + " " : "") + persona.nombre + " " + persona.apellido)
+            str = capitalize(string: persona.nombre + " " + persona.apellido)
         }
         out << str
     }

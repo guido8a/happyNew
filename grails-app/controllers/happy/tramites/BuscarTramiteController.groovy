@@ -37,10 +37,23 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                             "plazo anterior: ${persDocTram.fechaLimiteRespuesta.format('dd-MM-yyyy HH:mm')}"
                     def log = "Ampliado el plazo" + l
                     def log2 = "Ampliado el plazo ${para}" + l
-                    persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, log, params.aut, session.usuario.login)
-                    persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, log2, params.aut, session.usuario.login)
+//                    persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, log, params.aut, session.usuario.login)
+//                    persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, log2, params.aut, session.usuario.login)
 //                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, log)
 //                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, log2)
+
+                    //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
+                    def observacionOriginal = persDocTram.observaciones
+                    def accion = "Ampliación de plazo"
+                    def solicitadoPor = ""
+                    def usuario = session.usuario.login
+                    def texto = log
+                    def nuevaObservacion = ""
+                    persDocTram.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = persDocTram.tramite.observaciones
+                    texto = log2
+                    persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
                     persDocTram.fechaLimiteRespuesta = fecha
 //                    println persDocTram.id
                     if (!persDocTram.save(flush: true)) {

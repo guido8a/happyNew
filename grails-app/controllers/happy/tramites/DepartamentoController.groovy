@@ -79,11 +79,22 @@ class DepartamentoController extends happy.seguridad.Shield {
                     pr.departamento = dptoNuevo
                     def tramite = pr.tramite
 //                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
-                    //AQUI NO SE PONE AUTORIZACION?
-                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion +
-                            ". Redirigido por desactivación del departamento."
+//                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion +
+//                            ". Redirigido por desactivación del departamento."
 //                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObs)
-                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObs, "", session.usuario.login)
+//                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObs, "", session.usuario.login)
+
+                    //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
+                    def observacionOriginal = pr.observaciones
+                    def accion = "Desactivación de departamento"
+                    def solicitadoPor = ""
+                    def usuario = session.usuario.login
+                    def texto = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
+                    def nuevaObservacion = ""
+                    pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = tramite.observaciones
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"
                     } else {

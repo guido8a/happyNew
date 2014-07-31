@@ -47,11 +47,11 @@
         </tbody>
     </table>
 
-    <div class="row">
-        <div class="col-md-2">Autorizado por</div>
+    %{--<div class="row">--}%
+        %{--<div class="col-md-2">Solicitado por</div>--}%
 
-        <div class="col-md-4"><g:textField name="aut" class="form-control"/></div>
-    </div>
+        %{--<div class="col-md-4"><g:textField name="aut" class="form-control"/></div>--}%
+    %{--</div>--}%
 </g:form>
 <script type="text/javascript">
     $(function () {

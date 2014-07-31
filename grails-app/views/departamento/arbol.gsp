@@ -201,7 +201,7 @@
                                                 var dpto = $sel.data("dpto");
                                                 var autoriza = $.trim($txt.val());
                                                 if (resp == 1 || resp == "1") {
-                                                    if (validaAutorizacion($txt)) {
+//                                                    if (validaAutorizacion($txt)) {
                                                         openLoader("Cambiando");
                                                         $.ajax({
                                                             type    : "POST",
@@ -219,9 +219,9 @@
                                                                 }
                                                             }
                                                         });
-                                                    } else {
-                                                        return false;
-                                                    }
+//                                                    } else {
+//                                                        return false;
+//                                                    }
                                                 }
                                             }
                                         }
@@ -904,7 +904,7 @@
                         if (estaAusente) {
                             items.terminar = {
                                 separator_before : true,
-                                label            : "Terminar absentismo",
+                                label            : "Terminar ausentismo",
                                 icon             : "fa ${iconActivar} text-success",
                                 action           : function (obj) {
                                     $.ajax({
@@ -915,7 +915,7 @@
                                         },
                                         success : function (msg) {
                                             bootbox.dialog({
-                                                title   : "Terminar absentismo",
+                                                title   : "Terminar ausentismo",
                                                 message : msg,
                                                 buttons : {
                                                     cancelar : {
