@@ -4,10 +4,10 @@ class InicioController extends happy.seguridad.Shield {
     def dbConnectionService
 
     def index() {
-        if(session.usuario.puedeJefe()){
-            redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1","dir":"1"])
+        if(session.usuario.getPuedeDirector()){
+            redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params:[dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1",dir:"1"])
         }else{
-            if(session.usuario.puedeJefe()){
+            if(session.usuario.getPuedeJefe()){
                 redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
             }else{
 //                def cn = dbConnectionService.getConnection()
