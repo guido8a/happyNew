@@ -65,7 +65,7 @@
 
         %{--<div id="collapseAcceso" class="panel-collapse collapse in" style="padding: 10px">--}%
         %{--<div class="panel-body">--}%
-        <h4>Absentismos registrados de ${usuario.login}</h4>
+        <h4>Ausentismos registrados de ${usuario.login}</h4>
 
         <div id="divAccesos"></div>
         %{--</div>--}%
