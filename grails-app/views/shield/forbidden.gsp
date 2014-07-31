@@ -17,7 +17,7 @@
 <div class="alert alert-warning text-shadow">
     <i class="fa fa-ban fa-4x pull-left"></i>
 
-    <h1 class="text-warning tituloError">Página restringida</h1>
+    <h1 class="text-warning tituloError">Atención</h1>
 
 
     <g:if test="${msn}">
