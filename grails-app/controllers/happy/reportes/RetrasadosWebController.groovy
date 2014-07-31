@@ -464,7 +464,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         if(params.inicio)
             inicio=true
 
-        print("inicio "+inicio+" "+params)
         return [tabla: tabla, params: params,inicio:inicio]
     }
 

@@ -92,9 +92,9 @@
                 <div class="texto"><span class="text-success"><strong>Bandeja de entrada</strong></span>: trámites que le han enviado y pendientes de contestación</div>
             </div>
         </div>
-        <g:if test="${prms.contains('bandejaEntrada')}">
-            </a>
-        </g:if>
+
+    </a>
+
 
         <g:if test="${session.usuario.esTriangulo()}">
             <a href= "${createLink(controller:'tramite2', action: 'bandejaSalidaDep')}" style="text-decoration: none">
