@@ -9,7 +9,7 @@ class DocumentoTramite {
     String clave
     String path
     String descripcion
-    Date fechaLectura
+//    Date fechaLectura
     static mapping = {
         table 'dctr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -25,7 +25,7 @@ class DocumentoTramite {
             clave column: 'dctrclve'
             path column: 'dcmtpath'
             descripcion column: 'dctrdscr'
-            fechaLectura column: 'dctrfcrv'
+//            fechaLectura column: 'dctrfcrv'
         }
     }
     static constraints = {
@@ -36,7 +36,7 @@ class DocumentoTramite {
         clave(maxSize: 63, blank: true, nullable: true, attributes: [title: 'clave'])
         path(maxSize: 1024, blank: true, nullable: true, attributes: [title: 'path'])
         descripcion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'descripcion'])
-        fechaLectura(blank: true, nullable: true, attributes: [title: 'fechaLectura'])
+//        fechaLectura(blank: true, nullable: true, attributes: [title: 'fechaLectura'])
     }
 
     String getResumenCorto() {

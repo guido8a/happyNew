@@ -9,7 +9,7 @@ class PermisoUsuario {
     PermisoTramite permisoTramite
     Date fechaInicio
     Date fechaFin
-    String observaciones
+//    String observaciones
     Persona asignadoPor
     Persona modificadoPor
     Accs acceso
@@ -26,7 +26,7 @@ class PermisoUsuario {
             permisoTramite column: 'perm__id'
             fechaInicio column: 'prusfcin'
             fechaFin column: 'prusfcfn'
-            observaciones column: 'prusobsv'
+//            observaciones column: 'prusobsv'
 
             asignadoPor column: 'prsnasgn'
             modificadoPor column: 'prsnmdfc'
@@ -38,7 +38,7 @@ class PermisoUsuario {
         permisoTramite(blank: true, nullable: true, attributes: [title: 'permisoTramite'])
         fechaInicio(blank: false, attributes: [title: 'fechaInicio'])
         fechaFin(blank: true, nullable: true, attributes: [title: 'fechaFin'])
-        observaciones(blank: true, nullable: true, maxSize: 100, attributes: [title: 'observaciones'])
+//        observaciones(blank: true, nullable: true, maxSize: 100, attributes: [title: 'observaciones'])
 
         asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el permiso'])
         modificadoPor(blank: true, nullable: true, attributes: [title: 'modificado por'])
