@@ -880,15 +880,21 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     def enviarTramiteJefe() {
         def tramite = Tramite.get(params.id)
-        def obs = params.obs
-
-        def persona = Persona.get(session.usuario.id)
-
+//        def obs = params.obs
+//        def persona = Persona.get(session.usuario.id)
 //        tramite.observaciones = (tramite.observaciones ? tramite.observaciones + "; " : "") + persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
 //        def nuevaObsTram = persona.login + " (" + (new Date().format("dd-MM-yyyy HH:mm")) + "): " + obs
 //        tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObsTram)
-        tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obs, "", session.usuario.login)
+//        tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obs, "", session.usuario.login)
 //        tramite.estadoTramite = EstadoTramite.findByCodigo("E007")
+
+        def observacionOriginal = tramite.observaciones
+        def accion = ""
+        def solicitadoPor = ""
+        def usuario = session.usuario.login
+        def texto = ""
+        def nuevaObservacion = params.obs
+        tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
         if (tramite.save(flush: true)) {
             render "OK_Observaciones agregadas exitosamente"

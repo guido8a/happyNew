@@ -14,12 +14,12 @@ ${params.tipo == "archivar" ? "archivado" : "anulado"}!
     </p>
 </g:if>
 
-<label for="observacionArchivar">Observaciones:</label>
-<g:textArea name="observacionArchivar" maxlength="255" class="form-control" style="resize: none; height: 150px; "
-            value=""/>
-
 <div class="row">
-    <div class="col-md-3">Autorizado por</div>
+    <div class="col-md-3">Solicitado por</div>
 
     <div class="col-md-9"><g:textField name="aut" class="form-control"/></div>
 </div>
+
+<label for="observacionArchivar">Observaciones:</label>
+<g:textArea name="observacionArchivar" maxlength="255" class="form-control" style="resize: none; height: 150px; "
+            value=""/>

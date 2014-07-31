@@ -1617,38 +1617,56 @@ class TramiteController extends happy.seguridad.Shield {
 //        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
 //        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
 
-        def nuevaObs = "Trámite archivado"
-        def obs = ""
-        if (params.texto.trim() != "") {
-            obs += ", " + params.texto
-        }
-        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+//        def nuevaObs = "Trámite archivado"
+//        def obs = ""
+//        if (params.texto.trim() != "") {
+//            obs += ", " + params.texto
+//        }
+//        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+
+        def observacionOriginal = pdt.observaciones
+        def accion = "Archivo"
+        def solicitadoPor = ""
+        def usuario = session.usuario.login
+        def texto = ""
+        def nuevaObservacion = params.texto
+        pdt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
         if (pdt.rolPersonaTramite.codigo == "R001") {
 //            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
 //            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
-            nuevaObs = "Trámite PARA "
+            def nuevaObs = "Trámite PARA "
             if (pdt.departamento) {
                 nuevaObs += "el dpto. ${pdt.departamento.codigo}"
             } else if (pdt.persona) {
                 nuevaObs += "el usuario ${pdt.persona.login}"
             }
             nuevaObs += " archivado"
-            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+//            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+
+            observacionOriginal = pdt.tramite.observaciones
+            texto = nuevaObs
+            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
             pdt.tramite.save()
         } else {
 //            def nuevaObs2 = " COPIA archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
 //            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
 //            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + " COPIA Archivada por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
 //            pdt.tramite.save()
-            nuevaObs = "COPIA para "
+            def nuevaObs = "COPIA para "
             if (pdt.departamento) {
                 nuevaObs += "el dpto. ${pdt.departamento.codigo}"
             } else if (pdt.persona) {
                 nuevaObs += "el usuario ${pdt.persona.login}"
             }
             nuevaObs += " archivado"
-            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+//            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
+
+            observacionOriginal = pdt.tramite.observaciones
+            texto = nuevaObs
+            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
             pdt.tramite.save()
         }
         if (!pdt.save(flush: true)) {

@@ -1130,10 +1130,10 @@ class PersonaController extends happy.seguridad.Shield {
                             "<p style='font-size:larger;'>Se redireccionará${cantTramites == 1 ? '' : 'n'} ${cantTramites} trámite${cantTramites == 1 ? '' : 's'} " +
                             "de su bandeja de entrada personal a la bandeja de entrada de la oficina agregando una observación de " +
                             "notificación de esta acción.</p>" +
-                            "<div class='row'>" +
-                            "<div class='col-md-3 control-label' style='padding-top:8px; font-weight:bold;'>Autorizado por</div>" +
-                            "<div class='col-md-9'>" + g.textField(name: "txtWarning", class: "form-control") + "</div>" +
-                            "</div>" +
+//                            "<div class='row'>" +
+//                            "<div class='col-md-3 control-label' style='padding-top:8px; font-weight:bold;'>Autorizado por</div>" +
+//                            "<div class='col-md-9'>" + g.textField(name: "txtWarning", class: "form-control") + "</div>" +
+//                            "</div>" +
                             "<div class='row'>" +
                             "<div class='col-md-12'>" +
                             g.select("data-dpto": params.departamento.id, name: "selWarning", class: 'form-control', optionKey: "key", optionValue: "value",
@@ -1232,11 +1232,22 @@ class PersonaController extends happy.seguridad.Shield {
 //                            ". Redirigido por cambio de departamento el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}."
 //                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obsNueva)
 
-                    def obsNueva = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido +
-                            ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
-                    ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
-                    pr.observaciones = tramitesService.makeObservaciones(pr.observaciones, obsNueva, params.aut, session.usuario.login)
-                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obsNueva, params.aut, session.usuario.login)
+//                    def obsNueva = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido +
+//                            ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
+//                    ". Redirigido a la bandeja de entrada departamental por cambio de departamento."
+//                    pr.observaciones = tramitesService.makeObservaciones(pr.observaciones, obsNueva, params.aut, session.usuario.login)
+//                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obsNueva, params.aut, session.usuario.login)
+
+                    //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
+                    def observacionOriginal = pr.observaciones
+                    def accion = "Cambio de departamento"
+                    def solicitadoPor = ""
+                    def usuario = session.usuario.login
+                    def texto = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido
+                    def nuevaObservacion = ""
+                    pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = tramite.observaciones
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                     if (tramite.save(flush: true)) {
 //                        println "tr.save ok"

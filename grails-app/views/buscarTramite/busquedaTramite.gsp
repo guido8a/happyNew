@@ -319,7 +319,7 @@
                                                 var $frm = $("#frm-ampliar");
                                                 var $txt = $("#aut");
                                                 if ($frm.valid()) {
-                                                    if (validaAutorizacion($txt)) {
+//                                                    if (validaAutorizacion($txt)) {
                                                         openLoader("Ampliando plazo");
                                                         $.ajax({
                                                             type    : "POST",
@@ -331,9 +331,9 @@
                                                                 closeLoader();
                                                             }
                                                         });
-                                                    } else {
-                                                        return false;
-                                                    }
+//                                                    } else {
+//                                                        return false;
+//                                                    }
                                                 }
                                             }
                                         }

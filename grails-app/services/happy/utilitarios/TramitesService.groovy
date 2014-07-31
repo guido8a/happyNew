@@ -8,6 +8,34 @@ import happy.tramites.Tramite
 @Transactional
 class TramitesService {
 
+    /*
+    <fecha> - <accion> - solicitado por técnico <solicitadoPor> <texto> observaciones: <observaciones> ||
+     */
+
+    String observaciones(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion) {
+        def fecha = new Date().format('dd-MM-yyyy HH:mm')
+        observacionOriginal = observacionOriginal ? observacionOriginal.trim() : ""
+        accion = accion ? accion.trim() : ""
+        solicitadoPor = solicitadoPor ? solicitadoPor.trim() : ""
+        usuario = usuario ? usuario.trim() : ""
+        texto = texto ? texto.trim() : ""
+        nuevaObservacion = nuevaObservacion ? nuevaObservacion.trim() : ""
+
+        def obs = "${fecha}"
+        obs += (accion != "" ? " - ${accion}" : "")
+        obs += (solicitadoPor != "" ? " - solicitado por ${solicitadoPor}" : "")
+        obs += (usuario != "" ? ((solicitadoPor != "" ? " - técnico " : " - usuario ") + usuario) : "")
+//        obs += " - técnico ${usuario}"
+        obs += (texto != "" ? " - ${texto}" : "")
+        obs += (nuevaObservacion != "" ? " - observaciones: ${nuevaObservacion}" : "")
+
+        if (observacionOriginal != "") {
+            obs += " || " + observacionOriginal
+        }
+
+        return obs
+    }
+
     /**
      * hace prepend la nuevaObservacion a la observacionOriginal
      * @param observacionOriginal
@@ -35,11 +63,6 @@ class TramitesService {
      * @return : String      la observacion lista para ser insertada en el objeto
      */
     String makeObservaciones(String observacionOriginal, String nuevaObservacion, String autorizadoPor, String usuario) {
-//        println "observacion original: " + observacionOriginal
-//        println "observacion nueva: " + nuevaObservacion
-//        println "autorizado: " + autorizadoPor
-//        println "usuario: " + usuario
-
         observacionOriginal = observacionOriginal ? observacionOriginal.trim() : ""
         nuevaObservacion = nuevaObservacion ? nuevaObservacion.trim() : ""
         autorizadoPor = autorizadoPor ? autorizadoPor.trim() : ""

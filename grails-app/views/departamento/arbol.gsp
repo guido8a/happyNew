@@ -201,7 +201,7 @@
                                                 var dpto = $sel.data("dpto");
                                                 var autoriza = $.trim($txt.val());
                                                 if (resp == 1 || resp == "1") {
-                                                    if (validaAutorizacion($txt)) {
+//                                                    if (validaAutorizacion($txt)) {
                                                         openLoader("Cambiando");
                                                         $.ajax({
                                                             type    : "POST",
@@ -219,9 +219,9 @@
                                                                 }
                                                             }
                                                         });
-                                                    } else {
-                                                        return false;
-                                                    }
+//                                                    } else {
+//                                                        return false;
+//                                                    }
                                                 }
                                             }
                                         }

@@ -43,7 +43,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             }
 
         }
-        def depStr=""
+        def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
             //depStr="and departamento = ${departamento.id}"
@@ -68,7 +68,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         if (pdt) {
             pdt.each { pd ->
-                if(pd.tramite.externo!="1" || pd.tramite==null){
+                if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
@@ -274,7 +274,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr)
+                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
                 total += res[0]
                 totalSr += res[1]
                 tabla += res[2]

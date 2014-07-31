@@ -261,7 +261,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
             def log = strEnvioPrevio + " el " +
-                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
+                    "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}"
             if (persDoc) {
                 //cambia la fecha de envio, el estado y las obs
                 def alerta
@@ -288,16 +288,29 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                        "(enviado antes por: ${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(Tramite.get(id.toLong()),RolPersonaTramite.findByCodigo("E004"), [sort: 'id', order: 'desc']).persona.login} " +
 //                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')})"
 
-                    def nuevaObsPersDoc = "Cancelado el envío. " + log
-                    persDoc.observaciones = tramitesService.makeObservaciones(persDoc.observaciones, nuevaObsPersDoc, "", session.usuario.login)
-                    def nuevaObsTram = "Cancelado el envío"
+//                    def nuevaObsPersDoc = "Cancelado el envío. " + log
+//                    persDoc.observaciones = tramitesService.makeObservaciones(persDoc.observaciones, nuevaObsPersDoc, "", session.usuario.login)
+//                    def nuevaObsTram = "Cancelado el envío"
+                    def obsTram = ""
                     if (persDoc.departamento) {
-                        nuevaObsTram += " al dpto. ${persDoc.departamento.codigo}"
+                        obsTram = " al dpto. ${persDoc.departamento.codigo}"
                     } else if (persDoc.persona) {
-                        nuevaObsTram += " al usuario ${persDoc.persona.login}"
+                        obsTram = " al usuario ${persDoc.persona.login}"
                     }
-                    nuevaObsTram += ". " + log
-                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
+//                    nuevaObsTram += ". " + log
+//                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
+
+                    //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
+                    def observacionOriginal = persDoc.observaciones
+                    def accion = "Cancelación de envío"
+                    def solicitadoPor = ""
+                    def usuario = session.usuario.login
+                    def texto = log
+                    def nuevaObservacion = ""
+                    persDoc.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = tramite.observaciones
+                    texto = log + obsTram
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
 //                    def nuevaObsTram = " Cancelado el envío (PARA ${copiaA}) por el usuario ${session.usuario.login} " +
 //                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
@@ -332,14 +345,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             def persTram = PersonaDocumentoTramite.get(idCopia)
                             if (persTram) {
                                 if (persTram.rolPersonaTramite == rolCc) {
-                                    nuevaObsTram = "Cancelado el envío de la copia"
-                                    if (persDoc.departamento) {
-                                        nuevaObsTram += " para el dpto. ${persDoc.departamento.codigo}"
-                                    } else if (persDoc.persona) {
-                                        nuevaObsTram += " para el usuario ${persDoc.persona.login}"
-                                    }
-                                    nuevaObsTram += ". " + log
-                                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
+//                                    nuevaObsTram = "Cancelado el envío de la copia"
+//                                    if (persDoc.departamento) {
+//                                        nuevaObsTram += " para el dpto. ${persDoc.departamento.codigo}"
+//                                    } else if (persDoc.persona) {
+//                                        nuevaObsTram += " para el usuario ${persDoc.persona.login}"
+//                                    }
+//                                    nuevaObsTram += ". " + log
+//                                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
 //                                    copiaA = persTram.persona ? persTram.persona.login : persTram.departamento.codigo
 //                                    def nuevaObsTram2 = " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
 //                                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
@@ -348,6 +361,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                                    tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
 //                                            "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
 //                                            "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}); "
+
+                                    obsTram = ""
+                                    if (persDoc.departamento) {
+                                        obsTram = " al dpto. ${persDoc.departamento.codigo}"
+                                    } else if (persDoc.persona) {
+                                        obsTram = " al usuario ${persDoc.persona.login}"
+                                    }
+                                    observacionOriginal = tramite.observaciones
+                                    accion = "Cancelación de envío de copia"
+                                    solicitadoPor = ""
+                                    usuario = session.usuario.login
+                                    nuevaObservacion = ""
+                                    texto = log + obsTram
+                                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                                 }
                                 persTram.delete(flush: true)
                                 if (persTram.persona)
@@ -367,14 +394,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
 //                println "es COPIA: delete"
                     try {
-                        def nuevaObsTram = "Cancelado el envío de la copia"
-                        if (persDoc.departamento) {
-                            nuevaObsTram += " para el dpto. ${persDoc.departamento.codigo}"
-                        } else if (persDoc.persona) {
-                            nuevaObsTram += " para el usuario ${persDoc.persona.login}"
-                        }
-                        nuevaObsTram += ". " + log
-                        tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
+//                        def nuevaObsTram = "Cancelado el envío de la copia"
+//                        if (persDoc.departamento) {
+//                            nuevaObsTram += " para el dpto. ${persDoc.departamento.codigo}"
+//                        } else if (persDoc.persona) {
+//                            nuevaObsTram += " para el usuario ${persDoc.persona.login}"
+//                        }
+//                        nuevaObsTram += ". " + log
+//                        tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObsTram, "", session.usuario.login)
 //                        def copiaA = persDoc.persona ? persDoc.persona.login : persDoc.departamento?.codigo
 //                        def nuevaObsTram3 = " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
 //                                "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
@@ -383,6 +410,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                        tramite.observaciones = (tramite.observaciones ?: '') + " Cancelado el envío (COPIA A ${copiaA}) por el usuario ${session.usuario.login} " +
 //                                "el ${new Date().format('dd-MM-yyyy HH:mm')} (" + strEnvioPrevio + " el " +
 //                                "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}); "
+
+                        def obsTram = ""
+                        if (persDoc.departamento) {
+                            obsTram = " al dpto. ${persDoc.departamento.codigo}"
+                        } else if (persDoc.persona) {
+                            obsTram = " al usuario ${persDoc.persona.login}"
+                        }
+                        def observacionOriginal = tramite.observaciones
+                        def accion = "Cancelación de envío de copia"
+                        def solicitadoPor = ""
+                        def usuario = session.usuario.login
+                        def nuevaObservacion = ""
+                        def texto = log + obsTram
+                        tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
                         persDoc.delete(flush: true)
                         if (pers)
                             alerta = Alerta.findByPersonaAndTramite(pers, tram)
@@ -1659,12 +1701,24 @@ class Tramite2Controller extends happy.seguridad.Shield {
         personaDoc.persona = persona
 //        personaDoc.observaciones = params.observaciones
 //        personaDoc.observaciones = tramitesService.modificaObservaciones(personaDoc.observaciones, params.observaciones + " (${new Date().format('dd-MM-yyyy HH:mm')})")
-        def nuevaObs = "Agregado permiso de imprimir a ${persona.login}"
-        if (params.observaciones.trim() != "") {
-            nuevaObs += ", " + params.observaciones
-        }
-        personaDoc.observaciones = tramitesService.makeObservaciones(personaDoc.observaciones, nuevaObs, "", session.usuario.login)
-        personaDoc.tramite.observaciones = tramitesService.makeObservaciones(personaDoc.tramite.observaciones, nuevaObs, "", session.usuario.login)
+//        def nuevaObs = "Agregado permiso de imprimir a ${persona.login}"
+//        if (params.observaciones.trim() != "") {
+//            nuevaObs += ", " + params.observaciones
+//        }
+//        personaDoc.observaciones = tramitesService.makeObservaciones(personaDoc.observaciones, nuevaObs, "", session.usuario.login)
+//        personaDoc.tramite.observaciones = tramitesService.makeObservaciones(personaDoc.tramite.observaciones, nuevaObs, "", session.usuario.login)
+
+        def observacionOriginal = personaDoc.observaciones
+        def accion = "Asignación de permiso imprimir"
+        def solicitadoPor = ""
+        def usuario = session.usuario.login
+        def texto = "Agregado permiso de imprimir a ${persona.login}"
+        def nuevaObservacion = params.observaciones
+        personaDoc.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+        observacionOriginal = personaDoc.tramite.observaciones
+        personaDoc.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
         personaDoc.rolPersonaTramite = rol
         personaDoc.fechaEnvio = new Date()
 
