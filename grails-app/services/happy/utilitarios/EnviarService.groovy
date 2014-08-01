@@ -253,7 +253,7 @@ class EnviarService {
         }
 
         if (type == "download") {
-            println("entro!!!!!")
+//            println("entro!!!!!")
 //            render "OK*" + tramite.codigo + ".pdf"
             return "OK*" + dpto + "/" + anio + "/" + tramite.codigo + ".pdf"
         } else {

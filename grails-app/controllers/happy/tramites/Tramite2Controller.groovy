@@ -790,7 +790,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 def envio = new Date();
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
-                    if (t.estado?.codigo != "EOO6" && t.estado?.codigo != "EOO5") {
+//                    println("estado " + t?.estado?.codigo)
+                        if(t.estado.codigo != "E006" && t.estado.codigo != "E005"){
+//                        println("estado " + t?.estado?.codigo + " t--> " + t)
                         t.fechaEnvio = envio
                         t.estado = EstadoTramite.findByCodigo("E003")
                         if (t.save(flush: true)) {
@@ -817,10 +819,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             }
                         }
                     } else {
+                            println("entro false")
                         band = false
                     }
-//                    println("llllll" + t)
-
                 }
                 if (band) {
                     def pdt = new PersonaDocumentoTramite()
@@ -844,6 +845,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     }
                 } else {
                     band = true
+                    error += 'No se pudo enviar!'
                 }
 
 //                println("-->" + pdt)
@@ -857,6 +859,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             render "403"
         }
+    }
+
+
+    def errores() {
+        return [params: params]
+    }
+
+    def errores1() {
+        flash.message = "No puede enviar este trámite puesto que ha sido anulado o archivado"
+        response.sendError(403)
     }
 
 
@@ -1048,7 +1060,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (params.pdt) {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
-                    def hijos = Tramite.findAllByAQuienContesta(pdt)
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
                     if (hijos.size() > 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
                                 "'Agregar documento al trámite' de la bandeja de salida."
