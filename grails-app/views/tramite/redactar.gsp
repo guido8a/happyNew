@@ -40,7 +40,7 @@
         .nota {
             position           : absolute;
             left               : 15px;
-            top                : 200px;
+            top                : 260px;
             padding            : 10px;
             background         : #EFEFD1;
             border             : solid 1px #867722;
