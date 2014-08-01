@@ -29,7 +29,7 @@ class TramiteAdminController extends Shield {
             def estadoRecibido = EstadoTramite.findByCodigo("E004")
 
             msg = "<p>Seleccione el trámite al que se asociará <strong>${original.tramite.codigo}</strong> "
-            msg += "(creado el ${original.fechaCreacion.format('dd-MM-yyyy HH:mm')})</p>"
+            msg += "(creado el ${original.fechaCreacion.format('dd-MM-yyyy HH:mm')}, asunto: <strong>${original.tramite.asunto}</strong>)</p>"
             msg += "<table class='table table-condensed table-bordered'>"
             msg += "<thead>"
             msg += "<tr>"
@@ -42,9 +42,19 @@ class TramiteAdminController extends Shield {
             msg += "</thead>"
             def algo = false
             tramites.each { tr ->
-                if (Tramite.countByPadre(tr) == 0) {
+                def hijosVivos = 0
+                (Tramite.findAllByPadre(tr)).each { th ->
+                    def prtrHijo = PersonaDocumentoTramite.withCriteria {
+                        eq("tramite", th)
+                        inList("rolPersonaTramite", [rolCc, rolPara])
+                        ne("estado", estadoAnulado)
+                    }
+                    hijosVivos += prtrHijo.size()
+                }
+                if (hijosVivos == 0) {
                     def cod = tr.codigo
                     def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
+                    def asunto = tr.asunto
 
 //                println "tramite: " + tr
 //                println "duenioDep: " + duenioDep
@@ -73,7 +83,7 @@ class TramiteAdminController extends Shield {
                         msg += "<td>${cod}</td>"
                         msg += "<td>${de}</td>"
                         msg += "<td>${cc.rolPersonaTramite.descripcion} ${cc.departamento ? cc.departamento.codigo : cc.persona.login}</td>"
-                        msg += "<td>${tramiteFechas(cc)}</td>"
+                        msg += "<td><strong>Asunto: ${asunto}</strong><br/>${tramiteFechas(cc)}</td>"
                         msg += "<td><a href='#' class='btn btn-success select' id='${cc.id}'><i class='fa fa-check'></i></a></td>"
                         msg += "</tr>"
                     }

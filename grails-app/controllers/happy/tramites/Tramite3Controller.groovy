@@ -790,9 +790,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pxt.each {
                     println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
                 }
-                flash.message = "ERROR"
+//                flash.message = "ERROR"
                 println "mas de 1 PDT: ${pxt}"
-                redirect(action: "errores")
+//                redirect(action: "errores")
                 return
             } else if (pxt.size() == 0) {
                 flash.message = "ERROR"

@@ -420,13 +420,13 @@
                                             className : "btn-success",
                                             callback  : function () {
                                                 var $txt = $("#aut");
-                                                if (validaAutorizacion($txt)) {
+//                                                if (validaAutorizacion($txt)) {
                                                     $.ajax({
                                                         type    : 'POST',
                                                         url     : '${createLink(controller:'tramite',action: 'archivar')}/' + idPxt,
                                                         data    : {
-                                                            texto : $("#observacionArchivar").val(),
-                                                            aut   : $txt.val()
+                                                            texto : $("#observacionArchivar").val()/*,
+                                                            aut   : $txt.val()*/
                                                         },
                                                         success : function (msg) {
                                                             openLoader();
@@ -439,7 +439,7 @@
                                                             }
                                                         }
                                                     });
-                                                }
+//                                                }
                                             }
                                         }
                                     }

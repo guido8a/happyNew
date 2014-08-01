@@ -494,13 +494,13 @@
                                             className : "btn-success",
                                             callback  : function () {
                                                 var $txt = $("#aut");
-                                                if (validaAutorizacion($txt)) {
+//                                                if (validaAutorizacion($txt)) {
                                                     $.ajax({
                                                         type    : 'POST',
                                                         url     : '${createLink(action: 'archivar')}/' + idPxt,
                                                         data    : {
-                                                            texto : $("#observacionArchivar").val(),
-                                                            aut   : $txt.val()
+                                                            texto : $("#observacionArchivar").val()/*,
+                                                            aut   : $txt.val()*/
                                                         },
                                                         success : function (msg) {
                                                             openLoader();
@@ -513,9 +513,9 @@
                                                             }
                                                         }
                                                     });
-                                                } else {
-                                                    return false;
-                                                }
+//                                                } else {
+//                                                    return false;
+//                                                }
                                             }
                                         }
                                     }

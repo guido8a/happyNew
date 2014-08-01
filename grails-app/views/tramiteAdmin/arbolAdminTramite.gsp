@@ -651,62 +651,63 @@
                         action           : function () {
                             var msg = "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i>" +
                                       "<p class='lead'>Está por quitar el recibido del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>" +
+                                      '<div class="row">' +
+                                      '<div class="col-md-3">Autorizado por</div>' +
+                                      '<div class="col-md-9">' +
+                                      '<input type="text" class="form-control" id="autDesrecibir"/>' +
+                                      '</div>' +
+                                      '</div>' +
                                       "<label for='observacionDesrecibir'>Observaciones:</label>" +
                                       '<textarea id="observacionDesrecibir" style="resize: none; height: 150px;" ' +
-                                      'class="form-control" maxlength="255" name="observacionDesrecibir"></textarea>'/* +
-                             '<div class="row">' +
-                             '<div class="col-md-3">Autorizado por</div>' +
-                             '<div class="col-md-9">' +
-                             '<input type="text" class="form-control" id="autDesrecibir"/>' +
-                             '</div>' +
-                             '</div>'*/;
+                                      'class="form-control" maxlength="255" name="observacionDesrecibir"></textarea>';
+
                             bootbox.dialog({
                                 id      : "dlgDesrecibir",
                                 title   : '<i class="fa fa-magic"></i> Quitar recibido del Trámite',
                                 message : msg,
                                 buttons : {
-                                    cancelar : {
+                                    cancelar   : {
                                         label     : '<i class="fa fa-times"></i> Cancelar',
                                         className : 'btn-danger',
                                         callback  : function () {
                                         }
                                     },
-                                    archivar : {
-                                        id        : 'btnArchivar',
+                                    desrecibir : {
+                                        id        : 'btnDesrecibir',
                                         label     : '<i class="fa fa-check"></i> Quitar recibido',
                                         className : "btn-success",
                                         callback  : function () {
                                             var $txt = $("#autDesrecibir");
-//                                            if (validaAutorizacion($txt)) {
-                                            openLoader("Quitando el recibido");
-                                            $.ajax({
-                                                type    : 'POST',
-                                                url     : '${createLink(controller: "tramiteAdmin", action: "desrecibir")}',
-                                                data    : {
-                                                    id    : nodeId,
-                                                    texto : $("#observacionDesrecibir").val(),
-                                                    aut   : $txt.val()
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("*");
-                                                    if (parts[0] == 'OK') {
-                                                        log("Quitado el recibido del trámite correctamente", 'success')
-                                                        setTimeout(function () {
-                                                            location.reload(true);
-                                                        }, 500);
-                                                    } else if (parts[0] == 'NO') {
-                                                        log("Error al quitar el recibido del trámite el trámite: " + parts[1], 'error')
-                                                        closeLoader();
-                                                        setTimeout(function () {
-                                                            location.reload(true);
-                                                        }, 500);
+                                            if (validaAutorizacion($txt)) {
+                                                openLoader("Quitando el recibido");
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(controller: "tramiteAdmin", action: "desrecibir")}',
+                                                    data    : {
+                                                        id    : nodeId,
+                                                        texto : $("#observacionDesrecibir").val(),
+                                                        aut   : $txt.val()
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("*");
+                                                        if (parts[0] == 'OK') {
+                                                            log("Quitado el recibido del trámite correctamente", 'success')
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
+                                                        } else if (parts[0] == 'NO') {
+                                                            log("Error al quitar el recibido del trámite el trámite: " + parts[1], 'error')
+                                                            closeLoader();
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
 
+                                                        }
                                                     }
-                                                }
-                                            });
-//                                            } else {
-//                                                return false;
-//                                            }
+                                                });
+                                            } else {
+                                                return false;
+                                            }
                                         }
                                     }
                                 }
