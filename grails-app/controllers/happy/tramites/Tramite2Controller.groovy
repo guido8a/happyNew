@@ -791,7 +791,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 tramite = Tramite.get(d)
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
 //                    println("estado " + t?.estado?.codigo)
-                        if(t.estado.codigo != "E006" && t.estado.codigo != "E005"){
+                    if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") {
 //                        println("estado " + t?.estado?.codigo + " t--> " + t)
                         t.fechaEnvio = envio
                         t.estado = EstadoTramite.findByCodigo("E003")
@@ -819,7 +819,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             }
                         }
                     } else {
-                            println("entro false")
+                        println("entro false")
                         band = false
                     }
                 }
@@ -1060,13 +1060,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (params.pdt) {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
-                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt, EstadoTramite.findByCodigo("E006"))
                     def tiene = false
-                    hijos.each {h->
+                    hijos.each { h ->
 //                        println "hijo -> "+h
-                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h,[RolPersonaTramite.findByCodigo("E001"),RolPersonaTramite.findByCodigo("E002")]).each {pq->
+                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if(pq.estado?.codigo!="E006")
+                            if (pq.estado?.codigo != "E006")
                                 tiene = true
                         }
                     }
@@ -1388,13 +1388,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     //println "entro aqui"
                     def pdt = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
                     //println "dpt "+pdt
-                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt, EstadoTramite.findByCodigo("E006"))
                     def tiene = false
-                    hijos.each {h->
+                    hijos.each { h ->
 //                        println "hijo -> "+h
-                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h,[RolPersonaTramite.findByCodigo("E001"),RolPersonaTramite.findByCodigo("E002")]).each {pq->
+                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if(pq.estado?.codigo!="E006")
+                            if (pq.estado?.codigo != "E006")
                                 tiene = true
                         }
                     }
