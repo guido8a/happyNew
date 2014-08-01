@@ -736,7 +736,7 @@
                         }
                     },
                     state       : {
-                        key : "tramites"
+                        key : "tramiteAdmin"
                     },
                     contextmenu : {
                         show_at_node : false,
