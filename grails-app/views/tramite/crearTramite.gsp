@@ -128,7 +128,7 @@
 
                     <div class="row ">
                         <div class="col-xs-10">
-                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo)}" var="pdt" status="j">
+                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
                                 <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                 <span style="margin-right: 10px">
                                     ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
@@ -185,7 +185,7 @@
 
                         <div class="row ">
                             <div class="col-xs-10">
-                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre, rolesNo)}" var="pdt" status="j">
+                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
                                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                     <span style="margin-right: 10px">
                                         ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}

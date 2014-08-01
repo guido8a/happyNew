@@ -904,6 +904,30 @@ class TramiteAdminController extends Shield {
                 objeto.tramite.save(flush: true)
                 if (!objeto.save(flush: true)) {
                     println "error en el save anular " + objeto.errors
+                }else{
+                    /*alertas*/
+                    def alerta
+                    if(objeto.departamento){
+                        alerta=Alerta.findAllByTramiteAndDepartamento(objeto.tramite,objeto.departamento)
+                        //println "busco alerta dep "+alerta+"  "+objeto.tramite.id+"  "+objeto.departamento.id
+                        alerta.each {a->
+                            if(a.fechaRecibido==null) {
+                                a.fechaRecibido = new Date();
+                                a.save(flush: true)
+                            }
+                        }
+                    }
+                    if(objeto.persona){
+
+                        alerta=Alerta.findAllByTramiteAndPersona(objeto.tramite,objeto.persona)
+                       // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
+                        alerta.each {a->
+                            if(a.fechaRecibido==null) {
+                                a.fechaRecibido = new Date();
+                                a.save(flush: true)
+                            }
+                        }
+                    }
                 }
             }
             def rolCopia = RolPersonaTramite.findByCodigo("R002")

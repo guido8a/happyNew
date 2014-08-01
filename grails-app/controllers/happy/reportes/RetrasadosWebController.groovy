@@ -79,9 +79,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         hijos.each { lvl ->
             println "hijo "+lvl["objeto"]+"  "+lvl["retrasados"]+"  "+lvl["rezagados"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                println "primer if"
+              //  println "primer if"
 //                if (lvl["rezagados"]>0 || lvl["retrasados"]>0) {
-                println "segundo if"
+              //  println "segundo if"
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -364,10 +364,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tbody>"
 
         hijos.each { lvl ->
-            println "lvl "+lvl["objeto"]
+            //println "lvl "+lvl["objeto"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (lvl["tramites"].size() > 0 || lvl["personas"].size() > 0) {
-                      println "paso ambos if"
+                    //  println "paso ambos if"
                     datosGrafico.put(lvl["objeto"].toString(), [:])
                     def dg = datosGrafico[lvl["objeto"].toString()]
                     dg.put("rezagados", [:])
@@ -474,7 +474,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                println "hijos "+lvl["objeto"]
+              //  println "hijos "+lvl["objeto"]
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])

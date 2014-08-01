@@ -848,12 +848,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt.fechaLimiteRespuesta = limite
                 def alerta
                 if (pxt.departamento) {
-                    alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento, pxt.tramite)
-                } else {
-                    alerta = Alerta.findByPersonaAndTramite(pxt.persona, pxt.tramite)
+                    alerta = Alerta.findByTramiteAndDepartamento(pxt.tramite,pxt.departamento)
+                }
+                if (pxt.persona) {
+                    alerta = Alerta.findByTramiteAndPersona(pxt.tramite,pxt.persona)
                 }
                 if (alerta) {
-                    if (!alerta.fechaRecibido) {
+                    if (alerta.fechaRecibido==null) {
                         alerta.mensaje += " - Recibido"
                         alerta.fechaRecibido = new Date()
                         alerta.save()
