@@ -89,6 +89,17 @@ class BloqueadosController {
         tablaTramites.addCell(cell);
         def par
        deps.each {d->
+           if(d.estado=="B"){
+               par = new Paragraph(""+d, times8normal)
+               cell = new PdfPCell(par);
+               cell.setBorderColor(Color.WHITE)
+               tablaTramites.addCell(cell);
+               par = new Paragraph("(Oficina)", times8normal)
+               cell = new PdfPCell(par);
+               cell.setBorderColor(Color.WHITE)
+               tablaTramites.addCell(cell);
+               total++
+           }
            Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
                par = new Paragraph(""+d, times8normal)
                cell = new PdfPCell(par);
