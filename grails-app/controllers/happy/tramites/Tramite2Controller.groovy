@@ -1048,7 +1048,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (params.pdt) {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
-                    def hijos = Tramite.findAllByAQuienContesta(pdt)
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
                     if (hijos.size() > 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite. Si desea, puede utilizar la función " +
                                 "'Agregar documento al trámite' de la bandeja de salida."
