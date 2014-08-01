@@ -363,7 +363,17 @@ class TramiteController extends happy.seguridad.Shield {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
                     def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
-                    if (hijos.size() > 0) {
+                    def tiene = false
+                    hijos.each {h->
+//                        println "hijo -> "+h
+                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h,[RolPersonaTramite.findByCodigo("E001"),RolPersonaTramite.findByCodigo("E002")]).each {pq->
+//                            println "pq "+pq.estado?.descripcion
+                            if(pq.estado?.codigo!="E006")
+                                tiene = true
+                        }
+                    }
+//                    println hijos
+                    if (tiene) {
                         flash.message = "Ya ha realizado una respuesta a este trámite. "
                         redirect(controller: 'tramite', action: "errores")
                         return
