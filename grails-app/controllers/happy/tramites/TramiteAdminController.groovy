@@ -679,8 +679,6 @@ class TramiteAdminController extends Shield {
             clase += " esMio"
         }
 
-
-
         html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
         html += tramiteInfo(pdt)
         html += "\n"

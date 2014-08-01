@@ -146,7 +146,7 @@
                     icon : "fa fa-files-o text-info"
                 },
                 anulado   : {
-                    icon : "fa fa-circle-o text-muted"
+                    icon : "fa fa-ban text-muted"
                 }
             }
         });

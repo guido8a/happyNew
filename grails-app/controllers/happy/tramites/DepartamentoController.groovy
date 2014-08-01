@@ -131,12 +131,9 @@ class DepartamentoController extends happy.seguridad.Shield {
             def c = Persona.createCriteria()
             def find = c.list(params) {
                 or {
-                    ilike("cedula", "%" + search + "%")
                     ilike("nombre", "%" + search + "%")
                     ilike("apellido", "%" + search + "%")
-                    ilike("cargo", "%" + search + "%")
                     ilike("login", "%" + search + "%")
-                    ilike("codigo", "%" + search + "%")
                     departamento {
                         or {
                             ilike("descripcion", "%" + search + "%")
@@ -409,7 +406,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 //                    }
 
 //                    lbl += " <${tramites.size()} trámites>"
-                    lbl += " (${cantTramEntrada} trámites entrada) (${cantTramSalida} trámites salida)"
+//                    lbl += " (${cantTramEntrada} trámites entrada) (${cantTramSalida} trámites salida)"
 
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"
