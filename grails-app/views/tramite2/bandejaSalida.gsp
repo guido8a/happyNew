@@ -582,7 +582,9 @@
                                                                 var parts = msg.split("_");
                                                                 log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                                                 if (parts[0] == "OK") {
-                                                                    location.reload(true);
+                                                                    cargarBandeja(true)
+                                                                    log("Envío del trámite cancelado correctamente", 'success')
+                                                                    closeLoader();
                                                                 }
                                                             }
                                                         });
@@ -777,7 +779,11 @@
                                     closeLoader();
                                 }
                             } else {
-                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                cargarBandeja(true);
+//                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                location.href = "${g.createLink(action: 'errores1')}";
+
+//                                closeLoader();
                             }
                         }
                     });

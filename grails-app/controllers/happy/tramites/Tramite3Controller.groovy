@@ -877,6 +877,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
         } else {
             response.sendError(403)
         }
+
+
+
+
     }
 
     def enviarTramiteJefe() {
