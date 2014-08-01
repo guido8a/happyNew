@@ -513,7 +513,7 @@
                             var msg = "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i>" +
                                       "<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>" +
                                       '<div class="row">' +
-                                      '<div class="col-md-3"><strong>Autorizado por</strong></div>' +
+                                      '<div class="col-md-3"><strong>Solicitado por</strong></div>' +
                                       '<div class="col-md-9">' +
                                       '<input type="text" class="form-control" id="autDesanular"/>' +
                                       '</div>' +

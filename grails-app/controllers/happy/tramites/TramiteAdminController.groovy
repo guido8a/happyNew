@@ -362,13 +362,7 @@ class TramiteAdminController extends Shield {
             }.findAll {
                 it.estaActivo
             }
-
         }
-
-
-
-
-
         return [persona: persona, tramites: tramites, personas: personas, dep: dep]
     }
 
@@ -391,6 +385,10 @@ class TramiteAdminController extends Shield {
 //        println redDpto
 //        println redPrsn
 
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+
         if (pr.rolPersonaTramite.codigo == "I005") {
             pr.delete(flush: true)
         } else {
@@ -400,12 +398,98 @@ class TramiteAdminController extends Shield {
             def dptoAntes = pr.departamento
 
             if (redDpto) {
-                pr.persona = null
-                pr.departamento = redDpto
-                obs += " al departamento ${pr.departamento.descripcion}"
+                def prtrExisten = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", pr.tramite)
+                    eq("departamento", redDpto)
+                    inList("rolPersonaTramite", [rolPara, rolCopia])
+                }
+                if (prtrExisten.size() == 0) {
+                    pr.persona = null
+                    pr.departamento = redDpto
+                    obs += " al departamento ${pr.departamento.descripcion}"
+                } else {
+//                    println "1"
+                    if (pr.rolPersonaTramiteId == rolCopia.id) {
+//                        println "2"
+                        //si es copia, la anulo
+                        pr.estado = estadoAnulado
+                        pr.fechaAnulacion = new Date()
+                        obs = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
+                    } else {
+//                        println "3"
+                        prtrExisten.each { prtrExiste ->
+                            if (prtrExiste.rolPersonaTramiteId == rolCopia.id) {
+//                                println "4"
+                                prtrExiste.estado = estadoAnulado
+                                prtrExiste.fechaAnulacion = new Date()
+                                def obs1 = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
+                                def observacionOriginal = prtrExiste.observaciones
+                                def accion = "Redirección de trámite"
+                                def solicitadoPor = ""
+                                def usuario = session.usuario.login
+                                def texto = obs1
+                                def nuevaObservacion = ""
+                                prtrExiste.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                                observacionOriginal = prtrExiste.tramite.observaciones
+                                prtrExiste.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//                                println "AQUI:: " + obs1 + "  " + prtrExiste.id
+                                if (!prtrExiste.save(flush: true)) {
+                                    println "ERROR AQUI: " + prtrExiste.errors
+                                }
+                                if (!prtrExiste.tramite.save(flush: true)) {
+                                    println "ERROR AQUI3 : " + prtrExiste.tramite.errors
+                                }
+                            }
+                        }
+//                        println "AQUI>>> " + pr.id
+                        pr.persona = null
+                        pr.departamento = redDpto
+                        obs += " al departamento ${pr.departamento.descripcion}"
+                    }
+                }
             } else {
-                pr.persona = redPrsn
-                obs += " al usuario ${pr.persona.login}"
+                def prtrExisten = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", pr.tramite)
+                    eq("persona", redPrsn)
+                    inList("rolPersonaTramite", [rolPara, rolCopia])
+                }
+                if (prtrExisten.size() == 0) {
+                    pr.persona = redPrsn
+                    obs += " al usuario ${pr.persona.login}"
+                } else {
+//                    println "5"
+                    if (pr.rolPersonaTramiteId == rolCopia.id) {
+                        //si es copia, la anulo
+                        pr.estado = estadoAnulado
+                        pr.fechaAnulacion = new Date()
+                        obs = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
+                    } else {
+//                        println "6"
+                        prtrExisten.each { prtrExiste ->
+                            if (prtrExiste.rolPersonaTramiteId == rolCopia.id) {
+//                                println "7"
+                                prtrExiste.estado = estadoAnulado
+                                prtrExiste.fechaAnulacion = new Date()
+                                def obs1 = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
+                                def observacionOriginal = prtrExiste.observaciones
+                                def accion = "Redirección de trámite"
+                                def solicitadoPor = ""
+                                def usuario = session.usuario.login
+                                def texto = obs1
+                                def nuevaObservacion = ""
+                                prtrExiste.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                                observacionOriginal = prtrExiste.tramite.observaciones
+                                prtrExiste.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+                                if (!prtrExiste.save(flush: true)) {
+                                    println "ERROR AQUI2: " + prtrExiste.errors
+                                }
+                            }
+                        }
+                        pr.persona = redPrsn
+                        obs += " al usuario ${pr.persona.login}"
+                    }
+                }
             }
 //            obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}; "
             def tramite = pr.tramite
