@@ -2,8 +2,9 @@ package happy.tramites
 
 import happy.alertas.Alerta
 import happy.seguridad.Persona
+import happy.seguridad.Shield
 
-class TramiteAdminController {
+class TramiteAdminController extends Shield {
 
     def tramitesService
 
