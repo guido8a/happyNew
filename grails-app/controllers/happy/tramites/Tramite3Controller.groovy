@@ -701,6 +701,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def recibirTramite() {
         // println "recibir tramite " + params
         if (request.getMethod() == "POST") {
+
+
+
             def persona = Persona.get(session.usuario.id)
 
             def tramite = Tramite.get(params.id)
@@ -784,96 +787,107 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "rolPara: " + rolPara
 //        println "rolCC: " + rolCC
 //        println "rolImprimir: " + rolImprimir
-//            println "pxt 1 "+pxt
+//            println "pxt 1 "+pxt.estado.codigo
 
-            if (pxt.size() > 1) {
-                pxt.each {
-                    println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
-                }
+
+
+                if (pxt.size() > 1) {
+                    pxt.each {
+                        println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
+                    }
 //                flash.message = "ERROR"
-                println "mas de 1 PDT: ${pxt}"
+                    println "mas de 1 PDT: ${pxt}"
 //                redirect(action: "errores")
-                return
-            } else if (pxt.size() == 0) {
-                flash.message = "ERROR"
-                println "0 PDT"
-                redirect(action: "errores")
-            } else {
-                pxt = pxt.first()
-                def recibe = true
-                if (noRecibe.contains(pxt.estado)) {
-                    recibe = false
-                }
-                if (!recibe) {
-                    render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
                     return
+                } else if (pxt.size() == 0) {
+                    flash.message = "ERROR"
+                    println "0 PDT"
+                    redirect(action: "errores")
+                } else {
+                    pxt = pxt.first()
+                    def recibe = true
+                    if (noRecibe.contains(pxt.estado)) {
+                        recibe = false
+                    }
+                    if (!recibe) {
+                        render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
+                        return
+                    }
                 }
-            }
 
-            if (paraDpto && persona.departamentoId == paraDpto.id) {
-                tramite.estadoTramite = estadoRecibido
-            }
-            if (paraPrsn && persona.id == paraPrsn.id) {
-                tramite.estadoTramite = estadoRecibido
-            }
+//            println("pxt 2"  + pxt )
 
-            def hoy = new Date()
+            if(pxt.estado.codigo != "E004"){
 
-            def limite = hoy
+                if (paraDpto && persona.departamentoId == paraDpto.id) {
+                    tramite.estadoTramite = estadoRecibido
+                }
+                if (paraPrsn && persona.id == paraPrsn.id) {
+                    tramite.estadoTramite = estadoRecibido
+                }
+
+                def hoy = new Date()
+
+                def limite = hoy
 //        use(TimeCategory) {
 //            limite = limite + tramite.prioridad.tiempo.hours
 //        }
-            limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-            if (limite[0]) {
-                limite = limite[1]
-            } else {
-                flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
-                redirect(controller: 'tramite', action: 'errores')
-                return
-            }
+                limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
+                if (limite[0]) {
+                    limite = limite[1]
+                } else {
+                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+                    redirect(controller: 'tramite', action: 'errores')
+                    return
+                }
 //            println "aaa1"
 //            println "hoy "+hoy
 //            println "pxt "+pxt
-            pxt.fechaRecepcion = hoy
+                pxt.fechaRecepcion = hoy
 //            println "aaa2"
-            pxt.fechaLimiteRespuesta = limite
-            pxt.estado = EstadoTramite.findByCodigo("E004")
+                pxt.fechaLimiteRespuesta = limite
+                pxt.estado = EstadoTramite.findByCodigo("E004")
 
-            if (pxt.save(flush: true) && tramite.save(flush: true)) {
-                def pdt = new PersonaDocumentoTramite()
-                pdt.tramite = tramite
-                pdt.persona = persona
-                pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
-                pdt.fechaRecepcion = hoy
-                pdt.fechaLimiteRespuesta = limite
-                def alerta
-                if (pxt.departamento) {
-                    alerta = Alerta.findByTramiteAndDepartamento(pxt.tramite,pxt.departamento)
-                }
-                if (pxt.persona) {
-                    alerta = Alerta.findByTramiteAndPersona(pxt.tramite,pxt.persona)
-                }
-                if (alerta) {
-                    if (alerta.fechaRecibido==null) {
-                        alerta.mensaje += " - Recibido"
-                        alerta.fechaRecibido = new Date()
-                        alerta.save()
+                if (pxt.save(flush: true) && tramite.save(flush: true)) {
+                    def pdt = new PersonaDocumentoTramite()
+                    pdt.tramite = tramite
+                    pdt.persona = persona
+                    pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+                    pdt.fechaRecepcion = hoy
+                    pdt.fechaLimiteRespuesta = limite
+                    def alerta
+                    if (pxt.departamento) {
+                        alerta = Alerta.findByTramiteAndDepartamento(pxt.tramite,pxt.departamento)
                     }
-                }
-                if (pdt.save(flush: true)) {
-                    render "OK_Trámite recibido correctamente"
+                    if (pxt.persona) {
+                        alerta = Alerta.findByTramiteAndPersona(pxt.tramite,pxt.persona)
+                    }
+                    if (alerta) {
+                        if (alerta.fechaRecibido==null) {
+                            alerta.mensaje += " - Recibido"
+                            alerta.fechaRecibido = new Date()
+                            alerta.save()
+                        }
+                    }
+                    if (pdt.save(flush: true)) {
+                        render "OK_Trámite recibido correctamente"
+                    } else {
+                        println pdt.errors
+                        render "NO_Ocurrió un error al recibir"
+                    }
+                    def job = new BloqueosJob()
+                    job.executeRecibir(persona.departamento, session.usuario)
+                    job = null
                 } else {
-                    println pdt.errors
+                    println pxt.errors
+                    println tramite.errors
                     render "NO_Ocurrió un error al recibir"
                 }
-                def job = new BloqueosJob()
-                job.executeRecibir(persona.departamento, session.usuario)
-                job = null
-            } else {
-                println pxt.errors
-                println tramite.errors
+            }else{
                 render "NO_Ocurrió un error al recibir"
             }
+
+
         } else {
             response.sendError(403)
         }
