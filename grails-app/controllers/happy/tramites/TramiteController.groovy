@@ -362,13 +362,13 @@ class TramiteController extends happy.seguridad.Shield {
             if (params.pdt) {
                 if (params.esRespuesta == 1 || params.esRespuesta == '1') {
                     def pdt = PersonaDocumentoTramite.get(params.pdt)
-                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt, EstadoTramite.findByCodigo("E006"))
                     def tiene = false
-                    hijos.each {h->
+                    hijos.each { h ->
 //                        println "hijo -> "+h
-                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h,[RolPersonaTramite.findByCodigo("E001"),RolPersonaTramite.findByCodigo("E002")]).each {pq->
+                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if(pq.estado?.codigo!="E006")
+                            if (pq.estado?.codigo != "E006")
                                 tiene = true
                         }
                     }
@@ -1622,12 +1622,11 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def pdt = PersonaDocumentoTramite.get(params.id)
 
-        if(pdt.estado.codigo != "E006" && pdt.estado.codigo != "E005"){
-
-
-        def estadoTramite = EstadoTramite.findByCodigo('E005')
-        pdt.estado = estadoTramite
-        pdt.fechaArchivo = new Date();
+        if (pdt.estado.codigo != "E006" && pdt.estado.codigo != "E005") {
+//            println "AQIO"
+            def estadoTramite = EstadoTramite.findByCodigo('E005')
+            pdt.estado = estadoTramite
+            pdt.fechaArchivo = new Date();
 //        def nuevaObs = " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto
 //        pdt.observaciones = (pdt.observaciones ?: "") + " Archivado por ${persona.login} el ${new Date().format('dd-MM-yyyy HH:mm')}: " + params.texto + ";"
 //        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
@@ -1639,13 +1638,13 @@ class TramiteController extends happy.seguridad.Shield {
 //        }
 //        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
 
-        def observacionOriginal = pdt.observaciones
-        def accion = "Archivo"
-        def solicitadoPor = ""
-        def usuario = session.usuario.login
-        def texto = ""
-        def nuevaObservacion = params.texto
-        pdt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+            def observacionOriginal = pdt.observaciones
+            def accion = "Archivo"
+            def solicitadoPor = ""
+            def usuario = session.usuario.login
+            def texto = ""
+            def nuevaObservacion = params.texto
+            pdt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
 
             if (pdt.rolPersonaTramite.codigo == "R001") {
@@ -1687,20 +1686,18 @@ class TramiteController extends happy.seguridad.Shield {
 
                 if (!pdt.save(flush: true)) {
                     render("no")
+                    return
                 } else {
                     render("ok")
+                    return
                 }
-
             }
-
-        }else{
-
-//            println("entro false")
-            render ("no")
+            render "ok"
+        } else {
+            println("entro false")
+            render("no")
         }
-
-
-          }
+    }
 
 
     def anular() {
