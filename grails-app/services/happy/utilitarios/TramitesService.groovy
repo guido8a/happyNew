@@ -23,8 +23,8 @@ class TramitesService {
 
         def obs = "${fecha}"
         obs += (accion != "" ? " - ${accion}" : "")
-        obs += (solicitadoPor != "" ? " - solicitado por ${solicitadoPor}" : "")
-        obs += (usuario != "" ? ((solicitadoPor != "" ? " - técnico " : " - usuario ") + usuario) : "")
+        obs += (solicitadoPor != "" ? " - solicitado por: ${solicitadoPor}" : "")
+        obs += (usuario != "" ? ((solicitadoPor != "" ? " - técnico: " : " - usuario: ") + usuario) : "")
 //        obs += " - técnico ${usuario}"
         obs += (texto != "" ? " - ${texto}" : "")
         obs += (nuevaObservacion != "" ? " - observaciones: ${nuevaObservacion}" : "")

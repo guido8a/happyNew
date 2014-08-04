@@ -174,6 +174,9 @@ class EnviarService {
                 "    font-size   : 14pt;\n" +
                 "    font-weight : bold;\n" +
 //                "    margin-top: 1cm;" +
+                "}\n" +
+                "th {\n" +
+                "   padding-right: 10px;\n" +
                 "}\n"
         content += "</style>\n"
         content += "</head>\n"
