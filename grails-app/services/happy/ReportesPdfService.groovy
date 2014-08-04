@@ -525,4 +525,225 @@ class ReportesPdfService {
         }
         return arr
     }
+
+
+    /*Reportes de arboles*/
+    def jerarquia(arr, pdt) {
+//        println "______________jerarquia______________ "
+        //println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona+"  - "+pdt.persona?.departamento
+        def datos = arr
+        def dep
+        if (pdt.departamento) {
+            dep = pdt.departamento
+        } else {
+            dep = pdt.persona.departamento
+        }
+        def padres = []
+        padres.add(dep)
+        while (dep.padre) {
+            padres.add(dep.padre)
+            dep = dep.padre
+        }
+//        println "padres "+padres
+        def first = padres.pop()
+        padres = padres.reverse()
+        def nivel = padres.size()
+        def lvl
+        if (datos["id"] != first.id.toString()) {
+//            println "no padre lvl 0"
+            datos.put("id", first.id.toString())
+            datos.put("objeto", first)
+            datos.put("tramites", [])
+            datos.put("hijos", [])
+            datos.put("personas", [])
+            datos.put("triangulos", first.getTriangulos())
+            datos.put("nivel", 0)
+            datos.put("retrasados", 0)
+            datos.put("rezagados", 0)
+            datos.put("ofiRz", 0)
+            datos.put("ofiRs", 0)
+        }
+        lvl = datos["hijos"]
+        def padreData = datos
+        def cod = ""
+        def actual = null
+//        println "padres each "+padres
+        padres.each { p ->
+//            println "p.each "+p+"  nivel  "+nivel
+            // println "buscando........ "+p
+            lvl.each { l ->
+//                println "\t lvl each --> "+l
+                if (l["id"] == p.id.toString()) {
+                    actual = l
+                }
+            }
+//            println "fin buscando ..............."
+//            println "actual --> "+actual
+            if (actual) {
+//                println "p--> "+p
+                if (!pdt.fechaRecepcion) {
+                    padreData["retrasados"]++
+                }else{
+                    padreData["rezagados"]++
+                }
+
+                //  println "padre actual!!!!! "+padreData["objeto"]+" !!!-----!!!!   "+padreData["retrasados"]+"  "+padreData["rezagados"]
+                if (pdt.departamento) {
+
+                    if (actual["id"] == pdt.departamento.id.toString()) {
+
+//                        println "es el mismo add tramites"
+                        if (!pdt.fechaRecepcion) {
+                            actual["retrasados"]++
+                            actual["ofiRs"]++
+                        }else {
+                            actual["rezagados"]++
+                            actual["ofiRz"]++
+                        }
+                        actual["tramites"].add(pdt)
+                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
+                    }else{
+//                        if (!pdt.fechaRecepcion)
+//                            datos["retrasados"]++
+//                        else
+//                            datos["rezagados"]++
+                    }
+
+                } else {
+                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
+
+                        if (!pdt.fechaRecepcion) {
+                            actual["retrasados"]++
+                        }else {
+                            actual["rezagados"]++
+                        }
+
+                        if (actual["personas"].size() == 0) {
+                            if (!pdt.fechaRecepcion)
+                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+                            else
+                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
+//                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+                        } else {
+                            def per = null
+                            actual["personas"].each { pe ->
+                                if (pe["id"] == pdt.persona.id.toString()) {
+                                    per = pe
+                                }
+                            }
+                            if (per) {
+                                if (!pdt.fechaRecepcion)
+                                    per["retrasados"]++
+                                else
+                                    per["rezagados"]++
+                                per["tramites"].add(pdt)
+                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
+                            } else {
+                                if (!pdt.fechaRecepcion)
+                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+                                else
+                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
+//                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+                            }
+                        }
+                    }else{
+//                        if (!pdt.fechaRecepcion)
+//                            datos["retrasados"]++
+//                        else
+//                            datos["rezagados"]++
+                    }
+                }
+                padreData=actual
+                //println "nuevo padre actual "+padreData["objeto"]+" --- "+padreData["retrasados"]+"  "+padreData["rezagados"]
+                lvl = actual["hijos"]
+            } else {
+//                println "no actual add lvl "+lvl
+
+
+
+                // println "padre no actual "+padreData["objeto"]+" !!!-----!!!!  "+padreData["retrasados"]+"  "+padreData["rezagados"]
+                def temp = [:]
+                temp.put("id", p.id.toString())
+                temp.put("objeto", p)
+                temp.put("tramites", [])
+                temp.put("hijos", [])
+                temp.put("personas", [])
+                temp.put("triangulos", p.getTriangulos())
+                temp.put("retrasados", 0)
+                temp.put("rezagados", 0)
+                temp.put("ofiRs",0)
+                temp.put("ofiRz",0)
+                if (!pdt.fechaRecepcion) {
+                    padreData["retrasados"]++
+                } else {
+                    padreData["rezagados"]++
+                }
+                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
+                if (depto == p) {
+
+                    if (!pdt.fechaRecepcion) {
+                        temp["retrasados"]++
+
+                    }else {
+                        temp["rezagados"]++
+
+                    }
+
+                    if (pdt.departamento) {
+                        if (!pdt.fechaRecepcion) {
+                            temp["ofiRs"]++
+
+                        }else {
+                            temp["ofiRz"]++
+
+                        }
+                        temp["tramites"].add(pdt)
+                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
+
+                    } else {
+                        if (!pdt.fechaRecepcion)
+                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+                        else
+                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
+//                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+                    }
+                }else{
+
+                }
+
+                temp.put("nivel", nivel)
+
+                lvl.add(temp)
+                padreData= temp
+                //println "padre nuevo "+padreData["objeto"]+" -- "+padreData["retrasados"]+"  "+padreData["rezagados"]
+//                println "fin add actual "+temp+"  nivel "+nivel
+//                println "asi quedo lvl "+lvl
+//                println "######################"
+                if (lvl.size() == 1) {
+
+                    lvl = lvl[0]["hijos"]
+                } else {
+                    //padre = lvl[lvl.size() - 1]
+                    lvl = lvl[lvl.size() - 1]["hijos"]
+                }
+//                println "lvl ? "+lvl
+                nivel++
+
+            }
+
+            actual = null
+        }
+
+//        println "cod "+cod
+////        println "lvl "+lvl
+//        println "datos fun "+datos
+////
+//        println "---------------------fin datos---------------------------------------"
+        return datos
+    }
+
+
 }

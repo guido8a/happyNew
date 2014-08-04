@@ -33,8 +33,8 @@ import java.awt.geom.Rectangle2D
 
 class RetrasadosController {
     def reportesPdfService
+    def maxLvl = null
 
-    def index() {}
     Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
     Font times10bold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
@@ -111,7 +111,7 @@ class RetrasadosController {
                         def resp = Tramite.findAllByAQuienContesta(pd)
                         if (resp.size() == 0) {
                             if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                                datos = jerarquia(datos, pd)
+                                datos = reportesPdfService.jerarquia(datos, pd)
                         }
                     }
                 }
@@ -152,6 +152,9 @@ class RetrasadosController {
         def contenido = new Paragraph();
 
         def hijos = datos["hijos"]
+        if((puedeVer.id.contains(datos["objeto"].id))){
+            maxLvl=datos
+        }
 
         def total = 0
         def totalSr = 0
@@ -161,7 +164,8 @@ class RetrasadosController {
             //println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
 //            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
-
+                if(maxLvl==null)
+                    maxLvl=lvl
                 def totalNode = 0
                 def totalNodeSr = 0
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
@@ -178,7 +182,7 @@ class RetrasadosController {
 //                        par.setIndentationLeft(lvl["nivel"]*20+10)
 //                        document.add(par)
                     lvl["triangulos"].each { t ->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina  - [ Sin Recepción: " + lvl["retrasados"] + " , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina  - [ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         if (totalNode == 0)
                             totalNode += lvl["rezagados"]
@@ -353,9 +357,11 @@ class RetrasadosController {
             totalSr+= res[1]
 
         }
+        if(maxLvl){
+            def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
+            document.add(par);
+        }
 
-        def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${total}       Sin Recepción: ${totalSr}     ", times12bold)
-        document.add(par);
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
@@ -378,6 +384,8 @@ class RetrasadosController {
 //            println "hijo funcion ${lvl['objeto']} "+lvl["objeto"].id+"    "+puedeVer.id
 
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                if(maxLvl==null)
+                    maxLvl=lvl
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
 //                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 def totalNode = 0
@@ -390,7 +398,7 @@ class RetrasadosController {
 
                 if (lvl["tramites"].size() > 0) {
                     lvl["triangulos"].each { t ->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina - [ Sin Recepción: " + lvl["retrasados"] + " , Retrasados: ${lvl['rezagados']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina - [ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         contenido.add(par)
                         if (totalNode == 0)
@@ -637,7 +645,7 @@ class RetrasadosController {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                            datos = jerarquia(datos, pd)
+                            datos = reportesPdfService.jerarquia(datos, pd)
                     }
                 }
             }
@@ -661,7 +669,9 @@ class RetrasadosController {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-
+        if((puedeVer.id.contains(datos["objeto"].id))){
+            maxLvl=datos
+        }
         PdfPTable tablaTramites
         tablaTramites = new PdfPTable(4);
         tablaTramites.setWidths(10, 66, 12, 12)
@@ -687,6 +697,8 @@ class RetrasadosController {
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (lvl["tramites"].size() > 0 || lvl["personas"].size() > 0) {
+                    if(maxLvl==null)
+                        maxLvl=lvl
                     datosGrafico.put(lvl["objeto"].toString(), [:])
                     def dg = datosGrafico[lvl["objeto"].toString()]
                     dg.put("rezagados", [:])
@@ -711,15 +723,15 @@ class RetrasadosController {
                     if (lvl["tramites"].size() > 0) {
                         lvl["triangulos"].each { t ->
                             usuarios += "${t} (Oficina)\n"
-                            totales += "${lvl["rezagados"]} \n"
-                            totalesSr += "" + lvl["retrasados"] + " \n"
+                            totales += "${lvl["ofiRz"]} \n"
+                            totalesSr += "" + lvl["ofiRs"] + " \n"
                             if (totalNode == 0) {
-                                totalNode += lvl["rezagados"].toInteger()
-                                dg["rezagados"].put("Oficina", lvl["rezagados"].toInteger())
+                                totalNode += lvl["ofiRz"].toInteger()
+                                dg["rezagados"].put("Oficina", lvl["ofiRz"].toInteger())
                             }
                             if (totalNodeSr == 0) {
-                                totalNodeSr += lvl["retrasados"].toInteger()
-                                dg["retrasados"].put("Oficina", lvl["retrasados"].toInteger())
+                                totalNodeSr += lvl["ofiRs"].toInteger()
+                                dg["retrasados"].put("Oficina", lvl["ofiRs"].toInteger())
                             }
                         }
                     }
@@ -734,18 +746,18 @@ class RetrasadosController {
                     }
 
                     tablaTramites.addCell(cellNombre);
-                    par = new Paragraph("" + totalNode, times8bold)
+                    par = new Paragraph("" + lvl["rezagados"], times8bold)
                     def cellTotal = new PdfPCell(par);
                     cellTotal.setBorderColor(Color.WHITE)
                     cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT)
                     tablaTramites.addCell(cellTotal);
-                    par = new Paragraph("" + totalNodeSr, times8bold)
+                    par = new Paragraph("" + lvl["retrasados"], times8bold)
                     def cellTotalSr = new PdfPCell(par);
                     cellTotalSr.setBorderColor(Color.WHITE)
                     cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
                     tablaTramites.addCell(cellTotalSr);
-                    dg["totalRz"] = totalNode
-                    dg["totalRs"] = totalNodeSr
+                    dg["totalRz"] = lvl["rezagados"]
+                    dg["totalRs"] = lvl["retrasados"]
                     par = new Paragraph("Usuario:", times8bold)
                     cell = new PdfPCell(par);
                     cell.setBorderColor(Color.WHITE)
@@ -773,25 +785,28 @@ class RetrasadosController {
             totalSr += res[1]
 
         }
-        def par = new Paragraph("", times8bold)
-        cell = new PdfPCell(par);
-        cell.setBorderColor(Color.WHITE)
-        tablaTramites.addCell(cell);
-        par = new Paragraph("Gran Total", times8bold)
-        cell = new PdfPCell(par);
-        cell.setBorderColor(Color.WHITE)
-        tablaTramites.addCell(cell);
-        par = new Paragraph("" + total, times8bold)
-        cell = new PdfPCell(par);
-        cell.setBorderColor(Color.WHITE)
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
-        tablaTramites.addCell(cell);
-        par = new Paragraph("" + totalSr, times8bold)
-        cell = new PdfPCell(par);
-        cell.setBorderColor(Color.WHITE)
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
-        tablaTramites.addCell(cell);
+        if(maxLvl) {
+            def par = new Paragraph("", times8bold)
+            cell = new PdfPCell(par);
+            cell.setBorderColor(Color.WHITE)
+            tablaTramites.addCell(cell);
+            par = new Paragraph("Gran Total", times8bold)
+            cell = new PdfPCell(par);
+            cell.setBorderColor(Color.WHITE)
+            tablaTramites.addCell(cell);
+            par = new Paragraph("" + maxLvl["rezagados"], times8bold)
+            cell = new PdfPCell(par);
+            cell.setBorderColor(Color.WHITE)
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+            tablaTramites.addCell(cell);
+            par = new Paragraph("" + maxLvl["retrasados"], times8bold)
+            cell = new PdfPCell(par);
+            cell.setBorderColor(Color.WHITE)
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+            tablaTramites.addCell(cell);
+        }
         contenido.add(tablaTramites)
+
 
         document.add(contenido)
 //
@@ -910,6 +925,8 @@ class RetrasadosController {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                if(maxLvl==null)
+                    maxLvl=lvl
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -917,7 +934,7 @@ class RetrasadosController {
                 dg.put("totalRz", 0)
                 dg.put("totalRs", 0)
                 dg.put("objeto", lvl["objeto"])
-                def par = new Paragraph("Dirección", times8bold)
+                def par = new Paragraph("Departamento", times8bold)
                 PdfPCell cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -934,15 +951,15 @@ class RetrasadosController {
                 if (lvl["tramites"].size() > 0) {
                     lvl["triangulos"].each { t ->
                         usuarios += "${t} (Oficina)\n"
-                        totales += "${lvl["rezagados"]} \n"
-                        totalesSr += "" + lvl["retrasados"] + " \n"
+                        totales += "${lvl["ofiRz"]} \n"
+                        totalesSr += "" + lvl["ofiRs"] + " \n"
                         if (totalNode == 0) {
-                            totalNode += lvl["rezagados"].toInteger()
-                            dg["rezagados"].put("Oficina", lvl["rezagados"].toInteger())
+                            totalNode += lvl["ofiRz"].toInteger()
+                            dg["rezagados"].put("Oficina", lvl["ofiRz"].toInteger())
                         }
                         if (totalNodeSr == 0) {
-                            totalNodeSr += lvl["retrasados"].toInteger()
-                            dg["retrasados"].put("Oficina", lvl["retrasados"].toInteger())
+                            totalNodeSr += lvl["ofiRs"].toInteger()
+                            dg["retrasados"].put("Oficina", lvl["ofiRs"].toInteger())
                         }
                     }
                 }
@@ -957,17 +974,17 @@ class RetrasadosController {
                 }
 
                 tablaTramites.addCell(cellNombre);
-                par = new Paragraph("" + totalNode, times8bold)
+                par = new Paragraph("" + lvl["rezagados"], times8bold)
                 def cellTotal = new PdfPCell(par);
                 cellTotal.setBorderColor(Color.WHITE)
                 cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT)
                 tablaTramites.addCell(cellTotal);
-                par = new Paragraph("" + totalNodeSr, times8bold)
+                par = new Paragraph("" + lvl["retrasados"], times8bold)
                 def cellTotalSr = new PdfPCell(par);
                 cellTotalSr.setBorderColor(Color.WHITE)
                 cellTotalSr.setHorizontalAlignment(Element.ALIGN_RIGHT)
-                dg["totalRz"] = totalNode
-                dg["totalRs"] = totalNodeSr
+                dg["totalRz"] = lvl["rezagados"]
+                dg["totalRs"] = lvl["retrasados"]
                 tablaTramites.addCell(cellTotalSr);
                 par = new Paragraph("Usuario:", times8bold)
                 cell = new PdfPCell(par);
@@ -1023,190 +1040,190 @@ class RetrasadosController {
         }
     }
 
-    def jerarquia(arr, pdt) {
-//        println "______________jerarquia______________"
-//        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
-        def datos = arr
-        def dep
-        if (pdt.departamento) {
-            dep = pdt.departamento
-        } else {
-            dep = pdt.persona.departamento
-        }
-        def padres = []
-        padres.add(dep)
-        while (dep.padre) {
-            padres.add(dep.padre)
-            dep = dep.padre
-        }
-//        println "padres "+padres
-        def first = padres.pop()
-        padres = padres.reverse()
-        def nivel = padres.size()
-        def lvl
-        if (datos["id"] != first.id.toString()) {
-//            println "no padre lvl 0"
-            datos.put("id", first.id.toString())
-            datos.put("objeto", first)
-            datos.put("tramites", [])
-            datos.put("hijos", [])
-            datos.put("personas", [])
-            datos.put("triangulos", first.getTriangulos())
-            datos.put("nivel", 0)
-            datos.put("retrasados", 0)
-            datos.put("rezagados", 0)
-            datos.put("totalRz",0)
-            datos.put("totalSr",0)
-        }
-        lvl = datos["hijos"]
-        def actual = null
-//        println "padres each "+padres
-
-//                println "puede ver "+puedeVer+"  "+p
-        if (!pdt.fechaRecepcion)
-            datos["totalSr"]++
-        else
-            datos["totalRz"]++
-
-
-        padres.each { p ->
-//            println "p.each "+p+"  nivel  "+nivel
-//            println "buscando........"
-
-            lvl.each { l ->
-//                println "\t lvl each --> "+l
-                if (l["id"] == p.id.toString()) {
-                    actual = l
-                }
-            }
-//            println "fin buscando ..............."
-//            println "actual --> "+actual
-            if (actual) {
-//                println "p--> "+p
-                if (pdt.departamento) {
-
-                    if (actual["id"] == pdt.departamento.id.toString()) {
-//                        println "es el mismo add tramites"
-                        if (!pdt.fechaRecepcion) {
-                            actual["retrasados"]++
-
-                        }else {
-                            actual["rezagados"]++
-
-                        }
-                        actual["tramites"].add(pdt)
-                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
-
-
-                    }
-
-                } else {
-                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
-                        if (actual["personas"].size() == 0) {
-                            if (!pdt.fechaRecepcion) {
-                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-
-                            }else {
-                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-
-                            }
-                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
-//                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                        } else {
-                            def per = null
-                            actual["personas"].each { pe ->
-                                if (pe["id"] == pdt.persona.id.toString()) {
-                                    per = pe
-                                }
-                            }
-                            if (per) {
-                                if (!pdt.fechaRecepcion) {
-                                    per["retrasados"]++
-                                    datos["totalSr"]++
-                                }else {
-                                    per["rezagados"]++
-                                    datos["totalRz"]++
-                                }
-                                per["tramites"].add(pdt)
-                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
-                            } else {
-                                if (!pdt.fechaRecepcion) {
-                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-
-                                }else {
-                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-
-                                }
-                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
-                                //println actual["personas"]
-//                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                            }
-                        }
-                    }
-                }
-                lvl = actual["hijos"]
-            } else {
-//                println "no actual add lvl "+lvl
-                def temp = [:]
-                temp.put("id", p.id.toString())
-                temp.put("objeto", p)
-                temp.put("tramites", [])
-                temp.put("hijos", [])
-                temp.put("personas", [])
-                temp.put("triangulos", p.getTriangulos())
-                temp.put("retrasados", 0)
-                temp.put("rezagados", 0)
-                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
-                if (depto == p) {
-                    if (pdt.departamento) {
-                        temp["tramites"].add(pdt)
-                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
-                        if (!pdt.fechaRecepcion) {
-                            temp["retrasados"]++
-
-                        }else {
-                            temp["rezagados"]++
-
-                        }
-                    } else {
-                        if (!pdt.fechaRecepcion) {
-                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-
-                        }else {
-                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-
-                        }
-                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
-//                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                    }
-                }
-
-                temp.put("nivel", nivel)
-
-                lvl.add(temp)
-//                println "fin add actual "+temp+"  nivel "+nivel
-//                println "asi quedo lvl "+lvl
-//                println "######################"
-                if (lvl.size() == 1) {
-                    lvl = lvl[0]["hijos"]
-                } else {
-                    lvl = lvl[lvl.size() - 1]["hijos"]
-                }
-//                println "lvl ? "+lvl
-                nivel++
-
-            }
-
-            actual = null
-        }
-
-//        println "cod "+cod
-////        println "lvl "+lvl
-//        println "datos fun "+datos
-////
-//        println "---------------------fin datos---------------------------------------"
-        return datos
-    }
+//    def jerarquia(arr, pdt) {
+////        println "______________jerarquia______________"
+////        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
+//        def datos = arr
+//        def dep
+//        if (pdt.departamento) {
+//            dep = pdt.departamento
+//        } else {
+//            dep = pdt.persona.departamento
+//        }
+//        def padres = []
+//        padres.add(dep)
+//        while (dep.padre) {
+//            padres.add(dep.padre)
+//            dep = dep.padre
+//        }
+////        println "padres "+padres
+//        def first = padres.pop()
+//        padres = padres.reverse()
+//        def nivel = padres.size()
+//        def lvl
+//        if (datos["id"] != first.id.toString()) {
+////            println "no padre lvl 0"
+//            datos.put("id", first.id.toString())
+//            datos.put("objeto", first)
+//            datos.put("tramites", [])
+//            datos.put("hijos", [])
+//            datos.put("personas", [])
+//            datos.put("triangulos", first.getTriangulos())
+//            datos.put("nivel", 0)
+//            datos.put("retrasados", 0)
+//            datos.put("rezagados", 0)
+//            datos.put("totalRz",0)
+//            datos.put("totalSr",0)
+//        }
+//        lvl = datos["hijos"]
+//        def actual = null
+////        println "padres each "+padres
+//
+////                println "puede ver "+puedeVer+"  "+p
+//        if (!pdt.fechaRecepcion)
+//            datos["totalSr"]++
+//        else
+//            datos["totalRz"]++
+//
+//
+//        padres.each { p ->
+////            println "p.each "+p+"  nivel  "+nivel
+////            println "buscando........"
+//
+//            lvl.each { l ->
+////                println "\t lvl each --> "+l
+//                if (l["id"] == p.id.toString()) {
+//                    actual = l
+//                }
+//            }
+////            println "fin buscando ..............."
+////            println "actual --> "+actual
+//            if (actual) {
+////                println "p--> "+p
+//                if (pdt.departamento) {
+//
+//                    if (actual["id"] == pdt.departamento.id.toString()) {
+////                        println "es el mismo add tramites"
+//                        if (!pdt.fechaRecepcion) {
+//                            actual["retrasados"]++
+//
+//                        }else {
+//                            actual["rezagados"]++
+//
+//                        }
+//                        actual["tramites"].add(pdt)
+//                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
+//
+//
+//                    }
+//
+//                } else {
+//                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
+//                        if (actual["personas"].size() == 0) {
+//                            if (!pdt.fechaRecepcion) {
+//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//
+//                            }else {
+//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+//
+//                            }
+//                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
+////                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                        } else {
+//                            def per = null
+//                            actual["personas"].each { pe ->
+//                                if (pe["id"] == pdt.persona.id.toString()) {
+//                                    per = pe
+//                                }
+//                            }
+//                            if (per) {
+//                                if (!pdt.fechaRecepcion) {
+//                                    per["retrasados"]++
+//                                    datos["totalSr"]++
+//                                }else {
+//                                    per["rezagados"]++
+//                                    datos["totalRz"]++
+//                                }
+//                                per["tramites"].add(pdt)
+//                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
+//                            } else {
+//                                if (!pdt.fechaRecepcion) {
+//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//
+//                                }else {
+//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+//
+//                                }
+//                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
+//                                //println actual["personas"]
+////                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                            }
+//                        }
+//                    }
+//                }
+//                lvl = actual["hijos"]
+//            } else {
+////                println "no actual add lvl "+lvl
+//                def temp = [:]
+//                temp.put("id", p.id.toString())
+//                temp.put("objeto", p)
+//                temp.put("tramites", [])
+//                temp.put("hijos", [])
+//                temp.put("personas", [])
+//                temp.put("triangulos", p.getTriangulos())
+//                temp.put("retrasados", 0)
+//                temp.put("rezagados", 0)
+//                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
+//                if (depto == p) {
+//                    if (pdt.departamento) {
+//                        temp["tramites"].add(pdt)
+//                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
+//                        if (!pdt.fechaRecepcion) {
+//                            temp["retrasados"]++
+//
+//                        }else {
+//                            temp["rezagados"]++
+//
+//                        }
+//                    } else {
+//                        if (!pdt.fechaRecepcion) {
+//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//
+//                        }else {
+//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+//
+//                        }
+//                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
+////                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                    }
+//                }
+//
+//                temp.put("nivel", nivel)
+//
+//                lvl.add(temp)
+////                println "fin add actual "+temp+"  nivel "+nivel
+////                println "asi quedo lvl "+lvl
+////                println "######################"
+//                if (lvl.size() == 1) {
+//                    lvl = lvl[0]["hijos"]
+//                } else {
+//                    lvl = lvl[lvl.size() - 1]["hijos"]
+//                }
+////                println "lvl ? "+lvl
+//                nivel++
+//
+//            }
+//
+//            actual = null
+//        }
+//
+////        println "cod "+cod
+//////        println "lvl "+lvl
+////        println "datos fun "+datos
+//////
+////        println "---------------------fin datos---------------------------------------"
+//        return datos
+//    }
 
     def arreglaTramites() {
         Tramite.list().each {

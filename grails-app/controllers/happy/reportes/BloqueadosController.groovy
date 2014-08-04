@@ -78,7 +78,7 @@ class BloqueadosController {
 
         PdfPTable tablaTramites
         tablaTramites = new PdfPTable(2);
-        tablaTramites.setWidths(50,50)
+        tablaTramites.setWidths(70,30)
         tablaTramites.setWidthPercentage(100);
         def parH = new Paragraph("Departamento", times8bold)
         def cell = new PdfPCell(parH);

@@ -17,8 +17,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 class RetrasadosExcelController {
-
-
+    def maxLvl = null
+    def reportesPdfService
     def reporteRetrasadosDetalle() {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
@@ -83,7 +83,7 @@ class RetrasadosExcelController {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                            datos = jerarquia(datos, pd)
+                            datos = reportesPdfService.jerarquia(datos, pd)
                     }
                 }
             }
@@ -91,7 +91,9 @@ class RetrasadosExcelController {
 
 
         def hijos = datos["hijos"]
-
+        if((puedeVer.id.contains(datos["objeto"].id))){
+            maxLvl=datos
+        }
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
         //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
@@ -135,6 +137,8 @@ class RetrasadosExcelController {
 
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                if(maxLvl==null)
+                    maxLvl=lvl
                 row.createCell((int) 0).setCellValue("" + lvl["objeto"])
                 if (lvl["tramites"].size() > 0) {
                     lvl["triangulos"].each { t ->
@@ -143,7 +147,7 @@ class RetrasadosExcelController {
                         row.createCell((int) 0).setCellValue("Usuario:")
                         row.createCell((int) 1).setCellValue("${t.departamento.codigo}:" + t)
                         row.createCell((int) 2).setCellValue("${t.login} (oficina)")
-                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["retrasados"] + " , Retrasados: ${lvl['rezagados']} ]")
+                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]")
                     }
                     num++
                     row = sheet.createRow((short) num);
@@ -216,7 +220,12 @@ class RetrasadosExcelController {
             num = imprimeHijosPdf(lvl, sheet, num, params, usuario, deps, puedeVer)
 
         }
-
+        if(maxLvl){
+            row = sheet.createRow((short) num);
+            row.createCell((int) 1).setCellValue("TOTAL");
+            row.createCell((int) 2).setCellValue(maxLvl["rezagados"]);
+            row.createCell((int) 3).setCellValue(maxLvl["retrasados"]);
+        }
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();
@@ -243,6 +252,8 @@ class RetrasadosExcelController {
         datos.each { lvl ->
 
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                if(maxLvl==null)
+                    maxLvl=lvl
                 num++
                 row = sheet.createRow((short) num);
                 row.createCell((int) 0).setCellValue("" + lvl["objeto"])
@@ -253,7 +264,7 @@ class RetrasadosExcelController {
                         row.createCell((int) 0).setCellValue("Usuario:")
                         row.createCell((int) 1).setCellValue("${t.departamento.codigo}:" + t)
                         row.createCell((int) 2).setCellValue("${t.login} (oficina)")
-                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["retrasados"] + " , Retrasados: ${lvl['rezagados']} ]")
+                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]")
                     }
                     num++
                     row = sheet.createRow((short) num);
@@ -391,7 +402,7 @@ class RetrasadosExcelController {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                            datos = jerarquia(datos, pd)
+                            datos = reportesPdfService.jerarquia(datos, pd)
                     }
                 }
             }
@@ -424,6 +435,9 @@ class RetrasadosExcelController {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
+        if((puedeVer.id.contains(datos["objeto"].id))){
+            maxLvl=datos
+        }
 
         XSSFRow rowHead = sheet.createRow((short) 0);
         rowHead.setHeightInPoints(14)
@@ -451,53 +465,59 @@ class RetrasadosExcelController {
         rowNode.setHeightInPoints(14)
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                if(maxLvl==null)
+                    maxLvl=lvl
+                //println "imprime departamento padre"+lvl["objeto"] +"  en "+(num-1)
+                rowNode.createCell((int) 0).setCellValue("Dirección:");
+                rowNode.createCell((int) 1).setCellValue("" + lvl["objeto"]);
+                def totalNode = 0
+                def totalNodeSr
+
                 if (lvl["tramites"].size() > 0) {
-                    rowNode.createCell((int) 0).setCellValue("Dirección:");
-                    rowNode.createCell((int) 1).setCellValue("" + lvl["objeto"]);
-                    def totalNode = 0
-                    def totalNodeSr
-
-                    if (lvl["tramites"].size() > 0) {
-                        row.createCell((int) 0).setCellValue("Usuarios");
-                        lvl["triangulos"].each { t ->
-                            row.createCell((int) 1).setCellValue("${t} (Oficina)");
-                            row.createCell((int) 2).setCellValue(lvl["rezagados"]);
-                            row.createCell((int) 3).setCellValue(lvl["retrasados"]);
-                            num++
-                            row = sheet.createRow((short) num);
-                            if (totalNode == 0)
-                                totalNode += lvl["rezagados"]
-                            if (totalNodeSr == 0)
-                                totalNodeSr += lvl["retrasados"]
-
-                        }
-                    }
-                    lvl["personas"].each { p ->
-                        row.createCell((int) 1).setCellValue("${p['objeto']}");
-                        row.createCell((int) 2).setCellValue(p['rezagados']);
-                        row.createCell((int) 3).setCellValue(p['retrasados']);
+                    row.createCell((int) 0).setCellValue("Usuarios");
+                    lvl["triangulos"].each { t ->
+                        row.createCell((int) 1).setCellValue("${t} (Oficina)");
+                        row.createCell((int) 2).setCellValue(lvl["ofiRz"]);
+                        row.createCell((int) 3).setCellValue(lvl["ofiRs"]);
                         num++
                         row = sheet.createRow((short) num);
-                        totalNode += p["rezagados"]
-                        if (totalNodeSr && p["retrasados"]) {
-                            totalNodeSr += p["retrasados"]
-                        }
+                        if (totalNode == 0)
+                            totalNode += lvl["ofiRz"]
+                        if (totalNodeSr == 0)
+                            totalNodeSr += lvl["ofiRs"]
+
                     }
-                    rowNode.createCell((int) 2).setCellValue(totalNode);
-                    rowNode.createCell((int) 3).setCellValue(totalNodeSr);
-                    total += totalNode
                 }
+                lvl["personas"].each { p ->
+                    row.createCell((int) 1).setCellValue("${p['objeto']}");
+                    row.createCell((int) 2).setCellValue(p['rezagados']);
+                    row.createCell((int) 3).setCellValue(p['retrasados']);
+                    num++
+                    row = sheet.createRow((short) num);
+                    totalNode += p["rezagados"]
+                    if (totalNodeSr && p["retrasados"]) {
+                        totalNodeSr += p["retrasados"]
+                    }
+                }
+                rowNode.createCell((int) 2).setCellValue(lvl["rezagados"]);
+                rowNode.createCell((int) 3).setCellValue(lvl["retrasados"]);
+                total += totalNode
+                rowNode=sheet.createRow((short) num);
+                num++
+
             }
             def res = imprimeHijosXlsConsolidado(lvl, sheet, num, params, usuario, deps, puedeVer, total)
             total += res[0]
             totalSr += res[2]
             num = res[1]
         }
+        if(maxLvl){
+            row = sheet.createRow((short) num);
+            row.createCell((int) 1).setCellValue("TOTAL");
+            row.createCell((int) 2).setCellValue(maxLvl["rezagados"]);
+            row.createCell((int) 3).setCellValue(maxLvl["retrasados"]);
+        }
 
-        row = sheet.createRow((short) num);
-        row.createCell((int) 1).setCellValue("TOTAL");
-        row.createCell((int) 2).setCellValue(total);
-        row.createCell((int) 3).setCellValue(totalSr);
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();
@@ -530,40 +550,42 @@ class RetrasadosExcelController {
         rowNode.setHeightInPoints(14)
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if (lvl["tramites"].size() > 0) {
-                    rowNode.createCell((int) 0).setCellValue("Oficina:");
-                    rowNode.createCell((int) 1).setCellValue("" + lvl["objeto"]);
-                    def totalNode = 0
-                    def totalNodeSr = 0
+                if(maxLvl==null)
+                    maxLvl=lvl
+                //println "imprime departamento "+lvl["objeto"] +"  en "+(num-1)
+                rowNode.createCell((int) 0).setCellValue("Departamento:");
+                rowNode.createCell((int) 1).setCellValue("" + lvl["objeto"]);
+                def totalNode = 0
+                def totalNodeSr = 0
 
-                    if (lvl["tramites"].size() > 0) {
-                        row.createCell((int) 0).setCellValue("Usuarios");
-                        lvl["triangulos"].each { t ->
-                            row.createCell((int) 1).setCellValue("${t} (Oficina)");
-                            row.createCell((int) 2).setCellValue(lvl["rezagados"]);
-                            row.createCell((int) 3).setCellValue(lvl["retrasados"]);
-                            num++
-                            row = sheet.createRow((short) num);
-                            if (totalNode == 0)
-                                totalNode += lvl["rezagados"]
-                            if (totalNodeSr == 0)
-                                totalNodeSr += lvl["retrasados"]
-                        }
-                    }
-                    lvl["personas"].each { p ->
-                        row.createCell((int) 1).setCellValue("${p['objeto']}");
-                        row.createCell((int) 2).setCellValue(p['rezagados']);
-                        row.createCell((int) 3).setCellValue(p['retrasados']);
+                if (lvl["tramites"].size() > 0) {
+                    row.createCell((int) 0).setCellValue("Usuarios");
+                    lvl["triangulos"].each { t ->
+                        row.createCell((int) 1).setCellValue("${t} (Oficina)");
+                        row.createCell((int) 2).setCellValue(lvl["ofiRz"]);
+                        row.createCell((int) 3).setCellValue(lvl["ofiRs"]);
                         num++
                         row = sheet.createRow((short) num);
-                        totalNode += p["rezagados"]
-                        totalNodeSr += p["retrasados"]
+                        if (totalNode == 0)
+                            totalNode += lvl["ofiRz"]
+                        if (totalNodeSr == 0)
+                            totalNodeSr += lvl["ofiRs"]
                     }
-                    rowNode.createCell((int) 2).setCellValue(totalNode);
-                    rowNode.createCell((int) 3).setCellValue(totalNodeSr);
-                    total += totalNode
-                    totalSr += totalNodeSr
                 }
+                lvl["personas"].each { p ->
+                    row.createCell((int) 1).setCellValue("${p['objeto']}");
+                    row.createCell((int) 2).setCellValue(p['rezagados']);
+                    row.createCell((int) 3).setCellValue(p['retrasados']);
+                    num++
+                    row = sheet.createRow((short) num);
+                    totalNode += p["rezagados"]
+                    totalNodeSr += p["retrasados"]
+                }
+                rowNode.createCell((int) 2).setCellValue(lvl["rezagados"]);
+                rowNode.createCell((int) 3).setCellValue(lvl["retrasados"]);
+                total += totalNode
+                totalSr += totalNodeSr
+
             }
 
             if (lvl["hijos"].size() > 0) {
@@ -578,156 +600,156 @@ class RetrasadosExcelController {
     }
 
 
-    def jerarquia(arr, pdt) {
-//        println "______________jerarquia______________"
-//        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
-        def datos = arr
-        def dep
-        if (pdt.departamento) {
-            dep = pdt.departamento
-        } else {
-            dep = pdt.persona.departamento
-        }
-        def padres = []
-        padres.add(dep)
-        while (dep.padre) {
-            padres.add(dep.padre)
-            dep = dep.padre
-        }
-//        println "padres "+padres
-        def first = padres.pop()
-        padres = padres.reverse()
-        def nivel = padres.size()
-        def lvl
-        if (datos["id"] != first.id.toString()) {
-//            println "no padre lvl 0"
-            datos.put("id", first.id.toString())
-            datos.put("objeto", first)
-            datos.put("tramites", [])
-            datos.put("hijos", [])
-            datos.put("personas", [])
-            datos.put("triangulos", first.getTriangulos())
-            datos.put("nivel", 0)
-            datos.put("retrasados", 0)
-            datos.put("rezagados", 0)
-        }
-        lvl = datos["hijos"]
-        def cod = ""
-        def actual = null
-//        println "padres each "+padres
-        padres.each { p ->
-//            println "p.each "+p+"  nivel  "+nivel
-//            println "buscando........"
-            lvl.each { l ->
-//                println "\t lvl each --> "+l
-                if (l["id"] == p.id.toString()) {
-                    actual = l
-                }
-            }
-//            println "fin buscando ..............."
-//            println "actual --> "+actual
-            if (actual) {
-//                println "p--> "+p
-                if (pdt.departamento) {
-
-                    if (actual["id"] == pdt.departamento.id.toString()) {
-//                        println "es el mismo add tramites"
-                        if (!pdt.fechaRecepcion)
-                            actual["retrasados"]++
-                        else
-                            actual["rezagados"]++
-                        actual["tramites"].add(pdt)
-                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
-                    }
-
-                } else {
-                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
-                        if (actual["personas"].size() == 0) {
-                            if (!pdt.fechaRecepcion)
-                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                            else
-                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                        } else {
-                            def per = null
-                            actual["personas"].each { pe ->
-                                if (pe["id"] == pdt.persona.id.toString()) {
-                                    per = pe
-                                }
-                            }
-                            if (per) {
-                                if (!pdt.fechaRecepcion)
-                                    per["retrasados"]++
-                                else
-                                    per["rezagados"]++
-                                per["tramites"].add(pdt)
-                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
-                            } else {
-                                if (!pdt.fechaRecepcion)
-                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                                else
-                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                            }
-                        }
-                    }
-                }
-                lvl = actual["hijos"]
-            } else {
-//                println "no actual add lvl "+lvl
-                def temp = [:]
-                temp.put("id", p.id.toString())
-                temp.put("objeto", p)
-                temp.put("tramites", [])
-                temp.put("hijos", [])
-                temp.put("personas", [])
-                temp.put("triangulos", p.getTriangulos())
-                temp.put("retrasados", 0)
-                temp.put("rezagados", 0)
-                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
-                if (depto == p) {
-                    if (pdt.departamento) {
-                        temp["tramites"].add(pdt)
-                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
-                        if (!pdt.fechaRecepcion)
-                            temp["retrasados"]++
-                        else
-                            temp["rezagados"]++
-                    } else {
-                        if (!pdt.fechaRecepcion)
-                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                        else
-                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-                    }
-                }
-
-                temp.put("nivel", nivel)
-
-                lvl.add(temp)
-//                println "fin add actual "+temp+"  nivel "+nivel
-//                println "asi quedo lvl "+lvl
-//                println "######################"
-                if (lvl.size() == 1) {
-                    lvl = lvl[0]["hijos"]
-                } else {
-                    lvl = lvl[lvl.size() - 1]["hijos"]
-                }
-//                println "lvl ? "+lvl
-                nivel++
-
-            }
-
-            actual = null
-        }
-
-//        println "cod "+cod
-////        println "lvl "+lvl
-//        println "datos fun "+datos
-////
-//        println "---------------------fin datos---------------------------------------"
-        return datos
-    }
+//    def jerarquia(arr, pdt) {
+////        println "______________jerarquia______________"
+////        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
+//        def datos = arr
+//        def dep
+//        if (pdt.departamento) {
+//            dep = pdt.departamento
+//        } else {
+//            dep = pdt.persona.departamento
+//        }
+//        def padres = []
+//        padres.add(dep)
+//        while (dep.padre) {
+//            padres.add(dep.padre)
+//            dep = dep.padre
+//        }
+////        println "padres "+padres
+//        def first = padres.pop()
+//        padres = padres.reverse()
+//        def nivel = padres.size()
+//        def lvl
+//        if (datos["id"] != first.id.toString()) {
+////            println "no padre lvl 0"
+//            datos.put("id", first.id.toString())
+//            datos.put("objeto", first)
+//            datos.put("tramites", [])
+//            datos.put("hijos", [])
+//            datos.put("personas", [])
+//            datos.put("triangulos", first.getTriangulos())
+//            datos.put("nivel", 0)
+//            datos.put("retrasados", 0)
+//            datos.put("rezagados", 0)
+//        }
+//        lvl = datos["hijos"]
+//        def cod = ""
+//        def actual = null
+////        println "padres each "+padres
+//        padres.each { p ->
+////            println "p.each "+p+"  nivel  "+nivel
+////            println "buscando........"
+//            lvl.each { l ->
+////                println "\t lvl each --> "+l
+//                if (l["id"] == p.id.toString()) {
+//                    actual = l
+//                }
+//            }
+////            println "fin buscando ..............."
+////            println "actual --> "+actual
+//            if (actual) {
+////                println "p--> "+p
+//                if (pdt.departamento) {
+//
+//                    if (actual["id"] == pdt.departamento.id.toString()) {
+////                        println "es el mismo add tramites"
+//                        if (!pdt.fechaRecepcion)
+//                            actual["retrasados"]++
+//                        else
+//                            actual["rezagados"]++
+//                        actual["tramites"].add(pdt)
+//                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
+//                    }
+//
+//                } else {
+//                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
+//                        if (actual["personas"].size() == 0) {
+//                            if (!pdt.fechaRecepcion)
+//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//                            else
+//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+////                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                        } else {
+//                            def per = null
+//                            actual["personas"].each { pe ->
+//                                if (pe["id"] == pdt.persona.id.toString()) {
+//                                    per = pe
+//                                }
+//                            }
+//                            if (per) {
+//                                if (!pdt.fechaRecepcion)
+//                                    per["retrasados"]++
+//                                else
+//                                    per["rezagados"]++
+//                                per["tramites"].add(pdt)
+//                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
+//                            } else {
+//                                if (!pdt.fechaRecepcion)
+//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//                                else
+//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+////                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                            }
+//                        }
+//                    }
+//                }
+//                lvl = actual["hijos"]
+//            } else {
+////                println "no actual add lvl "+lvl
+//                def temp = [:]
+//                temp.put("id", p.id.toString())
+//                temp.put("objeto", p)
+//                temp.put("tramites", [])
+//                temp.put("hijos", [])
+//                temp.put("personas", [])
+//                temp.put("triangulos", p.getTriangulos())
+//                temp.put("retrasados", 0)
+//                temp.put("rezagados", 0)
+//                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
+//                if (depto == p) {
+//                    if (pdt.departamento) {
+//                        temp["tramites"].add(pdt)
+//                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
+//                        if (!pdt.fechaRecepcion)
+//                            temp["retrasados"]++
+//                        else
+//                            temp["rezagados"]++
+//                    } else {
+//                        if (!pdt.fechaRecepcion)
+//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
+//                        else
+//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+////                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
+//                    }
+//                }
+//
+//                temp.put("nivel", nivel)
+//
+//                lvl.add(temp)
+////                println "fin add actual "+temp+"  nivel "+nivel
+////                println "asi quedo lvl "+lvl
+////                println "######################"
+//                if (lvl.size() == 1) {
+//                    lvl = lvl[0]["hijos"]
+//                } else {
+//                    lvl = lvl[lvl.size() - 1]["hijos"]
+//                }
+////                println "lvl ? "+lvl
+//                nivel++
+//
+//            }
+//
+//            actual = null
+//        }
+//
+////        println "cod "+cod
+//////        println "lvl "+lvl
+////        println "datos fun "+datos
+//////
+////        println "---------------------fin datos---------------------------------------"
+//        return datos
+//    }
 
 
 }
