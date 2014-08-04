@@ -291,9 +291,11 @@ class ElementosTagLib {
 
         if (!attrs.pdf) {
             html = "<div style=\"margin-top: 30px;padding-bottom: 10px\" class=\"vertical-container header-tramite\">"
+            //tipo de documento
             html += "            <div class=\"titulo-azul titulo-horizontal\" style=\"margin-left: -50px\">"
             html += "                ${tramite.tipoDocumento?.descripcion} ${attrs.extraTitulo ?: ''}"
             html += "            </div>"
+            //No. documento
             html += "            <div class=\"row row-low-margin-top\" style=\"margin-top: 5px;\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
             html += "                    No."
@@ -305,22 +307,11 @@ class ElementosTagLib {
 //            html += "                    No. <span style=\"font-weight: 500; margin-left: 40px\">${tramite.codigo}</span>"
 //            html += "                </div>"
             html += "            </div>"
-            html += "            <div class=\"row row-low-margin-top\">"
-            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-            html += "                    DE"
-            html += "                </div>"
-            html += "                <div class=\"col-xs-10  col-buen-height\">"
-            if (tramite.tipoDocumento.codigo == "DEX") {
-                html += "                    ${tramite.paraExterno} (ext.)"
-            } else {
-                html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
-            }
-            html += "                </div>"
-            html += "            </div>"
+            //para
             if (para || tramite.paraExterno) {
                 html += "                <div class=\"row row-low-margin-top\">"
                 html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-                html += "                        PARA"
+                html += "                        Para:"
                 html += "                    </div>"
                 html += ""
                 html += "                    <div class=\"col-xs-10  col-buen-height\">"
@@ -333,18 +324,32 @@ class ElementosTagLib {
                 html += "                    </div>"
                 html += "                </div>"
             }
+            //de
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-            html += "                    FECHA"
+            html += "                    De:"
+            html += "                </div>"
+            html += "                <div class=\"col-xs-10  col-buen-height\">"
+            if (tramite.tipoDocumento.codigo == "DEX") {
+                html += "                    ${tramite.paraExterno} (ext.)"
+            } else {
+                html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+            }
+            html += "                </div>"
+            html += "            </div>"
+            //fecha
+            html += "            <div class=\"row row-low-margin-top\">"
+            html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+            html += "                    Fecha:"
             html += "                </div>"
             html += "                <div class=\"col-xs-10  col-buen-height\">"
             html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
             html += "                </div>"
             html += "            </div>"
-            html += ""
+            //asunto
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
-            html += "                    ASUNTO"
+            html += "                    Asunto:"
             html += "                </div>"
             html += ""
             html += "                <div class=\"col-xs-10  col-buen-height\">"
@@ -353,37 +358,61 @@ class ElementosTagLib {
             html += "            </div>"
             html += "        </div>"
         } else {
+            //tipo documento
             html = "<div class=\"titulo-azul titulo-horizontal\">"
             html += tramite.tipoDocumento?.descripcion
             html += "</div>"
             html += "<table class='tramiteHeader'>"
+            //no. documento
             html += "<tr>"
-            html += "<td class='negrilla'><b>No.</b></td>"
+            html += "<th>No.</th>"
             html += "<td>${tramite.codigo}</td>"
 //            html += "<td colspan='2'>"
 //            html += "<b>No.</b> ${tramite.codigo}"
 //            html += "</td>"
             html += "</tr>"
+            //para
+//            html += "<tr>"
+//            html += "<td class='negrilla'><b>Para:</b></td>"
+//            html += "<td>${strPara}</td>"
+//            html += "</tr>"
+            if (para || tramite.paraExterno) {
+                html += "<tr>"
+                html += "<th>Para:</th>"
+                html += "<td>"
+                if (tramite.tipoDocumento.codigo != "DEX") {
+                    if (tramite.paraExterno) {
+                        strPara = tramite.paraExterno
+                    }
+                }
+                html += strPara
+                html += "</td>"
+                html += "</tr>"
+            }
+            //de
             html += "<tr>"
-            html += "<td class='negrilla'><b>DE</b></td>"
-            if (tramite?.de?.nombre) {
-                html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
+            html += "<th>De:</th>"
+//            if (tramite?.de?.nombre) {
+//                html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
+//            } else {
+//                html += "<td>${tramite.de.departamento.descripcion}</td>"
+//            }
+            if (tramite.tipoDocumento.codigo == "DEX") {
+                html += "<td>${tramite.paraExterno} (ext.)</td>"
             } else {
-                html += "<td>${tramite.de.departamento.descripcion}</td>"
+                html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
             }
             html += "</tr>"
+            //fecha
             html += "<tr>"
-            html += "<td class='negrilla'><b>PARA</b></td>"
-            html += "<td>${strPara}</td>"
-            html += "</tr>"
-            html += "<tr>"
-            html += "<td class='negrilla'><b>FECHA</b></td>"
+            html += "<th>Fecha:</th>"
             html += "<td>"
             html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
             html += "</td>"
             html += "</tr>"
+            //asunto
             html += "<tr>"
-            html += "<td class='negrilla'><b>ASUNTO</b></td>"
+            html += "<th>Asunto:</th>"
             html += "<td>${tramite.asunto ?: ''}</td>"
             html += "</tr>"
             html += "</table>"

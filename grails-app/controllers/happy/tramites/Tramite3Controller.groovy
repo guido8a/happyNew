@@ -106,13 +106,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     //println "entro aqui"
                     def pdt = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
                     //println "dpt "+pdt
-                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt,EstadoTramite.findByCodigo("E006"))
+                    def hijos = Tramite.findAllByAQuienContestaAndEstadoNotEqual(pdt, EstadoTramite.findByCodigo("E006"))
                     def tiene = false
-                    hijos.each {h->
+                    hijos.each { h ->
 //                        println "hijo -> "+h
-                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h,[RolPersonaTramite.findByCodigo("E001"),RolPersonaTramite.findByCodigo("E002")]).each {pq->
+                        PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if(pq.estado?.codigo!="E006")
+                            if (pq.estado?.codigo != "E006")
                                 tiene = true
                         }
                     }
@@ -712,7 +712,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (request.getMethod() == "POST") {
 
 
-
             def persona = Persona.get(session.usuario.id)
 
             def tramite = Tramite.get(params.id)
@@ -763,6 +762,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (params.source == "bed")
                 triangulo = true
             def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
+            def estadoAnulado = EstadoTramite.findByCodigo('E006') //recibido
+            def estadoArchivado = EstadoTramite.findByCodigo('E005') //recibido
 //            println "es circu "+esCircular+" depto "+triangulo
             def pxt = PersonaDocumentoTramite.withCriteria {
                 eq("tramite", tramite)
@@ -788,6 +789,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     eq("rolPersonaTramite", rolCC)
                     eq("rolPersonaTramite", rolImprimir)
                 }
+                and {
+                    ne("estado", estadoAnulado)
+                    ne("estado", estadoArchivado)
+                }
             }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
 
 //        println "tramite: " + tramite
@@ -799,34 +804,33 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            println "pxt 1 "+pxt.estado.codigo
 
 
-
-                if (pxt.size() > 1) {
-                    pxt.each {
-                        println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
-                    }
-//                flash.message = "ERROR"
-                    println "mas de 1 PDT: ${pxt}"
-//                redirect(action: "errores")
-                    return
-                } else if (pxt.size() == 0) {
-                    flash.message = "ERROR"
-                    println "0 PDT"
-                    redirect(action: "errores")
-                } else {
-                    pxt = pxt.first()
-                    def recibe = true
-                    if (noRecibe.contains(pxt.estado)) {
-                        recibe = false
-                    }
-                    if (!recibe) {
-                        render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
-                        return
-                    }
+            if (pxt.size() > 1) {
+                pxt.each {
+                    println " " + it.persona + "   " + it.departamento + "   " + it.rolPersonaTramite.descripcion + "  " + it.tramite
                 }
+//                flash.message = "ERROR"
+                println "mas de 1 PDT: ${pxt}"
+//                redirect(action: "errores")
+                return
+            } else if (pxt.size() == 0) {
+                flash.message = "ERROR"
+                println "0 PDT"
+                redirect(action: "errores")
+            } else {
+                pxt = pxt.first()
+                def recibe = true
+                if (noRecibe.contains(pxt.estado)) {
+                    recibe = false
+                }
+                if (!recibe) {
+                    render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
+                    return
+                }
+            }
 
 //            println("pxt 2"  + pxt )
 
-            if(pxt.estado.codigo != "E004"){
+            if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {
                     tramite.estadoTramite = estadoRecibido
@@ -866,13 +870,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     pdt.fechaLimiteRespuesta = limite
                     def alerta
                     if (pxt.departamento) {
-                        alerta = Alerta.findByTramiteAndDepartamento(pxt.tramite,pxt.departamento)
+                        alerta = Alerta.findByTramiteAndDepartamento(pxt.tramite, pxt.departamento)
                     }
                     if (pxt.persona) {
-                        alerta = Alerta.findByTramiteAndPersona(pxt.tramite,pxt.persona)
+                        alerta = Alerta.findByTramiteAndPersona(pxt.tramite, pxt.persona)
                     }
                     if (alerta) {
-                        if (alerta.fechaRecibido==null) {
+                        if (alerta.fechaRecibido == null) {
                             alerta.mensaje += " - Recibido"
                             alerta.fechaRecibido = new Date()
                             alerta.save()
@@ -892,7 +896,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     println tramite.errors
                     render "NO_Ocurrió un error al recibir"
                 }
-            }else{
+            } else {
                 render "NO_Ocurrió un error al recibir"
             }
 
@@ -900,8 +904,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         } else {
             response.sendError(403)
         }
-
-
 
 
     }
