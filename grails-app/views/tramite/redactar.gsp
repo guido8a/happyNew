@@ -34,13 +34,14 @@
         .hoja {
             /*background: #abcdef;*/
             margin : auto;
+            float: right;
             width  : 19cm;
         }
 
         .nota {
             position           : absolute;
             left               : 15px;
-            top                : 260px;
+            top                : 240px;
             padding            : 10px;
             background         : #EFEFD1;
             border             : solid 1px #867722;

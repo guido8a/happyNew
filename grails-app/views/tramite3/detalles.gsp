@@ -95,9 +95,9 @@
         </g:if>
         <g:if test="${t.observaciones}">
             <div class="row" style="margin-bottom: 10px">
-                <div class="col-xs-1 negrilla">Obs:</div>
+                <div class="col-xs-1 negrilla">Obser:</div>
 
-                <div class="col-xs-8">${t.observaciones}</div>
+                <div class="col-xs-10">${t.observaciones}</div>
             </div>
         </g:if>
         <g:if test="${t.anexo == 1}">
@@ -212,9 +212,9 @@
 
         <g:if test="${t.observaciones}">
             <div class="row" style="margin-bottom: 10px">
-                <div class="col-xs-1 negrilla">Obs:</div>
+                <div class="col-xs-1 negrilla">Obser:</div>
 
-                <div class="col-xs-8">${tramite.observaciones}</div>
+                <div class="col-xs-10">${tramite.observaciones}</div>
             </div>
         </g:if>
         <g:if test="${t.anexo == 1}">
