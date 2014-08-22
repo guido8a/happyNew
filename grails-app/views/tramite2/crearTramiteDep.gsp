@@ -1038,14 +1038,23 @@
 
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {
+                    var tpdc = $("#tipoDocumento").val()
                     if ($(".frmTramite").valid()) {
                         var cc = "";
                         $("#ulSeleccionados li").each(function () {
                             cc += $(this).data("id") + "_";
                         });
-                        $("#hiddenCC").val(cc);
-                        $(".frmTramite").submit();
+
+                       if(!cc && tpdc == 4){
+                           log("No ha ingresado ningun destinatario!", 'error')
+                       }else{
+                           $("#hiddenCC").val(cc);
+                           $(".frmTramite").submit();
+                       }
+
+//                        console.log("-->" + cc)
                     }
+
                     return false;
                 });
                 </g:if>

@@ -924,16 +924,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def trams = []
         def trams2 = []
 
+
+
         tramites.each { tr ->
-            def pxd = PersonaDocumentoTramite.withCriteria {
-                eq("tramite", tr)
-                inList("rolPersonaTramite", [para, cc])
-                isNull("fechaRecepcion")
-            }
-            if (pxd.size() > 0) {
-                trams += tr
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            pdt.each { pd ->
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+                    if (!trams.contains(tr))
+                        trams += tr
+                }
             }
         }
+
 
 //busqueda
 
@@ -1786,14 +1788,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
             order("fechaCreacion", "desc")
         }
 //        println "tramites "+trams.codigo
+
+
         trams.each { tr ->
-            def pxd = PersonaDocumentoTramite.withCriteria {
-                eq("tramite", tr)
-                inList("rolPersonaTramite", [para, cc])
-                isNull("fechaRecepcion")
-            }
-            if (pxd.size() > 0) {
-                tramites += tr
+            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            pdt.each { pd ->
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+                    if (!tramites.contains(tr))
+                        tramites += tr
+                }
             }
         }
 

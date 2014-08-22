@@ -1299,7 +1299,6 @@ class TramiteController extends happy.seguridad.Shield {
         def enviado = EstadoTramite.findByCodigo("E003")
         def recibido = EstadoTramite.findByCodigo("E004")
 
-
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"
         params.order = params.order ?: "desc"
@@ -1308,6 +1307,7 @@ class TramiteController extends happy.seguridad.Shield {
             eq("persona", persona)
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
+            inList("estado", [enviado, recibido])
             tramite {
 //                inList("estadoTramite", [enviado, recibido])
                 if (params.domain == "tramite") {
@@ -1323,9 +1323,8 @@ class TramiteController extends happy.seguridad.Shield {
         def anulado = EstadoTramite.findByCodigo("E006")
         def band = false
         tramites.each { tr ->
-            if (!(tr.tramite.tipoDocumento.codigo == "OFI" && tr.estado.codigo == "E004")) {
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                 band = tramitesService.verificaHijos(tr, anulado)
-//            println "estado!!! " + band + "   " + tr.id
                 if (!band) {
                     tramitesSinHijos += tr
                 }

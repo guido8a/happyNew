@@ -947,9 +947,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
+        def departamento = persona?.departamento
+
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def departamento = persona?.departamento
+
 
         def pxtPara = PersonaDocumentoTramite.withCriteria {
             eq("departamento", departamento)
@@ -979,33 +981,27 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def pxtTodos = pxtPara
         pxtTodos += pxtCopia
-        def pxtTramites = pxtTodos
+//        def pxtTramites = pxtTodos
 
         if (params.domain == "persDoc") {
-            pxtTramites.sort { it[params.sort] }
+            pxtTodos.sort { it[params.sort] }
         } else if (params.domain == "tramite") {
-            pxtTramites.sort { it.tramite[params.sort] }
+            pxtTodos.sort { it.tramite[params.sort] }
         }
         if (params.order == "desc") {
-            pxtTramites = pxtTramites.reverse()
+            pxtTodos = pxtTodos.reverse()
         }
 
-
         def tramitesSinHijos = []
-
-//        pxtTramites.each { tr ->
-//            if (Tramite.countByPadreAndDeDepartamento(tr.tramite, departamento) == 0) {
-//                tramitesSinHijos += tr
-//            }
-//        }
-
         def band = false
         def anulado = EstadoTramite.findByCodigo("E006")
         pxtTodos.each { tr ->
-            band = tramitesService.verificaHijos(tr, anulado)
+            if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
+                band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
-            if (!band) {
-                tramitesSinHijos += tr
+                if (!band) {
+                    tramitesSinHijos += tr
+                }
             }
         }
 

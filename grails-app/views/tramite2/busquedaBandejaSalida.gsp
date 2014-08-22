@@ -24,12 +24,8 @@
         <g:each in="${pxtTramites}" var="pxt">
             <g:if test="${tramite?.id == pxt?.id}">
 
-                %{--<g:set var="limite" value="${tramite.getFechaLimite()}"/>--}%
-
-
                 <g:set var="limite" value="${tramite.getFechaBloqueo()}"/>
                 <g:set var="padre" value=""/>
-                %{--<g:set var="clase" value=""/>--}%
 
                 <g:set var="para" value="${tramite.getPara()}"/>
                 <g:set var="copias" value="${tramite.getCopias()}"/>
@@ -41,7 +37,6 @@
                     <g:set var="esImprimir" value="${true}"/>
                 </g:if>
 
-                %{--<g:if test="${tramite?.anexo == 1}">--}%
                 <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                     <g:set var="anexo" value="${'conAnexo'}"/>
                 </g:if>
@@ -87,7 +82,6 @@
                         <td>EXT</td>
                     </g:if>
                     <g:else>
-                        %{--<td>${para?.departamento?.codigo}</td>--}%
                         <g:if test="${para?.departamento}">
                             ${para?.departamento?.codigo}
                         </g:if>
@@ -167,11 +161,6 @@
                             </span>
                         </g:if>
                     </td>
-
-
-
-
-
                     <td>${tramite?.prioridad.descripcion}</td>
                     <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                     <td>${limite ? limite.format("dd-MM-yyyy HH:mm") : ''}</td>

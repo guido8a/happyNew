@@ -121,6 +121,7 @@ class PersonaDocumentoTramite {
         else {
             if (this.tramite.externo == "1")
                 return null
+//            println("fecha " + this.fechaEnvio)
             def limite = this.fechaEnvio
             def par = Parametros.list([sort: "id", order: "desc"])
             def tiempoBloqueo = 1
@@ -129,7 +130,16 @@ class PersonaDocumentoTramite {
                 tiempoBloqueo = par.bloqueo
             }
 //            println "tiempo Bloqueo " + tiempoBloqueo
-            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+            def fechaLimite =[]
+//            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+            if(limite){
+                fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+//                println("limite "+ fechaLimite)
+            }else{
+
+                fechaLimite[0] = false
+            }
+
 //            println fechaLimite
             if (fechaLimite[0]) {
                 return fechaLimite[1]

@@ -86,12 +86,10 @@ class BusquedaExternosController {
                     prsnPara = triangulo
                 }
             }
-            strPara = (prsnPara.titulo ? prsnPara.titulo + " " : "") +
-                    (prsnPara.nombre + " " + prsnPara.apellido)
+            strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara.nombre + " " + prsnPara.apellido)
             def jefe = prsnPara.jefePersona
             if (jefe) {
-                strJefe = (jefe.titulo ? jefe.titulo + " " : "") +
-                        (jefe.nombre + " " + jefe.apellido)
+                strJefe = /*(jefe.titulo ? jefe.titulo + " " : "") + */ (jefe.nombre + " " + jefe.apellido)
             }
             def dptoPadre = prsnPara.departamento.padre ?: prsnPara.departamento
             def director = Persona.withCriteria {
@@ -99,8 +97,7 @@ class BusquedaExternosController {
                 eq("jefe", 1)
             }
             if (director) {
-                strDirector = (director.titulo ? director.titulo + " " : "") +
-                        (director.nombre + " " + director.apellido)
+                strDirector = /*(director.titulo ? director.titulo + " " : "") + */ (director.nombre + " " + director.apellido)
             }
             def msg = "<div class='well well-lg text-left'>"
             msg += "<h4>Trámite ${externo.codigo}</h4>"

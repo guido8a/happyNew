@@ -665,6 +665,7 @@
             });
 
             $(".btnSalir").click(function () {
+//                console.log("entro!")
                 $(".buscar").attr("hidden", true);
                 openLoader();
                 cargarBandeja(true);
