@@ -259,38 +259,44 @@ class TramiteAdminController extends Shield {
         def errores = ""
 
         copias.each { copia ->
-            def id = copia.toInteger()
-            def copiaPers = new PersonaDocumentoTramite()
-            if (id > 0) {
-                copiaPers.persona = Persona.get(id)
-            } else {
-                copiaPers.departamento = Departamento.get(id * -1)
-            }
-            copiaPers.fechaEnvio = new Date()
-            copiaPers.tramite = tramite
-            copiaPers.rolPersonaTramite = rolCopia
-            copiaPers.estado = estadoEnviado
-
-            if (!copiaPers.save(flush: true)) {
-                errores += "<li>" + renderErrors(bean: copiaPers) + "</li>"
-            } else {
-                def alerta = new Alerta()
-                alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
-                if (copiaPers.persona) {
-                    alerta.controlador = "tramite"
-                    alerta.accion = "bandejaEntrada"
-                    alerta.persona = copiaPers.persona
+            copia=copia.trim()
+            if(copia!="") {
+                def id = copia.toInteger()
+                def copiaPers = new PersonaDocumentoTramite()
+                if (id > 0) {
+                    copiaPers.persona = Persona.get(id)
                 } else {
-                    alerta.departamento = copiaPers.departamento
-                    alerta.accion = "bandejaEntradaDpto"
-                    alerta.controlador = "tramite3"
+                    copiaPers.departamento = Departamento.get(id * -1)
                 }
-                alerta.datos = copiaPers.id
-                alerta.tramite = copiaPers.tramite
-                if (!alerta.save(flush: true)) {
-                    println "error save alerta " + alerta.errors
+                copiaPers.fechaEnvio = new Date()
+                copiaPers.tramite = tramite
+                copiaPers.rolPersonaTramite = rolCopia
+                copiaPers.estado = estadoEnviado
+
+                if (!copiaPers.save(flush: true)) {
+                    errores += "<li>" + renderErrors(bean: copiaPers) + "</li>"
+                } else {
+                    def alerta = new Alerta()
+                    alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                    if (copiaPers.persona) {
+                        alerta.controlador = "tramite"
+                        alerta.accion = "bandejaEntrada"
+                        alerta.persona = copiaPers.persona
+                    } else {
+                        alerta.departamento = copiaPers.departamento
+                        alerta.accion = "bandejaEntradaDpto"
+                        alerta.controlador = "tramite3"
+                    }
+                    alerta.datos = copiaPers.id
+                    alerta.tramite = copiaPers.tramite
+                    if (!alerta.save(flush: true)) {
+                        println "error save alerta " + alerta.errors
+                    }
                 }
+            }else{
+
             }
+
         }
         if (errores == "") {
             render "OK"
@@ -1002,7 +1008,7 @@ class TramiteAdminController extends Shield {
                     if(objeto.persona){
 
                         alerta=Alerta.findAllByTramiteAndPersona(objeto.tramite,objeto.persona)
-                       // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
+                        // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
                         alerta.each {a->
                             if(a.fechaRecibido==null) {
                                 a.fechaRecibido = new Date();

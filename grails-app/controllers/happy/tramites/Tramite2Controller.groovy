@@ -1045,6 +1045,31 @@ class Tramite2Controller extends happy.seguridad.Shield {
             return
         }
 
+
+
+        def tramitetr = Tramite.get(params.id)
+        if(tramitetr){
+            def paratr = tramitetr.para
+            def copiastr = tramitetr.copias
+            def enviado1 = false
+            (copiastr + paratr).each {c->
+                if(c?.estado?.codigo == "E003") {
+                    enviado1 = true
+                    flash.message = "Este trámite ya ha sido enviado, no puede guardar modificaciones."
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }else{
+
+                }
+            }
+        }
+
+
+
+
+
+
+
 //        println("params " + params)
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
@@ -1284,9 +1309,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
-
-
         }
+
 
         def tipoTramite
         if (params.confi == "on") {
