@@ -224,28 +224,38 @@ class TramiteExportController {
         def mensaje = message(code: 'pathImages').toString()
 
         if (params.editorTramite) {
-//            tramite.conMembrete = params.membrete
-            tramite.texto = (params.editorTramite).replaceAll("\\n", "")
-//            tramite.asunto = params.asunto
-            tramite.fechaModificacion = new Date()
-            if (tramite.save(flush: true)) {
-                def para = tramite.para
-                if (params.para) {
-                    if (params.para.toLong() > 0) {
-                        para.persona = Persona.get(params.para.toLong())
-                    } else {
-                        para.departamento = Departamento.get(params.para.toLong() * -1)
-                    }
-                    if (para.save(flush: true)) {
-//                println "OK_Trámite guardado exitosamente"
-                    } else {
-//                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
-                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
-                    }
+            def paratr = tramite.para
+            def copiastr = tramite.copias
+            def enviado = false
+            (copiastr + paratr).each {c->
+                if(c?.estado?.codigo == "E003") {
+                    enviado = true
                 }
-            } else {
+            }
+            if(!enviado) {
+//            tramite.conMembrete = params.membrete
+                tramite.texto = (params.editorTramite).replaceAll("\\n", "")
+//            tramite.asunto = params.asunto
+                tramite.fechaModificacion = new Date()
+                if (tramite.save(flush: true)) {
+                    def para = tramite.para
+                    if (params.para) {
+                        if (params.para.toLong() > 0) {
+                            para.persona = Persona.get(params.para.toLong())
+                        } else {
+                            para.departamento = Departamento.get(params.para.toLong() * -1)
+                        }
+                        if (para.save(flush: true)) {
+//                println "OK_Trámite guardado exitosamente"
+                        } else {
+//                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                            println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                        }
+                    }
+                } else {
 //                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
-                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+                    println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+                }
             }
         }
 
@@ -418,7 +428,7 @@ class TramiteExportController {
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
-                     times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
+                times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
 
         com.lowagie.text.Document document
         document = new com.lowagie.text.Document(PageSize.A4);
