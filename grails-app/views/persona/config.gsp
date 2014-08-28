@@ -86,7 +86,7 @@
                 <div id="collapsePerfiles" class="panel-collapse collapse in">
                     <div class="panel-body">
                         <p>
-                            <a href="#" class="btn btn-default btn-sm" id="allPerf">Asignar todos los perfiles</a>
+                            %{--<a href="#" class="btn btn-default btn-sm" id="allPerf">Asignar todos los perfiles</a>--}%
                             <a href="#" class="btn btn-default btn-sm" id="nonePerf">Quitar todos los perfiles</a>
                         </p>
                         <g:form name="frmPerfiles" action="savePerfiles_ajax">
@@ -94,7 +94,7 @@
                                 <g:each in="${happy.seguridad.Prfl.list([sort: 'nombre'])}" var="perfil">
                                     <li class="perfil">
                                         %{--<input class="chkPerfil" type="checkbox" name="perfil" value="${perfil.id}" ${perfilesUsu.contains(perfil.id) ? "checked" : ""}/>--}%
-                                        <i data-id="${perfil.id}"
+                                        <i data-id="${perfil.id}" data-cd="${perfil.codigo}"
                                            class="fa-li fa ${perfilesUsu.contains(perfil.id) ? "fa-check-square" : "fa-square-o"}"></i>
                                         <span>${perfil.nombre} ${perfil.observaciones ? '(' + perfil.observaciones + ')' : ''}</span>
                                     </li>
@@ -336,11 +336,11 @@
                     });
                 }
 
-                $("#allPerf").click(function () {
-                    $(".perfil .fa-li").removeClass("fa-square-o").addClass("fa-check-square");
-                    return false;
-                });
-
+//                $("#allPerf").click(function () {
+//                    $(".perfil .fa-li").removeClass("fa-square-o").addClass("fa-check-square");
+//                    return false;
+//                });
+//
                 $("#nonePerf").click(function () {
                     $(".perfil .fa-li").removeClass("fa-check-square").addClass("fa-square-o");
                     return false;
@@ -348,10 +348,29 @@
 
                 $(".perfil .fa-li, .perfil span").click(function () {
                     var ico = $(this).parent(".perfil").find(".fa-li");
-                    if (ico.hasClass("fa-check-square")) { //descheckear
-                        ico.removeClass("fa-check-square").addClass("fa-square-o");
-                    } else { //checkear
-                        ico.removeClass("fa-square-o").addClass("fa-check-square");
+                    var perf = ico.data("cd");
+                    var ok = true;
+                    if (perf == "JEFE" || perf == "DIR") {
+                        $(".perfil .fa-li").each(function () {
+                            var ico = $(this);
+                            if (ico.hasClass("fa-check-square") && (ico.data("cd") == "JEFE" || ico.data("cd") == "DIR")) {
+                                if (ico.data("cd") == "JEFE" && perf == "DIR") {
+                                    ok = false;
+                                }
+                                if (ico.data("cd") == "DIR" && perf == "JEFE") {
+                                    ok = false;
+                                }
+                            }
+                        });
+                    }
+                    if (ok) {
+                        if (ico.hasClass("fa-check-square")) { //descheckear
+                            ico.removeClass("fa-check-square").addClass("fa-square-o");
+                        } else { //checkear
+                            ico.removeClass("fa-square-o").addClass("fa-check-square");
+                        }
+                    } else {
+                        bootbox.alert("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>No puede asignar a la vez el perfil de JEFE y el de DIRECTOR a la misma persona</p>");
                     }
                 });
 
