@@ -209,6 +209,15 @@ class Tramite {
 //        return PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R001"))
 //    }
 
+    def getAllCopias() {
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def copias = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", this)
+            eq("rolPersonaTramite", rolCopia)
+        }
+        return copias
+    }
+
     def getCopias() {
 //        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(this, RolPersonaTramite.findByCodigo("R002"))
         def estadoAnulado = EstadoTramite.findByCodigo("E006")

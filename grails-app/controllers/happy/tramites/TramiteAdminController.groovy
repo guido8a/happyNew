@@ -1074,9 +1074,7 @@ class TramiteAdminController extends Shield {
 
     }
 
-    def desanular() {
-        def pdt = PersonaDocumentoTramite.get(params.id)
-
+    def desanularPdt(PersonaDocumentoTramite pdt) {
         def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
         def estadoRecibido = EstadoTramite.findByCodigo("E004")
@@ -1155,11 +1153,114 @@ class TramiteAdminController extends Shield {
         }
         pdt.tramite.save(flush: true)
         if (pdt.save(flush: true)) {
-            render "OK"
+            return true
         } else {
             println "erros " + pdt.errors
+            return false
+        }
+    }
+
+    def desanular() {
+        def pdt = PersonaDocumentoTramite.get(params.id)
+        if(pdt.rolPersonaTramite.codigo == "R001") { //es PARA
+            def tramite = pdt.tramite
+            def copias = tramite.allCopias
+            def ok = true
+            (copias+pdt).each {p->
+                println "desanular: "+p.rolPersonaTramite.descripcion
+                if(!desanularPdt(p) ) {
+                    ok = false
+                }
+            }
+            render ok?"OK":"NO"
+        } else {
             render "NO"
         }
+
+
+//        def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
+//        def estadoEnviado = EstadoTramite.findByCodigo("E003")
+//        def estadoRecibido = EstadoTramite.findByCodigo("E004")
+//        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+//        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+//
+//        if (!pdt.fechaEnvio) {
+//            pdt.estado = estadoPorEnviar
+//        }
+//        if (pdt.fechaEnvio) {
+//            pdt.estado = estadoEnviado
+//        }
+//        if (pdt.fechaRecepcion) {
+//            pdt.estado = estadoRecibido
+//        }
+//        if (pdt.fechaArchivo) {
+//            pdt.estado = estadoArchivado
+//        }
+////        def nuevaObs = "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
+//////        pdt.observaciones = (pdt.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
+////        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
+////        def nuevaObs = "Documento reactivado"
+////        if (params.texto.trim() != "") {
+////            nuevaObs += ": " + params.texto
+////        }
+////        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs, params.aut, session.usuario.login)
+//
+//        def observacionOriginal = pdt.observaciones
+//        def accion = "Reactivación"
+//        def solicitadoPor = params.aut
+//        def usuario = session.usuario.login
+//        def texto = ""
+//        def nuevaObservacion = params.texto
+//        pdt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//
+//        pdt.fechaAnulacion = null
+//        if (pdt.rolPersonaTramite.codigo == "R002") {
+////            def nuevaObs2 = "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
+////            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
+////            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+//            def nuevaObs = "COPIA para"
+//            if (pdt.departamento) {
+//                nuevaObs += " el dpto. ${pdt.departamento.codigo}"
+//            } else if (pdt.persona) {
+//                nuevaObs += " el usuario ${pdt.persona.login}"
+//            }
+//            nuevaObs += " reactivada"
+////            if (params.texto.trim() != "") {
+////                nuevaObs += ": " + params.texto
+////            }
+////            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
+//
+//            observacionOriginal = pdt.tramite.observaciones
+//            texto = nuevaObs
+//            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//
+//        }
+//        if (pdt.rolPersonaTramite.codigo == "R001") {
+////            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
+////            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
+//            def nuevaObs = "PARA"
+//            if (pdt.departamento) {
+//                nuevaObs += " el dpto. ${pdt.departamento.codigo}"
+//            } else if (pdt.persona) {
+//                nuevaObs += " el usuario ${pdt.persona.login}"
+//            }
+//            nuevaObs += " reactivado"
+////            if (params.texto.trim() != "") {
+////                nuevaObs += ": " + params.texto
+////            }
+////            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
+//
+//            observacionOriginal = pdt.tramite.observaciones
+//            texto = nuevaObs
+//            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//        }
+//        pdt.tramite.save(flush: true)
+//        if (pdt.save(flush: true)) {
+//            render "OK"
+//        } else {
+//            println "erros " + pdt.errors
+//            render "NO"
+//        }
     }
 
     def getCadenaDown(pdt, funcion) {

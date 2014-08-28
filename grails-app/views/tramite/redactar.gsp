@@ -160,7 +160,8 @@
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                            <i class="fa fa-list-ul"></i> Bandeja de Salida
+                            %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
+                            <i class="fa fa-list-ul"></i> Guardar y Salir
                         </g:link>
                     </g:if>
                     <g:else>
@@ -168,7 +169,8 @@
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                            <i class="fa fa-list-ul"></i> Bandeja de Salida
+                            %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
+                            <i class="fa fa-list-ul"></i> Guardar y Salir
                         </g:link>
                     </g:else>
                     <g:if test="${tramite.deDepartamento}">
