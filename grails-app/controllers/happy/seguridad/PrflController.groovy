@@ -1,6 +1,7 @@
 package happy.seguridad
 
 import com.sun.xml.internal.bind.v2.TODO
+import happy.tramites.PermisoTramite
 
 class PrflController extends happy.seguridad.Shield {
 
@@ -66,12 +67,12 @@ class PrflController extends happy.seguridad.Shield {
         def cn = dbConnectionService.getConnection()
         def tx = ""
         // selecciona los permisos consedidos
-        tx = "select perm.perm__id, permdscr, prpf.perm__id perm, permtxto " +
+        tx = "select perm.perm__id, permdscr, prpf.perm__id perm, permtxto, permcdgo " +
                 "from (perm left join prpf on prpf.perm__id = perm.perm__id and prfl__id = ${prfl}) " +
                 "order by permdscr"
 //        println "ajaxPermisos SQL: ${tx}"
         cn.eachRow(tx) { d ->
-            resultado[i] = [d.perm__id] + [d.permdscr] + [d.permtxto] + [d.perm]
+            resultado[i] = [d.perm__id] + [d.permdscr] + [d.permtxto] + [d.perm] + [d.permcdgo]
             i++
         }
         cn.close()
@@ -159,13 +160,12 @@ class PrflController extends happy.seguridad.Shield {
 //      println "------borrarMdlo: " + params
 
 
-
-   if(session.usuario.puedeAdmin){
-       Modulo.get(params.id).delete()
-    } else {
-        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
-        response.sendError(403)
-    }
+        if (session.usuario.puedeAdmin) {
+            Modulo.get(params.id).delete()
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
+        }
 
 /*
       params.controllerName = controllerName
@@ -370,7 +370,6 @@ class PrflController extends happy.seguridad.Shield {
             //resp += "<br>" + tx1
         }
 
-
         /* actualiza PRUS de los usuarios con el perfil actual */
         /* para cada persona, pone fecha de fin a los permisos que no son parte delperfil y añade los que no tenga*/
         /*TODO */
@@ -537,7 +536,6 @@ class PrflController extends happy.seguridad.Shield {
             flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
             response.sendError(403)
         }
-
 
 
     }

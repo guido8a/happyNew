@@ -350,19 +350,19 @@
                     var ico = $(this).parent(".perfil").find(".fa-li");
                     var perf = ico.data("cd");
                     var ok = true;
-                    if (perf == "JEFE" || perf == "DIR") {
-                        $(".perfil .fa-li").each(function () {
-                            var ico = $(this);
-                            if (ico.hasClass("fa-check-square") && (ico.data("cd") == "JEFE" || ico.data("cd") == "DIR")) {
-                                if (ico.data("cd") == "JEFE" && perf == "DIR") {
-                                    ok = false;
-                                }
-                                if (ico.data("cd") == "DIR" && perf == "JEFE") {
-                                    ok = false;
-                                }
-                            }
-                        });
-                    }
+//                    if (perf == "JEFE" || perf == "DIR") {
+//                        $(".perfil .fa-li").each(function () {
+//                            var ico = $(this);
+//                            if (ico.hasClass("fa-check-square") && (ico.data("cd") == "JEFE" || ico.data("cd") == "DIR")) {
+//                                if (ico.data("cd") == "JEFE" && perf == "DIR") {
+//                                    ok = false;
+//                                }
+//                                if (ico.data("cd") == "DIR" && perf == "JEFE") {
+//                                    ok = false;
+//                                }
+//                            }
+//                        });
+//                    }
                     if (ok) {
                         if (ico.hasClass("fa-check-square")) { //descheckear
                             ico.removeClass("fa-check-square").addClass("fa-square-o");
