@@ -5,19 +5,19 @@
     <g:if test="${datos?.size() > 0}">
         <div class="ui-corner-all" style="height: 500px; overflow:auto; margin-bottom: 5px; margin-left: -20px; background-color: #efeff8;
         border-style: solid; border-color: #AAA; border-width: 1px; ">
-            <table border="0" cellpadding="0" width="800px">
+            <table border="0" cellpadding="0" width="900px">
                 <thead style="color: #101010; background-color: #69b0d3">
-                    <tr>
-                        <th style="padding:4px;" width="100px">Activado</th>
-                        <th "width="200px">Permiso</th>
-                        <th "width="300px">Descripción</th>
-                    </tr>
+                <tr>
+                    <th style="padding:4px;" width="60px">Activado</th>
+                    <th width="150px" style="text-align: center">Permiso</th>
+                    <th width="690px" style="text-align: center">Descripción</th>
+                </tr>
                 </thead>
                 <tbody>
                 %{--<hr>Hola ${datos}</hr>--}%
                     <g:each in="${datos}" status="i" var="d">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" style="background: ${(d[3]) ? '#7cf' : ''}">
-                            <td><input type="checkbox" name="cdgo" class="ndm ${d[4]}"
+                            <td style="text-align: center"><input type="checkbox" name="cdgo" class="ndm ${d[4]}"
                                        value="${d[0].encodeAsHTML()}" ${(d[3]) ? 'checked' : ''}></td>
                             <td>${d[1]?.encodeAsHTML()}</td>
                             <td>${d[2]?.encodeAsHTML()}</td>

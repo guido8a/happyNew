@@ -59,7 +59,7 @@
     <body>
         <div style="margin-left:230px;"><h2 class="titl">S.A.D. Web - Trámites Retrasados y Sin Recepción</h2>
         </div>
-        <g:if test="${!inicio}">
+        %{--<g:if test="${!inicio}">--}%
             <div class="btn-toolbar toolbar" style="margin-left: 100px; margin-top: 20px;">
                 %{--
                             <div class="btn-group">
@@ -87,7 +87,7 @@
                     </g:link>
                 </div>
             </div>
-        </g:if>
+        %{--</g:if>--}%
         <div class="chartContainer hidden" style="margin-left: 130px;">
             <div id="chart_rz" class="divChart hidden"></div>
 

@@ -28,7 +28,7 @@
                                 <td class="col200">${permiso.permisoTramite.descripcion}</td>
                                 <td class="col100">${permiso.fechaInicio.format("dd-MM-yyyy")}</td>
                                 <td class="col100">${permiso.fechaFin ? permiso.fechaFin.format("dd-MM-yyyy") : ""}</td>
-                                <td class="col200">${permiso.observaciones}</td>
+                                %{--<td class="col200">${permiso.observaciones}</td>--}%
                                 <td class="col200">${permiso.asignadoPor.nombre} ${permiso.asignadoPor.apellido}</td>
                             </tr>
                         </g:each>
