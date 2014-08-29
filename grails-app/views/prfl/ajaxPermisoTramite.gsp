@@ -51,7 +51,7 @@
     }
 
     $(".ndm").click(function () {
-        /*
+        /* cambio para el merge
          *  Si es director  no puede ser jefe ni recibir
          *  Si es jefe      no puede ser director ni recibir
          *  Si es editor    no puede ser recibir ni recepcion
