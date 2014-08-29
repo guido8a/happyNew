@@ -197,8 +197,9 @@
 
                             <div class="col-md-5">
                                 <div class="input-group">
-                                    <g:passwordField name="password" class="form-control" maxlength="10" value="${personaInstance?.password}"/>
+                                    <g:passwordField name="password" class="form-control required" maxlength="15" value="${'pandagnaros'}"/>
                                     <span class="input-group-addon"><i class="fa fa-lock"></i> </span>
+
                                 </div>
                             </div>
                             *

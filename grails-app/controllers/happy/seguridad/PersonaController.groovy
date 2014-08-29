@@ -1102,8 +1102,16 @@ class PersonaController extends happy.seguridad.Shield {
 //            }
 //        }
 
+
         if (params.password) {
-            params.password = params.password.toString().encodeAsMD5()
+            if(params.password != 'pandagnaros'){
+//                println("nuevof")
+                params.password = params.password.toString().encodeAsMD5()
+            }else{
+//                println("antiguo")
+                params.password = Persona.get(params.id).password
+            }
+
         }
 
         params.mail = params.mail.toString().toLowerCase()
