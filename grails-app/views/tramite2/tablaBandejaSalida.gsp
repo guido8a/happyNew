@@ -174,7 +174,9 @@
                 </td>
                 <td id="${tramite?.id}" class="ck text-center">
                     <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
-                        <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 20px" class="form-control combo" checked="false"/>
+                        <g:if test="${!esEditor}">
+                            <g:checkBox name="porEnviar" tramite="${tramite?.id}" style="margin-left: 20px" class="form-control combo" checked="false"/>
+                        </g:if>
                     </g:if>
                 </td>
             </tr>

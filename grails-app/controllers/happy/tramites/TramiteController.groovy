@@ -32,9 +32,12 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def redactar() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def esEditor = persona.puedeEditor
         def tramite = Tramite.get(params.id)
         if (tramite.estadoTramite.codigo == "E001") { //borrador, por enviar
-            return [tramite: tramite]
+            return [tramite: tramite, esEditor: esEditor]
         } else {
             flash.message = "El trámite seleccionado no puede ser editado"
             redirect(action: "errores")
@@ -165,12 +168,12 @@ class TramiteController extends happy.seguridad.Shield {
         def paratr = tramite.para
         def copiastr = tramite.copias
         def enviado = false
-        (copiastr + paratr).each {c->
-            if(c?.estado?.codigo == "E003") {
+        (copiastr + paratr).each { c ->
+            if (c?.estado?.codigo == "E003") {
                 enviado = true
             }
         }
-        if(!enviado) {
+        if (!enviado) {
             tramite.texto = (params.editorTramite).replaceAll("\\n", "")
 //        tramite.asunto = params.asunto
             tramite.fechaModificacion = new Date()
@@ -324,6 +327,13 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def esEditor = persona.puedeEditor
+        if (esEditor) {
+            redirect(controller: "tramite2", action: "bandejaSalida")
+            return
+        }
         params.esRespuesta = params.esRespuesta ?: 0
         if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
@@ -420,8 +430,6 @@ class TramiteController extends happy.seguridad.Shield {
             tramite.fechaCreacion = new Date()
         }
 
-        def persona = Persona.get(session.usuario.id)
-
         def de = session.usuario
         def disp, disponibles = []
         def disp2 = []
@@ -449,15 +457,15 @@ class TramiteController extends happy.seguridad.Shield {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
                                 disponibles.add([id     : users[i].id,
-                                        label  : users[i].toString(),
-                                        obj    : users[i],
-                                        externo: false])
+                                                 label  : users[i].toString(),
+                                                 obj    : users[i],
+                                                 externo: false])
                             }
                         } else {
                             disponibles.add([id     : users[i].id,
-                                    label  : users[i].toString(),
-                                    obj    : users[i],
-                                    externo: false])
+                                             label  : users[i].toString(),
+                                             obj    : users[i],
+                                             externo: false])
                         }
                     }
                 }
@@ -469,17 +477,17 @@ class TramiteController extends happy.seguridad.Shield {
                 if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                label  : dep.descripcion,
-                                obj    : dep,
-                                externo: dep.externo == 1])
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             } else {
                 if (dep.triangulos.size() > 0) {
                     disp2.add([id     : dep.id * -1,
-                            label  : dep.descripcion,
-                            obj    : dep,
-                            externo: dep.externo == 1])
+                               label  : dep.descripcion,
+                               obj    : dep,
+                               externo: dep.externo == 1])
                 }
             }
         }
@@ -1092,6 +1100,13 @@ class TramiteController extends happy.seguridad.Shield {
 
 
     def bandejaEntrada() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def esEditor = persona.puedeEditor
+        if (esEditor) {
+            redirect(controller: "tramite2", action: "bandejaSalida")
+            return
+        }
         def bloqueo = false
         if (session.usuario.esTriangulo()) {
             flash.message = "Su perfil no le permite ingresar a la bandeja de entrada personal"
@@ -1102,8 +1117,6 @@ class TramiteController extends happy.seguridad.Shield {
             flash.message = "Su perfil no tiene acceso a la bandeja de entrada personal"
             response.sendError(403)
         }
-
-        def persona = Persona.get(session.usuario.id)
 
         return [persona: persona, bloqueo: bloqueo]
 

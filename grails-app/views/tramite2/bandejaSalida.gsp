@@ -136,9 +136,11 @@
                 <g:link action="" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
                 </g:link>
-                <g:link action="" class="btn btn-info btnEnviar">
-                    <i class="fa fa-pencil"></i> Enviar
-                </g:link>
+                <g:if test="${!esEditor}">
+                    <g:link action="" class="btn btn-info btnEnviar">
+                        <i class="fa fa-pencil"></i> Enviar
+                    </g:link>
+                </g:if>
             </div>
 
             <div style="float: right">
@@ -569,25 +571,25 @@
                                                 });
                                                 if (ids) {
 //                                                    if (validaAutorizacion($txt)) {
-                                                        openLoader("Quitando enviado");
-                                                        $.ajax({
-                                                            type    : "POST",
-                                                            url     : '${createLink(action:'desenviar_ajax')}',
-                                                            data    : {
-                                                                id  : id,
-                                                                ids : ids/*,
-                                                                aut : $.trim($txt.val())*/
-                                                            },
-                                                            success : function (msg) {
-                                                                var parts = msg.split("_");
-                                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                                if (parts[0] == "OK") {
-                                                                    cargarBandeja(true)
-                                                                    log("Envío del trámite cancelado correctamente", 'success')
-                                                                    closeLoader();
-                                                                }
+                                                    openLoader("Quitando enviado");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : '${createLink(action:'desenviar_ajax')}',
+                                                        data    : {
+                                                            id  : id,
+                                                            ids : ids/*,
+                                                             aut : $.trim($txt.val())*/
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            if (parts[0] == "OK") {
+                                                                cargarBandeja(true)
+                                                                log("Envío del trámite cancelado correctamente", 'success')
+                                                                closeLoader();
                                                             }
-                                                        });
+                                                        }
+                                                    });
 //                                                    } else {
 //                                                        return false;
 //                                                    }
@@ -623,10 +625,14 @@
                     }
                 }
                 if (tienePadre) {
+                    <g:if test="${!esEditor}">
                     items.hermano = crearHermano;
+                    </g:if>
                 }
                 if (porEnviar) {
+                    <g:if test="${!esEditor}">
                     items.imprimir = permisoImprimir;
+                    </g:if>
                 }
                 if (tieneAnexo) {
                     items.anexos = anexos;

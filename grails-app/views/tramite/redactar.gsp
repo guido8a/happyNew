@@ -34,7 +34,7 @@
         .hoja {
             /*background: #abcdef;*/
             margin : auto;
-            float: right;
+            float  : right;
             width  : 19cm;
         }
 
@@ -160,7 +160,7 @@
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                            %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
+                        %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
                             <i class="fa fa-list-ul"></i> Guardar y Salir
                         </g:link>
                     </g:if>
@@ -169,20 +169,22 @@
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                            %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
+                        %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
                             <i class="fa fa-list-ul"></i> Guardar y Salir
                         </g:link>
                     </g:else>
-                    <g:if test="${tramite.deDepartamento}">
-                        <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class="leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
-                            <i class="fa fa-pencil"></i>
-                        </g:link>
+                    <g:if test="${!esEditor}">
+                        <g:if test="${tramite.deDepartamento}">
+                            <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class="leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                                <i class="fa fa-pencil"></i>
+                            </g:link>
+                        </g:if>
+                        <g:else>
+                            <g:link action="crearTramite" id="${tramite.id}" class=" leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                                <i class="fa fa-pencil"></i>
+                            </g:link>
+                        </g:else>
                     </g:if>
-                    <g:else>
-                        <g:link action="crearTramite" id="${tramite.id}" class=" leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
-                            <i class="fa fa-pencil"></i>
-                        </g:link>
-                    </g:else>
                 </div>
 
                 <div class="btn-group membrete" data-con="${tramite.conMembrete ?: '0'}">

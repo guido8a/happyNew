@@ -210,6 +210,10 @@ class Persona {
         return this.puedePermiso("P001")
     }
 
+    def getPuedeEditor() {
+        return this.puedePermiso("P016")
+    }
+
 
     def getPuedeAdmin() {
         return this.puedePermiso("P013")
