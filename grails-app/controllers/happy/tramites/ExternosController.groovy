@@ -43,41 +43,63 @@ class ExternosController {
     }
 
     def recibirTramiteExterno() {
-//        println "recibir tramite "+params
-        if (request.getMethod() == "POST") {
-            def persona = Persona.get(session.usuario.id)
-            def tramite = Tramite.get(params.id)
-            def rolPara = RolPersonaTramite.findByCodigo("R001")
-            def pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite,rolPara)
-            if(!pdt){
-                render "NO_no se encontro el destinatario"
-                return
+        println "recibir tramite "+params
+
+        def tramitetr = Tramite.get(params.id)
+        if(tramitetr){
+//            println("entro!")
+            def paratr = tramitetr.para
+            def copiastr = tramitetr.copias
+            (copiastr + paratr).each {c->
+                if(c?.estado?.codigo == "E006") {
+                    render "NO_Este trámite ya ha sido anulado, no puede ser recibido."
+                    return
+                }else{
+
+
+                    if (request.getMethod() == "POST") {
+                        def persona = Persona.get(session.usuario.id)
+                        def tramite = Tramite.get(params.id)
+                        def rolPara = RolPersonaTramite.findByCodigo("R001")
+                        def pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite,rolPara)
+                        if(!pdt){
+                            render "NO_no se encontro el destinatario"
+                            return
+                        }
+                        def porEnviar = EstadoTramite.findByCodigo("E001")
+                        def enviado = EstadoTramite.findByCodigo("E003")
+                        def recibido = EstadoTramite.findByCodigo("E004")
+                        //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
+                        if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
+                            render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
+                            return
+                        }
+
+                        pdt.fechaRecepcion = new Date()
+                        pdt.estado=recibido
+                        pdt.tramite.estadoTramite=recibido
+                        pdt.save(flush: true)
+                        pdt.tramite.save(flush: true)
+                        def pdtRecibe = new PersonaDocumentoTramite()
+                        pdtRecibe.tramite = tramite
+                        pdtRecibe.persona = persona
+                        pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+                        pdtRecibe.fechaRecepcion =  new Date()
+                        pdtRecibe.save(flush: true)
+                        render "OK_Trámite recibido correctamente"
+
+
+                    } else {
+                        response.sendError(403)
+                    }
+
+                }
             }
-            def porEnviar = EstadoTramite.findByCodigo("E001")
-            def enviado = EstadoTramite.findByCodigo("E003")
-            def recibido = EstadoTramite.findByCodigo("E004")
-            //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-            if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
-                render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
-                return
-            }
-
-            pdt.fechaRecepcion = new Date()
-            pdt.estado=recibido
-            pdt.tramite.estadoTramite=recibido
-            pdt.save(flush: true)
-            pdt.tramite.save(flush: true)
-            def pdtRecibe = new PersonaDocumentoTramite()
-            pdtRecibe.tramite = tramite
-            pdtRecibe.persona = persona
-            pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
-            pdtRecibe.fechaRecepcion =  new Date()
-            pdtRecibe.save(flush: true)
-            render "OK_Trámite recibido correctamente"
-
-
-        } else {
-            response.sendError(403)
         }
+
+
+
+
+
     }
 }

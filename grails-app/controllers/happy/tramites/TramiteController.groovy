@@ -173,37 +173,88 @@ class TramiteController extends happy.seguridad.Shield {
                 enviado = true
             }
         }
-        if (!enviado) {
-            tramite.texto = (params.editorTramite).replaceAll("\\n", "")
-//        tramite.asunto = params.asunto
-            tramite.fechaModificacion = new Date()
 
-            if (tramite.save(flush: true)) {
-                def para = tramite.para
+
+        def tramitetr = Tramite.get(params.id)
+        if(tramitetr){
+            def paratr1 = tramitetr.para
+            def copiastr1 = tramitetr.copias
+            (copiastr1 + paratr1).each {c->
+                if(c?.estado?.codigo == "E006") {
+                    render "NO_Este trámite ya ha sido anulado, no puede guardar modificaciones"
+                    return
+                }else{
+
+                    if (!enviado) {
+                        tramite.texto = (params.editorTramite).replaceAll("\\n", "")
+//        tramite.asunto = params.asunto
+                        tramite.fechaModificacion = new Date()
+
+                        if (tramite.save(flush: true)) {
+                            def para = tramite.para
 
 //            crearPdf(tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje)
-                enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+                            enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
 
-                if (params.para) {
-                    if (params.para.toLong() > 0) {
-                        para.persona = Persona.get(params.para.toLong())
+                            if (params.para) {
+                                if (params.para.toLong() > 0) {
+                                    para.persona = Persona.get(params.para.toLong())
+                                } else {
+                                    para.departamento = Departamento.get(params.para.toLong() * -1)
+                                }
+                                if (para.save(flush: true)) {
+                                    render "OK_Trámite guardado exitosamente"
+                                } else {
+                                    render "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+                                }
+                            } else {
+                                render "OK_Trámite guardado exitosamente"
+                            }
+                        } else {
+                            render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+                        }
                     } else {
-                        para.departamento = Departamento.get(params.para.toLong() * -1)
+                        render "NO_Este trámite ya ha sido enviado, no puede guardar modificaciones"
                     }
-                    if (para.save(flush: true)) {
-                        render "OK_Trámite guardado exitosamente"
-                    } else {
-                        render "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
-                    }
-                } else {
-                    render "OK_Trámite guardado exitosamente"
                 }
-            } else {
-                render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
             }
-        } else {
-            render "NO_Este trámite ya ha sido enviado, no puede guardar modificaciones"
         }
+
+
+
+
+
+//        if (!enviado) {
+//            tramite.texto = (params.editorTramite).replaceAll("\\n", "")
+////        tramite.asunto = params.asunto
+//            tramite.fechaModificacion = new Date()
+//
+//            if (tramite.save(flush: true)) {
+//                def para = tramite.para
+//
+////            crearPdf(tramite, Persona usuario, String enviar, String type, String editorTramite, String asunto, String realPath, String mensaje)
+//                enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+//
+//                if (params.para) {
+//                    if (params.para.toLong() > 0) {
+//                        para.persona = Persona.get(params.para.toLong())
+//                    } else {
+//                        para.departamento = Departamento.get(params.para.toLong() * -1)
+//                    }
+//                    if (para.save(flush: true)) {
+//                        render "OK_Trámite guardado exitosamente"
+//                    } else {
+//                        render "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
+//                    }
+//                } else {
+//                    render "OK_Trámite guardado exitosamente"
+//                }
+//            } else {
+//                render "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
+//            }
+//        } else {
+//            render "NO_Este trámite ya ha sido enviado, no puede guardar modificaciones"
+//        }
     }
 
     def tiempoRespuestaEsperada_ajax() {
@@ -457,15 +508,15 @@ class TramiteController extends happy.seguridad.Shield {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
                                 disponibles.add([id     : users[i].id,
-                                                 label  : users[i].toString(),
-                                                 obj    : users[i],
-                                                 externo: false])
+                                        label  : users[i].toString(),
+                                        obj    : users[i],
+                                        externo: false])
                             }
                         } else {
                             disponibles.add([id     : users[i].id,
-                                             label  : users[i].toString(),
-                                             obj    : users[i],
-                                             externo: false])
+                                    label  : users[i].toString(),
+                                    obj    : users[i],
+                                    externo: false])
                         }
                     }
                 }
@@ -477,17 +528,17 @@ class TramiteController extends happy.seguridad.Shield {
                 if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                   label  : dep.descripcion,
-                                   obj    : dep,
-                                   externo: dep.externo == 1])
+                                label  : dep.descripcion,
+                                obj    : dep,
+                                externo: dep.externo == 1])
                     }
                 }
             } else {
                 if (dep.triangulos.size() > 0) {
                     disp2.add([id     : dep.id * -1,
-                               label  : dep.descripcion,
-                               obj    : dep,
-                               externo: dep.externo == 1])
+                            label  : dep.descripcion,
+                            obj    : dep,
+                            externo: dep.externo == 1])
                 }
             }
         }
