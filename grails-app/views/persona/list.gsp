@@ -55,9 +55,9 @@
                         <div class="btn-group text-left">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                 <g:if test="${params.estado}">
-                                    <g:if test="${params.estado == 'jefe'}">
-                                        <i class="fa fa-user text-warning"></i>
-                                    </g:if>
+                                %{--<g:if test="${params.estado == 'jefe'}">--}%
+                                %{--<i class="fa fa-user text-warning"></i>--}%
+                                %{--</g:if>--}%
                                     <g:if test="${params.estado == 'usuario'}">
                                         <i class="fa fa-user text-info"></i>
                                     </g:if>
@@ -91,11 +91,11 @@
                                         <i class="fa fa-user text-success"></i> Administrador
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="#" class="a" data-tipo="jefe">
-                                        <i class="fa fa-user text-warning"></i> Autoridad
-                                    </a>
-                                </li>
+                                %{--<li>--}%
+                                %{--<a href="#" class="a" data-tipo="jefe">--}%
+                                %{--<i class="fa fa-user text-warning"></i> Autoridad--}%
+                                %{--</a>--}%
+                                %{--</li>--}%
                                 <li>
                                     <a href="#" class="a" data-tipo="usuario">
                                         <i class="fa fa-user text-info"></i> Activo
@@ -118,55 +118,55 @@
             </thead>
             <tbody>
                 <g:each in="${personaInstanceList}" status="i" var="personaInstance">
-                    %{--<g:if test="${params.estado != 'admin' || (params.estado == 'admin' && personaInstance.puedeAdmin)}">--}%
-                        <g:set var="del" value="${true}"/>
-                        <g:if test="${Tramite.countByDe(personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
-                        <g:if test="${PersonaDocumentoTramite.countByPersona(personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
-                        <g:if test="${ObservacionTramite.countByPersona(personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
-                        <g:if test="${Accs.countByUsuarioOrAsignadoPor(personaInstance, personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
-                        <g:if test="${Sesn.countByUsuario(personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
-                        <g:if test="${PermisoUsuario.countByPersonaOrAsignadoPor(personaInstance, personaInstance) > 0}">
-                            <g:set var="del" value="${false}"/>
-                        </g:if>
+                %{--<g:if test="${params.estado != 'admin' || (params.estado == 'admin' && personaInstance.puedeAdmin)}">--}%
+                    <g:set var="del" value="${true}"/>
+                    <g:if test="${Tramite.countByDe(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${PersonaDocumentoTramite.countByPersona(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${ObservacionTramite.countByPersona(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${Accs.countByUsuarioOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${Sesn.countByUsuario(personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
+                    <g:if test="${PermisoUsuario.countByPersonaOrAsignadoPor(personaInstance, personaInstance) > 0}">
+                        <g:set var="del" value="${false}"/>
+                    </g:if>
 
-                        <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
-                        <g:set var="rolCopia" value="${RolPersonaTramite.findByCodigo('R002')}"/>
-                        <g:set var="rolImprimir" value="${RolPersonaTramite.findByCodigo('I005')}"/>
+                    <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
+                    <g:set var="rolCopia" value="${RolPersonaTramite.findByCodigo('R002')}"/>
+                    <g:set var="rolImprimir" value="${RolPersonaTramite.findByCodigo('I005')}"/>
 
-                        <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
+                    <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
-                        <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
-                            <td class="text-center">
-                                <g:if test="${personaInstance.puedeAdmin}">
-                                    <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'success'}"></i>
-                                </g:if>
-                                <g:else>
-                                    <i class="fa fa-user text-${!personaInstance.estaActivo? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
-                                </g:else>
-                            </td>
-                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
-                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
-                            <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
-                            <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
-                            <td>${Sesn.withCriteria {
-                                eq("usuario", personaInstance)
-                                perfil {
-                                    order("nombre")
-                                }
-                            }.perfil.nombre.join(", ")}</td>
-                            %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
-                        </tr>
-                    %{--</g:if>--}%
+                    <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
+                        <td class="text-center">
+                            <g:if test="${personaInstance.puedeAdmin}">
+                                <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'success'}"></i>
+                            </g:if>
+                            <g:else>
+                                <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
+                            </g:else>
+                        </td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
+                        <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
+                        <td>${Sesn.withCriteria {
+                            eq("usuario", personaInstance)
+                            perfil {
+                                order("nombre")
+                            }
+                        }.perfil.nombre.join(", ")}</td>
+                        %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
+                    </tr>
+                %{--</g:if>--}%
                 </g:each>
             </tbody>
         </table>
@@ -288,11 +288,11 @@
                     textBtn = "Activar";
                     textLoader = "Activando";
                     url = "${createLink(action:'activar_ajax')}";
-                   var b= bootbox.dialog({
+                    var b = bootbox.dialog({
                         title   : "Alerta",
                         message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
                         buttons : {
-                            cancelar : {
+                            cancelar      : {
                                 label     : "Cancelar",
                                 className : "btn-primary",
                                 callback  : function () {
@@ -526,38 +526,41 @@
                 };
 
                 var config = {
-                    label : 'Perfiles',
-                    icon  : "fa fa-gears",
-                    separator_after : true,
-                    url   : "${createLink(action: 'config')}/" + id
-                };
-
-/*
-                var ausentismo = {
-                    label           : 'Ausentismo',
+                    label           : 'Perfiles',
                     icon            : "fa fa-gears",
                     separator_after : true,
-                    url             : "${createLink(action: 'ausentismo')}/" + id
-                };
-*/
-
-/*
-                var desactivar = {
-                    label  : 'Desactivar',
-                    icon   : "fa ${iconDesactivar}'",
-                    action : function (e) {
-                        cambiarEstadoRow(id, false, tramites);
-                    }
+                    url             : "${createLink(action: 'config')}/" + id
                 };
 
-                var activar = {
-                    label  : 'Activar',
-                    icon   : "fa ${iconActivar}",
-                    action : function (e) {
-                        cambiarEstadoRow(id, true, tramites);
-                    }
-                };
-*/
+                /*
+                 var ausentismo = {
+                 label           : 'Ausentismo',
+                 icon            : "fa fa-gears",
+                 separator_after : true,
+                 url             : "
+                ${createLink(action: 'ausentismo')}/" + id
+                 };
+                 */
+
+                /*
+                 var desactivar = {
+                 label  : 'Desactivar',
+                 icon   : "fa
+                ${iconDesactivar}'",
+                 action : function (e) {
+                 cambiarEstadoRow(id, false, tramites);
+                 }
+                 };
+
+                 var activar = {
+                 label  : 'Activar',
+                 icon   : "fa
+                ${iconActivar}",
+                 action : function (e) {
+                 cambiarEstadoRow(id, true, tramites);
+                 }
+                 };
+                 */
 
                 var eliminar = {
                     label            : 'Eliminar',
@@ -578,11 +581,11 @@
                                 id : id
                             },
                             success : function (msg) {
-                                var men=""
-                                if(msg!="ok"){
-                                    men=msg
-                                }else{
-                                    men="Persona eliminada"
+                                var men = ""
+                                if (msg != "ok") {
+                                    men = msg
+                                } else {
+                                    men = "Persona eliminada"
                                     deleteRow(id);
                                 }
 
@@ -603,7 +606,6 @@
                     }
                 };
 
-
                 items.ver = ver;
                 items.editar = editar;
                 if (estaActivo) {
@@ -611,15 +613,15 @@
 //                    items.ausentismo = ausentismo;
 //                    items.desactivar = desactivar;
                 }
-/*
-                if (estaInactivo) {
-                    items.activar = activar;
-                }
-*/
+                /*
+                 if (estaInactivo) {
+                 items.activar = activar;
+                 }
+                 */
                 if (puedeEliminar) {
                     items.eliminar = eliminar;
                 }
-                items.eliminar=eliminarUsu
+                items.eliminar = eliminarUsu
 
                 return items;
             }

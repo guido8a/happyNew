@@ -25,7 +25,7 @@ class Persona {
 //    String autorizacion
     Date fechaCambioPass
     String telefono
-    int jefe
+    int jefe                //este ya no se usa: en 0 en la base de datos, comentado en persona/form_ajax, persona/list, departamento/arbol
 //    String celular
     String foto
 //    String codigo

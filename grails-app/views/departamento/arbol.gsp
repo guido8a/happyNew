@@ -99,8 +99,9 @@
                 </div>
 
                 <div class="btn-group pull-right ui-corner-all leyenda">
-                    <i class="fa fa-user text-info"></i> Usuario<br/>
-                    <i class="fa fa-user text-warning"></i> Autoridad
+                    <i class="fa fa-user text-info"></i> Usuario activo<br/>
+                    <i class="fa fa-user text-muted"></i> Usuario inactivo<br/>
+                    %{--<i class="fa fa-user text-warning"></i> Autoridad--}%
                 </div>
             </div>
 
