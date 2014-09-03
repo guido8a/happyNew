@@ -7,18 +7,19 @@
         border-style: solid; border-color: #AAA; border-width: 1px; ">
             <table border="0" cellpadding="0" width="900px">
                 <thead style="color: #101010; background-color: #69b0d3">
-                <tr>
-                    <th style="padding:4px;" width="60px">Activado</th>
-                    <th width="150px" style="text-align: center">Permiso</th>
-                    <th width="690px" style="text-align: center">Descripción</th>
-                </tr>
+                    <tr>
+                        <th style="padding:4px;" width="60px">Activado</th>
+                        <th width="150px" style="text-align: center">Permiso</th>
+                        <th width="690px" style="text-align: center">Descripción</th>
+                    </tr>
                 </thead>
                 <tbody>
                 %{--<hr>Hola ${datos}</hr>--}%
                     <g:each in="${datos}" status="i" var="d">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" style="background: ${(d[3]) ? '#7cf' : ''}">
                             <td style="text-align: center"><input type="checkbox" name="cdgo" class="ndm ${d[4]}"
-                                       value="${d[0].encodeAsHTML()}" ${(d[3]) ? 'checked' : ''}></td>
+                                                                  value="${d[0].encodeAsHTML()}" ${(d[3]) ? 'checked' : ''}>
+                            </td>
                             <td>${d[1]?.encodeAsHTML()}</td>
                             <td>${d[2]?.encodeAsHTML()}</td>
                         </tr>
@@ -61,6 +62,14 @@
          * RECIBIR   : P010
          * RECEPCION : E001
          * EDITOR    : P016
+         *
+         * Solo cuando es administrador puede anular, asociar, reactivar, redireccionar
+         *
+         * ADMINISTRACION   : P013
+         * ANULAR           : P009
+         * ASOCIAR          : P014
+         * REACTIVAR        : P012
+         * REDIRECCIONAR    : P008
          */
         var $this = $(this);
         var checked = $this.is(":checked");
@@ -70,6 +79,29 @@
         var codRecibir = "P010";
         var codRecepcion = "E001";
         var codEditor = "P016";
+
+        var codAdmin = "P013";
+        var codAnular = "P009";
+        var codAsociar = "P014";
+        var codReactivar = "P012";
+        var codRedirect = "P008";
+
+        var finalChecked = false;
+        var msg = "";
+
+        // que es lo q se checkeo
+        var esAdmin = $this.hasClass(codAdmin);
+        var esAnular = $this.hasClass(codAnular);
+        var esAsociar = $this.hasClass(codAsociar);
+        var esReactivar = $this.hasClass(codReactivar);
+        var esRedirect = $this.hasClass(codRedirect);
+
+        // los q ya estan checkeados
+        var tieneAdmin = $("." + codAdmin).is(":checked");
+        var tieneAnular = $("." + codAnular).is(":checked");
+        var tieneAsociar = $("." + codAsociar).is(":checked");
+        var tieneReactivar = $("." + codReactivar).is(":checked");
+        var tieneRedirect = $("." + codRedirect).is(":checked");
 
         if (checked) {
             // que es lo q se checkeo
@@ -85,8 +117,6 @@
             var tieneRecibir = $("." + codRecibir).is(":checked");
             var tieneRecepcion = $("." + codRecepcion).is(":checked");
             var tieneEditor = $("." + codEditor).is(":checked");
-
-            var msg = "";
 
             if (esDirector) {
                 // si tiene jefe y/o recibir no debe checkearse
@@ -109,18 +139,37 @@
             if (esRecepcion) {
                 // si tiene editor no debe checkearse
                 if (tieneEditor) {
-                    msg += "No puede asignar permiso de RECEPCION a un EDITOR";
+                    msg += "No puede asignar permiso de RECEPCIÓN a un EDITOR";
                 }
             }
             if (esEditor) {
                 // si tiene recibir o recepcion no debe checkearse
                 if (tieneRecibir || tieneRecepcion) {
-                    msg += "No puede asignar permiso de EDITOR si ya tiene permiso de RECIBIR o de RECEPCION";
+                    msg += "No puede asignar permiso de EDITOR si ya tiene permiso de RECIBIR o de RECEPCIÓN";
+                }
+            }
+
+            if (esAnular || esAsociar || esReactivar || esRedirect) {
+                // si no tiene admin no debe chechearse
+                if (!tieneAdmin) {
+                    msg += "No puede asignar permiso de ANULAR, ASOCIAR, REACTIVAR, REDIRECCIONAR si no tiene permiso de ADMINISTRACIÓN";
                 }
             }
 
             if (msg != "") {
-                $this.prop("checked", false);
+                $this.prop("checked", finalChecked);
+                showAlert(msg);
+            }
+        } else {
+            if (esAdmin) {
+                // si tiene anular, asociar, reactivar o redirect no debe descheckearse
+                if (tieneAnular || tieneAsociar || tieneReactivar || tieneRedirect) {
+                    msg += "No puede quitar el permiso de ADMINISTRACIÓN si tiene permiso de ANULAR, ASOCIAR, REACTIVAR o REDIRECCIONAR";
+                    finalChecked = true;
+                }
+            }
+            if (msg != "") {
+                $this.prop("checked", finalChecked);
                 showAlert(msg);
             }
         }
