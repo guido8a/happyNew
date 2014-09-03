@@ -264,7 +264,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         //esta quitando el enviado a estos
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
-            if(persDoc) {
+            if (persDoc) {
                 def log = strEnvioPrevio + " el " +
                         "${persDoc.fechaEnvio ? persDoc.fechaEnvio.format('dd-MM-yyyy HH:mm') : tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm')}"
                 if (persDoc) {
@@ -568,7 +568,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 personalActivo += it
             }
         }
-        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo]
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: persona.puedeEditor]
     }
 
     def bandejaSalida_old() {
@@ -620,7 +620,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramites = []
 //        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
         def estados = [porEnviar, revisado, enviado, recibido]
-        if (persona.jefe == 1) {
+//        if (persona.jefe == 1) {
+        if (persona.puedeEditor) {
             Persona.findAllByDepartamento(persona.departamento).each { p ->
                 def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
 
@@ -693,7 +694,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-        return [persona: persona, tramites: trams]
+        return [persona: persona, tramites: trams, esEditor: persona.puedeEditor]
     }
 
     def tablaBandejaSalida_old() {
@@ -702,7 +703,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramites = []
         def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-        if (persona.jefe == 1) {
+//        if (persona.jefe == 1) {
+        if (persona.puedeEditor) {
             Persona.findAllByDepartamento(persona.departamento).each { p ->
                 def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
                 if (t.size() > 0)
@@ -893,7 +895,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def tramites = []
 //        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003", "E004"])
         def estados = [porEnviar, revisado, enviado, recibido]
-        if (persona.jefe == 1) {
+//        if (persona.jefe == 1) {
+        if (persona.puedeEditor) {
             Persona.findAllByDepartamento(persona.departamento).each { p ->
                 def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
 
@@ -941,7 +944,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
-
 
 //busqueda
 
@@ -1052,31 +1054,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
         def tramitetr = Tramite.get(params.id)
-        if(tramitetr){
+        if (tramitetr) {
             println("entro!")
             def paratr = tramitetr.para
             def copiastr = tramitetr.copias
 //            def enviado1 = false
-            (copiastr + paratr).each {c->
+            (copiastr + paratr).each { c ->
 //                println("ccc"  + c.estado.codigo)
 //                if(c?.estado?.codigo == "E003" || c?.estado?.codigo == "E001" ) {
-                if(c?.estado?.codigo == "E006") {
+                if (c?.estado?.codigo == "E006") {
 //                    println("entro if")
 //                    enviado1 = true
                     flash.message = "Este trámite ya ha sido enviado, no puede guardar modificaciones."
                     redirect(controller: 'tramite', action: "errores")
                     return
-                }else{
+                } else {
 
                 }
             }
         }
-
-
-
-
-
-
 
 //        println("params " + params)
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
@@ -1191,15 +1187,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         if (params.id) {
                             if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
                                 disponibles.add([id     : users[i].id,
-                                        label  : users[i].toString(),
-                                        obj    : users[i],
-                                        externo: false],)
+                                                 label  : users[i].toString(),
+                                                 obj    : users[i],
+                                                 externo: false],)
                             }
                         } else {
                             disponibles.add([id     : users[i].id,
-                                    label  : users[i].toString(),
-                                    obj    : users[i],
-                                    externo: false])
+                                             label  : users[i].toString(),
+                                             obj    : users[i],
+                                             externo: false])
                         }
                     }
                 }
@@ -1216,17 +1212,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
                             disp2.add([id     : dep.id * -1,
-                                    label  : dep.descripcion,
-                                    obj    : dep,
-                                    externo: dep.externo == 1])
+                                       label  : dep.descripcion,
+                                       obj    : dep,
+                                       externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                label  : dep.descripcion,
-                                obj    : dep,
-                                externo: dep.externo == 1])
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             }
