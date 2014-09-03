@@ -60,6 +60,11 @@
         <script type="text/javascript">
 
             $(function () {
+
+                $( document ).ready(function() {
+                    $("#check0").click();
+                });
+
                 $("#cargaCtrl").click(function () {
                     bootbox.confirm("Cargar controladores desde Grails?", function (result) {
                         if (result) {

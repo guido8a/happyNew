@@ -203,6 +203,15 @@
             } //createEdit
 
             $(function () {
+                $( document ).ready(function() {
+                    $("#check0").click();
+                });
+
+                $("#perfil").change(function () {
+                            $("#check0").click();
+                        }
+                )
+
                 $(".btnCrear").click(function () {
                     createEditRow(null, "perfil");
                     return false;

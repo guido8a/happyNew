@@ -196,6 +196,10 @@
     } //createEdit
 
     $(function () {
+        $( document ).ready(function() {
+            $(".modulo").click();
+        });
+
         $(".btnCrear").click(function () {
             createEditRow(null, "perfil");
             return false;
