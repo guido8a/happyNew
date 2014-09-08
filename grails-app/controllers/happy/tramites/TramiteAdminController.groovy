@@ -8,6 +8,30 @@ class TramiteAdminController extends Shield {
 
     def tramitesService
 
+    def redireccionarTramitesUI() {
+
+    }
+
+    def buscarPersonasRedireccionar() {
+        def nombre = params.nombre.trim() != "" ? params.nombre.trim() : null
+        def apellido = params.apellido.trim() != "" ? params.apellido.trim() : null
+        def user = params.user.trim() != "" ? params.user.trim() : null
+        def personas
+        personas = Persona.withCriteria {
+            if (nombre) {
+                ilike("nombre", "%" + nombre + "%")
+            }
+            if (apellido) {
+                ilike("apellido", "%" + apellido + "%")
+            }
+            if (user) {
+                ilike("login", "%" + user + "%")
+            }
+            maxResults(10)
+        }
+        return [personas: personas]
+    }
+
     def asociarTramite_ajax() {
         def original = PersonaDocumentoTramite.get(params.original)
         def duenioDep = original.tramite.deDepartamento
@@ -259,8 +283,8 @@ class TramiteAdminController extends Shield {
         def errores = ""
 
         copias.each { copia ->
-            copia=copia.trim()
-            if(copia!="") {
+            copia = copia.trim()
+            if (copia != "") {
                 def id = copia.toInteger()
                 def copiaPers = new PersonaDocumentoTramite()
                 if (id > 0) {
@@ -293,7 +317,7 @@ class TramiteAdminController extends Shield {
                         println "error save alerta " + alerta.errors
                     }
                 }
-            }else{
+            } else {
 
             }
 
@@ -993,25 +1017,25 @@ class TramiteAdminController extends Shield {
                 objeto.tramite.save(flush: true)
                 if (!objeto.save(flush: true)) {
                     println "error en el save anular " + objeto.errors
-                }else{
+                } else {
                     /*alertas*/
                     def alerta
-                    if(objeto.departamento){
-                        alerta=Alerta.findAllByTramiteAndDepartamento(objeto.tramite,objeto.departamento)
+                    if (objeto.departamento) {
+                        alerta = Alerta.findAllByTramiteAndDepartamento(objeto.tramite, objeto.departamento)
                         //println "busco alerta dep "+alerta+"  "+objeto.tramite.id+"  "+objeto.departamento.id
-                        alerta.each {a->
-                            if(a.fechaRecibido==null) {
+                        alerta.each { a ->
+                            if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
                                 a.save(flush: true)
                             }
                         }
                     }
-                    if(objeto.persona){
+                    if (objeto.persona) {
 
-                        alerta=Alerta.findAllByTramiteAndPersona(objeto.tramite,objeto.persona)
+                        alerta = Alerta.findAllByTramiteAndPersona(objeto.tramite, objeto.persona)
                         // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
-                        alerta.each {a->
-                            if(a.fechaRecibido==null) {
+                        alerta.each { a ->
+                            if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
                                 a.save(flush: true)
                             }
@@ -1163,21 +1187,20 @@ class TramiteAdminController extends Shield {
 
     def desanular() {
         def pdt = PersonaDocumentoTramite.get(params.id)
-        if(pdt.rolPersonaTramite.codigo == "R001") { //es PARA
+        if (pdt.rolPersonaTramite.codigo == "R001") { //es PARA
             def tramite = pdt.tramite
             def copias = tramite.allCopias
             def ok = true
-            (copias+pdt).each {p->
-                println "desanular: "+p.rolPersonaTramite.descripcion
-                if(!desanularPdt(p) ) {
+            (copias + pdt).each { p ->
+                println "desanular: " + p.rolPersonaTramite.descripcion
+                if (!desanularPdt(p)) {
                     ok = false
                 }
             }
-            render ok?"OK":"NO"
+            render ok ? "OK" : "NO"
         } else {
             render "NO"
         }
-
 
 //        def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
 //        def estadoEnviado = EstadoTramite.findByCodigo("E003")
