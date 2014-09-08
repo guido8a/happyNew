@@ -235,6 +235,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids = null
         }
 
+        def tramiteEsCircular = tramite.tipoDocumento.codigo == "CIR"
+
 //        println "********************"
 //        println tramite
 //        println ids
@@ -429,8 +431,28 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             def nuevaObservacion = ""
                             def texto = log + obsTram
                             tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                            tramite.save(flush: true)
+                            if (tramiteEsCircular) {
+                                if (tramite.copias.size() > 1) {
+                                    persDoc.delete(flush: true)
+                                } else {
+                                    println "Esta no se elimina para tener un registro del tramite: solo se desenvia"
+                                    persDoc.fechaEnvio = null
+                                    persDoc.estado = porEnviar
+                                    persDoc.tramite.estadoTramite = porEnviar
 
-                            persDoc.delete(flush: true)
+                                    def observacionOriginal2 = persDoc.observaciones
+                                    def accion2 = "Cancelación de envío"
+                                    def solicitadoPor2 = ""
+                                    def usuario2 = session.usuario.login
+                                    def texto2 = log
+                                    def nuevaObservacion2 = ""
+                                    persDoc.observaciones = tramitesService.observaciones(observacionOriginal2, accion2, solicitadoPor2, usuario2, texto2, nuevaObservacion2)
+                                    persDoc.save(flush: true)
+                                }
+                            } else {
+                                persDoc.delete(flush: true)
+                            }
                             if (pers)
                                 alerta = Alerta.findByPersonaAndTramite(pers, tram)
                             else
