@@ -56,7 +56,7 @@
 
                 <div class="col-md-6" style="width: 380px;">
                     <g:textField name="observaciones" class="form-control allCaps" value="${prflInstance?.observaciones}" style="width: 360px;"/>
-                </div>
+                </div> *
             </span>
         </div>
 
