@@ -659,7 +659,7 @@
                     var msg = "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i>" +
                             "<p class='lead'>Está por quitar el recibido del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>" +
                             '<div class="row">' +
-                            '<div class="col-md-3">Autorizado por</div>' +
+                            '<div class="col-md-3"><b>Solicitado por:</b></div>' +
                             '<div class="col-md-9">' +
                             '<input type="text" class="form-control" id="autDesrecibir"/>' +
                             '</div>' +
@@ -703,7 +703,7 @@
                                                         location.reload(true);
                                                     }, 500);
                                                 } else if (parts[0] == 'NO') {
-                                                    log("Error al quitar el recibido del trámite el trámite: " + parts[1], 'error')
+                                                    log("Error al quitar el recibido del trámite : " + parts[1], 'error')
                                                     closeLoader();
                                                     setTimeout(function () {
                                                         location.reload(true);

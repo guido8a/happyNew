@@ -838,6 +838,7 @@ class TramiteAdminController extends Shield {
     }
 
     def desrecibir() {
+//        println("-->" + params)
         def persDocTram = PersonaDocumentoTramite.get(params.id)
 
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
@@ -859,7 +860,7 @@ class TramiteAdminController extends Shield {
 
             def observacionOriginal = persDocTram.observaciones
             def accion = "Quitado el recibido"
-            def solicitadoPor = ""
+            def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = o
             def nuevaObservacion = params.texto
