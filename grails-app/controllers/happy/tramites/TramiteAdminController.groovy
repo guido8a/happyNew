@@ -945,7 +945,7 @@ class TramiteAdminController extends Shield {
 //                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
 
                 def observacionOriginal = objeto.observaciones
-                def accion = "Aulación"
+                def accion = "Anulación"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
                 def texto = ""
