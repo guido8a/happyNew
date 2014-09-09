@@ -13,7 +13,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
     def reportesPdfService
     def maxLvl = null
-    def reporteRetrasadosConsolidadoDir(){
+
+    def reporteRetrasadosConsolidadoDir() {
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -27,7 +28,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def puedeVer = []
         def extraPersona = "and "
 
-        def depStr=""
+        def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
             def padre
@@ -52,7 +53,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         if (pdt) {
             pdt.each { pd ->
-                if(pd.tramite.externo!="1" || pd.tramite==null){
+                if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
@@ -127,7 +128,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     totalNodeSr += p["retrasados"].toInteger()
                 }
 
-                tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
+                tabla += "<tr class='data dir ${lvl.rezagados > 0 ? 'rz' : ''} ${lvl.retrasados > 0 ? 'rs' : ''}' " +
+                        "data-tipo='dir' data-value='${lvl.objeto.codigo}' data-rz='${lvl.rezagados}' data-rs='${lvl.retrasados}'>"
                 tabla += "<td class='titulo'>Dirección</td>"
                 tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${lvl["rezagados"]}</td>"
@@ -177,14 +179,14 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         params.detalle = 1
         def inicio = false
-        if(params.inicio)
-            inicio=true
+        if (params.inicio)
+            inicio = true
 
-        print("datos "+datos["objeto"]+"  "+datos["rezagados"]+"  "+datos["retrasados"])
-        return [tabla: tabla, params: params,inicio:inicio]
+        print("datos " + datos["objeto"] + "  " + datos["rezagados"] + "  " + datos["retrasados"])
+        return [tabla: tabla, params: params, inicio: inicio]
     }
 
-    def imprimeHijosPdfConsolidadoDir(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico){
+    def imprimeHijosPdfConsolidadoDir(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
         def tabla = ""
         total = 0
         totalSr = 0
@@ -235,15 +237,15 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     totalNodeSr += p["retrasados"].toInteger()
                 }
 
-                if(totalNode>0 || totalNodeSr>0){
-                    tabla += "<tr class='data dep ${totalNode > 0 ? 'rz' : ''} ${totalNodeSr > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${totalNode}' data-rs='${totalNodeSr}'>"
-                    tabla += "<td class='titulo'>Departamento</td>"
+                if (lvl.rezagados > 0 || lvl.retrasados > 0) {
+                    tabla += "<tr class='data dep ${lvl.rezagados > 0 ? 'rz' : ''} ${lvl.retrasados > 0 ? 'rs' : ''}'" +
+                            " data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${lvl.rezagados}' data-rs='${lvl.retrasados}'>"
+                    tabla += "<td class='titulo'>**Departamento</td>"
                     tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                     tabla += "<td class='titulo numero'>${lvl['rezagados']}</td>"
                     tabla += "<td class='titulo numero'>${lvl['retrasados']}</td>"
                     tabla += "</tr>"
                 }
-
 
 //                tabla += "<tr>"
 //                tabla += "<td class='titulo'>Usuario</td>"
@@ -268,7 +270,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosPdfConsolidadoDir(lvl, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
+                def res = imprimeHijosPdfConsolidadoDir(lvl, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
                 total += res[0]
                 totalSr += res[1]
                 tabla += res[2]
@@ -311,7 +313,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             }
 
         }
-        def depStr=""
+        def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
             def padre
@@ -340,7 +342,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         if (pdt) {
             pdt.each { pd ->
-                if(pd.tramite.externo!="1" || pd.tramite==null){
+                if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
@@ -353,8 +355,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-        if((puedeVer.id.contains(datos["objeto"].id))){
-            maxLvl=datos
+        if ((puedeVer.id.contains(datos["objeto"].id))) {
+            maxLvl = datos
         }
 
         def tabla = "<table class='table table-bordered table-condensed table-hover'>"
@@ -372,10 +374,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
 
         hijos.each { lvl ->
-           // println "lvl "+lvl["objeto"]+"  "+lvl["rezagados"]+"   "+lvl["retrasados"]
+            // println "lvl "+lvl["objeto"]+"  "+lvl["rezagados"]+"   "+lvl["retrasados"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if(maxLvl==null)
-                    maxLvl=lvl
+                if (maxLvl == null)
+                    maxLvl = lvl
 //                println "paso ambos if"
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
@@ -433,7 +435,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 //                    tabla += "<td class='numero'>${totales}</td>"
 //                    tabla += "<td class='numero'>${totalesSr}</td>"
 //                    tabla += "</tr>"
-                if(datosLuz.size()>0) {
+                if (datosLuz.size() > 0) {
                     tabla += "<tr>"
                     tabla += "<td  rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                     tabla += "</tr>"
@@ -459,7 +461,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             tabla += res[2]
         }
         tabla += "</tbody>"
-        if(maxLvl) {
+        if (maxLvl) {
             tabla += "<tfoot>"
             tabla += "<tr>"
             tabla += "<th colspan='2' class='titulo'>TOTAL</th>"
@@ -472,10 +474,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         params.detalle = 1
         def inicio = false
-        if(params.inicio)
-            inicio=true
+        if (params.inicio)
+            inicio = true
 
-        return [tabla: tabla, params: params,inicio:inicio]
+        return [tabla: tabla, params: params, inicio: inicio]
     }
 
     def imprimeHijosPdfConsolidado(arr, params, usuario, deps, puedeVer, total, totalSr, datosGrafico) {
@@ -485,8 +487,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if(maxLvl==null)
-                    maxLvl=lvl
+                if (maxLvl == null)
+                    maxLvl = lvl
 
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
@@ -547,7 +549,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 //                tabla += "<td class='numero'>${totales}</td>"
 //                tabla += "<td class='numero'>${totalesSr}</td>"
 //                tabla += "</tr>"
-                if(datosLuz.size()>0) {
+                if (datosLuz.size() > 0) {
                     tabla += "<tr>"
                     tabla += "<td  rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                     tabla += "</tr>"
@@ -568,7 +570,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
             if (lvl["hijos"].size() > 0) {
                 // println "tiene hijos ? "
-                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
+                def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
                 total += res[0]
                 totalSr += res[1]
                 tabla += res[2]
@@ -577,7 +579,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         }
         return [total, totalSr, tabla]
     }
-
 
 
 }

@@ -102,7 +102,7 @@
 
             function getData(tipo) {
                 var data = [], arr = [];
-                var deps = $(".data.dep." + tipo).size();
+                var deps = $(".data.dir." + tipo).size();
 
                 var title = tipo == "rs" ? "<p class='text-danger'><strong> Trámites sin recepción " : "<p class='text-warning'><strong>Trámites retrasados";
                 title += (deps > 1 ? " por departamento </strong></p>" : "");
@@ -124,7 +124,7 @@
                                 data.push(arr);
                             }
                         } else {
-                            if ($tr.data("tipo") == "dep") {
+                            if ($tr.data("tipo") == "dir") {
                                 arr = [ $tr.data("value"), valor];
                                 data.push(arr);
                             }
