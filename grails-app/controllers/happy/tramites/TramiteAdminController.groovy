@@ -42,6 +42,8 @@ class TramiteAdminController extends Shield {
 //        println "personas " + personas
         personas.each{ pr ->
             contador = 0
+//            println pr
+            data = [:]
             data.persona = pr
             data.tieneTrmt = 'N'
             def tramites = PersonaDocumentoTramite.withCriteria {

@@ -10,24 +10,24 @@
         </tr>
     </thead>
     <tbody>
-        <g:each in="${personas.persona}" var="per">
+        <g:each in="${personas}" var="per">
             <tr>
                 <td>
-                    ${per.nombre}
+                    ${per.persona.nombre}
                 </td>
                 <td>
-                    ${per.apellido}
+                    ${per.persona.apellido}
                 </td>
                 <td>
-                    ${per.login}
+                    ${per.persona.login}
                 </td>
                 <td>
                     <g:if test="${per.departamento}">
-                        ${per.departamento?.descripcion} (${per.departamento?.codigo})
+                        ${per.persona.departamento?.descripcion} (${per.persona.departamento?.codigo})
                     </g:if>
                 </td>
                 <td>
-                    <g:link class="btn btn-success" controller="tramiteAdmin" action="redireccionarTramites" id="${per.id}">
+                    <g:link class="btn btn-success" controller="tramiteAdmin" action="redireccionarTramites" id="${per.persona.id}">
                         <i class="fa fa-link"></i>
                     </g:link>
                 </td>
@@ -40,7 +40,7 @@
                     </g:if>
 --}%
                     %{--"${personas.tieneTrmt[0]}"--}%
-                    <g:if test="${personas.tieneTrmt[0] == 'S'}">
+                    <g:if test="${per.tieneTrmt[0] == 'S'}">
                         Si Tiene trámites
                     </g:if>
                     <g:else>
