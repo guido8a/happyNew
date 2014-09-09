@@ -16,7 +16,16 @@ class TramiteAdminController extends Shield {
         def nombre = params.nombre.trim() != "" ? params.nombre.trim() : null
         def apellido = params.apellido.trim() != "" ? params.apellido.trim() : null
         def user = params.user.trim() != "" ? params.user.trim() : null
+        def resultado = []
+        def band
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
+        def anulado = EstadoTramite.findByCodigo("E006")
+        def data = [:]
         def personas
+        def contador = 0
         personas = Persona.withCriteria {
             if (nombre) {
                 ilike("nombre", "%" + nombre + "%")
@@ -29,7 +38,34 @@ class TramiteAdminController extends Shield {
             }
             maxResults(10)
         }
-        return [personas: personas]
+
+//        println "personas " + personas
+        personas.each{ pr ->
+            contador = 0
+            data.persona = pr
+            data.tieneTrmt = 'N'
+            def tramites = PersonaDocumentoTramite.withCriteria {
+                eq("persona", pr)
+                inList("rolPersonaTramite", [rolPara, rolCopia])
+                isNotNull("fechaEnvio")
+                inList("estado", [enviado, recibido])
+            }
+
+            tramites.each{ tr ->
+//                println tramites.tramite
+                if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
+                    band = tramitesService.verificaHijos(tr, anulado)
+//                    println "estado!!! " + band + "   " + tr.id+"  "+tr.tramite.codigo
+                    if (!band) {
+                        contador += 1
+                    }
+                }
+            }
+            if (contador) data.tieneTrmt = 'S'
+            resultado.add(data)
+        }
+//        println "resultado: " + resultado
+        return [personas: resultado]
     }
 
     def asociarTramite_ajax() {

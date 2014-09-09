@@ -6,10 +6,11 @@
             <th>Usuario</th>
             <th>Departamento</th>
             <th>Redireccionar trámites</th>
+            <th>Trámites</th>
         </tr>
     </thead>
     <tbody>
-        <g:each in="${personas}" var="per">
+        <g:each in="${personas.persona}" var="per">
             <tr>
                 <td>
                     ${per.nombre}
@@ -29,6 +30,22 @@
                     <g:link class="btn btn-success" controller="tramiteAdmin" action="redireccionarTramites" id="${per.id}">
                         <i class="fa fa-link"></i>
                     </g:link>
+                </td>
+                <td>
+                    %{--${per.id}--}%
+%{--
+                    <g:if test="${happy.tramites.PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(happy.seguridad.Persona.get(per.id),
+                            happy.tramites.RolPersonaTramite.findAllByCodigoOrCodigo('R001', 'R002'))}">
+                        Tiene trámites
+                    </g:if>
+--}%
+                    %{--"${personas.tieneTrmt[0]}"--}%
+                    <g:if test="${personas.tieneTrmt[0] == 'S'}">
+                        Si Tiene trámites
+                    </g:if>
+                    <g:else>
+                        No tiene trámites
+                    </g:else>
                 </td>
             </tr>
         </g:each>

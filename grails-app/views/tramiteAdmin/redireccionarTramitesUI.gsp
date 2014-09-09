@@ -14,6 +14,9 @@
 
     <body>
         <div class="well">
+            Persona de quien se desea redireccionar sus trámites:
+
+            <p class="text-info">Ingrese uno varios criterios de búsqueda</p>
             <form class="form-inline" role="form">
                 <div class="form-group">
                     <g:textField name="nombre" class="form-control" placeholder="Nombre"/>
@@ -33,14 +36,15 @@
 
         <div class="well" id="divPersonas">
             <div class="alert alert-info">
+
                 <i class="fa fa-info-circle text-shadow pull-left fa-6x"></i>
 
                 <p>
-                    Ingrese uno o más parámetros para buscar a una persona y redireccionar sus trámites.
+                    Ingrese uno o varios criterios de búsqueda para ubicar a la persona.
                 </p>
 
                 <p>
-                    Realice una búsqueda para mostrar aquí los resultados.
+                    Haga clic en el botón Buscar para mostrar los resultados.
                 </p>
 
                 <p>
