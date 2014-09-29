@@ -68,14 +68,30 @@ class BusquedaExternosController {
             def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " "
             def para = tram.para
             if (para.persona) {
-//                strPara = (para.persona.titulo ? para.persona.titulo + " " : "") +
-//                        (para.persona.nombre + " " + para.persona.apellido)
-                prsnPara = para.persona
+//                prsnPara = para.persona
+//                println("-" + para.persona)
+                def rolRecibe = RolPersonaTramite.findByCodigo("E003")
+                def recibio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tram, rolRecibe)
+//                println("rec " + recibio)
+                if (recibio.size() >= 1) {
+//                    recibio = recibio.first()
+                    recibio = recibio.last()
+//                    println("--->" + recibio.last().persona)
+                    prsnPara = recibio.last().persona
+                }else{
+                    def triangulo = para.departamento.triangulos.first()
+                    prsnPara = triangulo
+                }
+
             } else {
                 def rolRecibe = RolPersonaTramite.findByCodigo("E003")
                 def recibio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tram, rolRecibe)
+//                println("rec " + recibio)
                 if (recibio.size() >= 1) {
-                    recibio = recibio.first()
+//                    recibio = recibio.first()
+                    recibio = recibio.last()
+//                    println("--->" + recibio.last().persona)
+
 //                    strPara = (recibio.persona.titulo ? recibio.persona.titulo + " " : "") +
 //                            (recibio.persona.nombre + " " + recibio.persona.apellido)
                     prsnPara = recibio.persona

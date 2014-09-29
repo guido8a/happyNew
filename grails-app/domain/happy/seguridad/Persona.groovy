@@ -231,22 +231,39 @@ class Persona {
         return this.puedePermiso("P014")
     }
 
-
-    def getJefePersona() {
-        def personas = Persona.withCriteria {
-            eq("departamento", this.departamento)
-            eq("jefe", 1)
+    def getJefePersona(){
+        def jefe = []
+        Persona.findAllByDepartamento(this.departamento).each {p->
+            if(p.puedeJefe && p.estaActivo){
+                jefe += p
+            }
         }
-        if (personas.size() == 1) {
-            return personas.first()
-        } else if (personas.size() > 1) {
-            println "Se encontraron ${personas.size()} jefes en el departamento ${this.departamento.descripcion}: ${personas}"
-            return personas.first()
-        } else {
-            println "No se encontraron jefes en el departamento ${this.departamento.descripcion}"
+        println("jefes " + jefe)
+        if(jefe.size() > 1) {
+            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
+        }
+        if(jefe.size() == 0) {
             return null
         }
+        return jefe.first()
     }
+
+
+//    def getJefePersona() {
+//        def personas = Persona.withCriteria {
+//            eq("departamento", this.departamento)
+//            eq("jefe", 1)
+//        }
+//        if (personas.size() == 1) {
+//            return personas.first()
+//        } else if (personas.size() > 1) {
+//            println "Se encontraron ${personas.size()} jefes en el departamento ${this.departamento.descripcion}: ${personas}"
+//            return personas.first()
+//        } else {
+//            println "No se encontraron jefes en el departamento ${this.departamento.descripcion}"
+//            return null
+//        }
+//    }
 
     def getTiposDocumento() {
 //        def lista = TipoDocumento.list(['sort': 'descripcion'])
