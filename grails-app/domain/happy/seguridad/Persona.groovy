@@ -238,7 +238,7 @@ class Persona {
                 jefe += p
             }
         }
-        println("jefes " + jefe)
+//        println("jefes " + jefe)
         if(jefe.size() > 1) {
             println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
         }
@@ -246,6 +246,24 @@ class Persona {
             return null
         }
         return jefe.first()
+    }
+
+
+    def getJefePersona2(){
+        def jefe = []
+        Persona.findAllByDepartamento(this.departamento).each {p->
+            if(p.puedeJefe && p.estaActivo){
+                jefe += p
+            }
+        }
+//        println("jefes " + jefe)
+        if(jefe.size() > 1) {
+            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
+        }
+        if(jefe.size() == 0) {
+            return null
+        }
+        return jefe
     }
 
 
