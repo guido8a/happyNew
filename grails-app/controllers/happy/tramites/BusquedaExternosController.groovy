@@ -104,16 +104,15 @@ class BusquedaExternosController {
             }
             strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara.nombre + " " + prsnPara.apellido)
             def jefe = prsnPara.jefePersona2
+            println("jefes " + jefe)
             def jefes = []
-            if (jefe) {
+            if (jefe.size >= 1) {
                 jefe.each{j->
-
                     jefes += (j.nombre + " " + j.apellido)
                 }
 //                strJefe = /*(jefe.titulo ? jefe.titulo + " " : "") + */ (jefe.nombre + " " + jefe.apellido)
             }
 
-//            println("jefes " + jefes)
             def dptoPadre = prsnPara.departamento.padre ?: prsnPara.departamento
             def director = Persona.withCriteria {
                 eq("departamento", dptoPadre)
@@ -140,9 +139,9 @@ class BusquedaExternosController {
                 msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
                 msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
 //                msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
-                jefes.each {
-                    msg += "<p>Jefe inmediato superior: <strong><em>${it}</em></strong></p>"
-                }
+
+                msg += "<p>Jefe inmediato superior: <strong><em>${jefes.join(', ')}</em></strong></p>"
+
                 msg += "<p>Nombre del director: <strong><em>${strDirector} (${dptoPadre.descripcion})</em></strong></p>"
             }
             msg += "</div>"
