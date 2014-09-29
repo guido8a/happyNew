@@ -313,7 +313,6 @@ class PrflController extends happy.seguridad.Shield {
         def exst = []
         def actl = []
         def prsn = []
-        def borra = ""
         def fcha = new Date().format('yyyy-MM-dd')
 
         if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
@@ -327,14 +326,12 @@ class PrflController extends happy.seguridad.Shield {
                 "prpf.perm__id not in (select perm__id " +
                 "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
 //
-//        println "grabar SQL: ${tx}"
-        borra = "("
+//        println "SQL para borrar permisos: ${tx}"
         cn.eachRow(tx) { d ->
-            if (borra == "(") borra += d.perm__id else borra += "," + d.perm__id
-            Prpf.get(d.prpf__id).delete()
+            println "borra: $d.perm__id"
+            cn1.execute("delete from prpf where prpf__id = ${d.prpf__id}")  /* añade permisos nuevos */
+//            Prpf.get(d.prpf__id).delete()
         }
-        borra += ")"
-        println borra
 
 //        println "-------------fin de borrado de permisos----------"
 
@@ -362,7 +359,7 @@ class PrflController extends happy.seguridad.Shield {
             try {
                 cn.execute(tx1)
                 //insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
-//                println "insertando.... ${tx1}"
+                println "insertando.... ${tx1}"
             }
             catch (Exception ex) {
                 println ex.getMessage()
@@ -376,53 +373,42 @@ class PrflController extends happy.seguridad.Shield {
         tx = "select prsn__id from sesn where prfl__id = ${prfl}"
         prsn = []
         cn.eachRow(tx.toString()) { d ->
-            prsn.add(d.prsn__id)
-        }
+//            println "inicia actualización de prpf de las personas: $prsn"
+            tx2 = "update prus set prusfcfn = '${fcha}', prsnmdfc = ${session.usuario.id} where prus__id in (select prus__id from prus " +
+                    "where prsn__id = ${d.prsn__id} and perm__id not in (select perm__id from prpf, sesn " +
+                    "where prpf.prfl__id = sesn.prfl__id and sesn.prsn__id = ${d.prsn__id}) and prusfcfn is null)"
 
-//        println "inicia actuliación de prpf de las personas: $prsn"
-        prsn.each {
-            if (borra != "()") {
-                /* verifica el permiso borrado no se halñle en los otros perfiles que tiene el usuario */
-                tx = "select distinct perm__id from prpf where perm__id in ${borra} and perm__id not in (" +
-                        "select perm__id from prpf, sesn where sesn.prsn__id = ${it} and sesn.prfl__id = prpf.prfl__id and " +
-                        "sesn.prfl__id <> ${prfl})"
-                prsn = []
-                cn.eachRow(tx.toString()) { d ->
-                    /* pone fecha de fin a los permisos que se eliminan del perfil */
-                    cn1.execute("update prus set prusfcfn = '${fcha}', prsnmdfc = ${session.usuario.id} " +
-                            "where prsn__id = ${it} and perm__id = ${d.perm__id}".toString())
-                }
+//            println "borra permisos con: $tx2"
+            cn1.execute(tx2.toString())
 
-            }
-
-            tx2 = "insert into prus(prsn__id, perm__id, prusfcin, prsnasgn) select ${it}, perm__id, '${fcha}', " +
+            tx2 = "insert into prus (prsn__id, perm__id, prusfcin, prsnasgn) select ${d.prsn__id}, perm__id, '${fcha}', " +
                     "${session.usuario.id} from prpf where prfl__id = ${prfl} and perm__id not in " +
-                    "(select perm__id from prus where prsn__id = ${it} and prusfcfn is null);"
-//            println "-- update: $tx2"
+                    "(select perm__id from prus where prsn__id = ${d.prsn__id} and prusfcfn is null)"
             try {
-                cn.execute(tx2.toString())  /* añade permisos nuevos */
+                cn1.execute(tx2.toString())  /* añade permisos nuevos */
+//                println "añade permisos: $tx2"
             }
             catch (Exception ex) {
                 println ex.getMessage()
                 error += ex.getMessage()
             }
+//            }
             //resp += "<br>" + tx1
         }
 
-
         cn.close()
         cn1.close()
-        println "errores:" + error.size() + ".."
+//        println "errores:" + error.size() + ".."
 
         if (error.size() > 1)
-            render("NO_Errores:\n ${error}")
+            render(" NO_Errores:\n  ${error} ")
         else
             render("OK_Proceso realizado con éxito")
 
-//        redirect(action: 'ajaxPermisos', params: params)
+        //        redirect(action: 'ajaxPermisos', params: params)
     }
 
-    //---------------------------------
+//---------------------------------
 
     def list() {
         if (session.usuario.puedeAdmin) {
