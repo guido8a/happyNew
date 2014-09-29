@@ -159,10 +159,13 @@ class BusquedaExternosController {
         def estadosOk = [enviado, recibido, archivado]
         def arreglo = []
         Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para, [sort: "fechaCreacion", order: "asc"]).each { tr ->
-            if (estadosOk.contains(tr.para.estado)) {
-                arreglo += tr
-                arreglo += todosHijos(tr)
+            if(tr.para){
+                if (estadosOk.contains(tr.para.estado)) {
+                    arreglo += tr
+                    arreglo += todosHijos(tr)
+                }
             }
+
         }
         return arreglo
     }
