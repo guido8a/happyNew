@@ -65,7 +65,7 @@ class BusquedaExternosController {
 //            def tram = ultimoHijo(externo)
 //            println "TRAM: " + tram.codigo
 
-            def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " "
+            def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " - Sin director asignado - "
             def para = tram.para
             if (para.persona) {
 //                prsnPara = para.persona
@@ -114,13 +114,31 @@ class BusquedaExternosController {
             }
 
             def dptoPadre = prsnPara.departamento.padre ?: prsnPara.departamento
-            def director = Persona.withCriteria {
-                eq("departamento", dptoPadre)
-                eq("jefe", 1)
+//            def director = Persona.withCriteria {
+//                eq("departamento", dptoPadre)
+//                eq("jefe", 1)
+//            }
+            def directores = [], dptoDirector
+            Persona.findAllByDepartamento(prsnPara.departamento).each {p->
+//                println "\tDPTO "+p.nombre+" "+p.apellido+"   "+p.estaActivo+"   "+p.puedeDirector
+                if(p.estaActivo && p.puedeDirector) {
+                    directores+=(p.nombre+" "+p.apellido)
+                    dptoDirector = prsnPara.departamento
+                }
             }
-            if (director) {
-                strDirector = /*(director.titulo ? director.titulo + " " : "") + */ (director.nombre + " " + director.apellido)
+            if(directores.size() == 0) {
+                Persona.findAllByDepartamento(dptoPadre).each {p->
+//                    println "\tPADRE "+p.nombre+" "+p.apellido+"   "+p.estaActivo+"   "+p.puedeDirector
+                    if(p.estaActivo && p.puedeDirector) {
+                        directores+=(p.nombre+" "+p.apellido)
+                        dptoDirector = dptoPadre
+                    }
+                }
             }
+            println "Directores: "+directores
+//            if (director) {
+//                strDirector = /*(director.titulo ? director.titulo + " " : "") + */ (director.nombre + " " + director.apellido)
+//            }
             def msg = "<div class='well well-lg text-left'>"
             msg += "<h4>Trámite ${externo.codigo}</h4>"
             if (tram.para.estado?.codigo == "E005") { //Archivado
@@ -138,11 +156,15 @@ class BusquedaExternosController {
                 msg += "se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
                 msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
                 msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
+                msg += "<p>Ubicación: <strong><em>${prsnPara.departamento.direccion}</em></strong></p>"
 //                msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
-
+                msg += "<hr style='border-color:#999 !important;'/>"
                 msg += "<p>Jefe inmediato superior: <strong><em>${jefes.join(', ')}</em></strong></p>"
 
-                msg += "<p>Nombre del director: <strong><em>${strDirector} (${dptoPadre.descripcion})</em></strong></p>"
+                msg += "<p>Nombre del director: <strong><em>${directores.join(', ')}</em></strong></p>"
+                msg += "<p>Departamento director: <strong><em>${dptoDirector.descripcion}</em></strong></p>"
+                msg += "<p>Teléfono: <strong><em>${dptoDirector.telefono}</em></strong></p>"
+                msg += "<p>Ubicación: <strong><em>${dptoDirector.direccion}</em></strong></p>"
             }
             msg += "</div>"
             render msg

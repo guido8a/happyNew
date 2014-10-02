@@ -76,7 +76,7 @@
 
     <body>
 
-        <div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '700'}px;" class="well">
+        <div style="text-align: center; margin-top: -60px; height: ${(flash.message) ? '650' : '830'}px;" class="well">
             <div class="page-header" style="margin-top: -10px;">
                 <div style="position: fixed; margin-left: 20px; width: 100px">
                     <img src="${resource(dir: 'images', file: 'logo_gadpp_reportes.png')}"/>

@@ -47,7 +47,8 @@ class PermisoUsuario {
 
     boolean getEstaActivo() {
         def now = new Date()
-        return (this.fechaInicio <= now && (this.fechaFin >= now || this.fechaFin == null))
+        return (this.fechaInicio <= now && this.fechaFin == null)
+//        return (this.fechaInicio <= now && (this.fechaFin >= now || this.fechaFin == null))
     }
 
     String getEstado() {
