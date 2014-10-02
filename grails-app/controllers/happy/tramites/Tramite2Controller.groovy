@@ -1305,6 +1305,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     response.sendError(403)
                     return
                 } else {
+                    //TODO: VER QUE DEMONIOS AQUI
+                    println "No encontro para asiq cogio una copia random....................."
                     pdt = pdt[0]
                 }
             }

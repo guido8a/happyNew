@@ -40,7 +40,7 @@ class TramiteAdminController extends Shield {
         }
 
 //        println "personas " + personas
-        personas.each{ pr ->
+        personas.each { pr ->
             contador = 0
 //            println pr
             data = [:]
@@ -53,7 +53,7 @@ class TramiteAdminController extends Shield {
                 inList("estado", [enviado, recibido])
             }
 
-            tramites.each{ tr ->
+            tramites.each { tr ->
 //                println tramites.tramite
                 if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                     band = tramitesService.verificaHijos(tr, anulado)
@@ -1094,7 +1094,11 @@ class TramiteAdminController extends Shield {
             }
 
             if (pdt.tramite.aQuienContesta) {
-                pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
+                if (pdt.tramite.aQuienContesta.fechaRecepcion) {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
+                } else {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")
+                }
                 pdt.tramite.aQuienContesta.fechaAnulacion = null
                 pdt.tramite.aQuienContesta.fechaArchivo = null
 //            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "

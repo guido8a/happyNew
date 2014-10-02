@@ -708,9 +708,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        // println "recibir tramite " + params
+        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
-
 
             def persona = Persona.get(session.usuario.id)
 
@@ -794,6 +793,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     ne("estado", estadoArchivado)
                 }
             }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
+
+            println "pxt: " + pxt
 
 //        println "tramite: " + tramite
 //        println "paraDpto: " + paraDpto
@@ -897,6 +898,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     render "NO_Ocurrió un error al recibir"
                 }
             } else {
+                println pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
                 render "NO_Ocurrió un error al recibir"
             }
 
