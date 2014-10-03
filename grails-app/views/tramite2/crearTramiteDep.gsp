@@ -105,8 +105,10 @@
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
             <g:hiddenField name="tramite.aQuienContesta.id" value="${pxt}"/>
             <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
+            <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
+
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
-            <g:if test="${padre}">
+            <g:if test="${padre || principal}">
                 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                     <p class="css-vertical-text">D. Principal</p>
@@ -129,7 +131,7 @@
 
                     <div class="row ">
                         <div class="col-xs-10">
-                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
+                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                                 <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                 <span style="margin-right: 10px">
                                     ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
@@ -163,7 +165,7 @@
                     </g:if>
 
                 </div>
-                <g:if test="${padre != principal}">
+                <g:if test="${padre && padre != principal}">
                     <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                         <p class="css-vertical-text">Contesta a</p>
@@ -186,7 +188,7 @@
 
                         <div class="row ">
                             <div class="col-xs-10">
-                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre, rolesNo,[sort:'rolPersonaTramite'])}" var="pdt" status="j">
+                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(padre, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                     <span style="margin-right: 10px">
                                         ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
@@ -1045,12 +1047,12 @@
                             cc += $(this).data("id") + "_";
                         });
 
-                       if(!cc && tpdc == 4){
-                           log("No ha ingresado ningun destinatario!", 'error')
-                       }else{
-                           $("#hiddenCC").val(cc);
-                           $(".frmTramite").submit();
-                       }
+                        if (!cc && tpdc == 4) {
+                            log("No ha ingresado ningun destinatario!", 'error')
+                        } else {
+                            $("#hiddenCC").val(cc);
+                            $(".frmTramite").submit();
+                        }
 
 //                        console.log("-->" + cc)
                     }

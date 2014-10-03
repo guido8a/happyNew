@@ -625,7 +625,7 @@ class TramiteAdminController extends Shield {
         }
     }
 
-    def arbolAdminTramite() {
+    def arbolAdminTramite_old() {
         def html = "", url = "", tramite = null
         if (params.id) {
             def usu = Persona.get(session.usuario.id)
@@ -652,6 +652,56 @@ class TramiteAdminController extends Shield {
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")
         }
         return [html2: html, url: url, tramite: tramite]
+    }
+
+    def arbolAdminTramite() {
+        def html = "", url = "", tramite = null
+        if (params.id) {
+            def usu = Persona.get(session.usuario.id)
+            def puedeAdministrar = session.usuario.puedeAdmin
+//            println "PUEDE??? " + puedeAdministrar
+
+            tramite = Tramite.get(params.id.toLong())
+            if (tramite) {
+                def principal = tramite
+                if (tramite.padre) {
+                    principal = tramite.padre
+                    while (true) {
+                        if (!principal.padre)
+                            break
+                        else {
+                            principal = principal.padre
+                        }
+                    }
+                }
+                html = "<ul>" + "\n"
+                html += makeNewTreeExtended(principal)
+                html += "</ul>" + "\n"
+            }
+            url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+        }
+        return [html2: html, url: url, tramite: tramite]
+    }
+
+    private String makeNewTreeExtended(Tramite principal) {
+        def html = ""
+        def tramitePrincipal = principal.tramitePrincipal
+        //debe hacer un arbol para cada tramite que tenga tramite.tramitePrincipal = principal.tramitePrincipal
+        def tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+
+        tramites.each { p ->
+            def type = "tramite"
+            if (p.tramitePrincipal == p.id) {
+                type += "Principal"
+            }
+            html += "<li id='t_${p.id}' class='jstree-open' data-jstree='{\"type\":\"${type}\"}' >"
+            html += "<b>" + p.codigo + "</b>"
+            html += "<ul>"
+            html += makeTreeExtended(p)
+            html += "</ul>"
+        }
+
+        return html
     }
 
     private String makeTreeExtended(Tramite principal) {

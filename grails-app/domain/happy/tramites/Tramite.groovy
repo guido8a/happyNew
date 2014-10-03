@@ -50,6 +50,8 @@ class Tramite {
 
     String conMembrete
 
+    Integer tramitePrincipal = 0
+
     def diasLaborablesService
 
     static mapping = {
@@ -99,6 +101,8 @@ class Tramite {
 
             conMembrete column: 'trmtcnmm'
             departamento column: 'dpto__id'
+
+            tramitePrincipal column: 'trmttrpr'
         }
     }
     static constraints = {
@@ -140,16 +144,16 @@ class Tramite {
 
     def beforeValidate(List propertiesBeingValidated) {
         // do pre validation work based on propertiesBeingValidated
-       // println "before validate"
-        if(this){
-            if(this.aQuienContesta==null){
+        // println "before validate"
+        if (this) {
+            if (this.aQuienContesta == null) {
                 def oldValue = this.getPersistentValue("aQuienContesta")
                 // println "old Value "+oldValue.class
-                if(!oldValue!=null && oldValue!="") {
+                if (!oldValue != null && oldValue != "") {
                     //println "es diferente aQuienConstesta wtf "
                     try {
                         this.aQuienContesta = PersonaDocumentoTramite.get(oldValue?.id)
-                    }catch(e){
+                    } catch (e) {
                         println "error before validate tramite"
                     }
                 }
@@ -181,10 +185,10 @@ class Tramite {
 
     def getRespuestas() {
         def hijos = Tramite.findAllByPadreAndEsRespuesta(this, 1)
-        def res =[]
-        hijos.each {t->
-            if(t.para){
-                if(!para.estado)
+        def res = []
+        hijos.each { t ->
+            if (t.para) {
+                if (!para.estado)
                     res.add(t)
                 else {
                     if (t.para.estado?.codigo != "E006")

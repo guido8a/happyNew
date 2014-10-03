@@ -580,30 +580,33 @@ class TramiteController extends happy.seguridad.Shield {
                 pdt = pdt.id
             }
         }
+        tramite.tramitePrincipal = 0
         if (params.buscar == '1') {
             def p = padre
             while (p.padre) {
                 p = p.padre
             }
-            pdt = p.para
-            padre = p
-//            println "padre!!! "+padre+"   "+pdt
-            if (!pdt) {
-                pdt = p.copias
-                if (pdt.size() == 0) {
-                    flash.message = "No puede agregar un documento a este tramite."
-                    response.sendError(403)
-                    return
-                } else {
-                    pdt = pdt[0]
-                }
-            }
-            if (pdt.estado?.codigo == "E006") {
-                flash.message = "No puede agregar un tramite a un documento anulado"
-                response.sendError(403)
-            } else {
-                pdt = pdt.id
-            }
+            tramite.tramitePrincipal = p.tramitePrincipal
+            padre = null
+//            pdt = p.para
+//            padre = p
+////            println "padre!!! "+padre+"   "+pdt
+//            if (!pdt) {
+//                pdt = p.copias
+//                if (pdt.size() == 0) {
+//                    flash.message = "No puede agregar un documento a este tramite."
+//                    response.sendError(403)
+//                    return
+//                } else {
+//                    pdt = pdt[0]
+//                }
+//            }
+//            if (pdt.estado?.codigo == "E006") {
+//                flash.message = "No puede agregar un tramite a un documento anulado"
+//                response.sendError(403)
+//            } else {
+//                pdt = pdt.id
+//            }
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,

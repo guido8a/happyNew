@@ -1296,26 +1296,28 @@ class Tramite2Controller extends happy.seguridad.Shield {
             while (p.padre) {
                 p = p.padre
             }
-            pdt = p.para
-            padre = p
-            if (!pdt) {
-                pdt = p.copias
-                if (pdt.size() == 0) {
-                    flash.message = "No puede agregar un documento a este tramite."
-                    response.sendError(403)
-                    return
-                } else {
-                    //TODO: VER QUE DEMONIOS AQUI
-                    println "No encontro para asiq cogio una copia random....................."
-                    pdt = pdt[0]
-                }
-            }
-            if (pdt.estado.codigo == "E006") {
-                flash.message = "No puede agregar un tramite a un documento anulado"
-                response.sendError(403)
-            } else {
-                pdt = pdt.id
-            }
+            tramite.tramitePrincipal = p.tramitePrincipal
+            padre = null
+//            pdt = p.para
+//            padre = p
+//            if (!pdt) {
+//                pdt = p.copias
+//                if (pdt.size() == 0) {
+//                    flash.message = "No puede agregar un documento a este tramite."
+//                    response.sendError(403)
+//                    return
+//                } else {
+//                    //TODO: VER QUE DEMONIOS AQUI
+//                    println "No encontro para asiq cogio una copia random....................."
+//                    pdt = pdt[0]
+//                }
+//            }
+//            if (pdt.estado.codigo == "E006") {
+//                flash.message = "No puede agregar un tramite a un documento anulado"
+//                response.sendError(403)
+//            } else {
+//                pdt = pdt.id
+//            }
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
@@ -1477,7 +1479,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite2", action: "crearTramiteDep", id: tramite.id)
             return
         } else {
-
 //            println "SAVED!!"
 //            println "externo? " + paramsTramite.externo
 //            println "externo? " + tramite.externo
@@ -1520,6 +1521,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 }
                 tramite.save(flush: true)
+            } else {
+                //si no tiene padre, es create y no llegó parámetro de trámite principal
+                // ponerle el numero de tramite principal
+                if (!paramsTramite.id && !paramsTramite.tramitePrincipal) {
+                    tramite.tramitePrincipal = tramite.id
+                    tramite.save(flush: true)
+                }
             }
 
             /*

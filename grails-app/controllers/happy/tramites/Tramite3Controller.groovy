@@ -190,6 +190,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 }
                 tramite.save(flush: true)
+            } else {
+                //si no tiene padre, es create y no llegó parámetro de trámite principal
+                // ponerle el numero de tramite principal
+                if (!paramsTramite.id && !paramsTramite.tramitePrincipal) {
+                    tramite.tramitePrincipal = tramite.id
+                    tramite.save(flush: true)
+                }
             }
             def tram = Tramite.lock(tramite.id)
 //            println "DESPUES1: " + tramite.aQuienContesta
@@ -1126,7 +1133,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [html: html, url: url]
     }
 
-    def arbolTramite() {
+    //Antes de que se cambie la estructura de tramites relacionados
+    def arbolTramite_old2() {
         def tramite = Tramite.get(params.id.toLong())
         def principal = tramite
         if (tramite.padre) {
@@ -1155,6 +1163,49 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            objeto.save(flush: true)
 //        }
 //        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297),funcion)
+
+        def url = ""
+        switch (params.b) {
+            case "bep":
+                url = createLink(controller: "tramite", action: "bandejaEntrada")
+                break;
+            case "bed":
+                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+                break;
+            case "bsp":
+                url = createLink(controller: "tramite2", action: "bandejaSalida")
+                break;
+            case "bsd":
+                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+                break;
+            case "bqt":
+                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+                break;
+            case "bqe":
+                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
+                break;
+
+        }
+
+        return [html2: html2, url: url]
+    }
+
+    def arbolTramite() {
+        def tramite = Tramite.get(params.id.toLong())
+        def principal = tramite
+        if (tramite.padre) {
+            principal = tramite.padre
+            while (true) {
+                if (!principal.padre)
+                    break
+                else {
+                    principal = principal.padre
+                }
+            }
+        }
+        def html2 = "<ul>" + "\n"
+        html2 += makeNewTreeExtended(principal)
+        html2 += "</ul>" + "\n"
 
         def url = ""
         switch (params.b) {
@@ -1273,6 +1324,28 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return html
     }
 
+    private String makeNewTreeExtended(Tramite principal) {
+        def html = ""
+        def tramitePrincipal = principal.tramitePrincipal
+        //debe hacer un arbol para cada tramite que tenga tramite.tramitePrincipal = principal.tramitePrincipal
+        def tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+
+        tramites.each { p ->
+            def type = "tramite"
+            if (p.tramitePrincipal == p.id) {
+                type += "Principal"
+            }
+            html += "<li id='t_${p.id}' class='jstree-open' data-jstree='{\"type\":\"${type}\"}' >"
+            html += "<b>" + p.codigo + "</b>"
+            html += "<ul>"
+            html += makeTreeExtended(p)
+            html += "</ul>"
+        }
+
+        return html
+    }
+
+    //Antes de cambiar la estructura de tramites relacionados
     private String makeTreeExtended(Tramite principal) {
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
