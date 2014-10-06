@@ -25,7 +25,7 @@ class Persona {
 //    String autorizacion
     Date fechaCambioPass
     String telefono
-    int jefe                //este ya no se usa: en 0 en la base de datos, comentado en persona/form_ajax, persona/list, departamento/arbol
+//    int jefe                //este ya no se usa: en 0 en la base de datos, comentado en persona/form_ajax, persona/list, departamento/arbol
 //    String celular
     String foto
 //    String codigo
@@ -67,7 +67,7 @@ class Persona {
 //            autorizacion column: 'prsnatrz'
             fechaCambioPass column: 'prsnfcps'
             telefono column: 'prsntelf'
-            jefe column: 'prsnjefe'
+//            jefe column: 'prsnjefe'
 //            celular column: 'prsntfcl'
             foto column: 'prsnfoto'
 //            codigo column: 'prsncdgo'
@@ -93,7 +93,7 @@ class Persona {
 //        autorizacion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'autorizacion'])
         fechaCambioPass(blank: true, nullable: true, attributes: [title: 'fechaCambioPass'])
         telefono(size: 1..63, blank: true, nullable: true, attributes: [title: 'telefono'])
-        jefe(blank: false, attributes: [title: 'jefe'])
+//        jefe(blank: false, attributes: [title: 'jefe'])
 //        celular(size: 1..63, blank: true, nullable: true, attributes: [title: 'celular'])
         foto(maxSize: 255, blank: true, nullable: true, attributes: [title: 'foto'])
 //        codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
@@ -232,40 +232,40 @@ class Persona {
         return this.puedePermiso("P014")
     }
 
-    def getJefePersona(){
-        def jefe = []
-        Persona.findAllByDepartamento(this.departamento).each {p->
-            if(p.puedeJefe && p.estaActivo){
-                jefe += p
-            }
-        }
-//        println("jefes " + jefe)
-        if(jefe.size() > 1) {
-            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
-        }
-        if(jefe.size() == 0) {
-            return null
-        }
-        return jefe.first()
-    }
+//    def getJefePersona(){
+//        def jefe = []
+//        Persona.findAllByDepartamento(this.departamento).each {p->
+//            if(p.puedeJefe && p.estaActivo){
+//                jefe += p
+//            }
+//        }
+////        println("jefes " + jefe)
+//        if(jefe.size() > 1) {
+//            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
+//        }
+//        if(jefe.size() == 0) {
+//            return null
+//        }
+//        return jefe.first()
+//    }
 
 
-    def getJefePersona2(){
-        def jefe = []
-        Persona.findAllByDepartamento(this.departamento).each {p->
-            if(p.puedeJefe && p.estaActivo){
-                jefe += p
-            }
-        }
-//        println("jefes " + jefe)
-        if(jefe.size() > 1) {
-            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
-        }
-        if(jefe.size() == 0) {
-            return null
-        }
-        return jefe
-    }
+//    def getJefePersona2(){
+//        def jefe = []
+//        Persona.findAllByDepartamento(this.departamento).each {p->
+//            if(p.puedeJefe && p.estaActivo){
+//                jefe += p
+//            }
+//        }
+////        println("jefes " + jefe)
+//        if(jefe.size() > 1) {
+//            println "Hay "+jefe.size()+" jefes en el departamento "+this.departamento.descripcion
+//        }
+//        if(jefe.size() == 0) {
+//            return null
+//        }
+//        return jefe
+//    }
 
 
 //    def getJefePersona() {

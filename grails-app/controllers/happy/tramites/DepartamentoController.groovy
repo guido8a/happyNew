@@ -343,11 +343,14 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
 
                     tp = "usu"
+/*
                     if (hijo.jefe == 1) {
                         rel = "jefe"
                     } else {
                         rel = "usuario"
                     }
+*/                  rel = "usuario"
+
                     clase = "usuario"
                     def rolPara = RolPersonaTramite.findByCodigo('R001');
                     def rolCopia = RolPersonaTramite.findByCodigo('R002');
