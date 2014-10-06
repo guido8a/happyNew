@@ -5,7 +5,7 @@
   Time: 3:13 PM
 --%>
 
-<%@ page import="happy.tramites.Departamento" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.utilitarios.Parametros; happy.tramites.Departamento" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -77,6 +77,7 @@
                         </g:link>
                     </div>
 
+                    <g:if test="${happy.utilitarios.Parametros.get(1).validaLDAP == 1}">
                     <div class="btn-group" style="margin-top: 4px;">
                         %{--
                                             <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
@@ -87,6 +88,7 @@
                         </a>
 
                     </div>
+                    </g:if>
 
                     <div class="btn-group" style="margin-top: 4px;">
                         <div class="input-group">
