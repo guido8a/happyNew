@@ -218,6 +218,7 @@ class DepartamentoController extends happy.seguridad.Shield {
             def hh = Departamento.countByPadreIsNull([sort: "descripcion"])
             if (hh > 0) {
                 clase = "hasChildren jstree-closed"
+//                println "-----" + session.usuario.puedeDirector
                 if (session.usuario.puedeDirector) {
 //                    clase += "jstree-opened"
                 } else if (session.usuario.puedeJefe) {

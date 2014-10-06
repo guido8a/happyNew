@@ -106,6 +106,7 @@ class Persona {
     }
 
     def puedePermiso(String codigoPermiso) {
+//        println this.permisos
         if (this.permisos.size() > 0) {
             def perm = null
             this.permisos.each {

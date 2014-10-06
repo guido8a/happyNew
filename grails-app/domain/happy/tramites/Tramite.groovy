@@ -18,7 +18,7 @@ class Tramite {
     TipoPrioridad prioridad
     EstadoTramite estadoTramite
     TipoTramite tipoTramite
-    OrigenTramite origenTramite
+//    OrigenTramite origenTramite
     String codigo
     Integer numero
     String asunto
@@ -114,7 +114,7 @@ class Tramite {
         prioridad(blank: false, nullable: false, attributes: [title: 'tipoPersona'])
         estadoTramite(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
         tipoTramite(blank: true, nullable: true, attributes: [title: 'tipoTramite'])
-        origenTramite(blank: true, nullable: true, attributes: [title: 'origenTRamite'])
+//        origenTramite(blank: true, nullable: true, attributes: [title: 'origenTRamite'])
         codigo(maxSize: 20, blank: true, nullable: true, attributes: [title: 'codigo'])
         numero(blank: false, attributes: [title: 'numero'])
         asunto(maxSize: 1023, blank: true, nullable: true, attributes: [title: 'asunto'])

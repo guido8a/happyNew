@@ -1,4 +1,4 @@
-<%@ page import="org.omg.CORBA.NO_IMPLEMENT; happy.tramites.TipoDepartamento; happy.tramites.Departamento" %>
+<%@ page import="org.omg.CORBA.NO_IMPLEMENT; happy.tramites.Departamento" %>
 
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <g:if test="${!departamentoInstance}">
@@ -15,7 +15,6 @@
     %{--</label>--}%
 
     %{--<div class="col-md-6">--}%
-    %{--<g:select id="tipoDepartamento" name="tipoDepartamento.id" from="${TipoDepartamento.list()}"--}%
     %{--optionKey="id" optionValue="descripcion"--}%
     %{--value="${departamentoInstance?.tipoDepartamento?.id}" class="many-to-one form-control"/>--}%
     %{--</div>--}%
@@ -47,7 +46,7 @@
 
                 <div class="col-md-3" style="width: 120px;">
                     <g:if test="${tramites == 0}">
-                        <g:textField name="codigo" maxlength="6" required="" class="form-control required allCaps"
+                        <g:textField name="codigo" maxlength="15" required="" class="form-control required allCaps"
                                      value="${departamentoInstance?.codigo}" style="width: 100px;"/>
                     </g:if>
                     <g:else>

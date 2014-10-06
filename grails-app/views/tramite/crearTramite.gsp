@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.OrigenTramite; happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -963,10 +963,10 @@
                             id = parseInt(para) * -1;
                         }
                     }
-                    if (paraExt) {
-                        url = "${createLink(controller: 'origenTramite', action: 'show_ajax')}";
-                        id = paraExt;
-                    }
+//                    if (paraExt) {
+                        %{--url = "${createLink(controller: 'origenTramite', action: 'show_ajax')}";--}%
+//                        id = paraExt;
+//                    }
                     $.ajax({
                         type    : "POST",
                         url     : url,

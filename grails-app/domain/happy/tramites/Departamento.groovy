@@ -4,7 +4,6 @@ import happy.seguridad.Persona
 
 class Departamento {
     static auditable = true
-    TipoDepartamento tipoDepartamento
     Departamento padre
     String codigo
     String descripcion
@@ -24,7 +23,6 @@ class Departamento {
         version false
         columns {
             id column: 'dpto__id'
-            tipoDepartamento column: 'tpdp__id'
             padre column: 'dptopdre'
             codigo column: 'dptocdgo'
             descripcion column: 'dptodscr'
@@ -37,7 +35,6 @@ class Departamento {
         }
     }
     static constraints = {
-        tipoDepartamento(blank: true, nullable: true, attributes: [title: 'TipoDepartamento'])
         padre(blank: true, nullable: true, attributes: [title: 'padre'])
         codigo(size: 1..15, unique: false, blank: false, attributes: [title: 'codigo'])
         descripcion(size: 1..511, blank: false, attributes: [title: 'descripcion'])
