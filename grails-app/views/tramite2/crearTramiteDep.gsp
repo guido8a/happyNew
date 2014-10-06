@@ -126,7 +126,14 @@
 
                         <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
 
-                        <div class="col-xs-3">${principal.deDepartamento ? principal.deDepartamento.codigo : "" + principal.de.departamento.codigo + ":" + principal.de.nombre + ' ' + principal.de.apellido}</div>
+                        <div class="col-xs-3">
+                            <g:if test="${principal.tipoDocumento.codigo == 'DEX'}">
+                                <td>${principal.paraExterno}</td>
+                            </g:if>
+                            <g:else>
+                                ${principal.deDepartamento ? principal.deDepartamento.codigo : "" + principal.de.departamento.codigo + ":" + principal.de.nombre + ' ' + principal.de.apellido}
+                            </g:else>
+                        </div>
                     </div>
 
                     <div class="row ">
@@ -183,7 +190,14 @@
 
                             <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
 
-                            <div class="col-xs-3">${padre.deDepartamento ? padre.deDepartamento.codigo : "" + padre.de.departamento.codigo + ":" + padre.de.nombre + ' ' + padre.de.apellido}</div>
+                            <div class="col-xs-3">
+                                <g:if test="${padre.tipoDocumento.codigo == 'DEX'}">
+                                    <td>${padre.paraExterno}</td>
+                                </g:if>
+                                <g:else>
+                                    ${padre.deDepartamento ? padre.deDepartamento.codigo : "" + padre.de.departamento.codigo + ":" + padre.de.nombre + ' ' + padre.de.apellido}
+                                </g:else>
+                            </div>
                         </div>
 
                         <div class="row ">
