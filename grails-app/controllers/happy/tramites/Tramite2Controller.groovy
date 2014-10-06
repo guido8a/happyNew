@@ -1524,7 +1524,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
             } else {
                 //si no tiene padre, es create y no llegó parámetro de trámite principal
                 // ponerle el numero de tramite principal
-                if (!paramsTramite.id && !paramsTramite.tramitePrincipal) {
+//                println "Params tramite: " + paramsTramite
+//                println "paramsTramite.id: " + paramsTramite.id
+//                println "!paramsTramite.id: " + (!paramsTramite.id)
+//                println "paramsTramite.tramitePrincipal: " + paramsTramite.tramitePrincipal
+//                println "!paramsTramite.tramitePrincipal: " + (!paramsTramite.tramitePrincipal)
+//                println "!paramsTramite.id && !paramsTramite.tramitePrincipal: " + (!paramsTramite.id && !paramsTramite.tramitePrincipal)
+                if (!paramsTramite.id && (!paramsTramite.tramitePrincipal || paramsTramite.tramitePrincipal.toString() == "0")) {
                     tramite.tramitePrincipal = tramite.id
                     tramite.save(flush: true)
                 }

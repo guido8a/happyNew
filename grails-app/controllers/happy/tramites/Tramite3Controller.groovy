@@ -193,7 +193,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             } else {
                 //si no tiene padre, es create y no llegó parámetro de trámite principal
                 // ponerle el numero de tramite principal
-                if (!paramsTramite.id && !paramsTramite.tramitePrincipal) {
+                if (!paramsTramite.id && (!paramsTramite.tramitePrincipal || paramsTramite.tramitePrincipal.toString() == "0")) {
                     tramite.tramitePrincipal = tramite.id
                     tramite.save(flush: true)
                 }
@@ -1328,7 +1328,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def html = ""
         def tramitePrincipal = principal.tramitePrincipal
         //debe hacer un arbol para cada tramite que tenga tramite.tramitePrincipal = principal.tramitePrincipal
-        def tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+        def tramites
+        if (tramitePrincipal > 0) {
+            tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+        } else {
+            tramites = [principal]
+        }
 
         tramites.each { p ->
             def type = "tramite"

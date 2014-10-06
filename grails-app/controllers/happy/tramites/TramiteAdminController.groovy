@@ -687,7 +687,12 @@ class TramiteAdminController extends Shield {
         def html = ""
         def tramitePrincipal = principal.tramitePrincipal
         //debe hacer un arbol para cada tramite que tenga tramite.tramitePrincipal = principal.tramitePrincipal
-        def tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+        def tramites
+        if (tramitePrincipal > 0) {
+            tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+        } else {
+            tramites = [principal]
+        }
 
         tramites.each { p ->
             def type = "tramite"
