@@ -188,14 +188,13 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbol() {
-
-        if (session.usuario.puedeAdmin) {
-            return [params: params]
-        } else {
-            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
-            response.sendError(403)
-        }
-
+//        if (session.usuario.puedeDirector || session.usuario.puedeJefe) {
+//            return [params: params]
+//        } else {
+//            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+//            response.sendError(403)
+//        }
+        return [params: params]
     }
 
     def loadTreePart() {

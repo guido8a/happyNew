@@ -39,7 +39,6 @@ class ElementosTagLib {
      */
     def flashMessage = { attrs, body ->
         def contenido = body()
-
         if (!contenido) {
             if (attrs.contenido) {
                 contenido = attrs.contenido
@@ -50,7 +49,9 @@ class ElementosTagLib {
             def finHtml = "</p></div>"
 
             def html = "<div class=\"alert ${attrs.tipo?.toLowerCase() == 'error' ? 'alert-danger' : attrs.tipo?.toLowerCase() == 'success' ? 'alert-success' : 'alert-info'} ${attrs.clase}\">"
-            html += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"
+            if (!attrs.dismissable || attrs.dismissable == true || attrs.dismissable.toString() == "1") {
+                html += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"
+            }
 
             if (attrs.icon) {
                 html += "<i class=\"${attrs.icon} fa-2x pull-left iconMargin\"></i> "
