@@ -145,13 +145,14 @@
 
                     <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
-                    <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}" class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
+                    <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}"
+                        class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
                         <td class="text-center">
                             <g:if test="${personaInstance.puedeAdmin}">
                                 <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'success'}"></i>
                             </g:if>
                             <g:else>
-                                <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : personaInstance.jefe == 1 ? 'warning' : 'info'}"></i>
+                                <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'info'}"></i>
                             </g:else>
                         </td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "login")}' search='${params.search}'/></td>

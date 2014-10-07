@@ -71,8 +71,8 @@ class Departamento {
 
     def getJefes() {
         def jefes = []
-        Persona.findAllByDepartamentoAndJefe(this, 1).each {
-            if (it.estaActivo)
+        Persona.findAllByDepartamento(this, 1).each {
+            if (it.estaActivo && it.puedeJefe)
                 jefes.add(it)
         }
         return jefes
