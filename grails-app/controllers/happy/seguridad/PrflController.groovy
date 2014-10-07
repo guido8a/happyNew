@@ -34,6 +34,7 @@ class PrflController extends happy.seguridad.Shield {
 
     def permisos = {  /* permisos apra trámites */
 //       println "recibe de parametros: ${params.id}"
+        if (session.usuario.puedeAdmin) {
         def prflInstance = Prfl.get(params.id)
         if (!prflInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
@@ -42,6 +43,10 @@ class PrflController extends happy.seguridad.Shield {
             def lstacmbo = lstaModulos(params.id)
 //          println "modulos:----- " + lstacmbo
             render(view: "permisos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
+        }
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
     }
 

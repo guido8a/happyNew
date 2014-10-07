@@ -111,6 +111,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
             redirect(controller: 'tramite2', action: 'bandejaSalida')
         }
+/*
         if (persona.jefe == 1)
             revisar = true
         else {
@@ -118,6 +119,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (per)
                 revisar = true
         }
+*/
 
 
         return [persona: persona, revisar: revisar, bloqueo: bloqueo]
