@@ -243,13 +243,18 @@ class DepartamentoController extends happy.seguridad.Shield {
         } else if (id == "root") {
 //            println "director: " + session.usuario.puedeDirector
 //            println "jefe: " + session.usuario.puedeJefe
-            if (session.usuario.puedeDirector) {
+            if (session.usuario.puedeAdmin) {
                 hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
-            } else if (session.usuario.puedeJefe) {
-                hijos = [session.usuario.departamento]
             } else {
                 hijos = []
             }
+//            if (session.usuario.puedeDirector) {
+//                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+//            } else if (session.usuario.puedeJefe) {
+//                hijos = [session.usuario.departamento]
+//            } else {
+//                hijos = []
+//            }
         } else {
             def parts = id.split("_")
             def node_id = parts[1].toLong()
