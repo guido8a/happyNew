@@ -54,7 +54,8 @@
     </head>
 
     <body>
-        <g:if test="${session.usuario.puedeDirector || session.usuario.puedeJefe}">
+        %{--<g:if test="${session.usuario.puedeDirector || session.usuario.puedeJefe}">--}%
+        <g:if test="${session.usuario.puedeAdmin}">
             <g:set var="iconActivar" value="fa-hdd-o"/>
             <g:set var="iconDesactivar" value="fa-power-off"/>
 
@@ -1092,7 +1093,7 @@
         <g:else>
             <elm:flashMessage clase="alert-warning" dismissable="false">
                 <i class="fa fa-warning fa-2x pull-left"></i>
-                <span style="font-size: larger">La estructura departamental solamente puede ser visualizada por directores y jefes</span>
+                <span style="font-size: larger">La estructura departamental solamente puede ser visualizada por administradores</span>
             </elm:flashMessage>
         </g:else>
     </body>

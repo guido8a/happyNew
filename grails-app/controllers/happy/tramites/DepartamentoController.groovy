@@ -219,13 +219,18 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (hh > 0) {
                 clase = "hasChildren jstree-closed"
 //                println "-----" + session.usuario.puedeDirector
-                if (session.usuario.puedeDirector) {
-//                    clase += "jstree-opened"
-                } else if (session.usuario.puedeJefe) {
+                if (session.usuario.puedeAdmin) {
 //                    clase += "jstree-opened"
                 } else {
                     clase = ""
                 }
+//                if (session.usuario.puedeDirector) {
+////                    clase += "jstree-opened"
+//                } else if (session.usuario.puedeJefe) {
+////                    clase += "jstree-opened"
+//                } else {
+//                    clase = ""
+//                }
             }
 //            println "director: " + session.usuario.puedeDirector
 //            println "jefe: " + session.usuario.puedeJefe
@@ -349,7 +354,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                     } else {
                         rel = "usuario"
                     }
-*/                  rel = "usuario"
+*/ rel = "usuario"
 
                     clase = "usuario"
                     def rolPara = RolPersonaTramite.findByCodigo('R001');
