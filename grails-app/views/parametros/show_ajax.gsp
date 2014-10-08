@@ -113,7 +113,7 @@
         <g:if test="${parametrosInstance?.bloqueo}">
 
                 <div class="col-md-3 text-info">
-                    Bloqueo en Horas
+                    Bloqueo en Horas por no recepción
                 </div>
 
                 <div class="col-md-3">

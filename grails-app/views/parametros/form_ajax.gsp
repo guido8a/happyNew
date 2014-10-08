@@ -129,7 +129,7 @@
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'bloqueo', 'error')} required">
             <span class="grupo">
                 <label for="bloqueo" class="col-md-3 control-label text-info">
-                    Bloqueo en Horas
+                    Bloqueo en Horas por no recepción
                 </label>
 
                 <div class="col-md-2">
