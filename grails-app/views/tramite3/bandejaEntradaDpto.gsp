@@ -573,7 +573,9 @@
                 </g:if>
 
                 if (conAnexo) {
+                    <g:if test="${session.usuario.puedeJefe}">
                     items.anexo = anexos
+                    </g:if>
                 }
                 if (retrasado || recibido) {
                     if (esExterno) {

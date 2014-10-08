@@ -82,10 +82,13 @@
                 <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}"
                     departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                     prtr="${tramite?.id}"
-                    class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}">
+                    class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno) ? 'estadoExterno' : ''}">
 
                     <g:if test="${tramite?.tramite?.anexo == 1}">
                         <td title="${tramite.tramite.asunto}">
+                            <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                            </g:if>
                             ${tramite?.tramite?.codigo}
                             <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
                                 <i class="fa fa-paperclip" style="margin-left: 10px"></i>
@@ -96,7 +99,7 @@
                         <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
                     </g:else>
 
-                    <td title="${tramite.fechaRecepcion?'':"El sistema se bloqueará el: "+tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm')+" si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+                    <td title="${tramite.fechaRecepcion ? '' : "El sistema se bloqueará el: " + tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm') + " si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                     <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
                         <td>EXT</td>
