@@ -128,7 +128,7 @@
         <span class="btn btn-success fileinput-button" style="position: relative;height: 40px;margin-top: 10px">
             <i class="glyphicon glyphicon-plus"></i>
             <span>Seleccionar archivos</span>
-            <input type="file" name="file" id="file" class="file" multiple>
+            <input type="file" name="file" id="file" class="file" multiple accept=".doc, .docx, .pdf, .odt, .xls, .xlsx">
         </span>
         %{--<span class="btn btn-success fileinput-button" id="adj-tramites" style="position: relative;height: 40px;margin-top: 10px">--}%
         %{--<i class="glyphicon glyphicon-plus"></i>--}%
