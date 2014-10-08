@@ -576,6 +576,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(action: 'bandejaSalidaDep')
             return
         }
+/*
         if (persona.jefe == 1)
             revisar = true
         else {
@@ -584,6 +585,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 revisar = true
             }
         }
+*/
         def departamento = Persona.get(usuario.id).departamento
         def personal = Persona.findAllByDepartamento(departamento)
         def personalActivo = []
