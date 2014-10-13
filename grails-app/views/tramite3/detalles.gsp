@@ -220,7 +220,7 @@
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
-                    <g:if test="${t.personaPuedeLeer(session.usuario)}">
+                    <g:if test="${t.personaPuedeLeerAnexo(session.usuario)}">
                         <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                             <g:each in="${happy.tramites.DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
                                 <span style='color: #327BBA'>Archivo:</span>
