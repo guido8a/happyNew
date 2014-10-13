@@ -1436,7 +1436,7 @@ class PersonaController extends happy.seguridad.Shield {
                                         prus.asignadoPor = session.usuario
                                         prus.persona = prsn
                                         prus.fechaInicio = new Date()
-                                        prus.permisoTramite = prpf.permiso
+                                        prus.permisoTramite = PermisoTramite.get(prpf.permiso.id)
                                         prus.save(flush: true)
                                     }
 
