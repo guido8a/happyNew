@@ -32,6 +32,10 @@
         .table-hover > tbody > tr.loading:hover > th {
             background-color : #ccc;
         }
+
+        .select {
+            width : 275px;
+        }
         </style>
     </head>
 
@@ -108,13 +112,28 @@
                         <td class="text-center">${tr.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
                         <td class="text-center">${tr.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                         <td class="text-center">${tr.tramite.de?.departamento?.codigo}</td>
-                        <td class="text-center">${tr.tramite?.de?.login ?: tr?.tramite?.de?.toString()}</td>
+                        <td class="text-center">
+                            <g:if test="${tr.tramite.deDepartamento}">
+                                <i class="fa fa-download"></i>
+                            </g:if>
+                            <g:else>
+                                <i class="fa fa-user"></i>
+                            </g:else>
+                            ${tr.tramite?.de?.login ?: tr?.tramite?.de?.toString()}
+                        </td>
                         <td class="text-center">${tr.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
                         <td class="text-center">${tr?.rolPersonaTramite?.descripcion}</td>
                         <td class="text-center">${estado}</td>
                         <td class="text-center">
-                            <g:select class="form-control input-sm" name="cmbRedirect_${tr.id}" from="${personas}" optionKey="id"
-                                      noSelection="[('-' + dep.id): dep.descripcion]"/>
+                            <g:if test="${tr.tramite.deDepartamento}">
+                                <g:set var="pers2" value="${personas - tr.tramite.de}"/>
+                                <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${personas}" optionKey="id"/>
+                            </g:if>
+                            <g:else>
+                                <g:set var="pers2" value="${personas - tr.tramite.de}"/>
+                                <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${pers2}" optionKey="id"
+                                          noSelection="[('-' + dep.id): dep.descripcion]"/>
+                            </g:else>
                         </td>
                         <td class="text-center">
                             <a href="#" class="btn btn-xs btn-success btn-move"
