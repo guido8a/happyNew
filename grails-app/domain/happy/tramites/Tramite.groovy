@@ -396,6 +396,45 @@ class Tramite {
         return false
     }
 
+    def personaPuedeLeerAnexo(Persona persona) {
+        def tienePermiso = persona.puedeVer
+
+        if (this.tipoTramite.codigo == "C") {
+            def para = this.para
+            if (persona.puedeJefe && para.departamento == persona.departamento) {
+                return true
+            }
+            if (!persona.puedeJefe && para.persona == persona) {
+                return true
+            }
+            return false
+        }
+        if (this.de == persona) {
+            return true
+        }
+        if (this.deDepartamento == persona.departamento && persona.esTriangulo()) {
+            return true
+        }
+        if (!tienePermiso) {
+            return false
+        }
+        if (this.tipoTramite.codigo == 'N') {
+            return true
+        } else {
+            return false
+//            if (this.para?.persona == persona || this.copias.contains(persona)) {
+//                return true
+//            }
+//            if (this.para?.departamento) {
+//                if(persona.departamento==this.para?.departamento && persona.esTriangulo())
+//                    return true
+//                else
+//                    return false
+//            }
+        }
+        return false
+    }
+
     def departamentoPuedeLeer(Departamento departamento) {
         return this.tipoTramite.codigo == 'N'
     }

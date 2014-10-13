@@ -234,6 +234,7 @@
                     label  : 'Detalles',
                     icon   : "fa fa-search",
                     action : function (e) {
+                        $("#dialog-body").html(spinner);
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'tramite3', action: 'detalles')}',
