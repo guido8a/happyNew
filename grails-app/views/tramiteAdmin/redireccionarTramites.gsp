@@ -126,7 +126,6 @@
                         <td class="text-center">${estado}</td>
                         <td class="text-center">
                             <g:if test="${tr.tramite.deDepartamento}">
-                                <g:set var="pers2" value="${personas - tr.tramite.de}"/>
                                 <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${personas}" optionKey="id"/>
                             </g:if>
                             <g:else>
