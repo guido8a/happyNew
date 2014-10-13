@@ -287,7 +287,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             if (params.memorando) {
                 ilike('codigo', '%' + params.memorando + '%')
             }
-            if (pers.jefe == 1) {
+            if (pers.puedeJefe) {
                 inList('de', Persona.findAllByDepartamento(pers.departamento))
                 inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
             } else {
