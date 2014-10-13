@@ -82,6 +82,10 @@
                         <g:set var="clase" value="${clase + ' recibido'}"/>
                     </g:if>
 
+                    <g:if test="${tramite.depr_id == session.usuario.id}">
+                        <g:set var="clase" value="${clase + ' mio'}"/>
+                    </g:if>
+
                     <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}" estado="${anulado}">
                         <td style="width: 110px">
                             ${tramite?.trmtcdgo}

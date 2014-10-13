@@ -220,7 +220,9 @@
                 var conAnexo = $tr.hasClass("conAnexo");
                 var conPadre = $tr.hasClass("padre");
                 var esPrincipal = $tr.hasClass("principal");
-                var anulado = $tr.hasClass("estado")
+                var anulado = $tr.hasClass("estado");
+
+                var esMio = $tr.hasClass("mio");
 
                 var arbol = {
                     label  : 'Cadena del trámite',
@@ -321,17 +323,17 @@
                                                 var $txt = $("#aut");
                                                 if ($frm.valid()) {
 //                                                    if (validaAutorizacion($txt)) {
-                                                        openLoader("Ampliando plazo");
-                                                        $.ajax({
-                                                            type    : "POST",
-                                                            url     : $frm.attr("action"),
-                                                            data    : $frm.serialize(),
-                                                            success : function (msg) {
-                                                                var parts = msg.split("_");
-                                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                                closeLoader();
-                                                            }
-                                                        });
+                                                    openLoader("Ampliando plazo");
+                                                    $.ajax({
+                                                        type    : "POST",
+                                                        url     : $frm.attr("action"),
+                                                        data    : $frm.serialize(),
+                                                        success : function (msg) {
+                                                            var parts = msg.split("_");
+                                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                            closeLoader();
+                                                        }
+                                                    });
 //                                                    } else {
 //                                                        return false;
 //                                                    }
@@ -344,6 +346,7 @@
                         });
                     }
                 };
+
                 var copia = {
                     separator_before : true,
                     label            : "Crear Copia",
@@ -408,7 +411,9 @@
                 };
 
                 <g:if test="${session.usuario.getPuedeCopiar()}">
-                items.copia = copia;
+                if (esMio) {
+                    items.copia = copia;
+                }
                 </g:if>
 
                 items.header.label = "Acciones";
