@@ -61,10 +61,11 @@
                 codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                 anexo="${anexo}" prtr="${tramite?.id}">
                 <g:if test="${tramite?.tramite?.anexo == 1}">
-                    <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
-                        <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
-                    </g:if>
+
                     <td title="${tramite?.tramite?.asunto}">
+                        <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                            <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                        </g:if>
                         ${tramite?.tramite?.codigo}
                         <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
                             <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
@@ -73,6 +74,9 @@
                 </g:if>
                 <g:else>
                     <td title="${tramite?.tramite?.asunto}">
+                        <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                            <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                        </g:if>
                         ${tramite?.tramite?.codigo}
                     </td>
                 </g:else>
