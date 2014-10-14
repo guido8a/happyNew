@@ -19,6 +19,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 class RetrasadosExcelController {
     def maxLvl = null
     def reportesPdfService
+
+    static scope = "session"
+
     def reporteRetrasadosDetalle() {
 //        params.detalle=1
 //        params.prsn=session.usuario.id

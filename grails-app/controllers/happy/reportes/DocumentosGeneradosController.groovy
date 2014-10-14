@@ -54,8 +54,9 @@ class DocumentosGeneradosController {
     Font fontGranTotal = new Font(Font.TIMES_ROMAN, 14, Font.BOLD);
 
     def reporteGeneralPdf() {
-        def desde = new Date().parse("dd-MM-yyyy", params.desde)
-        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
         def title = "Documentos generados de "
@@ -98,7 +99,17 @@ class DocumentosGeneradosController {
             }
             def tramites = 0
             if (pers.estaActivo) {
-                def trams = Tramite.withCriteria {
+                if(desde == hasta){
+                    def trams = Tramite.withCriteria {
+
+                        eq("de", pers)
+                        eq("departamento", dpto)
+                        eq("fechaCreacion", desde)
+                        order("fechaCreacion", "asc")
+                    }
+                    tramites = trams.size()
+                }else{
+                    def trams = Tramite.withCriteria {
                     eq("de", pers)
                     eq("departamento", dpto)
                     ge("fechaCreacion", desde)
@@ -106,6 +117,8 @@ class DocumentosGeneradosController {
                     order("fechaCreacion", "asc")
                 }
                 tramites = trams.size()
+                }
+//
             }
             def phrase = new Phrase()
             phrase.add(new Chunk("El usuario ", font))
@@ -257,8 +270,13 @@ class DocumentosGeneradosController {
     }
 
     def reporteDetalladoPdf() {
-        def desde = new Date().parse("dd-MM-yyyy", params.desde)
-        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        println("params " + params)
+
+
+
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "detalle_documentos_generados_"
         def title = "Detalle de los documentos generados de "

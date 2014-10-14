@@ -36,6 +36,8 @@ class RetrasadosController {
     def maxLvl = null
     def maxLvl2 = null
 
+    static scope = "session"
+
     Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
     Font times10bold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
@@ -62,7 +64,6 @@ class RetrasadosController {
         def puedeVer = []
         def extraPersona = "and "
         def depStr=""
-        println("persona " + params.prsn)
         if (params.prsn) {
             usuario = Persona.get(params.prsn)
             extraPersona += "persona=" + usuario.id + " "
@@ -155,27 +156,20 @@ class RetrasadosController {
 
         def hijos = datos["hijos"]
 
-        println("datos objeto " + datos["objeto"])
-
         if(datos){
             if((puedeVer.id.contains(datos["objeto"].id))){
                 maxLvl=datos
             }
         }
-//        else{
-//                maxLvl=[]
-//        }
-
-        println("maxlvl " + maxLvl)
 
         def total = 0
         def totalSr = 0
         PdfPTable tablaTramites
-
-        println("hijos " + hijos)
+//
+//        println("hijos " + hijos)
 
         hijos.each { lvl ->
-            println("lvl" + lvl)
+//            println("lvl" + lvl)
 //            println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
 //            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
@@ -379,10 +373,6 @@ class RetrasadosController {
             def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
             document.add(par);
         }
-//        else{
-//            def par = new Paragraph("Gran Total                                                                                                                                          Retrasados:      Sin Recepción:     ", times12bold)
-//            document.add(par);
-//        }
 
         document.close();
         pdfw.close()
