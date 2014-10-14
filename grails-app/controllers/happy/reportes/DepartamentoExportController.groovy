@@ -146,9 +146,9 @@ class DepartamentoExportController extends Shield {
                         fontUsu.setColor(Color.BLACK);
                     }
                     if (sort == "nombre") {
-                        descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.nombre} ${pers.apellido}")
+                        descP += WordUtils.capitalizeFully("${pers.puedeJefe ? '*' : ''} ${pers.nombre} ${pers.apellido}")
                     } else {
-                        descP += WordUtils.capitalizeFully("${pers.jefe == 1 ? '*' : ''} ${pers.apellido} ${pers.nombre}")
+                        descP += WordUtils.capitalizeFully("${pers.puedeJefe ? '*' : ''} ${pers.apellido} ${pers.nombre}")
                     }
                     if (pers.login || pers.telefono || pers.mail) {
                         descP += " ("

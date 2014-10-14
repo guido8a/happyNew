@@ -91,8 +91,10 @@ class RetrasadosExcelController {
 
 
         def hijos = datos["hijos"]
-        if((puedeVer.id.contains(datos["objeto"].id))){
-            maxLvl=datos
+        if(datos['objeto']){
+            if((puedeVer.id.contains(datos["objeto"].id))){
+                maxLvl=datos
+            }
         }
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
@@ -435,9 +437,13 @@ class RetrasadosExcelController {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-        if((puedeVer.id.contains(datos["objeto"].id))){
-            maxLvl=datos
+        println("hijos " + hijos)
+        if(datos["objeto"]){
+            if((puedeVer.id.contains(datos["objeto"].id))){
+                maxLvl=datos
+            }
         }
+
 
         XSSFRow rowHead = sheet.createRow((short) 0);
         rowHead.setHeightInPoints(14)

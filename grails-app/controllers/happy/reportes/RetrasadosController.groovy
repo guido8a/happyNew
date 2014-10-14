@@ -34,6 +34,7 @@ import java.awt.geom.Rectangle2D
 class RetrasadosController {
     def reportesPdfService
     def maxLvl = null
+    def maxLvl2 = null
 
     Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
@@ -61,6 +62,7 @@ class RetrasadosController {
         def puedeVer = []
         def extraPersona = "and "
         def depStr=""
+        println("persona " + params.prsn)
         if (params.prsn) {
             usuario = Persona.get(params.prsn)
             extraPersona += "persona=" + usuario.id + " "
@@ -152,20 +154,36 @@ class RetrasadosController {
         def contenido = new Paragraph();
 
         def hijos = datos["hijos"]
-        if((puedeVer.id.contains(datos["objeto"].id))){
-            maxLvl=datos
+
+        println("datos objeto " + datos["objeto"])
+
+        if(datos){
+            if((puedeVer.id.contains(datos["objeto"].id))){
+                maxLvl=datos
+            }
         }
+//        else{
+//                maxLvl=[]
+//        }
+
+        println("maxlvl " + maxLvl)
 
         def total = 0
         def totalSr = 0
         PdfPTable tablaTramites
 
+        println("hijos " + hijos)
+
         hijos.each { lvl ->
-            //println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "
+            println("lvl" + lvl)
+//            println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
 //            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
-                if(maxLvl==null)
+
+                if(maxLvl==null){
                     maxLvl=lvl
+                }
+
                 def totalNode = 0
                 def totalNodeSr = 0
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
@@ -361,6 +379,10 @@ class RetrasadosController {
             def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
             document.add(par);
         }
+//        else{
+//            def par = new Paragraph("Gran Total                                                                                                                                          Retrasados:      Sin Recepción:     ", times12bold)
+//            document.add(par);
+//        }
 
         document.close();
         pdfw.close()
@@ -669,9 +691,14 @@ class RetrasadosController {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-        if((puedeVer.id.contains(datos["objeto"].id))){
-            maxLvl=datos
+//        println("-->" + puedeVer.id)
+//        println("datos" +  datos["objeto"])
+        if(datos["objeto"]){
+            if((puedeVer.id.contains(datos["objeto"].id))){
+                maxLvl=datos
+            }
         }
+
         PdfPTable tablaTramites
         tablaTramites = new PdfPTable(4);
         tablaTramites.setWidths(10, 66, 12, 12)
