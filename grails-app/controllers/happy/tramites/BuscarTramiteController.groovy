@@ -12,6 +12,110 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     def dbConnectionService
     def tramitesService
 
+    //solo si la persona ha enviado un tramite de la cadena puede agregar doc al tramite
+    def verificarAgregarDoc() {
+        def tramite = Tramite.get(params.id)
+        def persona = Persona.get(session.usuario.id)
+        def esDepartamento = persona.esTriangulo
+
+        if (!esDepartamento && persona == tramite.de) {
+            println "1.1: " + persona
+            render "OK"
+            return
+        }
+        if (esDepartamento && tramite.deDepartamento == persona.departamento) {
+            println "1.2: " + persona.departamento
+            render "OK"
+            return
+        }
+        def principal = tramite
+        while (principal.padre) {
+            principal = principal.padre
+            if (!esDepartamento && persona == principal.de) {
+                println "2.1: " + persona
+                render "OK"
+                return
+            }
+            if (esDepartamento && principal.deDepartamento == persona.departamento) {
+                println "2.2: " + persona.departamento
+                render "OK"
+                return
+            }
+        }
+        // TODO: preguntar si es la cadena del tramite principal o tambien de los asociados
+        def tramitePrincipal = principal.tramitePrincipal
+        def tramites
+        if (tramitePrincipal > 0) {
+            tramites = Tramite.findAllByTramitePrincipal(tramitePrincipal, [sort: "fechaCreacion"])
+        } else {
+            tramites = [principal]
+        }
+
+        def puede = false
+
+        tramites.each { tr ->
+            puede = hijosTramite(tr, persona, esDepartamento, puede)
+            if (puede) {
+//                render "OK"
+                return
+            }
+        }
+        if (puede) {
+            render "OK"
+            return
+        }
+        render "NO"
+    }
+
+    def hijosTramite(Tramite principal, Persona persona, boolean esDepartamento, boolean puede) {
+        if (!puede) {
+            def rolPara = RolPersonaTramite.findByCodigo("R001")
+            def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+            def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
+            def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+
+            paras.each { para ->
+                if (!puede) {
+                    puede = hijosPdt(para, persona, esDepartamento, puede)
+                }
+            }
+
+            if (!puede) {
+                ccs.each { para ->
+                    if (!puede) {
+                        puede = hijosPdt(para, persona, esDepartamento, puede)
+                    }
+                }
+            }
+        }
+//        println "hijosTramite: " + puede
+        return puede
+    }
+
+    def hijosPdt(PersonaDocumentoTramite pdt, Persona persona, boolean esDepartamento, boolean puede) {
+        if (!puede) {
+            def hijos = Tramite.findAllByAQuienContesta(pdt, [sort: "fechaCreacion", order: "asc"])
+
+            hijos.each { h ->
+                if (!esDepartamento && h.de == persona) {
+                    println "3.1: " + persona
+                    puede = true
+                }
+                if (esDepartamento && h.deDepartamento == persona.departamento) {
+                    println "3.2: " + persona.departamento
+                    puede = true
+                }
+                if (!puede) {
+                    puede = hijosTramite(h, persona, esDepartamento, puede)
+                }
+            }
+        }
+//        println "hijosPdt: " + puede
+        return puede
+    }
+
+
     def busquedaTramite() {
     }
 

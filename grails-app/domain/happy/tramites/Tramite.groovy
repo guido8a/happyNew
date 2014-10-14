@@ -70,7 +70,7 @@ class Tramite {
             prioridad column: 'tppd__id'
             estadoTramite column: 'edtr__id'
             tipoTramite column: 'tptr__id'
-            origenTramite column: 'orgn__id'
+//            origenTramite column: 'orgn__id'
             codigo column: 'trmtcdgo'
             numero column: 'trmtnmro'
             asunto column: 'trmtasnt'
