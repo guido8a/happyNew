@@ -35,7 +35,9 @@
 
                     <div class="col-xs-6">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
-                        %{--${pdt.estado.descripcion}${pdt.id}${pdt.estado?.codigo}--}%
+                            %{--${pdt?.estado?.descripcion}--}%
+                            %{--${pdt?.id}--}%
+                            %{--${pdt?.estado?.codigo}--}%
                             <g:set var="fecha" value=""></g:set>
                             <g:set var="estado" value=""></g:set>
                             <g:if test="${pdt?.estado?.codigo == 'E006'}">

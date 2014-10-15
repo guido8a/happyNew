@@ -187,8 +187,12 @@ class TramiteController extends happy.seguridad.Shield {
 
                     if (!enviado) {
                         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
-//        tramite.asunto = params.asunto
                         tramite.fechaModificacion = new Date()
+                        //log Jefe
+                        if(session.usuario.getPuedeJefe()){
+                            tramite.fechaModificacion = new Date()
+                            tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '',' ','' , '')
+                        }
 
                         if (tramite.save(flush: true)) {
                             def para = tramite.para
