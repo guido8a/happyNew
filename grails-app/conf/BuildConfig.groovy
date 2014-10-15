@@ -65,7 +65,7 @@ grails.project.dependency.resolution = {
         runtime ":database-migration:1.3.8"
         runtime ":jquery:1.10.2.2"
         //runtime ":resources:1.2.1"
-       // runtime ":kerberos:1.2"
+        runtime ":kerberos:1.2"
         compile ":mail:1.0.6"
         //grails.plugin.location."grails-kerberos-0.7" = "lib/grails-kerberos-0.7"
 
