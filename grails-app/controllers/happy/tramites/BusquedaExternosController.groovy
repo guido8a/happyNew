@@ -103,15 +103,15 @@ class BusquedaExternosController {
                 }
             }
             strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara.nombre + " " + prsnPara.apellido)
-            def jefe = prsnPara.jefePersona2
-            println("jefes " + jefe)
-            def jefes = []
-            if (jefe.size >= 1) {
-                jefe.each{j->
-                    jefes += (j.nombre + " " + j.apellido)
-                }
-//                strJefe = /*(jefe.titulo ? jefe.titulo + " " : "") + */ (jefe.nombre + " " + jefe.apellido)
-            }
+//            def jefe = prsnPara.jefePersona2
+//            println("jefes " + jefe)
+//            def jefes = []
+//            if (jefe.size >= 1) {
+//                jefe.each{j->
+//                    jefes += (j.nombre + " " + j.apellido)
+//                }
+////                strJefe = /*(jefe.titulo ? jefe.titulo + " " : "") + */ (jefe.nombre + " " + jefe.apellido)
+//            }
 
             def dptoPadre = prsnPara.departamento.padre ?: prsnPara.departamento
 //            def director = Persona.withCriteria {
@@ -126,6 +126,7 @@ class BusquedaExternosController {
                     dptoDirector = prsnPara.departamento
                 }
             }
+            println "Directores: "+directores.size()
             if(directores.size() == 0) {
                 Persona.findAllByDepartamento(dptoPadre).each {p->
 //                    println "\tPADRE "+p.nombre+" "+p.apellido+"   "+p.estaActivo+"   "+p.puedeDirector
@@ -154,18 +155,21 @@ class BusquedaExternosController {
                 msg += "<p>Con documento: <strong><em>${tram.codigo}</em></strong> "
                 msg += "desde el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong> "
                 msg += "se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
-                msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion}</em></strong></p>"
-                msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono}</em></strong></p>"
-                msg += "<p>Ubicación: <strong><em>${prsnPara.departamento.direccion}</em></strong></p>"
+                msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion ?: ''}</em></strong></p>"
+                msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono ?: ' '}</em></strong></p>"
+                msg += "<p>Ubicación: <strong><em>${prsnPara.departamento.direccion ?: ''}</em></strong></p>"
 //                msg += "<p>Jefe inmediato superior: <strong><em>${strJefe}</em></strong></p>"
                 msg += "<hr style='border-color:#999 !important;'/>"
-                msg += "<p>Jefe inmediato superior: <strong><em>${jefes.join(', ')}</em></strong></p>"
+//                msg += "<p>Jefe inmediato superior: <strong><em>${jefes.join(', ')}</em></strong></p>"
 
-                msg += "<p>Nombre del director: <strong><em>${directores.join(', ')}</em></strong></p>"
-                msg += "<p>Departamento director: <strong><em>${dptoDirector.descripcion}</em></strong></p>"
-                msg += "<p>Teléfono: <strong><em>${dptoDirector.telefono}</em></strong></p>"
-                msg += "<p>Ubicación: <strong><em>${dptoDirector.direccion}</em></strong></p>"
-            }
+                if(directores){
+                    msg += "<p>Nombre del director: <strong><em>${directores?.join(', ')}</em></strong></p>"
+                    msg += "<p>Departamento director: <strong><em>${dptoDirector?.descripcion ?: ''}</em></strong></p>"
+                    msg += "<p>Teléfono: <strong><em>${dptoDirector?.telefono ?: ''}</em></strong></p>"
+                    msg += "<p>Ubicación: <strong><em>${dptoDirector?.direccion ?: ''}</em></strong></p>"
+                }
+                }
+
             msg += "</div>"
             render msg
         } else {

@@ -584,7 +584,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def tramites = []
         def principal = null
-        def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
+        def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003"), RolPersonaTramite.findByCodigo("I005")]
         if (tramite) {
             tramites.add(tramite)
             if (tramite.padre) {
