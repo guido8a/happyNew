@@ -81,7 +81,8 @@
 
                 <tr data-id="${tramite?.tramite?.id}" codigo="${tramite?.tramite?.codigo}"
                     departamento="${tramite?.tramite?.de?.departamento?.codigo}"
-                    prtr="${tramite?.id}"
+                    prtr="${tramite?.id}" de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :
+                        (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
                     class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno) ? 'estadoExterno' : ''}">
 
                     <g:if test="${tramite?.tramite?.anexo == 1}">

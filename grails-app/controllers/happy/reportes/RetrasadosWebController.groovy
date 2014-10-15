@@ -375,8 +375,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         tabla += "<tbody>"
 
-
-
         hijos.each { lvl ->
             // println "lvl "+lvl["objeto"]+"  "+lvl["rezagados"]+"   "+lvl["retrasados"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {

@@ -305,13 +305,13 @@
                     </div>
 
 
-                    <g:if test="${session.usuario.puedeTramitar}">
-                        <div class="col-xs-2 negrilla" id="divExterno" style="width: 100px; margin-left: -15px">
-                            <label for="externo"><input type="checkbox" name="externo" id="externo">
-                                Externo
-                            </label>
-                        </div>
-                    </g:if>
+                    %{--<g:if test="${session.usuario.puedeTramitar}">--}%
+                    %{--<div class="col-xs-2 negrilla" id="divExterno" style="width: 100px; margin-left: -15px">--}%
+                    %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
+                    %{--Externo--}%
+                    %{--</label>--}%
+                    %{--</div>--}%
+                    %{--</g:if>--}%
 
 
                     <div class="col-xs-4 negrilla hide" id="divPara" style="margin-top: -10px">

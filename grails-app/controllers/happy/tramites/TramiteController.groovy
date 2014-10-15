@@ -273,16 +273,21 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def getPara_ajax() {
+//        println "GET PARA AJAX"
+//        println params
         Tramite tramite = null
         if (params.tramite) {
             tramite = Tramite.get(params.tramite)
         }
         def html
         def tipoDoc = TipoDocumento.get(params.doc)
+//        println "tipo doc"
+//        println tipoDoc
         if (!tipoDoc) {
             html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
             html += "</div>"
         } else {
+//            println "tipo doc cod "+tipoDoc.codigo
             switch (tipoDoc.codigo) {
                 case "CIR":
                     html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
@@ -298,7 +303,7 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</div>"
                     break;
                 default: //DEX SUM MEM PLA
-//                    println "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+//                    println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 //                    println tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId
 //                    println "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                     html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px;margin-left: -25px\">"

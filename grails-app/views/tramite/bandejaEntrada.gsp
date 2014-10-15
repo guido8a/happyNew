@@ -308,6 +308,10 @@
                 var externo = $tr.hasClass("1");
                 var esExterno = $tr.hasClass("estadoExterno");
                 var esCopia = $tr.hasClass("R002");
+                var remitenteParts = $tr.attr("de").split("_");
+                var remitenteTipo = remitenteParts[0];
+                var remitenteId = remitenteParts[1];
+
 
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
@@ -315,6 +319,51 @@
                 var retrasado = $tr.hasClass("retrasado");
                 var conAnexo = $tr.hasClass("conAnexo");
 //                console.log("por porRecibir",porRecibir)
+
+                var infoRemitente = {
+                    label           : 'Información remitente',
+                    icon            : "fa fa-search",
+                    separator_afetr : true,
+                    action          : function (e) {
+                        var url = "", title = "";
+                        switch (remitenteTipo) {
+                            case "D":
+                                url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
+                                title = "Información del departamento";
+                                break;
+                            case "P":
+                                url = "${createLink(controller: 'persona', action: 'show_ajax')}";
+                                title = "Información de la persona";
+                                break;
+                            case "E":
+                                title = "Información de entidad externa";
+                                url = "${createLink(controller:'tramite3', action:'infoRemitente')}";
+                                break;
+                        }
+                        $.ajax({
+                            type    : 'POST',
+                            url     : url,
+                            data    : {
+                                id : remitenteId
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : title,
+                                    message : msg,
+                                    buttons : {
+                                        aceptar : {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
 
                 var contestar = {
                     label : 'Contestar Documento',
@@ -631,6 +680,9 @@
                 %{--};--}%
 
                 items.header.label = "Acciones";
+
+                items.infoRemitente = infoRemitente;
+
                 <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
                 items.arbol = arbol;

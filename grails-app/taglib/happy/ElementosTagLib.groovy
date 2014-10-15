@@ -195,6 +195,12 @@ class ElementosTagLib {
 //        println "ATTRS= " + attrs
         def html
         def persona = Persona.get(session.usuario.id)
+        def esTriangulo = session.usuario.esTriangulo
+
+//        println "persona " + persona
+//        println "persona.id " + persona.id
+//        println "esTriangulo " + esTriangulo
+
         def disp, disponibles = []
         def depar = ["depar", "departamento", "dpto", "ofi", "oficina"]
         def esDepartamento = (attrs.tipo && (depar.contains(attrs.tipo.toLowerCase())))
@@ -208,6 +214,8 @@ class ElementosTagLib {
         def arreglo = []
         def arreglo2 = []
 
+//        println "AQUI"
+
         if (attrs.tipoDoc.codigo == "DEX") {
             if (esDepartamento) {
                 todos = [[id: persona.departamento.id * -1, label: persona.departamento.descripcion, obj: persona.departamento]]
@@ -218,11 +226,19 @@ class ElementosTagLib {
             } else {
                 disp = [persona.departamento]
             }
+//            println "DISP::: " + disp
             disp.each { dep ->
+//                println "dep.id: " + dep.id + "    persona.dep: " + persona.departamento.id + "     " + (dep.id == persona.departamento.id)
                 if (dep.id == persona.departamento.id) {
                     def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
                     usuarios.each {
-                        if (it.id != persona.id && it.estaActivo && it.puedeRecibir) {
+//                        println "\tit.id " + it.id
+//                        println "\tpersona " + it.login
+//                        println "\tit.esta activo " + it.estaActivo
+//                        println "\tit.puede recibir " + it.puedeRecibir
+//                        println "*******************************************************************"
+
+                        if (((!esTriangulo && it.id != persona.id) || (esTriangulo && it.id == persona.id)) && it.estaActivo && it.puedeRecibir) {
 //                            users += it
                             disponibles.add([id     : it.id,
                                              label  : it.toString(),

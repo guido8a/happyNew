@@ -579,6 +579,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [persona: usu, bloqueo: bloqueo]
     }
 
+    def infoRemitente() {
+        def tramite = Tramite.get(params.id)
+        return [tramite: tramite]
+    }
 
     def detalles() {
         def tramite = Tramite.get(params.id)

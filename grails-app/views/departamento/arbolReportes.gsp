@@ -60,10 +60,10 @@
                 </div>
 
                 <div class="btn-group" style="margin-top: 4px;">
-                    <g:link action="arbol" params="[sort: 'nombre']" class="btn btn-sm btn-info">
+                    <g:link action="arbolReportes" params="[sort: 'nombre']" class="btn btn-sm btn-info">
                         <i class="fa fa-sort-alpha-asc"></i> Ordenar por nombre
                     </g:link>
-                    <g:link action="arbol" params="[sort: 'apellido']" class="btn btn-sm btn-info">
+                    <g:link action="arbolReportes" params="[sort: 'apellido']" class="btn btn-sm btn-info">
                         <i class="fa fa-sort-alpha-asc"></i> Ordenar por apellido
                     </g:link>
                 </div>

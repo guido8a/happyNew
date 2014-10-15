@@ -286,6 +286,9 @@
                 var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
                 var idPxt = $tr.attr("prtr");
                 var valAnexo = $tr.attr("anexo");
+                var remitenteParts = $tr.attr("de").split("_");
+                var remitenteTipo = remitenteParts[0];
+                var remitenteId = remitenteParts[1];
 
                 var esCopia = $tr.hasClass("R002");
                 var esExterno = $tr.hasClass("estadoExterno")
@@ -295,6 +298,51 @@
                 var retrasado = $tr.hasClass("retrasado");
                 var conAnexo = $tr.hasClass("conAnexo");
                 var jefe = $tr.hasClass("jefe");
+
+                var infoRemitente = {
+                    label           : 'Información remitente',
+                    icon            : "fa fa-search",
+                    separator_afetr : true,
+                    action          : function (e) {
+                        var url = "", title = "";
+                        switch (remitenteTipo) {
+                            case "D":
+                                url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
+                                title = "Información del departamento";
+                                break;
+                            case "P":
+                                url = "${createLink(controller: 'persona', action: 'show_ajax')}";
+                                title = "Información de la persona";
+                                break;
+                            case "E":
+                                title = "Información de entidad externa";
+                                url = "${createLink(controller:'tramite3', action:'infoRemitente')}";
+                                break;
+                        }
+                        $.ajax({
+                            type    : 'POST',
+                            url     : url,
+                            data    : {
+                                id : remitenteId
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : title,
+                                    message : msg,
+                                    buttons : {
+                                        aceptar : {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
 
                 var arbol = {
                     label  : 'Cadena del trámite',
@@ -316,7 +364,6 @@
                     label  : 'Ver',
                     icon   : "fa fa-search",
                     action : function (e) {
-
                         $.ajax({
                             type    : 'POST',
                             url     : '${createLink(controller: 'tramite' ,action: 'revisarConfidencial')}/' + id,
@@ -328,7 +375,6 @@
                                     bootbox.alert('No tiene permiso para ver el PDF de este trámite')
                                 }
                             }
-
                         });
                     }
                 };
@@ -567,6 +613,8 @@
 
                 items.header.label = "Acciones";
 
+                items.infoRemitente = infoRemitente;
+
                 <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
                 items.arbol = arbol;
@@ -574,7 +622,7 @@
 
                 if (conAnexo) {
                     <g:if test="${session.usuario.puedeJefe}">
-                    items.anexo = anexos
+                    items.anexo = anexos;
                     </g:if>
                 }
                 if (retrasado || recibido) {

@@ -219,42 +219,50 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (hh > 0) {
                 clase = "hasChildren jstree-closed"
 //                println "-----" + session.usuario.puedeDirector
-                if (session.usuario.puedeAdmin) {
+//                if (session.usuario.puedeAdmin) {
 //                    clase += "jstree-opened"
-                } else {
-                    clase = ""
-                }
-//                if (session.usuario.puedeDirector) {
-////                    clase += "jstree-opened"
-//                } else if (session.usuario.puedeJefe) {
-////                    clase += "jstree-opened"
 //                } else {
 //                    clase = ""
 //                }
+                if (session.usuario.puedeDirector || session.usuario.puedeAdmin) {
+//                    clase = "hasChildren jstree-open"
+                } else if (session.usuario.puedeJefe) {
+//                    clase = "hasChildren jstree-open"
+                } else {
+                    clase = ""
+                }
             }
 //            println "director: " + session.usuario.puedeDirector
 //            println "jefe: " + session.usuario.puedeJefe
+//            println "admin: " + session.usuario.puedeAdmin
+//            println "dpto: " + session.usuario.departamento
+//            println "clase: " + clase
+
             tree = "<li id='root' class='root ${clase}' data-jstree='{\"type\":\"root\"}' level='0' >" +
                     "<a href='#' class='label_arbol'>Estructura</a>" +
                     "</li>"
             if (clase == "") {
                 tree = ""
             }
+            println "TREE    " + tree
         } else if (id == "root") {
 //            println "director: " + session.usuario.puedeDirector
 //            println "jefe: " + session.usuario.puedeJefe
-            if (session.usuario.puedeAdmin) {
-                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
-            } else {
-                hijos = []
-            }
-//            if (session.usuario.puedeDirector) {
+//            if (session.usuario.puedeAdmin) {
 //                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
-//            } else if (session.usuario.puedeJefe) {
-//                hijos = [session.usuario.departamento]
 //            } else {
 //                hijos = []
 //            }
+            if (session.usuario.puedeDirector || session.usuario.puedeAdmin) {
+                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+            } else if (session.usuario.puedeJefe) {
+                hijos = [session.usuario.departamento]
+            } else {
+                hijos = []
+            }
+
+//            println "HIJOS: " + hijos
+
         } else {
             def parts = id.split("_")
             def node_id = parts[1].toLong()
@@ -359,7 +367,8 @@ class DepartamentoController extends happy.seguridad.Shield {
                     } else {
                         rel = "usuario"
                     }
-*/ rel = "usuario"
+*/
+                    rel = "usuario"
 
                     clase = "usuario"
                     def rolPara = RolPersonaTramite.findByCodigo('R001');
