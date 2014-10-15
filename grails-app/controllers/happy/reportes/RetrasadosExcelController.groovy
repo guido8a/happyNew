@@ -38,6 +38,7 @@ class RetrasadosExcelController {
         def deps = []
         def puedeVer = []
         def extraPersona = "and "
+        maxLvl=null
         if (params.prsn) {
             usuario = Persona.get(params.prsn)
             extraPersona += "persona=" + usuario.id + " "
@@ -350,6 +351,7 @@ class RetrasadosExcelController {
 
     def reporteRetrasadosConsolidado() {
 //        println "con excel    "+params
+        maxLvl=null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")

@@ -20,7 +20,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-
+        maxLvl=null
         def datos = [:]
         def usuario = null
         def deps = []
@@ -288,7 +288,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-
+        maxLvl=null
         def datos = [:]
         def usuario = null
         def deps = []
@@ -492,8 +492,11 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if (maxLvl == null)
+                println "puede ver "+lvl
+                if (maxLvl == null) {
                     maxLvl = lvl
+                    println "cambio a max"
+                }
 
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]

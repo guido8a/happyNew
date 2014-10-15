@@ -52,6 +52,7 @@ class RetrasadosController {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
 //        println "detallado aaa    " + params
+        maxLvl=null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -598,6 +599,7 @@ class RetrasadosController {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
 //        println "con aaa    " + params
+        maxLvl=null
         datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
