@@ -28,7 +28,7 @@ class Accs {
     static constraints = {
         accsFechaInicial(blank: false, nullable: false)
         accsFechaFinal(blank: false, nullable: false)
-        accsObservaciones(blank: true, nullable: true)
+        accsObservaciones(blank: true, nullable: true,size: 1..1024)
         asignadoPor(blank: false, nullable: false, attributes: [title: 'usuario que asigna el acceso'])
     }
 
