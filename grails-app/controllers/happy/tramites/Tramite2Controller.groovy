@@ -107,10 +107,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            redirect(controller: "tramite2", action: "bandejaSalida")
 //            return
 //        }
-        if (!session.usuario.esTriangulo()) {
-            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
-            redirect(controller: 'tramite2', action: 'bandejaSalida')
-        }
+//        if (!session.usuario.esTriangulo()) {
+//            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de salida departamental"
+//            redirect(controller: 'tramite2', action: 'bandejaSalida')
+//        }
 /*
         if (persona.jefe == 1)
             revisar = true

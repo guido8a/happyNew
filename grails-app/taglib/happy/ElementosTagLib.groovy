@@ -267,6 +267,8 @@ class ElementosTagLib {
     def headerTramite = { attrs ->
         def tramite = attrs.tramite
 
+        println("-->" +  tramite)
+
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')
 
@@ -334,7 +336,13 @@ class ElementosTagLib {
             if (tramite.tipoDocumento.codigo == "DEX") {
                 html += "                    ${tramite.paraExterno} (ext.)"
             } else {
-                html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+                if(tramite?.tipoDocumento?.codigo == 'OFI'){
+                    html += "                    ${tramite.de.departamento.descripcion}"
+
+                }else{
+                    html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+                }
+
             }
             html += "                </div>"
             html += "            </div>"
