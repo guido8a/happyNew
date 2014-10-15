@@ -110,6 +110,7 @@ class RetrasadosController {
 
             if (pdt) {
                 pdt.each { pd ->
+                    pd.refresh()
                     if(pd.tramite.externo!="1" || pd.tramite==null){
                         def resp = Tramite.findAllByAQuienContesta(pd)
                         if (resp.size() == 0) {
@@ -194,7 +195,7 @@ class RetrasadosController {
 //                        par.setIndentationLeft(lvl["nivel"]*20+10)
 //                        document.add(par)
                     lvl["triangulos"].each { t ->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina  - [ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina  - [  Retrasados: ${lvl['ofiRs']}, Sin Recepción: " + lvl["ofiRz"] + " ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         if (totalNode == 0)
                             totalNode += lvl["rezagados"]
@@ -285,7 +286,7 @@ class RetrasadosController {
                     par3 = null
                     par3 = new Paragraph("", times8normal)
                     par3.setSpacingBefore(0.001)
-                    par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [ Retrasados: ${p['rezagados']}, Sin Recepción: " + p["retrasados"] + " ]", times8bold)
                     par.setSpacingBefore(17)
 //                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
                     document.add(par)
@@ -373,7 +374,7 @@ class RetrasadosController {
             def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
             document.add(par);
         }
-
+        println "maxlvl "+maxLvl
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
@@ -410,7 +411,7 @@ class RetrasadosController {
 
                 if (lvl["tramites"].size() > 0) {
                     lvl["triangulos"].each { t ->
-                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina - [ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]", times8bold)
+                        par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina - [ Retrasados: ${lvl['ofiRz']}, Sin Recepción: " + lvl["ofiRs"] + " ]", times8bold)
 //                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         contenido.add(par)
                         if (totalNode == 0)
@@ -502,7 +503,7 @@ class RetrasadosController {
                     par3 = new Paragraph("", times8normal)
                     par3.setSpacingBefore(0.001)
 //                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
-                    par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]", times8bold)
+                    par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [  Retrasados: ${p['rezagados']}, Sin Recepción: " + p["retrasados"] + " ]", times8bold)
                     par.setSpacingBefore(17)
                     totalNode += p["rezagados"]
                     totalNodeSr += p["retrasados"]
@@ -653,6 +654,7 @@ class RetrasadosController {
 
         if (pdt) {
             pdt.each { pd ->
+                pd.refresh()
                 if(pd.tramite.externo!="1" || pd.tramite==null){
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
@@ -691,7 +693,7 @@ class RetrasadosController {
 
         PdfPTable tablaTramites
         tablaTramites = new PdfPTable(4);
-        tablaTramites.setWidths(10, 66, 12, 12)
+        tablaTramites.setWidths(14, 62, 12, 12)
         tablaTramites.setWidthPercentage(100);
         def parH = new Paragraph("", times8bold)
         def cell = new PdfPCell(parH);
@@ -951,7 +953,7 @@ class RetrasadosController {
                 dg.put("totalRz", 0)
                 dg.put("totalRs", 0)
                 dg.put("objeto", lvl["objeto"])
-                def par = new Paragraph("Departamento", times8bold)
+                def par = new Paragraph("- Departamento:", times8bold)
                 PdfPCell cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -1003,7 +1005,7 @@ class RetrasadosController {
                 dg["totalRz"] = lvl["rezagados"]
                 dg["totalRs"] = lvl["retrasados"]
                 tablaTramites.addCell(cellTotalSr);
-                par = new Paragraph("Usuario:", times8bold)
+                par = new Paragraph("--Usuario:", times8bold)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);

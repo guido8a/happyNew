@@ -88,7 +88,7 @@
                 </div>
             </div>
         </g:if>
-        <div class="chartContainer hidden" style="margin-left: 130px;">
+        <div class="chartContainer hidden" style="margin-left: 130px; ">
             <div id="chart_rz" class="divChart hidden"></div>
 
             <div id="chart_rs" class="divChart hidden"></div>

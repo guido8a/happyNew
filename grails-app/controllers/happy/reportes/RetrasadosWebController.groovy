@@ -1,6 +1,5 @@
 package happy.reportes
 
-import groovy.json.JsonBuilder
 import happy.seguridad.Persona
 import happy.tramites.Departamento
 import happy.tramites.EstadoTramite
@@ -10,7 +9,7 @@ import happy.tramites.Tramite
 
 class RetrasadosWebController extends happy.seguridad.Shield {
 
-
+    static scope = "session"
     def reportesPdfService
     def maxLvl = null
 
@@ -53,6 +52,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         if (pdt) {
             pdt.each { pd ->
+                pd.refresh()
                 if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
@@ -316,8 +316,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
+            println "dep "+departamento
             def padre
-
+            def pers= Persona.findAllByDepartamento(departamento)
 
             padre = departamento.padre
             while (padre) {
@@ -338,15 +339,18 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
                 " fechaEnvio is not null " +
                 "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
-                "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+                "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''}   ")
 
         if (pdt) {
             pdt.each { pd ->
+                pd.refresh()
                 if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
-                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
+                        if (pd.fechaLimite < now || (!pd.fechaRecepcion)) {
+                            //println "pdt -> "+pd.tramite.codigo+"  "+pd.estado.descripcion+" "+pd.fechaRecepcion+"  ||||  "+pd.fechaLimite+" "+" ||  "+pd.persona?.departamento?.codigo+" "+pd.departamento?.codigo
                             datos = reportesPdfService.jerarquia(datos, pd)
+                        }
                     }
                 }
             }
@@ -470,6 +474,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             tabla += "</tr>"
             tabla += "</tfoot>"
         }
+        println "maxLvl "+maxLvl
         tabla += "</table>"
 
         params.detalle = 1
@@ -538,7 +543,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
                 tabla += "<tr class='data dep ${lvl['rezagados'] > 0 ? 'rz' : ''} ${lvl['rezagados'] > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${lvl['rezagados']}' data-rs='${lvl['retrasados']}'>"
                 tabla += "<td >Departamento</td>"
-                tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
+                tabla += "<td class='titulo'>- ${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${lvl['rezagados']}</td>"
                 tabla += "<td class='titulo numero'>${lvl['retrasados']}</td>"
                 tabla += "</tr>"
@@ -557,7 +562,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 //println "imprime data"
                 datosLuz.each { d ->
                     tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
-                    tabla += "<td>${d[0]}</td>"
+                    tabla += "<td>-- ${d[0]}</td>"
                     tabla += "<td class='numero'>${d[1]}</td>"
                     tabla += "<td class='numero'>${d[2]}</td>"
                     tabla += "</tr>"

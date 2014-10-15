@@ -223,7 +223,7 @@ class RetrasadosExcelController {
 
             }
             num = imprimeHijosPdf(lvl, sheet, num, params, usuario, deps, puedeVer)
-
+            num++
         }
         if(maxLvl){
             row = sheet.createRow((short) num);
@@ -255,8 +255,9 @@ class RetrasadosExcelController {
         def datos = arr["hijos"]
         def row
         datos.each { lvl ->
-
+            println " "+lvl
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
+                println "puede ver"
                 if(maxLvl==null)
                     maxLvl=lvl
                 num++
@@ -316,6 +317,7 @@ class RetrasadosExcelController {
                     row.createCell((int) 5).setCellValue("F. Recepcíon")
                     row.createCell((int) 6).setCellValue("F. Límite")
                     p["tramites"].each { t ->
+                        println "tramite "+t
                         num++
                         row = sheet.createRow((short) num);
                         row.createCell((int) 0).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
