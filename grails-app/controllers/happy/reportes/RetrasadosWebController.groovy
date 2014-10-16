@@ -20,7 +20,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        maxLvl=null
+        maxLvl = null
         def datos = [:]
         def usuario = null
         def deps = []
@@ -288,7 +288,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def now = new Date()
-        maxLvl=null
+        maxLvl = null
         def datos = [:]
         def usuario = null
         def deps = []
@@ -316,9 +316,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            println "dep "+departamento
+            println "dep " + departamento
             def padre
-            def pers= Persona.findAllByDepartamento(departamento)
+            def pers = Persona.findAllByDepartamento(departamento)
 
             padre = departamento.padre
             while (padre) {
@@ -424,7 +424,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     totalNodeSr += p["retrasados"].toInteger()
                 }
 
-                tabla += "<tr class='data dep ${lvl['rezagados'] > 0 ? 'rz' : ''} ${lvl['retrasados'] > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${lvl['rezagados']}' data-rs='${lvl['retrasados']}'>"
+                tabla += "<tr class='data dep ${lvl['rezagados'] > 0 ? 'rz' : ''} ${lvl['retrasados'] > 0 ? 'rs' : ''}' data-tipo='dep' " +
+                        "data-value='${lvl.objeto.codigo}' data-rz='${lvl['rezagados']}' data-rs='${lvl['retrasados']}'>"
                 tabla += "<td class='titulo'>Dirección</td>"
                 tabla += "<td class='titulo'>${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${lvl['rezagados']}</td>"
@@ -472,7 +473,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             tabla += "</tr>"
             tabla += "</tfoot>"
         }
-        println "maxLvl "+maxLvl
+//        println "maxLvl " + maxLvl
         tabla += "</table>"
 
         params.detalle = 1
@@ -490,7 +491,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                println "puede ver "+lvl
+                println "puede ver " + lvl
                 if (maxLvl == null) {
                     maxLvl = lvl
                     println "cambio a max"
@@ -542,7 +543,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     totalNodeSr += p["retrasados"].toInteger()
                 }
 
-                tabla += "<tr class='data dep ${lvl['rezagados'] > 0 ? 'rz' : ''} ${lvl['rezagados'] > 0 ? 'rs' : ''}' data-tipo='dep' data-value='${lvl.objeto.codigo}' data-rz='${lvl['rezagados']}' data-rs='${lvl['retrasados']}'>"
+                tabla += "<tr class='data dep ${lvl['rezagados'] > 0 ? 'rz' : ''} ${lvl['retrasados'] > 0 ? 'rs' : ''}' data-tipo='dep'" +
+                        " data-value='${lvl.objeto.codigo}' data-rz='${lvl['rezagados']}' data-rs='${lvl['retrasados']}'>"
                 tabla += "<td >Departamento</td>"
                 tabla += "<td class='titulo'>- ${lvl.objeto} (${lvl.objeto.codigo})</td>"
                 tabla += "<td class='titulo numero'>${lvl['rezagados']}</td>"

@@ -52,7 +52,7 @@ class RetrasadosController {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
 //        println "detallado aaa    " + params
-        maxLvl=null
+        maxLvl = null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
         def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -64,7 +64,7 @@ class RetrasadosController {
         def deps = []
         def puedeVer = []
         def extraPersona = "and "
-        def depStr=""
+        def depStr = ""
         if (params.prsn) {
             usuario = Persona.get(params.prsn)
             extraPersona += "persona=" + usuario.id + " "
@@ -102,27 +102,25 @@ class RetrasadosController {
             }
         }
         //println "deps "+deps+"  puede ver  "+puedeVer
-       // def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
+        // def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
 
-            def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
-                    " fechaEnvio is not null " +
-                    "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
-                    "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
+        def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
+                " fechaEnvio is not null " +
+                "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
+                "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
 
-            if (pdt) {
-                pdt.each { pd ->
-                    pd.refresh()
-                    if(pd.tramite.externo!="1" || pd.tramite==null){
-                        def resp = Tramite.findAllByAQuienContesta(pd)
-                        if (resp.size() == 0) {
-                            if (pd.fechaLimite < now || (!pd.fechaRecepcion))
-                                datos = reportesPdfService.jerarquia(datos, pd)
-                        }
+        if (pdt) {
+            pdt.each { pd ->
+                pd.refresh()
+                if (pd.tramite.externo != "1" || pd.tramite == null) {
+                    def resp = Tramite.findAllByAQuienContesta(pd)
+                    if (resp.size() == 0) {
+                        if (pd.fechaLimite < now || (!pd.fechaRecepcion))
+                            datos = reportesPdfService.jerarquia(datos, pd)
                     }
                 }
             }
-
-
+        }
 
 //        println "tramites "+datos
 //        jerarquia(datos)
@@ -146,21 +144,21 @@ class RetrasadosController {
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         Document document = reportesPdfService.crearDocumento("svt", [top: 2, right: 2, bottom: 1.5, left: 2.5])
-
+        session.tituloReporte = "Reporte detallado de Trámites Retrasados y sin recepción"
         def pdfw = PdfWriter.getInstance(document, baos);
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
 
-        reportesPdfService.crearEncabezado(document, "Reporte detallado de Trámites Retrasados y sin recepción")
+//        reportesPdfService.crearEncabezado(document, "Reporte detallado de Trámites Retrasados y sin recepción")
 
         def contenido = new Paragraph();
 
         def hijos = datos["hijos"]
 
-        if(datos){
-            if((puedeVer.id.contains(datos["objeto"].id))){
-                maxLvl=datos
+        if (datos) {
+            if ((puedeVer.id.contains(datos["objeto"].id))) {
+                maxLvl = datos
             }
         }
 
@@ -176,8 +174,8 @@ class RetrasadosController {
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
 //            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
 
-                if(maxLvl==null){
-                    maxLvl=lvl
+                if (maxLvl == null) {
+                    maxLvl = lvl
                 }
 
                 def totalNode = 0
@@ -351,7 +349,7 @@ class RetrasadosController {
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
-                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now -t.fechaLimiteRespuesta): ''}", times8normal)
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
@@ -362,20 +360,20 @@ class RetrasadosController {
                         }
                     }
                 }
-                total+=totalNode
-                totalSr+=totalNodeSr
+                total += totalNode
+                totalSr += totalNodeSr
 
             }
             def res = imprimeHijosPdf(lvl, document, tablaTramites, params, usuario, deps, puedeVer)
-            total+= res[0]
-            totalSr+= res[1]
+            total += res[0]
+            totalSr += res[1]
 
         }
-        if(maxLvl){
+        if (maxLvl) {
             def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
             document.add(par);
         }
-        println "maxlvl "+maxLvl
+        println "maxlvl " + maxLvl
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
@@ -398,8 +396,8 @@ class RetrasadosController {
 //            println "hijo funcion ${lvl['objeto']} "+lvl["objeto"].id+"    "+puedeVer.id
 
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if(maxLvl==null)
-                    maxLvl=lvl
+                if (maxLvl == null)
+                    maxLvl = lvl
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
 //                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 def totalNode = 0
@@ -481,7 +479,7 @@ class RetrasadosController {
                         par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("${(t.fechaLimiteRespuesta) ?(now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
@@ -567,7 +565,7 @@ class RetrasadosController {
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
-                            par = new Paragraph("${(t.fechaLimiteRespuesta) ?(now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
@@ -579,7 +577,7 @@ class RetrasadosController {
                     }
                 }
                 total += totalNode
-                totalSr +=totalNodeSr
+                totalSr += totalNodeSr
             }
 
 
@@ -591,7 +589,7 @@ class RetrasadosController {
             }
         }
 //        println " return ${datos['objeto']} "+total+" "+totalSr
-        return [total,totalSr]
+        return [total, totalSr]
     }
 
 
@@ -599,7 +597,7 @@ class RetrasadosController {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
 //        println "con aaa    " + params
-        maxLvl=null
+        maxLvl = null
         datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -630,7 +628,7 @@ class RetrasadosController {
             }
 
         }
-        def depStr=""
+        def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
             //depStr=" and departamento = ${departamento.id}"
@@ -657,7 +655,7 @@ class RetrasadosController {
         if (pdt) {
             pdt.each { pd ->
                 pd.refresh()
-                if(pd.tramite.externo!="1" || pd.tramite==null){
+                if (pd.tramite.externo != "1" || pd.tramite == null) {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion))
@@ -676,20 +674,23 @@ class RetrasadosController {
         times10boldWhite.setColor(Color.WHITE)
         Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
-        def pdfw = PdfWriter.getInstance(document, baos);
+        def pdfw = PdfWriter.getInstance(document, baos)
+
+        session.tituloReporte = "Reporte resumido de Trámites Retrasados y sin recepción"
+
         reportesPdfService.membrete(document)
-        document.open();
+        document.open()
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-        reportesPdfService.crearEncabezado(document, "Reporte resumido de Trámites Retrasados  y sin recepción")
+//        reportesPdfService.crearEncabezado(document, "Reporte resumido de Trámites Retrasados  y sin recepción")
         def contenido = new Paragraph();
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
 //        println("-->" + puedeVer.id)
 //        println("datos" +  datos["objeto"])
-        if(datos["objeto"]){
-            if((puedeVer.id.contains(datos["objeto"].id))){
-                maxLvl=datos
+        if (datos["objeto"]) {
+            if ((puedeVer.id.contains(datos["objeto"].id))) {
+                maxLvl = datos
             }
         }
 
@@ -718,8 +719,8 @@ class RetrasadosController {
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (lvl["tramites"].size() > 0 || lvl["personas"].size() > 0) {
-                    if(maxLvl==null)
-                        maxLvl=lvl
+                    if (maxLvl == null)
+                        maxLvl = lvl
                     datosGrafico.put(lvl["objeto"].toString(), [:])
                     def dg = datosGrafico[lvl["objeto"].toString()]
                     dg.put("rezagados", [:])
@@ -806,7 +807,7 @@ class RetrasadosController {
             totalSr += res[1]
 
         }
-        if(maxLvl) {
+        if (maxLvl) {
             def par = new Paragraph("", times8bold)
             cell = new PdfPCell(par);
             cell.setBorderColor(Color.WHITE)
@@ -828,8 +829,6 @@ class RetrasadosController {
         }
         contenido.add(tablaTramites)
 
-
-        document.add(contenido)
 //
 //        println datosGrafico
 //        println datosGrafico.size()
@@ -845,28 +844,35 @@ class RetrasadosController {
 //            }
 //        }
 
+        boolean conGraficos = false
+
         try {
-            document.newPage()
+            conGraficos = true
+//            document.newPage()
             def width = 550
             def height = 250
             PdfContentByte contentByte = pdfw.getDirectContent();
-            PdfTemplate template = contentByte.createTemplate(width, height);
-            Graphics2D graphics2d = template.createGraphics(width, height, new DefaultFontMapper());
-            PdfTemplate template2 = contentByte.createTemplate(width, height);
-            Graphics2D graphics2d2 = template2.createGraphics(width, height, new DefaultFontMapper());
-            Rectangle2D rectangle2d = new Rectangle2D.Double(0, 0, width, height);
-            Rectangle2D rectangle2d2 = new Rectangle2D.Double(0, 0, width, height);
+            PdfTemplate templateSinRecepcion = contentByte.createTemplate(width, height);
+            Graphics2D graphics2dSinRecepcion = templateSinRecepcion.createGraphics(width, height, new DefaultFontMapper());
+            PdfTemplate templateRetrasados = contentByte.createTemplate(width, height);
+            Graphics2D graphics2dRetrasados = templateRetrasados.createGraphics(width, height, new DefaultFontMapper());
+            Rectangle2D rectangle2dSinRecepcion = new Rectangle2D.Double(0, 0, width, height);
+            Rectangle2D rectangle2dRetrasados = new Rectangle2D.Double(0, 0, width, height);
 
 ////        PARA GRAFICO PASTEL
             DefaultPieDataset dataSetRs = new DefaultPieDataset();
             DefaultPieDataset dataSetRz = new DefaultPieDataset();
             def ttl = " por departamento"
+            def existeSinRecepcion = false
+            def existeRetrasados = false
             datosGrafico.each { dep, valores ->
                 if (datosGrafico.size() > 1) {
                     if (valores.totalRs > 0) {
+                        existeSinRecepcion = true
                         dataSetRs.setValue(valores.objeto.codigo, valores.totalRs);
                     }
                     if (valores.totalRz > 0) {
+                        existeRetrasados = true
                         dataSetRz.setValue(valores.objeto.codigo, valores.totalRz);
                     }
                 } else {
@@ -874,8 +880,10 @@ class RetrasadosController {
                     valores.rezagados.each { k, v ->
                         if (v > 0) {
                             if (k instanceof java.lang.String) {
+                                existeRetrasados = true
                                 dataSetRz.setValue(k, v);
                             } else {
+                                existeRetrasados = true
                                 dataSetRz.setValue(k.login, v);
                             }
                         }
@@ -883,30 +891,33 @@ class RetrasadosController {
                     valores.retrasados.each { k, v ->
                         if (v > 0) {
                             if (k instanceof java.lang.String) {
+                                existeSinRecepcion = true
                                 dataSetRs.setValue(k, v);
                             } else {
+                                existeSinRecepcion = true
                                 dataSetRs.setValue(k.login, v);
                             }
                         }
                     }
                 }
             }
-            JFreeChart chart = ChartFactory.createPieChart("Documentos sin recepción" + ttl, dataSetRs, true, true, false);
-            chart.setTitle(
+
+            JFreeChart chartSinRecepcion = ChartFactory.createPieChart("Documentos sin recepción" + ttl, dataSetRs, true, true, false);
+            chartSinRecepcion.setTitle(
                     new org.jfree.chart.title.TextTitle("Documentos sin recepción" + ttl,
                             new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
                     )
             );
-            JFreeChart chart2 = ChartFactory.createPieChart("Documentos retrasados" + ttl, dataSetRz, true, true, false);
-            chart2.setTitle(
+            JFreeChart chartRetrasados = ChartFactory.createPieChart("Documentos retrasados" + ttl, dataSetRz, true, true, false);
+            chartRetrasados.setTitle(
                     new org.jfree.chart.title.TextTitle("Documentos retrasados" + ttl,
                             new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
                     )
             );
 
             /* getPlot method of JFreeChart class returns the PiePlot object back to us */
-            PiePlot ColorConfigurator = (PiePlot) chart.getPlot(); /* get PiePlot object for changing */
-            PiePlot ColorConfigurator2 = (PiePlot) chart2.getPlot(); /* get PiePlot object for changing */
+            PiePlot ColorConfigurator = (PiePlot) chartSinRecepcion.getPlot(); /* get PiePlot object for changing */
+            PiePlot ColorConfigurator2 = (PiePlot) chartRetrasados.getPlot(); /* get PiePlot object for changing */
             /* A format mask specified to display labels. Here {0} is the section name, and {1} is the value.
             We can also use {2} which will display a percent value */
             ColorConfigurator.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
@@ -915,18 +926,34 @@ class RetrasadosController {
             ColorConfigurator.setLabelBackgroundPaint(new Color(220, 220, 220));
             ColorConfigurator2.setLabelBackgroundPaint(new Color(220, 220, 220));
 
-            chart.draw(graphics2d, rectangle2d);
-            chart2.draw(graphics2d2, rectangle2d2);
+            chartSinRecepcion.draw(graphics2dSinRecepcion, rectangle2dSinRecepcion);
+            chartRetrasados.draw(graphics2dRetrasados, rectangle2dRetrasados);
 
-            graphics2d.dispose();
-            graphics2d2.dispose();
-            contentByte.addTemplate(template, 30, 500);
-            contentByte.addTemplate(template2, 30, 230);
+            graphics2dSinRecepcion.dispose();
+            graphics2dRetrasados.dispose();
 
+            def posyGraf1 = 450
+            def posyGraf2 = 180
+            if(existeSinRecepcion) {
+                contentByte.addTemplate(templateSinRecepcion, 30, posyGraf1);
+                if(existeRetrasados) {
+                    contentByte.addTemplate(templateRetrasados, 30, posyGraf2);
+                }
+            } else {
+                if(existeRetrasados) {
+                    contentByte.addTemplate(templateRetrasados, 30, posyGraf1);
+                }
+            }
         } catch (Exception e) {
             println "ERROR GRAFICOS::::::: "
             e.printStackTrace();
+            conGraficos = false
         }
+
+        if (conGraficos) {
+            document.newPage()
+        }
+        document.add(contenido)
 
         document.close();
         pdfw.close()
@@ -946,8 +973,8 @@ class RetrasadosController {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                if(maxLvl==null)
-                    maxLvl=lvl
+                if (maxLvl == null)
+                    maxLvl = lvl
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -1031,7 +1058,7 @@ class RetrasadosController {
             }
 
             if (lvl["hijos"].size() > 0) {
-                def res = imprimeHijosPdfConsolidado(lvl, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr,datosGrafico)
+                def res = imprimeHijosPdfConsolidado(lvl, contenido, tablaTramites, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
                 total += res[0]
                 totalSr += res[1]
             }

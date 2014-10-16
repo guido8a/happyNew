@@ -112,17 +112,17 @@
                     var valor = $tr.data(tipo);
                     if (valor) {
 
-                        if (deps == 1) {
+                        if (deps > 1) {
+                            if ($tr.data("tipo") == "dep") {
+                                arr = [ $tr.data("value"), valor];
+                                data.push(arr);
+                            }
+                        } else {
                             if ($tr.data("tipo") == "per") {
                                 arr = [ $tr.data("value"), valor];
                                 data.push(arr);
                             } else {
                                 title += " de " + $tr.data("value");
-                            }
-                        } else {
-                            if ($tr.data("tipo") == "dep") {
-                                arr = [ $tr.data("value"), valor];
-                                data.push(arr);
                             }
                         }
                     }
