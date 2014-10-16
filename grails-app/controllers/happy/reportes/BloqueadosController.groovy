@@ -41,6 +41,37 @@ class BloqueadosController {
     Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
     def datosGrafico
 
+    def reporteWeb(){
+        if(!params.dpto)
+            params.dpto=session.usuario.departamentoId
+
+        def dep = Departamento.get(params.dpto)
+        def deps = []
+        deps = getHijos(dep)
+        def total = 0
+        def tabla = "<table class='table table-bordered table-condensed table-hover'><thead><tr><th>Departamento</th><th>Usuario</th></tr></thead><tbody>"
+        deps.each {d->
+            if(d.estado=="B"){
+                tabla+="<tr>"
+                tabla+="<td>${d}</td>"
+                tabla+="<td>(Oficina)</td>"
+                tabla+="</tr>"
+                total++
+            }
+            Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
+                tabla+="<tr>"
+                tabla+="<td>${d}</td>"
+                tabla+="<td>${p}</td>"
+                tabla+="</tr>"
+                total++
+            }
+        }
+        tabla+="<tr><td style='font-weight:bold'>TOTAL</td><td style='text-align: right;font-weight:bold'>${total}</td></tr>"
+        tabla+="</tbody></table>"
+        return [tabla:tabla]
+    }
+
+
     def reporteConsolidado() {
 //        params.detalle=1
 //        params.prsn=session.usuario.id
@@ -69,10 +100,11 @@ class BloqueadosController {
         Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
+        session.tituloReporte="Reporte de usuarios bloqueados"
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteUsuariosBloqueados")
-        reportesPdfService.crearEncabezado(document, "Reporte de usuarios bloqueados")
+//        reportesPdfService.crearEncabezado(document, "Reporte de usuarios bloqueados")
         def contenido = new Paragraph();
         def total = 0
 

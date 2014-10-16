@@ -1386,14 +1386,14 @@ class PersonaController extends happy.seguridad.Shield {
                             def logn = e2["samaccountname"]
                             def mail = e2["mail"]
                             println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
-                            if (!mail) {
-                                println "------>no mail!! " + e2
-                                mail = e2["userprincipalname"]
-                                println "mail alterno " + mail
-                                if (!(mail =~ "@"))
-                                    mail = null
-                                println "le cambio?? " + mail
-                            }
+//                            if (!mail) {
+//                                println "------>no mail!! " + e2
+////                                mail = e2["userprincipalname"]
+////                                println "mail alterno " + mail
+//                                if (!(mail =~ "@"))
+//                                    mail = null
+//                                println "le cambio?? " + mail
+//                            }
                             if (!mail || mail == "") {
                                 noMail.add(["nombre": logn])
                             }
@@ -1552,11 +1552,11 @@ class PersonaController extends happy.seguridad.Shield {
 
                     def logn = entry["samaccountname"]
                     def mail = entry["mail"]
-                    if (!mail) {
-                        mail = entry["userprincipalname"]
-                        if (!(mail =~ "@"))
-                            mail = null
-                    }
+//                    if (!mail) {
+//                        mail = entry["userprincipalname"]
+//                        if (!(mail =~ "@"))
+//                            mail = null
+//                    }
                     if (!mail || mail == "") {
                         noMail.add(["nombre": logn])
                     }
@@ -1569,8 +1569,6 @@ class PersonaController extends happy.seguridad.Shield {
 
 
                         def apellido = WordUtils.capitalizeFully(entry["sn"])
-                        if (!apellido)
-                            apellido = "sin apellido"
                         prsn = new Persona()
                         prsn.nombre = nombres
                         prsn.apellido = apellido
