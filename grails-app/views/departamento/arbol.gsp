@@ -884,6 +884,17 @@
                             }
                         };
 
+                        if(nodeType.contains("Activo")){
+                            items.redireccionar = {
+                                separator_before : true,
+                                label            : "Ausentismo",
+                                icon             : "fa fa-refresh",
+                                action           : function () {
+                                    location.href = "${createLink(controller: 'persona', action: 'personalAdm')}/" + nodeId;
+                                }
+                            };
+                        }
+
                         if (nodeTramites > 0) {
                             items.redireccionar = {
                                 separator_before : true,

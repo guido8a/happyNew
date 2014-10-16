@@ -752,55 +752,62 @@ class DocumentosGeneradosController {
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
         def granTotal = 0
+        XSSFRow row
+        Cell cell
+        def wFechas = 4000
+        row = sheet.createRow((short) index);
+        cell = row.createCell((int) 0)
+        cell.setCellValue("Dep.")
+        cell = row.createCell((int) 1)
+        cell.setCellValue("Usuario")
+        cell = row.createCell((int) 2)
+        cell.setCellValue("No.")
+        sheet.setColumnWidth(2, 4000)
+        cell = row.createCell((int) 3)
+        cell.setCellValue("Fecha creación")
+        sheet.setColumnWidth(3, wFechas)
 
+        cell = row.createCell((int) 4)
+        cell.setCellValue("Para oficina")
+        sheet.setColumnWidth(4, 15000)
+
+        cell = row.createCell((int) 5)
+        cell.setCellValue("Destinatario")
+        sheet.setColumnWidth(5, 10000)
+
+        cell = row.createCell((int) 6)
+        cell.setCellValue("Fecha envío")
+        sheet.setColumnWidth(6, wFechas)
+
+        cell = row.createCell((int) 7)
+        cell.setCellValue("Fecha recepción")
+        sheet.setColumnWidth(7, wFechas)
+        index++
         tramites.each { depId, depMap ->
             def totalDep = 0
-            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
-            index++
-            XSSFRow row = sheet.createRow((short) index);
-            Cell cell = row.createCell((int) 0)
-            cell.setCellValue(header)
-            index++
-            def wFechas = 3000
+//            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
+//            index++
+
+            def dep =  depMap.departamento.codigo
+//            row = sheet.createRow((short) index);
+            //Cell cell = row.createCell((int) 0)
+            //cell.setCellValue(header)
+//            index++
+
 
             depMap.personas.each { persId, persMap ->
-                header = persMap.de + " (${depMap.departamento.codigo})" +
-                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'}"
+//                header = persMap.de + " (${depMap.departamento.codigo})" +
+//                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'}"
+                def usu = persMap.de
 
-                index++
-                row = sheet.createRow((short) index);
-                cell = row.createCell((int) 0)
-                cell.setCellValue(header)
-                index++
+
+//                index++
 
                 totalDep += persMap.tramites.size()
 
-                row = sheet.createRow((short) index);
+//                row = sheet.createRow((short) index);
 
-                cell = row.createCell((int) 0)
-                cell.setCellValue("No.")
-                sheet.setColumnWidth(0, 4000)
 
-                cell = row.createCell((int) 1)
-                cell.setCellValue("Fecha creación")
-                sheet.setColumnWidth(1, wFechas)
-
-                cell = row.createCell((int) 2)
-                cell.setCellValue("Para oficina")
-                sheet.setColumnWidth(2, 15000)
-
-                cell = row.createCell((int) 3)
-                cell.setCellValue("Destinatario")
-                sheet.setColumnWidth(3, 10000)
-
-                cell = row.createCell((int) 4)
-                cell.setCellValue("Fecha envío")
-                sheet.setColumnWidth(4, wFechas)
-
-                cell = row.createCell((int) 5)
-                cell.setCellValue("Fecha recepción")
-                sheet.setColumnWidth(5, wFechas)
-                index++
 
                 persMap.tramites.eachWithIndex { tr, j ->
 //                    if (j % 2 == 0) {
@@ -820,25 +827,31 @@ class DocumentosGeneradosController {
                         def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
                         def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
                         def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
-                        row = sheet.createRow((short) index)
-                        row.createCell((int) 0).setCellValue(cod)
-
+                        //row = sheet.createRow((short) index)
+                        index++
+                        row = sheet.createRow((short) index);
+                        cell = row.createCell((int) 0)
+                        cell.setCellValue(dep)
                         cell = row.createCell((int) 1)
+                        cell.setCellValue(usu)
+                        row.createCell((int) 2).setCellValue(cod)
+
+                        cell = row.createCell((int) 3)
                         cell.setCellValue(tr.fechaCreacion)
                         cell.setCellStyle(styleDate)
 
-                        row.createCell((int) 2).setCellValue(paraOficina)
-                        row.createCell((int) 3).setCellValue(para)
+                        row.createCell((int) 4).setCellValue(paraOficina)
+                        row.createCell((int) 5).setCellValue(para)
 
-                        cell = row.createCell((int) 4)
+                        cell = row.createCell((int) 6)
                         cell.setCellValue(persDoc.fechaEnvio)
                         cell.setCellStyle(styleDate)
 
-                        cell = row.createCell((int) 5)
+                        cell = row.createCell((int) 7)
                         cell.setCellValue(persDoc.fechaRecepcion)
                         cell.setCellStyle(styleDate)
 
-                        index++
+//                        index++
                     }
                 }
             }
@@ -852,7 +865,7 @@ class DocumentosGeneradosController {
             granTotal += totalDep
         }
 
-        XSSFRow row = sheet.createRow((short) index + 2)
+        row = sheet.createRow((short) index + 1)
         row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
         row.createCell((int) 5).setCellValue(granTotal)
 

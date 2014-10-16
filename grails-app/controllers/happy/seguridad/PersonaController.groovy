@@ -426,6 +426,19 @@ class PersonaController extends happy.seguridad.Shield {
         personas.remove(usuario)
         return [usuario: usuario, params: params, triangulos: triangulos, personas: personas]
     }
+    def personalAdm() {
+        if(session.usuario.puedeAdmin){
+            def usuario = Persona.get(params.id)
+            def dep = usuario.departamento
+            def triangulos = dep.getTriangulos()
+            def personas = Persona.findAllByDepartamentoAndActivo(dep, 1)
+            personas.remove(usuario)
+            return [usuario: usuario, params: params, triangulos: triangulos, personas: personas]
+        }else{
+            response.sendError(403)
+        }
+
+    }
 
     def personalArbol() {
         def usuario = Persona.get(params.id)
@@ -558,7 +571,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def saveAccesos_ajax() {
-//        println "asig acc "+params
+        println "asig acc "+params
         params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
@@ -570,7 +583,7 @@ class PersonaController extends happy.seguridad.Shield {
 //            println "accs final date " + accs.accsFechaFinal
             if (params.nuevoTriangulo) {
 
-                def pers = Sesn.findAllByUsuario(session.usuario).perfil
+                def pers = Sesn.findAllByUsuario(accs.usuario).perfil
                 def perfil = null
                 pers.each { p ->
                     if (!perfil) {
@@ -622,7 +635,7 @@ class PersonaController extends happy.seguridad.Shield {
 
 //                println "nuevo perm "+permUsu.persona.id+"  "+permUsu.permisoTramite.descripcion+"  "+permUsu.fechaInicio+"  "+permUsu.fechaFin
             } else {
-                def usu = Persona.get(session.usuario.id)
+                def usu = accs.usuario
                 def jefes = usu.departamento.getJefes()
                 jefes.each {
                     def alerta = new Alerta()
@@ -636,14 +649,19 @@ class PersonaController extends happy.seguridad.Shield {
 
             }
             accs.save(flush: true)
-            if (accs.accsFechaInicial <= new Date()) {
+            if(session.usuario.id==accs?.usuario?.id){
+                if (accs.accsFechaInicial <= new Date()) {
 
-                session.flag = 2
-                println "session.flag " + session.flag
-                render "OK_Restricción agregada_logout"
-            } else {
+                    session.flag = 2
+                    println "session.flag " + session.flag
+                    render "OK_Restricción agregada_logout"
+                } else {
+                    render "OK_Restricción agregada"
+                }
+            }else{
                 render "OK_Restricción agregada"
             }
+
 
         }
     }
