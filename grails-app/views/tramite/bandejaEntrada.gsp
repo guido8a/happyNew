@@ -683,12 +683,20 @@
 
                 items.infoRemitente = infoRemitente;
 
+                var idSession = ${session.usuario.id};
+
+//                if(idSession == remitenteId){
+                    <g:if test="${session.usuario.getPuedeVer()}">
+                    items.detalles = detalles;
+                    </g:if>
+//                }
+
                 <g:if test="${session.usuario.getPuedeVer()}">
-                items.detalles = detalles;
                 items.arbol = arbol;
                 </g:if>
 
-                if (conAnexo) {
+
+                if (conAnexo && recibido) {
                     items.anexo = anexos
                 }
                 if (retrasado) {

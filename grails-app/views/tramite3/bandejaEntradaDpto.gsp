@@ -620,11 +620,16 @@
                 items.arbol = arbol;
                 </g:if>
 
-                if (conAnexo) {
-                    <g:if test="${session.usuario.puedeJefe}">
+
+                if (conAnexo && recibido) {
+                    <g:if test="${session.usuario.puedeJefe || session.usuario.esTriangulo }">
                     items.anexo = anexos;
                     </g:if>
                 }
+
+
+
+
                 if (retrasado || recibido) {
                     if (esExterno) {
                         items.externo = externo;

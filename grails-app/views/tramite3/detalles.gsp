@@ -104,19 +104,25 @@
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
-                    <g:if test="${t.personaPuedeLeerAnexo(session.usuario)}">
-                        <div class="row" style="margin-bottom: 10px;margin-left: 2px">
-                            <g:each in="${DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
-                                <span style='color: #327BBA'>Archivo:</span>
-                                ${anexo.path}
-                                <a href='#' class='btn btn-success bajar' style='margin-right: 15px' title="Descargar Archivo" iden="${anexo.id}">
-                                    <i class="fa fa-download"></i>
-                                </a>
-                                ${anexo.descripcion}
-                                <br>
-                            </g:each>
-                        </div>
+                    <g:if test="${tramite.estadoTramite.codigo == 'E004'}">
+                         <g:if test="${session?.usuario?.id == tramite?.para?.persona?.id}">
+                            <g:if test="${t.personaPuedeLeerAnexo(session.usuario)}">
+                                <div class="row" style="margin-bottom: 10px;margin-left: 2px">
+                                    <g:each in="${DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
+                                        <span style='color: #327BBA'>Archivo:</span>
+                                        ${anexo.path}
+                                        <a href='#' class='btn btn-success bajar' style='margin-right: 15px' title="Descargar Archivo" iden="${anexo.id}">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                        ${anexo.descripcion}
+                                        <br>
+                                    </g:each>
+                                </div>
+                            </g:if>
+                        </g:if>
                     </g:if>
+
+
                 </g:if>
             </div>
         </g:if>
