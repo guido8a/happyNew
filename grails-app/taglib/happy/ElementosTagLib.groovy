@@ -277,7 +277,7 @@ class ElementosTagLib {
     def headerTramite = { attrs ->
         def tramite = attrs.tramite
 
-        println("-->" + tramite)
+        println("-->" +  tramite)
 
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')
@@ -286,19 +286,22 @@ class ElementosTagLib {
         def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
 
         def strPara = ""
+        def strDepa = ""
         para.each { p ->
             if (p.persona) {
+                println("-->" + p.persona.departamento.descripcion)
                 if (strPara != "") {
                     strPara += ", "
                 }
                 strPara += util.nombrePersona(persona: p.persona)
+                strDepa +=  p.persona.departamento.descripcion
             }
             if (p.departamento) {
                 if (strPara != "") {
                     strPara += ", "
                 }
                 strPara += p.departamento.descripcion
-            }
+                }
         }
         def html
 
@@ -378,63 +381,97 @@ class ElementosTagLib {
             html += "        </div>"
         } else {
             //tipo documento
-            html = "<div class=\"titulo-azul titulo-horizontal\">"
-            html += tramite.tipoDocumento?.descripcion
-            html += "</div>"
-            html += "<table class='tramiteHeader'>"
-            //no. documento
-            html += "<tr>"
-            html += "<th>No.</th>"
-            html += "<td>${tramite.codigo}</td>"
+            if(tramite?.tipoDocumento?.codigo != 'OFI'){
+
+                html = "<div class=\"titulo-azul titulo-horizontal\">"
+                html += tramite.tipoDocumento?.descripcion
+                html += "</div>"
+                html += "<table class='tramiteHeader'>"
+                //no. documento
+                html += "<tr>"
+                html += "<th>No.</th>"
+                html += "<td>${tramite.codigo}</td>"
 //            html += "<td colspan='2'>"
 //            html += "<b>No.</b> ${tramite.codigo}"
 //            html += "</td>"
-            html += "</tr>"
-            //para
+                html += "</tr>"
+                //para
 //            html += "<tr>"
 //            html += "<td class='negrilla'><b>Para:</b></td>"
 //            html += "<td>${strPara}</td>"
 //            html += "</tr>"
-            if (para || tramite.paraExterno) {
-                html += "<tr>"
-                html += "<th>Para:</th>"
-                html += "<td>"
-                if (tramite.tipoDocumento.codigo != "DEX") {
-                    if (tramite.paraExterno) {
-                        strPara = tramite.paraExterno
+                if (para || tramite.paraExterno) {
+                    html += "<tr>"
+                    html += "<th>Para:</th>"
+                    html += "<td>"
+                    if (tramite.tipoDocumento.codigo != "DEX") {
+                        if (tramite.paraExterno) {
+                            strPara = tramite.paraExterno
+                        }
                     }
+                    html += strPara + " (" + strDepa + ")"
+                    html += "</td>"
+                    html += "</tr>"
                 }
-                html += strPara
-                html += "</td>"
-                html += "</tr>"
-            }
-            //de
-            html += "<tr>"
-            html += "<th>De:</th>"
+                //de
+                html += "<tr>"
+                html += "<th>De:</th>"
 //            if (tramite?.de?.nombre) {
 //                html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
 //            } else {
 //                html += "<td>${tramite.de.departamento.descripcion}</td>"
 //            }
-            if (tramite.tipoDocumento.codigo == "DEX") {
-                html += "<td>${tramite.paraExterno} (ext.)</td>"
-            } else {
-                html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                if (tramite.tipoDocumento.codigo == "DEX") {
+                    html += "<td>${tramite.paraExterno} (ext.)</td>"
+                } else {
+                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                }
+                html += "</tr>"
+                //fecha
+                html += "<tr>"
+                html += "<th>Fecha:</th>"
+                html += "<td>"
+                html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+                html += "</td>"
+                html += "</tr>"
+                //asunto
+                html += "<tr>"
+                html += "<th>Asunto:</th>"
+                html += "<td>${tramite.asunto ?: ''}</td>"
+                html += "</tr>"
+                html += "</table>"
+            }else{
+
+
+                html = "<div>"
+                html += "</div>"
+               //no. documento
+                html += "<tr>"
+                html += "<td>Oficio N°: ${tramite.codigo}</td>"
+                html += "</tr>"
+               //fecha
+                html += "<tr>"
+                html += "<td>"
+                html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+                html += "</td>"
+                html += "</tr>"
+                //espacios
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
+                html += "<tr><td></td></tr>"
             }
-            html += "</tr>"
-            //fecha
-            html += "<tr>"
-            html += "<th>Fecha:</th>"
-            html += "<td>"
-            html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
-            html += "</td>"
-            html += "</tr>"
-            //asunto
-            html += "<tr>"
-            html += "<th>Asunto:</th>"
-            html += "<td>${tramite.asunto ?: ''}</td>"
-            html += "</tr>"
-            html += "</table>"
+
         }
         out << html
     }

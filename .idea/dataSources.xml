@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3236486519">
-    <data-source source="LOCAL" name="PostgreSQL - happy@localhost" uuid="e626e224-cfba-4687-8720-5827b6bdd56f">
+  <component name="DataSourceManagerImpl" format="xml" hash="873798855">
+    <data-source source="LOCAL" name="PostgreSQL - happy@10.0.0.2 [2]" uuid="e626e224-cfba-4687-8720-5827b6bdd56f">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
@@ -35,6 +35,16 @@
           <url>file://$PROJECT_DIR$/lib/postgresql-9.1-903.jdbc4.jar</url>
         </library>
       </libraries>
+    </data-source>
+    <data-source source="LOCAL" name="PostgreSQL - sadweb@192.168.0.176" uuid="8cda44c9-c78e-4744-897d-f329c6233e5e">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <auto-commit>false</auto-commit>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://192.168.0.176:5432/sadweb</jdbc-url>
+      <user-name>postgres</user-name>
+      <user-password>dfc0dfcbdfc4dfdfdfd9</user-password>
+      <libraries />
     </data-source>
   </component>
 </project>
