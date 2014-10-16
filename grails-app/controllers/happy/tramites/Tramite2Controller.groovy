@@ -567,6 +567,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
         return [tramite: tramite, paras: tramite.para, ccs: tramite.copias, estadosNo: estadosNo]
     }
 
+    def permisoImprimir_ajax() {
+        def tramite = Tramite.get(params.id)
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def personasDoc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolImprimir)
+
+        def usuario = session.usuario
+        def departamento = Persona.get(usuario.id).departamento
+        def personal = Persona.findAllByDepartamento(departamento)
+        def personalActivo = []
+        personal.each {
+            if (it?.estaActivo && it?.id != usuario.id) {
+                personalActivo += it
+            }
+        }
+
+        return [tramite: tramite, personasDoc: personasDoc, personal: personalActivo]
+    }
+
     def bandejaSalida() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -640,7 +659,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def para = RolPersonaTramite.findByCodigo("R001")
         def cc = RolPersonaTramite.findByCodigo("R002")
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
         def persona = Persona.get(session.usuario.id)
         def tramites = []
@@ -660,16 +679,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (t.size() > 0) {
                     tramites += t
                 }
-                t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
-//                t = PersonaDocumentoTramite.withCriteria {
-//                    eq("persona", p)
-//                    eq("rolPersonaTramite", rolImprimir)
-//                    isNull("fechaAnulacion")
-//                    isNull("fechaArchivo")
-//                }.tramite
-                if (t.size() > 0) {
-                    tramites += t
-                }
+//                t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(p, rolImprimir).tramite
+////                t = PersonaDocumentoTramite.withCriteria {
+////                    eq("persona", p)
+////                    eq("rolPersonaTramite", rolImprimir)
+////                    isNull("fechaAnulacion")
+////                    isNull("fechaArchivo")
+////                }.tramite
+//                if (t.size() > 0) {
+//                    tramites += t
+//                }
             }
             def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
 //            def t = Tramite.withCriteria {
@@ -688,10 +707,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 inList("estadoTramite", estados)
                 order("fechaCreacion", "desc")
             }
-            def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
-            if (t.size() > 0) {
-                tramites += t
-            }
+//            def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
+//            if (t.size() > 0) {
+//                tramites += t
+//            }
         }
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
@@ -823,6 +842,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                println('\t'  + d)
                 def envio = new Date();
                 tramite = Tramite.get(d)
+                def pdtEliminar = []
                 PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
 //                    println("estado " + t?.estado?.codigo)
                     if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") {
@@ -856,7 +876,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         println("entro false")
                         band = false
                     }
+
+                    if (t.rolPersonaTramite.codigo == 'I005') {
+                        //si tenia permiso imprimir se elimina
+                        pdtEliminar += t.id
+                    }
                 }
+
+                pdtEliminar.each { pdtId ->
+                    def pdt = PersonaDocumentoTramite.get(pdtId)
+                    pdt.delete(flush: true)
+                }
+
                 if (band) {
                     def pdt = new PersonaDocumentoTramite()
                     pdt.tramite = tramite
@@ -1798,19 +1829,27 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def persona = Persona.get(params.persona)
         def tramite = Tramite.get(params.id)
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        //antes de crear elimino los que existen
+        def idsExisten = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", tramite)
+            eq("rolPersonaTramite", rolImprimir)
+        }
+
+        if (idsExisten.size() > 0) {
+            def ids = idsExisten.id
+            ids.each { id ->
+                def pdt = PersonaDocumentoTramite.get(id)
+                pdt.delete(flush: true)
+            }
+        }
+
+        //una vez eliminados los existentes creo el nuevo registro
         def personaDoc = new PersonaDocumentoTramite();
-        def rol = RolPersonaTramite.findByCodigo('I005')
 
         personaDoc.tramite = tramite
         personaDoc.persona = persona
-//        personaDoc.observaciones = params.observaciones
-//        personaDoc.observaciones = tramitesService.modificaObservaciones(personaDoc.observaciones, params.observaciones + " (${new Date().format('dd-MM-yyyy HH:mm')})")
-//        def nuevaObs = "Agregado permiso de imprimir a ${persona.login}"
-//        if (params.observaciones.trim() != "") {
-//            nuevaObs += ", " + params.observaciones
-//        }
-//        personaDoc.observaciones = tramitesService.makeObservaciones(personaDoc.observaciones, nuevaObs, "", session.usuario.login)
-//        personaDoc.tramite.observaciones = tramitesService.makeObservaciones(personaDoc.tramite.observaciones, nuevaObs, "", session.usuario.login)
 
         def observacionOriginal = personaDoc.observaciones
         def accion = "Asignación de permiso imprimir"
@@ -1823,19 +1862,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
         observacionOriginal = personaDoc.tramite.observaciones
         personaDoc.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
-        personaDoc.rolPersonaTramite = rol
+        personaDoc.rolPersonaTramite = rolImprimir
         personaDoc.fechaEnvio = new Date()
 
         if (!personaDoc.save(flush: true)) {
-
             render "Ocurrió un error al otorgar el permiso"
         } else {
-
+            //despues de otorgar el permiso de imprimir mando una alerta al usuario
+            def alerta = new Alerta()
+            alerta.persona = persona
+            alerta.mensaje = session.usuario.nombre + " " + session.usuario.apellido + " le ha asignado permiso para imprimir el documento número " + tramite.codigo + ". Por favor revise su bandeja de documentos por imprimir."
+            alerta.accion = "bandejaImprimir"
+            alerta.controlador = "tramite3"
+            alerta.fechaCreacion = new Date()
+            alerta.tramite = tramite
+            if(!alerta.save(flush: true)) {
+                println "Error al mandar la alerta"
+            }
             render "Permiso de impresión otorgado correctamente"
         }
-
-//        return render
-
     }
 
 

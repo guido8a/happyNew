@@ -206,10 +206,6 @@
 
         %{--//bandeja--}%
 
-
-        <g:select from="${personal}" name="selector" optionKey="id" class="form-control hide"
-                  style="width: 300px; margin-left: 130px; margin-top: -30px"/>
-
         <div id="" style=";height: 600px;overflow: auto;position: relative">
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
@@ -280,9 +276,6 @@
 //        console.log($(".E001"),$(".E001").size())
                 $("#numBor").html($(".E001").size())
             }
-
-            var selPersonal = '<p id="seleccionar"> </p>';
-            var $sel = $("#selector").clone();
 
             function createContextMenu(node) {
                 var $tr = $(node);
@@ -426,44 +419,43 @@
                     label  : "Permiso de Imprimir",
                     icon   : "fa fa-print",
                     action : function () {
-                        bootbox.dialog({
-                            id      : "dlgImprimir",
-                            title   : "Permiso de impresión para el trámite:  " + codigo,
-                            message : "<label style='margin-left: 30px; margin-top: 30px'>Personal:</label>" + selPersonal +
-                                      "<label style='margin-left: 30px; margin-top: 60px'>Observaciones:</label>" + "<textarea  style='width: 300px;margin-left: 10px; height: 70px' id='observImp'></textarea>",
-                            buttons : {
-                                cancelar : {
-                                    label     : "Cancelar",
-                                    className : 'btn-danger',
-                                    callback  : function () {
-                                    }
-                                },
-                                guardar  : {
-                                    id        : 'btnSave',
-                                    label     : '<i class="fa fa-save"></i> Aceptar',
-                                    className : "btn-success",
-                                    callback  : function () {
-                                        $.ajax({
-                                            type    : 'POST',
-                                            url     : '${createLink(action: 'permisoImprimir')}/' + id,
-                                            data    : {
-                                                persona       : $("#iden").val(),
-                                                observaciones : $("#observImp").val()
-                                            },
-                                            success : function (msg) {
-                                                bootbox.alert(msg)
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite2', action: 'permisoImprimir_ajax')}/' + id,
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    id      : "dlgImprimir",
+                                    title   : "Permiso de impresión para el trámite:  " + codigo,
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : 'btn-danger',
+                                            callback  : function () {
                                             }
-                                        });
+                                        },
+                                        guardar  : {
+                                            id        : 'btnSave',
+                                            label     : '<i class="fa fa-save"></i> Aceptar',
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(action: 'permisoImprimir')}/' + id,
+                                                    data    : {
+                                                        persona       : $("#iden").val(),
+                                                        observaciones : $("#observImp").val()
+                                                    },
+                                                    success : function (msg) {
+                                                        bootbox.alert(msg)
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
-                                }
+                                });
                             }
-                        });
-
-                        if ($sel) {
-                            $sel.removeClass('hide');
-                            $sel.attr('id', 'iden');
-                            $("#seleccionar").append($sel);
-                        }
+                        }); //ajax
                     }
                 }; //imprimir
 

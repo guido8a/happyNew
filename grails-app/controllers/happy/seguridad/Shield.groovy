@@ -4,10 +4,8 @@ package happy.seguridad
 import happy.tramites.Departamento
 
 
-
 class Shield {
     def beforeInterceptor = [action: this.&auth, except: 'login']
-
 
     /**
      * Verifica si se ha iniciado una sesión
@@ -54,21 +52,21 @@ class Shield {
                 session.departamento = Departamento.get(session.departamento.id).refresh()
                 def perms = session.usuario.permisos
                 session.usuario = Persona.get(session.usuario.id).refresh()
-                session.usuario.permisos=perms
-                if(session.usuario.esTriangulo()){
-                    if(session.departamento.estado=="B"){
-                        if(isAllowedBloqueo()){
+                session.usuario.permisos = perms
+                if (session.usuario.esTriangulo()) {
+                    if (session.departamento.estado == "B") {
+                        if (isAllowedBloqueo()) {
                             return true
-                        }else{
-                            redirect(controller: 'shield', action: 'bloqueo',params:["dep":true])
+                        } else {
+                            redirect(controller: 'shield', action: 'bloqueo', params: ["dep": true])
                             return false
                         }
                     }
-                }else{
-                    if(session.usuario.estado=="B"){
-                        if(isAllowedBloqueo()){
+                } else {
+                    if (session.usuario.estado == "B") {
+                        if (isAllowedBloqueo()) {
                             return true
-                        }else{
+                        } else {
                             redirect(controller: 'shield', action: 'bloqueo')
                             return false
                         }
@@ -79,7 +77,7 @@ class Shield {
                 return true
             } else {
 //                println "session.flag shield "+session.flag
-                if(!session.flag || session.flag<1) {
+                if (!session.flag || session.flag < 1) {
 //                    println "menor que cero "+session.flag
                     session.usuario = null
                     session.perfil = null
@@ -88,12 +86,12 @@ class Shield {
                     session.an = null
                     session.cn = null
                     session.invalidate()
-                    session.flag=null
+                    session.flag = null
                     session.finalize()
                     redirect(controller: 'login', action: 'login')
                     return false
-                }else{
-                    session.flag = session.flag-1
+                } else {
+                    session.flag = session.flag - 1
                     session.departamento = Departamento.get(session.departamento.id).refresh()
                     return true
                 }
@@ -114,11 +112,18 @@ class Shield {
 //        return true
         return true
     }
+
     boolean isAllowedBloqueo() {
-        def permitidas = ["inicio":["index"],"tramite":["bandejaEntrada","tablaBandeja","busquedaBandeja","revisarConfidencial","revisarHijos","archivar"],"tramite3":["detalles","arbolTramite","recibirTramite","bandejaEntradaDpto","tablaBandejaEntradaDpto","enviarTramiteJefe","infoRemitente"],"documentoTramite":["verAnexos"],"alertas":["list","revisar"],"persona":["show_ajax"],"departamento":["show_ajax"]]
+        def permitidas = ["inicio"          : ["index"],
+                          "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar"],
+                          "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente"],
+                          "documentoTramite": ["verAnexos"],
+                          "alertas"         : ["list", "revisar"],
+                          "persona"         : ["show_ajax"],
+                          "departamento"    : ["show_ajax"]]
         try {
 
-            if(!permitidas[controllerName])
+            if (!permitidas[controllerName])
                 return false
             if (permitidas[controllerName].contains(actionName))
                 return true

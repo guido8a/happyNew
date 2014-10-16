@@ -1521,4 +1521,51 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
 
+    def bandejaImprimir() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        if (session.usuario.esTriangulo()) {
+            redirect(action: 'bandejaSalidaDep')
+            return
+        }
+/*
+        if (persona.jefe == 1)
+            revisar = true
+        else {
+            def per = PermisoUsuario.findByPersonaAndPermisoTramite(persona, PermisoTramite.findByCodigo("P005"))
+            if (per) {
+                revisar = true
+            }
+        }
+*/
+        def departamento = Persona.get(usuario.id).departamento
+        def personal = Persona.findAllByDepartamento(departamento)
+        def personalActivo = []
+        personal.each {
+            if (it?.estaActivo && it?.id != usuario.id) {
+                personalActivo += it
+            }
+        }
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: persona.puedeEditor]
+    }
+
+    def tablaBandejaImprimir() {
+
+        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+        def persona = Persona.get(session.usuario.id)
+        def tramites = []
+
+        def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(persona, rolImprimir).tramite
+        if (t.size() > 0) {
+            tramites += t
+        }
+        tramites?.sort { it.fechaCreacion }
+        tramites = tramites?.reverse()
+
+        return [persona: persona, tramites: tramites]
+    }
+
 }

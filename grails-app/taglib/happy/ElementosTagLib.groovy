@@ -252,7 +252,13 @@ class ElementosTagLib {
             }
 
             disp.each { dep ->
+//                println "DEP:: " + dep
+//                println "dep.triangulos: " + dep.triangulos
+//                println "dep.triangulos: " + dep.triangulos.size()
                 if (dep.triangulos.size() > 0) {
+//                    println "dep.id " + dep.id + "    " + persona.departamento.id
+//                    println "esDep " + esDepartamento
+//                    println "IF " + (dep.id.toLong() != persona.departamento.id.toLong() || (dep.id.toLong() == persona.departamento.id.toLong() && !esDepartamento))
                     if (dep.id.toLong() != persona.departamento.id.toLong() || (dep.id.toLong() == persona.departamento.id.toLong() && !esDepartamento)) {
                         disp2.add([id     : dep.id * -1,
                                    label  : dep.descripcion,
@@ -290,14 +296,14 @@ class ElementosTagLib {
                     strPara += ", "
                 }
                 strPara += util.nombrePersona(persona: p.persona)
-                strDepa +=  p.persona.departamento.descripcion
+                strDepa += p.persona.departamento.descripcion
             }
             if (p.departamento) {
                 if (strPara != "") {
                     strPara += ", "
                 }
                 strPara += p.departamento.descripcion
-                }
+            }
         }
         def html
 
@@ -377,7 +383,7 @@ class ElementosTagLib {
             html += "        </div>"
         } else {
             //tipo documento
-            if(tramite?.tipoDocumento?.codigo != 'OFI'){
+            if (tramite?.tipoDocumento?.codigo != 'OFI') {
 
                 html = "<div class=\"titulo-azul titulo-horizontal\">"
                 html += tramite.tipoDocumento?.descripcion
@@ -405,9 +411,9 @@ class ElementosTagLib {
                             strPara = tramite.paraExterno
                         }
                     }
-                    if(strDepa != ''){
+                    if (strDepa != '') {
                         html += strPara + " (" + strDepa + ")"
-                    }else{
+                    } else {
                         html += strPara
                     }
 
@@ -441,16 +447,16 @@ class ElementosTagLib {
                 html += "<td>${tramite.asunto ?: ''}</td>"
                 html += "</tr>"
                 html += "</table>"
-            }else{
+            } else {
 
 
                 html = "<div>"
                 html += "</div>"
-               //no. documento
+                //no. documento
                 html += "<tr>"
                 html += "<td>Oficio N°: ${tramite.codigo}</td>"
                 html += "</tr>"
-               //fecha
+                //fecha
                 html += "<tr>"
                 html += "<td>"
                 html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
