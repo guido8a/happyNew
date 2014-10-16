@@ -518,12 +518,12 @@ class DepartamentoController extends happy.seguridad.Shield {
         if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
             personal = departamentoInstance.getTriangulos();
-            println("personal" + personal)
+//            println("personal" + personal)
             if (!departamentoInstance) {
                 notFound_ajax()
                 return
             }
-            return [departamentoInstance: departamentoInstance, personal: personal]
+            return [departamentoInstance: departamentoInstance, personal: personal, params: params]
         } else {
             notFound_ajax()
         }
