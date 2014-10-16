@@ -231,18 +231,12 @@ class ElementosTagLib {
 //                println "dep.id: " + dep.id + "    persona.dep: " + persona.departamento.id + "     " + (dep.id == persona.departamento.id)
                 if (dep.id == persona.departamento.id) {
                     def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
-                    usuarios.each {
-//                        println "\tit.id " + it.id
-//                        println "\tpersona " + it.login
-//                        println "\tit.esta activo " + it.estaActivo
-//                        println "\tit.puede recibir " + it.puedeRecibir
-//                        println "*******************************************************************"
-
-                        if (((!esTriangulo && it.id != persona.id) || (esTriangulo && it.id == persona.id)) && it.estaActivo && it.puedeRecibir) {
+                    usuarios.each { usu ->
+                        if ((((!esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id == persona.id))) && usu.estaActivo && usu.puedeRecibirOff) {
 //                            users += it
-                            disponibles.add([id     : it.id,
-                                             label  : it.toString(),
-                                             obj    : it,
+                            disponibles.add([id     : usu.id,
+                                             label  : usu.toString(),
+                                             obj    : usu,
                                              externo: "interno"])
                         }
                     }
@@ -283,7 +277,7 @@ class ElementosTagLib {
     def headerTramite = { attrs ->
         def tramite = attrs.tramite
 
-        println("-->" +  tramite)
+        println("-->" + tramite)
 
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')
@@ -352,10 +346,10 @@ class ElementosTagLib {
             if (tramite.tipoDocumento.codigo == "DEX") {
                 html += "                    ${tramite.paraExterno} (ext.)"
             } else {
-                if(tramite?.tipoDocumento?.codigo == 'OFI'){
+                if (tramite?.tipoDocumento?.codigo == 'OFI') {
                     html += "                    ${tramite.de.departamento.descripcion}"
 
-                }else{
+                } else {
                     html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
                 }
 
