@@ -312,7 +312,6 @@
                 var remitenteTipo = remitenteParts[0];
                 var remitenteId = remitenteParts[1];
 
-
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
@@ -344,7 +343,8 @@
                             type    : 'POST',
                             url     : url,
                             data    : {
-                                id : remitenteId
+                                id      : remitenteId,
+                                tramite : id
                             },
                             success : function (msg) {
                                 bootbox.dialog({
@@ -783,13 +783,11 @@
                     }
                 }
 
-
                 if (recibido) {
                     if (esExterno) {
                         items.externo = estado1
                     }
                 }
-
 
                 return items
             }
