@@ -77,17 +77,21 @@ class BloqueosJob {
                 println "errores save dep "+dep.errors
         }
         Persona.findAllByEstadoInList(["B","W"]).each {
-//            println "desbloq "+it.login
+           // println "desbloq "+it.login
             it.estado=""
             if(!it.save(flush: true))
                 println "error desbloq prsn "+it.errors
 //            else println "si desbloq !!! "+it.estado+"  "+it.id+"   "+it.errors
         }
         bloquearUsu.each {
-//            println "bloqueando usu "+it
-            it.estado="B"
-            if(!it.save(flush: true))
-                println "error bloq usu"
+//            println "bloqueando usu "+it+"   puede admin "+it.puedeAdmin
+            if(!(it.puedeAdmin)){
+//                println "entro"
+                it.estado="B"
+                if(!it.save(flush: true))
+                    println "error bloq usu"
+            }
+
         }
         warningUsu.each {
             if(it.estado!="B"){
@@ -168,9 +172,11 @@ class BloqueosJob {
             it.save(flush: true)
         }
         bloquearUsu.each {
-//            println "bloqueando usu "+it
-            it.estado="B"
-            it.save(flush: true)
+//            println "bloqueando usu recibir "+it
+            if(!(it.puedeAdmin)) {
+                it.estado = "B"
+                it.save(flush: true)
+            }
         }
         warningUsu.each {
 //            println "warning usu "+it

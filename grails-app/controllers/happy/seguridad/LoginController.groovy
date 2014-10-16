@@ -22,7 +22,7 @@ class LoginController {
 //            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
             LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, "${user.getConnectionString()}", "${pass}")
 //            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
-            println " " + prmt.textoCn
+           // println " " + prmt.textoCn
             /*No borrar esta linea println */
             println "  exist " + ldap.exists("${prmt.textoCn}")
 //            assert ! ldap.exists("${prmt.textoCn}")
@@ -261,10 +261,14 @@ class LoginController {
         if (perf) {
 
             def permisos = Prpf.findAllByPerfil(perf)
+//            println "perfil "+perf.descripcion+"  "+perf.codigo
             permisos.each {
+//                println "perm "+it.permiso+"  "+it.permiso.codigo
                 def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario, it.permiso)
                 perm.each { pr ->
+//                    println "fechas "+pr.fechaInicio+"  "+pr.fechaFin+" "+pr.id+" "+pr.estaActivo
                     if (pr.estaActivo) {
+
                         session.usuario.permisos.add(pr.permisoTramite)
                     }
                 }

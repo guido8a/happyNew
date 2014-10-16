@@ -104,7 +104,7 @@ class RetrasadosExcelController {
         new File(path).mkdirs()
         //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
         String filename = path + "text.xlsx";
-        String sheetName = "Sheet1";
+        String sheetName = "SAD-WEB Reporte";
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
         CreationHelper createHelper = wb.getCreationHelper();
@@ -130,6 +130,8 @@ class RetrasadosExcelController {
         sheet.setColumnWidth(4, 8000)
         sheet.setColumnWidth(5, 8000)
         sheet.setColumnWidth(6, 8000)
+        sheet.setColumnWidth(7, 8000)
+        sheet.setColumnWidth(8, 8000)
         Cell cell = rowHead.createCell((int) 0).setCellValue("GAD DE LA PROVINCIA DE PICHINCHA")
         rowHead = sheet.createRow((short) 1);
         cell = rowHead.createCell((int) 0).setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL")
@@ -141,80 +143,93 @@ class RetrasadosExcelController {
         def row = sheet.createRow((short) num);
         row.setHeightInPoints(14)
 
+
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if(maxLvl==null)
                     maxLvl=lvl
                 row.createCell((int) 0).setCellValue("" + lvl["objeto"])
+                num++
+                row = sheet.createRow((short) num);
+                row.createCell((int) 0).setCellValue("Tipo")
+                row.createCell((int) 1).setCellValue("Usuario")
+                row.createCell((int) 2).setCellValue("Nro.")
+                row.createCell((int) 3).setCellValue("F. Creación")
+                row.createCell((int) 4).setCellValue("De")
+                row.createCell((int) 5).setCellValue("Creado por")
+                row.createCell((int) 6).setCellValue("F. Envío")
+                row.createCell((int) 7).setCellValue("F. Recepcíon")
+                row.createCell((int) 8).setCellValue("F. Límite")
                 if (lvl["tramites"].size() > 0) {
-                    lvl["triangulos"].each { t ->
-                        num++
-                        row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("Usuario:")
-                        row.createCell((int) 1).setCellValue("${t.departamento.codigo}:" + t)
-                        row.createCell((int) 2).setCellValue("${t.login} (oficina)")
-                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]")
+//                    lvl["triangulos"].each { t ->
+//                        num++
+//                        row = sheet.createRow((short) num);
+//                        row.createCell((int) 0).setCellValue("Usuario:")
+//                        row.createCell((int) 1).setCellValue("${t.departamento.codigo}:" + t)
+//                        row.createCell((int) 2).setCellValue("${t.login} (oficina)")
+//                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]")
+//                    }
+//                    num++
+                    def triangulo=""
+                    if(lvl["triangulos"] && lvl["triangulos"].size()>0){
+                        triangulo = lvl["triangulos"].get(0)+" (Oficina)"
+                    }else{
+                        triangulo="Oficina"
                     }
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Nro.")
-                    row.createCell((int) 1).setCellValue("F. Creación")
-                    row.createCell((int) 2).setCellValue("De")
-                    row.createCell((int) 3).setCellValue("Creado por")
-                    row.createCell((int) 4).setCellValue("F. Envío")
-                    row.createCell((int) 5).setCellValue("F. Recepcíon")
-                    row.createCell((int) 6).setCellValue("F. Límite")
+
                     lvl["tramites"].each { t ->
                         num++
                         row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
-                        row.createCell((int) 1).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
+                        row.createCell((int) 1).setCellValue(${(t.fechaRecepcion)?'Retrasado':'Sin recepción'})
+                        row.createCell((int) 0).setCellValue(triangulo)
+                        row.createCell((int) 2).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
+                        row.createCell((int) 3).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
                         if (t.tramite.deDepartamento) {
-                            row.createCell((int) 2).setCellValue("${t.tramite.deDepartamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.deDepartamento.codigo}")
                         } else {
-                            row.createCell((int) 2).setCellValue("${t.tramite.de.departamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.de.departamento.codigo}")
 
                         }
-                        row.createCell((int) 3).setCellValue("${t.tramite.de.login}")
-                        row.createCell((int) 4).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
-                        row.createCell((int) 5).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
-                        row.createCell((int) 6).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 5).setCellValue("${t.tramite.de.login}")
+                        row.createCell((int) 6).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
+                        row.createCell((int) 7).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 8).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
                     }
                 }
 
                 lvl["personas"].each { p ->
-                    num++
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Usuario:")
-                    row.createCell((int) 1).setCellValue("${p["objeto"].departamento.codigo}:" + p["objeto"])
-                    row.createCell((int) 2).setCellValue("${p['objeto'].login}")
-                    row.createCell((int) 3).setCellValue("[ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]")
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Nro.")
-                    row.createCell((int) 1).setCellValue("F. Creación")
-                    row.createCell((int) 2).setCellValue("De")
-                    row.createCell((int) 3).setCellValue("Creado por")
-                    row.createCell((int) 4).setCellValue("F. Envío")
-                    row.createCell((int) 5).setCellValue("F. Recepcíon")
-                    row.createCell((int) 6).setCellValue("F. Límite")
-                    p["tramites"].each { t ->
+//                    num++
+//                    row = sheet.createRow((short) num);
 
+//                    row.createCell((int) 1).setCellValue("${p["objeto"].departamento.codigo}:" + p["objeto"])
+//                    row.createCell((int) 2).setCellValue("${p['objeto'].login}")
+//                    row.createCell((int) 3).setCellValue("[ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]")
+                   // num++
+//                    row = sheet.createRow((short) num);
+//                    row.createCell((int) 0).setCellValue("Nro.")
+//                    row.createCell((int) 1).setCellValue("F. Creación")
+//                    row.createCell((int) 2).setCellValue("De")
+//                    row.createCell((int) 3).setCellValue("Creado por")
+//                    row.createCell((int) 4).setCellValue("F. Envío")
+//                    row.createCell((int) 5).setCellValue("F. Recepcíon")
+//                    row.createCell((int) 6).setCellValue("F. Límite")
+                    p["tramites"].each { t ->
                         num++
                         row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
-                        row.createCell((int) 1).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
+                        row.createCell((int) 0).setCellValue("${(t.tramite.fechaRecepcion)?'Retrasado':'Sin recepción'}")
+                        row.createCell((int) 1).setCellValue("${p['objeto'].login}")
+                        row.createCell((int) 2).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
+                        row.createCell((int) 3).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
                         if (t.tramite.deDepartamento) {
-                            row.createCell((int) 2).setCellValue("${t.tramite.deDepartamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.deDepartamento.codigo}")
                         } else {
-                            row.createCell((int) 2).setCellValue("${t.tramite.de.departamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.de.departamento.codigo}")
 
                         }
-                        row.createCell((int) 3).setCellValue("${t.tramite.de.login}")
-                        row.createCell((int) 4).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
-                        row.createCell((int) 5).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
-                        row.createCell((int) 6).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 5).setCellValue("${t.tramite.de.login}")
+                        row.createCell((int) 6).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
+                        row.createCell((int) 7).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 8).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
 
                     }
 
@@ -227,10 +242,17 @@ class RetrasadosExcelController {
             num++
         }
         if(maxLvl){
+            num++
+            num++
             row = sheet.createRow((short) num);
-            row.createCell((int) 1).setCellValue("TOTAL");
-            row.createCell((int) 2).setCellValue(maxLvl["rezagados"]);
-            row.createCell((int) 3).setCellValue(maxLvl["retrasados"]);
+            row.createCell((int) 0).setCellValue("");
+            row.createCell((int) 1).setCellValue("Retrasados");
+            row.createCell((int) 2).setCellValue("Sin recepción");
+            num++
+            row = sheet.createRow((short) num);
+            row.createCell((int) 0).setCellValue("TOTAL");
+            row.createCell((int) 1).setCellValue(maxLvl["rezagados"]);
+            row.createCell((int) 2).setCellValue(maxLvl["retrasados"]);
         }
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
@@ -264,75 +286,79 @@ class RetrasadosExcelController {
                 num++
                 row = sheet.createRow((short) num);
                 row.createCell((int) 0).setCellValue("" + lvl["objeto"])
+                num++
+                row = sheet.createRow((short) num);
+                row.createCell((int) 0).setCellValue("Tipo")
+                row.createCell((int) 1).setCellValue("Usuario")
+                row.createCell((int) 2).setCellValue("Nro.")
+                row.createCell((int) 3).setCellValue("F. Creación")
+                row.createCell((int) 4).setCellValue("De")
+                row.createCell((int) 5).setCellValue("Creado por")
+                row.createCell((int) 6).setCellValue("F. Envío")
+                row.createCell((int) 7).setCellValue("F. Recepcíon")
+                row.createCell((int) 8).setCellValue("F. Límite")
                 if (lvl["tramites"].size() > 0) {
-                    lvl["triangulos"].each { t ->
-                        num++
-                        row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("Usuario:")
-                        row.createCell((int) 1).setCellValue("${t.departamento.codigo}:" + t)
-                        row.createCell((int) 2).setCellValue("${t.login} (oficina)")
-                        row.createCell((int) 3).setCellValue("[ Sin Recepción: " + lvl["ofiRz"] + " , Retrasados: ${lvl['ofiRs']} ]")
+                    def triangulo=""
+                    if(lvl["triangulos"] && lvl["triangulos"].size()>0){
+                        triangulo = lvl["triangulos"].get(0)+" (Oficina)"
+                    }else{
+                        triangulo="Oficina"
                     }
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Nro.")
-                    row.createCell((int) 1).setCellValue("F. Creación")
-                    row.createCell((int) 2).setCellValue("De")
-                    row.createCell((int) 3).setCellValue("Creado por")
-                    row.createCell((int) 4).setCellValue("F. Envío")
-                    row.createCell((int) 5).setCellValue("F. Recepcíon")
-                    row.createCell((int) 6).setCellValue("F. Límite")
+
                     lvl["tramites"].each { t ->
                         num++
                         row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
-                        row.createCell((int) 1).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
+                        row.createCell((int) 1).setCellValue(${(t.fechaRecepcion)?'Retrasado':'Sin recepción'})
+                        row.createCell((int) 0).setCellValue(triangulo)
+                        row.createCell((int) 2).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
+                        row.createCell((int) 3).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
                         if (t.tramite.deDepartamento) {
-                            row.createCell((int) 2).setCellValue("${t.tramite.deDepartamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.deDepartamento.codigo}")
                         } else {
-                            row.createCell((int) 2).setCellValue("${t.tramite.de.departamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.de.departamento.codigo}")
 
                         }
-                        row.createCell((int) 3).setCellValue("${t.tramite.de.login}")
-                        row.createCell((int) 4).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
-                        row.createCell((int) 5).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
-                        row.createCell((int) 6).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 5).setCellValue("${t.tramite.de.login}")
+                        row.createCell((int) 6).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
+                        row.createCell((int) 7).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 8).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
                     }
 
                 }
                 lvl["personas"].each { p ->
-                    num++
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Usuario:")
-                    row.createCell((int) 1).setCellValue("${p["objeto"].departamento.codigo}:" + p["objeto"])
-                    row.createCell((int) 2).setCellValue("${p['objeto'].login}")
-                    row.createCell((int) 3).setCellValue("[ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]")
-                    num++
-                    row = sheet.createRow((short) num);
-                    row.createCell((int) 0).setCellValue("Nro.")
-                    row.createCell((int) 1).setCellValue("F. Creación")
-                    row.createCell((int) 2).setCellValue("De")
-                    row.createCell((int) 3).setCellValue("Creado por")
-                    row.createCell((int) 4).setCellValue("F. Envío")
-                    row.createCell((int) 5).setCellValue("F. Recepcíon")
-                    row.createCell((int) 6).setCellValue("F. Límite")
+//                    num++
+//                    num++
+//                    row = sheet.createRow((short) num);
+//                    row.createCell((int) 0).setCellValue("Usuario:")
+//                    row.createCell((int) 1).setCellValue("${p["objeto"].departamento.codigo}:" + p["objeto"])
+//                    row.createCell((int) 2).setCellValue("${p['objeto'].login}")
+//                    row.createCell((int) 3).setCellValue("[ Sin Recepción: " + p["retrasados"] + " , Retrasados: ${p['rezagados']} ]")
+//                    num++
+//                    row = sheet.createRow((short) num);
+//                    row.createCell((int) 0).setCellValue("Nro.")
+//                    row.createCell((int) 1).setCellValue("F. Creación")
+//                    row.createCell((int) 2).setCellValue("De")
+//                    row.createCell((int) 3).setCellValue("Creado por")
+//                    row.createCell((int) 4).setCellValue("F. Envío")
+//                    row.createCell((int) 5).setCellValue("F. Recepcíon")
+//                    row.createCell((int) 6).setCellValue("F. Límite")
                     p["tramites"].each { t ->
-                        println "tramite "+t
                         num++
                         row = sheet.createRow((short) num);
-                        row.createCell((int) 0).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
-                        row.createCell((int) 1).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
+                        row.createCell((int) 0).setCellValue("${(t.fechaRecepcion)?'Retrasado':'Sin recepción'}")
+                        row.createCell((int) 1).setCellValue("${p['objeto'].login}")
+                        row.createCell((int) 2).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
+                        row.createCell((int) 3).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
                         if (t.tramite.deDepartamento) {
-                            row.createCell((int) 2).setCellValue("${t.tramite.deDepartamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.deDepartamento.codigo}")
                         } else {
-                            row.createCell((int) 2).setCellValue("${t.tramite.de.departamento.codigo}")
+                            row.createCell((int) 4).setCellValue("${t.tramite.de.departamento.codigo}")
 
                         }
-                        row.createCell((int) 3).setCellValue("${t.tramite.de.login}")
-                        row.createCell((int) 4).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
-                        row.createCell((int) 5).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
-                        row.createCell((int) 6).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 5).setCellValue("${t.tramite.de.login}")
+                        row.createCell((int) 6).setCellValue("${t.fechaEnvio.format('dd-MM-yyyy hh:mm')}")
+                        row.createCell((int) 7).setCellValue("${(t.fechaRecepcion) ? t.fechaRecepcion?.format('dd-MM-yyyy hh:mm') : ''}")
+                        row.createCell((int) 8).setCellValue("${(t.fechaLimiteRespuesta) ? t.fechaLimiteRespuesta?.format('dd-MM-yyyy hh:mm') : ''}")
 
                     }
 

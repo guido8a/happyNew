@@ -567,7 +567,7 @@ class PersonaController extends happy.seguridad.Shield {
         } else {
 //            println "date "+accs.accsFechaFinal.format("dd-MM-yyyy")+" 23:55"+"   "+accs.accsFechaFinal.format("dd-MM-yyyy HH:mm")
             accs.accsFechaFinal = new Date().parse("dd-MM-yyyy HH:mm", accs.accsFechaFinal.format("dd-MM-yyyy") + " 23:55")
-            println "accs final date " + accs.accsFechaFinal
+//            println "accs final date " + accs.accsFechaFinal
             if (params.nuevoTriangulo) {
 
                 def pers = Sesn.findAllByUsuario(session.usuario).perfil
@@ -581,6 +581,7 @@ class PersonaController extends happy.seguridad.Shield {
                         }
                     }
                 }
+//                println "perfil "+perfil+" "+perfil.id
                 if (perfil) {
                     def asignado = Persona.get(params.nuevoTriangulo)
                     accs.accsObservaciones += "; Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
@@ -591,6 +592,7 @@ class PersonaController extends happy.seguridad.Shield {
                     sesion.fechaFin = accs.accsFechaFinal
                     sesion.save(flush: true)
                     Prpf.findAllByPerfil(perfil).each { pr ->
+//                        println "permiso "+pr.permiso.codigo+"  "+asignado.id+"  "+asignado.login+"  "+accs.accsFechaFinal
                         def permUsu = new PermisoUsuario()
                         permUsu.persona = asignado
                         permUsu.permisoTramite = pr.permiso
@@ -600,6 +602,12 @@ class PersonaController extends happy.seguridad.Shield {
                         permUsu.acceso = accs
                         if (!permUsu.save(flush: true))
                             println "error save perm nuevo triangulo " + permUsu.errors
+                        else{
+//                            println "despues del save "
+//                            println permUsu.id
+//                            println permUsu.permisoTramite.codigo
+//                            println permUsu.fechaFin
+                        }
                     }
                     def alerta = new Alerta()
                     alerta.persona = asignado
@@ -658,10 +666,14 @@ class PersonaController extends happy.seguridad.Shield {
                         usu = it.persona
                 }
                 if (usu) {
-                    def sesn = Sesn.findByUsuarioAndFechaInicio(usu, accs.accsFechaInicial)
-                    if (sesn) {
-                        sesn.fechaFin = now
-                        sesn.save(flush: true)
+                    def sesn = Sesn.findAllByUsuarioAndFechaInicio(usu, accs.accsFechaInicial)
+                    println "session "+sesn
+                    if (sesn.size()>0) {
+                        sesn.each {
+                            it.fechaFin = now
+                            it.save(flush: true)
+                        }
+
                     }
                 }
 
@@ -1422,7 +1434,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.departamento = dpto
                                 if (!prsn.save(flush: true)) {
 
-                                    // println "error save prns " + prsn.errors
+                                    println "error save prns " + prsn.errors
                                 } else {
                                     nuevos.add(prsn)
                                     def sesn = new Sesn()

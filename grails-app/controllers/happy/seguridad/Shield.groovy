@@ -115,7 +115,7 @@ class Shield {
         return true
     }
     boolean isAllowedBloqueo() {
-        def permitidas = ["inicio":["index"],"tramite":["bandejaEntrada","tablaBandeja","busquedaBandeja","revisarConfidencial","revisarHijos","archivar"],"tramite3":["detalles","arbolTramite","recibirTramite","bandejaEntradaDpto","tablaBandejaEntradaDpto","enviarTramiteJefe"],"documentoTramite":["verAnexos"],"alertas":["list","revisar"]]
+        def permitidas = ["inicio":["index"],"tramite":["bandejaEntrada","tablaBandeja","busquedaBandeja","revisarConfidencial","revisarHijos","archivar"],"tramite3":["detalles","arbolTramite","recibirTramite","bandejaEntradaDpto","tablaBandejaEntradaDpto","enviarTramiteJefe","infoRemitente"],"documentoTramite":["verAnexos"],"alertas":["list","revisar"],"persona":["show_ajax"],"departamento":["show_ajax"]]
         try {
 
             if(!permitidas[controllerName])
