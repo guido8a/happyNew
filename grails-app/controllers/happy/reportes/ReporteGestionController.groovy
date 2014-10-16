@@ -41,12 +41,15 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
         Document document = reportesPdfService.crearDocumento('h', [top: 2, right: 2, bottom: 1.5, left: 2])
         def pdfw = PdfWriter.getInstance(document, baos);
-        reportesPdfService.membrete(document)
-        document.open();
-
         def titulo = "Reporte de gestión de trámites del dpto. ${departamento.descripcion} del ${params.desde} al ${params.hasta}"
 
-        reportesPdfService.crearEncabezado(document, titulo)
+        session.tituloReporte =  titulo
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "gestion")
+
+
+//        reportesPdfService.crearEncabezado(document, titulo)
 
         //los tramites dirigidos al dpto (para y copia)
         if (departamento) {

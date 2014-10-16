@@ -369,8 +369,10 @@ class RetrasadosController {
             totalSr += res[1]
 
         }
+        def par = new Paragraph(" ", times12bold)
+        document.add(par);
         if (maxLvl) {
-            def par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
+            par = new Paragraph("Gran Total                                                                                                                                          Retrasados: ${maxLvl['rezagados']}       Sin Recepción: ${maxLvl['retrasados']}     ", times12bold)
             document.add(par);
         }
         println "maxlvl " + maxLvl

@@ -441,10 +441,15 @@ class TramiteExportController {
         document.open();
 
         Paragraph headers = new Paragraph();
-//        addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
+        headers.add(new Paragraph("", times18bold));
         headers.add(new Paragraph("Guía de Envio de Trámites", times18bold));
-//        addEmptyLine(headers, 1);
         headers.add(new Paragraph(params.departamento, times12bold));
         headers.add(new Paragraph("Fecha: " + new Date().format("dd-MM-yyyy"), times12bold));
         headers.add(new Paragraph("", times12bold));

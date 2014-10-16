@@ -189,7 +189,7 @@ class EnviarService {
             content += "<img alt='' src='${membrete}'/>"
             content += "</td>"
             content += "<td width='85%' style='text-align:center'>"
-            content += leyenda
+            content += "*****"+leyenda
             content += "</td>"
             content += "</tr>"
             content += "</table>"

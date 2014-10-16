@@ -83,10 +83,12 @@ class DocumentosGeneradosController {
 
         Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
         def pdfw = PdfWriter.getInstance(document, baos);
+
+        session.tituloReporte = title
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "trámite")
-        reportesPdfService.crearEncabezado(document, title)
+//        reportesPdfService.crearEncabezado(document, title)
 
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
@@ -271,7 +273,7 @@ class DocumentosGeneradosController {
 
     def reporteDetalladoPdf() {
 
-        println("params " + params)
+//        println("params " + params)
 
 
 
@@ -360,10 +362,12 @@ class DocumentosGeneradosController {
 
         Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
         def pdfw = PdfWriter.getInstance(document, baos);
+
+        session.tituloReporte = title
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "trámite")
-        reportesPdfService.crearEncabezado(document, title)
+//        reportesPdfService.crearEncabezado(document, title)
 
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]

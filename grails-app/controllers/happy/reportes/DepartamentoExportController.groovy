@@ -79,13 +79,14 @@ class DepartamentoExportController extends Shield {
 //        reportesPdfService.documentoHeader(document, strHeader, false, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         //pone en el footer el tipo de tramite q es y el numero de pagina
 
+        session.tituloReporte = strTitulo
         reportesPdfService.membrete(document)
 
         document.open();
         reportesPdfService.propiedadesDocumento(document, "departamentos")
         //pone las propiedades: title, subject, keywords, author, creator
 
-        reportesPdfService.crearEncabezado(document, strTitulo)
+//        reportesPdfService.crearEncabezado(document, strTitulo)
 //        println titulo
 //        Paragraph headersTitulo = new Paragraph();
 //        headersTitulo.setAlignment(Element.ALIGN_CENTER);
