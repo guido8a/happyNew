@@ -68,7 +68,7 @@
                     </g:link>
                 </div>
 
-                <div class="btn-group" style="margin-top: 4px;">
+                <div class="btn-group col-md-3" style="margin-top: 4px;">
                     <div class="input-group">
                         <g:textField name="search" class="form-control input-sm"/>
                         <span class="input-group-btn">

@@ -10,6 +10,7 @@ import happy.UtilitariosTagLib
 import happy.tramites.Departamento
 import happy.utilitarios.Parametros
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.web.context.request.RequestContextHolder
 
 class ReportesPdfService {
 
@@ -262,6 +263,14 @@ class ReportesPdfService {
     }
 
     def membrete(Document document) {
+//        println ">>>>>>>>>>>> " + grailsApplication
+
+        def session = RequestContextHolder.currentRequestAttributes().getSession()
+        def tituloReporte = ""
+        if (session.tituloReporte) {
+            tituloReporte = session.tituloReporte
+        }
+
 //        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
         File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp_reportes.png").file
         def absolutePath = layoutFolder.absolutePath
@@ -304,7 +313,17 @@ class ReportesPdfService {
         phraseHeader.add(chunkLogo)
         phraseHeader.add(chunkLeyenda)
 
-        HeaderFooter header = new HeaderFooter(phraseHeader, false);
+        def util = new UtilitariosTagLib()
+        Paragraph paragraphHeader = new Paragraph()
+        paragraphHeader.add(new Paragraph(phraseHeader))
+        paragraphHeader.add(new Paragraph("SISTEMA DE ADMINISTRACIÓN DOCUMENTAL", fontSubtituloGad))
+        paragraphHeader.add(new Paragraph(tituloReporte, fontSubtituloGad))
+        def parFecha = new Paragraph("Reporte generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontFecha)
+        parFecha.setAlignment(Element.ALIGN_RIGHT)
+        parFecha.setSpacingAfter(15)
+        paragraphHeader.add(parFecha)
+
+        HeaderFooter header = new HeaderFooter(paragraphHeader, false);
         header.setAlignment(Element.ALIGN_CENTER);
         header.setBorder(Rectangle.NO_BORDER);
         document.setHeader(header);
@@ -319,6 +338,67 @@ class ReportesPdfService {
         footer.setBorder(Rectangle.NO_BORDER);
         document.setFooter(footer);
     }
+
+//    def membrete(Document document) {
+//        println ">>>>>>>>>>>> " + grailsApplication
+//
+////        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
+//        File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp_reportes.png").file
+//        def absolutePath = layoutFolder.absolutePath
+////        println "Absolute Path to Layout Folder: ${absolutePath}"
+//
+////        def imagen = "/home/luz/logo_gadpp_reportes.png"
+//        def imagen = absolutePath
+//
+//        def page = document.getPageSize()
+//        def rot = page.getRotation()
+//        def x = -100
+//        def espacio = "            "
+//        if (rot == 90) {
+//            x = -230
+//            espacio += espacio + espacio + espacio + "    "
+//        }
+//
+//        def aux = Parametros.list([sort: "id", order: "asc"])
+//        def leyenda = ""
+//        if (aux.size() == 1) {
+//            leyenda = aux.first().institucion
+//        } else if (aux.size() > 1) {
+//            println "Hay ${aux.size()} parametros!!: " + aux
+//            leyenda = aux.first().institucion
+//        }
+//        def chunkLeyenda = new Chunk(leyenda, fontEncabezado)
+//        def chunkPieDireccion = new Chunk("Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • ", fontPiePagina)
+//        def chunkPieWeb = new Chunk("www.pichincha.gob.ec", fontPiePaginaBold)
+//        def chunkNumPag = new Chunk(espacio + "pág. ")
+//
+//        Image logo = Image.getInstance(imagen);
+//        logo.setAlignment(Image.LEFT);
+////        logo.scaleAbsoluteHeight(20);
+////        logo.scaleAbsoluteWidth(20);
+////        logo.scalePercent(100);
+////        Chunk chunkLogo = new Chunk(logo, x, -20);
+//        Chunk chunkLogo = new Chunk(logo, x, -10);
+//
+//        Phrase phraseHeader = new Phrase()
+//        phraseHeader.add(chunkLogo)
+//        phraseHeader.add(chunkLeyenda)
+//
+//        HeaderFooter header = new HeaderFooter(phraseHeader, false);
+//        header.setAlignment(Element.ALIGN_CENTER);
+//        header.setBorder(Rectangle.NO_BORDER);
+//        document.setHeader(header);
+//
+//        Phrase phrasePiePagina = new Phrase();
+//        phrasePiePagina.add(chunkPieDireccion)
+//        phrasePiePagina.add(chunkPieWeb)
+//        phrasePiePagina.add(chunkNumPag)
+//
+//        HeaderFooter footer = new HeaderFooter(phrasePiePagina, true);
+//        footer.setAlignment(Element.ALIGN_CENTER);
+//        footer.setBorder(Rectangle.NO_BORDER);
+//        document.setFooter(footer);
+//    }
 
     /**
      * crearTabla: crea una tabla para los pdfs
@@ -526,8 +606,8 @@ class ReportesPdfService {
         return arr
     }
 
-
     /*Reportes de arboles*/
+
     def jerarquia(arr, pdt) {
 //        println "______________jerarquia______________ "
         //println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona+"  - "+pdt.persona?.departamento
@@ -583,7 +663,7 @@ class ReportesPdfService {
 //                println "p--> "+p
                 if (!pdt.fechaRecepcion) {
                     padreData["retrasados"]++
-                }else{
+                } else {
                     padreData["rezagados"]++
                 }
 
@@ -596,13 +676,13 @@ class ReportesPdfService {
                         if (!pdt.fechaRecepcion) {
                             actual["retrasados"]++
                             actual["ofiRs"]++
-                        }else {
+                        } else {
                             actual["rezagados"]++
                             actual["ofiRz"]++
                         }
                         actual["tramites"].add(pdt)
                         actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
-                    }else{
+                    } else {
 //                        if (!pdt.fechaRecepcion)
 //                            datos["retrasados"]++
 //                        else
@@ -614,7 +694,7 @@ class ReportesPdfService {
 
                         if (!pdt.fechaRecepcion) {
                             actual["retrasados"]++
-                        }else {
+                        } else {
                             actual["rezagados"]++
                         }
 
@@ -648,20 +728,18 @@ class ReportesPdfService {
 //                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                             }
                         }
-                    }else{
+                    } else {
 //                        if (!pdt.fechaRecepcion)
 //                            datos["retrasados"]++
 //                        else
 //                            datos["rezagados"]++
                     }
                 }
-                padreData=actual
+                padreData = actual
                 //println "nuevo padre actual "+padreData["objeto"]+" --- "+padreData["retrasados"]+"  "+padreData["rezagados"]
                 lvl = actual["hijos"]
             } else {
 //                println "no actual add lvl "+lvl
-
-
 
                 // println "padre no actual "+padreData["objeto"]+" !!!-----!!!!  "+padreData["retrasados"]+"  "+padreData["rezagados"]
                 def temp = [:]
@@ -673,8 +751,8 @@ class ReportesPdfService {
                 temp.put("triangulos", p.getTriangulos())
                 temp.put("retrasados", 0)
                 temp.put("rezagados", 0)
-                temp.put("ofiRs",0)
-                temp.put("ofiRz",0)
+                temp.put("ofiRs", 0)
+                temp.put("ofiRz", 0)
                 if (!pdt.fechaRecepcion) {
                     padreData["retrasados"]++
                 } else {
@@ -686,7 +764,7 @@ class ReportesPdfService {
                     if (!pdt.fechaRecepcion) {
                         temp["retrasados"]++
 
-                    }else {
+                    } else {
                         temp["rezagados"]++
 
                     }
@@ -695,7 +773,7 @@ class ReportesPdfService {
                         if (!pdt.fechaRecepcion) {
                             temp["ofiRs"]++
 
-                        }else {
+                        } else {
                             temp["ofiRz"]++
 
                         }
@@ -710,14 +788,14 @@ class ReportesPdfService {
                         temp["personas"] = temp["personas"].sort { it.objeto.nombre }
 //                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                     }
-                }else{
+                } else {
 
                 }
 
                 temp.put("nivel", nivel)
 
                 lvl.add(temp)
-                padreData= temp
+                padreData = temp
                 //println "padre nuevo "+padreData["objeto"]+" -- "+padreData["retrasados"]+"  "+padreData["rezagados"]
 //                println "fin add actual "+temp+"  nivel "+nivel
 //                println "asi quedo lvl "+lvl

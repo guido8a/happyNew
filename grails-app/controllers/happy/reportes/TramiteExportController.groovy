@@ -425,6 +425,7 @@ class TramiteExportController {
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
+
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
@@ -471,17 +472,17 @@ class TramiteExportController {
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
-//        cantidadTramites.split(',').each {
-////            println(it)
-//            addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).codigo, times10bold), prmsHeaderHoja)
-//            if(Tramite.get(it).getPara()?.persona?.nombre){
-//                addCellTabla(tablaTramites, new Paragraph((Tramite.get(it).getPara()?.persona?.nombre ?: '') + " " + (Tramite.get(it).getPara()?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
-//            }else{
-//                addCellTabla(tablaTramites, new Paragraph(Tramite.get(it).getPara()?.departamento?.descripcion ?: '', times8bold), prmsHeaderHoja)
-//            }
-//            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
-//            addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
-//        }
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
         pxt.each {
             if (it.rolPersonaTramite.codigo != 'E004') {
@@ -498,6 +499,30 @@ class TramiteExportController {
                     addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
                 }
             }
+
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         }
 
         document.add(headers);

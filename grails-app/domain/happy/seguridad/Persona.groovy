@@ -224,11 +224,11 @@ class Persona {
         return this.puedePermiso("C001")
     }
 
-    def getPuedePlazo(){
+    def getPuedePlazo() {
         return this.puedePermiso("P007")
     }
 
-    def getPuedeAsociar(){
+    def getPuedeAsociar() {
         return this.puedePermiso("P014")
     }
 
@@ -249,7 +249,6 @@ class Persona {
 //        return jefe.first()
 //    }
 
-
 //    def getJefePersona2(){
 //        def jefe = []
 //        Persona.findAllByDepartamento(this.departamento).each {p->
@@ -266,7 +265,6 @@ class Persona {
 //        }
 //        return jefe
 //    }
-
 
 //    def getJefePersona() {
 //        def personas = Persona.withCriteria {
@@ -304,7 +302,6 @@ class Persona {
     }
 
     def esTrianguloOff() {
-
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)
             eq("permisoTramite", PermisoTramite.findByCodigo("E001"))
@@ -313,7 +310,17 @@ class Persona {
         def perms = perm.findAll { it.estaActivo }
 //            println "perms "+perms
         return perms.size() > 0
+    }
 
+    def getPuedeRecibirOff() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P010"))
+        }
+//            println "perm "+perm
+        def perms = perm.findAll { it.estaActivo }
+//            println "perms "+perms
+        return perms.size() > 0
     }
 
     def getEsTriangulo() {

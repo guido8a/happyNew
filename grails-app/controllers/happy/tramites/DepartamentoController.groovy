@@ -244,7 +244,7 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (clase == "") {
                 tree = ""
             }
-            println "TREE    " + tree
+//            println "TREE    " + tree
         } else if (id == "root") {
 //            println "director: " + session.usuario.puedeDirector
 //            println "jefe: " + session.usuario.puedeJefe
