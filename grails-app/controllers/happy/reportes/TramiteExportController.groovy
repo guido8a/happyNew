@@ -425,7 +425,7 @@ class TramiteExportController {
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsHeaderHoja1 = [border: Color.WHITE, bordeTop: "1", bordeBot: "1"]
-        def prmsHeaderHoja1 = [border: Color.WHITE, ]
+
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
@@ -478,6 +478,12 @@ class TramiteExportController {
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+
         pxt.each {
             if (it.rolPersonaTramite.codigo != 'E004') {
                 if (it.fechaEnvio) {
@@ -511,6 +517,12 @@ class TramiteExportController {
             addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
             addCellTabla(tablaTramites, new Paragraph("", times8bold), prmsHeaderHoja)
+
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         }
 
         document.add(headers);

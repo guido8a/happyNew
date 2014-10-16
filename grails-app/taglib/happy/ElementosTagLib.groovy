@@ -276,9 +276,6 @@ class ElementosTagLib {
 
     def headerTramite = { attrs ->
         def tramite = attrs.tramite
-
-        println("-->" +  tramite)
-
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')
 
@@ -289,7 +286,6 @@ class ElementosTagLib {
         def strDepa = ""
         para.each { p ->
             if (p.persona) {
-                println("-->" + p.persona.departamento.descripcion)
                 if (strPara != "") {
                     strPara += ", "
                 }
@@ -409,7 +405,12 @@ class ElementosTagLib {
                             strPara = tramite.paraExterno
                         }
                     }
-                    html += strPara + " (" + strDepa + ")"
+                    if(strDepa != ''){
+                        html += strPara + " (" + strDepa + ")"
+                    }else{
+                        html += strPara
+                    }
+
                     html += "</td>"
                     html += "</tr>"
                 }
