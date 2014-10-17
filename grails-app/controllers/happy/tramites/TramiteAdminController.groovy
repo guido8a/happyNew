@@ -911,7 +911,8 @@ class TramiteAdminController extends Shield {
 //            persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, obs, params.aut, session.usuario.login)
 
             def observacionOriginal = persDocTram.observaciones
-            def accion = "Quitado el archivado"
+//            def accion = "Quitado el archivado"
+            def accion = "Reactivado"
             def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = o
@@ -984,7 +985,8 @@ class TramiteAdminController extends Shield {
 //            persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, obs, params.aut, session.usuario.login)
 
             def observacionOriginal = persDocTram.observaciones
-            def accion = "Quitado el recibido"
+//            def accion = "Quitado el recibido"
+            def accion = "Quitado el Recibido"
             def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = o
@@ -1068,7 +1070,8 @@ class TramiteAdminController extends Shield {
 //                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
 
                 def observacionOriginal = objeto.observaciones
-                def accion = "Anulación"
+//                def accion = "Anulación"
+                def accion = "Anulado"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
                 def texto = ""
@@ -1173,7 +1176,8 @@ class TramiteAdminController extends Shield {
 //            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
 //                def nuevaObs = " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
 //                pdt.tramite.aQuienContesta.observaciones = tramitesService.modificaObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs)
-                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
+//                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
+                def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
 //                if (params.texto.trim()) {
 //                    nuevaObs += ": " + params.texto
 //                }
@@ -1233,7 +1237,8 @@ class TramiteAdminController extends Shield {
 //                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
 
                 def observacionOriginal = objeto.observaciones
-                def accion = "Anulación"
+//                def accion = "Anulación"
+                def accion = "Anulado"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
                 def texto = ""
@@ -1330,13 +1335,14 @@ class TramiteAdminController extends Shield {
 //            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
 //                def nuevaObs = " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
 //                pdt.tramite.aQuienContesta.observaciones = tramitesService.modificaObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs)
-                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
+//                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
+                def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
 //                if (params.texto.trim()) {
 //                    nuevaObs += ": " + params.texto
 //                }
 //                pdt.tramite.aQuienContesta.observaciones = tramitesService.makeObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs, params.aut, session.usuario.login)
                 def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
-                def accion = "Reactivación por anulación de trámite derivado"
+                def accion = "Reactivado por anulación de trámite derivado"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
                 def texto = nuevaObs
@@ -1396,7 +1402,8 @@ class TramiteAdminController extends Shield {
 //        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs, params.aut, session.usuario.login)
 
         def observacionOriginal = pdt.observaciones
-        def accion = "Reactivación"
+//        def accion = "Reactivación"
+        def accion = "Reactivado"
         def solicitadoPor = params.aut
         def usuario = session.usuario.login
         def texto = ""

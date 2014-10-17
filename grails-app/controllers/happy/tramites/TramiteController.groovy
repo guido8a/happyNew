@@ -1724,7 +1724,8 @@ class TramiteController extends happy.seguridad.Shield {
 //        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs + obs, params.aut, session.usuario.login)
 
             def observacionOriginal = pdt.observaciones
-            def accion = "Archivo"
+//            def accion = "Archivo"
+            def accion = "Archivado"
             def solicitadoPor = ""
             def usuario = session.usuario.login
             def texto = ""
