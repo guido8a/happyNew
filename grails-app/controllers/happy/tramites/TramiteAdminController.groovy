@@ -683,7 +683,9 @@ class TramiteAdminController extends Shield {
         return [html2: html, url: url, tramite: tramite]
     }
 
-    def 
+    def dialogAdmin() {
+
+    }
 
     private String makeNewTreeExtended(Tramite principal) {
         def html = ""
