@@ -359,7 +359,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-        if ((puedeVer.id.contains(datos["objeto"].id))) {
+        println("--> "+ datos)
+
+        if ((puedeVer?.id?.contains(datos["objeto"]?.id))) {
             maxLvl = datos
         }
 

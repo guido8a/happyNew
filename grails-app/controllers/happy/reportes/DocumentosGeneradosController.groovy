@@ -457,8 +457,8 @@ class DocumentosGeneradosController {
     }
 
     def reporteGeneralXlsx() {
-        def desde = new Date().parse("dd-MM-yyyy", params.desde)
-        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
         def title = ["Reporte de documentos generados"]
@@ -633,8 +633,10 @@ class DocumentosGeneradosController {
     }
 
     def reporteDetalladoXlsx() {
-        def desde = new Date().parse("dd-MM-yyyy", params.desde)
-        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
+
 
         def fileName = "detalle_documentos_generados_"
         def title = ["Reporte de documentos generados"]
