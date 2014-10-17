@@ -5,7 +5,7 @@
   Time: 1:20 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona; happy.tramites.Departamento" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -36,7 +36,7 @@
                     <i class="fa fa-arrow-left"></i> Regresar
                 </a>
 
-                <g:link controller="tramiteExport" action="arbolPdf" id="${tramite.id}" class="btn btn-default">
+                <g:link controller="tramiteExport" action="arbolPdf" id="${tramite?.id}" class="btn btn-default">
                     <i class="fa fa-print"></i> Imprimir
                 </g:link>
 
@@ -116,7 +116,14 @@
                 var padreEstaArchivado = $padre.hasClass("archivado");
                 var padreEstaAnulado = $padre.hasClass("anulado");
 
-//                 console.log("padre " + estaAnulado)
+
+                %{--console.log("tramite " + "${tramite?.de?.departamento}");--}%
+                console.log("tramite " + '${Persona.findAllByDepartamento(Departamento.get(tramite?.de?.departamento?.id))}')
+                %{--console.log("departamento " + ${Departamento.get(tramite?.deDepartamentoId)});--}%
+                %{--console.log("personas " + ${Persona.findAllByDepartamento(Departamento.get(tramite?.deDepartamentoId))});--}%
+
+
+                console.log("-->" + tramiteDe)
 
 //        console.log(padreEstaAnulado);
 
@@ -464,6 +471,7 @@
                                           '<div class="col-md-3"><strong>Solicitado por</strong></div>' +
                                           '<div class="col-md-9">' +
                                           '<input type="text" class="form-control" id="autAnular"/>' +
+                                          '<g:select name="autAnula" id="autAnula" from="${Persona.findAllByDepartamento(Departamento.get(tramite?.de?.departamento?.id))}"/> ' +
                                           '</div>' +
                                           '</div>' +
                                           "<label for='observacionAnular'>Observaciones:</label>" +

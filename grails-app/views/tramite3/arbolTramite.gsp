@@ -69,26 +69,6 @@
 //                    }
                 };
                 if (!nodeType.contains("tramite")) {
-                    %{--var items = {--}%
-
-                    %{--detalles : {--}%
-                    %{--label  : "Detalles",--}%
-                    %{--icon   : "fa fa-search",--}%
-                    %{--action : function () {--}%
-                    %{--$.ajax({--}%
-                    %{--type    : 'POST',--}%
-                    %{--url     : '${createLink(controller: 'tramite3', action: 'detalles')}',--}%
-                    %{--data    : {--}%
-                    %{--id : tramiteId--}%
-                    %{--},--}%
-                    %{--success : function (msg) {--}%
-                    %{--$("#dialog-body").html(msg)--}%
-                    %{--}--}%
-                    %{--});--}%
-                    %{--$("#dialog").modal("show")--}%
-                    %{--}--}%
-                    %{--}--}%
-                    %{--};--}%
                     var detalles = {
                         label  : 'Detalles',
                         icon   : "fa fa-search",

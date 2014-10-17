@@ -680,6 +680,10 @@ class TramiteAdminController extends Shield {
             }
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")
         }
+
+
+
+
         return [html2: html, url: url, tramite: tramite]
     }
 
