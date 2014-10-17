@@ -680,12 +680,10 @@ class TramiteAdminController extends Shield {
             }
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")
         }
-
-
-
-
         return [html2: html, url: url, tramite: tramite]
     }
+
+    def 
 
     private String makeNewTreeExtended(Tramite principal) {
         def html = ""

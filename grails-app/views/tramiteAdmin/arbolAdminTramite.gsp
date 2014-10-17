@@ -471,7 +471,6 @@
                                           '<div class="col-md-3"><strong>Solicitado por</strong></div>' +
                                           '<div class="col-md-9">' +
                                           '<input type="text" class="form-control" id="autAnular"/>' +
-                                          '<g:select name="autAnula" id="autAnula" from="${Persona.findAllByDepartamento(Departamento.get(tramite?.de?.departamento?.id))}"/> ' +
                                           '</div>' +
                                           '</div>' +
                                           "<label for='observacionAnular'>Observaciones:</label>" +
