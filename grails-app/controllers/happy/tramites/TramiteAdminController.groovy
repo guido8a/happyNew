@@ -684,7 +684,22 @@ class TramiteAdminController extends Shield {
     }
 
     def dialogAdmin() {
-
+        def tramite = Tramite.get(params.id)
+        def icon = params.icon
+        def msg = params.msg
+        def personas = []
+        Persona.findAllByDepartamento(tramite.de?.departamento).each { p ->
+            if (p.estaActivo) {
+//                personas.add(p)
+                def m = [:]
+                m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
+                m.value = p.nombre + " " + p.apellido + " (" + p.login + ")"
+                personas.add(m)
+            }
+        }
+        println msg
+        println icon
+        return [tramite: tramite, icon: icon, msg: msg, personas: personas]
     }
 
     private String makeNewTreeExtended(Tramite principal) {
@@ -1070,8 +1085,7 @@ class TramiteAdminController extends Shield {
 //                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
 
                 def observacionOriginal = objeto.observaciones
-//                def accion = "Anulación"
-                def accion = "Anulado"
+                def accion = "Anulación"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
                 def texto = ""
