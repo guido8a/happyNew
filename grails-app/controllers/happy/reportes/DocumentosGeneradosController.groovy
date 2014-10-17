@@ -55,7 +55,7 @@ class DocumentosGeneradosController {
 
     def reporteGeneralPdf() {
 
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
@@ -101,7 +101,7 @@ class DocumentosGeneradosController {
             }
             def tramites = 0
             if (pers.estaActivo) {
-                if(desde == hasta){
+                if (desde == hasta) {
                     def trams = Tramite.withCriteria {
 
                         eq("de", pers)
@@ -110,15 +110,15 @@ class DocumentosGeneradosController {
                         order("fechaCreacion", "asc")
                     }
                     tramites = trams.size()
-                }else{
+                } else {
                     def trams = Tramite.withCriteria {
-                    eq("de", pers)
-                    eq("departamento", dpto)
-                    ge("fechaCreacion", desde)
-                    le("fechaCreacion", hasta)
-                    order("fechaCreacion", "asc")
-                }
-                tramites = trams.size()
+                        eq("de", pers)
+                        eq("departamento", dpto)
+                        ge("fechaCreacion", desde)
+                        le("fechaCreacion", hasta)
+                        order("fechaCreacion", "asc")
+                    }
+                    tramites = trams.size()
                 }
 //
             }
@@ -206,6 +206,9 @@ class DocumentosGeneradosController {
                 totalGraf[depMap.departamento] = [:]
                 totalGraf[depMap.departamento].total = 0
                 totalGraf[depMap.departamento].detalle = [:]
+
+                depMap.personas = depMap.personas.sort { it.value.de }
+
                 depMap.personas.each { persId, persMap ->
                     reportesPdfService.addCellTabla(tabla, new Paragraph("${depMap.departamento.descripcion} (${depMap.departamento.codigo})", font), paramsLeft)
                     reportesPdfService.addCellTabla(tabla, new Paragraph("${persMap.de}", font), paramsLeft)
@@ -221,10 +224,12 @@ class DocumentosGeneradosController {
             }
             reportesPdfService.addCellTabla(tabla, new Paragraph("GRAN TOTAL", fontBold), [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, colspan: 2])
             reportesPdfService.addCellTabla(tabla, new Paragraph("${granTotal}", fontBold), paramsCenter)
-            document.add(tabla)
+
+            def conGrafico = false
 
             try {
-                document.newPage()
+                conGrafico = true
+//                document.newPage()
                 def width = 550
                 def height = 250
                 PdfContentByte contentByte = pdfw.getDirectContent();
@@ -255,11 +260,16 @@ class DocumentosGeneradosController {
                 ColorConfigurator.setLabelBackgroundPaint(new Color(220, 220, 220));
                 chart.draw(graphics2d, rectangle2d);
                 graphics2d.dispose();
-                contentByte.addTemplate(template, 30, 500);
+                contentByte.addTemplate(template, 30, 450);
             } catch (Exception e) {
+                conGrafico = false
                 println "ERROR GRAFICOS::::::: "
                 e.printStackTrace();
             }
+            if (conGrafico) {
+                document.newPage()
+            }
+            document.add(tabla)
         }
 
         document.close();
@@ -275,9 +285,7 @@ class DocumentosGeneradosController {
 
 //        println("params " + params)
 
-
-
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "detalle_documentos_generados_"
@@ -403,6 +411,7 @@ class DocumentosGeneradosController {
                 totalDep += persMap.tramites.size()
 
                 tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
+                tabla.setHeaderRows(1)
                 reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
                 reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
                 reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
@@ -457,7 +466,7 @@ class DocumentosGeneradosController {
     }
 
     def reporteGeneralXlsx() {
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
@@ -589,6 +598,9 @@ class DocumentosGeneradosController {
 
         tramites.each { depId, depMap ->
             def depTotal = 0
+
+            depMap.personas = depMap.personas.sort { it.value.de }
+
             depMap.personas.each { persId, persMap ->
 
                 XSSFRow row = sheet.createRow((short) index)
@@ -634,7 +646,7 @@ class DocumentosGeneradosController {
 
     def reporteDetalladoXlsx() {
 
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00"  )
+        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
 
@@ -790,7 +802,7 @@ class DocumentosGeneradosController {
 //            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
 //            index++
 
-            def dep =  depMap.departamento.codigo
+            def dep = depMap.departamento.codigo
 //            row = sheet.createRow((short) index);
             //Cell cell = row.createCell((int) 0)
             //cell.setCellValue(header)
@@ -802,13 +814,11 @@ class DocumentosGeneradosController {
 //                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'}"
                 def usu = persMap.de
 
-
 //                index++
 
                 totalDep += persMap.tramites.size()
 
 //                row = sheet.createRow((short) index);
-
 
 
                 persMap.tramites.eachWithIndex { tr, j ->
