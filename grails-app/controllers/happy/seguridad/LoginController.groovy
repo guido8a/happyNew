@@ -198,6 +198,7 @@ class LoginController {
                     if (perfiles.size() == 1) {
                         session.usuario.vaciarPermisos()
                         session.perfil = perfiles.first().perfil
+                        cargarPermisos()
                         def cn = "inicio"
                         def an = "index"
                         def count = 0
@@ -258,6 +259,7 @@ class LoginController {
     def savePer() {
         def sesn = Sesn.get(params.prfl)
         def perf = sesn.perfil
+        cargarPermisos()
         if (perf) {
 
             def permisos = Prpf.findAllByPerfil(perf)
@@ -333,6 +335,22 @@ class LoginController {
 
     def finDeSesion() {
 
+    }
+
+    def cargarPermisos(){
+        def permisos=Prms.findAllByPerfil(session.perfil)
+        def hp=[:]
+        permisos.each{
+//                println(it.accion.accnNombre+ " " + it.accion.control.ctrlNombre)
+            if(hp[it.accion.control.ctrlNombre.toLowerCase()]){
+                hp[it.accion.control.ctrlNombre.toLowerCase()].add(it.accion.accnNombre.toLowerCase())
+            }else{
+                hp.put(it.accion.control.ctrlNombre.toLowerCase(),[it.accion.accnNombre.toLowerCase()])
+            }
+
+        }
+        session.permisos=hp
+//        println "permisos menu "+session.permisos
     }
 
 }

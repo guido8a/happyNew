@@ -100,6 +100,7 @@
                 var tramiteInfo = tramiteCodigo + " (" + tramiteDe + ", " + tramitePara + ")";
 
                 var estaAnulado = $node.hasClass("anulado");
+                var esCircular = $node.hasClass("CIR");
                 var estaArchivado = $node.hasClass("archivado");
                 var estaEnviado = $node.hasClass("enviado");
                 var estaRecibido = $node.hasClass("recibido");
@@ -375,6 +376,77 @@
 //                    }
                     }
                     if (!estaAnulado && !estaArchivado) {
+                        if(esCircular){
+                            items.anularCircular = {
+                                label  : "Anular todo",
+                                icon   : "fa fa-ban",
+                                action : function () {
+                                    var hijosAnular = findAllHijos($node);
+                                    if (hijosAnular != "") {
+                                        hijosAnular = "<p>Se anularán todos los hijos asociados a la circular</p>"
+                                    }
+
+                                    var msg = "<i class='fa fa-ban fa-3x pull-left text-danger text-shadow'></i>" +
+                                            "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>"+
+                                            '<div class="row">' +
+                                            '<div class="col-md-3"><strong>Solicitado por</strong></div>' +
+                                            '<div class="col-md-9">' +
+                                            '<input type="text" class="form-control" id="autAnular"/>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            "<label for='observacionAnular'>Observaciones:</label>" +
+                                            '<textarea id="observacionAnular" style="resize: none; height: 150px;" ' +
+                                            'class="form-control" maxlength="255" name="observacionAnular"></textarea>';
+                                    bootbox.dialog({
+                                        id      : "dlgAnular",
+                                        title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',
+                                        message : msg,
+                                        buttons : {
+                                            cancelar : {
+                                                label     : '<i class="fa fa-times"></i> Cancelar',
+                                                className : 'btn-danger',
+                                                callback  : function () {
+                                                }
+                                            },
+                                            anular   : {
+                                                id        : 'btnArchivar',
+                                                label     : '<i class="fa fa-check"></i> Anular',
+                                                className : "btn-success",
+                                                callback  : function () {
+                                                    var $txt = $("#autAnular");
+                                                    if (validaAutorizacion($txt)) {
+                                                        openLoader("Anulando");
+                                                        $.ajax({
+                                                            type    : 'POST',
+                                                            url     : '${createLink(controller: "tramiteAdmin", action: "anularCircular")}',
+                                                            data    : {
+                                                                id    : nodeId,
+                                                                texto : $("#observacionAnular").val(),
+                                                                aut   : $txt.val()
+                                                            },
+                                                            success : function (msg) {
+                                                                var parts = msg.split("*");
+                                                                if (parts[0] == 'OK') {
+                                                                    log("Trámite anulado correctamente", 'success');
+                                                                    setTimeout(function () {
+                                                                        location.reload(true);
+                                                                    }, 500);
+                                                                } else if (parts[0] == 'NO') {
+                                                                    closeLoader();
+                                                                    log("Error al anular el trámite!", 'error');
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        return false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            };
+                        }
                         items.anular = {
                             label  : "Anular",
                             icon   : "fa fa-ban",

@@ -17,15 +17,19 @@ class MenuTagLib {
         }
 //        attrs.title = attrs.title.toUpperCase()
         if (usuario) {
+//            println "perfil "+perfil.id
             def acciones = happy.seguridad.Prms.findAllByPerfil(perfil).accion.sort { it.modulo.orden }
 
             acciones.each { ac ->
-                if (!items[ac.modulo.nombre]) {
-                    items.put(ac.modulo.nombre, [ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre)])
-                } else {
-                    items[ac.modulo.nombre].add(ac.accnDescripcion)
-                    items[ac.modulo.nombre].add(g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
+                if(ac.tipo.id==1){
+                    if (!items[ac.modulo.nombre]) {
+                        items.put(ac.modulo.nombre, [ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre)])
+                    } else {
+                        items[ac.modulo.nombre].add(ac.accnDescripcion)
+                        items[ac.modulo.nombre].add(g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
+                    }
                 }
+
             }
             items.each { item ->
                 for (int i = 0; i < item.value.size(); i += 2) {
