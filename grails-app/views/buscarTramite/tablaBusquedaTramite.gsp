@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.RolPersonaTramite; happy.tramites.EstadoTramite; happy.tramites.PersonaDocumentoTramite; happy.seguridad.Persona; happy.tramites.Tramite" %>
+<%@ page import="happy.tramites.DocumentoTramite; happy.tramites.RolPersonaTramite; happy.tramites.EstadoTramite; happy.tramites.PersonaDocumentoTramite; happy.seguridad.Persona; happy.tramites.Tramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: gato
@@ -8,6 +8,8 @@
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
+
+<util:renderHTML html="${msg}"/>
 
 <div style="height: 70px" class="container-celdas">
     <span class="grupo">
@@ -29,117 +31,133 @@
 
             </tbody>
         </table>
-
     </span>
-
 </div>
 
-
-<div style="height: 350px" class="container-celdas">
+<div style="height: ${msg == '' ? 350 : 300}px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
-            %{--<thead>--}%
-                %{--<tr>--}%
-                    %{--<th class="alinear">Documento</th>--}%
-                    %{--<th class="alinear">Fecha Creación</th>--}%
-                    %{--<th class="alinear">De</th>--}%
-                    %{--<th class="alinear">Para</th>--}%
-                    %{--<th class="alinear">Asunto</th>--}%
-                    %{--<th class="alinear">Prioridad</th>--}%
-                    %{--<th class="alinear">Envia</th>--}%
-                    %{--<th class="alinear">Fecha Envio</th>--}%
-                    %{--<th class="alinear">Fecha Recepción</th>--}%
-                %{--</tr>--}%
-            %{--</thead>--}%
             <tbody>
+                <g:set var="estadoAnulado" value="${EstadoTramite.findByCodigo('E006')}"/>
+                <g:set var="estadoRecibido" value="${EstadoTramite.findByCodigo('E004')}"/>
+
+                <g:set var="rolRecibe" value="${RolPersonaTramite.findByCodigo('E003')}"/>
+                <g:set var="rolEnvia" value="${RolPersonaTramite.findByCodigo('E004')}"/>
+                <g:set var="rolPara" value="${RolPersonaTramite.findByCodigo('R001')}"/>
+
                 <g:each in="${tramites}" var="tramite" status="z">
 
-                    <g:set var="estado" value="${EstadoTramite.findByCodigo('E006')}"/>
+                    <g:set var="recibe" value="${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolRecibe)}"/>
+                    <g:set var="envia" value="${PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolEnvia)}"/>
+                    <g:set var="receptoresAnulados" value="${(tramite.allCopias + tramite.para).findAll {
+                        it?.estado == estadoAnulado
+                    }}"/>
 
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
-                    <g:set var="de" value="${tramite.dedp_id ?: Persona.get(tramite.depr_id).departamentoId}"/>
+                    <g:set var="de" value="${tramite.deDepartamentoId ?: tramite.de.departamentoId}"/>
 
-                    <g:set var="tramiteActual" value="${Tramite.get(tramite?.trmt__id)}"/>
-
-                    <g:set var="anulado" value="${PersonaDocumentoTramite.findByTramiteAndEstadoAndRolPersonaTramite(tramiteActual,estado, RolPersonaTramite.findByCodigo('R001'))}"/>
-
-                    <g:if test="${tramiteActual.de?.id == session.usuario.id ||
-                            tramiteActual.deDepartamento?.id == session.usuario.departamentoId ||
+                    <g:if test="${tramite.de?.id == session.usuario.id ||
+                            tramite.deDepartamento?.id == session.usuario.departamentoId ||
                             (session.usuario.esTriangulo && de == session.usuario.departamentoId)}">
                         <g:set var="clase" value="${'principal'}"/>
-                        <g:if test="${tramiteActual.padre}">
-                            <g:set var="padre" value="${tramiteActual.padre?.id}"/>
+                        <g:if test="${tramite.padre}">
+                            <g:set var="padre" value="${tramite.padre?.id}"/>
                             <g:set var="clase" value="${'padre'}"/>
                         </g:if>
                     </g:if>
 
-                    <g:if test="${tramite.trmtanxo == 1}">
+                    <g:if test="${tramite.anexo == 1}">
                         <g:set var="clase" value="${clase + ' conAnexo'}"/>
                     </g:if>
 
-                    <g:if test="${tramite?.fc_recp}">
+                    <g:if test="${recibe && recibe.fechaRecepcion}">
                         <g:set var="clase" value="${clase + ' recibido'}"/>
                     </g:if>
 
-                    <g:if test="${tramite.depr_id == session.usuario.id}">
+                    <g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">
+                        <g:set var="clase" value="${clase + ' externo'}"/>
+                    </g:if>
+
+                    <g:if test="${tramite.de == session.usuario.id}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
-                    <tr id="${tramite?.trmt__id}" data-id="${tramite?.trmt__id}" padre="${padre}" class="${clase}" estado="${anulado}">
+                    <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}" anulados="${receptoresAnulados.size()}" dep="${tramite.de.departamentoId}"
+                        de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
+                                (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
                         <td style="width: 110px">
-                            ${tramite?.trmtcdgo}
-                        %{--<br/>--}%
-                        %{--${tramite}--}%
-                            <g:if test="${tramite.trmtanxo == 1}">
+                            <g:if test="${tramite.tipoTramite.codigo == 'C'}">
+                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                            </g:if>
+                            ${tramite.codigo}
+                            <g:if test="${tramite.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                                 <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
                             </g:if>
-                            <g:if test="${tramite?.es_extr == 1}">
+                            <g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">
                                 (ext)
                             </g:if>
                         </td>
-                        <td style="width: 100px">${tramite?.fc_trmt?.format('dd-MM-yyyy HH:mm')}</td>
-                        <g:if test="${tramite?.de_prsn}">
-                            <td style="width: 150px">${tramite?.de_prsn}</td>
-                        </g:if>
-                        <g:elseif test="${tramite?.de_dpto}">
-                            <td style="width: 150px">${tramite?.de_dpto}</td>
-                        </g:elseif>
-                        <g:else>
-                            <td style="width: 150px"></td>
-                        </g:else>
+
+                        <td style="width: 100px">
+                            ${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}
+                        </td>
 
                         <td style="width: 150px">
-                            <g:if test="${tramite?.pr_prsn}">
-                                ${tramite?.pr_prsn}
+                            <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
+                                ${tramite.paraExterno} (ext)
                             </g:if>
-                            <g:elseif test="${tramite?.pr_dpto}">
-                                ${tramite?.pr_dpto}
-                            </g:elseif>
-                            <g:if test="${tramite?.es_extr == 1 && tramite?.pr_extr}">
-                                (${tramite?.pr_extr})
+                            <g:else>
+                                <g:if test="${tramite.deDepartamento}">
+                                    ${tramite.deDepartamento.descripcion}
+                                </g:if>
+                                <g:elseif test="${tramite.de}">
+                                    ${tramite.de.nombre} ${tramite.de.apellido} (${tramite.de.departamento.codigo})
+                                </g:elseif>
+                            </g:else>
+                        </td>
+
+                        <td style="width: 150px">
+                            <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
+                                ${tramite.paraExterno} (ext)
                             </g:if>
+                            <g:else>
+                                <g:if test="${tramite.para}">
+                                    <g:if test="${tramite.para.persona}">
+                                        ${tramite.para.persona.nombre} ${tramite.para.persona.apellido} (${tramite.para.persona.departamento?.codigo})
+                                    </g:if>
+                                    <g:elseif test="${tramite.para.departamento}">
+                                        ${tramite.para.departamento.descripcion}
+                                    </g:elseif>
+                                </g:if>
+                            </g:else>
                         </td>
 
 
-                        <td style="width: 100px">${tramite?.trmtasnt}</td>
+                        <td style="width: 100px">
+                            ${tramite.asunto}
+                        </td>
 
-                        <td style="width: 60px">${tramite?.tppddscr}</td>
+                        <td style="width: 60px">
+                            ${tramite.prioridad.descripcion}
+                        </td>
 
-                        <td style="width: 90px">${tramite?.en_prsn}</td>
+                        <td style="width: 90px">
+                            <g:if test="${envia}">
+                                ${envia.persona.nombre} ${envia.persona.apellido}
+                            </g:if>
+                        </td>
+                        <td style="width: 110px">
+                            <g:if test="${tramite.fechaEnvio}">
+                                ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')}
+                            </g:if>
+                        </td>
 
-                        <g:if test="${tramite?.fc_envi}">
-                            <td style="width: 110px">${tramite?.fc_envi?.format('dd-MM-yyyy HH:mm')}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 110px"></td>
-                        </g:else>
-                        <g:if test="${tramite?.fc_recp}">
-                            <td style="width: 110px">${tramite?.fc_recp?.format('dd-MM-yyyy HH:mm')}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 110px"></td>
-                        </g:else>
+                        <td style="width: 110px">
+                            <g:if test="${recibe && recibe.fechaRecepcion && tramite.estadoTramite == estadoRecibido}">
+                                ${recibe.fechaRecepcion.format('dd-MM-yyyy HH:mm')}
+                            </g:if>
+                        </td>
                     </tr>
                 </g:each>
 

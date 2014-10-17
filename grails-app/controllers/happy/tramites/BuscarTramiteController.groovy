@@ -115,8 +115,10 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         return puede
     }
 
-
     def busquedaTramite() {
+    }
+
+    def busquedaTramite_old() {
     }
 
     def ampliarPlazo_ajax() {
@@ -200,6 +202,70 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     }
 
     def tablaBusquedaTramite() {
+
+        def persona = session.usuario.id
+
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        }
+
+        if (params.fechaRecepcion) {
+            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
+            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
+        }
+
+        def res
+
+        def estadoArchivado = EstadoTramite.findByCodigo('E005')
+        def estadoAnulado = EstadoTramite.findByCodigo('E006')
+
+//        println "#####################################################"
+//        println params
+//        println params.fecha
+//        println params.fechaRecepcion
+//        println session.usuario.puedeAdmin
+//        println "#####################################################"
+
+        res = PersonaDocumentoTramite.withCriteria {
+            if (!session.usuario.puedeAdmin) {
+                isNotNull("fechaEnvio")
+                and {
+                    ne('estado', estadoArchivado)
+                    ne('estado', estadoAnulado)
+                }
+            }
+            if (params.fecha) {
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
+            }
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+                if (params.fechaRecepcion) {
+                    gt('fechaCreacion', params.fechaIniR)
+                    lt('fechaCreacion', params.fechaFinR)
+                }
+                order('codigo')
+            }
+            maxResults(200)
+        }
+//        println res.tramite
+        def tramitesFiltrados = res.tramite.unique()
+        tramitesFiltrados.sort { it.codigo }
+        def msg = ""
+        if (tramitesFiltrados.size() > 20) {
+            tramitesFiltrados = tramitesFiltrados[0..19]
+            msg = "<div class='alert alert-danger'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 20 resultados. Por favor utilice los filtros.</div>"
+        }
+        return [tramites: tramitesFiltrados, persona: persona, msg: msg]
+    }
+
+    def tablaBusquedaTramite_old() {
 
 //        def tramite1 = Tramite.get(50)
 //        println("params tablaBusquedaTramite:" + params)

@@ -161,14 +161,11 @@
 
                 $.ajax({
                     type    : "POST",
-                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
+                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite_old')}",
                     data    : datos,
                     success : function (msg) {
 //                clearInterval(interval)
                         $("#bandeja").html(msg);
-                    },
-                    error   : function (msg) {
-                        $("#bandeja").html("Ha ocurrido un error");
                     }
                 });
 
@@ -184,13 +181,10 @@
 
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite')}",
+                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaTramite_old')}",
                         data      : datos,
                         success   : function (msg) {
                             $("#bandeja").html(msg);
-                        },
-                        error     : function (msg) {
-                            $("#bandeja").html("Ha ocurrido un error");
                         }
                     });
                 }
@@ -210,7 +204,7 @@
 
                 var id = $tr.data("id");
                 var codigo = $tr.attr("codigo");
-                var anulados = $tr.attr("anulados");
+                var estado = $tr.attr("estado");
                 var padre = $tr.attr("padre");
                 var de = $tr.attr("de");
                 var archivo = $tr.attr("departamento") + "/" + $tr.attr("anio") + "/" + $tr.attr("codigo");
@@ -219,69 +213,16 @@
 
                 var dptoId = $tr.data("de");
 
-                var remitenteParts = $tr.attr("de").split("_");
-                var remitenteTipo = remitenteParts[0];
-                var remitenteId = remitenteParts[1];
-
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
-                var externo = $tr.hasClass("externo");
                 var conAnexo = $tr.hasClass("conAnexo");
                 var conPadre = $tr.hasClass("padre");
                 var esPrincipal = $tr.hasClass("principal");
                 var anulado = $tr.hasClass("estado");
 
                 var esMio = $tr.hasClass("mio");
-
-                var depId = $tr.attr("dep");
-
-                var infoRemitente = {
-                    label           : 'Información remitente',
-                    icon            : "fa fa-search",
-                    separator_afetr : true,
-                    action          : function (e) {
-                        var url = "", title = "";
-                        switch (remitenteTipo) {
-                            case "D":
-                                url = "${createLink(controller: 'departamento', action: 'show_ajax')}";
-                                title = "Información del departamento";
-                                break;
-                            case "P":
-                                url = "${createLink(controller: 'persona', action: 'show_ajax')}";
-                                title = "Información de la persona";
-                                break;
-                            case "E":
-                                title = "Información de entidad externa";
-                                url = "${createLink(controller:'tramite3', action:'infoRemitente')}";
-                                break;
-                        }
-                        $.ajax({
-                            type    : 'POST',
-                            url     : url,
-                            data    : {
-                                id      : remitenteId,
-                                tramite : id
-                            },
-                            success : function (msg) {
-                                bootbox.dialog({
-                                    title   : title,
-                                    message : msg,
-                                    buttons : {
-                                        aceptar : {
-                                            label     : "Aceptar",
-                                            className : "btn-primary",
-                                            callback  : function () {
-
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                };
 
                 var arbol = {
                     label  : 'Cadena del trámite',
@@ -495,8 +436,6 @@
                     }
                 };
 
-                items.infoRemitente = infoRemitente;
-
                 <g:if test="${session.usuario.getPuedeCopiar()}">
                 if (esMio) {
                     items.copia = copia;
@@ -522,8 +461,8 @@
                 %{----}%
                 %{--items.plazo = ampliarPlazo;--}%
                 %{--</g:if>--}%
-                console.log(!externo && recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId));
-                if (recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId)) {
+
+                if (!estado && ${session.usuario.getPuedePlazo()}) {
                     items.plazo = ampliarPlazo;
                 }
 
