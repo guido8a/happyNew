@@ -4,6 +4,7 @@ import com.lowagie.text.Document
 import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
+import com.lowagie.text.Phrase
 import com.lowagie.text.pdf.PdfWriter
 import happy.tramites.Departamento
 import happy.tramites.PersonaDocumentoTramite
@@ -28,10 +29,10 @@ class ReporteGestionController extends happy.seguridad.Shield {
     def prmsHeaderHoja6 = [colspan: 6]
     def prmsHeaderHoja9 = [colspan: 9]
 
-    def reporteGestion4() {
+    def reporteGestion5() {
 
         def departamento = Departamento.get(params.id)
-        def departamentos = reportesPdfService.todosDep(departamento)
+        def departamentos = [departamento]
 
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
@@ -43,13 +44,10 @@ class ReporteGestionController extends happy.seguridad.Shield {
         def pdfw = PdfWriter.getInstance(document, baos);
         def titulo = "Reporte de gestión de trámites del dpto. ${departamento.descripcion} del ${params.desde} al ${params.hasta}"
 
-        session.tituloReporte =  titulo
+        session.tituloReporte = titulo
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "gestion")
-
-
-//        reportesPdfService.crearEncabezado(document, titulo)
 
         //los tramites dirigidos al dpto (para y copia)
         if (departamento) {
@@ -103,21 +101,23 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.codigo, font), prmsHeaderHoja2)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.asunto, font), prmsHeaderHoja5)
+                rowHeaderTramite(tablaTramite, false)
 
                 pdts.each { prtr ->
 //                    if (principal.id != prtr.tramite.id) {
 //                    if (prtr.departamentoId == departamento.id) {
                     if ((departamentos.id).contains(prtr.departamentoId)) {
-                        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("", fontBold), prmsHeaderHoja9)
-                        rowHeaderTramite(tablaTramite, false)
+//                        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("", fontBold), prmsHeaderHoja9)
                         rowTramite(prtr, tablaTramite)
                     }
                     llenaTablaTramite(prtr, tablaTramite, departamentos)
                 }
+                tablaTramite.setKeepTogether(true)
                 document.add(tablaTramite)
 //                }
             }
         }
+        document.add(new Phrase("  "))
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
@@ -125,7 +125,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
-
     }
 
     def llenaTablaTramite(PersonaDocumentoTramite prtr, tablaTramite, departamentos) {
@@ -150,7 +149,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 //                            pdt.tramite.departamentoId == departamento.id) {
                     if ((departamentos.id).contains(pdt.departamentoId) || (departamentos.id).contains(pdt.persona?.departamentoId) ||
                             (departamentos.id).contains(pdt.tramite.departamentoId)) {
-                        rowHeaderTramite(tablaTramite, esInterno)
+//                        rowHeaderTramite(tablaTramite, esInterno)
                         rowTramite(pdt, tablaTramite)
                     }
                     llenaTablaTramite(pdt, tablaTramite, departamentos)

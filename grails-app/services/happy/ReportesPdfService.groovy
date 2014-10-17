@@ -328,6 +328,8 @@ class ReportesPdfService {
         header.setBorder(Rectangle.NO_BORDER);
         document.setHeader(header);
 
+//        println "AQUI::::::::::::::::::::::::::"
+
         Phrase phrasePiePagina = new Phrase();
         phrasePiePagina.add(chunkPieDireccion)
         phrasePiePagina.add(chunkPieWeb)
