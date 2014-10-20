@@ -46,7 +46,12 @@
             //alert("armado: " + data);
             $.ajax({
                 type: "POST", url: "../grabar",
-                data: "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
+//                data: "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),
+                data: {
+                    ids: data,
+                    tpac:$(".tipo.active").find("input").val(),
+                    prfl:$("#perfil").val()
+                },
                 success: function(msg) {
                     $("#ajx").html(msg)
                 }
@@ -60,7 +65,7 @@
                 function() {
                     datos.push($(this).val());
                 })
-        datos += "&menu=" + $('#mdlo__id').val() + "&grabar=S"
+//        datos += "&menu=" + $('#mdlo__id').val() + "&grabar=S"
         return datos
     }
     ;

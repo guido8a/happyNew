@@ -251,6 +251,7 @@ class PrflController extends happy.seguridad.Shield {
         def ids = params.ids
         def modulo = params.menu
         def prfl = params.prfl
+        def tpac = params.tpac
         def tx1 = ""
         def exst = []
         def actl = []
@@ -263,9 +264,9 @@ class PrflController extends happy.seguridad.Shield {
                 "mdlo__id = ${modulo} and " +
                 "prms.accn__id not in (select accn__id " +
                 "from accn where mdlo__id = " + modulo + " and  " +
-                "accn__id in (${ids})) and prfl__id = ${prfl}"
+                "accn__id in (${ids})) and prfl__id = ${prfl} and tpac__id = ${tpac}"
 //
-//      println "grabar SQL: ${tx}"
+//        println "grabar SQL: ${tx}"
         cn.eachRow(tx) { d ->
             Prms.get(d.prms__id).delete()
         }
@@ -274,8 +275,9 @@ class PrflController extends happy.seguridad.Shield {
         tx = "select prms.accn__id from prms, accn where accn.accn__id = prms.accn__id and " +
                 "mdlo__id = ${modulo} and " +
                 "prms.accn__id in (select accn__id " +
-                "from accn where mdlo__id = " + modulo + " and accn__id in (${ids})) and prfl__id = ${prfl}"
-        //println "grabar IN SQL: ${tx}"
+                "from accn where mdlo__id = " + modulo + " and accn__id in (${ids})) and prfl__id = ${prfl} and " +
+                "tpac__id = ${tpac}"
+//        println "grabar IN SQL: ${tx}"
         exst = []
         cn.eachRow(tx) { d ->
             exst.add(d.accn__id)
@@ -287,7 +289,7 @@ class PrflController extends happy.seguridad.Shield {
         cn.eachRow(tx) { d ->
             actl.add(d.accn__id)
         }
-        //println "insercion  Actual: ${actl} \n Exst: ${exst}}"
+//        println "insercion  Actual: ${actl} \n Exst: ${exst}}"
         (actl - exst).each {
             tx1 = "insert into prms(prfl__id, accn__id) values (${prfl.toInteger()}, ${it})"
             try {
