@@ -213,7 +213,7 @@
         </div>
 
         <div class="col-md-5">
-            ${personaInstance.jefe == 1 ? "SI" : "NO"}
+            ${personaInstance.puedeJefe == 1 ? "SI" : "NO"}
         </div>
 
     </div>

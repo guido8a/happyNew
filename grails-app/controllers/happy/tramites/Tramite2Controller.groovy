@@ -58,7 +58,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (tramite.de.departamento.id != user.departamento.id) {
                 band = false
             }
-            if (user.jefe != 1 && !per)
+            if (user.puedeJefe != 1 && !per)
                 band = false
             if (band) {
                 if (tramite.estadoTramite.codigo == "E001") {
@@ -145,8 +145,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 isNull("fechaFin")
             }
         }
-        println "tiene " + tienePermiso + " jefe " + persona.jefe
-        if (tienePermiso.size() == 0 && persona.jefe != 1) {
+        println "tiene " + tienePermiso + " jefe " + persona.puedeJefe
+        if (tienePermiso.size() == 0 && persona.puedeJefe != 1) {
             flash.message = "El usuario no tiene los permisos necesarios para acceder a la bandeja de salida del departamento. Ha sido redireccionado a su bandeja de salida personal."
             flash.tipo = "error"
 
