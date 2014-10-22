@@ -41,7 +41,7 @@ class AccionesController extends happy.seguridad.Shield {
         def tx = ""
         tx = poneSQL(tipo, mdlo)
         //println "ajaxPermisos mdlo: ${mdlo}"
-        println tx
+//        println tx
         if (tipo == '1') {
             titulos[0] = ['Permisos'] + ['Acción'] + ['Menú'] + ['Controlador']
         } else {
