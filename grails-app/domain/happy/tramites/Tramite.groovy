@@ -438,5 +438,4 @@ class Tramite {
     def departamentoPuedeLeer(Departamento departamento) {
         return this.tipoTramite.codigo == 'N'
     }
-
 }

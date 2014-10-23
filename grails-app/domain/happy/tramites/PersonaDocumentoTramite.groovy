@@ -75,16 +75,16 @@ class PersonaDocumentoTramite {
 
     def beforeValidate(List propertiesBeingValidated) {
         // do pre validation work based on propertiesBeingValidated
-       // println "before validate"
-        if(this.departamento==null && this.persona==null){
-            println "dos nulos "+this.id
-            this.departamento=this.getPersistentValue("departamento")
-            this.persona=this.getPersistentValue("persona")
-          //  println "como quedo ? "
-            println "-->fin "+this.persona+"  "+this.departamento
-            if(this.departamento==null && this.persona==null){
-                this.tramite=null;
-                this.rolPersonaTramite=null
+        // println "before validate"
+        if (this.departamento == null && this.persona == null) {
+            println "dos nulos " + this.id
+            this.departamento = this.getPersistentValue("departamento")
+            this.persona = this.getPersistentValue("persona")
+            //  println "como quedo ? "
+            println "-->fin " + this.persona + "  " + this.departamento
+            if (this.departamento == null && this.persona == null) {
+                this.tramite = null;
+                this.rolPersonaTramite = null
                 return false
             }
 
@@ -130,12 +130,12 @@ class PersonaDocumentoTramite {
                 tiempoBloqueo = par.bloqueo
             }
 //            println "tiempo Bloqueo " + tiempoBloqueo
-            def fechaLimite =[]
+            def fechaLimite = []
 //            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
-            if(limite){
+            if (limite) {
                 fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
 //                println("limite "+ fechaLimite)
-            }else{
+            } else {
 
                 fechaLimite[0] = false
             }
@@ -153,5 +153,19 @@ class PersonaDocumentoTramite {
 
     def getFechaCreacion() {
         return this.tramite.fechaCreacion
+    }
+
+    def getRespuestasVivas() {
+        def respuestasVivas = []
+        Tramite.findAllByAQuienContesta(this).each { tr ->
+            def para = tr.para
+            def copias = tr.allCopias
+            (copias + para).each { p ->
+                if (p.estado.codigo != 'E006') {
+                    respuestasVivas += p
+                }
+            }
+        }
+        return respuestasVivas
     }
 }

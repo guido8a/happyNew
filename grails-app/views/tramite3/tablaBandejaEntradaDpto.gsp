@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.DocumentoTramite; happy.tramites.Tramite" %>
+<%@ page import="happy.tramites.EstadoTramite; happy.tramites.DocumentoTramite; happy.tramites.Tramite" %>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
@@ -19,8 +19,10 @@
             </tr>
         </thead>
         <tbody>
+            <g:set var="now" value="${new Date()}"/>
+            <g:set var="estadoAnulado" value="${EstadoTramite.findByCodigo('E006')}"/>
+
             <g:each in="${tramites}" var="tramite">
-                <g:set var="now" value="${new java.util.Date()}"/>
 
                 <g:set var="type" value=""/>
                 <g:set var="clase" value=""/>
@@ -42,12 +44,10 @@
             %{--</g:if>--}%
             %{--</g:else>--}%
 
-
-
                 <g:if test="${tramite.fechaRecepcion}">
                     <g:if test="${tramite.fechaLimiteRespuesta < now}">
                         <g:set var="clase" value="retrasado"/>
-                        <g:if test="${Tramite.countByAQuienContesta(tramite) > 0}">
+                        <g:if test="${tramite.respuestasVivas.size() > 0}">
                             <g:set var="clase" value="recibido"/>
                         </g:if>
                     </g:if>
@@ -85,8 +85,15 @@
                         (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
                     class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno) ? 'estadoExterno' : ''}">
 
-                    <g:if test="${tramite?.tramite?.anexo == 1}">
-                        <td title="${tramite.tramite.asunto}">
+                    <td title="${tramite.tramite.asunto}">
+                    %{--fecha rec: ${tramite.fechaRecepcion}<br/>--}%
+                    %{--fecha lim resp: ${tramite.fechaLimiteRespuesta}<br/>--}%
+                    %{--now: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
+                    %{--boolean: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
+                    %{--a quien contesta: ${tramite.respuestasVivas}<br/>--}%
+                    %{--a quien contesta: ${tramite.respuestasVivas.size()}<br/>--}%
+                    %{--boolean: ${Tramite.countByAQuienContesta(tramite) > 0}<br/>--}%
+                        <g:if test="${tramite?.tramite?.anexo == 1}">
                             <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
                                 <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
                             </g:if>
@@ -94,11 +101,11 @@
                             <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
                                 <i class="fa fa-paperclip" style="margin-left: 10px"></i>
                             </g:if>
-                        </td>
-                    </g:if>
-                    <g:else>
-                        <td title="${tramite.tramite.asunto}">${tramite?.tramite?.codigo}</td>
-                    </g:else>
+                        </g:if>
+                        <g:else>
+                            ${tramite?.tramite?.codigo}
+                        </g:else>
+                    </td>
 
                     <td title="${tramite.fechaRecepcion ? '' : "El sistema se bloqueará el: " + tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm') + " si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                     <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
