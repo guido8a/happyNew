@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <title>Reporte de bandejas bloqueadas</title>
+    <title>Reporte de Usuarios Bloqueados</title>
     <style type="text/css">
     .titulo {
         font-weight : bold;
@@ -45,7 +45,7 @@
 </head>
 
 <body>
-<div style="margin-left:230px;"><h2 class="titl">S.A.D. Web - Trámites Retrasados y Sin Recepción</h2>
+<div style="margin-left:230px;"><h2 class="titl">S.A.D. Web - Usuarios Bloqueados</h2>
 </div>
 
 <div class="btn-toolbar toolbar" style="margin-top: 20px; ">

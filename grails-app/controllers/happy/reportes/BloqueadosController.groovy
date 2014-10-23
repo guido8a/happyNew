@@ -68,6 +68,7 @@ class BloqueadosController {
         }
         tabla+="<tr><td style='font-weight:bold'>TOTAL</td><td style='text-align: right;font-weight:bold'>${total}</td></tr>"
         tabla+="</tbody></table>"
+        println "-----" + tabla
         return [tabla:tabla]
     }
 
@@ -100,7 +101,7 @@ class BloqueadosController {
         Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
-        session.tituloReporte="Reporte de usuarios bloqueados"
+        session.tituloReporte="Reporte de Usuarios Bloqueados"
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteUsuariosBloqueados")
