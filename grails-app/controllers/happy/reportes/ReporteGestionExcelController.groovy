@@ -1,5 +1,6 @@
 package happy.reportes
 
+import happy.seguridad.Shield
 import happy.tramites.Departamento
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
@@ -10,7 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
-class ReporteGestionExcelController {
+class ReporteGestionExcelController extends Shield {
 
     def diasLaborablesService
 

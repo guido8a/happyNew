@@ -61,20 +61,32 @@ class Shield {
                             redirect(controller: 'shield', action: 'bloqueo', params: ["dep": true])
                             return false
                         }
+                    }else{
+                        if(!isAllowed()){
+                            redirect(controller: 'shield', action: 'unauthorized')
+                            return false
+                        }
+
                     }
                 } else {
                     if (session.usuario.estado == "B") {
                         if (isAllowedBloqueo()) {
                             return true
                         } else {
-                            redirect(controller: 'shield', action: 'bloqueo')
+//                            redirect(controller: 'shield', action: 'bloqueo')
+                            redirect(controller: 'shield', action: 'unauthorized')
+                            return false
+                        }
+                    }else{
+                        if(!isAllowed()){
+                            redirect(controller: 'shield', action: 'unauthorized')
                             return false
                         }
                     }
                 }
 
 
-                return true
+//                return true
             } else {
 //                println "session.flag shield "+session.flag
                 if (!session.flag || session.flag < 1) {
@@ -102,8 +114,6 @@ class Shield {
 
 
     boolean isAllowed() {
-
-
             try {
                 if (request.method == "POST") {
 //                println "es post no audit"

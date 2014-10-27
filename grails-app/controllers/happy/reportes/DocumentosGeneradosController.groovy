@@ -1,5 +1,6 @@
 package happy.reportes
 
+import happy.seguridad.Shield
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator
 import org.jfree.chart.plot.PiePlot
 import org.jfree.data.general.DefaultPieDataset
@@ -43,7 +44,7 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.io.*;
 
-class DocumentosGeneradosController {
+class DocumentosGeneradosController extends Shield{
 
     def reportesPdfService
 

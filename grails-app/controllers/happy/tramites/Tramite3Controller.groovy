@@ -1090,109 +1090,109 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     }
 
-    def arbolTramite_old() {
-//        if (!params.id) {
-//            params.id = 61
+//    def arbolTramite_old() {
+////        if (!params.id) {
+////            params.id = 61
+////        }
+//
+//        def tramite = Tramite.get(params.id.toLong())
+//        def principal = tramite
+//        if (tramite.padre) {
+//            principal = tramite.padre
+//            while (true) {
+//                if (!principal.padre)
+//                    break
+//                else {
+//                    principal = principal.padre
+//                }
+//            }
 //        }
-
-        def tramite = Tramite.get(params.id.toLong())
-        def principal = tramite
-        if (tramite.padre) {
-            principal = tramite.padre
-            while (true) {
-                if (!principal.padre)
-                    break
-                else {
-                    principal = principal.padre
-                }
-            }
-        }
-        def html = "<ul>" + "\n"
-        html += makeTree(principal, tramite)
-        html += "</ul>" + "\n"
-
-        def url = ""
-        switch (params.b) {
-            case "bep":
-                url = createLink(controller: "tramite", action: "bandejaEntrada")
-                break;
-            case "bed":
-                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
-                break;
-            case "bsp":
-                url = createLink(controller: "tramite2", action: "bandejaSalida")
-                break;
-            case "bsd":
-                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
-                break;
-            case "bqt":
-                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-                break;
-            case "bqe":
-                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
-                break;
-
-        }
-
-        return [html: html, url: url]
-    }
+//        def html = "<ul>" + "\n"
+//        html += makeTree(principal, tramite)
+//        html += "</ul>" + "\n"
+//
+//        def url = ""
+//        switch (params.b) {
+//            case "bep":
+//                url = createLink(controller: "tramite", action: "bandejaEntrada")
+//                break;
+//            case "bed":
+//                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+//                break;
+//            case "bsp":
+//                url = createLink(controller: "tramite2", action: "bandejaSalida")
+//                break;
+//            case "bsd":
+//                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+//                break;
+//            case "bqt":
+//                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+//                break;
+//            case "bqe":
+//                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
+//                break;
+//
+//        }
+//
+//        return [html: html, url: url]
+//    }
 
     //Antes de que se cambie la estructura de tramites relacionados
-    def arbolTramite_old2() {
-        def tramite = Tramite.get(params.id.toLong())
-        def principal = tramite
-        if (tramite.padre) {
-            principal = tramite.padre
-            while (true) {
-                if (!principal.padre)
-                    break
-                else {
-                    principal = principal.padre
-                }
-            }
-        }
-        def html2 = "<ul>" + "\n"
-        html2 += makeTreeExtended(principal)
-        html2 += "</ul>" + "\n"
-
-//        def funcion = {objeto->
-////            println "ejecutando funcion de "+objeto+"  "+objeto.id
-//            def anulado = EstadoTramite.findByCodigo("E006")
-//            if(objeto instanceof happy.tramites.Tramite){
-//                objeto.estadoTramite=anulado
-//            }else{
-//                objeto.estado=anulado
-//                objeto.fechaAnulacion=new Date()
+//    def arbolTramite_old2() {
+//        def tramite = Tramite.get(params.id.toLong())
+//        def principal = tramite
+//        if (tramite.padre) {
+//            principal = tramite.padre
+//            while (true) {
+//                if (!principal.padre)
+//                    break
+//                else {
+//                    principal = principal.padre
+//                }
 //            }
-//            objeto.save(flush: true)
 //        }
-//        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297),funcion)
-
-        def url = ""
-        switch (params.b) {
-            case "bep":
-                url = createLink(controller: "tramite", action: "bandejaEntrada")
-                break;
-            case "bed":
-                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
-                break;
-            case "bsp":
-                url = createLink(controller: "tramite2", action: "bandejaSalida")
-                break;
-            case "bsd":
-                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
-                break;
-            case "bqt":
-                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-                break;
-            case "bqe":
-                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
-                break;
-
-        }
-
-        return [html2: html2, url: url]
-    }
+//        def html2 = "<ul>" + "\n"
+//        html2 += makeTreeExtended(principal)
+//        html2 += "</ul>" + "\n"
+//
+////        def funcion = {objeto->
+//////            println "ejecutando funcion de "+objeto+"  "+objeto.id
+////            def anulado = EstadoTramite.findByCodigo("E006")
+////            if(objeto instanceof happy.tramites.Tramite){
+////                objeto.estadoTramite=anulado
+////            }else{
+////                objeto.estado=anulado
+////                objeto.fechaAnulacion=new Date()
+////            }
+////            objeto.save(flush: true)
+////        }
+////        println "get des "+getCadenaDown(PersonaDocumentoTramite.get(297),funcion)
+//
+//        def url = ""
+//        switch (params.b) {
+//            case "bep":
+//                url = createLink(controller: "tramite", action: "bandejaEntrada")
+//                break;
+//            case "bed":
+//                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+//                break;
+//            case "bsp":
+//                url = createLink(controller: "tramite2", action: "bandejaSalida")
+//                break;
+//            case "bsd":
+//                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+//                break;
+//            case "bqt":
+//                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+//                break;
+//            case "bqe":
+//                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
+//                break;
+//
+//        }
+//
+//        return [html2: html2, url: url]
+//    }
 
     def arbolTramite() {
         def tramite = Tramite.get(params.id.toLong())

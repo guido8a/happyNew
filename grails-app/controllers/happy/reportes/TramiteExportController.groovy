@@ -12,6 +12,7 @@ import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
+import happy.seguridad.Shield
 
 import java.awt.Color
 import java.io.*;
@@ -34,7 +35,7 @@ import happy.tramites.Tramite
 //import javax.xml.parsers.DocumentBuilderFactory
 //import org.xhtmlrenderer.pdf.ITextRenderer;
 
-class TramiteExportController {
+class TramiteExportController extends Shield{
 
     def reportesPdfService
     def enviarService

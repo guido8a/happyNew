@@ -6,7 +6,7 @@ import com.lowagie.text.pdf.PdfContentByte
 import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfTemplate
-
+import happy.seguridad.Shield
 import happy.tramites.EstadoTramite
 
 import com.lowagie.text.Document
@@ -31,7 +31,7 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 
-class RetrasadosController {
+class RetrasadosController  extends Shield{
     def reportesPdfService
     def maxLvl = null
     def maxLvl2 = null

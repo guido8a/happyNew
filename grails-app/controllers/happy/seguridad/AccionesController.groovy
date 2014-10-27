@@ -78,6 +78,8 @@ class AccionesController extends happy.seguridad.Shield {
         render("la accion '${dscr}' ha sido modificada")
     }
 
+
+
     def moverAccn = {
 //       println "moverAccn---------parametros: ${params}"
         def mdlo = params.mdlo

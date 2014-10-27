@@ -118,8 +118,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     def busquedaTramite() {
     }
 
-    def busquedaTramite_old() {
-    }
+//    def busquedaTramite_old() {
+//    }
 
     def ampliarPlazo_ajax() {
         def error = ""
@@ -265,147 +265,147 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         return [tramites: tramitesFiltrados, persona: persona, msg: msg]
     }
 
-    def tablaBusquedaTramite_old() {
-
-//        def tramite1 = Tramite.get(50)
-//        println("params tablaBusquedaTramite:" + params)
-
-        def persona = session.usuario.id
-
-        if (params.fecha) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
-        }
-
-        if (params.fechaRecepcion) {
-            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
-            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
-        }
-
-        def res
-
-//        if (Persona.get(session.usuario.id).esTriangulo()) {
+//    def tablaBusquedaTramite_old() {
 //
-//            res = PersonaDocumentoTramite.withCriteria {
-////                eq("departamento", Persona.get(session.usuario.id).departamento)
-//                ne('estado', EstadoTramite.findByCodigo("E006"))
-//                if (params.fecha) {
-//                    gt('fechaEnvio', params.fechaIni)
-//                    lt('fechaEnvio', params.fechaFin)
-//                }
-//                tramite {
-//                    if (params.asunto) {
-//                        ilike('asunto', '%' + params.asunto + '%')
-//                    }
-//                    if (params.memorando) {
-//                        ilike('codigo', '%' + params.memorando + '%')
-//                    }
-//                    if (params.fechaRecepcion) {
-//                        gt('fechaCreacion', params.fechaIniR)
-//                        lt('fechaCreacion', params.fechaFinR)
-//                    }
-//                    order('codigo')
-//                }
-//                maxResults(20);
-//            }
+////        def tramite1 = Tramite.get(50)
+////        println("params tablaBusquedaTramite:" + params)
 //
-//        } else {
-//            res = PersonaDocumentoTramite.withCriteria {
-////                eq("persona", Persona.get(session.usuario.id))
-//                ne('estado', EstadoTramite.findByCodigo("E006"))
-//                if (params.fecha) {
-//                    gt('fechaEnvio', params.fechaIni)
-//                    lt('fechaEnvio', params.fechaFin)
-//                }
-//                tramite {
-//                    if (params.asunto) {
-//                        ilike('asunto', '%' + params.asunto + '%')
-//                    }
-//                    if (params.memorando) {
-//                        ilike('codigo', '%' + params.memorando + '%')
-//                    }
-//                    if (params.fechaRecepcion) {
-//                        gt('fechaCreacion', params.fechaIniR)
-//                        lt('fechaCreacion', params.fechaFinR)
-//                    }
-//                    order('codigo')
-//                }
-//                maxResults(20);
-//            }
+//        def persona = session.usuario.id
+//
+//        if (params.fecha) {
+//            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+//            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
 //        }
-
-//        println "session.usuario.puedeAdmin: " + session.usuario.puedeAdmin
-
-        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def estadoAnulado = EstadoTramite.findByCodigo('E006')
-
-        res = PersonaDocumentoTramite.withCriteria {
-            if (!session.usuario.puedeAdmin) {
-                isNotNull("fechaEnvio")
-                and {
-                    ne('estado', estadoArchivado)
-                    ne('estado', estadoAnulado)
-                }
-            }/* else {
-                or {
-                    ne('estado', estadoAnulado)
-                    ne('estado', estadoArchivado)
-                }
-            }*/
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
-            }
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
-                }
-                if (params.fechaRecepcion) {
-                    gt('fechaCreacion', params.fechaIniR)
-                    lt('fechaCreacion', params.fechaFinR)
-                }
-                order('codigo')
-            }
-            maxResults(20);
-        }
-
-//println("res" + res)
-
-        def filtro = []
-        def unicos = []
-        def tramitesFiltrados = []
-
-        res.each {
-//            println("-->" + it?.estado?.codigo)
-//            if(!session.usuario.puedeAdmin){
-//                if(it?.estado?.codigo == 'E005' || it?.estado?.codigo == 'E006'){
 //
+//        if (params.fechaRecepcion) {
+//            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
+//            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
+//        }
+//
+//        def res
+//
+////        if (Persona.get(session.usuario.id).esTriangulo()) {
+////
+////            res = PersonaDocumentoTramite.withCriteria {
+//////                eq("departamento", Persona.get(session.usuario.id).departamento)
+////                ne('estado', EstadoTramite.findByCodigo("E006"))
+////                if (params.fecha) {
+////                    gt('fechaEnvio', params.fechaIni)
+////                    lt('fechaEnvio', params.fechaFin)
+////                }
+////                tramite {
+////                    if (params.asunto) {
+////                        ilike('asunto', '%' + params.asunto + '%')
+////                    }
+////                    if (params.memorando) {
+////                        ilike('codigo', '%' + params.memorando + '%')
+////                    }
+////                    if (params.fechaRecepcion) {
+////                        gt('fechaCreacion', params.fechaIniR)
+////                        lt('fechaCreacion', params.fechaFinR)
+////                    }
+////                    order('codigo')
+////                }
+////                maxResults(20);
+////            }
+////
+////        } else {
+////            res = PersonaDocumentoTramite.withCriteria {
+//////                eq("persona", Persona.get(session.usuario.id))
+////                ne('estado', EstadoTramite.findByCodigo("E006"))
+////                if (params.fecha) {
+////                    gt('fechaEnvio', params.fechaIni)
+////                    lt('fechaEnvio', params.fechaFin)
+////                }
+////                tramite {
+////                    if (params.asunto) {
+////                        ilike('asunto', '%' + params.asunto + '%')
+////                    }
+////                    if (params.memorando) {
+////                        ilike('codigo', '%' + params.memorando + '%')
+////                    }
+////                    if (params.fechaRecepcion) {
+////                        gt('fechaCreacion', params.fechaIniR)
+////                        lt('fechaCreacion', params.fechaFinR)
+////                    }
+////                    order('codigo')
+////                }
+////                maxResults(20);
+////            }
+////        }
+//
+////        println "session.usuario.puedeAdmin: " + session.usuario.puedeAdmin
+//
+//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
+//        def estadoAnulado = EstadoTramite.findByCodigo('E006')
+//
+//        res = PersonaDocumentoTramite.withCriteria {
+//            if (!session.usuario.puedeAdmin) {
+//                isNotNull("fechaEnvio")
+//                and {
+//                    ne('estado', estadoArchivado)
+//                    ne('estado', estadoAnulado)
 //                }
-//            else{
-            filtro += it.tramite
+//            }/* else {
+//                or {
+//                    ne('estado', estadoAnulado)
+//                    ne('estado', estadoArchivado)
+//                }
+//            }*/
+//            if (params.fecha) {
+//                gt('fechaEnvio', params.fechaIni)
+//                lt('fechaEnvio', params.fechaFin)
 //            }
+//            tramite {
+//                if (params.asunto) {
+//                    ilike('asunto', '%' + params.asunto + '%')
+//                }
+//                if (params.memorando) {
+//                    ilike('codigo', '%' + params.memorando + '%')
+//                }
+//                if (params.fechaRecepcion) {
+//                    gt('fechaCreacion', params.fechaIniR)
+//                    lt('fechaCreacion', params.fechaFinR)
+//                }
+//                order('codigo')
 //            }
-
-        }
-
-        filtro.unique().each {
-//            unicos += it
-            tramitesFiltrados += resTramites(it);
-        }
-
-//        println("ids" + res)
-//        println("filtro:" + filtro)
-//        println("filtrados:" + tramitesFiltrados)
-
-        tramitesFiltrados.sort { it.trmtcdgo }
-        //println " tramites "+tramitesFiltrados
-//        return [tramites: res, resTramites: filtro]
-        return [tramites: tramitesFiltrados, persona: persona]
-
-    }
+//            maxResults(20);
+//        }
+//
+////println("res" + res)
+//
+//        def filtro = []
+//        def unicos = []
+//        def tramitesFiltrados = []
+//
+//        res.each {
+////            println("-->" + it?.estado?.codigo)
+////            if(!session.usuario.puedeAdmin){
+////                if(it?.estado?.codigo == 'E005' || it?.estado?.codigo == 'E006'){
+////
+////                }
+////            else{
+//            filtro += it.tramite
+////            }
+////            }
+//
+//        }
+//
+//        filtro.unique().each {
+////            unicos += it
+//            tramitesFiltrados += resTramites(it);
+//        }
+//
+////        println("ids" + res)
+////        println("filtro:" + filtro)
+////        println("filtrados:" + tramitesFiltrados)
+//
+//        tramitesFiltrados.sort { it.trmtcdgo }
+//        //println " tramites "+tramitesFiltrados
+////        return [tramites: res, resTramites: filtro]
+//        return [tramites: tramitesFiltrados, persona: persona]
+//
+//    }
 
     def resTramites(Tramite tramite) {
 

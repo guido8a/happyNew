@@ -625,34 +625,34 @@ class TramiteAdminController extends Shield {
         }
     }
 
-    def arbolAdminTramite_old() {
-        def html = "", url = "", tramite = null
-        if (params.id) {
-            def usu = Persona.get(session.usuario.id)
-            def puedeAdministrar = session.usuario.puedeAdmin
-//            println "PUEDE??? " + puedeAdministrar
-
-            tramite = Tramite.get(params.id.toLong())
-            if (tramite) {
-                def principal = tramite
-                if (tramite.padre) {
-                    principal = tramite.padre
-                    while (true) {
-                        if (!principal.padre)
-                            break
-                        else {
-                            principal = principal.padre
-                        }
-                    }
-                }
-                html = "<ul>" + "\n"
-                html += makeTreeExtended(principal)
-                html += "</ul>" + "\n"
-            }
-            url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-        }
-        return [html2: html, url: url, tramite: tramite]
-    }
+//    def arbolAdminTramite_old() {
+//        def html = "", url = "", tramite = null
+//        if (params.id) {
+//            def usu = Persona.get(session.usuario.id)
+//            def puedeAdministrar = session.usuario.puedeAdmin
+////            println "PUEDE??? " + puedeAdministrar
+//
+//            tramite = Tramite.get(params.id.toLong())
+//            if (tramite) {
+//                def principal = tramite
+//                if (tramite.padre) {
+//                    principal = tramite.padre
+//                    while (true) {
+//                        if (!principal.padre)
+//                            break
+//                        else {
+//                            principal = principal.padre
+//                        }
+//                    }
+//                }
+//                html = "<ul>" + "\n"
+//                html += makeTreeExtended(principal)
+//                html += "</ul>" + "\n"
+//            }
+//            url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+//        }
+//        return [html2: html, url: url, tramite: tramite]
+//    }
 
     def arbolAdminTramite() {
         def html = "", url = "", tramite = null

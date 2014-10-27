@@ -1,5 +1,7 @@
 package happy.seguridad
 
+import kerberos.Krbs
+
 //import kerberos.Krbs
 
 class AuditoriaController extends Shield{
@@ -43,6 +45,7 @@ class AuditoriaController extends Shield{
             dominio= params.domain.split("\\.")[(params.domain.split("\\.").size()-1)]
         }
 //        println "!! desde "+desde+" hasta "+hasta+" op "+params.operacion+"  dom "+params.domain+" usu "+params.usuario
+//        def c = Krbs.createCriteria()
         def c = Krbs.createCriteria()
         //println "max "+(max+offset)
         def res =c.list (max: max+offset, offset: offset) {

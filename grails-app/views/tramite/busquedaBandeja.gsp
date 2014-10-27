@@ -36,10 +36,11 @@
                 <g:set var="now" value="${new java.util.Date()}"/>
 
                 <g:set var="clase" value=""/>
+
                 <g:if test="${tramite.fechaRecepcion}">
                     <g:if test="${tramite.fechaLimiteRespuesta < now}">
                         <g:set var="clase" value="retrasado"/>
-                        <g:if test="${happy.tramites.Tramite.countByPadre(tramite.tramite) > 0}">
+                        <g:if test="${happy.tramites.Tramite.countByAQuienContesta(tramite) > 0}">
                             <g:set var="clase" value="recibido"/>
                         </g:if>
                     </g:if>
@@ -69,12 +70,16 @@
                <g:each in="${pxtTramites}" var="pxt">
                     <g:if test="${tramite?.id == pxt?.id}">
                         <tr data-id="${tramite?.tramite?.id}"
-                            class="${clase}"
-                            codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}" prtr="${tramite?.id}">
-
-
+                            class="${clase} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}"
+                            de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :
+                                    (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
+                            codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
+                            prtr="${tramite?.id}" anexo="${anexo}" prtr="${tramite?.id}">
                             <g:if test="${tramite?.tramite?.anexo == 1}">
                                 <td title="${tramite?.tramite?.asunto}">
+                                    <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                                        <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                                    </g:if>
                                     ${tramite?.tramite?.codigo}
                                     <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
                                         <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
@@ -83,38 +88,37 @@
                             </g:if>
                             <g:else>
                                 <td title="${tramite?.tramite?.asunto}">
+                                    <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                                        <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                                    </g:if>
                                     ${tramite?.tramite?.codigo}
                                 </td>
                             </g:else>
-
-                            <td>${tramite?.tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+                            <td title="${tramite.fechaRecepcion?'':"El sistema se bloqueará el: "+tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm')+" si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                             <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
                             <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}</td>
-                            <g:if test="${tramite?.persona}">
-                                <td>${tramite?.persona}</td>
+                            <g:if test="${tramite.tramite.tipoDocumento.codigo == 'OFI'}">
+                                <td>${tramite.tramite.paraExterno}</td>
                             </g:if>
                             <g:else>
-                                <td title="${tramite?.departamento?.descripcion}">${tramite?.departamento?.codigo}</td>
+                                <g:if test="${tramite?.persona}">
+                                    <td>${tramite?.persona}</td>
+                                </g:if>
+                                <g:else>
+                                    <td title="${tramite?.departamento?.descripcion}">${tramite?.departamento?.codigo}</td>
+                                </g:else>
                             </g:else>
                             <td>${tramite?.tramite?.prioridad?.descripcion}%{-- - ${tramite.tramite.estadoTramite.descripcion}--}%</td>
                             <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
                             <td>${tramite?.rolPersonaTramite?.descripcion}</td>
-
                         </tr>
-
                     </g:if>
                 </g:each>
-
-
-
             </g:each>
-
             </tbody>
         </table>
-
     </span>
-
 </div>
 
 <script type="text/javascript">

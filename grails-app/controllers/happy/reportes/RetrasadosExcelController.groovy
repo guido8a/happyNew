@@ -1,6 +1,7 @@
 package happy.reportes
 
 import happy.seguridad.Persona
+import happy.seguridad.Shield
 import happy.tramites.Departamento
 import happy.tramites.EstadoTramite
 import happy.tramites.PersonaDocumentoTramite
@@ -16,7 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-class RetrasadosExcelController {
+class RetrasadosExcelController extends Shield{
     def maxLvl = null
     def reportesPdfService
 

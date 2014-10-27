@@ -1,8 +1,9 @@
 package happy.tramites
 
 import happy.seguridad.Persona
+import happy.seguridad.Shield
 
-class BusquedaExternosController {
+class BusquedaExternosController extends Shield {
 
     def index() {}
 

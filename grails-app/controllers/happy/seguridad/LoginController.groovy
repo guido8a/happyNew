@@ -259,7 +259,7 @@ class LoginController {
     def savePer() {
         def sesn = Sesn.get(params.prfl)
         def perf = sesn.perfil
-        cargarPermisos()
+
         if (perf) {
 
             def permisos = Prpf.findAllByPerfil(perf)
@@ -287,6 +287,7 @@ class LoginController {
 //            println "puede getPuedeAnular " + session.usuario.getPuedeAnular()
 //            println "puede getPuedeTramitar " + session.usuario.getPuedeTramitar()
             session.perfil = perf
+            cargarPermisos()
 //            if (session.an && session.cn) {
 //                if (session.an.toString().contains("ajax")) {
 //                    redirect(controller: "inicio", action: "index")

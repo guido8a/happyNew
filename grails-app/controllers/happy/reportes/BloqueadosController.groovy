@@ -28,8 +28,9 @@ import org.jfree.data.general.DefaultPieDataset
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
+import happy.seguridad.Shield;
 
-class BloqueadosController {
+class BloqueadosController  extends Shield{
     def reportesPdfService
 
     Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);

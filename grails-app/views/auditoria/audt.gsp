@@ -24,18 +24,6 @@
 </head>
 <body>
 <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
-<div class="btn-toolbar toolbar">
-    <div class="btn-group">
-        <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-        <g:link action="" class="btn btn-success btnActualizar">
-            <i class="fa fa-refresh"></i> Actualizar
-        </g:link>
-        <g:link action="crearTramite" class="btn btn-default btnCrearTramite" style="margin-left: 10px">
-            <i class="fa fa-edit"></i> Crear Trámite Principal
-        </g:link>
-
-    </div>
-</div>
 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
     <p class="css-vertical-text" style="bottom: -10px">Parámetros</p>
     <div class="linea"></div>

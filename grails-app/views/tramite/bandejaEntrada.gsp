@@ -176,7 +176,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps"/>
                     </div>
 
                     <div class="col-md-2">

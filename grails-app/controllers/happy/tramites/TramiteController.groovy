@@ -1135,25 +1135,25 @@ class TramiteController extends happy.seguridad.Shield {
 
     //fin alertas bandeja entrada
 
-    def bandejaSalidaDepartamento() {
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        return [persona: persona]
-    }
+//    def bandejaSalidaDepartamento() {
+//        def usuario = session.usuario
+//        def persona = Persona.get(usuario.id)
+//        return [persona: persona]
+//    }
 
-    def tablaBandejaSalidaDepartamento() {
-
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
-        def departamento = persona?.departamento
-        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
-        def personasDepartamento = Persona.findAllByDepartamento(departamento)
-//        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
-        def tramites = Tramite.findAllByDeInListAndEstadoTramiteInList(personasDepartamento, estados, [sort: "fechaCreacion", order: "desc"])
-
-//        println("tramites salida departamento" + tramites)
-        return [persona: persona, tramites: tramites]
-    }
+//    def tablaBandejaSalidaDepartamento() {
+//
+//        def usuario = session.usuario
+//        def persona = Persona.get(usuario.id)
+//        def departamento = persona?.departamento
+//        def estados = EstadoTramite.findAllByCodigoInList(["E001", "E002", "E003"])
+//        def personasDepartamento = Persona.findAllByDepartamento(departamento)
+////        def tramites = Tramite.findAllByDeAndEstadoTramiteInList(persona,estados,[sort:"fechaCreacion",order:"desc"])
+//        def tramites = Tramite.findAllByDeInListAndEstadoTramiteInList(personasDepartamento, estados, [sort: "fechaCreacion", order: "desc"])
+//
+////        println("tramites salida departamento" + tramites)
+//        return [persona: persona, tramites: tramites]
+//    }
 
     //BANDEJA PERSONAL
 
@@ -1187,11 +1187,9 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//        def rolImprimir = RolPersonaTramite.findByCodigo('I005')
         def enviado = EstadoTramite.findByCodigo("E003")
         def recibido = EstadoTramite.findByCodigo("E004")
         def anexo
-//        def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${session.usuario.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id/* + "," + rolImprimir.id*/}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
         /*
         from PersonaDocumentoTramite as p
         inner join fetch p.tramite as tramites
@@ -1447,8 +1445,8 @@ class TramiteController extends happy.seguridad.Shield {
 //        println("--->" + res)
 //        println("DDDD:" + pxtTramites)
 
-//        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
         return [tramites: res, pxtTramites: pxtTramites]
+//        return [tramites: pxtTramites]
 
     }
 
@@ -1518,18 +1516,6 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def busquedaArchivados() {
-
-//        def persona = Persona.get(session.usuario.id)
-//        def rolPara = RolPersonaTramite.findByCodigo('R001');
-//        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//
-//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-//        def pxtPara = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolPara, estadoArchivado)
-//        def pxtCopia = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramiteAndEstado(persona, rolCopia, estadoArchivado)
-//
-//
-//        pxtPara += pxtCopia
-
 
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento

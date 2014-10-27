@@ -1,7 +1,9 @@
 package happy.pdf
 
+import happy.seguridad.Shield
 
-class PdfController {
+
+class PdfController extends Shield {
 
     PdfService pdfService
 
