@@ -8,15 +8,6 @@ class ModuloController extends happy.seguridad.Shield  {
         redirect(action: "list", params: params)
     }
 
-//    def list = {
-//        def title = g.message(code: "modulo.list", default: "Modulo List")
-////        <g:message code="default.list.label" args="[entityName]" />
-//
-//        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-//
-//        [moduloInstanceList: Modulo.list(params), moduloInstanceTotal: Modulo.count(), title: title, params: params]
-//    }
-
     def form = {
         def title
         def moduloInstance
@@ -183,11 +174,6 @@ class ModuloController extends happy.seguridad.Shield  {
     def save_ajax() {
         println params
         params.each { k, v ->
-/*
-            if (v != "date.struct" && v instanceof java.lang.String) {
-                params[k] = v.toUpperCase()
-            }
-*/
         }
         def moduloInstance = new Modulo()
         if (params.id) {

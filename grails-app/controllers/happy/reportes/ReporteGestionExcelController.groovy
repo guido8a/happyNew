@@ -69,8 +69,6 @@ class ReporteGestionExcelController extends Shield {
             def tramitesPrincipales = []
 
             PersonaDocumentoTramite.withCriteria {
-//                isNotNull('fechaEnvio')
-//                eq("departamento", departamento)
                 inList("departamento", departamentos)
                 or {
                     eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
@@ -214,21 +212,15 @@ class ReporteGestionExcelController extends Shield {
         } else {
             dias = "No enviado"
         }
-
-
         if (pdt.departamento) {
             para = pdt.departamento.codigo
         } else if (pdt.persona) {
             para = pdt.persona.login + " (${pdt.persona.departamento.codigo})"
         }
-
         if (pdt.rolPersonaTramite.codigo == "R002") {
             codigo += " [CC]"
         }
-
         def contestacionRetraso = "Sin respuesta"
-        // f. recep - fecha actual (no hay contestacion)
-        // f.recep - fecha creacion contestacion mas antigua (hijo mas viejo)
         def respuestas = Tramite.withCriteria {
             eq("aQuienContesta", pdt)
             order("fechaCreacion", "asc")

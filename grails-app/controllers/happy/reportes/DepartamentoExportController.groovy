@@ -22,11 +22,9 @@ class DepartamentoExportController extends Shield {
     def reporteSinUsuarios() {
         redirect(action: "crearPdf", params: [usu: false])
     }
-
     def reporteConUsuarios() {
         redirect(action: "crearPdf", params: [usu: true, inactivos: true])
     }
-
     def reporteUsuariosActivos() {
         redirect(action: "crearPdf", params: [usu: true, inactivos: false])
     }
@@ -34,7 +32,6 @@ class DepartamentoExportController extends Shield {
     def crearPdf() {
         params.inactivos=params.inactivos?:true
         params.sort = params.sort ?: "apellido"
-
         def conUsuarios = params.usu ? (params.usu == "true") : "true"
         def departamentoInicial = params.id?.toLong() > -1 ? Departamento.get(params.id.toLong()) : null
 
@@ -73,30 +70,14 @@ class DepartamentoExportController extends Shield {
         Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
         //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
         def pdfw = PdfWriter.getInstance(document, baos);
-
-//        reportesPdfService.documentoFooter(document, "", true)
-//        reportesPdfService.documentoFooter(document, "", true, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
-//        reportesPdfService.documentoHeader(document, strHeader, false, [top: false, right: false, bottom: false, left: false], Element.ALIGN_CENTER)
         //pone en el footer el tipo de tramite q es y el numero de pagina
-
         session.tituloReporte = strTitulo
         reportesPdfService.membrete(document)
 
         document.open();
         reportesPdfService.propiedadesDocumento(document, "departamentos")
         //pone las propiedades: title, subject, keywords, author, creator
-
-//        reportesPdfService.crearEncabezado(document, strTitulo)
-//        println titulo
-//        Paragraph headersTitulo = new Paragraph();
-//        headersTitulo.setAlignment(Element.ALIGN_CENTER);
-//        headersTitulo.add(new Paragraph(strTitulo, titleFont2));
-//        headersTitulo.setSpacingAfter(10f)
-//
-//        document.add(headersTitulo)
-
         arbolDpto(document, departamentoInicial, "", conUsuarios, params.inactivos, params.sort)
-
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
@@ -124,11 +105,6 @@ class DepartamentoExportController extends Shield {
                 eq("departamento", padre)
                 order(sort, "asc")
             }.each { pers ->
-//                println "login:" + pers.login + "   inactivos:" + inactivos + "   pers.estaActivo:" + pers.estaActivo +
-//                        "  inactivos:" + inactivos + "  " +
-//                        "  0:" + (!inactivos) + "  " +
-//                        "  1:" + (!inactivos && pers.estaActivo) +
-//                        "  inactivos || 1:" + (inactivos || (!inactivos && pers.estaActivo))
                 if (inactivos || (!inactivos && pers.estaActivo)) {
                     def esp2 = esp
                     if (esp2 != "") {
@@ -139,7 +115,6 @@ class DepartamentoExportController extends Shield {
                         esp2 = esp + "" + esp + "    "
                     }
                     def descP = esp2
-//                    if (pers.activo == 0) {
                     if (!pers.estaActivo) {
                         fontUsu.setColor(Color.GRAY);
                         descP += " Inactivo - "
@@ -170,7 +145,6 @@ class DepartamentoExportController extends Shield {
                         }
                         descP += ")"
                     }
-//                descP = WordUtils.capitalizeFully(descP)
                     document.add(new Paragraph(descP, fontUsu));
                 }
             }
@@ -180,7 +154,6 @@ class DepartamentoExportController extends Shield {
             if (esp2 != "") {
                 esp2 += " "
             }
-//            def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
             def desc = esp2 + "${dpto.descripcion} (${dpto.codigo})"
             if (dpto.telefono || dpto.extension || dpto.direccion) {
                 desc += ": "

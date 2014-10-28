@@ -78,13 +78,6 @@ class DepartamentoController extends happy.seguridad.Shield {
                 } else {
                     pr.departamento = dptoNuevo
                     def tramite = pr.tramite
-//                    tramite.observaciones = (tramite.observaciones ?: "") + "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
-//                    def nuevaObs = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion +
-//                            ". Redirigido por desactivación del departamento."
-//                    tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, nuevaObs)
-//                    tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, nuevaObs, "", session.usuario.login)
-
-                    //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
                     def observacionOriginal = pr.observaciones
                     def accion = "Desactivación de departamento"
                     def solicitadoPor = ""
@@ -96,13 +89,11 @@ class DepartamentoController extends happy.seguridad.Shield {
                     tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                     if (tramite.save(flush: true)) {
-//                        println "tr.save ok"
                     } else {
                         errores += renderErrors(bean: tramite)
                         println tramite.errors
                     }
                     if (pr.save(flush: true)) {
-//                        println "pr save ok"
                         ok++
                     } else {
                         println pr.errors
@@ -114,7 +105,6 @@ class DepartamentoController extends happy.seguridad.Shield {
                 println "NOPE: " + errores
                 render "NO_" + errores
             } else {
-//                println "OK"
                 render "OK_Cambio realizado exitosamente"
             }
         } else {
@@ -124,8 +114,6 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbolSearch_ajax() {
-//        println params
-//        def parts = params.search_string.split("~")
         def search = params.str.trim()
         if (search != "") {
             def c = Persona.createCriteria()
@@ -141,15 +129,12 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
                 }
             }
-//            println "FIND"
-//            println find
             def departamentos = []
             find.each { pers ->
                 if (pers.departamento && !departamentos.contains(pers.departamento)) {
                     departamentos.add(pers.departamento)
                     def dep = pers.departamento
                     def padre = dep.padre
-//                    println "ANTES: " + departamentos
                     while (padre) {
                         dep = padre
                         padre = dep.padre
@@ -157,26 +142,18 @@ class DepartamentoController extends happy.seguridad.Shield {
                             departamentos.add(dep)
                         }
                     }
-//                    println "DESPUES: " + departamentos
                 }
             }
-//            println departamentos
             departamentos = departamentos.reverse()
-
             def ids = "["
-
             if (find.size() > 0) {
                 ids += "\"#root\","
-//                ids += "\"#lidep_11\","
                 departamentos.each { dp ->
                     ids += "\"#lidep_" + dp.id + "\","
                 }
                 ids = ids[0..-2]
             }
             ids += "]"
-//            println ">>>>>>"
-//            println ids
-//            println "<<<<<<<"
             render ids
         } else {
             render ""
@@ -188,12 +165,6 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbol() {
-//        if (session.usuario.puedeDirector || session.usuario.puedeJefe) {
-//            return [params: params]
-//        } else {
-//            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
-//            response.sendError(403)
-//        }
         return [params: params]
     }
 
@@ -218,25 +189,12 @@ class DepartamentoController extends happy.seguridad.Shield {
             def hh = Departamento.countByPadreIsNull([sort: "descripcion"])
             if (hh > 0) {
                 clase = "hasChildren jstree-closed"
-//                println "-----" + session.usuario.puedeDirector
-//                if (session.usuario.puedeAdmin) {
-//                    clase += "jstree-opened"
-//                } else {
-//                    clase = ""
-//                }
                 if (session.usuario.puedeDirector || session.usuario.puedeAdmin) {
-//                    clase = "hasChildren jstree-open"
                 } else if (session.usuario.puedeJefe) {
-//                    clase = "hasChildren jstree-open"
                 } else {
                     clase = ""
                 }
             }
-//            println "director: " + session.usuario.puedeDirector
-//            println "jefe: " + session.usuario.puedeJefe
-//            println "admin: " + session.usuario.puedeAdmin
-//            println "dpto: " + session.usuario.departamento
-//            println "clase: " + clase
 
             tree = "<li id='root' class='root ${clase}' data-jstree='{\"type\":\"root\"}' level='0' >" +
                     "<a href='#' class='label_arbol'>Estructura</a>" +
@@ -244,15 +202,8 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (clase == "") {
                 tree = ""
             }
-//            println "TREE    " + tree
         } else if (id == "root") {
-//            println "director: " + session.usuario.puedeDirector
-//            println "jefe: " + session.usuario.puedeJefe
-//            if (session.usuario.puedeAdmin) {
-//                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
-//            } else {
-//                hijos = []
-//            }
+
             if (session.usuario.puedeDirector || session.usuario.puedeAdmin) {
                 hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
             } else if (session.usuario.puedeJefe) {
@@ -260,13 +211,9 @@ class DepartamentoController extends happy.seguridad.Shield {
             } else {
                 hijos = []
             }
-
-//            println "HIJOS: " + hijos
-
         } else {
             def parts = id.split("_")
             def node_id = parts[1].toLong()
-
             padre = Departamento.get(node_id)
             if (padre) {
                 hijos = []
@@ -341,9 +288,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                     def pxtTodos = pxtPara
                     pxtTodos += pxtCopia
                     pxtTodos += pxtImprimir
-
                     data = "data-tramites='${pxtTodos.size()}'"
-
                     if (hijo.externo == 1) {
                         rel += "Externo"
                     }
@@ -361,27 +306,15 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
 
                     tp = "usu"
-/*
-                    if (hijo.jefe == 1) {
-                        rel = "jefe"
-                    } else {
-                        rel = "usuario"
-                    }
-*/
                     rel = "usuario"
-
                     clase = "usuario"
                     def rolPara = RolPersonaTramite.findByCodigo('R001');
                     def rolCopia = RolPersonaTramite.findByCodigo('R002');
                     def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-
                     def estadoEnviado = EstadoTramite.findByCodigo("E003")
                     def estadoRecibido = EstadoTramite.findByCodigo("E004")
                     def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
                     def estadoRevisado = EstadoTramite.findByCodigo("E002")
-
-//                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
-
                     def tramitesEntrada = PersonaDocumentoTramite.withCriteria {
                         eq("persona", hijo)
                         or {
@@ -421,38 +354,18 @@ class DepartamentoController extends happy.seguridad.Shield {
                         }
                     }
                     cantTramSalida = tramsSalida.size()
-
-//                    if (hijo.id == 4675) {
-////                        println tramites.tramite.codigo
-//                        println tramites.tramite.id
-//                    }
-
-//                    lbl += " <${tramites.size()} trámites>"
-//                    lbl += " (${cantTramEntrada} trámites entrada) (${cantTramSalida} trámites salida)"
-
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"
-//                        rel += "Ausente"
                     }
 
-//                    data = "data-tramites='${tramites.size()}'"
                     data = "data-tramites='${cantTramEntrada}' data-tramitess='${cantTramSalida}'"
                     data += "data-usuario='${hijo.login}'"
-//                    if(hijo.login=="mmoya")
-//                    println "hijo!!!!!!!  "+hijo.login +"  "+hijo.esTriangulo
                     if (hijo.esTrianguloOff()) {
                         rel += "Triangulo"
-//                        println "++++++++++++++++++++++++++++"
-//                        println hijo
-//                        println hijo.departamento
-//                        println hijo.departamento.triangulos
-//                        println hijo.departamento.triangulos.size()
-//                        println "++++++++++++++++++++++++++++"
                         data += "data-triangulos=" + (hijo.departamento.triangulos.size())
                     }
 
                 }
-//                if (hijo.activo == 1) {
                 if (hijo.estaActivo) {
                     rel += "Activo"
                 } else {
@@ -500,25 +413,12 @@ class DepartamentoController extends happy.seguridad.Shield {
         return lista
     }
 
-//    def list() {
-//        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-//        def departamentoInstanceList = getLista(params, false)
-//        def departamentoInstanceCount = getLista(params, true).size()
-//        if (departamentoInstanceList.size() == 0 && params.offset && params.max) {
-//            params.offset = params.offset - params.max
-//        }
-//        departamentoInstanceList = getLista(params, false)
-//        return [departamentoInstanceList: departamentoInstanceList, departamentoInstanceCount: departamentoInstanceCount, params: params]
-//    } //list
-
     def show_ajax() {
 
         def personal = []
-
         if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
             personal = departamentoInstance.getTriangulos();
-//            println("personal" + personal)
             if (!departamentoInstance) {
                 notFound_ajax()
                 return
@@ -600,7 +500,6 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //form para cargar con ajax en un dialog
 
     def saveTipoDoc_ajax() {
-//        println "***" + params
         def dep = Departamento.get(params.id)
         def tiene = TipoDocumentoDepartamento.findAllByDepartamentoAndEstado(dep, 1).tipo
         def nuevos = []
@@ -611,24 +510,16 @@ class DepartamentoController extends happy.seguridad.Shield {
         (params.tipoDoc).each { id ->
             nuevos += TipoDocumento.get(id)
         }
-
         nuevos.each { nuevo ->
             if (!tiene.contains(nuevo)) {
                 agregar += nuevo
             }
         }
-
         tiene.each { old ->
             if (!nuevos.contains(old)) {
                 quitar += old
             }
         }
-
-//        println "dep: " + dep
-//        println "tiene: " + tiene
-//        println "nuevos: " + nuevos
-//        println "agregar: " + agregar
-//        println "quitar: " + quitar
 
         agregar.each { tp ->
             def old = TipoDocumentoDepartamento.findAllByDepartamentoAndTipo(dep, tp)

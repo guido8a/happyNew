@@ -28,7 +28,6 @@ class AuditoriaController extends Shield{
     }
 
     def tablaAudt(){
-        //println "params "+params
         def desde = new Date().parse("dd-MM-yyyy HH:mm:ss",params.desde+" 00:00:01")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm:ss",params.hasta+" 23:59:59")
         def dominio =null
@@ -44,10 +43,8 @@ class AuditoriaController extends Shield{
         if(params.domain!="-1"){
             dominio= params.domain.split("\\.")[(params.domain.split("\\.").size()-1)]
         }
-//        println "!! desde "+desde+" hasta "+hasta+" op "+params.operacion+"  dom "+params.domain+" usu "+params.usuario
-//        def c = Krbs.createCriteria()
+
         def c = Krbs.createCriteria()
-        //println "max "+(max+offset)
         def res =c.list (max: max+offset, offset: offset) {
             between("fecha",desde,hasta)
             if(params.operacion!='-1')
@@ -58,7 +55,6 @@ class AuditoriaController extends Shield{
                 eq("dominio","class "+params.domain)
             order("fecha","desc")
         }
-        //println "size "+res.size()
         if(maxView==0)
             maxView=res.size()
         else {
@@ -69,16 +65,12 @@ class AuditoriaController extends Shield{
             resFin = res[1..show]
         else
             resFin=res
-       // println "maxView "+maxView+" show  "+show+" offset "+offset
         def rango = maxView/show
         rango=Math.ceil(rango)
-        //println "div "+rango
         rango=1..rango.toInteger()
         def heigth = 35
         if(rango.size()>28)
             heigth=(Math.ceil(rango.size()/28))*36
-        //println " h ${heigth} ${(Math.ceil(rango.size()/28))}  ${rango.size()} rango "+rango
-
 
         [res:resFin,dominio:dominio,maxView:maxView,show:show,offset: offset,desde:params.desde,hasta:params.hasta,usuario:params.usuario,domain:params.domain,operacion:params.operacion,rango:rango,heigth:heigth]
 

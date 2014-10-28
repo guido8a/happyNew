@@ -21,7 +21,6 @@ class PdfController extends Shield {
             } else {
                 println "sin plugin --> params url "+params.url
                 def url = baseUri + params.url
-//                println "url pdf "+url
                 b = pdfService.buildPdf(url)
             }
             response.setContentType("application/pdf")
@@ -31,9 +30,7 @@ class PdfController extends Shield {
         }
         catch (Throwable e) {
             println "there was a problem with PDF generation 2 ${e}"
-            //if(params.template) render(template:params.template)
             if (params.pdfController) {
-//                println "no"
                 redirect(controller: params.pdfController, action: params.pdfAction, params: params)
             } else {
                 redirect(action: "index", controller: "reportes", params: [msn: "Hubo un error en la genración del reporte. Si este error vuelve a ocurrir comuniquelo al administrador del sistema."])
@@ -45,7 +42,6 @@ class PdfController extends Shield {
         try {
             byte[] b
             def baseUri = request.scheme + "://" + request.serverName + ":" + request.serverPort + grailsAttributes.getApplicationUri(request)
-            // def baseUri = g.createLink(uri:"/", absolute:"true").toString()
             if (request.method == "GET") {
                 def url = baseUri + params.url + '?' + request.getQueryString()
                 //println "BaseUri is $baseUri"
@@ -55,7 +51,6 @@ class PdfController extends Shield {
             if (request.method == "POST") {
                 def content
                 if (params.template) {
-                    //println "Template: $params.template"
                     content = g.render(template: params.template, model: [pdf: params])
                 } else {
                     content = g.include(controller: params.pdfController, action: params.pdfAction, id: params.id, pdf: params)

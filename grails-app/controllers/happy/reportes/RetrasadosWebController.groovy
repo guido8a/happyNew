@@ -44,7 +44,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 hi = Departamento.findAllByPadreInList(hi)
             }
         }
-//        println "deps "+deps+"  puede ver  "+puedeVer
         def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
                 " fechaEnvio is not null " +
                 "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
@@ -80,11 +79,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tbody>"
 
         hijos.each { lvl ->
-//            println "hijo "+lvl
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                //  println "primer if"
-//                if (lvl["rezagados"]>0 || lvl["retrasados"]>0) {
-                //  println "segundo if"
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -136,23 +131,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 tabla += "<td class='titulo numero'>${lvl["retrasados"]}</td>"
                 tabla += "</tr>"
 
-//                    tabla += "<tr>"
-//                    tabla += "<td class='titulo'>Usuario</td>"
-//                    tabla += "<td>${usuarios}</td>"
-//                    tabla += "<td class='numero'>${totales}</td>"
-//                    tabla += "<td class='numero'>${totalesSr}</td>"
-//                    tabla += "</tr>"
-//                    tabla += "<tr>"
-//                    tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
-//                    tabla += "</tr>"
-//                    datosLuz.each { d ->
-//                        tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
-//                        tabla += "<td>${d[0]}</td>"
-//                        tabla += "<td class='numero'>${d[1]}</td>"
-//                        tabla += "<td class='numero'>${d[2]}</td>"
-//                        tabla += "</tr>"
-//                    }
-
                 dg["totalRz"] = totalNode
                 dg["totalRs"] = totalNodeSr
 
@@ -192,7 +170,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         totalSr = 0
         def datos = arr["hijos"]
         datos.each { lvl ->
-//            println "hijo imprime "+lvl
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
@@ -201,10 +178,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 dg.put("totalRz", 0)
                 dg.put("totalRs", 0)
                 dg.put("objeto", lvl["objeto"])
-
                 def totalNode = 0
                 def totalNodeSr = 0
-
                 def usuarios = ""
                 def totales = ""
                 def totalesSr = ""
@@ -247,26 +222,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     tabla += "</tr>"
                 }
 
-//                tabla += "<tr>"
-//                tabla += "<td class='titulo'>Usuario</td>"
-//                tabla += "<td>${usuarios}</td>"
-//                tabla += "<td class='numero'>${totales}</td>"
-//                tabla += "<td class='numero'>${totalesSr}</td>"
-//                tabla += "</tr>"
-//                tabla += "<tr>"
-//                tabla += "<td class='titulo' rowspan='${datosLuz.size() + 1}'>Usuario</td>"
-//                tabla += "</tr>"
-//                datosLuz.each { d ->
-//                    tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
-//                    tabla += "<td>${d[0]}</td>"
-//                    tabla += "<td class='numero'>${d[1]}</td>"
-//                    tabla += "<td class='numero'>${d[2]}</td>"
-//                    tabla += "</tr>"
-//                }
-
                 total += totalNode
                 totalSr += totalNodeSr
-//                println "total "+total+"   "+totalNode
             }
 
             if (lvl["hijos"].size() > 0) {
@@ -275,13 +232,11 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 totalSr += res[1]
                 tabla += res[2]
             }
-//            println "total des dentro "+total+"   "
         }
         return [total, totalSr, tabla]
     }
 
     def reporteRetrasadosConsolidado() {
-        //println("params retra " + params)
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -325,8 +280,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 deps.add(padre)
                 padre = padre.padre
             }
-
-
             deps.add(departamento)
             puedeVer.add(departamento)
             def hi = Departamento.findAllByPadre(departamento)
@@ -335,7 +288,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 hi = Departamento.findAllByPadreInList(hi)
             }
         }
-//        println "deps "+deps+"  puede ver  "+puedeVer
         def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
                 " fechaEnvio is not null " +
                 "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
@@ -348,7 +300,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     def resp = Tramite.findAllByAQuienContesta(pd)
                     if (resp.size() == 0) {
                         if (pd.fechaLimite < now || (!pd.fechaRecepcion)) {
-                            //println "pdt -> "+pd.tramite.codigo+"  "+pd.estado.descripcion+" "+pd.fechaRecepcion+"  ||||  "+pd.fechaLimite+" "+" ||  "+pd.persona?.departamento?.codigo+" "+pd.departamento?.codigo
                             datos = reportesPdfService.jerarquia(datos, pd)
                         }
                     }
@@ -378,11 +329,9 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tbody>"
 
         hijos.each { lvl ->
-            // println "lvl "+lvl["objeto"]+"  "+lvl["rezagados"]+"   "+lvl["retrasados"]
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (maxLvl == null)
                     maxLvl = lvl
-//                println "paso ambos if"
                 datosGrafico.put(lvl["objeto"].toString(), [:])
                 def dg = datosGrafico[lvl["objeto"].toString()]
                 dg.put("rezagados", [:])
@@ -393,7 +342,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
                 def totalNode = 0
                 def totalNodeSr = 0
-
                 def usuarios = ""
                 def totales = ""
                 def totalesSr = ""
@@ -433,13 +381,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 tabla += "<td class='titulo numero'>${lvl['rezagados']}</td>"
                 tabla += "<td class='titulo numero'>${lvl['retrasados']}</td>"
                 tabla += "</tr>"
-
-//                    tabla += "<tr>"
-//                    tabla += "<td class='titulo'>Usuario</td>"
-//                    tabla += "<td>${usuarios}</td>"
-//                    tabla += "<td class='numero'>${totales}</td>"
-//                    tabla += "<td class='numero'>${totalesSr}</td>"
-//                    tabla += "</tr>"
                 if (datosLuz.size() > 0) {
                     tabla += "<tr>"
                     tabla += "<td  rowspan='${datosLuz.size() + 1}'>Usuario</td>"
@@ -452,10 +393,8 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                     tabla += "<td class='numero'>${d[2]}</td>"
                     tabla += "</tr>"
                 }
-
                 dg["totalRz"] = lvl["rezagados"]
                 dg["totalRs"] = lvl["retrasados"]
-
                 total += totalNode
                 totalSr += totalNodeSr
 
@@ -475,9 +414,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
             tabla += "</tr>"
             tabla += "</tfoot>"
         }
-//        println "maxLvl " + maxLvl
         tabla += "</table>"
-
         params.detalle = 1
         def inicio = false
         if (params.inicio)
@@ -534,7 +471,6 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 }
                 //println "personas "
                 lvl["personas"].each { p ->
-//                    println " "+p["objeto"]+"  "+p["rezagados"]+"  "+p["retrasados"]
                     usuarios += "${p['objeto']} <br/>"
                     totales += "${p["rezagados"]} <br/>"
                     totalesSr += "" + p["retrasados"] + " <br/>"
@@ -553,18 +489,11 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 tabla += "<td class='titulo numero'>${lvl['retrasados']}</td>"
                 tabla += "</tr>"
 
-//                tabla += "<tr>"
-//                tabla += "<td class='titulo'>Usuario</td>"
-//                tabla += "<td>${usuarios}</td>"
-//                tabla += "<td class='numero'>${totales}</td>"
-//                tabla += "<td class='numero'>${totalesSr}</td>"
-//                tabla += "</tr>"
                 if (datosLuz.size() > 0) {
                     tabla += "<tr>"
                     tabla += "<td  rowspan='${datosLuz.size() + 1}'>Usuario</td>"
                     tabla += "</tr>"
                 }
-                //println "imprime data"
                 datosLuz.each { d ->
                     tabla += "<tr class='data per ${d[1] > 0 ? 'rz' : ''} ${d[2] > 0 ? 'rs' : ''}' data-tipo='per' data-value='${d[3]}' data-rz='${d[1]}' data-rs='${d[2]}'>"
                     tabla += "<td>-- ${d[0]}</td>"
@@ -575,17 +504,14 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
                 total += totalNode
                 totalSr += totalNodeSr
-//                println "total "+total+"   "+totalNode
             }
 
             if (lvl["hijos"].size() > 0) {
-                // println "tiene hijos ? "
                 def res = imprimeHijosPdfConsolidado(lvl, params, usuario, deps, puedeVer, total, totalSr, datosGrafico)
                 total += res[0]
                 totalSr += res[1]
                 tabla += res[2]
             }
-//            println "total des dentro "+total+"   "
         }
         return [total, totalSr, tabla]
     }

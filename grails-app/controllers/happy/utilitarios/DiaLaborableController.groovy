@@ -17,40 +17,6 @@ class DiaLaborableController extends happy.seguridad.Shield {
         def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "02-07-2014 09:05")
         def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "02-07-2014 00:00")
         println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
-//         fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
-//         fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "24-07-2014 10:30")
-//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
-
-//        def fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 10:30")
-//        def fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "29-07-2014 14:15")
-//
-//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
-
-//        fecha1 = new Date().parse("dd-MM-yyyy HH:mm", "22-07-2014 15:00")
-//        fecha2 = new Date().parse("dd-MM-yyyy HH:mm", "23-07-2014 11:00")
-//
-//        println diasLaborablesService.tiempoLaborableEntre(fecha1, fecha2)
-
-//        def tramite = Tramite.get(31)
-//        tramite.fechaEnvio = new Date()
-//        println tramite.fechaLimite
-//        println tramite.fechaBloqueo
-
-//        def fecha = new Date().parse("dd-MM-yyyy HH:mm", "31-03-2014 11:00")
-//        println "fecha: "
-//        println fecha
-//        println "2 horas"
-//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 2)
-//        println "4 horas"
-//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 4)
-//        println "24 horas"
-//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 24)
-//        println "1 dia"
-//        println diasLaborablesService.fechaMasDia(fecha.clone(), 1)
-//        println "48 horas"
-//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 48)
-//        println "72 horas"
-//        println diasLaborablesService.fechaMasTiempo(fecha.clone(), 72)
     }
 
     def calculador() {
@@ -93,16 +59,11 @@ class DiaLaborableController extends happy.seguridad.Shield {
 
         def errores = 0
         params.dia.each { dia ->
-//            println dia
             def parts = dia.split(":")
-//            println parts
-//            println parts.size()
-//            println "********************************************"
             if (parts.size() == 3 || parts.size() == 7) {
                 def id = parts[0].toLong()
                 def fecha = new Date().parse("dd-MM-yyyy", parts[1])
                 def cont = parts[2].toInteger()
-//                println id + "     " + fecha.format("dd-MM-yyyy") + "    " + cont
                 def diaLaborable = DiaLaborable.get(id)
                 if (diaLaborable.fecha == fecha &&
                         (cont != diaLaborable.ordinal ||
@@ -117,7 +78,6 @@ class DiaLaborableController extends happy.seguridad.Shield {
                         // grabo la hora y minutos de inicio
                         if (parts[3].toString() != parametros.horaInicio.toString() ||
                                 parts[4].toString() != parametros.minutoInicio.toString()) {
-//                            println "parts[3]=" + parts[3] + "      parts[4]=" + parts[4]
                             diaLaborable.horaInicio = parts[3].toInteger()
                             diaLaborable.minutoInicio = parts[4].toInteger()
                         } else {
@@ -132,7 +92,6 @@ class DiaLaborableController extends happy.seguridad.Shield {
                         // grabo la hora y minutos de fin
                         if (parts[5].toString() != parametros.horaFin.toString() ||
                                 parts[6].toString() != parametros.minutoFin.toString()) {
-//                            println "parts[5]=" + parts[5] + "      parts[6]=" + parts[6]
                             diaLaborable.horaFin = parts[5].toInteger()
                             diaLaborable.minutoFin = parts[6].toInteger()
                         } else {
@@ -385,122 +344,6 @@ class DiaLaborableController extends happy.seguridad.Shield {
         redirect(action: "calendario", params: params)
     }
 
-//    def calendario_old() {
-//
-//        def parametros = Parametros.list()
-//        if (parametros.size() == 0) {
-//            parametros = new Parametros([
-//                    horaInicio  : 8,
-//                    minutoInicio: 00,
-//                    horaFin     : 16,
-//                    minutoFin   : 30
-//            ])
-//            if (!parametros.save(flush: true)) {
-//                println "error al guardar params: " + parametros.errors
-//            }
-//        } else {
-//            parametros = parametros.first()
-//        }
-//
-//        def anio = new Date().format('yyyy').toInteger()
-//
-//        if (!params.anio) {
-//            params.anio = anio
-//        }
-//
-//        def anioObj = Anio.findAllByNumero(params.anio, [sort: "id"])
-//        if (anioObj.size() > 1) {
-//            println "Hay mas de un registro de año ${params.anio}!!!! ${anioObj}"
-//            anioObj = anioObj.first()
-//        } else if (anioObj.size() == 1) {
-//            anioObj = anioObj.first()
-//            if (anioObj.estado == 0) {
-//                response.sendError(404)
-//            }
-//        } else {
-//            if (new Date().format("yyyy") == params.anio.toString() || (new Date().format("yyyy").toInteger() - 1 == params.anio.toInteger() && new Date().format("mm") == "12" && (new Date().format("dd").toInteger() >= 26))) {
-//                anioObj = new Anio([
-//                        numero: params.anio,
-//                        estado: 0
-//                ])
-//                if (!anioObj.save(flush: true)) {
-//                    println "ERROR: " + anioObj.errors
-//                }
-//            } else {
-//                response.sendError(404)
-//            }
-//        }
-//        def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-//        def enero01 = new Date().parse("dd-MM-yyyy", "01-01-" + params.anio)
-//        def diciembre31 = new Date().parse("dd-MM-yyyy", "31-12-" + params.anio)
-//
-////        def dias = DiaLaborable.withCriteria {
-////            ge("fecha", enero01)
-////            le("fecha", diciembre31)
-////            order("fecha", "asc")
-////        }
-//        def dias = DiaLaborable.withCriteria {
-//            eq("anio", anioObj)
-//            order("fecha", "asc")
-//        }
-//
-//        if (dias.size() < 365) {
-//            println "No hay todos los dias para ${params.anio}: hay " + dias.size()
-//
-//            def fecha = enero01
-//            def cont = 1
-//            def fds = ["sat", "sun"]
-//            def fmt = new java.text.SimpleDateFormat("EEE", new Locale("en"))
-//
-//            def diasSem = [
-//                    "mon": 1,
-//                    "tue": 2,
-//                    "wed": 3,
-//                    "thu": 4,
-//                    "fri": 5,
-//                    "sat": 6,
-//                    "sun": 0,
-//            ]
-//
-//            while (fecha <= diciembre31) {
-//                def dia = fmt.format(fecha).toLowerCase()
-//                def ordinal = 0
-//                if (!fds.contains(dia)) {
-//                    ordinal = cont
-//                    cont++
-//                }
-//                def diaExiste = DiaLaborable.withCriteria {
-//                    eq("fecha", fecha)
-//                }
-//                if (!diaExiste) {
-//                    def diaLaborable = new DiaLaborable([
-//                            fecha       : fecha,
-//                            dia         : diasSem[dia],
-//                            anio        : anioObj,
-//                            ordinal     : ordinal,
-//                            horaInicio  : -1,
-//                            minutoInicio: -1,
-//                            horaFin     : -1,
-//                            minutoFin   : -1
-//                    ])
-//                    if (!diaLaborable.save(flush: true)) {
-//                        println "error al guardar el dia laborable ${fecha.format('dd-MM-yyyy')}: " + diaLaborable.errors
-//                    } else {
-////                    println "guardado: " + fecha.format("dd-MM-yyyy") + "   " + dia + " ordinal:" + ordinal
-//                    }
-//                }
-//                fecha++
-//            }
-//            dias = DiaLaborable.withCriteria {
-//                ge("fecha", enero01)
-//                le("fecha", diciembre31)
-//                order("fecha", "asc")
-//            }
-//            println "Guardados ${dias.size()} dias"
-//        }
-//
-//        return [anio: anio, dias: dias, meses: meses, params: params, anioObj: anioObj]
-//    }
 
     def index() {
         redirect(action: "calendario", params: params)

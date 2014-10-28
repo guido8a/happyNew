@@ -57,7 +57,6 @@ class SesnController extends happy.seguridad.Shield  {
             redirect(action: "list")
             return
         }
-
         [sesnInstance: sesnInstance]
     }
 
@@ -70,7 +69,6 @@ class SesnController extends happy.seguridad.Shield  {
             redirect(action: "list")
             return
         }
-
         [sesnInstance: sesnInstance]
     }
 

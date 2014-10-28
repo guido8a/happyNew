@@ -89,8 +89,6 @@ class DocumentosGeneradosController extends Shield{
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "trámite")
-//        reportesPdfService.crearEncabezado(document, title)
-
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
 
@@ -104,7 +102,6 @@ class DocumentosGeneradosController extends Shield{
             if (pers.estaActivo) {
                 if (desde == hasta) {
                     def trams = Tramite.withCriteria {
-
                         eq("de", pers)
                         eq("departamento", dpto)
                         eq("fechaCreacion", desde)
@@ -230,7 +227,6 @@ class DocumentosGeneradosController extends Shield{
 
             try {
                 conGrafico = true
-//                document.newPage()
                 def width = 550
                 def height = 250
                 PdfContentByte contentByte = pdfw.getDirectContent();
@@ -283,9 +279,6 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteDetalladoPdf() {
-
-//        println("params " + params)
-
         def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
 
@@ -376,7 +369,6 @@ class DocumentosGeneradosController extends Shield{
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "trámite")
-//        reportesPdfService.crearEncabezado(document, title)
 
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
@@ -596,20 +588,15 @@ class DocumentosGeneradosController extends Shield{
         }
 
         def granTotal = 0
-
         tramites.each { depId, depMap ->
             def depTotal = 0
-
             depMap.personas = depMap.personas.sort { it.value.de }
-
             depMap.personas.each { persId, persMap ->
-
                 XSSFRow row = sheet.createRow((short) index)
                 row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
                 row.createCell((int) 1).setCellValue("${persMap.de}")
                 row.createCell((int) 2).setCellValue(persMap.tramites)
                 index++
-
                 depTotal += persMap.tramites
             }
             if (params.tipo == "dpto") {
@@ -624,7 +611,6 @@ class DocumentosGeneradosController extends Shield{
         XSSFRow row = sheet.createRow((short) index + 2)
         row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
         row.createCell((int) 2).setCellValue(granTotal)
-
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();
@@ -634,7 +620,6 @@ class DocumentosGeneradosController extends Shield{
         PrintWriter pw = response.getWriter();
         FileInputStream fileInputStream = new FileInputStream(desktopFile);
         int j;
-
         while ((j = fileInputStream.read()) != -1) {
             pw.write(j);
         }
@@ -642,19 +627,15 @@ class DocumentosGeneradosController extends Shield{
         response.flushBuffer();
         pw.flush();
         pw.close();
-
     }
 
     def reporteDetalladoXlsx() {
 
         def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
-
-
         def fileName = "detalle_documentos_generados_"
         def title = ["Reporte de documentos generados"]
         def title2 = ""
-
         def tramites = [:], trams = []
 
         if (params.tipo == "prsn") {
@@ -800,36 +781,11 @@ class DocumentosGeneradosController extends Shield{
         index++
         tramites.each { depId, depMap ->
             def totalDep = 0
-//            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
-//            index++
-
             def dep = depMap.departamento.codigo
-//            row = sheet.createRow((short) index);
-            //Cell cell = row.createCell((int) 0)
-            //cell.setCellValue(header)
-//            index++
-
-
             depMap.personas.each { persId, persMap ->
-//                header = persMap.de + " (${depMap.departamento.codigo})" +
-//                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'}"
                 def usu = persMap.de
-
-//                index++
-
                 totalDep += persMap.tramites.size()
-
-//                row = sheet.createRow((short) index);
-
-
                 persMap.tramites.eachWithIndex { tr, j ->
-//                    if (j % 2 == 0) {
-//                        paramsLeft.bg = Color.WHITE
-//                        paramsCenter.bg = Color.WHITE
-//                    } else {
-//                        paramsLeft.bg = Color.LIGHT_GRAY
-//                        paramsCenter.bg = Color.LIGHT_GRAY
-//                    }
                     def prtr = PersonaDocumentoTramite.withCriteria {
                         eq("tramite", tr)
                         inList("rolPersonaTramite", [rolPara, rolCopia])
@@ -840,7 +796,6 @@ class DocumentosGeneradosController extends Shield{
                         def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
                         def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
                         def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
-                        //row = sheet.createRow((short) index)
                         index++
                         row = sheet.createRow((short) index);
                         cell = row.createCell((int) 0)
@@ -863,8 +818,6 @@ class DocumentosGeneradosController extends Shield{
                         cell = row.createCell((int) 7)
                         cell.setCellValue(persDoc.fechaRecepcion)
                         cell.setCellStyle(styleDate)
-
-//                        index++
                     }
                 }
             }

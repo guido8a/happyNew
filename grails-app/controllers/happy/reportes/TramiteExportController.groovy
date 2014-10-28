@@ -23,18 +23,6 @@ import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
 
-//import org.xhtmlrenderer.extend.FontResolver
-
-//import com.lowagie.text.DocumentException;
-
-//import happy.tramites.PersonaDocumentoTramite
-//import happy.tramites.RolPersonaTramite
-//import happy.tramites.Tramite
-
-//import javax.xml.parsers.DocumentBuilder
-//import javax.xml.parsers.DocumentBuilderFactory
-//import org.xhtmlrenderer.pdf.ITextRenderer;
-
 class TramiteExportController extends Shield{
 
     def reportesPdfService
@@ -54,14 +42,12 @@ class TramiteExportController extends Shield{
             //crea el doc A4, vertical con margenes de top:2.5, right:2.5, bottom:2.5, left:2.5
             def pdfw = PdfWriter.getInstance(document, baos);
 
-//            reportesPdfService.documentoFooter(document, "Reporte del trámite " + codigo + "        pág. ", true)
             //pone en el footer el nombre de tramite q es y el numero de pagina
             reportesPdfService.membrete(document)
             document.open();
             reportesPdfService.propiedadesDocumento(document, "trámite")
             //pone las propiedades: title, subject, keywords, author, creator
 
-//            reportesPdfService.crearEncabezado(document, "Reporte del trámite ${codigo}")
             //crea el encabezado que quieren estos manes con el titulo que se le mande
             reportesPdfService.crearEncabezado(document, "Reporte del trámite ${codigo}")
 
@@ -95,7 +81,6 @@ class TramiteExportController extends Shield{
     def makeTreeExtended(Document document, Tramite principal, Integer espacio) {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
-
         def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
         def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
 
@@ -116,9 +101,7 @@ class TramiteExportController extends Shield{
         Paragraph paragraphTramite = new Paragraph();
 
         def nivel = (espacio / 10) + 1
-
         def phraseInfo = tramiteInfo(pdt, nivel.toInteger())
-
         paragraphTramite.setIndentationLeft(espacio);
         paragraphTramite.add(phraseInfo)
         document.add(paragraphTramite)
@@ -167,9 +150,6 @@ class TramiteExportController extends Shield{
             } else if (tramiteParaInfo.persona) {
                 paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login + ", "
             }
-//            paraStr = tramiteParaInfo.departamento ?
-//                    tramiteParaInfo.departamento.descripcion + ", " :
-//                    tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login + ", "
         }
         def phraseInfo = new Phrase()
         phraseInfo.add(new Chunk("<${nivel}> ", fontSmallBold))
@@ -216,8 +196,6 @@ class TramiteExportController extends Shield{
     }
 
     def crearPdf() {
-//        println "crear pdf"
-//        println params
 
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
@@ -234,9 +212,7 @@ class TramiteExportController extends Shield{
                 }
             }
             if(!enviado) {
-//            tramite.conMembrete = params.membrete
                 tramite.texto = (params.editorTramite).replaceAll("\\n", "")
-//            tramite.asunto = params.asunto
                 tramite.fechaModificacion = new Date()
                 if (tramite.save(flush: true)) {
                     def para = tramite.para
@@ -247,14 +223,11 @@ class TramiteExportController extends Shield{
                             para.departamento = Departamento.get(params.para.toLong() * -1)
                         }
                         if (para.save(flush: true)) {
-//                println "OK_Trámite guardado exitosamente"
                         } else {
-//                        println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
                             println "NO_Ha ocurrido un error al guardar el destinatario: " + renderErrors(bean: para)
                         }
                     }
                 } else {
-//                println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
                     println "NO_Ha ocurrido un error al guardar el trámite: " + renderErrors(bean: tramite)
                 }
             }
@@ -270,140 +243,8 @@ class TramiteExportController extends Shield{
 
     }
 
-//    def crearPdf_old() {
-//        def tramite = Tramite.get(params.id)
-//        def tipoTramite = tramite.tipoDocumento.descripcion
-//        def codigo = tramite.codigo
-//
-//        def rolPara = RolPersonaTramite.findByCodigo('R001')
-//        def rolCC = RolPersonaTramite.findByCodigo('R002')
-//
-//        def para = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolPara)
-//        def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
-//
-//        def fileName = tipoTramite.toLowerCase() + "_" + codigo
-//
-//        def texto = tramite.texto
-//
-//        def baos = new ByteArrayOutputStream()
-//        def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
-////            println "name "+name
-//        Font titleFont = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
-//        Font titleFont3 = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
-//        Font titleFont2 = new Font(Font.TIMES_ROMAN, 16, Font.BOLD);
-//        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL);
-//
-//        Font fontTh = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
-//        Font fontTd = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
-//
-//        Document document = reportesPdfService.crearDocumento([top: 4.5, right: 2.5, bottom: 2.5, left: 3])
-//        //crea el doc A4, vertical con margenes de top:4.5, right:2.5, bottom:2.5, left:2.5
-//        def pdfw = PdfWriter.getInstance(document, baos);
-//
-//        reportesPdfService.documentoFooter(document, tipoTramite, true)
-//        //pone en el footer el tipo de tramite q es y el numero de pagina
-//
-//        document.open();
-//        reportesPdfService.propiedadesDocumento(document, tipoTramite)
-//        //pone las propiedades: title, subject, keywords, author, creator
-//
-////        println titulo
-//        Paragraph headersTitulo = new Paragraph();
-//        headersTitulo.setAlignment(Element.ALIGN_CENTER);
-//        headersTitulo.add(new Paragraph(tipoTramite.toUpperCase(), titleFont2));
-//
-//        document.add(headersTitulo)
-//
-//        def paramsBorderTop = [bct: Color.BLACK, bcl: Color.WHITE, bcr: Color.WHITE, bcb: Color.WHITE, bwt: 0.1, bwl: 0, bwr: 0, bwb: 0, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 2]
-//        def paramsBorderBottom = [bcb: Color.BLACK, bcl: Color.WHITE, bcr: Color.WHITE, bct: Color.WHITE, bwb: 0.1, bwl: 0, bwr: 0, bwt: 0, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-//        def paramsNoBorder = [borderWidth: 0.1, borderColor: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-//
-//        def tablaHeader = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 85]), 25, 5)
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("No.  " + codigo, fontTh), paramsBorderTop)
-//
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("", fontTh), paramsNoBorder)
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("", fontTd), paramsNoBorder)
-//
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("DE", fontTh), paramsNoBorder)
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph(tramite.de.departamento.descripcion, fontTd), paramsNoBorder)
-//
-//        if (para) {
-//            def strPara = ""
-//            para.each { p ->
-//                if (p.persona) {
-//                    if (strPara != "") {
-//                        strPara += ", "
-//                    }
-//                    strPara += util.nombrePersona(persona: p.persona)
-//                }
-//                if (p.departamento) {
-//                    if (strPara != "") {
-//                        strPara += ", "
-//                    }
-//                    strPara += p.departamento.descripcion
-//                }
-//            }
-//            reportesPdfService.addCellTabla(tablaHeader, new Paragraph("PARA", fontTh), paramsNoBorder)
-//            reportesPdfService.addCellTabla(tablaHeader, new Paragraph(strPara, fontTd), paramsNoBorder)
-//        }
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("FECHA", fontTh), paramsNoBorder)
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph(util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito").toString(), fontTd), paramsNoBorder)
-//
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph("ASUNTO", fontTh), paramsBorderBottom)
-//        reportesPdfService.addCellTabla(tablaHeader, new Paragraph(tramite.asunto, fontTd), paramsBorderBottom)
-//
-//        document.add(tablaHeader)
-//
-////        def sql = "SELECT DISTINCT\n" +
-//////                "  v.voit__id id,\n" +
-//////                "  i.item__id iid,\n" +
-////                "  i.itemcdgo codigo,\n" +
-////                "  i.itemnmbr item,\n" +
-////                "  v.voitcoef aporte,\n" +
-////                "  v.voitpcun precio,\n" +
-////                "  g.grpodscr grupo\n" +
-////                "FROM vlobitem v\n" +
-////                "  INNER JOIN item i ON v.item__id = i.item__id\n" +
-////                "  INNER JOIN grpo g ON v.voitgrpo = g.grpo__id\n" +
-////                "WHERE v.obra__id = ${params.id}\n" +
-////                "      AND voitgrpo IN (1, 2)\n" + //cambiar aqui si hay que filtrar solo mano de obra o no: 1:formula polinomica, 2:mano de obra
-////                "ORDER BY g.grpodscr, i.itemnmbr;"
-////
-////        def tablaDatos = new PdfPTable(3);
-////        tablaDatos.setWidthPercentage(100);
-////        tablaDatos.setWidths(arregloEnteros([15, 77, 8]))
-////
-////        addCellTabla(tablaDatos, new Paragraph("Item", fontTh), [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
-////        addCellTabla(tablaDatos, new Paragraph("Descripción", fontTh), [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
-////        addCellTabla(tablaDatos, new Paragraph("Aporte", fontTh), [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
-////
-////        def grupo = "null"
-////
-////        def cn = dbConnectionService.getConnection()
-////        cn.eachRow(sql.toString()) { row ->
-////            if (row.grupo != grupo) {
-////                grupo = row.grupo
-////                addCellTabla(tablaDatos, new Paragraph(row.grupo, fontTh), [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, colspan: 3])
-////            }
-////            addCellTabla(tablaDatos, new Paragraph(row.codigo, fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
-////            addCellTabla(tablaDatos, new Paragraph(row.item, fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
-////            addCellTabla(tablaDatos, new Paragraph(numero(row.aporte, 5), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
-////        }
-////
-////        document.add(tablaDatos)
-//
-//        document.close();
-//        pdfw.close()
-//        byte[] b = baos.toByteArray();
-//        response.setContentType("application/pdf")
-//        response.setHeader("Content-disposition", "attachment; filename=" + name)
-//        response.setContentLength(b.length)
-//        response.getOutputStream().write(b)
-//    }
 
     def imprimirGuia() {
-
-//        println("imprimir guia:" + params)
 
         def cantidadTramites = params.ids
         def personaDocumento
@@ -555,7 +396,6 @@ class TramiteExportController extends Shield{
 
     def addCellTabla(table, paragraph, params) {
         PdfPCell cell = new PdfPCell(paragraph);
-//        println "params "+params
         cell.setBorderColor(Color.BLACK);
 
         if (params.border) {
@@ -598,6 +438,4 @@ class TramiteExportController extends Shield{
         }
         table.addCell(cell);
     }
-
-
 }

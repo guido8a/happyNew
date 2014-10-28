@@ -10,17 +10,13 @@ class CtrlController extends happy.seguridad.Shield  {
 
     def list = {
         def title = g.message(code: "ctrl.list", default: "Ctrl List")
-//        <g:message code="default.list.label" args="[entityName]" />
-
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-
         [ctrlInstanceList: Ctrl.list(params), ctrlInstanceTotal: Ctrl.count(), title: title, params: params]
     }
 
     def form = {
         def title
         def ctrlInstance
-
         if (params.source == "create") {
             ctrlInstance = new Ctrl()
             ctrlInstance.properties = params
@@ -33,7 +29,6 @@ class CtrlController extends happy.seguridad.Shield  {
             }
             title = g.message(code: "ctrl.edit", default: "Edit Ctrl")
         }
-
         return [ctrlInstance: ctrlInstance, title: title, source: params.source]
     }
 

@@ -16,14 +16,12 @@ class PrflController extends happy.seguridad.Shield {
 
     def modulos = {
         if (session.usuario.puedeAdmin) {
-//       println "recibe de parametros: ${params.id}"
             def prflInstance = Prfl.get(params.id)
             if (!prflInstance) {
                 flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'prfl.label', default: 'Perfil'), params.id])}"
                 redirect(action: "list")
             } else {
                 def lstacmbo = lstaModulos(params.id)
-//          println "modulos:----- " + lstacmbo
                 render(view: "modulos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
             }
         } else {
@@ -33,7 +31,6 @@ class PrflController extends happy.seguridad.Shield {
     }
 
     def permisos = {  /* permisos apra trámites */
-//       println "recibe de parametros: ${params.id}"
         if (session.usuario.puedeAdmin) {
         def prflInstance = Prfl.get(params.id)
         if (!prflInstance) {
@@ -41,7 +38,6 @@ class PrflController extends happy.seguridad.Shield {
             redirect(action: "list")
         } else {
             def lstacmbo = lstaModulos(params.id)
-//          println "modulos:----- " + lstacmbo
             render(view: "permisos", model: [prflInstance: prflInstance, lstacmbo: lstacmbo])
         }
         } else {
@@ -53,21 +49,17 @@ class PrflController extends happy.seguridad.Shield {
 
     def verMenu = {
         def prfl = params.prfl.toInteger()
-//    println "verMenu: ---------parametros: ${params}"
         render(g.generarMenuPreview(perfil: prfl))
-        //render(g.generarMenu( perfil: "${prfl}" ))
     }
 
     def ajaxPermisoTramite = {
         def prfl = params.prfl.toInteger()
         def tpac = params.tpac
-//        println "---------parametros: ${params}"
         def resultado = []
         def i = 0
         def ids = params.ids
         if (params.menu?.size() > 0) ids = params.menu
         if (params.grabar) {
-            //println "a grabar... ${prfl}, ${ids}"
         }
         def cn = dbConnectionService.getConnection()
         def tx = ""
@@ -75,14 +67,11 @@ class PrflController extends happy.seguridad.Shield {
         tx = "select perm.perm__id, permdscr, prpf.perm__id perm, permtxto, permcdgo " +
                 "from (perm left join prpf on prpf.perm__id = perm.perm__id and prfl__id = ${prfl}) " +
                 "order by permdscr"
-//        println "ajaxPermisos SQL: ${tx}"
         cn.eachRow(tx) { d ->
             resultado[i] = [d.perm__id] + [d.permdscr] + [d.permtxto] + [d.perm] + [d.permcdgo]
             i++
         }
         cn.close()
-//        println "-------------------------" + resultado
-
         return [datos: resultado, mdlo__id: ids, tpac__id: tpac]
     }
 
@@ -90,13 +79,11 @@ class PrflController extends happy.seguridad.Shield {
     def ajaxPermisos = {
         def prfl = params.prfl.toInteger()
         def tpac = params.tpac
-        //println "---------parametros: ${params}"
         def resultado = []
         def i = 0
         def ids = params.ids
         if (params.menu?.size() > 0) ids = params.menu
         if (params.grabar) {
-            //println "a grabar... ${prfl}, ${ids}"
         }
         def cn = dbConnectionService.getConnection()
         def tx = ""
@@ -105,37 +92,29 @@ class PrflController extends happy.seguridad.Shield {
                 "from (accn left join prms on prms.accn__id = accn.accn__id and prfl__id = ${prfl}), ctrl " +
                 "where mdlo__id in (" + ids + ") and " +
                 "accn.ctrl__id = ctrl.ctrl__id and tpac__id = " + tpac + " order by ctrlnmbr, accndscr"
-//        println "ajaxPermisos SQL: ${tx}"
         cn.eachRow(tx) { d ->
             resultado[i] = [d.accn__id] + [d.accndscr] + [d.accnnmbr] + [d.ctrlnmbr] + [d.prms]
             i++
         }
         cn.close()
-//        println "-------------------------" + resultado
-
         return [datos: resultado, mdlo__id: ids, tpac__id: tpac]
     }
 
     def creaMdlo = {
         def mdloInstance = new Modulo()
-        //prflInstance.properties = params
         render(view: 'creaMdlo', model: ['mdloInstance': mdloInstance])
     }
 
     def editMdlo = {
-//      println "------editMdlo: " + params
         def mdloInstance = Modulo.get(params.id)
-        //println mdloInstance
         render(view: 'creaMdlo', model: ['mdloInstance': mdloInstance])
     }
 
     def grabaMdlo = {
-//    println "+++++parametros: ${params}"
         if (!params.id) {
             def mdloInstance = new Modulo()
             params.controllerName = controllerName
             params.actionName = "saveMdlo"
-//      mdloInstance = kerberosoldService.save(params, Modulo, session.perfil, session.usuario)
             mdloInstance.properties = params
             mdloInstance.save()
             if (mdloInstance.properties.errors.getErrorCount() > 0) {
@@ -145,15 +124,12 @@ class PrflController extends happy.seguridad.Shield {
                 render("El módulo ${params.nombre} ha sido grabado en el sistema")
             }
         } else {
-//      println "<<< Update >>> : ${params.id}"
             def mdloInstance = Modulo.get(params.id)
             params.controllerName = controllerName
             params.actionName = "UpdateMdlo"
-//      mdloInstance = kerberosoldService.save(params, Modulo, session.perfil, session.usuario)
             mdloInstance.properties = params
             mdloInstance.save(flush: true)
             if (mdloInstance.properties.errors.getErrorCount() > 0) {
-//        println "---- save ${mdloInstance}"
                 render("El módulo no se ha podido actualizar")
             } else {
                 render("ok")
@@ -162,34 +138,21 @@ class PrflController extends happy.seguridad.Shield {
     }
 
     def borraMdlo = {
-//      println "------borrarMdlo: " + params
-
-
         if (session.usuario.puedeAdmin) {
             Modulo.get(params.id).delete()
         } else {
             flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
             response.sendError(403)
         }
-
-/*
-      params.controllerName = controllerName
-      params.actionName = "delete"
-
-      kerberosoldService.delete(params, Modulo, session.perfil, session.usuario)
-*/
         render('borrado: ${params.id}')
     }
 
     def creaPrfl = {
         def prflInstance = new Prfl()
-        //prflInstance.properties = params
         render(view: 'crear', model: ['prflInstance': prflInstance])
     }
 
     def grabaPrfl = {
-        //println "+++++parametros: ${params}"
-        //println "+++++parametros: ${params.codigo}"
         if (!params.id) {
             def prflInstance = new Prfl()
             params.controllerName = controllerName
@@ -198,7 +161,6 @@ class PrflController extends happy.seguridad.Shield {
             prflInstance.save()
             render("ok")
             if (prflInstance.properties.errors.getErrorCount() > 0) {
-                //println "---- save ${bancoInstance}"
                 println("El perfil no ha podido crearse: " + prflInstance.properties.errors)
             } else {
                 if (prflInstance.padre) {
@@ -212,15 +174,12 @@ class PrflController extends happy.seguridad.Shield {
                 render("El perfil ${params.nmbr} ha sido grabado en el sistema")
             }
         } else {
-//        println "<<< Update >>> : ${params.id}"
             def prflInstance = Prfl.get(params.id)
             params.controllerName = controllerName
             params.actionName = "Update"
             prflInstance.properties = params
             prflInstance.save()
-            //prflInstance = kerberosoldService.save(params, Prfl, session.perfil, session.usuario)
             if (prflInstance.properties.errors.getErrorCount() > 0) {
-//          println "---- save ${prflInstance}"
                 render("El perfil no ha podido actualizar")
             } else {
                 render("ok")
@@ -229,17 +188,14 @@ class PrflController extends happy.seguridad.Shield {
     }
 
     def editPrfl = {
-//      println "------editPrfl: " + params
         def prflInstance = Prfl.get(params.id)
         render(view: 'crear', model: ['prflInstance': prflInstance])
     }
 
     def borraPrfl = {
-//      println "------editPrfl: " + params
         params.controllerName = controllerName
         params.actionName = "delete"
         Prfl.get(params.id).save()
-        //kerberosoldService.delete(params, Prfl, session.perfil, session.usuario)
         render('borrado: ${params.id}')
     }
 
@@ -247,7 +203,6 @@ class PrflController extends happy.seguridad.Shield {
     * **/
 
     def grabar = {
-//      println "parametros grabar: ${params}"
         def ids = params.ids
         def modulo = params.menu
         def prfl = params.prfl
@@ -265,52 +220,40 @@ class PrflController extends happy.seguridad.Shield {
                 "prms.accn__id not in (select accn__id " +
                 "from accn where mdlo__id = " + modulo + " and  " +
                 "accn__id in (${ids})) and prfl__id = ${prfl} and tpac__id = ${tpac}"
-//
-//        println "grabar SQL: ${tx}"
         cn.eachRow(tx) { d ->
             Prms.get(d.prms__id).delete()
         }
-        //println "-------------borrado de permisos----------"
         // se debe barrer tosos los menús señalados y si está chequeado añadir a prms.
         tx = "select prms.accn__id from prms, accn where accn.accn__id = prms.accn__id and " +
                 "mdlo__id = ${modulo} and " +
                 "prms.accn__id in (select accn__id " +
                 "from accn where mdlo__id = " + modulo + " and accn__id in (${ids})) and prfl__id = ${prfl} and " +
                 "tpac__id = ${tpac}"
-//        println "grabar IN SQL: ${tx}"
         exst = []
         cn.eachRow(tx) { d ->
             exst.add(d.accn__id)
         }
         tx = "select accn__id " +
                 "from accn where mdlo__id = " + modulo + " and accn__id in (${ids})"
-        //println "grabar señalados SQL: ${tx}"
         actl = []
         cn.eachRow(tx) { d ->
             actl.add(d.accn__id)
         }
-//        println "insercion  Actual: ${actl} \n Exst: ${exst}}"
         (actl - exst).each {
             tx1 = "insert into prms(prfl__id, accn__id) values (${prfl.toInteger()}, ${it})"
             try {
                 cn.execute(tx1)
-                //insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
-//          println "insertando.... ${tx1}"
             }
             catch (Exception ex) {
                 println ex.getMessage()
             }
-            //resp += "<br>" + tx1
         }
         cn.close()
-        //println "recibido:" + params
-        //render(resp + "<br>Existe:" + exst + "<br>Actual:" + actl + "<br>a insertar: ${actl-exst}")
         redirect(action: 'ajaxPermisos', params: params)
     }
 
 
     def grabar_perm = {
-//        println "parametros grabar: ${params}"
         def ids = params.ids
         def modulo = params.menu
         def prfl = params.prfl
@@ -332,12 +275,9 @@ class PrflController extends happy.seguridad.Shield {
         tx = "select prpf__id, prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
                 "prpf.perm__id not in (select perm__id " +
                 "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
-//
-//        println "SQL para borrar permisos: ${tx}"
         cn.eachRow(tx) { d ->
             println "borra: $d.perm__id"
             cn1.execute("delete from prpf where prpf__id = ${d.prpf__id}")  /* añade permisos nuevos */
-//            Prpf.get(d.prpf__id).delete()
         }
 
 //        println "-------------fin de borrado de permisos----------"
@@ -346,46 +286,36 @@ class PrflController extends happy.seguridad.Shield {
         tx = "select prpf.perm__id from prpf, perm where perm.perm__id = prpf.perm__id and " +
                 "prpf.perm__id in (select perm__id " +
                 "from perm where perm__id in (${ids})) and prfl__id = ${prfl}"
-//        println "grabar IN SQL: ${tx}"
         exst = []
         cn.eachRow(tx) { d ->
             exst.add(d.perm__id)
         }
 
         tx = "select perm__id from perm where perm__id in (${ids})"
-        //println "grabar señalados SQL: ${tx}"
         actl = []
         cn.eachRow(tx.toString()) { d ->
             actl.add(d.perm__id)
         }
-
-//        println "insercion  Actual: ${actl} y Exst: ${exst}"
-//        println "a insertar:" + actl - exst
         (actl - exst).each {
             tx1 = "insert into prpf(prfl__id, perm__id) values (${prfl.toInteger()}, ${it.toInteger()})"
             try {
                 cn.execute(tx1)
-                //insertaKerveros(prfl.toInteger(), session.usuario, session.perfil)
                 println "insertando.... ${tx1}"
             }
             catch (Exception ex) {
                 println ex.getMessage()
             }
-            //resp += "<br>" + tx1
         }
 
         /* actualiza PRUS de los usuarios con el perfil actual */
         /* para cada persona, pone fecha de fin a los permisos que no son parte delperfil y añade los que no tenga*/
-        /*TODO */
         tx = "select prsn__id from sesn where prfl__id = ${prfl}"
         prsn = []
         cn.eachRow(tx.toString()) { d ->
-//            println "inicia actualización de prpf de las personas: $prsn"
             tx2 = "update prus set prusfcfn = '${fcha}', prsnmdfc = ${session.usuario.id} where prus__id in (select prus__id from prus " +
                     "where prsn__id = ${d.prsn__id} and perm__id not in (select perm__id from prpf, sesn " +
                     "where prpf.prfl__id = sesn.prfl__id and sesn.prsn__id = ${d.prsn__id}) and prusfcfn is null)"
 
-//            println "borra permisos con: $tx2"
             cn1.execute(tx2.toString())
 
             tx2 = "insert into prus (prsn__id, perm__id, prusfcin, prsnasgn) select ${d.prsn__id}, perm__id, '${fcha}', " +
@@ -393,29 +323,23 @@ class PrflController extends happy.seguridad.Shield {
                     "(select perm__id from prus where prsn__id = ${d.prsn__id} and prusfcfn is null)"
             try {
                 cn1.execute(tx2.toString())  /* añade permisos nuevos */
-//                println "añade permisos: $tx2"
             }
             catch (Exception ex) {
                 println ex.getMessage()
                 error += ex.getMessage()
             }
-//            }
-            //resp += "<br>" + tx1
         }
 
         cn.close()
         cn1.close()
-//        println "errores:" + error.size() + ".."
 
         if (error.size() > 1)
             render(" NO_Errores:\n  ${error} ")
         else
             render("OK_Proceso realizado con éxito")
 
-        //        redirect(action: 'ajaxPermisos', params: params)
     }
 
-//---------------------------------
 
     def list() {
         if (session.usuario.puedeAdmin) {
@@ -510,7 +434,6 @@ class PrflController extends happy.seguridad.Shield {
 
             def title
             def prflInstance
-
             if (params.source == "create") {
                 prflInstance = new Prfl()
                 prflInstance.properties = params

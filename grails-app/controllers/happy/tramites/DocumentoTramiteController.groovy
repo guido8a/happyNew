@@ -50,11 +50,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def cargaDocs() {
 
         def tramite = Tramite.get(params.id)
-        //println "carga docs " + params + " " + tramite.anexo
         if (tramite) {
             if (tramite.anexo == 1) {
                 def docs = DocumentoTramite.findAllByTramite(tramite)
-                //println "dosc " + docs
                 def editable = false
                 if (tramite.estadoTramite.codigo == "E001" || tramite.estadoTramite.codigo == "E002")
                     editable = true
@@ -97,7 +95,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     }
     def borrarDocNoFile() {
-//        println "borrar docs NF " +params
         if (request.getMethod() == "POST") {
             def doc = DocumentoTramite.get(params.id)
             doc.delete(flush: true)
@@ -110,7 +107,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
     def generateKey() {
         if (request.getMethod() == "POST") {
-//            println "generate key "+params
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
             def anio =doc.fecha.format("yyyy")
@@ -138,10 +134,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         if (session.key == (doc.path.size() + doc.descripcion?.encodeAsMD5().substring(0, 10))) {
             session.key = null
             def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
-//            println "path " + doc.path + " " + doc.path.split("\\.")
             def tipo = doc.path.split("\\.")
             tipo = tipo[1]
-//            println "tipo " + tipo
             switch (tipo) {
                 case "jpeg":
                 case "gif":
@@ -174,7 +168,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 response.setContentLength(b.length)
                 response.getOutputStream().write(b)
             }catch(e){
-                println "error en download"
                 response.sendError(404)
             }
         } else {
@@ -184,7 +177,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
 
     def uploadSvt() {
-        //println "updaload svt " + params
         def tramite = Tramite.get(params.id)
         def anio = new Date().format("yyyy")
         def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/"+anio+"/"+ tramite.codigo + "/"
@@ -249,7 +241,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 }
                 try {
                     f.transferTo(new File(pathFile)) // guarda el archivo subido al nuevo path
-                    //println pathFile
                 } catch (e) {
                     println "????????\n" + e + "\n???????????"
                 }
@@ -304,7 +295,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                         path       : nombre
                 ])
                 def data
-//                println "llego hasta mas aca"
                 if (docTramite.save(flush: true)) {
                     data = [
                             files: [
@@ -316,7 +306,6 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                                     ]
                             ]
                     ]
-//                    println "llego hasta mas mas aca"
                 } else {
                     println "error al guardar: " + docTramite.errors
                     data = [
@@ -329,17 +318,12 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                             ]
                     ]
                 }
-//                println "llego json"
                 def json = new JsonBuilder(data)
-                //println json.toPrettyString()
                 render json
                 return
-//                println "return ?"
             } //ok contents
             else {
                 println "llego else no se acepta"
-//                render "NO_No se acepta esa extensión"
-
                 def data = [
                         files: [
                                 [
@@ -507,13 +491,10 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                     ]
                 }
                 def json = new JsonBuilder(data)
-//                    //println json.toPrettyString()
                 render json
                 return
             } //ok contents
             else {
-//                render "NO_No se acepta esa extensión"
-
                 def data = [
                         files: [
                                 [

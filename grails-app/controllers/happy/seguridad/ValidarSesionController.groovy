@@ -2,7 +2,6 @@ package happy.seguridad
 
 class ValidarSesionController {
     def validarSesion = {
-//        render "OK"
         if (session.usuario) {
             render "OK"
         } else {

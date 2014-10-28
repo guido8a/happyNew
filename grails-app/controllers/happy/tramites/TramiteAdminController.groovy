@@ -39,10 +39,8 @@ class TramiteAdminController extends Shield {
             maxResults(10)
         }
 
-//        println "personas " + personas
         personas.each { pr ->
             contador = 0
-//            println pr
             data = [:]
             data.persona = pr
             data.tieneTrmt = 'N'
@@ -54,10 +52,8 @@ class TramiteAdminController extends Shield {
             }
 
             tramites.each { tr ->
-//                println tramites.tramite
                 if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                     band = tramitesService.verificaHijos(tr, anulado)
-//                    println "estado!!! " + band + "   " + tr.id+"  "+tr.tramite.codigo
                     if (!band) {
                         contador += 1
                     }
@@ -66,7 +62,6 @@ class TramiteAdminController extends Shield {
             if (contador) data.tieneTrmt = 'S'
             resultado.add(data)
         }
-//        println "resultado: " + resultado
         return [personas: resultado]
     }
 
@@ -118,10 +113,6 @@ class TramiteAdminController extends Shield {
                     def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
                     def asunto = tr.asunto
 
-//                println "tramite: " + tr
-//                println "duenioDep: " + duenioDep
-//                println "duenioPer: " + duenioPer
-
                     def personas = PersonaDocumentoTramite.withCriteria {
                         eq("tramite", tr)
                         or {
@@ -130,7 +121,6 @@ class TramiteAdminController extends Shield {
                         }
                         eq("estado", estadoRecibido)
                         tramite {
-//                        lt("fechaCreacion", original.tramite.fechaCreacion)
                             lt("fechaEnvio", original.tramite.fechaCreacion)
                         }
                         if (duenioDep) {
@@ -189,12 +179,6 @@ class TramiteAdminController extends Shield {
         original.tramite.padre = nuevoPadre.tramite
         original.tramite.aQuienContesta = nuevoPadre
 
-//        original.observaciones = (original.observaciones ?: "") + " Trámite asociado al trámite ${nuevoPadre.tramite.codigo} por " +
-//                "${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')}"
-//        def nuevaObs = " Trámite asociado al trámite ${nuevoPadre.tramite.codigo} por " +
-//                "${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')}"
-//        original.observaciones = tramitesService.modificaObservaciones(original.observaciones, nuevaObs)
-//        original.tramite.observaciones = tramitesService.modificaObservaciones(original.tramite.observaciones, nuevaObs)
         def nuevaObsPersDoc = "Asociado al trámite ${nuevoPadre.tramite.codigo}"
         def nuevaObsTram = "Trámite ${original.rolPersonaTramite.descripcion}"
         if (original.departamento) {
@@ -203,9 +187,6 @@ class TramiteAdminController extends Shield {
             nuevaObsTram += " el usuario ${original.persona.login}"
         }
         nuevaObsTram += " asociado al trámite ${nuevoPadre.tramite.codigo}"
-
-//        original.observaciones = tramitesService.makeObservaciones(original.observaciones, nuevaObsPersDoc, "", session.usuario.login)
-//        original.tramite.observaciones = tramitesService.makeObservaciones(original.tramite.observaciones, nuevaObsTram, "", session.usuario.login)
 
         def observacionOriginal = original.observaciones
         def accion = "Asociación de trámite"
@@ -266,9 +247,7 @@ class TramiteAdminController extends Shield {
                 disp = [persona.departamento]
             }
             disp.each { dep ->
-//            disponibles.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
                 if (dep.id == persona.departamento.id) {
-//                def users = Persona.findAllByDepartamento(dep)
                     def usuarios = Persona.findAllByDepartamento(dep)
                     usuarios.each {
                         if (it.id != de.id) {
@@ -393,7 +372,6 @@ class TramiteAdminController extends Shield {
 
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
         def estadoRecibido = EstadoTramite.findByCodigo("E004")
-//                    def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${hijo.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
         def tramites = PersonaDocumentoTramite.withCriteria {
             eq("persona", persona)
@@ -436,7 +414,6 @@ class TramiteAdminController extends Shield {
 
     def redireccionarTramite_ajax() {
         def persona = Persona.get(params.id)
-//        def dpto = persona.departamento
         def redDpto = null, redPrsn = null
         if (params.quien.toString().startsWith("-")) {
             redDpto = Departamento.get(params.quien.toInteger() * -1)
@@ -446,12 +423,6 @@ class TramiteAdminController extends Shield {
         def pr = PersonaDocumentoTramite.get(params.pr)
 
         def errores = ""
-
-//        println "redireccionar!! " + params
-//        println persona
-//        println pr
-//        println redDpto
-//        println redPrsn
 
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
@@ -476,18 +447,14 @@ class TramiteAdminController extends Shield {
                     pr.departamento = redDpto
                     obs += " al departamento ${pr.departamento.descripcion}"
                 } else {
-//                    println "1"
                     if (pr.rolPersonaTramiteId == rolCopia.id) {
-//                        println "2"
                         //si es copia, la anulo
                         pr.estado = estadoAnulado
                         pr.fechaAnulacion = new Date()
                         obs = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
                     } else {
-//                        println "3"
                         prtrExisten.each { prtrExiste ->
                             if (prtrExiste.rolPersonaTramiteId == rolCopia.id) {
-//                                println "4"
                                 prtrExiste.estado = estadoAnulado
                                 prtrExiste.fechaAnulacion = new Date()
                                 def obs1 = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
@@ -500,7 +467,6 @@ class TramiteAdminController extends Shield {
                                 prtrExiste.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                                 observacionOriginal = prtrExiste.tramite.observaciones
                                 prtrExiste.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-//                                println "AQUI:: " + obs1 + "  " + prtrExiste.id
                                 if (!prtrExiste.save(flush: true)) {
                                     println "ERROR AQUI: " + prtrExiste.errors
                                 }
@@ -509,7 +475,6 @@ class TramiteAdminController extends Shield {
                                 }
                             }
                         }
-//                        println "AQUI>>> " + pr.id
                         pr.persona = null
                         pr.departamento = redDpto
                         obs += " al departamento ${pr.departamento.descripcion}"
@@ -525,17 +490,14 @@ class TramiteAdminController extends Shield {
                     pr.persona = redPrsn
                     obs += " al usuario ${pr.persona.login}"
                 } else {
-//                    println "5"
                     if (pr.rolPersonaTramiteId == rolCopia.id) {
                         //si es copia, la anulo
                         pr.estado = estadoAnulado
                         pr.fechaAnulacion = new Date()
                         obs = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
                     } else {
-//                        println "6"
                         prtrExisten.each { prtrExiste ->
                             if (prtrExiste.rolPersonaTramiteId == rolCopia.id) {
-//                                println "7"
                                 prtrExiste.estado = estadoAnulado
                                 prtrExiste.fechaAnulacion = new Date()
                                 def obs1 = "Trámite anulado automáticamente al redireccionar debido a un duplicado en la bandeja receptora"
@@ -559,17 +521,7 @@ class TramiteAdminController extends Shield {
                     }
                 }
             }
-//            obs += " el ${new Date().format('dd-MM-yyyy HH:mm')} por ${session.usuario.login}; "
             def tramite = pr.tramite
-//            tramite.observaciones = (tramite.observaciones ?: "") + obs
-//            pr.observaciones = (pr.observaciones ?: "") + obs
-
-//            tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, obs)
-//            pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, obs)
-
-//            tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, obs, "", session.usuario.login)
-//            pr.observaciones = tramitesService.makeObservaciones(pr.observaciones, obs, "", session.usuario.login)
-
             def observacionOriginal = pr.observaciones
             def accion = "Redirección de trámite"
             def solicitadoPor = ""
@@ -589,13 +541,6 @@ class TramiteAdminController extends Shield {
             if (!pr.persona && !pr.departamento) {
                 pr.persona = personaAntes
                 pr.departamento = dptoAntes
-//                pr.observaciones += " Ha ocurrido un error al redireccionar. "
-//                tramite.observaciones += " Ha ocurrido un error al redireccionar. "
-//                pr.observaciones = tramitesService.modificaObservaciones(pr.observaciones, "Ha ocurrido un error al redireccionar (${new Date().format('dd-MM-yyyy HH:mm')}).")
-//                tramite.observaciones = tramitesService.modificaObservaciones(tramite.observaciones, "Ha ocurrido un error al redireccionar.")
-//                pr.observaciones = tramitesService.makeObservaciones(pr.observaciones, "Redirección no efectuada a causa de un error.", "", "")
-//                tramite.observaciones = tramitesService.makeObservaciones(tramite.observaciones, "Redirección no efectuada a causa de un error.", "", "")
-
                 observacionOriginal = pr.observaciones
                 accion = ""
                 solicitadoPor = ""
@@ -607,12 +552,10 @@ class TramiteAdminController extends Shield {
                 tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                 if (tramite.save(flush: true)) {
-//                    println "ok"
                 }
                 errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
             }
             if (pr.save(flush: true)) {
-//                        println "pr save ok"
             } else {
                 println pr.errors
                 errores += renderErrors(bean: pr)
@@ -625,42 +568,12 @@ class TramiteAdminController extends Shield {
         }
     }
 
-//    def arbolAdminTramite_old() {
-//        def html = "", url = "", tramite = null
-//        if (params.id) {
-//            def usu = Persona.get(session.usuario.id)
-//            def puedeAdministrar = session.usuario.puedeAdmin
-////            println "PUEDE??? " + puedeAdministrar
-//
-//            tramite = Tramite.get(params.id.toLong())
-//            if (tramite) {
-//                def principal = tramite
-//                if (tramite.padre) {
-//                    principal = tramite.padre
-//                    while (true) {
-//                        if (!principal.padre)
-//                            break
-//                        else {
-//                            principal = principal.padre
-//                        }
-//                    }
-//                }
-//                html = "<ul>" + "\n"
-//                html += makeTreeExtended(principal)
-//                html += "</ul>" + "\n"
-//            }
-//            url = createLink(controller: "buscarTramite", action: "busquedaTramite")
-//        }
-//        return [html2: html, url: url, tramite: tramite]
-//    }
 
     def arbolAdminTramite() {
         def html = "", url = "", tramite = null
         if (params.id) {
             def usu = Persona.get(session.usuario.id)
             def puedeAdministrar = session.usuario.puedeAdmin
-//            println "PUEDE??? " + puedeAdministrar
-
             tramite = Tramite.get(params.id.toLong())
             if (tramite) {
                 def principal = tramite
@@ -690,7 +603,6 @@ class TramiteAdminController extends Shield {
         def personas = []
         Persona.findAllByDepartamento(tramite.de?.departamento).each { p ->
             if (p.estaActivo) {
-//                personas.add(p)
                 def m = [:]
                 m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
                 m.value = p.nombre + " " + p.apellido + " (" + p.login + ")"
@@ -785,7 +697,6 @@ class TramiteAdminController extends Shield {
             clase+=" CIR"
 
         }
-//        println "clase "+clase
         rel += estado
 
         def rol = pdt.rolPersonaTramite
@@ -795,7 +706,6 @@ class TramiteAdminController extends Shield {
         if (rol.codigo == "R002") {
             paraStr = "CC: "
         }
-//        paraStr += pdt.departamento ? pdt.departamento.descripcion : pdt.persona.departamento.codigo + ":" + pdt.persona.login
         if (pdt.departamento) {
             paraStr += pdt.departamento.descripcion
         } else if (pdt.persona) {
@@ -805,7 +715,6 @@ class TramiteAdminController extends Shield {
         def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite.de.departamento.codigo + ":" + pdt.tramite.de.login)
 
         data += ',"tramite":"' + pdt.tramiteId + '"'
-//        data += ',"duenio":"' + duenio + '"'
         data += ',"codigo":"' + pdt.tramite.codigo + '"'
         data += ',"de":"' + deStr + '"'
         data += ',"para":"' + paraStr + '"'
@@ -814,7 +723,6 @@ class TramiteAdminController extends Shield {
         }
         if (tramitesService.verificaHijos(pdt, EstadoTramite.findByCodigo("E006"))) {
             //false: no tiene hijos vivos
-//            println "tiene hijos"
             clase += " tieneHijos"
         }
         if (pdt.tramite.padre) {
@@ -908,36 +816,21 @@ class TramiteAdminController extends Shield {
 
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
-//        def estados = [estadoAnulado, estadoArchivado]
         def estados = [estadoAnulado]
-
 
         if (estados.contains(persDocTram.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede quitar el archivado"
         } else {
-//            def obs = " Quitado el archivado por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-//                    "(originalmente archivado el ${persDocTram.fechaArchivo.format('dd-MM-yyyy HH:mm')}): " + params.texto
-//            persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
             def o = "Archivado originalmente el ${persDocTram.fechaArchivo.format('dd-MM-yyyy HH:mm')}"
-//            if (params.texto.trim() != "") {
-//                o += ": " + params.obs
-//            }
-//            def obs = "Quitado el archivado. " + o
-//            persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, obs, params.aut, session.usuario.login)
 
             def observacionOriginal = persDocTram.observaciones
-//            def accion = "Quitado el archivado"
             def accion = "Reactivado"
             def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = o
             def nuevaObservacion = params.obs
             persDocTram.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-
-//            persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, obs)
             if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
-//                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
-//                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, obs)
                 def obs = "PARA "
                 if (persDocTram.departamento) {
                     obs += "el dpto. ${persDocTram.departamento.codigo}"
@@ -945,13 +838,10 @@ class TramiteAdminController extends Shield {
                     obs += "el usuario ${persDocTram.persona.login}"
                 }
                 obs += ", " + o
-//                persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, obs, params.aut, session.usuario.login)
                 observacionOriginal = persDocTram.tramite.observaciones
                 texto = obs
                 persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
             } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
-//                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
-//                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, " COPIA " + obs)
                 def obs = "COPIA para "
                 if (persDocTram.departamento) {
                     obs += "el dpto. ${persDocTram.departamento.codigo}"
@@ -959,7 +849,6 @@ class TramiteAdminController extends Shield {
                     obs += "el usuario ${persDocTram.persona.login}"
                 }
                 obs += ", " + o
-//                persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, obs, params.aut, session.usuario.login)
                 observacionOriginal = persDocTram.tramite.observaciones
                 texto = obs
                 persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -979,7 +868,6 @@ class TramiteAdminController extends Shield {
     }
 
     def desrecibir() {
-//        println("-->" + params)
         def persDocTram = PersonaDocumentoTramite.get(params.id)
 
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
@@ -988,31 +876,16 @@ class TramiteAdminController extends Shield {
         if (estados.contains(persDocTram.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede quitar el recibido"
         } else {
-
-//            def obs = " Quitado el recibido por ${session.usuario.login} el ${new Date().format('dd-MM-yyyy HH:mm')} " +
-//                    "(originalmente recibido el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}): " + params.texto
-
             def o = " Recibido originalmente el ${persDocTram.fechaRecepcion.format('dd-MM-yyyy HH:mm')}"
-//            if (params.texto.trim() != "") {
-//                o += ": " + params.texto
-//            }
-//            def obs = "Quitado el recibido. " + o
-//            persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, obs, params.aut, session.usuario.login)
 
             def observacionOriginal = persDocTram.observaciones
-//            def accion = "Quitado el recibido"
             def accion = "Quitado el Recibido"
             def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = o
             def nuevaObservacion = params.texto
             persDocTram.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-
-//            persDocTram.observaciones = (persDocTram.observaciones ?: "") + obs
-//            persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, obs)
             if (persDocTram.rolPersonaTramite.codigo == "R001") { //PARA
-//                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + obs
-//                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, obs)
                 def obs = "PARA "
                 if (persDocTram.departamento) {
                     obs += "el dpto. ${persDocTram.departamento.codigo}"
@@ -1020,15 +893,11 @@ class TramiteAdminController extends Shield {
                     obs += "el usuario ${persDocTram.persona.login}"
                 }
                 obs += ", " + o
-//                persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, obs, params.aut, session.usuario.login)
-
                 observacionOriginal = persDocTram.tramite.observaciones
                 texto = obs
                 persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
             } else if (persDocTram.rolPersonaTramite.codigo == "R002") { //CC
-//                persDocTram.tramite.observaciones = (persDocTram.tramite.observaciones ?: "") + " COPIA" + obs
-//                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, "COPIA " + obs)
                 def obs = "COPIA para "
                 if (persDocTram.departamento) {
                     obs += "el dpto. ${persDocTram.departamento.codigo}"
@@ -1036,7 +905,6 @@ class TramiteAdminController extends Shield {
                     obs += "el usuario ${persDocTram.persona.login}"
                 }
                 obs += ", " + o
-//                persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, obs, params.aut, session.usuario.login)
                 observacionOriginal = persDocTram.tramite.observaciones
                 texto = obs
                 persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -1075,15 +943,10 @@ class TramiteAdminController extends Shield {
                 def anulado = EstadoTramite.findByCodigo("E006")
                 objeto.estado = anulado
                 objeto.fechaAnulacion = new Date()
-//            objeto.observaciones = (objeto.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
-//                def nuevaObs = "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto}"
-//                objeto.observaciones = tramitesService.modificaObservaciones(objeto.observaciones.toString(), nuevaObs)
                 def nuevaObs = "Anulado"
                 if (params.texto.trim() != "") {
                     nuevaObs += ": " + params.texto
                 }
-//                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
-
                 def observacionOriginal = objeto.observaciones
                 def accion = "Anulación"
                 def solicitadoPor = params.aut
@@ -1093,39 +956,24 @@ class TramiteAdminController extends Shield {
                 objeto.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                 if (objeto.rolPersonaTramite.codigo == "R002") {
-//                    def nuevaObs2 = " COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//                    objeto.tramite.observaciones = tramitesService.modificaObservaciones(objeto.tramite.observaciones, nuevaObs2)
-                    //                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
                     nuevaObs = "COPIA para "
                     if (objeto.departamento) {
                         nuevaObs += "el dpto. ${objeto.departamento.codigo}"
                     } else if (objeto.persona) {
                         nuevaObs += "el usuario ${objeto.persona.login}"
                     }
-//                    nuevaObs += " anulada"
-//                    if (params.texto.trim() != "") {
-//                        nuevaObs += ": " + params.texto
-//                    }
-//                    objeto.tramite.observaciones = tramitesService.makeObservaciones(objeto.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
 
                     observacionOriginal = objeto.tramite.observaciones
                     texto = nuevaObs
                     objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                 }
                 if (objeto.rolPersonaTramite.codigo == "R001") {
-//                    objeto.tramite.observaciones = tramitesService.modificaObservaciones(objeto.tramite.observaciones, nuevaObs)
-//                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
                     nuevaObs = "PARA "
                     if (objeto.departamento) {
                         nuevaObs += "el dpto. ${objeto.departamento.codigo}"
                     } else if (objeto.persona) {
                         nuevaObs += "el usuario ${objeto.persona.login}"
                     }
-//                    nuevaObs += " anulado"
-//                    if (params.texto.trim() != "") {
-//                        nuevaObs += ": " + params.texto
-//                    }
-//                    objeto.tramite.observaciones = tramitesService.makeObservaciones(objeto.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
                     observacionOriginal = objeto.tramite.observaciones
                     texto = nuevaObs
                     objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -1138,7 +986,6 @@ class TramiteAdminController extends Shield {
                     def alerta
                     if (objeto.departamento) {
                         alerta = Alerta.findAllByTramiteAndDepartamento(objeto.tramite, objeto.departamento)
-                        //println "busco alerta dep "+alerta+"  "+objeto.tramite.id+"  "+objeto.departamento.id
                         alerta.each { a ->
                             if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
@@ -1149,7 +996,6 @@ class TramiteAdminController extends Shield {
                     if (objeto.persona) {
 
                         alerta = Alerta.findAllByTramiteAndPersona(objeto.tramite, objeto.persona)
-                        // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
                         alerta.each { a ->
                             if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
@@ -1169,16 +1015,6 @@ class TramiteAdminController extends Shield {
             pdts.each {p->
                 getCadenaDown(p, funcion)
             }
-
-//            if (pdt.rolPersonaTramite.codigo == "R001") {
-//                def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, rolCopia)
-//                if (copias.size() > 0) {
-//                    copias.each {
-//                        getCadenaDown(it, funcion)
-//                    }
-//                }
-//            }
-
             if (pdt.tramite.aQuienContesta) {
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
@@ -1187,15 +1023,7 @@ class TramiteAdminController extends Shield {
                 }
                 pdt.tramite.aQuienContesta.fechaAnulacion = null
                 pdt.tramite.aQuienContesta.fechaArchivo = null
-//            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-//                def nuevaObs = " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//                pdt.tramite.aQuienContesta.observaciones = tramitesService.modificaObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs)
-//                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
                 def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
-//                if (params.texto.trim()) {
-//                    nuevaObs += ": " + params.texto
-//                }
-//                pdt.tramite.aQuienContesta.observaciones = tramitesService.makeObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs, params.aut, session.usuario.login)
                 def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
                 def accion = "Reactivación por anulación de trámite derivado"
                 def solicitadoPor = params.aut
@@ -1212,10 +1040,6 @@ class TramiteAdminController extends Shield {
                     nuevaObs += " el usuario ${pdt.tramite.aQuienContesta.persona.login}"
                 }
                 nuevaObs += " reactivado al anularse ${persDocTram.tramite.codigo}"
-//                if (params.texto.trim()) {
-//                    nuevaObs += ": " + params.texto
-//                }
-//                pdt.tramite.aQuienContesta.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.aQuienContesta.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
                 observacionOriginal = pdt.tramite.aQuienContesta.tramite.observaciones
                 texto = nuevaObs
                 nuevaObservacion = params.texto
@@ -1241,17 +1065,11 @@ class TramiteAdminController extends Shield {
                 def anulado = EstadoTramite.findByCodigo("E006")
                 objeto.estado = anulado
                 objeto.fechaAnulacion = new Date()
-//            objeto.observaciones = (objeto.observaciones ?: "") + "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto};"
-//                def nuevaObs = "Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}: ${params.texto}"
-//                objeto.observaciones = tramitesService.modificaObservaciones(objeto.observaciones.toString(), nuevaObs)
                 def nuevaObs = "Anulado"
                 if (params.texto.trim() != "") {
                     nuevaObs += ": " + params.texto
                 }
-//                objeto.observaciones = tramitesService.makeObservaciones(objeto.observaciones, nuevaObs, params.aut, session.usuario.login)
-
                 def observacionOriginal = objeto.observaciones
-//                def accion = "Anulación"
                 def accion = "Anulado"
                 def solicitadoPor = params.aut
                 def usuario = session.usuario.login
@@ -1260,39 +1078,23 @@ class TramiteAdminController extends Shield {
                 objeto.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                 if (objeto.rolPersonaTramite.codigo == "R002") {
-//                    def nuevaObs2 = " COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//                    objeto.tramite.observaciones = tramitesService.modificaObservaciones(objeto.tramite.observaciones, nuevaObs2)
-                    //                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " COPIA anulada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
                     nuevaObs = "COPIA para "
                     if (objeto.departamento) {
                         nuevaObs += "el dpto. ${objeto.departamento.codigo}"
                     } else if (objeto.persona) {
                         nuevaObs += "el usuario ${objeto.persona.login}"
                     }
-//                    nuevaObs += " anulada"
-//                    if (params.texto.trim() != "") {
-//                        nuevaObs += ": " + params.texto
-//                    }
-//                    objeto.tramite.observaciones = tramitesService.makeObservaciones(objeto.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
-
                     observacionOriginal = objeto.tramite.observaciones
                     texto = nuevaObs
                     objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                 }
                 if (objeto.rolPersonaTramite.codigo == "R001") {
-//                    objeto.tramite.observaciones = tramitesService.modificaObservaciones(objeto.tramite.observaciones, nuevaObs)
-//                objeto.tramite.observaciones = (objeto.tramite.observaciones ?: "") + " Documento anulado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
                     nuevaObs = "PARA "
                     if (objeto.departamento) {
                         nuevaObs += "el dpto. ${objeto.departamento.codigo}"
                     } else if (objeto.persona) {
                         nuevaObs += "el usuario ${objeto.persona.login}"
                     }
-//                    nuevaObs += " anulado"
-//                    if (params.texto.trim() != "") {
-//                        nuevaObs += ": " + params.texto
-//                    }
-//                    objeto.tramite.observaciones = tramitesService.makeObservaciones(objeto.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
                     observacionOriginal = objeto.tramite.observaciones
                     texto = nuevaObs
                     objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -1305,7 +1107,6 @@ class TramiteAdminController extends Shield {
                     def alerta
                     if (objeto.departamento) {
                         alerta = Alerta.findAllByTramiteAndDepartamento(objeto.tramite, objeto.departamento)
-                        //println "busco alerta dep "+alerta+"  "+objeto.tramite.id+"  "+objeto.departamento.id
                         alerta.each { a ->
                             if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
@@ -1314,9 +1115,7 @@ class TramiteAdminController extends Shield {
                         }
                     }
                     if (objeto.persona) {
-
                         alerta = Alerta.findAllByTramiteAndPersona(objeto.tramite, objeto.persona)
-                        // println "busco alerta persona "+alerta+"  "+objeto.tramite.id+"  "+objeto.persona.id
                         alerta.each { a ->
                             if (a.fechaRecibido == null) {
                                 a.fechaRecibido = new Date();
@@ -1346,15 +1145,7 @@ class TramiteAdminController extends Shield {
                 }
                 pdt.tramite.aQuienContesta.fechaAnulacion = null
                 pdt.tramite.aQuienContesta.fechaArchivo = null
-//            pdt.tramite.aQuienContesta.observaciones = (pdt.tramite.aQuienContesta.observaciones ?: "") + " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-//                def nuevaObs = " Tramite reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//                pdt.tramite.aQuienContesta.observaciones = tramitesService.modificaObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs)
-//                def nuevaObs = "Trámite reactivado al anularse ${persDocTram.tramite.codigo}"
                 def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
-//                if (params.texto.trim()) {
-//                    nuevaObs += ": " + params.texto
-//                }
-//                pdt.tramite.aQuienContesta.observaciones = tramitesService.makeObservaciones(pdt.tramite.aQuienContesta.observaciones, nuevaObs, params.aut, session.usuario.login)
                 def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
                 def accion = "Reactivado por anulación de trámite derivado"
                 def solicitadoPor = params.aut
@@ -1371,10 +1162,6 @@ class TramiteAdminController extends Shield {
                     nuevaObs += " el usuario ${pdt.tramite.aQuienContesta.persona.login}"
                 }
                 nuevaObs += " reactivado al anularse ${persDocTram.tramite.codigo}"
-//                if (params.texto.trim()) {
-//                    nuevaObs += ": " + params.texto
-//                }
-//                pdt.tramite.aQuienContesta.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.aQuienContesta.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
                 observacionOriginal = pdt.tramite.aQuienContesta.tramite.observaciones
                 texto = nuevaObs
                 nuevaObservacion = params.texto
@@ -1406,17 +1193,8 @@ class TramiteAdminController extends Shield {
         if (pdt.fechaArchivo) {
             pdt.estado = estadoArchivado
         }
-//        def nuevaObs = "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-////        pdt.observaciones = (pdt.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
-//        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
-//        def nuevaObs = "Documento reactivado"
-//        if (params.texto.trim() != "") {
-//            nuevaObs += ": " + params.texto
-//        }
-//        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs, params.aut, session.usuario.login)
 
         def observacionOriginal = pdt.observaciones
-//        def accion = "Reactivación"
         def accion = "Reactivado"
         def solicitadoPor = params.aut
         def usuario = session.usuario.login
@@ -1426,9 +1204,6 @@ class TramiteAdminController extends Shield {
 
         pdt.fechaAnulacion = null
         if (pdt.rolPersonaTramite.codigo == "R002") {
-//            def nuevaObs2 = "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
-//            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
             def nuevaObs = "COPIA para"
             if (pdt.departamento) {
                 nuevaObs += " el dpto. ${pdt.departamento.codigo}"
@@ -1436,19 +1211,12 @@ class TramiteAdminController extends Shield {
                 nuevaObs += " el usuario ${pdt.persona.login}"
             }
             nuevaObs += " reactivada"
-//            if (params.texto.trim() != "") {
-//                nuevaObs += ": " + params.texto
-//            }
-//            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
-
             observacionOriginal = pdt.tramite.observaciones
             texto = nuevaObs
             pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
         }
         if (pdt.rolPersonaTramite.codigo == "R001") {
-//            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-//            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
             def nuevaObs = "PARA"
             if (pdt.departamento) {
                 nuevaObs += " el dpto. ${pdt.departamento.codigo}"
@@ -1456,11 +1224,6 @@ class TramiteAdminController extends Shield {
                 nuevaObs += " el usuario ${pdt.persona.login}"
             }
             nuevaObs += " reactivado"
-//            if (params.texto.trim() != "") {
-//                nuevaObs += ": " + params.texto
-//            }
-//            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
-
             observacionOriginal = pdt.tramite.observaciones
             texto = nuevaObs
             pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -1490,94 +1253,9 @@ class TramiteAdminController extends Shield {
         } else {
             render "NO"
         }
-
-//        def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
-//        def estadoEnviado = EstadoTramite.findByCodigo("E003")
-//        def estadoRecibido = EstadoTramite.findByCodigo("E004")
-//        def estadoArchivado = EstadoTramite.findByCodigo("E005")
-//        def estadoAnulado = EstadoTramite.findByCodigo("E006")
-//
-//        if (!pdt.fechaEnvio) {
-//            pdt.estado = estadoPorEnviar
-//        }
-//        if (pdt.fechaEnvio) {
-//            pdt.estado = estadoEnviado
-//        }
-//        if (pdt.fechaRecepcion) {
-//            pdt.estado = estadoRecibido
-//        }
-//        if (pdt.fechaArchivo) {
-//            pdt.estado = estadoArchivado
-//        }
-////        def nuevaObs = "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-//////        pdt.observaciones = (pdt.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto};"
-////        pdt.observaciones = tramitesService.modificaObservaciones(pdt.observaciones, nuevaObs)
-////        def nuevaObs = "Documento reactivado"
-////        if (params.texto.trim() != "") {
-////            nuevaObs += ": " + params.texto
-////        }
-////        pdt.observaciones = tramitesService.makeObservaciones(pdt.observaciones, nuevaObs, params.aut, session.usuario.login)
-//
-//        def observacionOriginal = pdt.observaciones
-//        def accion = "Reactivación"
-//        def solicitadoPor = params.aut
-//        def usuario = session.usuario.login
-//        def texto = ""
-//        def nuevaObservacion = params.texto
-//        pdt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-//
-//        pdt.fechaAnulacion = null
-//        if (pdt.rolPersonaTramite.codigo == "R002") {
-////            def nuevaObs2 = "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}"
-////            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs2)
-////            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "COPIA reactivada por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-//            def nuevaObs = "COPIA para"
-//            if (pdt.departamento) {
-//                nuevaObs += " el dpto. ${pdt.departamento.codigo}"
-//            } else if (pdt.persona) {
-//                nuevaObs += " el usuario ${pdt.persona.login}"
-//            }
-//            nuevaObs += " reactivada"
-////            if (params.texto.trim() != "") {
-////                nuevaObs += ": " + params.texto
-////            }
-////            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
-//
-//            observacionOriginal = pdt.tramite.observaciones
-//            texto = nuevaObs
-//            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-//
-//        }
-//        if (pdt.rolPersonaTramite.codigo == "R001") {
-////            pdt.tramite.observaciones = (pdt.tramite.observaciones ?: "") + "Documento reactivado por ${session.usuario} el ${new Date().format('dd-MM-yyyy HH:mm')}:${params.texto}; "
-////            pdt.tramite.observaciones = tramitesService.modificaObservaciones(pdt.tramite.observaciones, nuevaObs)
-//            def nuevaObs = "PARA"
-//            if (pdt.departamento) {
-//                nuevaObs += " el dpto. ${pdt.departamento.codigo}"
-//            } else if (pdt.persona) {
-//                nuevaObs += " el usuario ${pdt.persona.login}"
-//            }
-//            nuevaObs += " reactivado"
-////            if (params.texto.trim() != "") {
-////                nuevaObs += ": " + params.texto
-////            }
-////            pdt.tramite.observaciones = tramitesService.makeObservaciones(pdt.tramite.observaciones, nuevaObs, params.aut, session.usuario.login)
-//
-//            observacionOriginal = pdt.tramite.observaciones
-//            texto = nuevaObs
-//            pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-//        }
-//        pdt.tramite.save(flush: true)
-//        if (pdt.save(flush: true)) {
-//            render "OK"
-//        } else {
-//            println "erros " + pdt.errors
-//            render "NO"
-//        }
     }
 
     def getCadenaDown(pdt, funcion) {
-       // println "get cade down " + pdt
         def res = []
         def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
         println "tramite " + tramite
@@ -1603,14 +1281,9 @@ class TramiteAdminController extends Shield {
         } else {
             return []
         }
-
-
-        println "res lol " + res
-
     }
 
     def getHermanos(tramite, res, roles, funcion) {
-//        println "get hermanos "+tramite.id
         def lvl
         def hermanos = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, roles)
         while (hermanos.size() > 0) {
@@ -1623,12 +1296,10 @@ class TramiteAdminController extends Shield {
             res.add(tmp)
 
         }
-//        println "return get hermanos "+res
         return res
     }
 
     def getHijos(pdt, roles, funcion) {
-//        println "get hijos "+pdt.id+" "+pdt.rolPersonaTramite.descripcion
         def res = []
         def t = Tramite.findByAQuienContesta(pdt)
         if (t) {
@@ -1646,7 +1317,6 @@ class TramiteAdminController extends Shield {
             res = getHermanos(t, res, roles, funcion)
             res.add(tmp)
         }
-//        println "fin hijos "+res
         return res
     }
 

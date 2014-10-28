@@ -49,9 +49,6 @@ class RetrasadosController  extends Shield{
 
 
     def reporteRetrasadosDetalle() {
-//        params.detalle=1
-//        params.prsn=session.usuario.id
-//        println "detallado aaa    " + params
         maxLvl = null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -87,7 +84,6 @@ class RetrasadosController  extends Shield{
 
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            // println "DPTO " + departamento.codigo + "  " + departamento.descripcion
             def padre = departamento.padre
             while (padre) {
                 deps.add(padre)
@@ -101,8 +97,6 @@ class RetrasadosController  extends Shield{
                 hi = Departamento.findAllByPadreInList(hi)
             }
         }
-        //println "deps "+deps+"  puede ver  "+puedeVer
-        // def tramites = Tramite.findAll("from Tramite where externo!='1' or externo is null ${depStr}")
 
         def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
                 " fechaEnvio is not null " +
@@ -122,20 +116,6 @@ class RetrasadosController  extends Shield{
             }
         }
 
-//        println "tramites "+datos
-//        jerarquia(datos)
-//        println datos["objeto"]
-//        datos["hijos"].each{
-//            println "\t--> "+it["objeto"]
-//            println "\t\t tramites "+it["tramites"]
-//            println "\t\t personas "+it["personas"]
-//            println "\t\t\t tramites "+it["personas"]["tramites"]
-//            println "\t\thijos ------  "
-//            imprimeHijos(it)
-//            println "\t\t ------------!!------  "
-//        }
-
-
         def baos = new ByteArrayOutputStream()
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
@@ -150,12 +130,8 @@ class RetrasadosController  extends Shield{
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
 
-//        reportesPdfService.crearEncabezado(document, "Reporte detallado de Trámites Retrasados y sin recepción")
-
-        def contenido = new Paragraph();
-
+        def contenido = ne Paragraph();
         def hijos = datos["hijos"]
-
         if (datos) {
             if ((puedeVer.id.contains(datos["objeto"].id))) {
                 maxLvl = datos
@@ -165,37 +141,22 @@ class RetrasadosController  extends Shield{
         def total = 0
         def totalSr = 0
         PdfPTable tablaTramites
-//
-//        println("hijos " + hijos)
-
         hijos.each { lvl ->
-//            println("lvl" + lvl)
-//            println "hijo ${lvl} ||  ${lvl['objeto']}  ${lvl['objeto'].id}   "
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-//            println "desp "+deps+"   "+lvl["objeto"]+"   "+(deps.id.contains(lvl["objeto"].id))
-
                 if (maxLvl == null) {
                     maxLvl = lvl
                 }
-
                 def totalNode = 0
                 def totalNodeSr = 0
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
-//                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 document.add(par)
                 def par2 = new Paragraph("", times8normal)
                 par2.setSpacingBefore(4)
                 def par3 = new Paragraph("", times8normal)
                 par3.setSpacingBefore(4)
-//                println "wtf "+lvl["triangulos"]
-
                 if (lvl["tramites"].size() > 0) {
-//                        par = new Paragraph("Trámites:", times10bold)
-//                        par.setIndentationLeft(lvl["nivel"]*20+10)
-//                        document.add(par)
                     lvl["triangulos"].each { t ->
                         par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina  - [  Retrasados: ${lvl['ofiRs']}, Sin Recepción: " + lvl["ofiRz"] + " ]", times8bold)
-//                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         if (totalNode == 0)
                             totalNode += lvl["rezagados"]
                         if (totalNodeSr == 0)
@@ -219,9 +180,6 @@ class RetrasadosController  extends Shield{
                     par = new Paragraph("Creado por", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-//                    par = new Paragraph("Para", times8bold)
-//                    cell = new PdfPCell(par);
-//                    tablaTramites.addCell(cell);
                     par = new Paragraph("F. Envío", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
@@ -235,7 +193,6 @@ class RetrasadosController  extends Shield{
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
-//                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
@@ -274,22 +231,13 @@ class RetrasadosController  extends Shield{
                         document.add(par2)
                     }
                 }
-//                    if(lvl["personas"].size()>0){
-//                        par = new Paragraph("Usuarios:", times10bold)
-//                        par.setIndentationLeft(lvl["nivel"]*20+10)
-//                        document.add(par)
-//
-//                    }
                 lvl["personas"].each { p ->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
                     par3 = null
                     par3 = new Paragraph("", times8normal)
                     par3.setSpacingBefore(0.001)
                     par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [ Retrasados: ${p['rezagados']}, Sin Recepción: " + p["retrasados"] + " ]", times8bold)
                     par.setSpacingBefore(17)
-//                    par.setIndentationLeft((lvl["nivel"]-1)*20+20)
                     document.add(par)
-//                    par3.setIndentationLeft((lvl["nivel"]-1)*20+20)
                     totalNode += p["rezagados"]
                     totalNodeSr += p["retrasados"]
 
@@ -321,7 +269,6 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
-//                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                             par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
@@ -383,7 +330,6 @@ class RetrasadosController  extends Shield{
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
-//        return  [tramites:tramites,datos:datos]
     }
 
 
@@ -393,15 +339,10 @@ class RetrasadosController  extends Shield{
         def datos = arr["hijos"]
         def now = new Date()
         datos.each { lvl ->
-//            println  "\t "+lvl["objeto"]
-//            println "\t\t Tramites:"
-//            println "hijo funcion ${lvl['objeto']} "+lvl["objeto"].id+"    "+puedeVer.id
-
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 if (maxLvl == null)
                     maxLvl = lvl
                 def par = new Paragraph("-" + lvl["objeto"], times12bold)
-//                par.setIndentationLeft((lvl["nivel"]-1)*20)
                 def totalNode = 0
                 def totalNodeSr = 0
                 contenido.add(par)
@@ -413,7 +354,6 @@ class RetrasadosController  extends Shield{
                 if (lvl["tramites"].size() > 0) {
                     lvl["triangulos"].each { t ->
                         par = new Paragraph("Usuario: ${t.departamento.codigo}:" + t + " - Trámites de oficina - [ Retrasados: ${lvl['ofiRz']}, Sin Recepción: " + lvl["ofiRs"] + " ]", times8bold)
-//                        par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         contenido.add(par)
                         if (totalNode == 0)
                             totalNode += lvl["rezagados"]
@@ -437,9 +377,6 @@ class RetrasadosController  extends Shield{
                     par = new Paragraph("Creado por", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
-//                    par = new Paragraph("Para", times8bold)
-//                    cell = new PdfPCell(par);
-//                    tablaTramites.addCell(cell);
                     par = new Paragraph("F. Envío", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
@@ -453,7 +390,6 @@ class RetrasadosController  extends Shield{
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
-//                        par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                         par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}", times8normal)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
@@ -492,23 +428,14 @@ class RetrasadosController  extends Shield{
                         contenido.add(par2)
                     }
                 }
-//                    if(lvl["personas"].size()>0){
-//                        par = new Paragraph("Usuarios:", times10bold)
-//                        par.setIndentationLeft(lvl["nivel"]*20+10)
-//                        contenido.add(par)
-//
-//                    }
                 lvl["personas"].each { p ->
-//                println "\t\t "+p["objeto"]+ "  "+  p["objeto"].departamento
                     par3 = null
                     par3 = new Paragraph("", times8normal)
                     par3.setSpacingBefore(0.001)
-//                    par3.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     par = new Paragraph("Usuario: ${p["objeto"].departamento.codigo}:" + p["objeto"] + " - ${p['objeto'].login} - [  Retrasados: ${p['rezagados']}, Sin Recepción: " + p["retrasados"] + " ]", times8bold)
                     par.setSpacingBefore(17)
                     totalNode += p["rezagados"]
                     totalNodeSr += p["retrasados"]
-//                    par.setIndentationLeft((lvl["nivel"]-1)*20+10)
                     contenido.add(par)
                     if (params.detalle) {
                         tablaTramites = null
@@ -539,7 +466,6 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
-//                            par2.setIndentationLeft((lvl["nivel"]-1)*20+10)
                             par = new Paragraph("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}", times8normal)
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
@@ -590,15 +516,11 @@ class RetrasadosController  extends Shield{
                 totalSr += res[1]
             }
         }
-//        println " return ${datos['objeto']} "+total+" "+totalSr
         return [total, totalSr]
     }
 
 
     def reporteRetrasadosConsolidado() {
-//        params.detalle=1
-//        params.prsn=session.usuario.id
-//        println "con aaa    " + params
         maxLvl = null
         datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
@@ -633,8 +555,6 @@ class RetrasadosController  extends Shield{
         def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            //depStr=" and departamento = ${departamento.id}"
-//            println "DPTO " + departamento.codigo + "  " + departamento.descripcion
             def padre = departamento.padre
             while (padre) {
                 deps.add(padre)
@@ -648,7 +568,6 @@ class RetrasadosController  extends Shield{
                 hi = Departamento.findAllByPadreInList(hi)
             }
         }
-//        println "deps "+deps+"  puede ver  "+puedeVer
         def pdt = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where" +
                 " fechaEnvio is not null " +
                 "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
@@ -683,13 +602,10 @@ class RetrasadosController  extends Shield{
         reportesPdfService.membrete(document)
         document.open()
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-//        reportesPdfService.crearEncabezado(document, "Reporte resumido de Trámites Retrasados  y sin recepción")
         def contenido = new Paragraph();
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-//        println("-->" + puedeVer.id)
-//        println("datos" +  datos["objeto"])
         if (datos["objeto"]) {
             if ((puedeVer.id.contains(datos["objeto"].id))) {
                 maxLvl = datos
@@ -830,27 +746,10 @@ class RetrasadosController  extends Shield{
             tablaTramites.addCell(cell);
         }
         contenido.add(tablaTramites)
-
-//
-//        println datosGrafico
-//        println datosGrafico.size()
-//        datosGrafico.each { dep, valores ->
-//            println dep
-//            println "Retrasados"
-//            valores.retrasados.each { k, v ->
-//                println "\t" + k + "   " + v
-//            }
-//            println "Rezagados"
-//            valores.rezagados.each { k, v ->
-//                println "\t" + k + "   " + v
-//            }
-//        }
-
         boolean conGraficos = false
 
         try {
             conGraficos = true
-//            document.newPage()
             def width = 550
             def height = 250
             PdfContentByte contentByte = pdfw.getDirectContent();
@@ -960,12 +859,10 @@ class RetrasadosController  extends Shield{
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
-//        println "datos grafico "+datosGrafico
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
-//        return  [tramites:tramites,datos:datos]
     }
 
 
@@ -1056,7 +953,6 @@ class RetrasadosController  extends Shield{
                 tablaTramites.addCell(cell);
                 total += totalNode
                 totalSr += totalNodeSr
-//                println "total "+total+"   "+totalNode
             }
 
             if (lvl["hijos"].size() > 0) {
@@ -1064,12 +960,9 @@ class RetrasadosController  extends Shield{
                 total += res[0]
                 totalSr += res[1]
             }
-//            println "total des dentro "+total+"   "
         }
         return [total, totalSr]
     }
-
-
     def imprimeHijos(arr) {
         def datos = arr["hijos"]
         datos.each { lvl ->
@@ -1089,192 +982,6 @@ class RetrasadosController  extends Shield{
                 imprimeHijos(lvl)
         }
     }
-
-//    def jerarquia(arr, pdt) {
-////        println "______________jerarquia______________"
-////        println "datos ini  ----- ${pdt.tramite.codigo}  ${pdt.id} dep   "+pdt.departamento+"   prsn "+pdt.persona
-//        def datos = arr
-//        def dep
-//        if (pdt.departamento) {
-//            dep = pdt.departamento
-//        } else {
-//            dep = pdt.persona.departamento
-//        }
-//        def padres = []
-//        padres.add(dep)
-//        while (dep.padre) {
-//            padres.add(dep.padre)
-//            dep = dep.padre
-//        }
-////        println "padres "+padres
-//        def first = padres.pop()
-//        padres = padres.reverse()
-//        def nivel = padres.size()
-//        def lvl
-//        if (datos["id"] != first.id.toString()) {
-////            println "no padre lvl 0"
-//            datos.put("id", first.id.toString())
-//            datos.put("objeto", first)
-//            datos.put("tramites", [])
-//            datos.put("hijos", [])
-//            datos.put("personas", [])
-//            datos.put("triangulos", first.getTriangulos())
-//            datos.put("nivel", 0)
-//            datos.put("retrasados", 0)
-//            datos.put("rezagados", 0)
-//            datos.put("totalRz",0)
-//            datos.put("totalSr",0)
-//        }
-//        lvl = datos["hijos"]
-//        def actual = null
-////        println "padres each "+padres
-//
-////                println "puede ver "+puedeVer+"  "+p
-//        if (!pdt.fechaRecepcion)
-//            datos["totalSr"]++
-//        else
-//            datos["totalRz"]++
-//
-//
-//        padres.each { p ->
-////            println "p.each "+p+"  nivel  "+nivel
-////            println "buscando........"
-//
-//            lvl.each { l ->
-////                println "\t lvl each --> "+l
-//                if (l["id"] == p.id.toString()) {
-//                    actual = l
-//                }
-//            }
-////            println "fin buscando ..............."
-////            println "actual --> "+actual
-//            if (actual) {
-////                println "p--> "+p
-//                if (pdt.departamento) {
-//
-//                    if (actual["id"] == pdt.departamento.id.toString()) {
-////                        println "es el mismo add tramites"
-//                        if (!pdt.fechaRecepcion) {
-//                            actual["retrasados"]++
-//
-//                        }else {
-//                            actual["rezagados"]++
-//
-//                        }
-//                        actual["tramites"].add(pdt)
-//                        actual["tramites"] = actual["tramites"].sort { it.fechaEnvio }
-//
-//
-//                    }
-//
-//                } else {
-//                    if (actual["id"] == pdt.persona.departamento.id.toString()) {
-//                        if (actual["personas"].size() == 0) {
-//                            if (!pdt.fechaRecepcion) {
-//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-//
-//                            }else {
-//                                actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//
-//                            }
-//                            actual["personas"] = actual["personas"].sort { it.objeto.nombre }
-////                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-//                        } else {
-//                            def per = null
-//                            actual["personas"].each { pe ->
-//                                if (pe["id"] == pdt.persona.id.toString()) {
-//                                    per = pe
-//                                }
-//                            }
-//                            if (per) {
-//                                if (!pdt.fechaRecepcion) {
-//                                    per["retrasados"]++
-//                                    datos["totalSr"]++
-//                                }else {
-//                                    per["rezagados"]++
-//                                    datos["totalRz"]++
-//                                }
-//                                per["tramites"].add(pdt)
-//                                per["tramites"] = per["tramites"].sort { it.fechaEnvio }
-//                            } else {
-//                                if (!pdt.fechaRecepcion) {
-//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-//
-//                                }else {
-//                                    actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//
-//                                }
-//                                actual["personas"] = actual["personas"].sort { it.objeto.nombre }
-//                                //println actual["personas"]
-////                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-//                            }
-//                        }
-//                    }
-//                }
-//                lvl = actual["hijos"]
-//            } else {
-////                println "no actual add lvl "+lvl
-//                def temp = [:]
-//                temp.put("id", p.id.toString())
-//                temp.put("objeto", p)
-//                temp.put("tramites", [])
-//                temp.put("hijos", [])
-//                temp.put("personas", [])
-//                temp.put("triangulos", p.getTriangulos())
-//                temp.put("retrasados", 0)
-//                temp.put("rezagados", 0)
-//                def depto = (pdt.departamento) ? pdt.departamento : pdt.persona.departamento
-//                if (depto == p) {
-//                    if (pdt.departamento) {
-//                        temp["tramites"].add(pdt)
-//                        temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
-//                        if (!pdt.fechaRecepcion) {
-//                            temp["retrasados"]++
-//
-//                        }else {
-//                            temp["rezagados"]++
-//
-//                        }
-//                    } else {
-//                        if (!pdt.fechaRecepcion) {
-//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-//
-//                        }else {
-//                            temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
-//
-//                        }
-//                        temp["personas"] = temp["personas"].sort { it.objeto.nombre }
-////                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
-//                    }
-//                }
-//
-//                temp.put("nivel", nivel)
-//
-//                lvl.add(temp)
-////                println "fin add actual "+temp+"  nivel "+nivel
-////                println "asi quedo lvl "+lvl
-////                println "######################"
-//                if (lvl.size() == 1) {
-//                    lvl = lvl[0]["hijos"]
-//                } else {
-//                    lvl = lvl[lvl.size() - 1]["hijos"]
-//                }
-////                println "lvl ? "+lvl
-//                nivel++
-//
-//            }
-//
-//            actual = null
-//        }
-//
-////        println "cod "+cod
-//////        println "lvl "+lvl
-////        println "datos fun "+datos
-//////
-////        println "---------------------fin datos---------------------------------------"
-//        return datos
-//    }
-
     def arreglaTramites() {
         Tramite.list().each {
             def hijos = Tramite.findAllByPadre(it)

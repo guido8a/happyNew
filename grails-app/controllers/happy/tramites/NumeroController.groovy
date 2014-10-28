@@ -105,12 +105,9 @@ class NumeroController extends happy.seguridad.Shield {
             flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
-//        def tiposDoc = Numero.list([sort: "tipoDocumento"]).tipoDocumento.unique()
-
     }
 
     def saveConfig() {
-        //'action':'saveConfig', 'format':null, 'controller':'numero'
         params.remove("action")
         params.remove("format")
         params.remove("controller")

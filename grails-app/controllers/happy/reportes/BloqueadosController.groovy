@@ -69,29 +69,18 @@ class BloqueadosController  extends Shield{
         }
         tabla+="<tr><td style='font-weight:bold'>TOTAL</td><td style='text-align: right;font-weight:bold'>${total}</td></tr>"
         tabla+="</tbody></table>"
-        println "-----" + tabla
         return [tabla:tabla]
     }
 
 
     def reporteConsolidado() {
-//        params.detalle=1
-//        params.prsn=session.usuario.id
-//        println "con aaa    " + params
-//        datosGrafico = [:]
-//        def estadoR = EstadoTramite.findByCodigo("E004")
         if(!params.dpto)
             params.dpto=session.usuario.departamentoId
 
         def datos = []
         def dep = Departamento.get(params.dpto)
-//        dep = dep.padre?.padre
         def deps = []
         deps = getHijos(dep)
-
-//        println "deps "+deps
-
-
         def baos = new ByteArrayOutputStream()
         def name = "reporteUsuariosBloqueados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
@@ -106,7 +95,6 @@ class BloqueadosController  extends Shield{
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteUsuariosBloqueados")
-//        reportesPdfService.crearEncabezado(document, "Reporte de usuarios bloqueados")
         def contenido = new Paragraph();
         def total = 0
 
@@ -146,10 +134,6 @@ class BloqueadosController  extends Shield{
                total++
            }
        }
-
-
-
-
         par = new Paragraph("Gran Total", times8bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
@@ -160,24 +144,15 @@ class BloqueadosController  extends Shield{
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
         tablaTramites.addCell(cell);
         contenido.add(tablaTramites)
-
         document.add(contenido)
-
-
-
-
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
-//        println "datos grafico "+datosGrafico
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
-//        return  [tramites:tramites,datos:datos]
     }
-
-
 
     def getHijos(dep){
         def res = [dep]

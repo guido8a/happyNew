@@ -10,10 +10,7 @@ class SistemaController extends happy.seguridad.Shield  {
 
     def list = {
         def title = g.message(code: "sistema.list", default: "Sistema List")
-//        <g:message code="default.list.label" args="[entityName]" />
-
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-
         [sistemaInstanceList: Sistema.list(params), sistemaInstanceTotal: Sistema.count(), title: title, params: params]
     }
 
@@ -33,7 +30,6 @@ class SistemaController extends happy.seguridad.Shield  {
             }
             title = g.message(code: "sistema.edit", default: "Edit Sistema")
         }
-
         return [sistemaInstance: sistemaInstance, title: title, source: params.source]
     }
 

@@ -54,8 +54,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
             def tramitesPrincipales = []
 
             PersonaDocumentoTramite.withCriteria {
-//                isNotNull('fechaEnvio')
-//                eq("departamento", departamento)
                 inList("departamento", departamentos)
                 or {
                     eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
@@ -82,11 +80,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
                     tramitesPrincipales += principal
                 }
             }
-//            println tramitesPrincipales
-
             tramitesPrincipales.each { principal ->
-//                if (principal.numero == 11) {
-//                    println principal.codigo
                 def pdts = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", principal)
                     or {
@@ -94,9 +88,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
                         eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
                     }
                 }
-//t. numero, f creacion, f envio, f recepcion, t env-rec, de, asnto, para, t rec-resp
                 def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
-
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.codigo, font), prmsHeaderHoja2)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
@@ -104,17 +96,13 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 rowHeaderTramite(tablaTramite, false)
 
                 pdts.each { prtr ->
-//                    if (principal.id != prtr.tramite.id) {
-//                    if (prtr.departamentoId == departamento.id) {
                     if ((departamentos.id).contains(prtr.departamentoId)) {
-//                        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("", fontBold), prmsHeaderHoja9)
                         rowTramite(prtr, tablaTramite)
                     }
                     llenaTablaTramite(prtr, tablaTramite, departamentos)
                 }
                 tablaTramite.setKeepTogether(true)
                 document.add(tablaTramite)
-//                }
             }
         }
         document.add(new Phrase("  "))
@@ -128,10 +116,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
     }
 
     def llenaTablaTramite(PersonaDocumentoTramite prtr, tablaTramite, departamentos) {
-//        def band = false
         def respuestas = Tramite.withCriteria {
             eq("aQuienContesta", prtr)
-//            eq("departamento", departamento)
             order("fechaCreacion", "asc")
         }
         if (respuestas.size() > 0) {
@@ -143,26 +129,15 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(h, rolCc)
 
                 (paras + ccs).each { pdt ->
-//                    def esInterno = pdt.tramite.departamentoId == departamento.id
                     def esInterno = false
-//                    if (pdt.departamentoId == departamento.id || pdt.persona?.departamentoId == departamento.id ||
-//                            pdt.tramite.departamentoId == departamento.id) {
                     if ((departamentos.id).contains(pdt.departamentoId) || (departamentos.id).contains(pdt.persona?.departamentoId) ||
                             (departamentos.id).contains(pdt.tramite.departamentoId)) {
-//                        rowHeaderTramite(tablaTramite, esInterno)
                         rowTramite(pdt, tablaTramite)
                     }
                     llenaTablaTramite(pdt, tablaTramite, departamentos)
-//                    if (!band && (pdt.departamentoId == departamento.id || pdt.persona?.departamentoId == departamento.id)) {
-//                        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fin ${pdt.tramite.codigo} (regresa a ${prtr.tramite.codigo})", fontBold), prmsHeaderHoja9)
-//                        band = true
-//                    }
                 }
             }
         } else {
-//            if (prtr.departamentoId == departamento.id || prtr.persona?.departamentoId == departamento.id) {
-//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("fin ${prtr.tramite.codigo}", fontBold), prmsHeaderHoja9)
-//            }
         }
     }
 
@@ -226,8 +201,6 @@ class ReporteGestionController extends happy.seguridad.Shield {
         }
 
         def contestacionRetraso = "Sin respuesta"
-        // f. recep - fecha actual (no hay contestacion)
-        // f.recep - fecha creacion contestacion mas antigua (hijo mas viejo)
         def respuestas = Tramite.withCriteria {
             eq("aQuienContesta", pdt)
             order("fechaCreacion", "asc")

@@ -5,14 +5,10 @@ import happy.seguridad.Persona
 
 class BuscarTramiteController extends happy.seguridad.Shield {
 
-//    def index() {
-//
-//    }
 
     def dbConnectionService
     def tramitesService
 
-    //solo si la persona ha enviado un tramite de la cadena puede agregar doc al tramite
     def verificarAgregarDoc() {
         def tramite = Tramite.get(params.id)
         def persona = Persona.get(session.usuario.id)
@@ -42,7 +38,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 return
             }
         }
-        // TODO: preguntar si es la cadena del tramite principal o tambien de los asociados
         def tramitePrincipal = principal.tramitePrincipal
         def tramites
         if (tramitePrincipal > 0) {
@@ -56,7 +51,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         tramites.each { tr ->
             puede = hijosTramite(tr, persona, esDepartamento, puede)
             if (puede) {
-//                render "OK"
                 return
             }
         }
@@ -89,7 +83,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 }
             }
         }
-//        println "hijosTramite: " + puede
         return puede
     }
 
@@ -111,15 +104,11 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 }
             }
         }
-//        println "hijosPdt: " + puede
         return puede
     }
 
     def busquedaTramite() {
     }
-
-//    def busquedaTramite_old() {
-//    }
 
     def ampliarPlazo_ajax() {
         def error = ""
@@ -143,10 +132,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                             "plazo anterior: ${persDocTram.fechaLimiteRespuesta.format('dd-MM-yyyy HH:mm')}"
                     def log = "Ampliado el plazo" + l
                     def log2 = "Ampliado el plazo ${para}" + l
-//                    persDocTram.observaciones = tramitesService.makeObservaciones(persDocTram.observaciones, log, params.aut, session.usuario.login)
-//                    persDocTram.tramite.observaciones = tramitesService.makeObservaciones(persDocTram.tramite.observaciones, log2, params.aut, session.usuario.login)
-//                persDocTram.observaciones = tramitesService.modificaObservaciones(persDocTram.observaciones, log)
-//                persDocTram.tramite.observaciones = tramitesService.modificaObservaciones(persDocTram.tramite.observaciones, log2)
+
 
                     //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
                     def observacionOriginal = persDocTram.observaciones
@@ -161,7 +147,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     persDocTram.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                     persDocTram.fechaLimiteRespuesta = fecha
-//                    println persDocTram.id
                     if (!persDocTram.save(flush: true)) {
                         error += renderErrors(bean: persDocTram)
                     }
@@ -183,8 +168,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
-//        println "****************************"
-//        println dpto.id
 
         def personas = PersonaDocumentoTramite.withCriteria {
             eq("tramite", tramite)
@@ -194,9 +177,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
         }
 
-//        println personas.persona.departamento.id
-//        println personas.departamento.id
-//        println "****************************"
 
         return [tramite: tramite, jefe: jefe, personas: personas, dpto: dpto]
     }
@@ -219,13 +199,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         def estadoArchivado = EstadoTramite.findByCodigo('E005')
         def estadoAnulado = EstadoTramite.findByCodigo('E006')
-
-//        println "#####################################################"
-//        println params
-//        println params.fecha
-//        println params.fechaRecepcion
-//        println session.usuario.puedeAdmin
-//        println "#####################################################"
 
         res = PersonaDocumentoTramite.withCriteria {
             if (!session.usuario.puedeAdmin) {
@@ -254,7 +227,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
             maxResults(200)
         }
-//        println res.tramite
         def tramitesFiltrados = res.tramite.unique()
         tramitesFiltrados.sort { it.codigo }
         def msg = ""
@@ -264,148 +236,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         }
         return [tramites: tramitesFiltrados, persona: persona, msg: msg]
     }
-
-//    def tablaBusquedaTramite_old() {
-//
-////        def tramite1 = Tramite.get(50)
-////        println("params tablaBusquedaTramite:" + params)
-//
-//        def persona = session.usuario.id
-//
-//        if (params.fecha) {
-//            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
-//            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
-//        }
-//
-//        if (params.fechaRecepcion) {
-//            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
-//            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
-//        }
-//
-//        def res
-//
-////        if (Persona.get(session.usuario.id).esTriangulo()) {
-////
-////            res = PersonaDocumentoTramite.withCriteria {
-//////                eq("departamento", Persona.get(session.usuario.id).departamento)
-////                ne('estado', EstadoTramite.findByCodigo("E006"))
-////                if (params.fecha) {
-////                    gt('fechaEnvio', params.fechaIni)
-////                    lt('fechaEnvio', params.fechaFin)
-////                }
-////                tramite {
-////                    if (params.asunto) {
-////                        ilike('asunto', '%' + params.asunto + '%')
-////                    }
-////                    if (params.memorando) {
-////                        ilike('codigo', '%' + params.memorando + '%')
-////                    }
-////                    if (params.fechaRecepcion) {
-////                        gt('fechaCreacion', params.fechaIniR)
-////                        lt('fechaCreacion', params.fechaFinR)
-////                    }
-////                    order('codigo')
-////                }
-////                maxResults(20);
-////            }
-////
-////        } else {
-////            res = PersonaDocumentoTramite.withCriteria {
-//////                eq("persona", Persona.get(session.usuario.id))
-////                ne('estado', EstadoTramite.findByCodigo("E006"))
-////                if (params.fecha) {
-////                    gt('fechaEnvio', params.fechaIni)
-////                    lt('fechaEnvio', params.fechaFin)
-////                }
-////                tramite {
-////                    if (params.asunto) {
-////                        ilike('asunto', '%' + params.asunto + '%')
-////                    }
-////                    if (params.memorando) {
-////                        ilike('codigo', '%' + params.memorando + '%')
-////                    }
-////                    if (params.fechaRecepcion) {
-////                        gt('fechaCreacion', params.fechaIniR)
-////                        lt('fechaCreacion', params.fechaFinR)
-////                    }
-////                    order('codigo')
-////                }
-////                maxResults(20);
-////            }
-////        }
-//
-////        println "session.usuario.puedeAdmin: " + session.usuario.puedeAdmin
-//
-//        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-//        def estadoAnulado = EstadoTramite.findByCodigo('E006')
-//
-//        res = PersonaDocumentoTramite.withCriteria {
-//            if (!session.usuario.puedeAdmin) {
-//                isNotNull("fechaEnvio")
-//                and {
-//                    ne('estado', estadoArchivado)
-//                    ne('estado', estadoAnulado)
-//                }
-//            }/* else {
-//                or {
-//                    ne('estado', estadoAnulado)
-//                    ne('estado', estadoArchivado)
-//                }
-//            }*/
-//            if (params.fecha) {
-//                gt('fechaEnvio', params.fechaIni)
-//                lt('fechaEnvio', params.fechaFin)
-//            }
-//            tramite {
-//                if (params.asunto) {
-//                    ilike('asunto', '%' + params.asunto + '%')
-//                }
-//                if (params.memorando) {
-//                    ilike('codigo', '%' + params.memorando + '%')
-//                }
-//                if (params.fechaRecepcion) {
-//                    gt('fechaCreacion', params.fechaIniR)
-//                    lt('fechaCreacion', params.fechaFinR)
-//                }
-//                order('codigo')
-//            }
-//            maxResults(20);
-//        }
-//
-////println("res" + res)
-//
-//        def filtro = []
-//        def unicos = []
-//        def tramitesFiltrados = []
-//
-//        res.each {
-////            println("-->" + it?.estado?.codigo)
-////            if(!session.usuario.puedeAdmin){
-////                if(it?.estado?.codigo == 'E005' || it?.estado?.codigo == 'E006'){
-////
-////                }
-////            else{
-//            filtro += it.tramite
-////            }
-////            }
-//
-//        }
-//
-//        filtro.unique().each {
-////            unicos += it
-//            tramitesFiltrados += resTramites(it);
-//        }
-//
-////        println("ids" + res)
-////        println("filtro:" + filtro)
-////        println("filtrados:" + tramitesFiltrados)
-//
-//        tramitesFiltrados.sort { it.trmtcdgo }
-//        //println " tramites "+tramitesFiltrados
-////        return [tramites: res, resTramites: filtro]
-//        return [tramites: tramitesFiltrados, persona: persona]
-//
-//    }
 
     def resTramites(Tramite tramite) {
 
@@ -417,9 +247,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def cn = dbConnectionService.getConnection();
 
         sql = "select * from tramites(" + tramite.id + ") "
-//        println "........" + sql
         cn.eachRow(sql) { r ->
-//            println(">>>>>" + r)
             result.add(r.toRowResult())
         }
 
@@ -431,8 +259,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     }
 
     def tablaBusquedaEnviados() {
-
-//        println("params" + params)
 
         if (params.fecha) {
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
@@ -483,8 +309,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 
-
-
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
@@ -545,8 +369,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     lt('fechaEnvio', params.fechaFin)
                 }
 
-//            eq("departamento", departamento)
-
                 eq('estado', EstadoTramite.findByCodigo("E005"))
                 isNotNull("fechaEnvio")
 
@@ -583,8 +405,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     lt('fechaEnvio', params.fechaFin)
                 }
 
-//            eq("departamento", departamento)
-
                 eq('estado', EstadoTramite.findByCodigo("E005"))
                 isNotNull("fechaEnvio")
 
@@ -612,8 +432,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             }
         }
-
-//        println("filtrados" + res)
 
         return [tramites: res, pxtTramites: pxtPara]
 
@@ -631,8 +449,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 
-//        println("departamento" + departamento)
-
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
@@ -658,8 +474,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         pxtPara += pxtCopia
 
-//        println("---" + pxtPara)
-
         def res
 
 
@@ -681,7 +495,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     lt('fechaEnvio', params.fechaFin)
                 }
 
-//                eq("departamento", departamento)
                 eq('estado', EstadoTramite.findByCodigo("E006"))
 
                 isNotNull("fechaEnvio")
@@ -720,7 +533,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     lt('fechaEnvio', params.fechaFin)
                 }
 
-//                eq("departamento", departamento)
                 eq('estado', EstadoTramite.findByCodigo("E006"))
 
                 isNotNull("fechaEnvio")
@@ -752,41 +564,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         }
 
-//       res = PersonaDocumentoTramite.withCriteria {
-//
-//            if (params.fecha) {
-//                gt('fechaEnvio', params.fechaIni)
-//                lt('fechaEnvio', params.fechaFin)
-//            }
-//
-//            eq("departamento", departamento)
-//            eq('estado', EstadoTramite.findByCodigo("E006"))
-//
-//            isNotNull("fechaEnvio")
-//
-//            or{
-//                eq("rolPersonaTramite", rolPara)
-//                eq("rolPersonaTramite", rolCopia)
-//            }
-//
-//
-//            tramite {
-//                if (params.asunto) {
-//                    ilike('asunto', '%' + params.asunto + '%')
-//                }
-//                if (params.memorando) {
-//                    ilike('codigo', '%' + params.memorando + '%')
-//                }
-//
-//                eq('de', persona)
-//                order ('codigo', 'desc')
-//                order ('estadoTramite', 'desc')
-//
-//            }
-//
-//            maxResults(20);
-//
-//        }
 
         println("res" + res + ' ' + res.unique())
 
