@@ -58,7 +58,7 @@ class BusquedaExternosController extends Shield {
                     recibio = recibio.last()
                     prsnPara = recibio.last().persona
                 }else{
-                    def triangulo = para.departamento.triangulos.first()
+                    def triangulo = para?.departamento?.triangulos?.first()
                     prsnPara = triangulo
                 }
 
@@ -69,14 +69,14 @@ class BusquedaExternosController extends Shield {
                     recibio = recibio.last()
                     prsnPara = recibio.persona
                 } else {
-                    def triangulo = para.departamento.triangulos.first()
+                    def triangulo = para?.departamento?.triangulos?.first()
                     prsnPara = triangulo
                 }
             }
-            strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara.nombre + " " + prsnPara.apellido)
-            def dptoPadre = prsnPara.departamento.padre ?: prsnPara.departamento
+            strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara?.nombre + " " + prsnPara?.apellido)
+            def dptoPadre = prsnPara?.departamento?.padre ?: prsnPara?.departamento
             def directores = [], dptoDirector
-            Persona.findAllByDepartamento(prsnPara.departamento).each {p->
+            Persona.findAllByDepartamento(prsnPara?.departamento).each {p->
                 if(p.estaActivo && p.puedeDirector) {
                     directores+=(p.nombre+" "+p.apellido)
                     dptoDirector = prsnPara.departamento

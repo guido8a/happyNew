@@ -433,7 +433,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
         }
 
-        return [tramites: res, pxtTramites: pxtPara]
+
+        return [tramites: res.unique(), pxtTramites: pxtPara]
 
 
     }
@@ -448,34 +449,76 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
-
+        def pxtPara
+        def pxtCopia
+        def res
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
-        def pxtPara = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamento)
-            eq("rolPersonaTramite", rolPara)
-            eq('estado', EstadoTramite.findByCodigo("E006"))
-            isNotNull("fechaEnvio")
+        if(persona?.esTriangulo()){
+            pxtPara = PersonaDocumentoTramite.withCriteria {
+//                eq("departamento", departamento)
+                eq("rolPersonaTramite", rolPara)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+                isNotNull("fechaEnvio")
 
-            maxResults(20);
+                tramite {
 
+                    eq('deDepartamento', departamento)
+
+                }
+
+                maxResults(20);
+
+            }
+            pxtCopia = PersonaDocumentoTramite.withCriteria {
+//            eq("departamento", departamento)
+                eq("rolPersonaTramite", rolCopia)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+                isNotNull("fechaEnvio")
+
+                tramite {
+
+                    eq ('deDepartamento', departamento)
+                }
+
+
+                maxResults(20);
+            }
+        }else{
+
+            pxtPara = PersonaDocumentoTramite.withCriteria {
+                eq("persona", persona)
+                eq("rolPersonaTramite", rolPara)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+                isNotNull("fechaEnvio")
+
+                tramite {
+
+                    eq('de', persona)
+                }
+
+                maxResults(20);
+
+            }
+            pxtCopia = PersonaDocumentoTramite.withCriteria {
+//                eq("persona", persona)
+                eq("rolPersonaTramite", rolCopia)
+                eq('estado', EstadoTramite.findByCodigo("E006"))
+                isNotNull("fechaEnvio")
+
+
+                tramite {
+                    eq('de', persona)
+                }
+
+                maxResults(20);
+            }
         }
-        def pxtCopia = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamento)
-            eq("rolPersonaTramite", rolCopia)
-            eq('estado', EstadoTramite.findByCodigo("E006"))
-            isNotNull("fechaEnvio")
 
-
-            maxResults(20);
-        }
 
         pxtPara += pxtCopia
-
-        def res
-
 
         if (params.fecha) {
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
@@ -486,7 +529,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         }
 
 
-        if (Persona.get(session.usuario.id).esTriangulo()) {
+        if (persona.esTriangulo()) {
 
             res = PersonaDocumentoTramite.withCriteria {
 
@@ -563,10 +606,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 
         }
-
-
-        println("res" + res + ' ' + res.unique())
-
         return [tramites: res.unique(), pxtTramites: pxtPara]
 
 
