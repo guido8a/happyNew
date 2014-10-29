@@ -232,7 +232,7 @@ class ElementosTagLib {
                 if (dep.id == persona.departamento.id) {
                     def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
                     usuarios.each { usu ->
-                        if ((((!esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id == persona.id))) && usu.estaActivo && usu.puedeRecibirOff) {
+                        if ((((!esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id == persona.id))) && usu.estaActivo && usu.puedeRecibirOff) {
 //                            users += it
                             disponibles.add([id     : usu.id,
                                              label  : usu.toString(),

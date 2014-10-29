@@ -231,7 +231,7 @@ class TramiteAdminController extends Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
 
-        if (estadosNo.contains(paraTramite.estado)) {
+        if (estadosNo.contains(paraTramite?.estado)) {
             return [tramite: tramite, error: "El trámite se encuentra <strong>${paraTramite.estado.descripcion}</strong>, no puede crear copias"]
         } else {
             def de = tramite.de

@@ -421,7 +421,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def enviar() {
-          if (request.getMethod() == "POST") {
+        if (request.getMethod() == "POST") {
             def msg = ""
             def tramite = Tramite.get(params.id)
             def envio = new Date()
@@ -780,6 +780,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         def persona = Persona.get(session.usuario.id)
+        def esTriangulo = session.usuario.esTriangulo
 
         def de = session.usuario
         def disp, disponibles = []
@@ -792,31 +793,33 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             disp = [persona.departamento]
         }
+        def copias = []
+        if(tramite.id) {
+            copias = tramite.copias.persona.id*.toLong()
+        }
         //modificado
         disp.each { dep ->
             if (dep.id == persona.departamento?.id) {
-                def usuarios = Persona.findAllByDepartamento(dep)
+                def usuarios = Persona.findAllByDepartamento(dep, [sort: 'nombre'])
                 usuarios.each {
                     if (it.id != de.id) {
                         users += it
                     }
                 }
-                for (int i = users.size() - 1; i > -1; i--) {
-                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
-                        users.remove(i)
-                    } else {
+                users.each { usu->
+                    if ((((!esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id == persona.id))) && usu.estaActivo && usu.puedeRecibirOff) {
                         if (params.id) {
-                            if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                                disponibles.add([id     : users[i].id,
-                                                 label  : users[i].toString(),
-                                                 obj    : users[i],
-                                                 externo: false],)
+                            if (!copias.contains(usu.id.toLong())) {
+                                disponibles.add([id     : usu.id,
+                                        label  : usu.toString(),
+                                        obj    : usu,
+                                        externo: false],)
                             }
                         } else {
-                            disponibles.add([id     : users[i].id,
-                                             label  : users[i].toString(),
-                                             obj    : users[i],
-                                             externo: false])
+                            disponibles.add([id     : usu.id,
+                                    label  : usu.toString(),
+                                    obj    : usu,
+                                    externo: false])
                         }
                     }
                 }
@@ -833,17 +836,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
                             disp2.add([id     : dep.id * -1,
-                                       label  : dep.descripcion,
-                                       obj    : dep,
-                                       externo: dep.externo == 1])
+                                    label  : dep.descripcion,
+                                    obj    : dep,
+                                    externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                   label  : dep.descripcion,
-                                   obj    : dep,
-                                   externo: dep.externo == 1])
+                                label  : dep.descripcion,
+                                obj    : dep,
+                                externo: dep.externo == 1])
                     }
                 }
             }
