@@ -14,10 +14,10 @@
 
     <body>
 
-        <div class="alert alert-danger text-shadow">
+        <div class="alert alert-warning text-shadow">
             <i class="fa fa-ban fa-4x pull-left"></i>
 
-            <h1 class="text-danger tituloError">Ha ocurrido un error grave</h1>
+            <h1 class="text-warning tituloError">Acceso no permitido</h1>
 
             <p style="font-size: 16px; margin-top: 25px;">No está autorizado para ver la página solicitada.</p>
 
