@@ -121,16 +121,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def desenviar_ajax() {
-
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
         def ids
+        def enviado = EstadoTramite.findByCodigo("E003")
+        def recibido = EstadoTramite.findByCodigo("E004")
 
         if (params.ids) {
             ids = params.ids
         } else {
             ids = null
         }
+
+        println(tramite.estadoTramite)
+
+        if (tramite.estadoTramite == recibido) {
+            render "ERROR_Se ha cancelado el proceso de cancelación de envio.<br/>Este trámite no puede ser gestionado."
+            return
+        }
+
 
         def tramiteEsCircular = tramite.tipoDocumento.codigo == "CIR"
         def errores = ""

@@ -1,3 +1,4 @@
+<%@ page import="happy.tramites.Tramite" %>
 <%--
   Created by IntelliJ IDEA.
   User: gato
@@ -61,21 +62,30 @@
                             <g:else>
                                 <td style="width: 190px">${tramite?.tramite?.de?.nombre + " " + tramite?.tramite?.de?.apellido}</td>
                             </g:else>
-                            <g:if test="${tramite?.tramite?.para?.persona}">
-                                <td style="width: 200px">${tramite?.tramite?.para?.persona?.nombre + " " + tramite?.tramite?.para?.persona?.apellido}</td>
+                            <g:if test="${tramite?.departamento}">
+                                <td style="width: 200px">${tramite?.departamento?.descripcion + ' [' + tramite?.rolPersonaTramite?.descripcion + '] ' }</td>
                             </g:if>
                             <g:else>
-                                <td style="width: 200px">${tramite?.tramite?.para?.departamento?.descripcion}</td>
+                                <td style="width: 200px">${tramite?.persona?.nombre + " " + tramite?.persona?.apellido + ' [' + tramite?.rolPersonaTramite?.descripcion + ' ] '}</td>
                             </g:else>
                             <td style="width: 190px">${tramite?.tramite?.asunto}</td>
                             <td style="width: 115px">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
-                            <g:if test="${tramite?.tramite?.padre}">
-                                <td style="width: 110px">${tramite?.tramite?.padre?.codigo}</td>
+                            <g:if test="${tramite?.rolPersonaTramite?.codigo == 'R002'}">
+                                <g:if test="${tramite?.tramite?.tramitePrincipal}">
+                                    <td style="width: 110px">${ Tramite.get(tramite?.tramite?.tramitePrincipal).codigo}</td>
+                                </g:if>
+                                <g:else>
+                                    <td style="width: 110px"></td>
+                                </g:else>
                             </g:if>
                             <g:else>
-                                <td style="width: 110px">Trámite Padre</td>
+                                <g:if test="${tramite?.tramite?.padre}">
+                                    <td style="width: 110px">${tramite?.tramite?.padre?.codigo}</td>
+                                </g:if>
+                                <g:else>
+                                    <td style="width: 110px">Trámite Padre</td>
+                                </g:else>
                             </g:else>
-                            %{--<td>${tramite?.tramite?.observaciones}</td>--}%
                             <td style="width: 67px">${tramite?.estado?.descripcion}</td>
                         </tr>
                     %{--</g:if>--}%

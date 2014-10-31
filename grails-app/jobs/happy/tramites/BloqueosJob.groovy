@@ -27,10 +27,10 @@ class BloqueosJob {
             if(pdt.tramite.externo!="1"){
 //                println "no es externo"
               //  if(!pdt.persona && !pdt.departamento)
-//                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
+
                 def fechaBloqueo = pdt.fechaBloqueo
                 if(fechaBloqueo && fechaBloqueo<ahora){
-
+//                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                     if(pdt.tramite.deDepartamento){
                         if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
                             warning.add(pdt.tramite.deDepartamento)
@@ -173,7 +173,8 @@ class BloqueosJob {
         }
         bloquearUsu.each {
 //            println "bloqueando usu recibir "+it
-            if(!(it.puedeAdmin)) {
+            if(!(it.getPuedeAdminOff() )) {
+//                println "entro"
                 it.estado = "B"
                 it.save(flush: true)
             }

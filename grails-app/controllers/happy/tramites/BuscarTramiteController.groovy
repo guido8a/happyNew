@@ -433,7 +433,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
         }
 
-
         return [tramites: res.unique(), pxtTramites: pxtPara]
 
 

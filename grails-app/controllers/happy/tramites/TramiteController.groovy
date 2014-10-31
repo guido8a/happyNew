@@ -151,9 +151,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def saveTramite() {
-        /*
-         ['editorTramite':'<p>s asdf asdfasd asdf</p>\n', 'tramite':'4', 'action':'saveTramite', 'format':null, 'controller':'tramiteImagenes']
-         */
+
         def tramite = Tramite.get(params.id)
         def paratr = tramite.para
         def copiastr = tramite.copias
@@ -173,7 +171,11 @@ class TramiteController extends happy.seguridad.Shield {
                 if (c?.estado?.codigo == "E006") {
                     render "NO_Este trámite ya ha sido anulado, no puede guardar modificaciones"
                     return
-                } else {
+                }
+                if(c?.estado?.codigo == 'E005'){
+                    render "NO_Este trámite ya ha sido archivado, no puede guardar modificaciones"
+                    return
+                }else {
 
                     if (!enviado) {
                         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
@@ -1282,6 +1284,11 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def pdt = PersonaDocumentoTramite.get(params.id)
 
+        if(pdt.estado.codigo == 'E003'){
+            render 'no'
+            return
+        }
+
         if (pdt.estado.codigo != "E006" && pdt.estado.codigo != "E005") {
             def estadoTramite = EstadoTramite.findByCodigo('E005')
             pdt.estado = estadoTramite
@@ -1330,7 +1337,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
             render "ok"
         } else {
-            println("entro false")
+//            println("entro false")
             render("no")
         }
     }

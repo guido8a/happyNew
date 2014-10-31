@@ -873,6 +873,17 @@ class TramiteAdminController extends Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estados = [estadoAnulado, estadoArchivado]
+
+
+        println("tiene hijos " + Tramite.findAllByPadre(Tramite.get(persDocTram.tramite.id)))
+
+
+        if (Tramite.findAllByPadre(Tramite.get(persDocTram.tramite.id))) {
+            render "NO*"
+            return
+        }
+
+
         if (estados.contains(persDocTram.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede quitar el recibido"
         } else {

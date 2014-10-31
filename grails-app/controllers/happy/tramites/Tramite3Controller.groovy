@@ -841,7 +841,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
 
 //            println("pxt 2"  + pxt )
-
+            println "Estado del pdt "+pxt.estado.codigo
             if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {
@@ -897,19 +897,19 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     if (pdt.save(flush: true)) {
                         render "OK_Trámite recibido correctamente"
                     } else {
-                        println pdt.errors
+                        println "error pdt recibir "+pdt.errors
                         render "NO_Ocurrió un error al recibir"
                     }
                     def job = new BloqueosJob()
                     job.executeRecibir(persona.departamento, session.usuario)
                     job = null
                 } else {
-                    println pxt.errors
-                    println tramite.errors
+                    println "pxt error " +pxt.errors
+                    println "error tramite recibir "+tramite.errors
                     render "NO_Ocurrió un error al recibir"
                 }
             } else {
-                println pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
+                println "estado 4 "+ pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
                 render "NO_Ocurrió un error al recibir"
             }
 

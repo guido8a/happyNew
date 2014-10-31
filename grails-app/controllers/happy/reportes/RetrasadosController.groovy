@@ -130,7 +130,7 @@ class RetrasadosController  extends Shield{
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
 
-        def contenido = ne Paragraph();
+        def contenido = new Paragraph();
         def hijos = datos["hijos"]
         if (datos) {
             if ((puedeVer.id.contains(datos["objeto"].id))) {

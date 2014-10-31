@@ -322,6 +322,16 @@ class Persona {
 //            println "perms "+perms
         return perms.size() > 0
     }
+    def getPuedeAdminOff() {
+        def perm = PermisoUsuario.withCriteria {
+            eq("persona", this)
+            eq("permisoTramite", PermisoTramite.findByCodigo("P013"))
+        }
+//            println "perm "+perm
+        def perms = perm.findAll { it.estaActivo }
+//            println "perms "+perms
+        return perms.size() > 0
+    }
 
     def getEsTriangulo() {
         return this.esTriangulo()
