@@ -313,7 +313,7 @@
                                 id : id
                             },
                             success : function (msg) {
-                                if(msg=="ok") {
+                                if (msg == "ok") {
                                     $.ajax({
                                         type    : "POST",
                                         url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
@@ -370,8 +370,7 @@
                                         }
                                     });
 
-
-                                }else
+                                } else
                                     bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")
                             }
                         });
@@ -441,7 +440,7 @@
                                 id : id
                             },
                             success : function (msg) {
-                                if(msg=="ok")
+                                if (msg == "ok")
                                     window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");
                                 else
                                     bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")
@@ -477,7 +476,7 @@
                 var crearHermano = {
                     label : "Agregar documento al trámite",
                     icon  : "fa fa-paste",
-                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id
+                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1"
                 }; //crear hermano
 
                 var editar = {
