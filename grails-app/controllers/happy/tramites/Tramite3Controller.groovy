@@ -11,6 +11,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
     def save() {
 
+//        println("params " + params)
+
+        if(params.tramite.aQuienContesta.id){
+          if(PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006'  ){
+            flash.tipo = "error"
+            flash.message = "Ha ocurrido un error al grabar el tramite"
+            redirect(controller: 'tramite', action: "bandejaEntrada")
+            return
+        }
+        }
+
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
 

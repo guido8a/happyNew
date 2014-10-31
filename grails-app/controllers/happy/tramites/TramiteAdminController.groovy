@@ -251,7 +251,7 @@ class TramiteAdminController extends Shield {
                     def usuarios = Persona.findAllByDepartamento(dep)
                     usuarios.each {
                         if (it.id != de.id) {
-                            if (!para.persona || (para.persona && para.personaId != it.id)) {
+                            if (!para?.persona || (para?.persona && para?.personaId != it.id)) {
                                 users += it
                             }
                         }

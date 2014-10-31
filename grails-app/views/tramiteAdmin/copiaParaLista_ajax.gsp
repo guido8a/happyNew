@@ -70,7 +70,9 @@ li {
     <div class="alert alert-info">
         <b>Trámite:</b> ${tramite.codigo}<br/>
         <b>De:</b> ${tramite.deDepartamento ? tramite.deDepartamento.codigo : tramite.de.departamento.codigo + " " + tramite.de.login}<br/>
-        <b>Para:</b> ${tramite.para.departamento ? tramite.para.departamento.codigo : tramite.para.persona.login + " (" + tramite.para.persona.departamento.codigo + ")"}
+        <g:if test="${tramite.para}">
+            <b>Para:</b> ${tramite.para.departamento ? tramite.para.departamento.codigo : tramite.para.persona.login + " (" + tramite.para.persona.departamento.codigo + ")"}
+        </g:if>
         <g:if test="${tramite.copias.size() > 0}">
             <g:set var="copias" value=""/>
             <g:each in="${tramite.copias}" var="copia">
