@@ -40,8 +40,9 @@
                 <g:if test="${tramite.fechaRecepcion}">
                     <g:if test="${tramite.fechaLimiteRespuesta < now}">
                         <g:set var="clase" value="retrasado"/>
-                        <g:if test="${happy.tramites.Tramite.countByAQuienContesta(tramite) > 0}">
-                            <g:set var="clase" value="recibido"/>
+                        %{--<g:if test="${happy.tramites.Tramite.countByAQuienContesta(tramite) > 0}">--}%
+                        <g:if test="${tramite.respuestasVivas.size() > 0}">
+                        <g:set var="clase" value="recibido"/>
                         </g:if>
                     </g:if>
                     <g:else>
@@ -69,13 +70,20 @@
 
                <g:each in="${pxtTramites}" var="pxt">
                     <g:if test="${tramite?.id == pxt?.id}">
+                        %{--<tr data-id="${tramite?.tramite?.id}"--}%
+                            %{--class="${clase} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}"--}%
+                            %{--de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :--}%
+                                    %{--(tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"--}%
+                            %{--codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"--}%
+                            %{--prtr="${tramite?.id}" anexo="${anexo}" prtr="${tramite?.id}">--}%
+
                         <tr data-id="${tramite?.tramite?.id}"
-                            class="${clase} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}"
-                            de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :
-                                    (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
+                            class="${clase} ${(tramite?.tramite?.estadoTramiteExterno)?'estadoExterno':''}" de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :
+                                (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
                             codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
-                            prtr="${tramite?.id}" anexo="${anexo}" prtr="${tramite?.id}">
-                            <g:if test="${tramite?.tramite?.anexo == 1}">
+                            anexo="${anexo}" prtr="${tramite?.id}">
+
+                           <g:if test="${tramite?.tramite?.anexo == 1}">
                                 <td title="${tramite?.tramite?.asunto}">
                                     <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
                                         <i class="fa fa-eye-slash" style="margin-left: 10px"></i>

@@ -61,6 +61,7 @@
                             ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
                             codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
+                            principal="${tramite.tramitePrincipal}"
                             anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
 
                             <g:if test="${tramite?.anexo == 1}">
@@ -95,29 +96,6 @@
                                 </g:else>
                             </td>
                             <g:set var="infoExtra" value=""/>
-                            %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
-                                %{--<g:if test="${infoExtra != ''}">--}%
-                                    %{--<g:set var="infoExtra" value="${infoExtra + '<br/>'}"/>--}%
-                                %{--</g:if>--}%
-                                %{--<g:set var="infoExtra" value="${infoExtra + pdt.rolPersonaTramite.descripcion}: "/>--}%
-                                %{--<g:if test="${pdt.departamento}">--}%
-                                    %{--<g:set var="infoExtra" value="${infoExtra + pdt.departamento.codigo}"/>--}%
-                                %{--</g:if>--}%
-                                %{--<g:else>--}%
-                                    %{--<g:if test="${pdt.persona}">--}%
-                                        %{--<g:set var="infoExtra" value="${infoExtra + pdt.persona.login}"/>--}%
-                                    %{--</g:if>--}%
-                                %{--</g:else>--}%
-                                %{--<g:if test="${pdt.fechaEnvio}">--}%
-                                    %{--<g:if test="${pdt.fechaRecepcion}">--}%
-                                        %{--<g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>--}%
-                                    %{--</g:if>--}%
-                                    %{--<g:else>--}%
-                                        %{--<g:set var="infoExtra" value="${infoExtra + ' (no recibido)'}"/>--}%
-                                    %{--</g:else>--}%
-                                %{--</g:if>--}%
-                            %{--</g:each>--}%
-
                             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                                 <g:set var="infoExtra" value="${tramite.paraExterno}"/>
                             </g:if>
@@ -150,8 +128,8 @@
 
                             <td title="${infoExtra}">
                                 <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
-                                    ${tramite.paraExterno}
-                                    <g:set var="dest" value="${tramite.paraExterno ? 1 : 0}"/>
+                                    ${tramite?.paraExterno}
+                                    <g:set var="dest" value="${tramite?.paraExterno ? 1 : 0}"/>
                                 </g:if>
 
                             <g:else>
@@ -161,6 +139,7 @@
                                         <g:set var="dest" value="${1}"/>
                                     </g:if>
                                     <g:else>
+                                        <g:set var="dest" value="${0}"/>
                                         <g:if test="${para?.departamento?.triangulos}">
                                             <span class="small">
                                                 <g:each in="${para?.departamento?.triangulos}" var="t" status="i">
@@ -176,6 +155,9 @@
                                 </g:if>
                             %{--<g:else>--}%
                                 <span class="small">
+                                    <g:if test="${dest == null}">
+                                        <g:set var="dest" value="${0}"/>
+                                    </g:if>
                                     <g:each in="${copias}" var="copia" status="i">
                                         <g:set var="dest" value="${dest + 1}"/>
                                         [CC]

@@ -637,7 +637,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
+
+                order("fechaCreacion", "desc")
             }
+
         }
 
         return [tramites: res.tramite.unique(), pxtTramites: trams]

@@ -161,7 +161,7 @@ class PersonaDocumentoTramite {
             def para = tr.para
             def copias = tr.allCopias
             (copias + para).each { p ->
-                if (p.estado.codigo != 'E006') {
+                if (p?.estado?.codigo != 'E006') {
                     respuestasVivas += p
                 }
             }

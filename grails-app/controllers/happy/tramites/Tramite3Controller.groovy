@@ -1052,7 +1052,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             }
 
-//            order("fechaEnvio", 'desc')
+            order("fechaEnvio", 'desc')
         }
 
         return [tramites: res, pxtTramites: tramitesSinHijos]

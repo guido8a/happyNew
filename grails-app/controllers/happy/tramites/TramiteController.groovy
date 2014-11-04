@@ -1080,6 +1080,8 @@ class TramiteController extends happy.seguridad.Shield {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
             }
+
+            order("fechaEnvio", "desc")
         }
 
         return [tramites: res, pxtTramites: pxtTramites]
