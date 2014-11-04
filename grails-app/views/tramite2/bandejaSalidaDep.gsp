@@ -298,6 +298,8 @@
                 var tieneAlerta = $tr.hasClass("alerta");
                 var tieneAnexo = $tr.hasClass("conAnexo");
 
+                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
+
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
@@ -572,8 +574,8 @@
                     items.ver = ver;
                 }
                 <g:if test="${session.usuario.getPuedeVer()}">
-                items.detalles = detalles
-                items.arbol = arbol
+                items.detalles = detalles;
+                items.arbol = arbol;
                 </g:if>
                 if (porEnviar) {
                     if (esSumilla || esDex) {
@@ -582,7 +584,7 @@
                         items.editar = editar;
                     }
                 }
-                if (tienePadre) {
+                if (tienePadre || tienePrincipal) {
                     items.hermano = crearHermano;
                 }
                 if (tieneAnexo) {

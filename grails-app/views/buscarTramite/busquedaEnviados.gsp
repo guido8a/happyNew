@@ -224,6 +224,8 @@
                 var tieneAlerta = $tr.hasClass("alerta");
                 var enviado = $tr.hasClass("estado");
 
+                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
+
                 var arbol = {
                     label  : 'Cadena del trámite',
                     icon   : "fa fa-sitemap",
@@ -343,7 +345,7 @@
                 items.administrar = administrar;
                 </g:if>
 
-                if (padre) {
+                if (padre || tienePrincipal) {
                     items.hermano = crearHermano;
                 }
 

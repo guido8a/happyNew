@@ -252,21 +252,21 @@
                     }
                 };
 
-                var crearHermano = {
-                    label  : "Agregar documento al trámite",
-                    icon   : "fa fa-paste",
-                    action : function () {
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1";
-                    }
-                };
+                %{--var crearHermano = {--}%
+                %{--label  : "Agregar documento al trámite",--}%
+                %{--icon   : "fa fa-paste",--}%
+                %{--action : function () {--}%
+                %{--location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1";--}%
+                %{--}--}%
+                %{--};--}%
 
-                var administrar = {
-                    label  : "Administrar trámite",
-                    icon   : "fa fa-cogs",
-                    action : function () {
-                        location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
-                    }
-                };
+                %{--var administrar = {--}%
+                %{--label  : "Administrar trámite",--}%
+                %{--icon   : "fa fa-cogs",--}%
+                %{--action : function () {--}%
+                %{--location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;--}%
+                %{--}--}%
+                %{--};--}%
 
                 %{--var copia = {--}%
                 %{--separator_before : true,--}%
@@ -333,8 +333,8 @@
 
                 items.header.label = "Acciones";
                 <g:if test="${session.usuario.getPuedeVer()}">
-                items.detalles = detalles
-                items.arbol = arbol
+                items.detalles = detalles;
+                items.arbol = arbol;
                 </g:if>
 
                 return items

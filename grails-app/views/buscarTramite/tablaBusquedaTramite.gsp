@@ -83,7 +83,8 @@
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
-                    <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}" anulados="${receptoresAnulados.size()}" dep="${tramite.de.departamentoId}"
+                    <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}" anulados="${receptoresAnulados.size()}"
+                        dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
                         <td style="width: 110px">

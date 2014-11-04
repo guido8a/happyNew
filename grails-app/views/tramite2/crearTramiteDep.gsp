@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.OrigenTramite; happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.Tramite; happy.tramites.OrigenTramite; happy.tramites.TipoPrioridad; happy.tramites.TipoDocumento" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -107,8 +107,13 @@
             <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
             <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
 
+            <g:if test="${tramite.tramitePrincipal > 0}">
+                <g:set var="principal" value="${Tramite.get(tramite.tramitePrincipal)}"/>
+            </g:if>
+
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre || principal}">
+
                 <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                     <p class="css-vertical-text">D. Principal</p>

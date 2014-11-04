@@ -53,6 +53,7 @@
                     class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
                     ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
                     codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
+                    principal="${tramite.tramitePrincipal}"
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
                     anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
                     <g:if test="${tramite?.anexo == 1}">

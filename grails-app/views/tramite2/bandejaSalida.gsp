@@ -309,6 +309,8 @@
                 var tieneAlerta = $tr.hasClass("alerta");
                 var tieneAnexo = $tr.hasClass("conAnexo");
 
+                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
+
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
@@ -618,7 +620,7 @@
                         items.editar = editar;
                     }
                 }
-                if (tienePadre) {
+                if (tienePadre || tienePrincipal) {
                     <g:if test="${!esEditor}">
                     items.hermano = crearHermano;
                     </g:if>

@@ -172,18 +172,18 @@ class TramiteController extends happy.seguridad.Shield {
                     render "NO_Este trámite ya ha sido anulado, no puede guardar modificaciones"
                     return
                 }
-                if(c?.estado?.codigo == 'E005'){
+                if (c?.estado?.codigo == 'E005') {
                     render "NO_Este trámite ya ha sido archivado, no puede guardar modificaciones"
                     return
-                }else {
+                } else {
 
                     if (!enviado) {
                         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
                         tramite.fechaModificacion = new Date()
                         //log Jefe
-                        if(session.usuario.getPuedeJefe()){
+                        if (session.usuario.getPuedeJefe()) {
                             tramite.fechaModificacion = new Date()
-                            tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '',' ','' , '')
+                            tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '', ' ', '', '')
                         }
                         if (tramite.save(flush: true)) {
                             def para = tramite.para
@@ -546,6 +546,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
             tramite.tramitePrincipal = p.tramitePrincipal
             padre = null
+            pdt = null
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
@@ -1284,7 +1285,7 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def pdt = PersonaDocumentoTramite.get(params.id)
 
-        if(pdt.estado.codigo == 'E003'){
+        if (pdt.estado.codigo == 'E003') {
             render 'no'
             return
         }

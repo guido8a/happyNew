@@ -803,7 +803,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             disp = [persona.departamento]
         }
         def copias = []
-        if(tramite.id) {
+        if (tramite.id) {
             copias = tramite.copias.persona.id*.toLong()
         }
         //modificado
@@ -815,20 +815,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         users += it
                     }
                 }
-                users.each { usu->
+                users.each { usu ->
                     if ((((!esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id != persona.id) || (esTriangulo && usu.id == persona.id))) && usu.estaActivo && usu.puedeRecibirOff) {
                         if (params.id) {
                             if (!copias.contains(usu.id.toLong())) {
                                 disponibles.add([id     : usu.id,
-                                        label  : usu.toString(),
-                                        obj    : usu,
-                                        externo: false],)
+                                                 label  : usu.toString(),
+                                                 obj    : usu,
+                                                 externo: false],)
                             }
                         } else {
                             disponibles.add([id     : usu.id,
-                                    label  : usu.toString(),
-                                    obj    : usu,
-                                    externo: false])
+                                             label  : usu.toString(),
+                                             obj    : usu,
+                                             externo: false])
                         }
                     }
                 }
@@ -845,17 +845,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
                             disp2.add([id     : dep.id * -1,
-                                    label  : dep.descripcion,
-                                    obj    : dep,
-                                    externo: dep.externo == 1])
+                                       label  : dep.descripcion,
+                                       obj    : dep,
+                                       externo: dep.externo == 1])
                         }
                     }
                 } else {
                     if (dep.triangulos.size() > 0) {
                         disp2.add([id     : dep.id * -1,
-                                label  : dep.descripcion,
-                                obj    : dep,
-                                externo: dep.externo == 1])
+                                   label  : dep.descripcion,
+                                   obj    : dep,
+                                   externo: dep.externo == 1])
                     }
                 }
             }
@@ -908,6 +908,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
             tramite.tramitePrincipal = p.tramitePrincipal
             padre = null
+            pdt = null
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
@@ -1328,7 +1329,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             alerta.controlador = "tramite3"
             alerta.fechaCreacion = new Date()
             alerta.tramite = tramite
-            if(!alerta.save(flush: true)) {
+            if (!alerta.save(flush: true)) {
                 println "Error al mandar la alerta"
             }
             render "Permiso de impresión otorgado correctamente"
@@ -1381,7 +1382,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 order("fechaCreacion", "desc")
             }
 
-         }
+        }
 
         return [tramites: res.tramite.unique(), pxtTramites: tramites]
     }

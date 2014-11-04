@@ -237,6 +237,8 @@
 
                 var depId = $tr.attr("dep");
 
+                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
+
                 var infoRemitente = {
                     label           : 'Información remitente',
                     icon            : "fa fa-search",
@@ -336,31 +338,31 @@
                     }
                 };
 
-                var contestar = {
-                    label  : "Agregar documento al trámite",
-                    icon   : "fa fa-paste",
-                    action : function () {
-                        $.ajax({
-                            type    : 'POST',
-                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
-                            data    : {
-                                id : id
-                            },
-                            success : function (msg) {
-                                if (msg == "OK") {
-                                    <g:if test="${session.usuario.esTriangulo}">
-                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + id + "&buscar=1";
-                                    </g:if>
-                                    <g:else>
-                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + id + "&buscar=1";
-                                    </g:else>
-                                } else {
-                                    bootbox.alert("No puede agregar documentos a este trámite");
-                                }
-                            }
-                        });
-                    }
-                };
+                %{--var contestar = {--}%
+                %{--label  : "Agregar documento al trámite",--}%
+                %{--icon   : "fa fa-paste",--}%
+                %{--action : function () {--}%
+                %{--$.ajax({--}%
+                %{--type    : 'POST',--}%
+                %{--url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',--}%
+                %{--data    : {--}%
+                %{--id : id--}%
+                %{--},--}%
+                %{--success : function (msg) {--}%
+                %{--if (msg == "OK") {--}%
+                %{--<g:if test="${session.usuario.esTriangulo}">--}%
+                %{--location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + id + "&buscar=1";--}%
+                %{--</g:if>--}%
+                %{--<g:else>--}%
+                %{--location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + id + "&buscar=1";--}%
+                %{--</g:else>--}%
+                %{--} else {--}%
+                %{--bootbox.alert("No puede agregar documentos a este trámite");--}%
+                %{--}--}%
+                %{--}--}%
+                %{--});--}%
+                %{--}--}%
+                %{--};--}%
 
                 var administrar = {
                     label  : "Administrar trámite",
@@ -511,12 +513,12 @@
                 <g:if test="${session.usuario.getPuedeAdmin()}">
                 items.administrar = administrar;
                 </g:if>
-                if (conPadre) {
+                if (conPadre || tienePrincipal || esPrincipal) {
                     items.crearHermano = crearHermano;
                 }
-                if (esPrincipal) {
-                    items.contestar = contestar;
-                }
+//                if (esPrincipal) {
+//                    items.contestar = contestar;
+//                }
 
                 %{--<g:if test="${session.usuario.getPuedeJefe()}">--}%
                 %{----}%
