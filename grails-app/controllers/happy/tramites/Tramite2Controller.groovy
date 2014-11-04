@@ -1348,7 +1348,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def trams = Tramite.withCriteria {
             eq("deDepartamento", persona.departamento)
             inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
-            order("fechaCreacion", "desc")
+            order("fechaCreacion", "asc")
         }
         trams.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
@@ -1378,8 +1378,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
+                order("fechaCreacion", "desc")
             }
-        }
+
+         }
 
         return [tramites: res.tramite.unique(), pxtTramites: tramites]
     }

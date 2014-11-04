@@ -121,10 +121,6 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-
-                %{--<a href="#" class="btn btn-primary btnArchivados">--}%
-                %{--<i class="fa fa-folder"></i> Archivados--}%
-                %{--</a>--}%
                 <a href="#" class="btn btn-success btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
                 </a>

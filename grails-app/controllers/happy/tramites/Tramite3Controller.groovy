@@ -1049,10 +1049,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
+
             }
+
+//            order("fechaEnvio", 'desc')
         }
 
-//        return [tramites: res, pxtTramites: pxtTramites, idTramitesRetrasados: idTramitesRetrasados, idTramitesRecibidos: idTramitesRecibidos, idRojos: idRojos]
         return [tramites: res, pxtTramites: tramitesSinHijos]
 
     }
