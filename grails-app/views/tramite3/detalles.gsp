@@ -80,9 +80,9 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-1 negrilla">Asunto:</div>
+                    <div class="col-xs-1 negrilla">Asunto1:</div>
 
-                    <div class="col-xs-8">${t.asunto}</div>
+                    <div class="col-xs-8">${t.asunto.decodeHTML()}</div>
                 </div>
 
                 <g:if test="${t.personaPuedeLeer(session.usuario) && t.texto?.size() > 2}">

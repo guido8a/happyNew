@@ -782,14 +782,14 @@
                             if (parts[0] == 'ok') {
                                 cargarBandeja(true);
                                 log('Trámites Enviados'+parts[1], 'success');
-                                if (imprimir && parts[1] != "") {
+                                if (imprimir) {
                                     openLoader();
                                     location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
                                     closeLoader();
                                 }
                             } else {
                                 cargarBandeja(true);
-//                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
                                 %{--location.href = "${g.createLink(action: 'errores1')}";--}%
 
 //                                closeLoader();

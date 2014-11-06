@@ -34,7 +34,7 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(usuario.id)
         def esEditor = persona.puedeEditor
         def tramite = Tramite.get(params.id)
-        if (tramite.estadoTramite.codigo == "E001") { //borrador, por enviar
+        if (tramite?.estadoTramite?.codigo == "E001") { //borrador, por enviar
             return [tramite: tramite, esEditor: esEditor]
         } else {
             flash.message = "El trámite seleccionado no puede ser editado"

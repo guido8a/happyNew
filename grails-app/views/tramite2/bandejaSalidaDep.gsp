@@ -711,8 +711,9 @@
                         },
                         success : function (msg) {
                             closeLoader();
-//                                                console.log(msg);
-                            if (msg == 'ok') {
+//                            console.log(msg);
+                            var parts = msg.split('_');
+                            if (parts[0] == 'ok') {
                                 cargarBandeja(true);
                                 log('Trámites Enviados', 'success');
                                 if (imprimir) {
@@ -721,9 +722,9 @@
                                     closeLoader();
                                 }
                             } else {
-//                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
                                 cargarBandeja(true);
-                                location.href = "${g.createLink(action: 'errores1')}";
+                                %{--location.href = "${g.createLink(action: 'errores1')}";--}%
                             }
                         }
                     });

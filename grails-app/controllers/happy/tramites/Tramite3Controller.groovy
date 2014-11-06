@@ -10,8 +10,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def tramitesService
 
     def save() {
-
-//        println("params " + params)
+        params.tramite.asunto = params.tramite.asunto.decodeHTML()
+        params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
+        params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
 
         if(params.tramite.aQuienContesta.id){
           if(PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006'  ){

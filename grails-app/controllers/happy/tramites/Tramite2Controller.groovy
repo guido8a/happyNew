@@ -925,6 +925,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def saveDep() {
+//        println("params" + params)
+
+        params.tramite.asunto = params.tramite.asunto.decodeHTML()
+        params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
+        params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
+
+//        println("asunto " + params.tramite.asunto)
+
+//        def nombre = rubro.nombre.decodeHTML()
+//
+//        nombre = nombre.replaceAll(/</, /&lt;/)
+//        nombre = nombre.replaceAll(/>/, /&gt;/)
+
+
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
         def aqc
