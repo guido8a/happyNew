@@ -92,7 +92,7 @@
                                 </div>
 
                                 <div class="col-md-2">
-                                    <elm:datepicker name="desde_${reporte}" class="form-control date" value="${new Date() - 15}"
+                                    <elm:datepicker name="desde_${reporte}" class="form-control date" value="${new Date() - 15}" maxDate="+0"
                                                     extra="data-tipo='desde' data-reporte='${reporte}'" onChangeDate="updateFecha"/>
                                 </div>
 
@@ -135,11 +135,19 @@
 
         <script type="application/javascript">
             function updateFecha($elm, e) {
-//                console.log($elm); //el objeto jquery del datepicker, el textfield
+////                console.log($elm); //el objeto jquery del datepicker, el textfield
                 var tipo = $elm.data("tipo");
                 var valor = $elm.val();
                 var reporte = $elm.data("reporte");
                 $("#" + reporte + "_" + tipo).text(valor);
+                if($elm.attr("id") == "desde_generados_input"){
+                    var fecha = e.date;
+                    var $hasta = $("#hasta_generados_input");
+                    if ($hasta.datepicker('getDate') < fecha) {
+                        $hasta.datepicker('setDate', fecha);
+                    }
+                    $hasta.datepicker('setStartDate', fecha);
+                }
             }
 
             $(function () {
@@ -148,7 +156,7 @@
                     var valor = $(this).val();
                     var reporte = $(this).data("reporte");
                     $("#" + reporte + "_" + tipo).text(valor);
-                });
+               });
 
                 $(".generar").click(function () {
                     var params = "?desde=" + $("#desde_generados_input").val() + "&hasta=" + $("#hasta_generados_input").val() + "&tipo=prsn";

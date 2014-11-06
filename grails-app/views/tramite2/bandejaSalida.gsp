@@ -583,6 +583,11 @@
                                                                 cargarBandeja(true)
                                                                 log("Envío del trámite cancelado correctamente", 'success')
                                                                 closeLoader();
+                                                            }else{
+                                                                if(parts[0] == 'NO'){
+                                                                 log(parts[1], "error")
+                                                                 closeLoader();
+                                                                }
                                                             }
                                                         }
                                                     });
@@ -772,10 +777,12 @@
                         success : function (msg) {
                             closeLoader();
 //                                                console.log(msg);
-                            if (msg == 'ok') {
+                            var parts = msg.split("_");
+
+                            if (parts[0] == 'ok') {
                                 cargarBandeja(true);
-                                log('Trámites Enviados', 'success');
-                                if (imprimir) {
+                                log('Trámites Enviados'+parts[1], 'success');
+                                if (imprimir && parts[1] != "") {
                                     openLoader();
                                     location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
                                     closeLoader();
@@ -783,7 +790,7 @@
                             } else {
                                 cargarBandeja(true);
 //                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
-                                location.href = "${g.createLink(action: 'errores1')}";
+                                %{--location.href = "${g.createLink(action: 'errores1')}";--}%
 
 //                                closeLoader();
                             }
