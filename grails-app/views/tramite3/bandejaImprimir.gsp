@@ -15,7 +15,7 @@
         <style type="text/css">
 
         body {
-            background-color : #dbd0e5;
+            background-color : #ebe0f5; /*#fef8e1 */;
         }
 
         .etiqueta {
@@ -83,7 +83,7 @@
         }
 
         tr.alerta, tr.alerta td {
-            background-color : #f2c1b9;
+            background-color : #dbd0d5;
             font-weight      : bold;
         }
 
@@ -102,7 +102,7 @@
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
             /*background-color:#faebc9;*/
-            background-color : #a591ba;
+            background-color : #c5a1ca;
         }
 
         #c99671
