@@ -524,7 +524,7 @@
                 %{----}%
                 %{--items.plazo = ampliarPlazo;--}%
                 %{--</g:if>--}%
-                console.log(!externo && recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId));
+                %{--console.log(!externo && recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId));--}%
                 if (recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId)) {
                     items.plazo = ampliarPlazo;
                 }
