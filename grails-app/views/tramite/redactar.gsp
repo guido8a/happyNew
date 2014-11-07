@@ -536,7 +536,7 @@
                             ['Image'/*, 'Timestamp'*/, '-', 'TextColor', 'BGColor', '-', 'About' ],
                             '/',
                             [ 'Bold', 'Italic', 'Underline', /*'Strike', */'Subscript', 'Superscript'/*, '-', 'RemoveFormat'*/ ],
-                            [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Font', 'FontSize' ]
+                            [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'FontSize' ]
 //                            [/* 'Font', 'FontSize'*/ /*, '-', 'TextColor', 'BGColor'*/]
 //                            ['About' ]
                         ]

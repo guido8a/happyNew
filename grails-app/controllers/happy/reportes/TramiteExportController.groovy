@@ -271,10 +271,18 @@ class TramiteExportController extends Shield{
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         def fonts = [times12bold     : times12bold, times10bold: times10bold, times8bold: times8bold,
-                times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
+                     times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times18bold: times18bold]
 
-        com.lowagie.text.Document document
-        document = new com.lowagie.text.Document(PageSize.A4);
+//        com.lowagie.text.Document document
+//        document = new com.lowagie.text.Document(PageSize.A4);
+//        def pdfw = PdfWriter.getInstance(document, baos);
+//        HeaderFooter footer1 = new HeaderFooter(new Phrase('', times8normal), true);
+//        footer1.setBorder(Rectangle.NO_BORDER);
+//        footer1.setAlignment(Element.ALIGN_CENTER);
+//        document.setFooter(footer1);
+//        document.open();
+
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
         def pdfw = PdfWriter.getInstance(document, baos);
         HeaderFooter footer1 = new HeaderFooter(new Phrase('', times8normal), true);
         footer1.setBorder(Rectangle.NO_BORDER);
@@ -284,13 +292,13 @@ class TramiteExportController extends Shield{
 
         Paragraph headers = new Paragraph();
         headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
-        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
+//        headers.add(new Paragraph("", times18bold));
         headers.add(new Paragraph("Guía de Envio de Trámites", times18bold));
         headers.add(new Paragraph(params.departamento, times12bold));
         headers.add(new Paragraph("Fecha: " + new Date().format("dd-MM-yyyy"), times12bold));
@@ -342,8 +350,8 @@ class TramiteExportController extends Shield{
                     } else {
                         addCellTabla(tablaTramites, new Paragraph((it?.persona?.nombre ?: '') + " " + (it?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
                     }
-                    addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
-                    addCellTabla(tablaTramites, new Paragraph("______________________", times8bold), prmsHeaderHoja)
+                    addCellTabla(tablaTramites, new Paragraph("___________________", times8bold), prmsHeaderHoja)
+                    addCellTabla(tablaTramites, new Paragraph("___________________", times8bold), prmsHeaderHoja)
                 }
             }
 

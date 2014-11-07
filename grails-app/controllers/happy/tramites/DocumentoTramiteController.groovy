@@ -190,6 +190,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 'image/jpg'                                                                : "jpg",
 
                 'application/pdf'                                                          : 'pdf',
+                'application/download'                                                     : 'pdf',
 
                 'application/excel'                                                        : 'xls',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'        : 'xlsx',
