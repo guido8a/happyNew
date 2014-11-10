@@ -350,9 +350,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def usuario = session.usuario
         def departamento = Persona.get(usuario.id).departamento
         def personal = Persona.findAllByDepartamento(departamento)
+//        println("personal " + personal)
         def personalActivo = []
         personal.each {
-            if (it?.estaActivo && it?.id != usuario.id) {
+            if (it?.estaActivo && it?.id != usuario.id && !it?.esTriangulo() && !it?.getPuedeJefe()) {
                 personalActivo += it
             }
         }
