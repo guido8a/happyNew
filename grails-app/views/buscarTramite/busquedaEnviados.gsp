@@ -58,12 +58,12 @@
                 </div>
 
                 <div class="col-md-2" style="margin-left: 150px">
-                    <label>Fecha Desde</label>
+                    <label>Enviados Desde</label>
                     <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
                 </div>
 
                 <div class="col-md-2" style="margin-left: 15px">
-                    <label>Fecha Hasta</label>
+                    <label>Enviados Hasta</label>
                     <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                 </div>
 
