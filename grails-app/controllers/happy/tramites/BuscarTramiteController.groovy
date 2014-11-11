@@ -260,44 +260,59 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
     def tablaBusquedaEnviados() {
 
-        if (params.fecha) {
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
-        }
-
-        if (params.fechaRecepcion) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
-        }
-
-        def pers = Persona.get(session.usuario.id)
-
+        def persona = Persona.get(session.usuario.id)
+        def departamento = persona?.departamento
+        def pxtPara
+        def pxtCopia
         def res
 
-        res = Tramite.withCriteria {
-            if (params.fecha) {
-                ge('fechaEnvio', params.fechaIni)
-                le('fechaEnvio', params.fechaFin)
-            }
-            if (params.asunto) {
-                ilike('asunto', '%' + params.asunto + '%')
-            }
-            if (params.memorando) {
-                ilike('codigo', '%' + params.memorando + '%')
-            }
-            if (pers.puedeJefe) {
-                inList('de', Persona.findAllByDepartamento(pers.departamento))
-                inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
-            } else {
-                eq('de', pers)
-                inList('estadoTramite', EstadoTramite.findAllByCodigoInList(["E003", "E004"]))
-            }
-            maxResults(20);
-            order("estadoTramite", 'desc')
-            order('codigo', 'desc')
+        def rolPara = RolPersonaTramite.findByCodigo('R001');
+        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+
+
+        if (params.fechaDesde) {
+            params.fechaDesde = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaDesde + " 00:00:00")
+        }
+        if (params.fechaHasta) {
+            params.fechaHasta = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaHasta + " 23:59:59")
+        }else{
+            params.fechaHasta = new Date()
         }
 
+        res = PersonaDocumentoTramite.withCriteria {
+            if (params.fechaDesde) {
+                ge('fechaEnvio', params.fechaDesde)
+            }
+            if(params.fechaHasta){
+                le('fechaEnvio', params.fechaHasta)
+            }
+            isNotNull("fechaEnvio")
+            or {
+                eq("rolPersonaTramite", rolPara)
+                eq("rolPersonaTramite", rolCopia)
+            }
 
 
-        return [persona: pers, tramites: res]
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+                if (persona.esTriangulo()) {
+                    eq('deDepartamento', departamento)
+                }else {
+                    eq('de', persona)
+                }
+                order('codigo', 'desc')
+                order('estadoTramite', 'desc')
+            }
+            maxResults(20);
+        }
+
+        return [tramites: res.unique()]
+
     }
 
     def busquedaArchivados() {
@@ -519,12 +534,12 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
         pxtPara += pxtCopia
 
-        if (params.fecha) {
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        if (params.fechaDesde) {
+            params.fechaDesde = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaDesde + " 00:00:00")
         }
 
-        if (params.fechaRecepcion) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
+        if (params.fechaHasta) {
+            params.fechaHasta = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaHasta + " 23:59:59")
         }
 
 
@@ -532,14 +547,17 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             res = PersonaDocumentoTramite.withCriteria {
 
-                if (params.fecha) {
-                    gt('fechaEnvio', params.fechaIni)
-                    lt('fechaEnvio', params.fechaFin)
+                if (params.fechaDesde) {
+                    ge('fechaAnulacion', params.fechaDesde)
+
+                }
+                if(params.fechaHasta){
+                    le('fechaAnulacion', params.fechaHasta)
                 }
 
                 eq('estado', EstadoTramite.findByCodigo("E006"))
 
-                isNotNull("fechaEnvio")
+                isNotNull("fechaAnulacion")
 
                 or {
                     eq("rolPersonaTramite", rolPara)
@@ -570,14 +588,17 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             res = PersonaDocumentoTramite.withCriteria {
 
-                if (params.fecha) {
-                    gt('fechaEnvio', params.fechaIni)
-                    lt('fechaEnvio', params.fechaFin)
+                if (params.fechaDesde) {
+                    ge('fechaAnulacion', params.fechaDesde)
+
+                }
+                if(params.fechaHasta){
+                    le('fechaAnulacion', params.fechaHasta)
                 }
 
                 eq('estado', EstadoTramite.findByCodigo("E006"))
 
-                isNotNull("fechaEnvio")
+                isNotNull("fechaAnulacion")
 
                 or {
                     eq("rolPersonaTramite", rolPara)

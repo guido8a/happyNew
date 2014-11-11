@@ -163,7 +163,7 @@
                 var fecha = $("#fechaBusqueda_input").val();
                 var fechaRecepcion = $("#fechaRecepcion_input").val();
 
-                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
+                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaDesde=" + fechaRecepcion + "&fechaHasta=" + fecha
 
                 $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
                     data      : datos,
@@ -182,8 +182,7 @@
                     var fecha = $("#fechaBusqueda_input").val();
                     var fechaRecepcion = $("#fechaRecepcion_input").val();
 
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
-
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaDesde=" + fechaRecepcion + "&fechaHasta=" + fecha
                     $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
                         data      : datos,
                         success   : function (msg) {
