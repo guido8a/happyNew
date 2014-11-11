@@ -52,13 +52,13 @@
                 </div>
 
                 <div class="col-md-2" style="margin-left: 150px">
-                    <label>Fecha Archivados Desde</label>
+                    <label>Archivados Desde</label>
                     <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
                 </div>
 
 
                 <div class="col-md-2" style="margin-left: 15px">
-                    <label>Fecha Archivados Hasta</label>
+                    <label>Archivados Hasta</label>
                     <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                 </div>
 
@@ -80,7 +80,7 @@
 
         <div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
 
-            <p class="css-vertical-text">Resultado</p>
+            <p class="css-vertical-text">Resultado - Buscar Trámites Archivados</p>
 
             <div class="linea"></div>
 

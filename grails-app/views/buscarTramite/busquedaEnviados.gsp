@@ -84,7 +84,7 @@
 
         <div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
 
-            <p class="css-vertical-text">Resultado</p>
+            <p class="css-vertical-text">Resultado - Buscar Trámites Enviados </p>
 
             <div class="linea"></div>
 

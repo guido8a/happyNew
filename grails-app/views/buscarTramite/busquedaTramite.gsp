@@ -32,9 +32,8 @@
     </head>
 
     <body>
-
+        %{--<h3>Búsqueda de Trámites</h3>--}%
         <div style="margin-top: 0px;" class="vertical-container">
-
             <p class="css-vertical-text" style="margin-top: -10px;">Buscar</p>
 
             <div class="linea"></div>
@@ -79,7 +78,7 @@
 
         <div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
 
-            <p class="css-vertical-text">Resultado</p>
+            <p class="css-vertical-text">Resultado - Buscar trámites</p>
 
             <div class="linea"></div>
 

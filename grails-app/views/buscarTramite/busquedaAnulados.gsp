@@ -59,13 +59,13 @@
                 </div>
 
                 <div class="col-md-2" style="margin-left: 150px">
-                    <label>Fecha Anulados Desde</label>
+                    <label>Anulados Desde</label>
                     <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
                 </div>
 
 
                 <div class="col-md-2" style="margin-left: 15px">
-                    <label>Fecha Anulados Hasta</label>
+                    <label>Anulados Hasta</label>
                     <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                 </div>
 
@@ -87,7 +87,7 @@
 
         <div style="margin-top: 30px; min-height: 510px" class="vertical-container" id="divBandeja">
 
-            <p class="css-vertical-text">Resultado</p>
+            <p class="css-vertical-text">Resultado - Buscar Trámites Anulados</p>
 
             <div class="linea"></div>
 
