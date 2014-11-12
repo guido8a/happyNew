@@ -263,57 +263,73 @@
     var times  = 0;
     var check = false;
     var salto = 40
+    var breakingPoint = false
+    function resetValues(){
+        breakingPoint = true;
+        lastSize=0
+        nowSize=0
+        times=0
+        check = false
+        $("#tabla_salida").html("")
+    }
     function cargarBandeja(band) {
         $(".qtip").hide();
 //                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-        $.ajax({
-            type    : "POST",
-            url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
-            data    : {
-                actual:actual,
-                max:max
-            },
-            async   : true,
-            success : function (msg) {
-                times++
-                $("#tabla_salida").append(msg);
+        if(!breakingPoint && !band){
+            if(breakingPoint)
+                breakingPoint=false
+            $.ajax({
+                type    : "POST",
+                url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
+                data    : {
+                    actual:actual,
+                    max:max
+                },
+                async   : true,
+                success : function (msg) {
+                    times++
+                    $("#tabla_salida").append(msg);
 
-                cargarAlertas();
-                nowSize = $(".trTramite").length
+                    cargarAlertas();
+                    nowSize = $(".trTramite").length
 
 
-                if (band) {
-                    log('Datos actualizados', 'success');
-                }
+//                    if (band) {
+//                        log('Datos actualizados', 'success');
+//                    }
 //                        console.log("cargar bandeja ",nowSize,actual)
-                actual+=max
+                    actual+=max
 
-                if(lastSize!=0){
-                    if(nowSize>lastSize){
-                        if(max>salto) {
-                            max = max - salto
-                            check = false
-                        }
-                        lastSize = nowSize
-                        cargarBandeja(false)
-                    }else{
-//                        console.log("tiempo del check "+check)
-                        if(!check){
-                            check = true
-                            max = max+salto
+                    if(lastSize!=0){
+                        if(nowSize>lastSize){
+                            if(max>salto) {
+                                max = max - salto
+                                check = false
+                            }
+                            lastSize = nowSize
                             cargarBandeja(false)
+                        }else{
+//                        console.log("tiempo del check "+check)
+                            if(!check){
+                                check = true
+                                max = max+salto
+                                cargarBandeja(false)
 //                            actual+=salto
 //                            console.log("max "+max)
-                        }
+                            }
 
-                    }
-                }else{
-                    lastSize = nowSize
+                        }
+                    }else{
+                        lastSize = nowSize
 //                    actual=nowSize
-                    cargarBandeja(false)
+                        cargarBandeja(false)
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            breakingPoint=false
+        }
+
     }
 
     function cargarAlertas() {
@@ -463,9 +479,11 @@
                     url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,
                     success : function (msg) {
                         var parts = msg.split('_')
-                        openLoader();
-                        cargarBandeja();
-                        closeLoader();
+//                        openLoader();
+                        resetValues();
+                        cargarBandeja(true);
+
+//                        closeLoader();
                         if (parts[0] == 'NO') {
                             log(parts[1], "error");
                         } else if (parts[0] == "OK") {
@@ -642,9 +660,11 @@
                                                     var parts = msg.split("_");
                                                     log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                                     if (parts[0] == "OK") {
+                                                        resetValues()
+                                                        closeLoader();
                                                         cargarBandeja(true)
                                                         log("Envío del trámite cancelado correctamente", 'success')
-                                                        closeLoader();
+
                                                     }else{
                                                         if(parts[0] == 'NO'){
                                                             log(parts[1], "error")
@@ -774,11 +794,13 @@
             $("#fechaBusqueda_day").val("");
             $("#fechaBusqueda_month").val("");
             $("#fechaBusqueda_year").val("");
-            cargarBandeja();
+            resetValues();
+            cargarBandeja(true);
 
         });
         $(".btnActualizar").click(function () {
             openLoader();
+            resetValues();
             cargarBandeja(true);
             closeLoader();
             return false;
@@ -842,6 +864,7 @@
                     var parts = msg.split("_");
 
                     if (parts[0] == 'ok') {
+                        resetValues();
                         cargarBandeja(true);
                         log('Trámites Enviados'+parts[1], 'success');
                         if (imprimir) {
@@ -850,6 +873,7 @@
                             closeLoader();
                         }
                     } else {
+                        resetValues();
                         cargarBandeja(true);
                         log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
                         %{--location.href = "${g.createLink(action: 'errores1')}";--}%
