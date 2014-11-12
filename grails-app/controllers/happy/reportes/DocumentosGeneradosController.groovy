@@ -383,7 +383,7 @@ class DocumentosGeneradosController extends Shield{
 
         def granTotal = 0
 
-        def tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
+        def tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
 
         tramites.each { depId, depMap ->
             def totalDep = 0
@@ -403,7 +403,7 @@ class DocumentosGeneradosController extends Shield{
 
                 totalDep += persMap.tramites.size()
 
-                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 15, 20, 20, 15, 15]), 10, 5)
+                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
                 tabla.setHeaderRows(1)
                 reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
                 reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)

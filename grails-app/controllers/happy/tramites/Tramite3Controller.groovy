@@ -809,7 +809,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 or {
                     eq("rolPersonaTramite", rolPara)
                     eq("rolPersonaTramite", rolCC)
-                    eq("rolPersonaTramite", rolImprimir)
+//                    eq("rolPersonaTramite", rolImprimir)
                 }
                 and {
                     ne("estado", estadoAnulado)
@@ -817,6 +817,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }//PersonaDocumentoTramite.findByTramiteAndDepartamento(tramite, persona.departamento)
 
+            if (pxt.size() == 0) {
+                render "ERROR_Este trámite no puede ser gestionado. Por favor actualice su bandeja"
+                return
+            }
             println "pxt: " + pxt
 
 //        println "tramite: " + tramite
