@@ -622,7 +622,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def tablaBandejaEntradaDpto() {
-
+//        println "1dpto.... --- " + System.currentTimeMillis()/1000
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"
         params.order = params.order ?: "desc"
@@ -701,7 +701,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         }
 
-
+//        println "2dpto.... --- " + System.currentTimeMillis()/1000
         return [persona: persona, tramites: tramitesSinHijos, ahora: ahora, params: params]
     }
 
