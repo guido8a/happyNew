@@ -239,12 +239,16 @@
     var salto = 40
     var breakingPoint = false
     function resetValues(){
+//        console.log("reset values")
         breakingPoint = true;
         lastSize=0
         nowSize=0
         times=0
+        max=10
+        salto=40
+        actual=0
         check = false
-        $("#tabla_salida").html("")
+        $(".trTramite").remove()
     }
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
@@ -267,8 +271,14 @@
     function cargarBandeja(band) {
         $(".qtip").hide();
 //        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-//        console.log("cargar bandeja "+new Date())
-        if(!breakingPoint && !band) {
+//        console.log("cargar bandeja ",band,breakingPoint)
+        var pass=true
+        if(breakingPoint && !band)
+        pass=false
+        if(breakingPoint && band)
+        pass=true
+//        console.log("pass "+pass)
+        if(pass) {
             if (breakingPoint)
                 breakingPoint = false
             $.ajax({
@@ -287,9 +297,9 @@
                     nowSize = $(".trTramite").length
 
 
-                    if (band) {
-                        log('Datos actualizados', 'success');
-                    }
+//                    if (band) {
+//                        log('Datos actualizados', 'success');
+//                    }
                     actual += max
 //                console.log("cargar bandeja ",nowSize,actual)
                     if (lastSize != 0) {
@@ -783,6 +793,7 @@
         });
 
         function doEnviar(imprimir, strIds) {
+            console.log("enviar????")
             $.ajax({
                 type    : "POST",
                 url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
@@ -796,7 +807,7 @@
 //                            console.log(msg);
                     var parts = msg.split('_');
                     if (parts[0] == 'ok') {
-                        resetValues()
+                        resetValues();
                         cargarBandeja(true);
                         log('Trámites Enviados', 'success');
                         if (imprimir) {

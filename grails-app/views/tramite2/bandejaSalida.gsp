@@ -269,13 +269,21 @@
         lastSize=0
         nowSize=0
         times=0
+        max=10
+        salto=40
+        actual=0
         check = false
-        $("#tabla_salida").html("")
+        $(".trTramite").remove()
     }
     function cargarBandeja(band) {
         $(".qtip").hide();
-//                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-        if(!breakingPoint && !band){
+        var pass=true
+        if(breakingPoint && !band)
+            pass=false
+        if(breakingPoint && band)
+            pass=true
+//        console.log("pass "+pass)
+        if(pass) {
             if(breakingPoint)
                 breakingPoint=false
             $.ajax({
