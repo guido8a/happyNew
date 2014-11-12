@@ -74,10 +74,10 @@
                     $("#file").click();
                 });
                 $("#file").change(function (ev) {
-                    console.log(ev);
-                    console.log($(this));
-                    console.log($(this).val());
-                    console.log($(this)[0].files);
+//                    console.log(ev);
+//                    console.log($(this));
+//                    console.log($(this).val());
+//                    console.log($(this)[0].files);
                 });
             });
         </script>
