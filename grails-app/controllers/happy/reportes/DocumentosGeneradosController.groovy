@@ -395,7 +395,7 @@ class DocumentosGeneradosController extends Shield{
             document.add(paragraphDep)
             depMap.personas.each { persId, persMap ->
                 header = persMap.de + " (${depMap.departamento.codigo})" +
-                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'}"
+                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'} generado${tramites == 1 ? '' : 's'} sin incluir copias"
                 Paragraph paragraphUsu = new Paragraph();
                 paragraphUsu.setAlignment(Element.ALIGN_LEFT);
                 paragraphUsu.add(new Phrase(header, fontBold));
