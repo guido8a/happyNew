@@ -79,7 +79,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def bandejaSalidaDep() {
-
+        println "--------------------------------------------------------"
+        println "inicio bandeja "+new Date().format("hh:mm:ss.SSS ")
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def revisar = false
@@ -92,6 +93,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def tablaBandejaSalidaDep() {
+//        println "inicio tabla bandeja "+new Date().format("hh:mm:ss.SSS ")
+//        println "params "+params
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def porEnviar = EstadoTramite.findByCodigo("E001")
@@ -100,12 +103,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def recibido = EstadoTramite.findByCodigo("E004")
         def para = RolPersonaTramite.findByCodigo("R001")
         def cc = RolPersonaTramite.findByCodigo("R002")
-
+        def max = params.max.toInteger()
+        def offset = params.actual.toInteger()
+//        println "max "+max+"  off "+offset
         def trams = Tramite.withCriteria {
             eq("deDepartamento", persona.departamento)
             inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
             order("fechaCreacion", "desc")
+            maxResults(max)
+            firstResult(offset)
         }
+//        println "trams "+trams.size()
+//        println "criteria "+new Date().format("hh:mm:ss.SSS ")
         trams.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
             pdt.each { pd ->
@@ -115,6 +124,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
+//        println "fin each "+new Date().format("hh:mm:ss.SSS ")
 
         return [persona: persona, tramites: tramites]
     }
@@ -390,26 +400,37 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def recibido = EstadoTramite.findByCodigo("E004")
         def para = RolPersonaTramite.findByCodigo("R001")
         def cc = RolPersonaTramite.findByCodigo("R002")
+        def max = params.max.toInteger()
+        def offset = params.actual.toInteger()
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def estados = [porEnviar, revisado, enviado, recibido]
+//        println "--------------------"
+//        println " max "+max +" off "+offset
         if (persona.puedeEditor) {
+//            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
-                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc"])
+//                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])
+                def t = Tramite.findAll("from Tramite where deDepartamento is null and de=${p.id} and estadoTramite in (${porEnviar.id},${revisado.id},${enviado.id},${recibido.id}) order by fechaCreacion desc",[max:max,offset:offset] )
                 if (t.size() > 0) {
                     tramites += t
                 }
             }
-            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+
+            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])
             if (t.size() > 0) {
                 tramites += t
+
             }
+
         } else {
             tramites = Tramite.withCriteria {
                 eq("de", persona)
                 isNull("deDepartamento")
                 inList("estadoTramite", estados)
                 order("fechaCreacion", "desc")
+                maxResults(max)
+                firstResult(offset)
             }
         }
         tramites?.sort { it.fechaCreacion }
@@ -417,17 +438,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def trams = []
         def trams2 = []
-
+//        println tramites.size()
         tramites.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
             pdt.each { pd ->
                 if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    if (!trams.contains(tr))
+                    if (!trams.contains(tr)){
+//                        println ""+tr.codigo
                         trams += tr
+                    }
+
+
                 }
             }
         }
-
+//        println " "+trams.size()
         return [persona: persona, tramites: trams, esEditor: persona.puedeEditor]
     }
 
@@ -1362,6 +1387,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def busquedaBandejaSalidaDep() {
+
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def porEnviar = EstadoTramite.findByCodigo("E001")
@@ -1375,6 +1401,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             inList("estadoTramite", [porEnviar, revisado, enviado, recibido])
             order("fechaCreacion", "asc")
         }
+
         trams.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
             pdt.each { pd ->
@@ -1384,7 +1411,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
-
+        println "each pdt "+new Date().format("hh:mm:ss ")
 //busqueda
 
         if (params.fecha) {
@@ -1407,7 +1434,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
 
         }
-
+        println "salio "+new Date().format("hh:mm:ss ")
         return [tramites: res.tramite.unique(), pxtTramites: tramites]
     }
 }
