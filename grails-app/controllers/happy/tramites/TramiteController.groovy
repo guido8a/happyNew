@@ -869,6 +869,7 @@ class TramiteController extends happy.seguridad.Shield {
 
 
     def tablaBandeja() {
+//        println "1.... --- " + System.currentTimeMillis()/1000
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def rolPara = RolPersonaTramite.findByCodigo('R001');
@@ -917,7 +918,7 @@ class TramiteController extends happy.seguridad.Shield {
                 }
             }
         }
-
+//        println "2.... --- " + System.currentTimeMillis()/1000
         return [tramites: tramitesSinHijos, params: params]
     }
 
