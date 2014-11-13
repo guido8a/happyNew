@@ -338,6 +338,11 @@
     }
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
+            if(cargando) {
+                breakingPoint = true
+                externalSource = true
+            }
+            $(".trTramite").remove()
             $(".trTramite").remove()
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();

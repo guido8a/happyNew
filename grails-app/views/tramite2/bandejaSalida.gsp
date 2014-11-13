@@ -265,6 +265,7 @@
     var salto = 40
     var breakingPoint = false
     var cargando = false
+    var externalSource = false
     function resetValues(){
         if(cargando){
             breakingPoint = true;
@@ -299,7 +300,8 @@
                 async   : true,
                 success : function (msg) {
                     times++
-                    $("#tabla_salida").append(msg);
+                    if(!breakingPoint)
+                        $("#tabla_salida").append(msg);
 
                     cargarAlertas();
                     nowSize = $(".trTramite").length
@@ -350,7 +352,11 @@
             check = false
             cargando=false
             breakingPoint=false
-            cargarBandeja(true)
+            if(!externalSource)
+                cargarBandeja(true)
+            else
+                externalSource = false
+//            cargarBandeja(true)
         }
 
     }
@@ -770,6 +776,11 @@
         $("input").keyup(function (ev) {
             if (ev.keyCode == 13) {
 //                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                if(cargando) {
+                    breakingPoint = true
+                    externalSource = true
+                }
+                $(".trTramite").remove()
                 $(".trTramite").remove()
                 var memorando = $("#memorando").val();
                 var asunto = $("#asunto").val();
@@ -925,6 +936,11 @@
 
         $(".btnBusqueda").click(function () {
 //            $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+            if(cargando) {
+                breakingPoint = true
+                externalSource = true
+            }
+            $(".trTramite").remove()
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();
             var fecha = $("#fechaBusqueda_input").val();
