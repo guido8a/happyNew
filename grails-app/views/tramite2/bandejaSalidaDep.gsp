@@ -229,7 +229,7 @@
 </div>
 
 <script type="text/javascript">
-console.log("aqif")
+
     var actual = 0;
     var max = 10;
     var lastSize = 0;
@@ -238,17 +238,97 @@ console.log("aqif")
     var check = false;
     var salto = 40
     var breakingPoint = false
+    var cargando = false
     function resetValues(){
-//        console.log("reset values")
-        breakingPoint = true;
-        lastSize=0
-        nowSize=0
-        times=0
-        max=10
-        salto=40
-        actual=0
-        check = false
-        $(".trTramite").remove()
+        if(cargando){
+            breakingPoint = true;
+        }else{
+            lastSize=0
+            nowSize=0
+            times=0
+            max=10
+            salto=40
+            actual=0
+            check = false
+            breakingPoint = false
+            $(".trTramite").remove()
+            cargarBandeja(true)
+        }
+
+    }
+
+    function cargarBandeja(band) {
+        $(".qtip").hide();
+//        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+//        console.log("cargar bandeja ",band,breakingPoint)
+        cargando=true
+
+//        console.log("pass "+pass)
+        if(!breakingPoint) {
+
+            $.ajax({
+                type: "POST",
+                url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",
+                data: {
+                    actual: actual,
+                    max: max
+                },
+                async: true,
+                success: function (msg) {
+                    times++
+                    $("#tablaTramites").append(msg);
+
+                    cargarAlertas();
+                    nowSize = $(".trTramite").length
+
+                    actual += max
+//                console.log("cargar bandeja ",nowSize,actual)
+
+                    if (lastSize != 0) {
+                        if (nowSize > lastSize) {
+                            if (max > salto) {
+                                max = max - salto
+                                check = false
+                            }
+                            lastSize = nowSize
+                            cargarBandeja(false)
+                        } else {
+//                        console.log("tiempo del check "+check)
+                            if (!check) {
+                                check = true
+                                max = max + salto
+                                cargarBandeja(false)
+//                            actual+=salto
+//                            console.log("max "+max)
+                            }else{
+                                cargando=false
+                                if(breakingPoint){
+                                    resetValues()
+                                }
+
+                            }
+
+                        }
+                    } else {
+                        lastSize = nowSize
+//                    actual=nowSize
+                        cargarBandeja(false)
+                    }
+
+                }
+            });
+        }else{
+            lastSize=0
+            nowSize=0
+            times=0
+            max=10
+            salto=40
+            actual=0
+            check = false
+            cargando=false
+            breakingPoint=false
+            cargarBandeja(true)
+        }
     }
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
@@ -267,71 +347,6 @@ console.log("aqif")
             });
         }
     });
-
-    function cargarBandeja(band) {
-        $(".qtip").hide();
-//        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-//        console.log("cargar bandeja ",band,breakingPoint)
-        var pass=true
-        if(breakingPoint && !band)
-        pass=false
-        if(breakingPoint && band)
-        pass=true
-//        console.log("pass "+pass)
-        if(pass) {
-
-            $.ajax({
-                type: "POST",
-                url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",
-                data: {
-                    actual: actual,
-                    max: max
-                },
-                async: true,
-                success: function (msg) {
-                    times++
-                    $("#tablaTramites").append(msg);
-
-                    cargarAlertas();
-                    nowSize = $(".trTramite").length
-
-
-//                    if (band) {
-//                        log('Datos actualizados', 'success');
-//                    }
-                    actual += max
-//                console.log("cargar bandeja ",nowSize,actual)
-                    if (breakingPoint)
-                        breakingPoint = false
-                    if (lastSize != 0) {
-                        if (nowSize > lastSize) {
-                            if (max > salto) {
-                                max = max - salto
-                                check = false
-                            }
-                            lastSize = nowSize
-                            cargarBandeja(false)
-                        } else {
-//                        console.log("tiempo del check "+check)
-                            if (!check) {
-                                check = true
-                                max = max + salto
-                                cargarBandeja(false)
-//                            actual+=salto
-//                            console.log("max "+max)
-                            }
-
-                        }
-                    } else {
-                        lastSize = nowSize
-//                    actual=nowSize
-                        cargarBandeja(false)
-                    }
-
-                }
-            });
-        }
-    }
 
     function cargarAlertas() {
         cargarAlertaRevisados();
@@ -481,7 +496,7 @@ console.log("aqif")
                         var parts = msg.split('_');
                         openLoader();
                         resetValues();
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         closeLoader();
                         if (parts[0] == 'NO') {
                             log(parts[1], "error");
@@ -508,7 +523,7 @@ console.log("aqif")
                         var parts = msg.split('_');
                         openLoader();
                         resetValues()
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         closeLoader();
                         if (parts[0] == 'NO') {
                             log(parts[1], "error");
@@ -641,7 +656,7 @@ console.log("aqif")
                                                         location.reload(true);
                                                     } else {
                                                         resetValues()
-                                                        cargarBandeja(true)
+//                                                        cargarBandeja(true)
                                                         log("Envío del trámite cancelado correctamente", 'success')
                                                         closeLoader();
                                                     }
@@ -740,15 +755,21 @@ console.log("aqif")
             $("#fechaBusqueda_month").val("");
             $("#fechaBusqueda_year").val("");
             resetValues()
-            cargarBandeja(true);
+//            cargarBandeja(true);
         });
 
         $(".btnActualizar").click(function () {
-            openLoader();
-            resetValues()
-            cargarBandeja(true);
-            closeLoader();
-            return false;
+            if(!cargando){
+                openLoader();
+                resetValues()
+//                cargarBandeja(true);
+                closeLoader();
+                return false;
+            }else{
+                log('La bandeja se esta cargando, no se puede actualizar en este momento', 'info');
+                return false
+            }
+
         });
 
         $(".btnEnviar").click(function () {
@@ -795,7 +816,7 @@ console.log("aqif")
         });
 
         function doEnviar(imprimir, strIds) {
-            console.log("enviar????")
+//            console.log("enviar????")
             $.ajax({
                 type    : "POST",
                 url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
@@ -810,7 +831,7 @@ console.log("aqif")
                     var parts = msg.split('_');
                     if (parts[0] == 'ok') {
                         resetValues();
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         log('Trámites Enviados', 'success');
                         if (imprimir) {
                             openLoader();
@@ -820,7 +841,7 @@ console.log("aqif")
                     } else {
                         log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
                         resetValues()
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         %{--location.href = "${g.createLink(action: 'errores1')}";--}%
                     }
                 }

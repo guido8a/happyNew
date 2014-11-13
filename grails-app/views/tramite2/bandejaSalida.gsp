@@ -264,26 +264,30 @@
     var check = false;
     var salto = 40
     var breakingPoint = false
+    var cargando = false
     function resetValues(){
-        breakingPoint = true;
-        lastSize=0
-        nowSize=0
-        times=0
-        max=10
-        salto=40
-        actual=0
-        check = false
-        $(".trTramite").remove()
+        if(cargando){
+            breakingPoint = true;
+        }else{
+            lastSize=0
+            nowSize=0
+            times=0
+            max=10
+            salto=40
+            actual=0
+            check = false
+            breakingPoint = false
+            $(".trTramite").remove()
+            cargarBandeja(true)
+        }
+
     }
     function cargarBandeja(band) {
         $(".qtip").hide();
-        var pass=true
-        if(breakingPoint && !band)
-            pass=false
-        if(breakingPoint && band)
-            pass=true
+        cargando=true
+
 //        console.log("pass "+pass)
-        if(pass) {
+        if(!breakingPoint) {
 
             $.ajax({
                 type    : "POST",
@@ -300,44 +304,53 @@
                     cargarAlertas();
                     nowSize = $(".trTramite").length
 
+                    actual += max
+//                console.log("cargar bandeja ",nowSize,actual)
 
-//                    if (band) {
-//                        log('Datos actualizados', 'success');
-//                    }
-//                        console.log("cargar bandeja ",nowSize,actual)
-                    actual+=max
-                    if(breakingPoint)
-                        breakingPoint=false
-                    if(lastSize!=0){
-                        if(nowSize>lastSize){
-                            if(max>salto) {
+                    if (lastSize != 0) {
+                        if (nowSize > lastSize) {
+                            if (max > salto) {
                                 max = max - salto
                                 check = false
                             }
                             lastSize = nowSize
                             cargarBandeja(false)
-                        }else{
+                        } else {
 //                        console.log("tiempo del check "+check)
-                            if(!check){
+                            if (!check) {
                                 check = true
-                                max = max+salto
+                                max = max + salto
                                 cargarBandeja(false)
 //                            actual+=salto
 //                            console.log("max "+max)
+                            }else{
+                                cargando=false
+                                if(breakingPoint){
+                                    resetValues()
+                                }
+
                             }
 
                         }
-                    }else{
+                    } else {
                         lastSize = nowSize
 //                    actual=nowSize
                         cargarBandeja(false)
                     }
-                    if(breakingPoint)
-                        breakingPoint=false
+
                 }
             });
         }else{
+            lastSize=0
+            nowSize=0
+            times=0
+            max=10
+            salto=40
+            actual=0
+            check = false
+            cargando=false
             breakingPoint=false
+            cargarBandeja(true)
         }
 
     }
@@ -491,7 +504,7 @@
                         var parts = msg.split('_')
 //                        openLoader();
                         resetValues();
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
 
 //                        closeLoader();
                         if (parts[0] == 'NO') {
@@ -672,7 +685,7 @@
                                                     if (parts[0] == "OK") {
                                                         resetValues()
                                                         closeLoader();
-                                                        cargarBandeja(true)
+//                                                        cargarBandeja(true)
                                                         log("Envío del trámite cancelado correctamente", 'success')
 
                                                     }else{
@@ -805,15 +818,20 @@
             $("#fechaBusqueda_month").val("");
             $("#fechaBusqueda_year").val("");
             resetValues();
-            cargarBandeja(true);
+//            cargarBandeja(true);
 
         });
         $(".btnActualizar").click(function () {
-            openLoader();
-            resetValues();
-            cargarBandeja(true);
-            closeLoader();
-            return false;
+            if(!cargando){
+                openLoader();
+                resetValues()
+//                cargarBandeja(true);
+                closeLoader();
+                return false;
+            }else{
+                log('La bandeja se esta cargando, no se puede actualizar en este momento', 'info');
+                return false
+            }
         });
 
         $(".btnEnviar").click(function () {
@@ -875,7 +893,7 @@
 
                     if (parts[0] == 'ok') {
                         resetValues();
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         log('Trámites Enviados'+parts[1], 'success');
                         if (imprimir) {
                             openLoader();
@@ -884,7 +902,7 @@
                         }
                     } else {
                         resetValues();
-                        cargarBandeja(true);
+//                        cargarBandeja(true);
                         log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
                         %{--location.href = "${g.createLink(action: 'errores1')}";--}%
 
