@@ -1031,23 +1031,47 @@ class TramiteController extends happy.seguridad.Shield {
         def enviado = EstadoTramite.findByCodigo("E003")
         def recibido = EstadoTramite.findByCodigo("E004")
 
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        }
+
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"
         params.order = params.order ?: "desc"
 
         def tramites = PersonaDocumentoTramite.withCriteria {
+
+            if (params.fecha) {
+                ge('fechaEnvio', params.fechaIni)
+                le('fechaEnvio', params.fechaFin)
+            }
+
             eq("persona", persona)
             inList("rolPersonaTramite", [rolPara, rolCopia])
             isNotNull("fechaEnvio")
             inList("estado", [enviado, recibido])
+
             tramite {
-                if (params.domain == "tramite") {
-                    order(params.sort, params.order)
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
                 }
             }
-            if (params.domain == "persDoc") {
-                order(params.sort, params.order)
-            }
+            order("fechaEnvio", "desc")
+        }
+
+        if (params.domain == "persDoc") {
+            tramites.sort {it [params.sort]}
+        }
+
+        if (params.domain == "tramite") {
+            tramites.sort {it.tramite [params.sort]}
+        }
+        if (params.order == "desc") {
+            tramites = tramites.reverse()
         }
 
         def tramitesSinHijos = []
@@ -1062,30 +1086,9 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
 
-        def pxtTodos = []
         def pxtTramites = tramitesSinHijos
-        if (params.fecha) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
-        }
-        def res = PersonaDocumentoTramite.withCriteria {
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
-            }
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
-                }
-            }
 
-            order("fechaEnvio", "desc")
-        }
-
-        return [tramites: res, pxtTramites: pxtTramites]
+        return [tramites: pxtTramites]
     }
 
 

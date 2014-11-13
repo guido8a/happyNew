@@ -8,22 +8,7 @@
 <%@ page import="happy.tramites.DocumentoTramite; happy.tramites.Tramite" %>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
-<div style="height: 450px" class="container-celdas">
-    <table class="table table-bordered table-condensed table-hover">
-        <thead>
-            <tr>
-                <th class="cabecera sortable ${params.sort == 'codigo' ? (params.order) : ''}" data-domain="tramite" data-sort="codigo" data-order="${params.order}">Documento</th>
-                <th class="cabecera sortable ${params.sort == 'fechaEnvio' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaEnvio" data-order="${params.order}">Fecha Envío</th>
-                <th class="cabecera sortable ${params.sort == 'fechaRecepcion' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaRecepcion" data-order="${params.order}">Fecha Recepción</th>
-                <th class="cabecera sortable ${params.sort == 'de' ? (params.order) : ''}" data-domain="tramite" data-sort="de" data-order="${params.order}">De</th>
-                <th class="cabecera" data-domain="tramite" data-sort="creadoPor" data-order="${params.order}">Creado por</th>
-                <th class="cabecera">Para</th>
-                <th class="cabecera sortable ${params.sort == 'prioridad' ? (params.order) : ''}" data-domain="tramite" data-sort="prioridad" data-order="${params.order}">Prioridad</th>
-                <th class="cabecera sortable ${params.sort == 'fechaLimiteRespuesta' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaLimiteRespuesta" data-order="${params.order}">Fecha Límite</th>
-                <th class="cabecera sortable ${params.sort == 'rolPersonaTramite' ? (params.order) : ''}" data-domain="persDoc" data-sort="rolPersonaTramite" data-order="${params.order}">Rol</th>
-            </tr>
-        </thead>
-        <tbody>
+
             <g:each in="${tramites}" var="tramite">
                 <g:set var="now" value="${new java.util.Date()}"/>
 
@@ -102,9 +87,7 @@
                             <td>${tramite?.rolPersonaTramite?.descripcion}</td>
                         </tr>
             </g:each>
-        </tbody>
-    </table>
-</div>
+
 
 <script type="text/javascript">
     $(function () {
