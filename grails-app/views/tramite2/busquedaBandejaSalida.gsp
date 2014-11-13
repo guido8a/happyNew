@@ -4,22 +4,6 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
-<table class="table table-bordered  table-condensed table-hover">
-    <thead>
-    <tr>
-        <th class="cabecera">Documento</th>
-        <th>De</th>
-        <th class="cabecera">Fec. Creación</th>
-        <th class="cabecera">Para</th>
-        <th class="cabecera">Destinatario</th>
-        <th class="cabecera">Prioridad</th>
-        <th class="cabecera">Fecha Envío</th>
-        <th class="cabecera">F Límite Recepción</th>
-        <th class="cabecera">Estado</th>
-        <th class="cabecera">Enviar</th>
-    </tr>
-    </thead>
-    <tbody id="tabla_salida">
     <g:each in="${tramites}" var="tramite">
         <g:each in="${pxtTramites}" var="pxt">
             <g:if test="${tramite?.id == pxt?.id}">
@@ -57,7 +41,7 @@
                 </g:if>
 
                 <tr id="${tramite?.id}" data-id="${tramite?.id}"
-                    class="${esImprimir ? 'imprimir' : ''}
+                    class=" trTramite ${esImprimir ? 'imprimir' : ''}
                     ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
                     ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno?'estado':''} ${tramite.externo=='1'?((tramite.tipoDocumento.codigo=='DEX')?'DEX':'externo'):''}  "
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
@@ -185,8 +169,7 @@
             </g:if>
         </g:each>
     </g:each>
-    </tbody>
-</table>
+
 
 <script type="text/javascript">
     $(function () {

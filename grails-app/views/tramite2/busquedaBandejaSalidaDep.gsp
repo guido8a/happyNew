@@ -1,25 +1,9 @@
 <%@ page import="happy.tramites.DocumentoTramite; happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
-<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
+%{--<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>--}%
 
-<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
-<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
+%{--<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>--}%
+%{--<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">--}%
 
-<table class="table table-bordered  table-condensed table-hover">
-    <thead>
-        <tr>
-            <th class="cabecera">Documento</th>
-            <th>De</th>
-            <th class="cabecera">Fec. Creación</th>
-            <th class="cabecera">Para</th>
-            <th class="cabecera">Destinatario</th>
-            <th class="cabecera">Prioridad</th>
-            <th class="cabecera">Fecha Envio</th>
-            <th class="cabecera">F. Límite Recepción</th>
-            <th class="cabecera">Estado</th>
-            <th class="cabecera">Enviar</th>
-        </tr>
-    </thead>
-    <tbody>
         <g:each in="${tramites}" var="tramite">
             %{--<g:each in="${pxtTramites}" var="pxt">--}%
                 %{--<g:if test="${tramite?.id == pxt?.id}">--}%
@@ -57,7 +41,7 @@
                             %{--codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"--}%
                             %{--estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"--}%
                             %{--anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">--}%
-                            class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
+                            class=" trTramite ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + " " + clase}
                             ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
                             codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
                             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
@@ -207,11 +191,10 @@
             %{--</g:each>--}%
 
         </g:each>
-    </tbody>
-</table>
+
 
 <script type="text/javascript">
-    $(function () {
+
         $("tr").contextMenu({
             items  : createContextMenu,
             onShow : function ($element) {
@@ -221,5 +204,5 @@
                 $(".trHighlight").removeClass("trHighlight");
             }
         });
-    });
+
 </script>

@@ -239,7 +239,9 @@
     var salto = 40
     var breakingPoint = false
     var cargando = false
+    var externalSource = false
     function resetValues(){
+//        console.log("reset values",cargando)
         if(cargando){
             breakingPoint = true;
         }else{
@@ -265,7 +267,7 @@
 
 //        console.log("pass "+pass)
         if(!breakingPoint) {
-
+//            console.log("paso")
             $.ajax({
                 type: "POST",
                 url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",
@@ -276,7 +278,8 @@
                 async: true,
                 success: function (msg) {
                     times++
-                    $("#tablaTramites").append(msg);
+                    if(!breakingPoint)
+                        $("#tablaTramites").append(msg);
 
                     cargarAlertas();
                     nowSize = $(".trTramite").length
@@ -327,11 +330,15 @@
             check = false
             cargando=false
             breakingPoint=false
-            cargarBandeja(true)
+            if(!externalSource)
+                cargarBandeja(true)
+            else
+                externalSource = false
         }
     }
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
+            $(".trTramite").remove()
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();
             var fecha = $("#fechaBusqueda").val();
@@ -341,7 +348,8 @@
                 url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
                 data    : datos,
                 success : function (msg) {
-                    $("#bandeja").html(msg);
+//                    $("#bandeja").html(msg);
+                    $("#tablaTramites").append(msg);
                 }
 
             });
@@ -859,6 +867,13 @@
 
         $(".btnBusqueda").click(function () {
             openLoader();
+//            console.log("buscar")
+            if(cargando) {
+                breakingPoint = true
+                externalSource = true
+            }
+            $(".trTramite").remove()
+
             var memorando = $("#memorando").val();
             var asunto = $("#asunto").val();
             var fecha = $("#fechaBusqueda_input").val();
@@ -868,7 +883,9 @@
                 url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
                 data    : datos,
                 success : function (msg) {
-                    $("#bandeja").html(msg);
+//                    console.log(msg)
+//                    $("#bandeja").html(msg);
+                    $("#tablaTramites").append(msg);
                     closeLoader()
                 }
 
