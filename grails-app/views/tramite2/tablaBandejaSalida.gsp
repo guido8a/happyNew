@@ -41,19 +41,12 @@
         estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
         principal="${tramite.tramitePrincipal}"
         departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
-        <g:if test="${tramite?.anexo == 1}">
-            <td title="${tramite.asunto}">
-                ${tramite?.codigo}
-                <g:if test="${DocumentoTramite.countByTramite(tramite) > 0}">
-                    <i class="fa fa-paperclip"></i>
-                </g:if>
-            </td>
-        </g:if>
-        <g:else>
-            <td title="${tramite.asunto}">
-                ${tramite?.codigo}
-            </td>
-        </g:else>
+        <td title="${tramite.asunto.decodeHTML()}">
+            ${tramite?.codigo}
+            <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
+                <i class="fa fa-paperclip"></i>
+            </g:if>
+        </td>
         <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
         <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
         <td>

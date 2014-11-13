@@ -21,8 +21,8 @@
     </thead>
     <tbody>
         <g:each in="${tramites}" var="tramite">
-            <g:each in="${pxtTramites}" var="pxt">
-                <g:if test="${tramite?.id == pxt?.id}">
+            %{--<g:each in="${pxtTramites}" var="pxt">--}%
+                %{--<g:if test="${tramite?.id == pxt?.id}">--}%
                     <g:if test="${tramite.tipoDocumento.codigo != 'DEX' || (tramite.tipoDocumento.codigo == 'DEX' && tramite.estadoTramite.codigo == 'E001')}">
                         <g:set var="limite" value="${tramite.getFechaBloqueo()}"/>
                         <g:set var="padre" value=""/>
@@ -203,8 +203,8 @@
                             </td>
                         </tr>
                     </g:if>
-                </g:if>
-            </g:each>
+                %{--</g:if>--}%
+            %{--</g:each>--}%
 
         </g:each>
     </tbody>

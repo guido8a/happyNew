@@ -981,40 +981,48 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 
+        if (params.fecha) {
+            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        }
 
-        def pxtPara = PersonaDocumentoTramite.withCriteria {
+        def pxtTodos = PersonaDocumentoTramite.withCriteria {
+
             eq("departamento", departamento)
-            eq("rolPersonaTramite", rolPara)
-            isNotNull("fechaEnvio")
-//            tramite {
+            or{
+                eq("rolPersonaTramite", rolCopia)
+                eq("rolPersonaTramite", rolPara)
+            }
+           isNotNull("fechaEnvio")
             or {
                 eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
                 eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
                 eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
             }
-//            }
-        }
-        def pxtCopia = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", departamento)
-            eq("rolPersonaTramite", rolCopia)
-            isNotNull("fechaEnvio")
-//            tramite {
-            or {
-                eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
-                eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                eq("estado", EstadoTramite.findByCodigo("E004")) //recibido
+
+            if (params.fecha) {
+                ge('fechaEnvio', params.fechaIni)
+                le('fechaEnvio', params.fechaFin)
             }
-//            }
+
+            tramite {
+                if (params.asunto) {
+                    ilike('asunto', '%' + params.asunto + '%')
+                }
+                if (params.memorando) {
+                    ilike('codigo', '%' + params.memorando + '%')
+                }
+
+            }
+
+            order("fechaEnvio", 'desc')
+
         }
-
-
-        def pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-//        def pxtTramites = pxtTodos
 
         if (params.domain == "persDoc") {
             pxtTodos.sort { it[params.sort] }
-        } else if (params.domain == "tramite") {
+        }
+        if (params.domain == "tramite") {
             pxtTodos.sort { it.tramite[params.sort] }
         }
         if (params.order == "desc") {
@@ -1033,34 +1041,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
         }
-
-        //busqueda
-        if (params.fecha) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
-        }
-
-        def res = PersonaDocumentoTramite.withCriteria {
-
-            if (params.fecha) {
-                gt('fechaEnvio', params.fechaIni)
-                lt('fechaEnvio', params.fechaFin)
-            }
-
-            tramite {
-                if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
-                }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
-                }
-
-            }
-
-            order("fechaEnvio", 'desc')
-        }
-
-        return [tramites: res, pxtTramites: tramitesSinHijos]
+        return [tramites: tramitesSinHijos]
 
     }
 

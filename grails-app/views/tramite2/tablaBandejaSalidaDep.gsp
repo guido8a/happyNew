@@ -37,14 +37,14 @@
             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
             anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
             <g:if test="${tramite?.anexo == 1}">
-                <td title="${tramite.asunto}">${tramite?.codigo}
+                <td title="${tramite.asunto?.decodeHTML()}">${tramite?.codigo}
                     <g:if test="${anexos > 0}">
                         <i class="fa fa-paperclip" style="margin-left: 10px"></i>
                     </g:if>
                 </td>
             </g:if>
             <g:else>
-                <td title="${tramite.asunto}">${tramite?.codigo}</td>
+                <td title="${tramite.asunto?.decodeHTML()}">${tramite?.codigo}</td>
             </g:else>
             <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
                 <td>${tramite.paraExterno} (EXT)</td>

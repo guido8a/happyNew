@@ -141,7 +141,7 @@ class Shield {
     boolean isAllowedBloqueo() {
         def permitidas = ["inicio"          : ["index"],
                           "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar"],
-                          "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente"],
+                          "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente", "busquedaBandeja"],
                           "documentoTramite": ["verAnexos","cargaDocs"],
                           "alertas"         : ["list", "revisar"],
                           "persona"         : ["show_ajax"],

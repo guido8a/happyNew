@@ -229,7 +229,7 @@
 </div>
 
 <script type="text/javascript">
-
+console.log("aqif")
     var actual = 0;
     var max = 10;
     var lastSize = 0;

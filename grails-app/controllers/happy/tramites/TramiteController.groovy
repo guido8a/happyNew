@@ -509,7 +509,7 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.pdt) {
             pdt = params.pdt
             def pdto = PersonaDocumentoTramite.get(pdt)
-            if (pdto.estado.codigo != "E004") {
+            if (pdto?.estado?.codigo != "E004") {
                 flash.message = "No puede responder a este tramite puesto que ha sido anulado, archivado o no ha sido recibido"
                 response.sendError(403)
             }
@@ -1267,16 +1267,16 @@ class TramiteController extends happy.seguridad.Shield {
         def pxt = PersonaDocumentoTramite.get(params.id)
         def hijos = []
         if (params.tipo == 'archivar') {
-            if (pxt.departamento) {
-                hijos = Tramite.findAllByPadreAndDeDepartamento(pxt.tramite, pxt.departamento)
+            if (pxt?.departamento) {
+                hijos = Tramite.findAllByPadreAndDeDepartamento(pxt?.tramite, pxt?.departamento)
             } else {
-                hijos = Tramite.findAllByPadreAndDe(pxt.tramite, pxt.persona)
+                hijos = Tramite.findAllByPadreAndDe(pxt?.tramite, pxt?.persona)
             }
         } else if (params.tipo == 'anular') {
-            if (pxt.departamento) {
-                hijos = todaDescendenciaExtended(pxt.tramite, 'dep', pxt.departamento)
+            if (pxt?.departamento) {
+                hijos = todaDescendenciaExtended(pxt?.tramite, 'dep', pxt?.departamento)
             } else {
-                hijos = todaDescendenciaExtended(pxt.tramite, 'per', pxt.persona)
+                hijos = todaDescendenciaExtended(pxt?.tramite, 'per', pxt?.persona)
             }
         }
         [pxt: pxt, hijos: hijos]

@@ -712,7 +712,7 @@
                     location.href = '${createLink(controller: 'tramite', action: 'archivados')}?dpto=' + 'si';
                 });
 
-                cargarBandeja();
+                cargarBandeja(true);
             });
 
             $(".btnSalir").click(function () {
