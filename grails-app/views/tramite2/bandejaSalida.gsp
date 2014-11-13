@@ -284,8 +284,7 @@
             pass=true
 //        console.log("pass "+pass)
         if(pass) {
-            if(breakingPoint)
-                breakingPoint=false
+
             $.ajax({
                 type    : "POST",
                 url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
@@ -307,7 +306,8 @@
 //                    }
 //                        console.log("cargar bandeja ",nowSize,actual)
                     actual+=max
-
+                    if(breakingPoint)
+                        breakingPoint=false
                     if(lastSize!=0){
                         if(nowSize>lastSize){
                             if(max>salto) {
@@ -332,6 +332,8 @@
 //                    actual=nowSize
                         cargarBandeja(false)
                     }
+                    if(breakingPoint)
+                        breakingPoint=false
                 }
             });
         }else{
