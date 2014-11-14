@@ -1,8 +1,5 @@
 <%@ page import="happy.tramites.DocumentoTramite; happy.tramites.RolPersonaTramite; happy.tramites.PersonaDocumentoTramite" %>
-<script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 
-<script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
-<link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
     <g:each in="${tramites}" var="tramite">
         <g:each in="${pxtTramites}" var="pxt">
