@@ -86,7 +86,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                     doc.delete(flush: true)
                     render "ok"
                 } else {
-                    render "error_No se pudo eliminar el archivo."
+//                    render "error_No se pudo eliminar el archivo."
+                    render "no_No se pudo eliminar el archivo."
                 }
             }
         } else {
@@ -100,7 +101,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
             doc.delete(flush: true)
             render "ok"
         } else {
-            response.sendError(403)
+            render "no_No se pudo borrar el archivo anexo"
         }
 
     }

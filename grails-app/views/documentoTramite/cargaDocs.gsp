@@ -145,14 +145,10 @@
                                     url     : "${g.createLink(controller: 'documentoTramite',action: 'borrarDocNoFile')}",
                                     data    : "id=" + id,
                                     success : function (msg) {
-//                            closeLoader()
                                         if (msg == "ok") {
                                             cargaDocs();
-//                                closeLoader()
                                         } else {
-                                            var mensaje = msg.split("_")
-                                            mensaje = mensaje[1]
-                                            bootbox.alert(mensaje)
+                                            bootbox.alert("No se pudo eliminar el archivo anexo")
                                         }
                                     }
                                 });
