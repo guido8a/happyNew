@@ -476,7 +476,7 @@
                                                                         setTimeout(function () {
                                                                             location.reload(true);
                                                                         }, 500);
-                                                                    } else if (msg == 'NO') {
+                                                                    } else if (parts[0] == 'NO') {
                                                                         closeLoader();
                                                                         log(parts[1], 'error');
                                                                     }

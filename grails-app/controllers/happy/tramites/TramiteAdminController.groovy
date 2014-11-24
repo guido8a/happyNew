@@ -231,7 +231,22 @@ class TramiteAdminController extends Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
 
+//        def puede = true
+
+        if(!paraTramite) {
+            if(tramite.copias.size() == 0) {
+                return [tramite: tramite, error: "No puede crear copias"]
+            }
+        }
+
+//        (tramite.para + tramite.allCopias).each {prtr->
+//            if(estadosNo.contains(prtr.estado)) {
+//                puede = false;
+//            }
+//        }
+
         if (estadosNo.contains(paraTramite?.estado)) {
+//        if (puede) {
             return [tramite: tramite, error: "El trámite se encuentra <strong>${paraTramite.estado.descripcion}</strong>, no puede crear copias"]
         } else {
             def de = tramite.de
@@ -285,6 +300,7 @@ class TramiteAdminController extends Shield {
     }
 
     def enviarCopias_ajax() {
+        println("params " +  params)
         def tramite
         if (params.id) {
             def persDocTram = PersonaDocumentoTramite.get(params.id)
@@ -292,12 +308,33 @@ class TramiteAdminController extends Shield {
         } else if (params.tramite) {
             tramite = Tramite.get(params.tramite)
         }
-        def copias = params.copias.split("_")
+        def copias = params.copias.trim().split("_")
 
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
 
         def errores = ""
+
+        if(params.copias.trim() == "") {
+            render "NO*"+"Tiene que seleccionar al menos una persona para enviar copia."
+            return
+        }
+
+        if(tramite.para) {
+            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
+                println("entrof")
+                render "NO*"+"El trámite se encuentra <strong>${tramite.para?.estado.descripcion}</strong>, no puede crear copias"
+                return
+            }
+        } else {
+            if(tramite.copias.size() == 0) {
+                render "NO*"+"No puede crear copias"
+                return
+            }
+        }
+
 
         copias.each { copia ->
             copia = copia.trim()
@@ -874,11 +911,27 @@ class TramiteAdminController extends Shield {
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estados = [estadoAnulado, estadoArchivado]
 
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
 
-        println("tiene hijos " + Tramite.findAllByPadre(Tramite.get(persDocTram.tramite.id)))
+        def hijosVivos = 0
+
+        Tramite.findAllByPadre(persDocTram.tramite).each { tr->
+            def prtr = PersonaDocumentoTramite.withCriteria {
+                eq("tramite", tr)
+                ne("estado", estadoAnulado)
+                inList("rolPersonaTramite", [rolPara, rolCopia])
+            }
+//            prtr.each {hj->
+//                println " "+hj.rolPersonaTramite.descripcion+"  "+hj.estado.descripcion
+//            }
+            hijosVivos+=prtr.size()
+        }
+
+        println("tiene hijos " + hijosVivos)
 
 
-        if (Tramite.findAllByPadre(Tramite.get(persDocTram.tramite.id))) {
+        if (hijosVivos>0) {
             render "NO*"
             return
         }
@@ -1098,6 +1151,7 @@ class TramiteAdminController extends Shield {
                     observacionOriginal = objeto.tramite.observaciones
                     texto = nuevaObs
                     objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
                 }
                 if (objeto.rolPersonaTramite.codigo == "R001") {
                     nuevaObs = "PARA "
@@ -1135,6 +1189,16 @@ class TramiteAdminController extends Shield {
                         }
                     }
                 }
+
+
+//                if (objeto.rolPersonaTramite.codigo == "R002") {
+//                    if(objeto.delete(flush: true)){
+//                        println("anulado y borrado")
+//                    }else{
+//                        println("error anulado-borrado " + objeto.errors)
+//                    }
+//                }
+
             }
             def rolCopia = RolPersonaTramite.findByCodigo("R002")
             def pdt = PersonaDocumentoTramite.get(params.id)
@@ -1147,6 +1211,9 @@ class TramiteAdminController extends Shield {
                     }
                 }
             }
+
+
+
 
             if (pdt.tramite.aQuienContesta) {
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {

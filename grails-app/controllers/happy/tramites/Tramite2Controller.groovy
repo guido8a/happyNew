@@ -563,9 +563,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def contestados = ""
 
+        println("tramites " +  tramites)
+
         tramites.each { pr ->
             if (Tramite.countByAQuienContesta(pr) > 0) {
-                contestados += "<li>El usuario " + pr.persona.nombre + " " + pr.persona.apellido + " ya contestó el documento</li>"
+                contestados += "<li>El usuario " + pr?.persona?.nombre + " " + pr?.persona?.apellido + " ya contestó el documento</li>"
             }
         }
 
@@ -928,6 +930,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
+
+        println("params " + params)
+
         params.esRespuesta = params.esRespuesta ?: 0
         if (!session.usuario.esTriangulo()) {
             flash.message = "Su perfil (${session.perfil}), no tiene permiso para entrar a esta pantalla"
@@ -1179,6 +1184,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //
 //        nombre = nombre.replaceAll(/</, /&lt;/)
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
+
+        if(params.tramite.aQuienContesta.id){
+            if(PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006'  ){
+                flash.tipo = "error"
+                flash.message = "Ha ocurrido un error al grabar el tramite"
+                redirect(controller: 'tramite3', action: "bandejaEntradaDpto")
+                return
+            }
+        }
 
 
         def persona = Persona.get(session.usuario.id)
