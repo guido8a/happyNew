@@ -577,6 +577,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
     def permisoImprimir_ajax() {
         def tramite = Tramite.get(params.id)
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+
+
+        if(tramite.para){
+            println("--> " + tramite?.para?.estado?.codigo)
+            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
+                render "El trámite se encuentra <strong>${tramite?.para?.estado?.descripcion}</strong>, no puede asignar el permiso de imprimir"
+                return
+            }
+        }
+
+
         def personasDoc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolImprimir)
         def usuario = session.usuario
         def departamento = Persona.get(usuario.id).departamento
@@ -1564,6 +1577,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def persona = Persona.get(params.persona)
         def tramite = Tramite.get(params.id)
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+
+
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+
+
+        if(tramite.para){
+//            println("-->2 " + tramite?.para?.estado?.codigo)
+            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
+                render "El trámite se encuentra <strong>${tramite?.para?.estado?.descripcion}</strong>, no puede asignar el permiso de imprimir"
+                return
+            }
+        }
 
         //antes de crear elimino los que existen
         def idsExisten = PersonaDocumentoTramite.withCriteria {

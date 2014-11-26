@@ -312,8 +312,10 @@ class TramiteAdminController extends Shield {
 
         def rolCopia = RolPersonaTramite.findByCodigo("R002")
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
+        def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
+
 
         def errores = ""
 
@@ -323,8 +325,7 @@ class TramiteAdminController extends Shield {
         }
 
         if(tramite.para) {
-            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
-                println("entrof")
+            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado || tramite.para?.estado == estadoPorEnviar){
                 render "NO*"+"El trámite se encuentra <strong>${tramite.para?.estado.descripcion}</strong>, no puede crear copias"
                 return
             }
