@@ -559,11 +559,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
 
-        def tramites = ([tramite.para] + tramite.copias)
+        def tramites = ([tramite.para] + tramite.allCopias)
 
         def contestados = ""
 
-        println("tramites " +  tramites)
+        println("tramites-> " +  tramites)
 
         tramites.each { pr ->
             if (Tramite.countByAQuienContesta(pr) > 0) {
