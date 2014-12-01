@@ -13,7 +13,7 @@ class MailJob {
     def mailService
 
     def execute() {
-        println "mandar mail"
+//        println "mandar mail"
 //        mailService.sendMail {
 //            to "valentinsvt@hotmail.com"
 //            from "noreply@battle.com"
