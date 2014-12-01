@@ -271,7 +271,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def depStr = ""
         if (params.dpto) {
             def departamento = Departamento.get(params.dpto)
-            println "dep " + departamento
+//            println "dep " + departamento
             def padre
             def pers = Persona.findAllByDepartamento(departamento)
 
@@ -310,7 +310,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def total = 0
         def totalSr = 0
         def hijos = datos["hijos"]
-        println("--> "+ datos)
+//        println("--> "+ datos)
 
         if ((puedeVer?.id?.contains(datos["objeto"]?.id))) {
             maxLvl = datos
@@ -430,10 +430,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         def datos = arr["hijos"]
         datos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
-                println "puede ver " + lvl
+//                println "puede ver " + lvl
                 if (maxLvl == null) {
                     maxLvl = lvl
-                    println "cambio a max"
+//                    println "cambio a max"
                 }
 
                 datosGrafico.put(lvl["objeto"].toString(), [:])
