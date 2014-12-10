@@ -168,5 +168,14 @@
                 $(".trHighlight").removeClass("trHighlight");
             }
         });
+        $('[title!=""]').qtip({
+            style    : {
+                classes : 'qtip-tipsy'
+            },
+            position : {
+                my : "bottom center",
+                at : "top center"
+            }
+        });
     });
 </script>

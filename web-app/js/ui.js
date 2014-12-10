@@ -11,7 +11,7 @@
 
 //valida la autorizacion y muestra error cuando no se ingresa
 function validaAutorizacion($textField) {
-    console.log($textField);
+    //console.log($textField);
     var autorizadoPor = $.trim($textField.val());
     if ($.trim(autorizadoPor) == "") {
         $textField.addClass("errorAutorizacion").effect("pulsate", 1000, function () {
