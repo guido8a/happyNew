@@ -395,9 +395,9 @@
                                         type    : "POST",
                                         url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
                                         data    : {
-                                            id   : tramiteId,
-                                            msg  : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
-                                                   hijosAnular,
+                                            id  : tramiteId,
+                                            msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
+                                                 hijosAnular,
                                             icon : "fa-ban"
                                         },
                                         success : function (msg) {
@@ -457,7 +457,17 @@
                             label  : "Anular",
                             icon   : "fa fa-ban",
                             action : function () {
-                                var hijosAnular = findAllHijos($node);
+                                var $parent = $node.parent().parent();
+                                var hijosAnular = "";
+                                if (nodeTipo.indexOf("copia") == -1) {
+                                    if ($parent.data("jstree").type == "tramitePrincipal") {
+                                        $parent.parent().children().each(function () {
+                                            hijosAnular += findAllHijos($(this));
+                                        });
+                                    }
+                                } else {
+                                    hijosAnular = findAllHijos($node);
+                                }
                                 if (hijosAnular != "") {
                                     hijosAnular = "<p>Los siguientes trámites derivados también serán anulados:</p>" +
                                                   "<ul style='max-height:100px; overflow: auto;'>" + hijosAnular + "</ul>";
@@ -466,9 +476,9 @@
                                     type    : "POST",
                                     url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
                                     data    : {
-                                        id   : tramiteId,
-                                        msg  : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
-                                               hijosAnular,
+                                        id  : tramiteId,
+                                        msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
+                                             hijosAnular,
                                         icon : "fa-ban"
                                     },
                                     success : function (msg) {
@@ -587,138 +597,138 @@
                         }
                     }
                     if (estaAnulado && (!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado))) {
-                        if (nodeTipo.indexOf("copia") == -1) {
-                            items.desAnular = {
-                                separator_before : true,
-                                label            : "Quitar anulado",
-                                icon             : "fa fa-magic",
-                                action           : function () {
-                                    $.ajax({
-                                        type    : "POST",
-                                        url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
-                                        data    : {
-                                            id   : tramiteId,
-                                            msg  : "<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",
-                                            icon : "fa-magic"
-                                        },
-                                        success : function (msg) {
-                                            bootbox.dialog({
-                                                id      : "dlgDesanular",
-                                                title   : '<i class="fa fa-magic"></i> Quitar anulado del Trámite',
-                                                message : msg,
-                                                buttons : {
-                                                    cancelar    : {
-                                                        label     : '<i class="fa fa-times"></i> Cancelar',
-                                                        className : 'btn-danger',
-                                                        callback  : function () {
-                                                        }
-                                                    },
-                                                    desanular : {
-                                                        id        : 'btnDesanular',
-                                                        label     : '<i class="fa fa-check"></i> Quitar anulado',
-                                                        className : "btn-success",
-                                                        callback  : function () {
-                                                            var $txt = $("#aut");
-                                                            if (validaAutorizacion($txt)) {
-                                                                openLoader("Quitando el anulado");
-                                                                $.ajax({
-                                                                    type    : 'POST',
-                                                                    url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',
-                                                                    data    : {
-                                                                        id    : nodeId,
-                                                                        texto : $("#observacion").val(),
-                                                                        aut   : $txt.val()
-                                                                    },
-                                                                    success : function (msg) {
-                                                                        openLoader();
+//                        if (nodeTipo.indexOf("copia") == -1) {
+                        items.desAnular = {
+                            separator_before : true,
+                            label            : "Quitar anulado",
+                            icon             : "fa fa-magic",
+                            action           : function () {
+                                $.ajax({
+                                    type    : "POST",
+                                    url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
+                                    data    : {
+                                        id   : tramiteId,
+                                        msg  : "<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",
+                                        icon : "fa-magic"
+                                    },
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            id      : "dlgDesanular",
+                                            title   : '<i class="fa fa-magic"></i> Quitar anulado del Trámite',
+                                            message : msg,
+                                            buttons : {
+                                                cancelar  : {
+                                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                                    className : 'btn-danger',
+                                                    callback  : function () {
+                                                    }
+                                                },
+                                                desanular : {
+                                                    id        : 'btnDesanular',
+                                                    label     : '<i class="fa fa-check"></i> Quitar anulado',
+                                                    className : "btn-success",
+                                                    callback  : function () {
+                                                        var $txt = $("#aut");
+                                                        if (validaAutorizacion($txt)) {
+                                                            openLoader("Quitando el anulado");
+                                                            $.ajax({
+                                                                type    : 'POST',
+                                                                url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',
+                                                                data    : {
+                                                                    id    : nodeId,
+                                                                    texto : $("#observacion").val(),
+                                                                    aut   : $txt.val()
+                                                                },
+                                                                success : function (msg) {
+                                                                    openLoader();
+                                                                    closeLoader();
+                                                                    var parts = msg.split("*");
+                                                                    if (parts[0] == 'OK') {
+                                                                        log("Quitado el anulado del trámite correctamente", 'success');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
+                                                                    } else if (parts[0] == 'NO') {
                                                                         closeLoader();
-                                                                        var parts = msg.split("*");
-                                                                        if (parts[0] == 'OK') {
-                                                                            log("Quitado el anulado del trámite correctamente", 'success');
-                                                                            setTimeout(function () {
-                                                                                location.reload(true);
-                                                                            }, 500);
-                                                                        } else if (parts[0] == 'NO') {
-                                                                            closeLoader();
-                                                                            log("Error al quitar el anulado del trámite", 'error');
-                                                                            setTimeout(function () {
-                                                                                location.reload(true);
-                                                                            }, 500);
-                                                                        }
+                                                                        log("Error al quitar el anulado del trámite", 'error');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
                                                                     }
-                                                                });
-                                                            } else {
-                                                                return false;
-                                                            }
+                                                                }
+                                                            });
+                                                        } else {
+                                                            return false;
                                                         }
                                                     }
                                                 }
-                                            });
-                                        }
-                                    });
-                                }
-                                %{--action           : function () {--}%
-                                    %{--var msg = "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i>" +--}%
-                                              %{--"<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>" +--}%
-                                              %{--'<div class="row">' +--}%
-                                              %{--'<div class="col-md-3"><strong>Solicitado por</strong></div>' +--}%
-                                              %{--'<div class="col-md-9">' +--}%
-                                              %{--'<input type="text" class="form-control" id="autDesanular"/>' +--}%
-                                              %{--'</div>' +--}%
-                                              %{--'</div>' +--}%
-                                              %{--"<label for='observacionDesanular'>Observaciones:</label>" +--}%
-                                              %{--'<textarea id="observacionDesanular" style="resize: none; height: 150px;" ' +--}%
-                                              %{--'class="form-control" maxlength="255" name="observacionDesanular"></textarea>';--}%
-                                    %{--bootbox.dialog({--}%
-                                        %{--id      : "dlgAnular",--}%
-                                        %{--title   : '<i class="fa fa-magic"></i> Quitar anulado del Trámite',--}%
-                                        %{--message : msg,--}%
-                                        %{--buttons : {--}%
-                                            %{--cancelar  : {--}%
-                                                %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
-                                                %{--className : 'btn-danger',--}%
-                                                %{--callback  : function () {--}%
-                                                %{--}--}%
-                                            %{--},--}%
-                                            %{--desanular : {--}%
-                                                %{--id        : 'btnDesanular',--}%
-                                                %{--label     : '<i class="fa fa-check"></i> Quitar anulado',--}%
-                                                %{--className : "btn-success",--}%
-                                                %{--callback  : function () {--}%
-                                                    %{--var $txt = $("#autDesanular");--}%
-                                                    %{--if (validaAutorizacion($txt)) {--}%
-                                                        %{--openLoader("Procesando");--}%
-                                                        %{--$.ajax({--}%
-                                                            %{--type    : 'POST',--}%
-                                                            %{--url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',--}%
-                                                            %{--data    : {--}%
-                                                                %{--id    : nodeId,--}%
-                                                                %{--texto : $("#observacionDesanular").val(),--}%
-                                                                %{--aut   : $txt.val()--}%
-                                                            %{--},--}%
-                                                            %{--success : function (msg) {--}%
-                                                                %{--var parts = msg.split("*");--}%
-                                                                %{--if (parts[0] == 'OK') {--}%
-                                                                    %{--log("Quitado el anulado del trámite correctamente", 'success');--}%
-                                                                    %{--setTimeout(function () {--}%
-                                                                        %{--location.reload(true);--}%
-                                                                    %{--}, 500);--}%
-                                                                %{--} else if (parts[0] == 'NO') {--}%
-                                                                    %{--closeLoader();--}%
-                                                                    %{--log("Error al quitar el anulado del trámite el trámite", 'error')--}%
-                                                                %{--}--}%
-                                                            %{--}--}%
-                                                        %{--});--}%
-                                                    %{--} else {--}%
-                                                        %{--return false;--}%
-                                                    %{--}--}%
-                                                %{--}--}%
-                                            %{--}--}%
-                                        %{--}--}%
-                                    %{--});--}%
-                                %{--}--}%
-                            };
-                        }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                            %{--action           : function () {--}%
+                            %{--var msg = "<i class='fa fa-magic fa-3x pull-left text-danger text-shadow'></i>" +--}%
+                            %{--"<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>" +--}%
+                            %{--'<div class="row">' +--}%
+                            %{--'<div class="col-md-3"><strong>Solicitado por</strong></div>' +--}%
+                            %{--'<div class="col-md-9">' +--}%
+                            %{--'<input type="text" class="form-control" id="autDesanular"/>' +--}%
+                            %{--'</div>' +--}%
+                            %{--'</div>' +--}%
+                            %{--"<label for='observacionDesanular'>Observaciones:</label>" +--}%
+                            %{--'<textarea id="observacionDesanular" style="resize: none; height: 150px;" ' +--}%
+                            %{--'class="form-control" maxlength="255" name="observacionDesanular"></textarea>';--}%
+                            %{--bootbox.dialog({--}%
+                            %{--id      : "dlgAnular",--}%
+                            %{--title   : '<i class="fa fa-magic"></i> Quitar anulado del Trámite',--}%
+                            %{--message : msg,--}%
+                            %{--buttons : {--}%
+                            %{--cancelar  : {--}%
+                            %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                            %{--className : 'btn-danger',--}%
+                            %{--callback  : function () {--}%
+                            %{--}--}%
+                            %{--},--}%
+                            %{--desanular : {--}%
+                            %{--id        : 'btnDesanular',--}%
+                            %{--label     : '<i class="fa fa-check"></i> Quitar anulado',--}%
+                            %{--className : "btn-success",--}%
+                            %{--callback  : function () {--}%
+                            %{--var $txt = $("#autDesanular");--}%
+                            %{--if (validaAutorizacion($txt)) {--}%
+                            %{--openLoader("Procesando");--}%
+                            %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(controller: "tramiteAdmin", action: "desanular")}',--}%
+                            %{--data    : {--}%
+                            %{--id    : nodeId,--}%
+                            %{--texto : $("#observacionDesanular").val(),--}%
+                            %{--aut   : $txt.val()--}%
+                            %{--},--}%
+                            %{--success : function (msg) {--}%
+                            %{--var parts = msg.split("*");--}%
+                            %{--if (parts[0] == 'OK') {--}%
+                            %{--log("Quitado el anulado del trámite correctamente", 'success');--}%
+                            %{--setTimeout(function () {--}%
+                            %{--location.reload(true);--}%
+                            %{--}, 500);--}%
+                            %{--} else if (parts[0] == 'NO') {--}%
+                            %{--closeLoader();--}%
+                            %{--log("Error al quitar el anulado del trámite el trámite", 'error')--}%
+                            %{--}--}%
+                            %{--}--}%
+                            %{--});--}%
+                            %{--} else {--}%
+                            %{--return false;--}%
+                            %{--}--}%
+                            %{--}--}%
+                            %{--}--}%
+                            %{--}--}%
+                            %{--});--}%
+                            %{--}--}%
+                        };
+//                        }
                     }
                     if (estaArchivado && !estaAnulado) {
                         items.desArchivar = {
@@ -873,7 +883,7 @@
                 });
 
                 $('#jstree').jstree({
-                    plugins     : [ "types", "state", "contextmenu", "wholerow" , "search"],
+                    plugins     : ["types", "state", "contextmenu", "wholerow", "search"],
                     core        : {
                         multiple       : false,
                         check_callback : true,

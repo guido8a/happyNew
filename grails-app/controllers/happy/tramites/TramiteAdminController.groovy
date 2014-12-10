@@ -233,8 +233,8 @@ class TramiteAdminController extends Shield {
 
 //        def puede = true
 
-        if(!paraTramite) {
-            if(tramite.copias.size() == 0) {
+        if (!paraTramite) {
+            if (tramite.copias.size() == 0) {
                 return [tramite: tramite, error: "No puede crear copias"]
             }
         }
@@ -300,7 +300,7 @@ class TramiteAdminController extends Shield {
     }
 
     def enviarCopias_ajax() {
-        println("params " +  params)
+        println("params " + params)
         def tramite
         if (params.id) {
             def persDocTram = PersonaDocumentoTramite.get(params.id)
@@ -319,19 +319,19 @@ class TramiteAdminController extends Shield {
 
         def errores = ""
 
-        if(params.copias.trim() == "") {
-            render "NO*"+"Tiene que seleccionar al menos una persona para enviar copia."
+        if (params.copias.trim() == "") {
+            render "NO*" + "Tiene que seleccionar al menos una persona para enviar copia."
             return
         }
 
-        if(tramite.para) {
-            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado || tramite.para?.estado == estadoPorEnviar){
-                render "NO*"+"El trámite se encuentra <strong>${tramite.para?.estado.descripcion}</strong>, no puede crear copias"
+        if (tramite.para) {
+            if (tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado || tramite.para?.estado == estadoPorEnviar) {
+                render "NO*" + "El trámite se encuentra <strong>${tramite.para?.estado.descripcion}</strong>, no puede crear copias"
                 return
             }
         } else {
-            if(tramite.copias.size() == 0) {
-                render "NO*"+"No puede crear copias"
+            if (tramite.copias.size() == 0) {
+                render "NO*" + "No puede crear copias"
                 return
             }
         }
@@ -682,8 +682,8 @@ class TramiteAdminController extends Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
-        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
-        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara, [sort: "id"])
+        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc, [sort: "id"])
 
         def html = ""
 
@@ -731,8 +731,8 @@ class TramiteAdminController extends Shield {
         if (pdt.tramite.estadoTramiteExterno) {
             clase += " externo"
         }
-        if(pdt.tramite.tipoDocumento?.codigo=="CIR"){
-            clase+=" CIR"
+        if (pdt.tramite.tipoDocumento?.codigo == "CIR") {
+            clase += " CIR"
 
         }
         rel += estado
@@ -917,7 +917,7 @@ class TramiteAdminController extends Shield {
 
         def hijosVivos = 0
 
-        Tramite.findAllByPadre(persDocTram.tramite).each { tr->
+        Tramite.findAllByPadre(persDocTram.tramite).each { tr ->
             def prtr = PersonaDocumentoTramite.withCriteria {
                 eq("tramite", tr)
                 ne("estado", estadoAnulado)
@@ -926,13 +926,13 @@ class TramiteAdminController extends Shield {
 //            prtr.each {hj->
 //                println " "+hj.rolPersonaTramite.descripcion+"  "+hj.estado.descripcion
 //            }
-            hijosVivos+=prtr.size()
+            hijosVivos += prtr.size()
         }
 
         println("tiene hijos " + hijosVivos)
 
 
-        if (hijosVivos>0) {
+        if (hijosVivos > 0) {
             render "NO*"
             return
         }
@@ -995,7 +995,7 @@ class TramiteAdminController extends Shield {
         }
     }
 
-    def anularCircular(){
+    def anularCircular() {
         def persDocTram = PersonaDocumentoTramite.get(params.id)
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estados = [estadoArchivado]
@@ -1073,11 +1073,11 @@ class TramiteAdminController extends Shield {
             /*aqui especial para circular*/
             def rolCopia = RolPersonaTramite.findByCodigo("R002")
             def pdt = PersonaDocumentoTramite.get(params.id)
-            if(pdt.tramite.tipoDocumento?.codigo!="CIR"){
+            if (pdt.tramite.tipoDocumento?.codigo != "CIR") {
                 response.sendError(403)
             }
-            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite,rolCopia)
-            pdts.each {p->
+            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, rolCopia)
+            pdts.each { p ->
                 getCadenaDown(p, funcion)
             }
             if (pdt.tramite.aQuienContesta) {
@@ -1126,7 +1126,7 @@ class TramiteAdminController extends Shield {
 
         } else {
             def funcion = { objeto ->
-                println "anulando " + objeto.id + " " + objeto.rolPersonaTramite.descripcion + "  " + objeto.tramite
+//                println "anulando " + objeto.id + " " + objeto.rolPersonaTramite.descripcion + "  " + objeto.tramite
                 def anulado = EstadoTramite.findByCodigo("E006")
                 objeto.estado = anulado
                 objeto.fechaAnulacion = new Date()
@@ -1191,7 +1191,6 @@ class TramiteAdminController extends Shield {
                     }
                 }
 
-
 //                if (objeto.rolPersonaTramite.codigo == "R002") {
 //                    if(objeto.delete(flush: true)){
 //                        println("anulado y borrado")
@@ -1201,21 +1200,31 @@ class TramiteAdminController extends Shield {
 //                }
 
             }
+
             def rolCopia = RolPersonaTramite.findByCodigo("R002")
             def pdt = PersonaDocumentoTramite.get(params.id)
-            getCadenaDown(pdt, funcion)
-            if (pdt.rolPersonaTramite.codigo == "R001") {
-                def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, rolCopia)
-                if (copias.size() > 0) {
-                    copias.each {
-                        getCadenaDown(it, funcion)
+            def esPara = pdt.rolPersonaTramite.codigo == "R001"
+            def esPrincipal = pdt.tramite.tramitePrincipal > 0 && pdt.tramite.tramitePrincipal.toLong() == pdt.tramite.tramitePrincipal
+
+            def listaAnular = [pdt.tramite]
+            if (esPara && esPrincipal) {
+                listaAnular = Tramite.findAllByTramitePrincipal(pdt.tramite.tramitePrincipal)
+            }
+
+            listaAnular.each { tramite ->
+                def pxt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("R001"))
+                if (pxt) {
+                    getCadenaDown(pxt, funcion)
+                    if (esPara) {
+                        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pxt.tramite, rolCopia)
+                        if (copias.size() > 0) {
+                            copias.each { cp ->
+                                getCadenaDown(cp, funcion)
+                            }
+                        }
                     }
                 }
             }
-
-
-
-
             if (pdt.tramite.aQuienContesta) {
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
@@ -1246,11 +1255,8 @@ class TramiteAdminController extends Shield {
                 nuevaObservacion = params.texto
                 pdt.tramite.aQuienContesta.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
             }
-
             render "OK"
         }
-
-
     }
 
     def desanularPdt(PersonaDocumentoTramite pdt) {
@@ -1318,20 +1324,27 @@ class TramiteAdminController extends Shield {
 
     def desanular() {
         def pdt = PersonaDocumentoTramite.get(params.id)
-        if (pdt.rolPersonaTramite.codigo == "R001") { //es PARA
-            def tramite = pdt.tramite
-            def copias = tramite.allCopias
-            def ok = true
-            (copias + pdt).each { p ->
-                println "desanular: " + p.rolPersonaTramite.descripcion
-                if (!desanularPdt(p)) {
-                    ok = false
-                }
-            }
-            render ok ? "OK" : "NO"
-        } else {
-            render "NO"
+//        if (pdt.rolPersonaTramite.codigo == "R001") { //es PARA
+        def tramite = pdt.tramite
+        def copias = tramite.allCopias
+        def ok = true
+
+        def listaDesanular = [pdt]
+
+        if (pdt.rolPersonaTramite.codigo == "R001") {// es PARA
+            listaDesanular = (copias + pdt)
         }
+//        (copias + pdt).each { p ->
+        listaDesanular.each { p ->
+            println "desanular: " + p.rolPersonaTramite.descripcion
+            if (!desanularPdt(p)) {
+                ok = false
+            }
+        }
+        render ok ? "OK" : "NO"
+//        } else {
+//            render "NO"
+//        }
     }
 
     def getCadenaDown(pdt, funcion) {

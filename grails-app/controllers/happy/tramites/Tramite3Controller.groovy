@@ -14,13 +14,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
 
-        if(params.tramite.aQuienContesta.id){
-          if(PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006'  ){
-            flash.tipo = "error"
-            flash.message = "Ha ocurrido un error al grabar el tramite"
-            redirect(controller: 'tramite', action: "bandejaEntrada")
-            return
-        }
+        if (params.tramite.aQuienContesta.id) {
+            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006') {
+                flash.tipo = "error"
+                flash.message = "Ha ocurrido un error al grabar el tramite"
+                redirect(controller: 'tramite', action: "bandejaEntrada")
+                return
+            }
         }
 
         def persona = Persona.get(session.usuario.id)
@@ -857,7 +857,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
 
 //            println("pxt 2"  + pxt )
-            println "Estado del pdt "+pxt.estado.codigo
+            println "Estado del pdt " + pxt.estado.codigo
             if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {
@@ -913,19 +913,19 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     if (pdt.save(flush: true)) {
                         render "OK_Trámite recibido correctamente"
                     } else {
-                        println "error pdt recibir "+pdt.errors
+                        println "error pdt recibir " + pdt.errors
                         render "NO_Ocurrió un error al recibir"
                     }
                     def job = new BloqueosJob()
                     job.executeRecibir(persona.departamento, session.usuario)
                     job = null
                 } else {
-                    println "pxt error " +pxt.errors
-                    println "error tramite recibir "+tramite.errors
+                    println "pxt error " + pxt.errors
+                    println "error tramite recibir " + tramite.errors
                     render "NO_Ocurrió un error al recibir"
                 }
             } else {
-                println "estado 4 "+ pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
+                println "estado 4 " + pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
                 render "NO_Ocurrió un error al recibir"
             }
 
@@ -989,11 +989,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def pxtTodos = PersonaDocumentoTramite.withCriteria {
 
             eq("departamento", departamento)
-            or{
+            or {
                 eq("rolPersonaTramite", rolCopia)
                 eq("rolPersonaTramite", rolPara)
             }
-           isNotNull("fechaEnvio")
+            isNotNull("fechaEnvio")
             or {
                 eq("estado", EstadoTramite.findByCodigo("E003")) //enviado
                 eq("estado", EstadoTramite.findByCodigo("E007")) //enviado al jefe
@@ -1256,8 +1256,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
-        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara)
-        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc)
+        def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolPara, [sort: "id"])
+        def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(principal, rolCc, [sort: "id"])
 
         def html = ""
 

@@ -479,11 +479,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         //1ro saco todos los receptores a ver si alguien ha contestado
         def para = tramite.para
-        def copias = tramite.copias
+        def copias = tramite.allCopias
 
         def contestaron = ""
 
-        ([para] + copias).each { pdt ->
+        def listaDesenviar = []
+
+        if (para) {
+            listaDesenviar += para
+        }
+        listaDesenviar += copias
+
+//        ([para] + copias).each { pdt ->
+        listaDesenviar.each { pdt ->
             if (Tramite.countByAQuienContesta(pdt) > 0) {
                 if (tramite.deDepartamento) {
                     contestaron += "<li>El departamento ${tramite.deDepartamento.descripcion} " +
@@ -530,11 +538,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def recibidos = 0
         def enviados = 0
         ([tramite.para] + tramite.copias).each { pdt ->
-            if (pdt.fechaRecepcion) {
-                recibidos++
-            }
-            if (pdt.fechaEnvio) {
-                enviados++
+            if (pdt) {
+                if (pdt.fechaRecepcion) {
+                    recibidos++
+                }
+                if (pdt.fechaEnvio) {
+                    enviados++
+                }
             }
         }
         if (enviados == 0 && recibidos == 0) {
@@ -559,11 +569,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
 
-        def tramites = ([tramite.para] + tramite.allCopias)
+//        def tramites = ([tramite.para] + tramite.allCopias)
+        def tramites = []
+        if (tramite.para) {
+            tramites += tramite.para
+        }
+        tramites += tramite.allCopias
 
         def contestados = ""
-
-        println("tramites-> " +  tramites)
 
         tramites.each { pr ->
             if (Tramite.countByAQuienContesta(pr) > 0) {
@@ -581,9 +594,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
 
 
-        if(tramite.para){
+        if (tramite.para) {
             println("--> " + tramite?.para?.estado?.codigo)
-            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
+            if (tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado) {
                 render "El trámite se encuentra <strong>${tramite?.para?.estado?.descripcion}</strong>, no puede asignar el permiso de imprimir"
                 return
             }
@@ -1198,8 +1211,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        nombre = nombre.replaceAll(/</, /&lt;/)
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
 
-        if(params.tramite.aQuienContesta.id){
-            if(PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006'  ){
+        if (params.tramite.aQuienContesta.id) {
+            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006') {
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite3', action: "bandejaEntradaDpto")
@@ -1583,9 +1596,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
 
 
-        if(tramite.para){
+        if (tramite.para) {
 //            println("-->2 " + tramite?.para?.estado?.codigo)
-            if(tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado){
+            if (tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado) {
                 render "El trámite se encuentra <strong>${tramite?.para?.estado?.descripcion}</strong>, no puede asignar el permiso de imprimir"
                 return
             }
