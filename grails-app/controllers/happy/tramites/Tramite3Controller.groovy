@@ -600,6 +600,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def tramite = Tramite.get(params.id)
         def tramites = []
         def principal = null
+        def tp = null
+        def tramitesTp = []
+        println "tramite  "+tramite.codigo+" - "+tramite.id+" "+tramite.tramitePrincipal
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003"), RolPersonaTramite.findByCodigo("I005")]
         if (tramite) {
             tramites.add(tramite)
@@ -615,9 +618,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 }
             }
+            if(tramite.tramitePrincipal!=0 && tramite.tramitePrincipal!=tramite.id){
+                tp = Tramite.get(tramite.tramitePrincipal)
+                println "tp "+tp.codigo+" - "+tp.id
+            }
         }
+
         tramites = tramites.reverse()
-        return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo]
+        return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo,tp:tp]
     }
 
 
