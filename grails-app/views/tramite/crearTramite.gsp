@@ -36,6 +36,12 @@
             color      : #0A384F;
         }
 
+        .divFieldsListas {
+            height     : 280px;
+            width      : 970px;
+            overflow-x : auto;
+        }
+
         .fieldLista {
             width   : 450px;
             height  : 250px;
@@ -543,70 +549,71 @@
 
             <div class="linea"></div>
 
-            <fieldset class="ui-corner-all fieldLista">
-                <legend style="margin-bottom: 1px">
-                    Disponibles
-                </legend>
+            <div class="divFieldsListas">
+                <fieldset class="ui-corner-all fieldLista">
+                    <legend style="margin-bottom: 1px">
+                        Disponibles
+                    </legend>
 
-                <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
-                    <g:each in="${disponibles}" var="disp">
-                        <g:if test="${disp.id.toInteger() < 0}">
-                            <li data-id="${disp.id}" class="${disp.externo ? 'externo' : 'interno'}">
-                                <i class="fa fa-li ${disp.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.label}
-                            </li>
-                        </g:if>
-                        <g:else>
-                            <li data-id="${disp.id}" class="interno">
-                                <i class="fa fa-li fa-user"></i> ${disp.label}
-                            </li>
-                        </g:else>
-                    </g:each>
-                </ul>
-            </fieldset>
-
-            <div class="divBotones">
-                <div class="btn-group-vertical">
-                    <a href="#" class="btn btn-default" title="Agregar todos" id="btnAddAll">
-                        <i class="fa fa-angle-double-right"></i>
-                    </a>
-                    <a href="#" class="btn btn-default" title="Agregar seleccionados" id="btnAddSelected">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                    <a href="#" class="btn btn-default" title="Quitar seleccionados" id="btnRemoveSelected">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a href="#" class="btn btn-default" title="Quitar todos" id="btnRemoveAll">
-                        <i class="fa fa-angle-double-left"></i>
-                    </a>
-                </div>
-            </div>
-
-            <fieldset class="ui-corner-all fieldLista">
-                <legend style="margin-bottom: 1px">
-                    Seleccionados
-                </legend>
-
-                <ul id="ulSeleccionados" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
-                    <g:if test="${tramite.id}">
-                        <g:each in="${tramite.copias}" var="disp">
-                            <g:if test="${disp.persona}">
-                                <li data-id="${disp.persona.id}" class="interno">
-                                    <i class="fa fa-li fa-user"></i> ${disp.persona.toString()}
+                    <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
+                        <g:each in="${disponibles}" var="disp">
+                            <g:if test="${disp.id.toInteger() < 0}">
+                                <li data-id="${disp.id}" class="${disp.externo ? 'externo' : 'interno'}">
+                                    <i class="fa fa-li ${disp.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.label}
                                 </li>
                             </g:if>
                             <g:else>
-                            %{--<li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">--}%
-                            %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
-                            %{--</li>--}%
-                                <li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
-                                    <i class="fa fa-li ${disp.departamento.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.departamento.descripcion}
+                                <li data-id="${disp.id}" class="interno">
+                                    <i class="fa fa-li fa-user"></i> ${disp.label}
                                 </li>
                             </g:else>
                         </g:each>
-                    </g:if>
-                </ul>
-            </fieldset>
+                    </ul>
+                </fieldset>
 
+                <div class="divBotones">
+                    <div class="btn-group-vertical">
+                        <a href="#" class="btn btn-default" title="Agregar todos" id="btnAddAll">
+                            <i class="fa fa-angle-double-right"></i>
+                        </a>
+                        <a href="#" class="btn btn-default" title="Agregar seleccionados" id="btnAddSelected">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                        <a href="#" class="btn btn-default" title="Quitar seleccionados" id="btnRemoveSelected">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+                        <a href="#" class="btn btn-default" title="Quitar todos" id="btnRemoveAll">
+                            <i class="fa fa-angle-double-left"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <fieldset class="ui-corner-all fieldLista">
+                    <legend style="margin-bottom: 1px">
+                        Seleccionados
+                    </legend>
+
+                    <ul id="ulSeleccionados" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
+                        <g:if test="${tramite.id}">
+                            <g:each in="${tramite.copias}" var="disp">
+                                <g:if test="${disp.persona}">
+                                    <li data-id="${disp.persona.id}" class="interno">
+                                        <i class="fa fa-li fa-user"></i> ${disp.persona.toString()}
+                                    </li>
+                                </g:if>
+                                <g:else>
+                                %{--<li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">--}%
+                                %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
+                                %{--</li>--}%
+                                    <li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
+                                        <i class="fa fa-li ${disp.departamento.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.departamento.descripcion}
+                                    </li>
+                                </g:else>
+                            </g:each>
+                        </g:if>
+                    </ul>
+                </fieldset>
+            </div>
         </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1099,14 +1106,14 @@
                         cedulaOrigen : {
                             required : {
                                 depends : function (element) {
-                                    return  $("#tipoDocumento").find("option:selected").hasClass("DEX");
+                                    return $("#tipoDocumento").find("option:selected").hasClass("DEX");
                                 }
                             }
                         },
                         nombreOrigen : {
                             required : {
                                 depends : function (element) {
-                                    return  $("#tipoDocumento").find("option:selected").hasClass("DEX");
+                                    return $("#tipoDocumento").find("option:selected").hasClass("DEX");
                                 }
                             }
                         }
