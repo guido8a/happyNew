@@ -224,9 +224,10 @@
                     var fecha = $("#fechaBusqueda_input").val();
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
-                        data      : datos,
-                        success   : function (msg) {
+                    $.ajax({
+                        type    : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                        data    : datos,
+                        success : function (msg) {
                             $("#bandeja").html(msg);
 
                         }
@@ -325,6 +326,7 @@
                                 bootbox.dialog({
                                     title   : title,
                                     message : msg,
+                                    class   : "medium",
                                     buttons : {
                                         aceptar : {
                                             label     : "Aceptar",
@@ -503,8 +505,8 @@
                             id      : "dlgJefe",
                             title   : "Añadir observaciones al trámite",
                             message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
-                                      "Escriba las observaciones: " +
-                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                                    "Escriba las observaciones: " +
+                                    "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',
@@ -616,15 +618,11 @@
                 items.arbol = arbol;
                 </g:if>
 
-
                 if (conAnexo && recibido) {
                     <g:if test="${session.usuario.puedeJefe || session.usuario.esTriangulo }">
                     items.anexo = anexos;
                     </g:if>
                 }
-
-
-
 
                 if (retrasado || recibido) {
                     if (esExterno) {
@@ -729,9 +727,10 @@
                 var asunto = $("#asunto").val();
                 var fecha = $("#fechaBusqueda_input").val();
                 var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-                $.ajax({ type : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
-                    data      : datos,
-                    success   : function (msg) {
+                $.ajax({
+                    type    : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                    data    : datos,
+                    success : function (msg) {
 
                         $("#bandeja").html(msg);
                         closeLoader();

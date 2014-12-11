@@ -1295,7 +1295,8 @@ class TramiteAdminController extends Shield {
             } else if (pdt.persona) {
                 nuevaObs += " el usuario ${pdt.persona.login}"
             }
-            nuevaObs += " reactivada"
+//            nuevaObs += " reactivada"
+            nuevaObs += " "
             observacionOriginal = pdt.tramite.observaciones
             texto = nuevaObs
             pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -1308,7 +1309,8 @@ class TramiteAdminController extends Shield {
             } else if (pdt.persona) {
                 nuevaObs += " el usuario ${pdt.persona.login}"
             }
-            nuevaObs += " reactivado"
+//            nuevaObs += " reactivado"
+            nuevaObs += " "
             observacionOriginal = pdt.tramite.observaciones
             texto = nuevaObs
             pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)

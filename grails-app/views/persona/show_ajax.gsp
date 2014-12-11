@@ -17,7 +17,7 @@
             <g:if test="${personaInstance?.departamento}">
                 <div class="row">
                     <div class="col-md-${width} text-info">
-                        Dpto.
+                        Departamento
                     </div>
 
                     <div class="col-md-7">

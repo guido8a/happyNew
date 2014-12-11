@@ -12,3 +12,13 @@
 .long.modal-dialog {
     width : 1100px;
 }
+
+.medium .bootbox-body {
+    max-height : 720px;
+    overflow-y : auto;
+    overflow-x : hidden;
+}
+
+.medium.modal-dialog {
+    width : 700px;
+}

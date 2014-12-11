@@ -3,7 +3,7 @@ package happy.tramites
 import happy.seguridad.Persona
 import happy.seguridad.Shield
 
-class BusquedaExternosController extends Shield {
+class BusquedaExternosController {
 
     def index() {}
 
@@ -51,41 +51,46 @@ class BusquedaExternosController extends Shield {
             def tram = todos.last()
             def prsnPara, strPara, strJefe = "- Sin jefe asignado -", strDirector = " - Sin director asignado - "
             def para = tram.para
+            def recibido = false
             if (para.persona) {
                 def rolRecibe = RolPersonaTramite.findByCodigo("E003")
                 def recibio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tram, rolRecibe)
                 if (recibio.size() >= 1) {
                     recibio = recibio.last()
                     prsnPara = recibio.last().persona
-                }else{
-                    def triangulo = para?.departamento?.triangulos?.first()
-                    prsnPara = triangulo
+                    recibido = true
+                } else {
+//                    def triangulo = para?.departamento?.triangulos?.first()
+//                    prsnPara = triangulo
+                    prsnPara = para.persona
                 }
-
             } else {
                 def rolRecibe = RolPersonaTramite.findByCodigo("E003")
                 def recibio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tram, rolRecibe)
                 if (recibio.size() >= 1) {
                     recibio = recibio.last()
                     prsnPara = recibio.persona
+                    recibido = true
                 } else {
                     def triangulo = para?.departamento?.triangulos?.first()
                     prsnPara = triangulo
                 }
             }
-            strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/   (prsnPara?.nombre + " " + prsnPara?.apellido)
+            strPara = /* (prsnPara.titulo ? prsnPara.titulo + " " : "") +*/ (prsnPara?.nombre + " " + prsnPara?.apellido)
+//            strPara += recibido ? " - Recibido " : " - No recibido"
+
             def dptoPadre = prsnPara?.departamento?.padre ?: prsnPara?.departamento
             def directores = [], dptoDirector
-            Persona.findAllByDepartamento(prsnPara?.departamento).each {p->
-                if(p.estaActivo && p.puedeDirector) {
-                    directores+=(p.nombre+" "+p.apellido)
+            Persona.findAllByDepartamento(prsnPara?.departamento).each { p ->
+                if (p.estaActivo && p.puedeDirector) {
+                    directores += (p.nombre + " " + p.apellido)
                     dptoDirector = prsnPara.departamento
                 }
             }
-            if(directores.size() == 0) {
-                Persona.findAllByDepartamento(dptoPadre).each {p->
-                    if(p.estaActivo && p.puedeDirector) {
-                        directores+=(p.nombre+" "+p.apellido)
+            if (directores.size() == 0) {
+                Persona.findAllByDepartamento(dptoPadre).each { p ->
+                    if (p.estaActivo && p.puedeDirector) {
+                        directores += (p.nombre + " " + p.apellido)
                         dptoDirector = dptoPadre
                     }
                 }
@@ -109,13 +114,13 @@ class BusquedaExternosController extends Shield {
                 msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono ?: ' '}</em></strong></p>"
                 msg += "<p>Ubicación: <strong><em>${prsnPara.departamento.direccion ?: ''}</em></strong></p>"
                 msg += "<hr style='border-color:#999 !important;'/>"
-                if(directores){
+                if (directores.size() > 0) {
                     msg += "<p>Nombre del director: <strong><em>${directores?.join(', ')}</em></strong></p>"
                     msg += "<p>Departamento director: <strong><em>${dptoDirector?.descripcion ?: ''}</em></strong></p>"
                     msg += "<p>Teléfono: <strong><em>${dptoDirector?.telefono ?: ''}</em></strong></p>"
                     msg += "<p>Ubicación: <strong><em>${dptoDirector?.direccion ?: ''}</em></strong></p>"
                 }
-                }
+            }
 
             msg += "</div>"
             render msg
@@ -134,7 +139,7 @@ class BusquedaExternosController extends Shield {
         def estadosOk = [enviado, recibido, archivado]
         def arreglo = []
         Tramite.findAllByAQuienContestaAndFechaEnvioIsNotNull(tramite.para, [sort: "fechaCreacion", order: "asc"]).each { tr ->
-            if(tr.para){
+            if (tr.para) {
                 if (estadosOk.contains(tr.para.estado)) {
                     arreglo += tr
                     arreglo += todosHijos(tr)

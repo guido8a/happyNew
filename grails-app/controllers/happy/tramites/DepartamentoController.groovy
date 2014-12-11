@@ -414,7 +414,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def show_ajax() {
-
+        println "show dpto " + params
         def personal = []
         if (params.id) {
             def departamentoInstance = Departamento.get(params.id)
