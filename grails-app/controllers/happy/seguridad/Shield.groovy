@@ -140,12 +140,13 @@ class Shield {
 
     boolean isAllowedBloqueo() {
         def permitidas = ["inicio"          : ["index"],
-                          "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar"],
+                          "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar","saveTramite"],
                           "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente", "busquedaBandeja"],
                           "documentoTramite": ["verAnexos","cargaDocs"],
                           "alertas"         : ["list", "revisar"],
                           "persona"         : ["show_ajax"],
                           "departamento"    : ["show_ajax"]]
+
         try {
 
             if (!permitidas[controllerName])
