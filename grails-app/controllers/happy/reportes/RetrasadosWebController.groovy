@@ -148,8 +148,14 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         tabla += "<tfoot>"
         tabla += "<tr>"
         tabla += "<th colspan='2' class='titulo'>Gran Total</th>"
-        tabla += "<th class='titulo numero'>${datos['rezagados']}</th>"
-        tabla += "<th class='titulo numero'>${datos['retrasados']}</th>"
+        if(datos['rezagados'] != null){
+            tabla += "<th class='titulo numero'>${datos['rezagados']}</th>"
+            tabla += "<th class='titulo numero'>${datos['retrasados']}</th>"
+        }else{
+            tabla += "<th class='titulo numero'> </th>"
+            tabla += "<th class='titulo numero'> </th>"
+        }
+
         tabla += "</tr>"
         tabla += "</tfoot>"
 

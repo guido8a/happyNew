@@ -501,7 +501,7 @@
                 var url = $frmAccesos.attr("action");
                 var data = "usuario.id=${usuario.id}";
                 data += "&" + $frmAccesos.serialize();
-                $btnAccesos.hide().after(spinner);
+//                $btnAccesos.hide().after(spinner);
                 $.ajax({
                     type    : "POST",
                     url     : url,

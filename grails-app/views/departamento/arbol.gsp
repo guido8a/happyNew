@@ -953,7 +953,7 @@
                             if (!node.data.triangulos || node.data.triangulos > 1) {
                                 items.desactivar = {
                                     separator_before : true,
-                                    label            : "Desctivar",
+                                    label            : "Desactivar",
                                     icon             : "fa ${iconDesactivar}",
                                     action           : function (obj) {
                                         cambiarEstadoRowPersona(nodeId, nodeUsu, false, nodeTramites, nodeTramitess);

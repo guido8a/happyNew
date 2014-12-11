@@ -609,6 +609,7 @@ class TramiteAdminController extends Shield {
 
     def arbolAdminTramite() {
         def html = "", url = "", tramite = null
+
         if (params.id) {
             def usu = Persona.get(session.usuario.id)
             def puedeAdministrar = session.usuario.puedeAdmin

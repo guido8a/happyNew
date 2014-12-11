@@ -473,52 +473,10 @@
                         </span>
                     </div>
                 </div>
-
-                %{--<div class="row">--}%
-                %{--<div class="col-xs-3 ">--}%
-                %{--<span class="grupo">--}%
-                %{--<b>Apellido contacto:</b>--}%
-                %{--<g:textField id="apellidoContactoOrigen" name="origen.apellidoContacto" class="origenTram form-control " maxlength="31"--}%
-                %{--value="${origen?.apellidoContacto}"/>--}%
-                %{--</span>--}%
-                %{--</div>--}%
-
-                %{--<div class="col-xs-3 ">--}%
-                %{--<span class="grupo">--}%
-                %{--<b>Título:</b>--}%
-                %{--<g:textField id="tituloOrigen" name="origen.titulo" class="origenTram form-control " maxlength="4"--}%
-                %{--value="${origen?.titulo}"/>--}%
-                %{--</span>--}%
-                %{--</div>--}%
-
-                %{--<div class="col-xs-3 ">--}%
-                %{--<span class="grupo">--}%
-                %{--<b>Cargo:</b>--}%
-                %{--<g:textField id="cargoOrigen" name="origen.cargo" class="origenTram form-control" maxlength="127"--}%
-                %{--value="${origen?.cargo}"/>--}%
-                %{--</span>--}%
-                %{--</div>--}%
-
-                %{--<div class="col-xs-3 ">--}%
-                %{--<span class="grupo">--}%
-                %{--<b>E-mail:</b>--}%
-
-                %{--<div class="input-group">--}%
-                %{--<g:textField id="mailOrigen" name="origen.mail" class="origenTram form-control" maxlength="63"--}%
-                %{--value="${origen?.mail}"/>--}%
-                %{--<span class="input-group-addon"><i class="fa fa-envelope"></i></span>--}%
-                %{--</div>--}%
-                %{--</span>--}%
-                %{--</div>--}%
-                %{--</div>--}%
-
-                %{--<div class="row">--}%
-                %{--</div>--}%
-
             </div>
         </g:form>
 
-        <div style="float: left;width: 100%" class="vertical-container hide" id="divCopia">
+        <div style="float: left;width: 100%" class="" id="divCopia">
             <p class="css-vertical-text" id="tituloCopia">Con copia / Circular</p>
 
             <div class="linea"></div>
@@ -587,7 +545,7 @@
                 </ul>
             </fieldset>
 
-        </div>
+            </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
