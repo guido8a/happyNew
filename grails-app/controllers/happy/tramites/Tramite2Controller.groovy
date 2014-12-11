@@ -2,7 +2,10 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.alertas.Alerta
+import happy.seguridad.Accn
 import happy.seguridad.Persona
+import happy.seguridad.Prfl
+import happy.seguridad.Sesn
 import happy.utilitarios.DiaLaborable
 import org.w3c.dom.Document
 import org.xhtmlrenderer.extend.FontResolver
@@ -602,6 +605,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
+//        def perfilSesion = Prfl.get(session.perfil.id)
+//
+//        def a = Accn.withCriteria {
+//            eq("accnNombre", "bandejaImprimir")
+//            permisos {
+//                eq("perfil", perfilSesion)
+//            }
+//        }
+//
+//        println a
 
         def personasDoc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolImprimir)
         def usuario = session.usuario
@@ -609,12 +622,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def personal = Persona.findAllByDepartamento(departamento)
 //        println("personal " + personal)
         def personalActivo = []
-        personal.each {
-            if (it?.estaActivo && it?.id != usuario.id && !it?.esTriangulo() && !it?.getPuedeJefe()) {
-                personalActivo += it
+        personal.each { pr ->
+            if (pr?.estaActivo && pr?.id != usuario.id /*&& !pr?.esTriangulo() && !pr?.getPuedeJefe()*/) {
+//                println " " + pr + "  " + pr.esTriangulo + "  " + pr.puedeJefe
+                def a = Accn.withCriteria {
+                    eq("accnNombre", "bandejaImprimir")
+                    permisos {
+                        inList("perfil", Sesn.findAllByUsuario(pr).perfil)
+                    }
+                }
+//                println "\t" + a
+                if (a.size() > 0) {
+                    personalActivo += pr
+                }
             }
         }
-
+//        println personalActivo
         return [tramite: tramite, personasDoc: personasDoc, personal: personalActivo]
     }
 
