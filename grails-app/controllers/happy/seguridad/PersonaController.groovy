@@ -363,6 +363,14 @@ class PersonaController extends happy.seguridad.Shield {
             render "NO_El password actual no coincide"
         }
     }
+    def saveTelf(){
+        def usuario = Persona.get(session.usuario.id)
+        def telefono = params.telefono
+        usuario.telefono = params.telefono?.trim()
+        if (usuario.save(flush: true)) {
+            render "OK_Teléfono actualizado correctamente"
+        }
+    }
 
     def accesos() {
         def usu = Persona.get(params.id)
