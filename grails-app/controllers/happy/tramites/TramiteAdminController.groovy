@@ -1213,7 +1213,12 @@ class TramiteAdminController extends Shield {
             }
 
             listaAnular.each { tramite ->
-                def pxt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("R001"))
+                def pxt
+                if (tramite.id == pdt.tramiteId) {
+                    pxt = pdt
+                } else {
+                    pxt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("R001"))
+                }
                 if (pxt) {
                     getCadenaDown(pxt, funcion)
                     if (esPara) {
