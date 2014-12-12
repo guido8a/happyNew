@@ -46,7 +46,7 @@ class Departamento {
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
         estado(blank: true, nullable: true, size: 1..1)
-        objectguid(blank: true,nullable: true,size: 1..64)
+        objectguid(blank: true,nullable: true,size: 1..128)
     }
 
     String toString() {

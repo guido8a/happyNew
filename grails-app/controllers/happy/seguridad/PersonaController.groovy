@@ -1076,13 +1076,13 @@ class PersonaController extends happy.seguridad.Shield {
                 if (ou) {
                     println "es ou lvl1 " + ou
                     println "encode hex "+entry["objectguid"]?.encodeAsHex()
-                    println "bytes "+entry["objectguid"].encodeAsMD5Bytes()
+//                    println "bytes "+entry["objectguid"].encodeAsMD5Bytes()
 //                    println "decode hex "+entry["objectguid"]?.decodeHex()
                     def dep = Departamento.findByDescripcion(ou)
                     if (!dep) {
                         println "no encontro "+ou
-                        println "buscando por uid "+entry["objectguid"]
-                        dep = Departamento.findByObjectguid(entry["objectguid"])
+                        println "buscando por uid "+entry["objectguid"]?.encodeAsHex()
+                        dep = Departamento.findByObjectguid(entry["objectguid"]?.encodeAsHex())
                         println "result "+dep
                         if(!dep){
                             def sec = new Date().format("ss")
@@ -1093,7 +1093,7 @@ class PersonaController extends happy.seguridad.Shield {
                             dep.padre = n1
 
 
-                            dep.objectguid=entry["objectguid"]?.decodeHex()
+                            dep.objectguid=entry["objectguid"]?.encodeAsHex()
                             if (!dep.save(flush: true))
                                 println "errores dep " + dep.errors
                         }else{
@@ -1223,8 +1223,8 @@ class PersonaController extends happy.seguridad.Shield {
                             if (!dep) {
 
                                 println "no encontro ou2 "+ou2
-                                println "buscando por uid "+e2["objectguid"]
-                                dep = Departamento.findByObjectguid(e2["objectguid"])
+                                println "buscando por uid "+e2["objectguid"]?.encodeAsHex()
+                                dep = Departamento.findByObjectguid(e2["objectguid"]?.encodeAsHex())
                                 println "result "+dep
                                 if(!dep){
                                     def sec = new Date().format("ss")
@@ -1240,7 +1240,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     dep.codigo = "NUEVO-" + sec + secuencia++
                                     dep.activo = 1
                                     dep.padre = padre
-                                    dep.objectguid = e2["objectguid"]
+                                    dep.objectguid = e2["objectguid"]?.encodeAsHex()
                                     if (!dep.save(flush: true))
                                         println "errores dep " + dep.errors
                                 }else{
@@ -1252,8 +1252,8 @@ class PersonaController extends happy.seguridad.Shield {
 
 
                             } else {
-                                println "actualizando uid "+e2["objectguid"]+" en "+dep+"  "+dep.id
-                                dep.objectguid = e2["objectguid"]
+                                println "actualizando uid "+e2["objectguid"]?.encodeAsHex()+" en "+dep+"  "+dep.id
+                                dep.objectguid = e2["objectguid"]?.encodeAsHex()
                                 if(!dep.save(flush: true)){
                                     println "error en el save del uid "+dep.errors
                                 }
