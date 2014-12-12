@@ -1075,6 +1075,8 @@ class PersonaController extends happy.seguridad.Shield {
                 def ou = entry["ou"]
                 if (ou) {
                     println "es ou lvl1 " + ou
+                    println "encode hex "+entry["objectguid"]?.encodeAsHex()
+                    println "decode hex "+entry["objectguid"]?.decodeHex()
                     def dep = Departamento.findByDescripcion(ou)
                     if (!dep) {
                         println "no encontro "+ou
@@ -1088,7 +1090,9 @@ class PersonaController extends happy.seguridad.Shield {
                             dep.codigo = "NUEVO-" + sec + secuencia++
                             dep.activo = 1
                             dep.padre = n1
-                            dep.objectguid=entry["objectguid"]
+
+
+                            dep.objectguid=entry["objectguid"]?.decodeHex()
                             if (!dep.save(flush: true))
                                 println "errores dep " + dep.errors
                         }else{
