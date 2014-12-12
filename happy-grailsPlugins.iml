@@ -15,6 +15,8 @@
           <root url="file://$MODULE_DIR$/target/work/plugins/mail-1.0.6/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/jquery-1.10.2.2/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/grails-app/views" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -48,6 +50,12 @@
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-1.10.2.2/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-1.10.2.2/grails-app/taglib" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2">
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/grails-app/i18n" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/kerberos-1.2/grails-app/services" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/mail-1.0.6">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/mail-1.0.6/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/mail-1.0.6/grails-app/i18n" isTestSource="false" />
@@ -72,6 +80,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="grails-2.3.11" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.3.11" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.3.11" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.3.11" level="application" />
@@ -101,7 +110,7 @@
           <root url="jar://$MAVEN_REPOSITORY$/org/grails/grails-datastore-gorm-hibernate/3.1.1.RELEASE/grails-datastore-gorm-hibernate-3.1.1.RELEASE.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-core/2.4.8/ehcache-core-2.4.8.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-ehcache/3.6.10.Final/hibernate-ehcache-3.6.10.Final.jar!/" />
-          <root url="jar://$MODULE_DIR$/../grails-2.3.11/lib/junit/junit/jars/junit-4.11.jar!/" />
+          <root url="jar://C:/grails-2.3.11/lib/junit/junit/jars/junit-4.11.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/7.0.47/tomcat-embed-core-7.0.47.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jdt/core/compiler/ecj/3.7.2/ecj-3.7.2.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-logging-log4j/7.0.47/tomcat-embed-logging-log4j-7.0.47.jar!/" />
@@ -114,4 +123,3 @@
     </orderEntry>
   </component>
 </module>
-

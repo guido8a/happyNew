@@ -1082,6 +1082,7 @@ class PersonaController extends happy.seguridad.Shield {
                     if (!dep) {
                         println "no encontro "+ou
                         println "buscando por uid "+entry["objectguid"]?.encodeAsHex()
+                        println "busqueda todos "+Departamento.findAllByObjectguid(entry["objectguid"]?.encodeAsHex())
                         dep = Departamento.findByObjectguid(entry["objectguid"]?.encodeAsHex())
                         println "result "+dep
                         if(!dep){
@@ -1224,6 +1225,7 @@ class PersonaController extends happy.seguridad.Shield {
 
                                 println "no encontro ou2 "+ou2
                                 println "buscando por uid "+e2["objectguid"]?.encodeAsHex()
+                                println "busqueda todos "+Departamento.findAllByObjectguid(e2["objectguid"]?.encodeAsHex())
                                 dep = Departamento.findByObjectguid(e2["objectguid"]?.encodeAsHex())
                                 println "result "+dep
                                 if(!dep){
