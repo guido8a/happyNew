@@ -15,6 +15,9 @@ class Departamento {
     Integer externo = 0 //1->externo, 0->interno
 
     Integer activo //1-> activo 0-> inactivo
+
+    String objectguid=""
+
     static mapping = {
         table 'dpto'
         cache usage: 'read-write', include: 'non-lazy'
@@ -32,6 +35,7 @@ class Departamento {
             estado column: 'dptoetdo'
             activo column: 'dptoactv'
             externo column: 'dptoextr'
+            objectguid column: 'dptoobid'
         }
     }
     static constraints = {
@@ -42,6 +46,7 @@ class Departamento {
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
         estado(blank: true, nullable: true, size: 1..1)
+        objectguid(blank: true,nullable: true,size: 1..64)
     }
 
     String toString() {

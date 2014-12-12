@@ -126,7 +126,7 @@
 
                         <div class="col-md-5">
                             %{--<g:textField name="telefono" maxlength="63" telefono="true" class="form-control" value="${personaInstance?.telefono}"/>--}%
-                            <g:textField name="telefono" maxlength="63" class="form-control" value="${personaInstance?.telefono}" style="width: 300px;"/>
+                            <g:textField name="telefono" maxlength="63" class="form-control digits" value="${personaInstance?.telefono}" style="width: 300px;"/>
                         </div>
 
                     </span>

@@ -1077,14 +1077,32 @@ class PersonaController extends happy.seguridad.Shield {
                     println "es ou lvl1 " + ou
                     def dep = Departamento.findByDescripcion(ou)
                     if (!dep) {
-                        def sec = new Date().format("ss")
-                        dep = new Departamento()
-                        dep.descripcion = ou
-                        dep.codigo = "NUEVO-" + sec + secuencia++
-                        dep.activo = 1
-                        dep.padre = n1
-                        if (!dep.save(flush: true))
-                            println "errores dep " + dep.errors
+                        println "no encontro "+ou
+                        println "buscando por uid "+entry["objectguid"]
+                        dep = Departamento.findByObjectguid(entry["objectguid"])
+                        println "result "+dep
+                        if(!dep){
+                            def sec = new Date().format("ss")
+                            dep = new Departamento()
+                            dep.descripcion = ou
+                            dep.codigo = "NUEVO-" + sec + secuencia++
+                            dep.activo = 1
+                            dep.padre = n1
+                            dep.objectguid=entry["objectguid"]
+                            if (!dep.save(flush: true))
+                                println "errores dep " + dep.errors
+                        }else{
+                            println "update del nombre"
+                            dep.descripcion=ou
+                            dep.save(flush: true)
+                        }
+
+                    }else{
+                        println "save del objectuid "+entry["objectguid"]+" en "+dep+"  "+dep.id
+                        dep.objectguid=entry["objectguid"]
+                        if(!dep.save(flush: true)){
+                            println "error en el save del uid "+dep.errors
+                        }
                     }
 
                     def searchString = 'ou=' + ou + "," + prmt.ouPrincipal
@@ -1198,23 +1216,42 @@ class PersonaController extends happy.seguridad.Shield {
                         if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
                             dep = Departamento.findByDescripcion(ou2)
                             if (!dep) {
-                                def sec = new Date().format("ss")
-                                def datos = e2["dn"].split(",")
-                                def padre = null
-                                if (datos)
-                                    padre = datos[1].split("=")
-                                padre = Departamento.findByDescripcion(padre[1])
-                                if (!padre)
-                                    padre = n1
-                                dep = new Departamento()
-                                dep.descripcion = ou2
-                                dep.codigo = "NUEVO-" + sec + secuencia++
-                                dep.activo = 1
-                                dep.padre = padre
-                                if (!dep.save(flush: true))
-                                    println "errores dep " + dep.errors
+
+                                println "no encontro ou2 "+ou2
+                                println "buscando por uid "+e2["objectguid"]
+                                dep = Departamento.findByObjectguid(e2["objectguid"])
+                                println "result "+dep
+                                if(!dep){
+                                    def sec = new Date().format("ss")
+                                    def datos = e2["dn"].split(",")
+                                    def padre = null
+                                    if (datos)
+                                        padre = datos[1].split("=")
+                                    padre = Departamento.findByDescripcion(padre[1])
+                                    if (!padre)
+                                        padre = n1
+                                    dep = new Departamento()
+                                    dep.descripcion = ou2
+                                    dep.codigo = "NUEVO-" + sec + secuencia++
+                                    dep.activo = 1
+                                    dep.padre = padre
+                                    dep.objectguid = e2["objectguid"]
+                                    if (!dep.save(flush: true))
+                                        println "errores dep " + dep.errors
+                                }else{
+                                    println "update del nombre"
+                                    dep.descripcion=ou
+                                    dep.save(flush: true)
+                                }
+
+
 
                             } else {
+                                println "actualizando uid "+e2["objectguid"]+" en "+dep+"  "+dep.id
+                                dep.objectguid = e2["objectguid"]
+                                if(!dep.save(flush: true)){
+                                    println "error en el save del uid "+dep.errors
+                                }
                                 def datos = e2["dn"].split(",")
                                 def padre = null
                                 if (datos)

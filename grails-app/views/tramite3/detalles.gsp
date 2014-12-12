@@ -72,7 +72,7 @@
                             ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
                         </g:else>
 
-                        <b><span style="${pdt?.estado?.codigo == 'E006' ? 'color:red' : ''}">${estado}</span>
+                        <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                         </b> el ${fecha} <br>
 
                     %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
@@ -202,7 +202,7 @@
                                 ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
                             </g:else>
 
-                            <b><span style="${pdt?.estado?.codigo == 'E006' ? 'color:red' : ''}">${estado}</span>
+                            <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
                         %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
@@ -329,7 +329,8 @@
                                 ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
                             </g:else>
 
-                            <b><span style="${pdt?.estado?.codigo == 'E006' ? 'color:red' : ''}">${estado}</span>
+                            <b>
+                                <span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
                         %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
