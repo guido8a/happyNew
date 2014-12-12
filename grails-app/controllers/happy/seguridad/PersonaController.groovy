@@ -1074,8 +1074,8 @@ class PersonaController extends happy.seguridad.Shield {
                 println "----------------------------"
                 def ou = entry["ou"]
                 if (ou) {
-                    println "es ou lvl1 " + ou
-                    println "encode hex "+entry["objectguid"]?.encodeAsHex()
+                    //println "es ou lvl1 " + ou
+               //     println "encode hex "+entry["objectguid"]?.encodeAsHex()
 //                    println "bytes "+entry["objectguid"].encodeAsMD5Bytes()
 //                    println "decode hex "+entry["objectguid"]?.decodeHex()
                     def dep = Departamento.findByDescripcion(ou)
@@ -1118,7 +1118,7 @@ class PersonaController extends happy.seguridad.Shield {
                         if (gn) {
                             def logn = e2["samaccountname"]
                             def mail = e2["mail"]
-                            println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
+                          //  println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
                             if (!mail || mail == "") {
                                 noMail.add(["nombre": logn])
                             }
@@ -1175,7 +1175,7 @@ class PersonaController extends happy.seguridad.Shield {
                             } else {
                                 //println "encontro"
                                 if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento == null) {
-                                    println "update"
+                                //    println "update"
                                     prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                     prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
                                     prsn.mail = mail
