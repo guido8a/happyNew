@@ -1153,7 +1153,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     dpto = sinDep
                                 prsn.departamento = dpto
                                 if (!prsn.save(flush: true)) {
-                                    println "error save prns " + prsn.errors
+//                                    println "error save prns " + prsn.errors
                                 } else {
                                     nuevos.add(prsn)
                                     def sesn = new Sesn()
@@ -1209,7 +1209,7 @@ class PersonaController extends happy.seguridad.Shield {
                                         prsn.apellido = "N.A."
                                     // println "update " + prsn.apellido
                                     if (!prsn.save(flush: true)) {
-                                        println "error save prns " + prsn.errors
+//                                        println "error save prns " + prsn.errors
                                     } else {
                                         mod.add(prsn)
                                     }
@@ -1303,7 +1303,7 @@ class PersonaController extends happy.seguridad.Shield {
                             dpto = sinDep
                         prsn.departamento = dpto
                         if (!prsn.save(flush: true)) {
-                            println "error save prns " + prsn.errors
+//                            println "error save prns " + prsn.errors
                         } else {
                             nuevos.add(prsn)
                             users.add(prsn)
@@ -1334,7 +1334,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     prsn.activo = 0
                                 }
                                 if (!prsn.save(flush: true)) {
-                                    println "error save prns update " + prsn.errors
+//                                    println "error save prns update " + prsn.errors
                                 } else {
                                     mod.add(prsn)
                                 }
