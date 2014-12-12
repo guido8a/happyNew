@@ -57,7 +57,7 @@ class BusquedaExternosController {
                 def recibio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tram, rolRecibe)
                 if (recibio.size() >= 1) {
                     recibio = recibio.last()
-                    prsnPara = recibio.last().persona
+                    prsnPara = recibio.persona
                     recibido = true
                 } else {
 //                    def triangulo = para?.departamento?.triangulos?.first()
@@ -80,6 +80,9 @@ class BusquedaExternosController {
 //            strPara += recibido ? " - Recibido " : " - No recibido"
 
             def dptoPadre = prsnPara?.departamento?.padre ?: prsnPara?.departamento
+            if (dptoPadre.codigo == "PRF") {
+                dptoPadre = prsnPara?.departamento
+            }
             def directores = [], dptoDirector
             Persona.findAllByDepartamento(prsnPara?.departamento).each { p ->
                 if (p.estaActivo && p.puedeDirector) {

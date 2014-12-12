@@ -580,7 +580,9 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def save_ajax() {
-        println params
+
+        params.codigo = params.codigo.toString().trim().toUpperCase()
+
         if (!params.activo) {
             params.activo = 1
         }
@@ -637,7 +639,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     } //notFound para ajax
 
     def validarCodigo_ajax() {
-        params.codigo = params.codigo.toString().trim()
+        params.codigo = params.codigo.toString().trim().toUpperCase()
         if (params.id) {
             def dpto = Departamento.get(params.id)
             if (dpto.codigo == params.codigo) {

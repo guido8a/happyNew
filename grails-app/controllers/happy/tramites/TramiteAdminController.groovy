@@ -287,7 +287,7 @@ class TramiteAdminController extends Shield {
                 if (!deDep || (deDep && deDep.id != dep.id)) {
                     if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
                         if (dep.triangulos.size() > 0) {
-                            if (!para.departamento || (para.departamento && para.departamentoId != dep.id)) {
+                            if (!para || !para.departamento || (para.departamento && para.departamentoId != dep.id)) {
                                 disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
                             }
                         }
