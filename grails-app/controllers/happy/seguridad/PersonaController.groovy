@@ -1247,7 +1247,7 @@ class PersonaController extends happy.seguridad.Shield {
                                         println "errores dep " + dep.errors
                                 }else{
                                     println "update del nombre"
-                                    dep.descripcion=ou
+                                    dep.descripcion=ou2
                                     dep.save(flush: true)
                                 }
 
