@@ -1103,8 +1103,8 @@ class PersonaController extends happy.seguridad.Shield {
                         }
 
                     }else{
-                        println "save del objectuid "+entry["objectguid"]+" en "+dep+"  "+dep.id
-                        dep.objectguid=entry["objectguid"]
+                        println "save del objectuid "+entry["objectguid"]?.encodeAsHex()+" en "+dep+"  "+dep.id
+                        dep.objectguid=entry["objectguid"]?.encodeAsHex()
                         if(!dep.save(flush: true)){
                             println "error en el save del uid "+dep.errors
                         }
