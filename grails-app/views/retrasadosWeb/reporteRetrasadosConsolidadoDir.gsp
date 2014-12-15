@@ -53,6 +53,10 @@
             border-color     : #444;
             background-color : #e4e4e8;
         }
+
+        .dir {
+            background : #aaa;
+        }
         </style>
     </head>
 
@@ -60,33 +64,33 @@
         <div style="margin-left:230px;"><h2 class="titl">S.A.D. Web - Trámites Retrasados y Sin Recepción</h2>
         </div>
         %{--<g:if test="${!inicio}">--}%
-            <div class="btn-toolbar toolbar" style="margin-left: 100px; margin-top: 20px;">
-                %{--
-                            <div class="btn-group">
-                                <a href="#" class="btn btn-default" id="btnCerrar">
-                                    <i class="fa fa-times"></i> Cerrar esta ventana
-                                </a>
-                            </div>
-                --}%
+        <div class="btn-toolbar toolbar" style="margin-left: 100px; margin-top: 20px;">
+            %{--
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-default" id="btnCerrar">
+                                <i class="fa fa-times"></i> Cerrar esta ventana
+                            </a>
+                        </div>
+            --}%
 
-                <div class="btn-group">
-                    <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
-                        <i class="fa fa-file-pdf-o"></i> Reporte detallado pdf
-                    </g:link>
-                    <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
-                        <i class="fa fa-file-pdf-o"></i> Reporte resumido pdf
-                    </g:link>
-                </div>
-
-                <div class="btn-group">
-                    <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
-                        <i class="fa fa-file-excel-o"></i> Reporte detallado Excel
-                    </g:link>
-                    <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
-                        <i class="fa fa-file-excel-o"></i> Reporte resumido Excel
-                    </g:link>
-                </div>
+            <div class="btn-group">
+                <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosDetalle" params="${params}">
+                    <i class="fa fa-file-pdf-o"></i> Reporte detallado pdf
+                </g:link>
+                <g:link class="btn btn-default" controller="retrasados" action="reporteRetrasadosConsolidado" params="${params}">
+                    <i class="fa fa-file-pdf-o"></i> Reporte resumido pdf
+                </g:link>
             </div>
+
+            <div class="btn-group">
+                <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="${params}">
+                    <i class="fa fa-file-excel-o"></i> Reporte detallado Excel
+                </g:link>
+                <g:link class="btn btn-primary" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="${params}">
+                    <i class="fa fa-file-excel-o"></i> Reporte resumido Excel
+                </g:link>
+            </div>
+        </div>
         %{--</g:if>--}%
         <div class="chartContainer hidden" style="margin-left: 130px;">
             <div id="chart_rz" class="divChart hidden"></div>
@@ -103,35 +107,32 @@
             function getData(tipo) {
                 var data = [], arr = [];
                 var deps = $(".data.dir." + tipo).size();
+                var totalDirs = $(".data.dir").size();
 
                 var title = tipo == "rs" ? "<p class='text-danger'><strong> Trámites sin recepción " : "<p class='text-warning'><strong>Trámites retrasados";
-                title += (deps > 1 ? " por departamento </strong></p>" : "");
-
-//                console.log(tipo, title);
+                title += (totalDirs > 1 ? " por dirección </strong></p>" : "");
 
                 $("tr").each(function () {
                     var $tr = $(this);
                     var valor = $tr.data(tipo);
-//                    console.log("valor: ", valor, $tr.data("value"), $tr.data("tipo"), deps);
                     if (valor) {
-                        if (deps == 1) {
+                        if (totalDirs == 1) {
                             if ($tr.data("tipo") == "per") {
-                                arr = [ $tr.data("value"), valor];
+                                arr = [$tr.data("value"), valor];
                                 data.push(arr);
                             } else {
                                 title += " de " + $tr.data("value");
-                                arr = [ $tr.data("value"), valor];
+                                arr = [$tr.data("value"), valor];
                                 data.push(arr);
                             }
                         } else {
                             if ($tr.data("tipo") == "dir") {
-                                arr = [ $tr.data("value"), valor];
+                                arr = [$tr.data("value"), valor];
                                 data.push(arr);
                             }
                         }
                     }
                 });
-//                console.log(data);
                 return {
                     data  : data,
                     title : title
