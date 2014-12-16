@@ -14,6 +14,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
     def maxLvl = null
 
     def reporteRetrasadosConsolidadoDir() {
+        println "retrasados consol dir "+params
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")

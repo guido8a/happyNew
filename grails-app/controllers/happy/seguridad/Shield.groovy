@@ -13,7 +13,7 @@ class Shield {
      */
     def auth() {
 //        println "an " + actionName + " cn " + controllerName + "  "
-//        println "sesión:" + session
+//        println "shield sesión: " + session.usuario
         session.an = actionName
         session.cn = controllerName
         session.pr = params

@@ -759,7 +759,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-        println("params " + params)
+        println("params enviar varios " + params+"  "+request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         if (request.getMethod() == "POST") {

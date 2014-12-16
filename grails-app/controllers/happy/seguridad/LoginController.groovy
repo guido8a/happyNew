@@ -107,6 +107,7 @@ class LoginController {
     }
 
     def login() {
+        println "login "+params
         def usu = session.usuario
         def cn = "inicio"
         def an = "index"
@@ -120,7 +121,7 @@ class LoginController {
     }
 
     def validar() {
-//        println "valida "+params
+        println "valida "+params
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
             eq("activo", 1)
@@ -134,7 +135,7 @@ class LoginController {
             flash.tipo = "error"
         } else {
             user = user[0]
-            println "sta activo " + user.estaActivo
+//            println "sta activo " + user.estaActivo
             if (!user.estaActivo) {
                 flash.message = "El usuario ingresado no esta activo."
                 flash.tipo = "error"
@@ -146,6 +147,7 @@ class LoginController {
                 session.time = new Date()
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
+                println "pone valores "+session.usuario
                 def perf = Sesn.findAllByUsuario(user)
                 def perfiles = []
                 perf.each { p ->

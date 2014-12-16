@@ -739,7 +739,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        println "recibir tramite " + params
+//        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
 
             def persona = Persona.get(session.usuario.id)
@@ -829,7 +829,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 render "ERROR_Este trámite no puede ser gestionado. Por favor actualice su bandeja"
                 return
             }
-            println "pxt: " + pxt
+//            println "pxt: " + pxt
 
 //        println "tramite: " + tramite
 //        println "paraDpto: " + paraDpto
@@ -865,7 +865,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
 
 //            println("pxt 2"  + pxt )
-            println "Estado del pdt " + pxt.estado.codigo
+//            println "Estado del pdt " + pxt.estado.codigo
             if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {

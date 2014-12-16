@@ -108,6 +108,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     }
 
     def busquedaTramite() {
+//        println "busqueda "
     }
 
     def ampliarPlazo_ajax() {

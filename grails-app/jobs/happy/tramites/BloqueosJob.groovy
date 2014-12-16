@@ -13,7 +13,7 @@ class BloqueosJob {
 
         def ahora = new Date()
 //        println "----------------------------------"
-        println "bloqueo bandeja salida!!!!! "+ahora.format("dd-MM-yyyy hh:mm:ss")
+//        println "bloqueo bandeja salida!!!!! "+ahora.format("dd-MM-yyyy hh:mm:ss")
         def bloquear = []
         def bloquearUsu = []
         def warning = []
@@ -102,7 +102,7 @@ class BloqueosJob {
         }
 
 
-        println "fin bloqueo bandeja salida "+new Date().format("dd-MM-yyyy hh:mm:ss")
+//        println "fin bloqueo bandeja salida "+new Date().format("dd-MM-yyyy hh:mm:ss")
     }
     def executeRecibir(depar,persona){
         def ahora = new Date()
