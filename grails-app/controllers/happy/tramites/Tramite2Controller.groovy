@@ -980,14 +980,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def crearTramiteDep() {
 
-        println("params " + params)
-
+//        println("params " + params)
+//println ("-->"  + session.usuario.esTriangulo())
         params.esRespuesta = params.esRespuesta ?: 0
         if (!session.usuario.esTriangulo()) {
             flash.message = "Su perfil (${session.perfil}), no tiene permiso para entrar a esta pantalla"
             response.sendError(403)
         }
 
+//        println("size" + session.usuario.tiposDocumento.size())
         if (session.usuario.tiposDocumento.size() == 0) {
             flash.message = "No puede crear ningún tipo de documento. Contáctese con el administrador."
             redirect(controller: 'tramite', action: "errores")
