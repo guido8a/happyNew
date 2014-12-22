@@ -35,7 +35,7 @@
                     <div class="col-md-3">
                         <g:select name="horaInicio" from="${0..23}" value="${parametrosInstance.horaInicio ?: 8}"
                                   optionValue="${{ it.toString().padLeft(2, '0') }}"/>
-                        <g:select name="minutoInicio" from="${0..59}" value="${parametrosInstance.minutoInicio ?: 30}"
+                        <g:select name="minutoInicio" from="${0..59}" value="${parametrosInstance.minutoInicio ?: 00}"
                                   optionValue="${{ it.toString().padLeft(2, '0') }}"/>
                     </div>
                 </span>
@@ -47,7 +47,7 @@
                     <div class="col-md-3">
                         <g:select name="horaFin" from="${0..23}" value="${parametrosInstance.horaFin ?: 16}"
                                   optionValue="${{ it.toString().padLeft(2, '0') }}"/>
-                        <g:select name="minutoFin" from="${0..59}" value="${parametrosInstance.minutoFin ?: 30}"
+                        <g:select name="minutoFin" from="${0..59}" value="${parametrosInstance.minutoFin ?: 00}"
                                   optionValue="${{ it.toString().padLeft(2, '0') }}"/>
                     </div>
                 </span>
