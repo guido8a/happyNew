@@ -563,18 +563,19 @@
                         clase = "danger";
                         icon = "${iconDesactivar}";
                         textMsg = "<p>¿Está seguro que desea desactivar el departamento seleccionado?</p>";
-                        if (tramites > 0) {
-                            textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
-                                       "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
+//                        if (tramites > 0) {
+                            textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados al departamento seleccionado</p>";
+//                            textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
+//                                       "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
 //                        textMsg += "<div class='row'>";
 //                        textMsg += "<div class='col-md-3'>Autorizado por</div>";
 //                        textMsg += "<div class='col-md-8'>";
 //                        textMsg += "<input type='text' name='aut' class='form-control' />";
 //                        textMsg += "</div>";
 //                        textMsg += "</div>";
-                        } else {
-                            textMsg += "<p>No tiene trámites en su bandeja de entrada.</p>"
-                        }
+//                        } else {
+//                            textMsg += "<p>No tiene trámites en su bandeja de entrada.</p>"
+//                        }
                         var $sel = $("#selDptoOrig").clone();
 
                         %{--textMsg += "${g.select(name:'selDpto', from:Departamento.list([sort:'descripcion']), class: 'form-control')}";--}%

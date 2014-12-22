@@ -24,9 +24,12 @@ class DepartamentoController extends happy.seguridad.Shield {
     def desactivar_ajax() {
         def dpto = Departamento.get(params.id)
         def dptoNuevo = Departamento.get(params.nuevo)
-        dpto.activo = 0
 
-        if (dpto.save(flush: true)) {
+//        def cantErrores = 0
+
+//        dpto.activo = 0
+
+//        if (dpto.save(flush: true)) {
             def rolPara = RolPersonaTramite.findByCodigo('R001');
             def rolCopia = RolPersonaTramite.findByCodigo('R002');
             def rolImprimir = RolPersonaTramite.findByCodigo('I005');
@@ -101,15 +104,37 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
                 }
             }
+            def trmts = Tramite.findAllByDeDepartamento(dpto)
+            trmts.each {dp->
+//                println "cambiado de de "+dp.codigo
+                dp.deDepartamento=dptoNuevo
+                def observacionOriginal = dp.observaciones
+                def accion = "Desactivación de departamento"
+                def solicitadoPor = ""
+                def usuario = session.usuario.login
+                def texto = "Trámite antes enviado por " + dpto.codigo + " " + dpto.descripcion
+                def nuevaObservacion = ""
+                observacionOriginal = dp.observaciones
+                dp.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                if(!dp.save(flush: true)){
+                    errores += renderErrors(bean: dp)
+                    println dp.errors
+                }
+            }
             if (errores != "") {
                 println "NOPE: " + errores
-                render "NO_" + errores
+                render "NO_Han ocurrido los siguientes errores por lo que no se pudo desactivar el departamento. Por favor intente nuwevamente o contáctese con un administrador. " + errores
             } else {
-                render "OK_Cambio realizado exitosamente"
+                dpto.activo = 0
+                if(dpto.save(flush:true)) {
+                    render "OK_Cambio realizado exitosamente"
+                } else {
+                    render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+                }
             }
-        } else {
-            render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
-        }
+//        } else {
+//            render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+//        }
 
     }
 
