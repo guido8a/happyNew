@@ -67,8 +67,8 @@
                 </label>
 
                 <div class="col-md-6">
-                    <g:textField name="descripcion" maxlength="63" required="" class="form-control required allCaps"
-                                 value="${departamentoInstance?.descripcion}" style="width: 440px;"/>
+                    <g:textField name="descripcion" maxlength="128" required="" class="form-control required allCaps"
+                                 value="${departamentoInstance?.descripcion}" style="width: 445px;"/>
                 </div>
                 *
             </span>
