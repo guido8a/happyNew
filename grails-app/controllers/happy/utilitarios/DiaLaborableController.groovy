@@ -167,7 +167,47 @@ class DiaLaborableController extends happy.seguridad.Shield {
     }
 
     def error() {
-        return [params: params]
+        println params
+        def js = ""
+        if (params.anio) {
+            def anio = Anio.get(params.anio)
+            js = "<script type=\"text/javascript\">\n" +
+                    "        \$(function () {\n" +
+                    "            \$(\"#btnDesactivar\").click(function () {\n" +
+                    "                bootbox.dialog({\n" +
+                    "                    title  : \"Alerta\",\n" +
+                    "                    message: \"<i class='fa fa-power-off fa-3x pull-left text-shadow'></i>\" +\n" +
+                    "                    \"<p>¿Está seguro que desea cerrar el año de proceso: ${anio.numero}?</p>\" +\n" +
+                    "                    \"<p>Esta acción no se puede deshacer y consiste de:</p>\" +\n" +
+                    "                    \"<ul>\" +\n" +
+                    "                    \"<li>Cerrar el año de proceso ${anio.numero}, por lo que no se podrá crear nuevos trámites este año</li>\" +\n" +
+                    "                    \"<li>Reiniciar la numeración de los trámites</li>\" +\n" +
+                    "                    \"<li>Crear el nuevo año ${anio.numero.toInteger() + 1}</li>\" +\n" +
+                    "                    \"<li>Inicializar el calendario laborable y definir los días festivos y el horario de trabajo</li>\" +\n" +
+                    "                    \"</ul>\",\n" +
+                    "                    buttons: {\n" +
+                    "                        cancelar  : {\n" +
+                    "                            label    : \"Cancelar\",\n" +
+                    "                            className: \"btn-primary\",\n" +
+                    "                            callback : function () {\n" +
+                    "                            }\n" +
+                    "                        },\n" +
+                    "                        desactivar: {\n" +
+                    "                            label    : \"<i class='fa fa-power-off'></i> Desactivar\",\n" +
+                    "                            className: \"btn-default\",\n" +
+                    "                            callback : function () {\n" +
+                    "                                openLoader();\n" +
+                    "                                location.href = \"${createLink(action: 'desactivar')}/${anio.id}\";\n" +
+                    "                            }\n" +
+                    "                        }\n" +
+                    "                    }\n" +
+                    "                });\n" +
+                    "                return false;\n" +
+                    "            });\n" +
+                    "        });\n" +
+                    "    </script>"
+        }
+        return [params: params, js: js]
     }
 
     def calendario() {
@@ -191,14 +231,28 @@ class DiaLaborableController extends happy.seguridad.Shield {
                 params.anio = new Date().format('yyyy').toInteger()
             }
 
+//            println "AQUI"
             def anio = Anio.findAllByNumeroAndEstado(params.anio, 1, [sort: "id"])
+//            println "ANIO::: " + anio
             if (anio.size() > 1) {
                 flash.message = "Se encontraron ${anio.size()} registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
                 redirect(action: "error")
                 return
             } else if (anio.size() == 0) {
-                flash.message = "No se encontraron registros para el año ${params.anio}. Por favor póngase en contacto con el administrador."
-                redirect(action: "error")
+                def numAnio = params.anio.toInteger()
+                def anioDesactivar = Anio.findByNumero(numAnio)
+                while (!anioDesactivar) {
+                    numAnio -= 1
+                    anioDesactivar = Anio.findByNumero(numAnio)
+                }
+                flash.message = "<p>No se encontraron registros para el año ${params.anio}. Por favor póngase en contacto con el administrador, " +
+                        "o haga click en el siguiente botón para inicializarlo.</p><br/>" +
+                        "<p><a href='#' id='btnDesactivar' class='btn btn-danger'>" +
+                        "<i class=\"icon fa fa-power-off\"></i> Cerrar el año ${anioDesactivar.numero}" +
+                        "</a></p>"
+                params.anio = anioDesactivar.id
+
+                redirect(action: "error", params: params)
                 return
             }
             anio = anio.first()

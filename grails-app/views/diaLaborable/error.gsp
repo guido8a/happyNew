@@ -5,7 +5,7 @@
   Time: 3:42 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.tramites.Anio" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -14,5 +14,7 @@
 
     <body>
         <elm:flashMessage tipo="error" contenido="${flash.message}"/>
+
+        <util:renderHTML html="${js}"/>
     </body>
 </html>
