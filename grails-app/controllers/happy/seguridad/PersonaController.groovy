@@ -7,6 +7,7 @@ import happy.tramites.PermisoTramite
 import happy.tramites.PermisoUsuario
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
+import happy.tramites.Tramite
 import happy.utilitarios.Parametros
 import org.apache.commons.lang.WordUtils
 import static java.awt.RenderingHints.*
@@ -1025,18 +1026,41 @@ class PersonaController extends happy.seguridad.Shield {
         }
     } //cambio dpto
 
+    /*** se puede boirrar el usaurio siempre y cuando no haya registros en:
+     *   trmt.prsn__de: Persona.de
+     *   prtr.prsn__id: Persona.persona
+     *   accs.usro__id: Persona.usuario y Persona.asignadoPor
+     */
     def delete_ajax() {
+        def mnsj = ""
         if (params.id) {
             def personaInstance = Persona.get(params.id)
-            if (personaInstance) {
-                try {
-                    personaInstance.delete(flush: true)
-                    render "ok."
-                } catch (e) {
-                    render "No se pudo eliminar esta persona."
+            /** comprueba que se pueda borrar **/
+            if(Tramite.findByDe(personaInstance)) mnsj += "La persona tiene trámites creados\n"
+            if (PersonaDocumentoTramite.findByPersona(personaInstance)) mnsj += "La persona se halla relacionada a trámites\n"
+            if (Accs.findByUsuario(personaInstance)) mnsj += "La persona tiene permisos de ausentismo\n"
+            if (Accs.findByAsignadoPor(personaInstance)) mnsj += "La persona ha registrado ausentismo\n"
+//            println "prsn:" + personaInstance.id + personaInstance
+//            println "mnsj:" + mnsj
+
+            if(!mnsj) {
+                if (personaInstance) {
+                    try {
+                        Sesn.findAllByUsuario(personaInstance).each {pr ->
+                            pr.delete(flush: true)
+                        }
+
+                        personaInstance.delete(flush: true)
+                        render "OK"
+                    } catch (e) {
+                        render "NO_"+mnsj
+                    }
+                } else {
+                    notFound_ajax()
                 }
+
             } else {
-                notFound_ajax()
+                render "NO_"+mnsj
             }
         } else {
             notFound_ajax()
