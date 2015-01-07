@@ -54,7 +54,7 @@
     </head>
 
     <body>
-        %{--<g:if test="${session.usuario.puedeDirector || session.usuario.puedeJefe}">--}%
+    %{--<g:if test="${session.usuario.puedeDirector || session.usuario.puedeJefe}">--}%
         <g:if test="${session.usuario.puedeAdmin}">
             <g:set var="iconActivar" value="fa-hdd-o"/>
             <g:set var="iconDesactivar" value="fa-power-off"/>
@@ -79,16 +79,16 @@
                     </div>
 
                     <g:if test="${happy.utilitarios.Parametros.get(1).validaLDAP == 1}">
-                    <div class="btn-group" style="margin-top: 4px;">
-                        %{--
-                                            <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
-                                                <i class="fa fa-users"></i> Usuarios LDAP
-                                            </g:link>
-                        --}%
-                        <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP
-                        </a>
+                        <div class="btn-group" style="margin-top: 4px;">
+                            %{--
+                                                <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
+                                                    <i class="fa fa-users"></i> Usuarios LDAP
+                                                </g:link>
+                            --}%
+                            <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP
+                            </a>
 
-                    </div>
+                        </div>
                     </g:if>
 
                     <div class="btn-group col-md-3" style="margin-top: 4px;">
@@ -103,9 +103,10 @@
                     </div>
 
                     <div class="btn-group pull-right ui-corner-all leyenda">
-                        <i class="fa fa-user text-info"></i> Usuario activo<br/>
-                        <i class="fa fa-user text-muted"></i> Usuario inactivo<br/>
-                        %{--<i class="fa fa-user text-warning"></i> Autoridad--}%
+                        <i class="fa fa-user text-info"></i> Usuario activo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="fa fa-user text-warning"></i> Jefe<br/>
+                        <i class="fa fa-user text-muted"></i> Usuario inactivo&nbsp;&nbsp;&nbsp;
+                        <i class="fa fa-user text-danger"></i> Director<br/>
                     </div>
                 </div>
 
@@ -564,7 +565,7 @@
                         icon = "${iconDesactivar}";
                         textMsg = "<p>¿Está seguro que desea desactivar el departamento seleccionado?</p>";
 //                        if (tramites > 0) {
-                            textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados al departamento seleccionado</p>";
+                        textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados al departamento seleccionado</p>";
 //                            textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
 //                                       "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
 //                        textMsg += "<div class='row'>";
@@ -885,7 +886,7 @@
                             }
                         };
 
-                        if(nodeType.contains("Activo")){
+                        if (nodeType.contains("Activo")) {
                             items.redireccionar = {
                                 separator_before : true,
                                 label            : "Ausentismo",
@@ -1026,55 +1027,67 @@
                             }
                         },
                         types       : {
-                            root                     : {
+                            root                      : {
                                 icon : "fa fa-folder text-warning"
                             },
-                            padreActivo              : {
+                            padreActivo               : {
                                 icon : "fa fa-building-o text-info"
                             },
-                            padreInactivo            : {
+                            padreInactivo             : {
                                 icon : "fa fa-building-o text-muted"
                             },
-                            padreExternoActivo       : {
+                            padreExternoActivo        : {
                                 icon : "fa fa-paper-plane text-info"
                             },
-                            padreExternoInactivo     : {
+                            padreExternoInactivo      : {
                                 icon : "fa fa-paper-plane text-muted"
                             },
-                            hijoActivo               : {
+                            hijoActivo                : {
                                 icon : "fa fa-home text-success"
                             },
-                            hijoInactivo             : {
+                            hijoInactivo              : {
                                 icon : "fa fa-home text-muted"
                             },
-                            hijoExternoActivo        : {
+                            hijoExternoActivo         : {
                                 icon : "fa fa-paper-plane-o text-success"
                             },
-                            hijoExternoInactivo      : {
+                            hijoExternoInactivo       : {
                                 icon : "fa fa-paper-plane-o text-muted"
                             },
-                            usuarioActivo            : {
+                            usuarioActivo             : {
                                 icon : "fa fa-user text-info"
                             },
-                            usuarioInactivo          : {
+                            usuarioInactivo           : {
                                 icon : "fa fa-user text-muted"
                             },
-                            jefeActivo               : {
+                            jefeActivo                : {
                                 icon : "fa fa-user text-warning"
                             },
-                            jefeInactivo             : {
+                            jefeInactivo              : {
                                 icon : "fa fa-user text-muted"
                             },
-                            usuarioTrianguloActivo   : {
+                            directorActivo            : {
+                                icon : "fa fa-user text-danger"
+                            },
+                            directorInactivo          : {
+                                icon : "fa fa-user text-muted"
+                            },
+                            usuarioTrianguloActivo    : {
                                 icon : "fa fa-download text-info"
                             },
-                            usuarioTrianguloInactivo : {
+                            usuarioTrianguloInactivo  : {
                                 icon : "fa fa-download text-muted"
                             },
-                            jefeTrianguloActivo      : {
+                            jefeTrianguloActivo       : {
                                 icon : "fa fa-cloud-download text-warning"
                             },
-                            jefeTrianguloInactivo    : {
+                            jefeTrianguloInactivo     : {
+                                icon : "fa fa-cloud-download text-muted"
+                            },
+                            directorTrianguloActivo   : {
+                                icon : "fa fa-cloud-download text-danger"
+                            },
+                            directorTrianguloInactivo : {
                                 icon : "fa fa-cloud-download text-muted"
                             }
                         }
