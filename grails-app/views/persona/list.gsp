@@ -246,9 +246,9 @@
             }
             function deleteRow(itemId) {
                 bootbox.dialog({
-                    title   : "Alerta",
+                    title   : "Alerta - Está a punto de Eliminar una Persona del Sistema",
                     message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
-                              "<p>¿Está seguro que desea eliminar la Persona seleccionada? Esta acción no se puede deshacer.</p>",
+                              "<p>¿Está seguro que desea eliminar a la Persona seleccionada? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -257,7 +257,7 @@
                             }
                         },
                         eliminar : {
-                            label     : "<i class='fa fa-trash-o'></i> Eliminar",
+                            label     : "<i class='fa fa-trash-o'></i> Eliminar Persona",
                             className : "btn-danger",
                             callback  : function () {
                                 openLoader("Eliminando");
@@ -567,7 +567,7 @@
                  */
 
                 var eliminar = {
-                    label            : 'Eliminar',
+                    label            : 'Eliminar Persona',
                     icon             : "fa fa-trash-o",
                     separator_before : true,
                     action           : function (e) {

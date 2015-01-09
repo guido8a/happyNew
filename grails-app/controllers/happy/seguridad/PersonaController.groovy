@@ -1040,18 +1040,29 @@ class PersonaController extends happy.seguridad.Shield {
             if (PersonaDocumentoTramite.findByPersona(personaInstance)) mnsj += "La persona se halla relacionada a trámites\n"
             if (Accs.findByUsuario(personaInstance)) mnsj += "La persona tiene permisos de ausentismo\n"
             if (Accs.findByAsignadoPor(personaInstance)) mnsj += "La persona ha registrado ausentismo\n"
+            if (PermisoUsuario.findByAsignadoPor(personaInstance)) mnsj += "La persona ha realizado Asignación de permisos\n"
+            if (PermisoUsuario.findByModificadoPor(personaInstance)) mnsj += "La persona ha realizado Modificación de permisos\n"
+            if (personaInstance.esTriangulo) mnsj += "La persona es recepcionista de oficina\n"
+            if (personaInstance.puedeAdmin) mnsj += "La persona tiene permios de administración\n"
+            if (personaInstance.activo) mnsj += "La persona se halla activa\n"
+
 //            println "prsn:" + personaInstance.id + personaInstance
 //            println "mnsj:" + mnsj
 
             if(!mnsj) {
+                def prsn = personaInstance.nombre + " " + personaInstance.apellido
                 if (personaInstance) {
                     try {
                         Sesn.findAllByUsuario(personaInstance).each {pr ->
                             pr.delete(flush: true)
                         }
 
+                        PermisoUsuario.findAllByPersona(personaInstance).each {pr ->
+                            pr.delete(flush: true)
+                        }
+
                         personaInstance.delete(flush: true)
-                        render "OK"
+                        render "OK_${prsn} ha sido eliminada(o) del sistema"
                     } catch (e) {
                         render "NO_"+mnsj
                     }
