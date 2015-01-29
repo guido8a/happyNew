@@ -1268,21 +1268,25 @@ class TramiteController extends happy.seguridad.Shield {
 
         //nuevo
         def pxt = PersonaDocumentoTramite.get(params.id)
-        def hijos = []
-        if (params.tipo == 'archivar') {
-            if (pxt?.departamento) {
-                hijos = Tramite.findAllByPadreAndDeDepartamento(pxt?.tramite, pxt?.departamento)
-            } else {
-                hijos = Tramite.findAllByPadreAndDe(pxt?.tramite, pxt?.persona)
+        if(pxt) {
+            def hijos = []
+            if (params.tipo == 'archivar') {
+                if (pxt?.departamento) {
+                    hijos = Tramite.findAllByPadreAndDeDepartamento(pxt?.tramite, pxt?.departamento)
+                } else {
+                    hijos = Tramite.findAllByPadreAndDe(pxt?.tramite, pxt?.persona)
+                }
+            } else if (params.tipo == 'anular') {
+                if (pxt?.departamento) {
+                    hijos = todaDescendenciaExtended(pxt?.tramite, 'dep', pxt?.departamento)
+                } else {
+                    hijos = todaDescendenciaExtended(pxt?.tramite, 'per', pxt?.persona)
+                }
             }
-        } else if (params.tipo == 'anular') {
-            if (pxt?.departamento) {
-                hijos = todaDescendenciaExtended(pxt?.tramite, 'dep', pxt?.departamento)
-            } else {
-                hijos = todaDescendenciaExtended(pxt?.tramite, 'per', pxt?.persona)
-            }
+            return [pxt: pxt, hijos: hijos]
+        } else {
+            return [error:"No se encontró"]
         }
-        [pxt: pxt, hijos: hijos]
     }
 
 

@@ -24,7 +24,18 @@ class TramitesService {
         def obs = "${fecha}"
         obs += (accion != "" ? " - ${accion}" : "")
         obs += (solicitadoPor != "" ? " - solicitado por: ${solicitadoPor}" : "")
-        obs += (usuario != "" ? ((solicitadoPor != "" ? " - técnico: " : " - usuario: ") + usuario) : "")
+        if (usuario != "") {
+            if (solicitadoPor != "") {
+                obs += " - técnico: " + usuario
+            } else {
+                if (usuario.startsWith("por")) {
+                    obs += " " + usuario
+                } else {
+                    obs += " - usuario: " + usuario
+                }
+            }
+        }
+//        obs += (usuario != "" ? ((solicitadoPor != "" ? " - técnico: " : " - usuario: ") + usuario) : "")
 //        obs += " - técnico ${usuario}"
         obs += (texto != "" ? " - ${texto}" : "")
         obs += (nuevaObservacion != "" ? " - observaciones: ${nuevaObservacion}" : "")

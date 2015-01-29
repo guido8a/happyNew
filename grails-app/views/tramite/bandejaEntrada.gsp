@@ -570,8 +570,13 @@
                                             }
                                         }
                                     }
-                                })
-
+                                });
+                                setTimeout(function () {
+                                    if (msg.indexOf("error") > -1) {
+                                        b.find(".btn-success").remove();
+                                        b.find(".btn-danger").removeClass("btn-danger").addClass("btn-default").html("Cerrar");
+                                    }
+                                }, 300);
                             }
 
                         });

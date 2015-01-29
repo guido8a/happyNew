@@ -563,7 +563,7 @@ class TramiteAdminController extends Shield {
             def observacionOriginal = pr.observaciones
             def accion = "Redirección de trámite"
             def solicitadoPor = ""
-            def usuario = session.usuario.login
+            def usuario = "por: " + session.usuario.login
             def texto = obs
             def nuevaObservacion = ""
             pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
