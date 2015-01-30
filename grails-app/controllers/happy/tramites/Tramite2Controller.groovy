@@ -395,7 +395,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     private String desenviar(PersonaDocumentoTramite pdt, String strEnvioPrevio, boolean esCircular) {
+//        println "\tdesenviar, circular? " + esCircular
         if (pdt) {
+//            println "\texiste pdt"
             def codigoRolPara = "R001"
             def codigoRolCc = "R002"
             def rolPara = RolPersonaTramite.findByCodigo(codigoRolPara)
@@ -420,7 +422,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     elimino = true
                     creaAlerta(tramite, pers, dpto)
                 } else {
-                    println "ERROR AL CAMBIAR PERS DOC TRAM: " + pdt.errors
+//                    println "ERROR AL CAMBIAR PERS DOC TRAM: " + pdt.errors
                     errores += "<li>" + renderErrors(bean: pdt) + "</li>"
                 }
                 // si desenvio el para se tienen que eliminar todas las copias, vivas o muertas
@@ -449,6 +451,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (esCircular && pdt.rolPersonaTramite.codigo == codigoRolCc) {
                     if (tramite.copias.size() > 1) {
                         pdt.delete(flush: true)
+                    } else {
+                        pdt.fechaEnvio = null
+                        pdt.estado = estadoPorEnviar
+                        pdt.tramite.estadoTramite = estadoPorEnviar
+                        pdt.save(flush: true)
                     }
                 } else {
                     pdt.delete(flush: true)
@@ -469,6 +476,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
      * @return
      */
     def desenviar_ajax() {
+//        println "desenviar"
         def tramite = Tramite.get(params.id)
         def codigoEnviado = "E003"
         def porEnviar = EstadoTramite.findByCodigo("E001")
@@ -497,20 +505,24 @@ class Tramite2Controller extends happy.seguridad.Shield {
         listaDesenviar.each { pdt ->
             if (Tramite.countByAQuienContesta(pdt) > 0) {
                 if (tramite.deDepartamento) {
+//                    println "dep ${tramite.deDepartamento.descripcion} contesto"
                     contestaron += "<li>El departamento ${tramite.deDepartamento.descripcion} " +
                             "(${tramite.deDepartamento.codigo}) ya contestó el documento</li>"
                 } else if (tramite.de) {
+//                    println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
                     contestaron += "<li>El usuario ${tramite.de.nombre} ${tramite.de.apellido} (${tramite.de.login}) " +
                             "ya contestó el documento</li>"
                 }
             }
         }
         if (contestaron != "") {
+//            println "No puede desenviar"
             render "NO_<h3>No puede quitar el enviado del trámite ${tramite.codigo}</h3>" +
                     "<ul>" + contestaron + "<ul>"
             return
         }
 
+//        println "si puede desenviar"
         // nadie ha contestado todavía: puedo desenviar
         def tramiteEsCircular = tramite.tipoDocumento.codigo == "CIR"
         def errores = ""
@@ -522,16 +534,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             strEnvioPrevio = "Enviado anteriormente por " + quienEnvio.persona.login.join(', ')
         }
-
+//        println "lista ids pdt: " + ids
         // la lista de ids de las pers doc tram a las que hay que desenviar
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
             if (persDoc) {
+//                println "pdt existe, codigo = " + persDoc.estado.codigo + " (enviado = " + codigoEnviado + ")"
                 // si el estado no esta enviado no puede quitar el enviado
                 if (persDoc.estado.codigo == codigoEnviado) {
                     errores += desenviar(persDoc, strEnvioPrevio, tramiteEsCircular)
                 } //el tramite esta enviado
                 else {
+//                    println "pdt no existe"
                     errores += "<li>El trámite ${persDoc.tramite.codigo} no puede ser gestionado.</li>"
                 } //el tramite no esta enviado
             } //existe la persona doc tram
@@ -759,7 +773,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-        println("params enviar varios " + params+"  "+request.getMethod())
+        println("params enviar varios " + params + "  " + request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         if (request.getMethod() == "POST") {
