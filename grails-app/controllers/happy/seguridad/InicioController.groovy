@@ -1,7 +1,5 @@
 package happy.seguridad
 
-import happy.tramites.BloqueosJob
-
 class InicioController extends happy.seguridad.Shield {
     def dbConnectionService
 
@@ -15,11 +13,6 @@ class InicioController extends happy.seguridad.Shield {
             }
 
         }
-
-        def job = new BloqueosJob()
-        job.execute()
-        job = null
-
     }
 
     def parametros = {
