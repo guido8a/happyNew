@@ -94,7 +94,7 @@
                                     ${tramite?.tramite?.codigo}
                                 </td>
                             </g:else>
-                            <td title="${tramite.fechaRecepcion?'':"El sistema se bloqueará el: "+tramite.fechaBloqueo?.format('dd-MM-yyyy HH:mm')+" si este documento no ha sido recibido"}">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+                            <td>${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                             <td>${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                             <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>
                             <td title="${tramite?.tramite?.de}">${tramite?.tramite?.de?.login ?: tramite?.tramite?.de?.toString()}</td>
