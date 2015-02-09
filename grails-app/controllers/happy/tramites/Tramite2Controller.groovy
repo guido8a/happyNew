@@ -449,10 +449,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 //al final se elimina el pdt
                 //si es cirucular tengo que dejar una copia viva
                 if (esCircular && pdt.rolPersonaTramite.codigo == codigoRolCc) {
-                    if (tramite.copias.size() > 1) {
+                    if (tramite.allCopias.size() > 1) {
                         pdt.delete(flush: true)
                     } else {
                         pdt.fechaEnvio = null
+                        pdt.fechaRecepcion = null
+                        pdt.fechaAnulacion = null
+                        pdt.fechaArchivo = null
+                        pdt.fechaRespuesta = null
+                        pdt.fechaLimiteRespuesta = null
                         pdt.estado = estadoPorEnviar
                         pdt.tramite.estadoTramite = estadoPorEnviar
                         pdt.save(flush: true)
@@ -479,6 +484,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "desenviar"
         def tramite = Tramite.get(params.id)
         def codigoEnviado = "E003"
+
+        def codigoAnulado = "E006"
+        def codigoArchivado = "E005"
+
+        def codigosOK = [codigoEnviado, codigoArchivado, codigoAnulado]
+
         def porEnviar = EstadoTramite.findByCodigo("E001")
 
         def ids
@@ -555,7 +566,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (persDoc) {
 //                println "pdt existe, codigo = " + persDoc.estado.codigo + " (enviado = " + codigoEnviado + ")"
                 // si el estado no esta enviado no puede quitar el enviado
-                if (persDoc.estado.codigo == codigoEnviado) {
+//                if (persDoc.estado.codigo == codigoEnviado) {
+                if (codigosOK.contains(persDoc.estado.codigo)) {
                     errores += desenviar(persDoc, strEnvioPrevio, tramiteEsCircular)
                 } //el tramite esta enviado
                 else {

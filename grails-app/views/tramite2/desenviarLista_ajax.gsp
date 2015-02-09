@@ -34,7 +34,7 @@ td {
     </p>
 
     <div class="alert alert-info" style="padding: 10px; font-size: larger;">
-        Si quita el enviado de la persona con rol PARA se eliminarán las copias aunque ya se encuentren recibidas.
+        Si quita el enviado de la persona con rol PARA se eliminarán las copias aunque ya se encuentren recibidas o archivadas.
     </div>
 
     <div class="lista">
@@ -61,12 +61,14 @@ td {
                             <td class="text-center">
                                 <g:if test="${estadosNo.contains(para.estado)}">
                                     Trámite ${para.estado.descripcion}
+                                    <i class="chk chkOne fa fa-square-o fa-lg" id="${para.id}"></i>
                                 </g:if>
                                 <g:else>
                                     <g:if test="${para.fechaEnvio}">
                                         <g:if test="${para.fechaRecepcion}">
                                             recibido el<br/>
                                             ${para.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}
+                                            <i class="chk chkOne fa fa-square-o fa-lg" id="${para.id}"></i>
                                         </g:if>
                                         <g:else>
                                             <g:if test="${([paras] + ccs).size() == 1}">
