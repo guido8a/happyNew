@@ -504,6 +504,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        ([para] + copias).each { pdt ->
         listaDesenviar.each { pdt ->
             def contestaciones = Tramite.findAllByAQuienContesta(pdt)
+//            println "contestaciones de " + pdt.persona + " " + pdt.departamento + "      " + contestaciones.size()
 //            if (Tramite.countByAQuienContesta(pdt) > 0) {
             if (contestaciones.size() > 0) {
                 contestaciones.each { c ->
@@ -609,9 +610,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def contestados = ""
 
         tramites.each { pr ->
-            if (Tramite.countByAQuienContesta(pr) > 0) {
-                contestados += "<li>El usuario " + pr?.persona?.nombre + " " + pr?.persona?.apellido + " ya contestó el documento</li>"
+            def respuestas = Tramite.findAllByAQuienContesta(pr)
+//            println "pr: " + pr.persona + "   " + pr.departamento + "   " + respuestas.de + "   " + respuestas.deDepartamento
+            respuestas.each { rs ->
+                if (rs.deDepartamento) {
+                    contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
+                } else if (rs.de) {
+                    contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
+                }
             }
+//            if (Tramite.countByAQuienContesta(pr) > 0) {
+//                contestados += "<li>El usuario " + pr?.persona?.nombre + " " + pr?.persona?.apellido + " ya contestó el documento</li>"
+//            }
         }
 
         return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados]
