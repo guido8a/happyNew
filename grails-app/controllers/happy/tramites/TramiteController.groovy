@@ -1321,7 +1321,7 @@ class TramiteController extends happy.seguridad.Shield {
                 }
                 nuevaObs += " archivado"
                 observacionOriginal = pdt.tramite.observaciones
-                texto = nuevaObs
+//                texto = nuevaObs
                 pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
                 pdt.tramite.save()
@@ -1334,7 +1334,7 @@ class TramiteController extends happy.seguridad.Shield {
                 }
                 nuevaObs += " archivado"
                 observacionOriginal = pdt.tramite.observaciones
-                texto = nuevaObs
+//                texto = nuevaObs
                 pdt.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                 pdt.tramite.save()
 

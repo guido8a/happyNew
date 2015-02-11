@@ -41,14 +41,17 @@
         estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
         principal="${tramite.tramitePrincipal}"
         departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
-        <td title="${tramite.asunto.decodeHTML()}">
-            ${tramite?.codigo}
+        <td title="${tramite.asunto.decodeHTML()}" style="width: 145px;">
+            <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
+                <i class="fa fa-eye-slash"></i>
+            </g:if>
             <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                 <i class="fa fa-paperclip"></i>
             </g:if>
+            ${tramite?.codigo}
         </td>
         <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
-        <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
+        <td style="width: 115px;">${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
         <td>
             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                 EXT
@@ -134,7 +137,7 @@
             </g:if>
         </td>
         <td>${tramite?.prioridad.descripcion}</td>
-        <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
+        <td style="width: 115px;">${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
         <td>${limite ? limite.format("dd-MM-yyyy HH:mm") : ''}</td>
         <td>
             ${tramite?.estadoTramite.descripcion}

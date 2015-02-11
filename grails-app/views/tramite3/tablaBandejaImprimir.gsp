@@ -60,21 +60,30 @@
                 ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''}  "
                 estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
                 departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
-                <g:if test="${tramite?.anexo == 1}">
-                    <td title="${tramite.asunto}">
-                        ${tramite?.codigo}
-                        <g:if test="${DocumentoTramite.countByTramite(tramite) > 0}">
-                            <i class="fa fa-paperclip"></i>
-                        </g:if>
-                    </td>
-                </g:if>
-                <g:else>
-                    <td title="${tramite.asunto}">
-                        ${tramite?.codigo}
-                    </td>
-                </g:else>
+                %{--<g:if test="${tramite?.anexo == 1}">--}%
+                %{--<td title="${tramite.asunto}">--}%
+                %{--${tramite?.codigo}--}%
+                %{--<g:if test="${DocumentoTramite.countByTramite(tramite) > 0}">--}%
+                %{--<i class="fa fa-paperclip"></i>--}%
+                %{--</g:if>--}%
+                %{--</td>--}%
+                %{--</g:if>--}%
+                %{--<g:else>--}%
+                %{--<td title="${tramite.asunto}">--}%
+                %{--${tramite?.codigo}--}%
+                %{--</td>--}%
+                %{--</g:else>--}%
+                <td>
+                    <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
+                        <i class="fa fa-eye-slash"></i>
+                    </g:if>
+                    <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
+                        <i class="fa fa-paperclip"></i>
+                    </g:if>
+                    ${tramite?.codigo}
+                </td>
                 <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
-                <td>${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
+                <td style="width: 115px;">${tramite.fechaCreacion?.format("dd-MM-yyyy HH:mm")}</td>
                 <td>
                     <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                         EXT

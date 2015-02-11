@@ -11,12 +11,18 @@
 
 <util:renderHTML html="${msg}"/>
 
-<div style="height: 70px" class="container-celdas">
+<style type="text/css">
+table {
+    font-size : 9pt;
+}
+</style>
+
+<div style="height: 30px; overflow: hidden;" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
                 <tr>
-                    <th class="alinear" style="width: 110px">Documento</th>
+                    <th class="alinear" style="width: 165px">Documento</th>
                     <th class="alinear" style="width: 100px">Fecha Creación</th>
                     <th class="alinear" style="width: 150px">De</th>
                     <th class="alinear" style="width: 150px">Para</th>
@@ -87,14 +93,26 @@
                         dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
-                        <td style="width: 110px">
-                            <g:if test="${tramite.tipoTramite.codigo == 'C'}">
-                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                        %{--<td style="width: 110px">--}%
+                        %{--<g:if test="${tramite.tipoTramite.codigo == 'C'}">--}%
+                        %{--<i class="fa fa-eye-slash" style="margin-left: 10px"></i>--}%
+                        %{--</g:if>--}%
+                        %{--${tramite.codigo}--}%
+                        %{--<g:if test="${tramite.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">--}%
+                        %{--<i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>--}%
+                        %{--</g:if>--}%
+                        %{--<g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">--}%
+                        %{--(ext)--}%
+                        %{--</g:if>--}%
+                        %{--</td>--}%
+                        <td style="width: 165px">
+                            <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
+                                <i class="fa fa-eye-slash"></i>
                             </g:if>
-                            ${tramite.codigo}
-                            <g:if test="${tramite.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
-                                <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
+                            <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
+                                <i class="fa fa-paperclip"></i>
                             </g:if>
+                            ${tramite?.codigo}
                             <g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">
                                 (ext)
                             </g:if>

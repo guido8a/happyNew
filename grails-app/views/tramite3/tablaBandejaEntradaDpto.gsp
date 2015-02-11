@@ -83,33 +83,40 @@
                     departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                     prtr="${tramite?.id}"
                     de="${tramite.tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.tramiteId :
-                        (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
+                            (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
                     class="${clase} ${type} ${(tramite?.tramite?.estadoTramiteExterno) ? 'estadoExterno' : ''}">
 
-                    <td title="${tramite.tramite.asunto}">
-                    %{--fecha rec: ${tramite.fechaRecepcion}<br/>--}%
-                    %{--fecha lim resp: ${tramite.fechaLimiteRespuesta}<br/>--}%
-                    %{--now: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
-                    %{--boolean: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
-                    %{--a quien contesta: ${tramite.respuestasVivas}<br/>--}%
-                    %{--a quien contesta: ${tramite.respuestasVivas.size()}<br/>--}%
-                    %{--boolean: ${Tramite.countByAQuienContesta(tramite) > 0}<br/>--}%
-                        <g:if test="${tramite?.tramite?.anexo == 1}">
-                            <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
-                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
-                            </g:if>
-                            ${tramite?.tramite?.codigo}
-                            <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
-                                <i class="fa fa-paperclip" style="margin-left: 10px"></i>
-                            </g:if>
+                    <td title="${tramite.tramite.asunto}" style="width: 145px;">
+                        <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                            <i class="fa fa-eye-slash"></i>
                         </g:if>
-                        <g:else>
-                            ${tramite?.tramite?.codigo}
-                        </g:else>
+                        <g:if test="${tramite?.tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite.tramite) > 0}">
+                            <i class="fa fa-paperclip"></i>
+                        </g:if>
+                        ${tramite?.tramite?.codigo}
+                        %{--fecha rec: ${tramite.fechaRecepcion}<br/>--}%
+                        %{--fecha lim resp: ${tramite.fechaLimiteRespuesta}<br/>--}%
+                        %{--now: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
+                        %{--boolean: ${tramite.fechaLimiteRespuesta < now}<br/>--}%
+                        %{--a quien contesta: ${tramite.respuestasVivas}<br/>--}%
+                        %{--a quien contesta: ${tramite.respuestasVivas.size()}<br/>--}%
+                        %{--boolean: ${Tramite.countByAQuienContesta(tramite) > 0}<br/>--}%
+                        %{--<g:if test="${tramite?.tramite?.anexo == 1}">--}%
+                        %{--<g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">--}%
+                        %{--<i class="fa fa-eye-slash" style="margin-left: 10px"></i>--}%
+                        %{--</g:if>--}%
+                        %{--${tramite?.tramite?.codigo}--}%
+                        %{--<g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">--}%
+                        %{--<i class="fa fa-paperclip" style="margin-left: 10px"></i>--}%
+                        %{--</g:if>--}%
+                        %{--</g:if>--}%
+                        %{--<g:else>--}%
+                        %{--${tramite?.tramite?.codigo}--}%
+                        %{--</g:else>--}%
                     </td>
 
-                    <td>${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
-                    <td>${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
+                    <td style="width: 115px;">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
+                    <td style="width: 115px;">${tramite?.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
                     <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
                         <td>EXT</td>
                     </g:if>
@@ -135,7 +142,7 @@
                         </g:else>
                     </g:else>
                     <td>${tramite.tramite.prioridad.descripcion}</td>
-                    <td>${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
+                    <td style="width: 115px;">${tramite?.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
                     <td>${tramite?.rolPersonaTramite?.descripcion}</td>
                 </tr>
             </g:each>

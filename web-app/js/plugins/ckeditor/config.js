@@ -16,7 +16,7 @@ CKEDITOR.editorConfig = function (config) {
     config.language = "es";
     config.uiColor = '#4D76A3';
 //    config.enterMode = CKEDITOR.ENTER_BR;
-//    config.shiftEnterMode = CKEDITOR.ENTER_P;
+    config.shiftEnterMode = CKEDITOR.ENTER_DIV;
 
 //    config.extraPlugins = 'timestamp,serverSave,createPdf';
 

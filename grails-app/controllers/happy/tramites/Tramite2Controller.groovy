@@ -487,8 +487,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def codigoAnulado = "E006"
         def codigoArchivado = "E005"
+        def codigoRecibido = "E004"
 
-        def codigosOK = [codigoEnviado, codigoArchivado, codigoAnulado]
+        def codigosOK = [codigoEnviado, codigoArchivado, codigoAnulado, codigoRecibido]
 
         def porEnviar = EstadoTramite.findByCodigo("E001")
 

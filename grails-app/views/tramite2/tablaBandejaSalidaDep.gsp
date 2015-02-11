@@ -29,8 +29,8 @@
             <g:set var="padre" value="${tramite.padreId}"/>
         </g:if>
 
-        <g:set var="enviados" value="${0}" />
-        <g:set var="recibidos" value="${0}" />
+        <g:set var="enviados" value="${0}"/>
+        <g:set var="recibidos" value="${0}"/>
 
         <g:set var="infoExtra" value=""/>
     %{--<g:each in="${PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [RolPersonaTramite.findByCodigo('R001'), RolPersonaTramite.findByCodigo('R002')])}" var="pdt">--}%
@@ -55,9 +55,9 @@
                         </g:if>
                     </g:else>
                     <g:if test="${pdt.fechaEnvio}">
-                        <g:set var="enviados" value="${enviados+1}" />
+                        <g:set var="enviados" value="${enviados + 1}"/>
                         <g:if test="${pdt.fechaRecepcion}">
-                            <g:set var="recibidos" value="${recibidos+1}" />
+                            <g:set var="recibidos" value="${recibidos + 1}"/>
                             <g:set var="infoExtra" value="${infoExtra + ' (recibido el ' + pdt.fechaRecepcion.format('dd-MM-yyyy HH:mm') + ')'}"/>
                         </g:if>
                         <g:else>
@@ -70,36 +70,47 @@
 
         <g:set var="desenviar" value=""/>
         <g:if test="${tramite.fechaEnvio}">
-            <g:if test="${recibidos<enviados}">
+            <g:if test="${recibidos < enviados}">
                 <g:set var="desenviar" value="desenviar"/>
             </g:if>
         </g:if>
 
         <tr id="${tramite?.id}" data-id="${tramite?.id}"
-            class="trTramite ${clase} ${(limite) ? ((limite < new Date()) ? 'alerta'  : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo }
+            class="trTramite ${clase} ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
             ${desenviar} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
             codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
             principal="${tramite.tramitePrincipal}"
             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
             anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
-            <g:if test="${tramite?.anexo == 1}">
-                <td title="${tramite.asunto?.decodeHTML()}">${tramite?.codigo}
-                    <g:if test="${anexos > 0}">
-                        <i class="fa fa-paperclip" style="margin-left: 10px"></i>
-                    </g:if>
-                </td>
-            </g:if>
-            <g:else>
-                <td title="${tramite.asunto?.decodeHTML()}">${tramite?.codigo}</td>
-            </g:else>
-            <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
-                <td>${tramite.paraExterno} (EXT)</td>
-            </g:if>
-            <g:else>
-                <td title="${tramite.deTexto.codigo}">${tramite.deTexto.codigo}</td>
-            </g:else>
 
-            <td>${tramite.fechaCreacion?.format("dd-MM-yyyy HH:mm")}</td>
+            <td title="${tramite.asunto?.decodeHTML()}" style="width: 145px;">
+                <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
+                    <i class="fa fa-eye-slash"></i>
+                </g:if>
+                <g:if test="${DocumentoTramite.countByTramite(tramite) > 0}">
+                    <i class="fa fa-paperclip"></i>
+                </g:if>
+                ${tramite?.codigo}
+            %{--<g:if test="${tramite?.anexo == 1}">--}%
+            %{--<g:if test="${anexos > 0}">--}%
+            %{--<i class="fa fa-paperclip" style="margin-left: 10px"></i>--}%
+            %{--</g:if>--}%
+            %{--</g:if>--}%
+            %{--<g:else>--}%
+            %{--${tramite?.codigo}--}%
+            %{--</g:else>--}%
+            </td>
+            %{--<td title="${tramite.deTexto.codigo}">--}%
+            <td ${tramite.tipoDocumento.codigo != "DEX" ? "title='" + tramite.deTexto.codigo + "'" : ''}>
+                <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
+                    ${tramite.paraExterno} (EXT)
+                </g:if>
+                <g:else>
+                    ${tramite.deTexto.codigo}
+                </g:else>
+            </td>
+
+            <td style="width: 115px;">${tramite.fechaCreacion?.format("dd-MM-yyyy HH:mm")}</td>
             %{--<g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">--}%
             %{--<td>EXT</td>--}%
             %{--</g:if>--}%
@@ -172,8 +183,8 @@
                 </g:if>
             </td>
             <td>${tramite?.prioridad.descripcion}</td>
-            <td>${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
-            <td>${limite ? limite.format("dd-MM-yyyy HH:mm") : ''}</td>
+            <td style="width: 115px;">${tramite.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
+            <td style="width: 115px;">${limite ? limite.format("dd-MM-yyyy HH:mm") : ''}</td>
             <td>${tramite?.estadoTramite.descripcion}</td>
             <td id="${tramite?.id}" class="ck text-center">
                 <g:if test="${tramite.estadoTramite.codigo == 'E001'}">
