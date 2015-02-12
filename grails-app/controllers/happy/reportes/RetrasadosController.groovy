@@ -49,6 +49,7 @@ class RetrasadosController  extends Shield{
 
 
     def reporteRetrasadosDetalle() {
+//        println "aqui"
         maxLvl = null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -166,7 +167,7 @@ class RetrasadosController  extends Shield{
 
                 }
                 if (params.detalle) {
-                    tablaTramites = new PdfPTable(8);
+                    tablaTramites = new PdfPTable(9);
                     tablaTramites.setWidthPercentage(100);
                     par = new Paragraph("Nro.", times8bold)
                     PdfPCell cell = new PdfPCell(par);
@@ -190,6 +191,9 @@ class RetrasadosController  extends Shield{
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     par = new Paragraph("Retraso (días)", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Tipo", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
@@ -224,6 +228,10 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setHorizontalAlignment(1)
+                        tablaTramites.addCell(cell);
 
                     }
                     if (lvl["tramites"].size() > 0) {
@@ -242,7 +250,7 @@ class RetrasadosController  extends Shield{
                     totalNodeSr += p["retrasados"]
 
                     if (params.detalle) {
-                        tablaTramites = new PdfPTable(8);
+                        tablaTramites = new PdfPTable(9);
                         tablaTramites.setWidthPercentage(100);
                         par = new Paragraph("Nro.", times8bold)
                         PdfPCell cell = new PdfPCell(par);
@@ -266,6 +274,9 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("Retraso (días)", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("Tipo", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
@@ -297,6 +308,10 @@ class RetrasadosController  extends Shield{
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                            cell = new PdfPCell(par);
+                            cell.setHorizontalAlignment(1)
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
@@ -363,7 +378,7 @@ class RetrasadosController  extends Shield{
 
                 }
                 if (params.detalle) {
-                    tablaTramites = new PdfPTable(8);
+                    tablaTramites = new PdfPTable(9);
                     tablaTramites.setWidthPercentage(100);
                     par = new Paragraph("Nro.", times8bold)
                     PdfPCell cell = new PdfPCell(par);
@@ -387,6 +402,9 @@ class RetrasadosController  extends Shield{
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     par = new Paragraph("Retraso (días)", times8bold)
+                    cell = new PdfPCell(par);
+                    tablaTramites.addCell(cell);
+                    par = new Paragraph("Tipo", times8bold)
                     cell = new PdfPCell(par);
                     tablaTramites.addCell(cell);
                     lvl["tramites"].each { t ->
@@ -421,6 +439,10 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setHorizontalAlignment(1)
+                        tablaTramites.addCell(cell);
 
                     }
                     if (lvl["tramites"].size() > 0) {
@@ -439,7 +461,7 @@ class RetrasadosController  extends Shield{
                     contenido.add(par)
                     if (params.detalle) {
                         tablaTramites = null
-                        tablaTramites = new PdfPTable(8);
+                        tablaTramites = new PdfPTable(9);
                         tablaTramites.setWidthPercentage(100);
                         par = new Paragraph("Nro.", times8bold)
                         PdfPCell cell = new PdfPCell(par);
@@ -463,6 +485,9 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         par = new Paragraph("Retraso (días)", times8bold)
+                        cell = new PdfPCell(par);
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph("Tipo", times8bold)
                         cell = new PdfPCell(par);
                         tablaTramites.addCell(cell);
                         p["tramites"].each { t ->
@@ -494,6 +519,10 @@ class RetrasadosController  extends Shield{
                             cell = new PdfPCell(par);
                             tablaTramites.addCell(cell);
                             par = new Paragraph("${(t.fechaLimiteRespuesta) ? (now - t.fechaLimiteRespuesta) : ''}", times8normal)
+                            cell = new PdfPCell(par);
+                            cell.setHorizontalAlignment(1)
+                            tablaTramites.addCell(cell);
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
