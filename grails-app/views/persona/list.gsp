@@ -18,7 +18,6 @@
     </head>
 
     <body>
-
         <g:set var="iconActivar" value="fa-hdd-o"/>
         <g:set var="iconDesactivar" value="fa-power-off"/>
 
@@ -145,6 +144,21 @@
 
                     <g:set var="tramites" value="${PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites where p.persona=${personaInstance.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")}"/>
 
+                    <g:set var="perfiles" value="${Sesn.withCriteria {
+                        eq("usuario", personaInstance)
+                        or {
+                            le("fechaInicio", new Date())
+                            isNull("fechaInicio")
+                        }
+                        or {
+                            ge("fechaFin", new Date())
+                            isNull("fechaFin")
+                        }
+                        perfil {
+                            order("nombre")
+                        }
+                    }}"/>
+
                     <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}"
                         class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
                         <td class="text-center">
@@ -159,12 +173,15 @@
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "nombre")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${fieldValue(bean: personaInstance, field: "apellido")}' search='${params.search}'/></td>
                         <td><elm:textoBusqueda texto='${personaInstance.departamento?.descripcion}' search='${params.search}'/></td>
-                        <td>${Sesn.withCriteria {
-                            eq("usuario", personaInstance)
-                            perfil {
-                                order("nombre")
-                            }
-                        }.perfil.nombre.join(", ")}</td>
+                        <td>
+                            <g:each in="${perfiles}" var="per" status="p">
+                                ${p > 0 ? ', ' : ''}<strong>${per.perfil.nombre}</strong>
+                                <g:if test="${per.fechaInicio || per.fechaFin}">
+                                    (${per.fechaInicio?.format("dd-MM-yyyy")} a ${per.fechaFin?.format("dd-MM-yyyy")})
+                                </g:if>
+                            </g:each>
+                        </td>
+                        %{--<td>${perfiles.perfil.nombre.join(", ")}</td>--}%
                         %{--<td>${personaInstance.jefe == 1 ? "SI" : "NO"}</td>--}%
                     </tr>
                 %{--</g:if>--}%
@@ -248,7 +265,7 @@
                 bootbox.dialog({
                     title   : "Alerta - Está a punto de Eliminar una Persona del Sistema",
                     message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
-                              "<p>¿Está seguro que desea eliminar a la Persona seleccionada? Esta acción no se puede deshacer.</p>",
+                            "<p>¿Está seguro que desea eliminar a la Persona seleccionada? Esta acción no se puede deshacer.</p>",
                     buttons : {
                         cancelar : {
                             label     : "Cancelar",
@@ -272,7 +289,7 @@
                                         log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                         if (parts[0] == "OK") {
                                             location.reload(true);
-                                        }else {
+                                        } else {
                                             closeLoader();
                                         }
                                     }
@@ -428,7 +445,7 @@
             }
             function createEditRow(id, tipo) {
                 var title = id ? "Editar " : "Crear ";
-                var data = id ? { id : id } : {};
+                var data = id ? {id : id} : {};
 
                 var url = "";
                 switch (tipo) {

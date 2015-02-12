@@ -31,7 +31,7 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 
-class RetrasadosController  extends Shield{
+class RetrasadosController extends Shield {
     def reportesPdfService
     def maxLvl = null
     def maxLvl2 = null
@@ -228,7 +228,7 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado' : 'No recibido'}", times8normal)
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
@@ -311,7 +311,7 @@ class RetrasadosController  extends Shield{
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
-                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado' : 'Sin recepción'}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
@@ -439,7 +439,7 @@ class RetrasadosController  extends Shield{
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
-                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                        par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado' : 'No recibido'}", times8normal)
                         cell = new PdfPCell(par);
                         cell.setHorizontalAlignment(1)
                         tablaTramites.addCell(cell);
@@ -522,7 +522,7 @@ class RetrasadosController  extends Shield{
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
-                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado': 'No recibido'}", times8normal)
+                            par = new Paragraph("${(t.fechaLimiteRespuesta) ? 'Retrasado' : 'No recibido'}", times8normal)
                             cell = new PdfPCell(par);
                             cell.setHorizontalAlignment(1)
                             tablaTramites.addCell(cell);
@@ -864,13 +864,13 @@ class RetrasadosController  extends Shield{
 
             def posyGraf1 = 450
             def posyGraf2 = 180
-            if(existeSinRecepcion) {
+            if (existeSinRecepcion) {
                 contentByte.addTemplate(templateSinRecepcion, 30, posyGraf1);
-                if(existeRetrasados) {
+                if (existeRetrasados) {
                     contentByte.addTemplate(templateRetrasados, 30, posyGraf2);
                 }
             } else {
-                if(existeRetrasados) {
+                if (existeRetrasados) {
                     contentByte.addTemplate(templateRetrasados, 30, posyGraf1);
                 }
             }
@@ -992,6 +992,7 @@ class RetrasadosController  extends Shield{
         }
         return [total, totalSr]
     }
+
     def imprimeHijos(arr) {
         def datos = arr["hijos"]
         datos.each { lvl ->
@@ -1011,6 +1012,7 @@ class RetrasadosController  extends Shield{
                 imprimeHijos(lvl)
         }
     }
+
     def arreglaTramites() {
         Tramite.list().each {
             def hijos = Tramite.findAllByPadre(it)
