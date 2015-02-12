@@ -155,7 +155,7 @@
                 </div>
 
                 <div class="btn-group">
-                    <g:if test="${tramite.deDepartamento}">
+                    <g:if test="${tramite.deDepartamento && !esEditor}">
                     %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
                     %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
                     %{--</g:link>--}%
@@ -530,13 +530,13 @@
                         %{--},--}%
                         toolbar                 : [
 //                            [ /*'Source',*//*'ServerSave', *//*'NewPage', *//*'CreatePdf',*/ /*'-',*/ /*'Scayt'*/],
-                            ['Scayt', '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
-                            [ 'Find', 'Replace', '-', 'SelectAll' ],
-                            [ 'Table', 'HorizontalRule', 'PageBreak'],
-                            ['Image'/*, 'Timestamp'*/, '-', 'TextColor', 'BGColor', '-', 'About' ],
+                            ['Scayt', '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+                            ['Find', 'Replace', '-', 'SelectAll'],
+                            ['Table', 'HorizontalRule', 'PageBreak'],
+                            ['Image'/*, 'Timestamp'*/, '-', 'TextColor', 'BGColor', '-', 'About'],
                             '/',
-                            [ 'Bold', 'Italic', 'Underline', /*'Strike', */'Subscript', 'Superscript'/*, '-', 'RemoveFormat'*/ ],
-                            [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'FontSize' ]
+                            ['Bold', 'Italic', 'Underline', /*'Strike', */'Subscript', 'Superscript'/*, '-', 'RemoveFormat'*/],
+                            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'FontSize']
 //                            [/* 'Font', 'FontSize'*/ /*, '-', 'TextColor', 'BGColor'*/]
 //                            ['About' ]
                         ]

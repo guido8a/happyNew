@@ -30,7 +30,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse_${reporte}">
-                            Trámites retrasados
+                            Trámites retrasados y sin recepción
                             %{--<small>afsdfa</small>--}%
                         </a>
                     </h4>
@@ -41,7 +41,7 @@
                         <form class="form-horizontal">
                             <div class="alert alert-info">
                                 Se generará un reporte
-                                de sus <span class="info">trámites retrasados</span>.
+                                de sus <span class="info">trámites retrasados y sin recepción</span>.
                             </div>
 
                             <div class="btn-group">
