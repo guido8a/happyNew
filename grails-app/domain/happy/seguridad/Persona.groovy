@@ -106,7 +106,7 @@ class Persona {
     }
 
     def puedePermiso(String codigoPermiso) {
-//        println this.permisos
+//        println "puede permiso " + codigoPermiso + "    " + this.permisos
         if (this.permisos.size() > 0) {
             def perm = null
             this.permisos.each {
@@ -322,6 +322,7 @@ class Persona {
 //            println "perms "+perms
         return perms.size() > 0
     }
+
     def getPuedeAdminOff() {
         def perm = PermisoUsuario.withCriteria {
             eq("persona", this)

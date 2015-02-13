@@ -47,9 +47,20 @@ class PermisoUsuario {
 
     boolean getEstaActivo() {
         def now = new Date()
-        if(fechaFin==null && fechaInicio <= now)
+
+        def fi = new Date().parse("dd-MM-yyyy HH:mm", fechaInicio.format("dd-MM-yyyy 00:01"))
+        def ff = fechaFin ? new Date().parse("dd-MM-yyyy HH:mm", fechaFin.format("dd-MM-yyyy 23:59")) : null
+
+//        println "permiso esta activo? now=" + now + "   fi=" + fi + "   ff=" + ff +
+//                "   (ff == null)=" + (ff == null) + "   (fi <= now)=" +
+//                (fi <= now) + "   if1= " + (ff == null && fi <= now) +
+//                "   (fechaInicio?.clearTime() <= now.clearTime())=" + (fi <= now) +
+//                "   (fechaFin?.clearTime() > now.clearTime())=" + (ff > now) +
+//                "   if2=" + (fi <= now && ff > now)
+
+        if (ff == null && fi <= now)
             return true
-        if(fechaInicio <= now && fechaFin>now)
+        if (fi <= now && ff > now)
             return true
         return false
 //        return (this.fechaInicio <= now && this.fechaFin == null)

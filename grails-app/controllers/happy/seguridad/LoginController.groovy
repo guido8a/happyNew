@@ -15,16 +15,16 @@ class LoginController {
     def conecta(user, pass) {
 
         def prmt = Parametros.findAll()[0]
-        println "conecta "+user+" pass  "+pass
+//        println "conecta " + user + " pass  " + pass
         def connect = true
         try {
 //            println "connect    "+user.getConnectionString()
 //            LDAP ldap = LDAP.newInstance('ldap://192.168.0.60:389',"${user.getConnectionString()}","${pass}")
             LDAP ldap = LDAP.newInstance('ldap://' + prmt.ipLDAP, "${user.getConnectionString()}", "${pass}")
 //            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
-           // println " " + prmt.textoCn
+            // println " " + prmt.textoCn
             /*No borrar esta linea println */
-            println "  exist " + ldap.exists("${prmt.textoCn}")
+//            println "  exist " + ldap.exists("${prmt.textoCn}")
 //            assert ! ldap.exists("${prmt.textoCn}")
 //            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
         } catch (e) {
@@ -44,7 +44,7 @@ class LoginController {
     }
 
     def validarPass() {
-        println params
+//        println params
         render "No puede ingresar este valor"
     }
 
@@ -107,7 +107,7 @@ class LoginController {
     }
 
     def login() {
-        println "login "+params
+//        println "login " + params
         def usu = session.usuario
         def cn = "inicio"
         def an = "index"
@@ -121,7 +121,7 @@ class LoginController {
     }
 
     def validar() {
-        println "valida "+params
+//        println "valida " + params
         def user = Persona.withCriteria {
             eq("login", params.login, [ignoreCase: true])
             eq("activo", 1)
@@ -143,11 +143,11 @@ class LoginController {
                 return
             } else {
                 session.usuario = user
-                session.usuarioKerberos=user.login
+                session.usuarioKerberos = user.login
                 session.time = new Date()
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
-                println "pone valores "+session.usuario
+//                println "pone valores " + session.usuario
                 def perf = Sesn.findAllByUsuario(user)
                 def perfiles = []
                 perf.each { p ->
@@ -215,19 +215,19 @@ class LoginController {
                         }
                         if (session.usuario.esTriangulo()) {
                             count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-                        }else{
+                        } else {
                             count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
                         }
 
                         if (count > 0)
                             redirect(controller: 'alertas', action: 'list')
                         else {//
-                            if(session.usuario.getPuedeDirector()){
-                                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1",dir:"1"])
-                            }else{
-                                if(session.usuario.getPuedeJefe()){
-                                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id],inicio:"1")
-                                }else{
+                            if (session.usuario.getPuedeDirector()) {
+                                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])
+                            } else {
+                                if (session.usuario.getPuedeJefe()) {
+                                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id], inicio: "1")
+                                } else {
                                     redirect(controller: "inicio", action: "index")
                                 }
 
@@ -269,10 +269,10 @@ class LoginController {
             permisos.each {
 //                println "perm "+it.permiso+"  "+it.permiso.codigo
                 def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario, it.permiso)
+//                println "***************************** " + perm
                 perm.each { pr ->
-//                    println "fechas "+pr.fechaInicio+"  "+pr.fechaFin+" "+pr.id+" "+pr.estaActivo
+//                    println pr.permisoTramite.descripcion + "  fechas " + pr.fechaInicio + "  " + pr.fechaFin + " " + pr.id + " " + pr.estaActivo
                     if (pr.estaActivo) {
-
                         session.usuario.permisos.add(pr.permisoTramite)
                     }
                 }
@@ -300,20 +300,20 @@ class LoginController {
             def count = 0
             if (session.usuario.esTriangulo()) {
                 count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-            }else{
-                count=Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+            } else {
+                count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
             }
 
             if (count > 0)
                 redirect(controller: 'alertas', action: 'list')
             else {//
 //                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
-                if(session.usuario.getPuedeDirector()){
-                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1",dir:"1"])
-                }else{
-                    if(session.usuario.getPuedeJefe()){
-                        redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
-                    }else{
+                if (session.usuario.getPuedeDirector()) {
+                    redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])
+                } else {
+                    if (session.usuario.getPuedeJefe()) {
+                        redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1"])
+                    } else {
                         redirect(controller: "inicio", action: "index")
                     }
 
@@ -340,20 +340,22 @@ class LoginController {
 
     }
 
-    def cargarPermisos(){
-        def permisos=Prms.findAllByPerfil(session.perfil)
-        def hp=[:]
-        permisos.each{
+    def cargarPermisos() {
+        def permisos = Prms.findAllByPerfil(session.perfil)
+//        println "CARGAR PERMISOS  perfil: " + session.perfil + "  " + session.perfil.id
+//        println "Permisos:    " + permisos
+        def hp = [:]
+        permisos.each {
 //                println(it.accion.accnNombre+ " " + it.accion.control.ctrlNombre)
-            if(hp[it.accion.control.ctrlNombre.toLowerCase()]){
+            if (hp[it.accion.control.ctrlNombre.toLowerCase()]) {
                 hp[it.accion.control.ctrlNombre.toLowerCase()].add(it.accion.accnNombre.toLowerCase())
-            }else{
-                hp.put(it.accion.control.ctrlNombre.toLowerCase(),[it.accion.accnNombre.toLowerCase()])
+            } else {
+                hp.put(it.accion.control.ctrlNombre.toLowerCase(), [it.accion.accnNombre.toLowerCase()])
             }
 
         }
-        session.permisos=hp
-//        println "permisos menu "+session.permisos
+        session.permisos = hp
+//        println "permisos menu " + session.permisos
     }
 
 }
