@@ -25,9 +25,9 @@ CKEDITOR.editorConfig = function (config) {
 
     config.removePlugins = 'elementspath,resize';
 
-    config.extraCss = "body{min-width:400px;}";
+    config.extraCss = "body{ min-width:400px; }";
 
-    config.contentsCss= "p {text-align: justify;}";
+    config.contentsCss= "p { text-align: justify; margin-bottom: 0; }";
 
     /*
      // Toolbar configuration generated automatically by the editor based on config.toolbarGroups.

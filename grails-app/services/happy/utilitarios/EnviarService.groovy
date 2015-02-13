@@ -163,6 +163,7 @@ class EnviarService {
                 "}\n" +
                 "p{\n" +
                 "   text-align: justify;\n" +
+                "   margin-bottom: 0;\n" +
                 "}\n" +
                 "\n" +
                 ".membrete {\n" +
