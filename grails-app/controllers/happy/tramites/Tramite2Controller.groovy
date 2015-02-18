@@ -1030,6 +1030,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def crearTramiteDep() {
 
+        if (params.padre) {
+            def padre = Tramite.get(params.padre)
+
+            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
+            def tramitesHijos = Tramite.countByPadre(padre)
+//            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
+            if (tramitesHijos != 0) {
+                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
+        }
+
 //        println("params " + params)
 //println ("-->"  + session.usuario.esTriangulo())
         params.esRespuesta = params.esRespuesta ?: 0
@@ -1294,7 +1310,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
         def aqc
@@ -1303,6 +1318,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
+
+            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
+            def tramitesHijos = Tramite.countByPadre(padre)
+//            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
+            if (tramitesHijos != 0) {
+                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
         }
 
         def tipoTramite
@@ -1406,27 +1433,27 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(controller: "tramite2", action: "crearTramiteDep", id: tramite.id)
             return
         } else {
-            if (tramite.externo == "0") {
-                def documentos = DocumentoTramite.findAllByTramite(tramite)
-                if (documentos.size() > 0) {
-                    def ids = documentos.id
-                    ids.each { id ->
-                        def doc = DocumentoTramite.get(id)
-                        def departamento = doc.tramite.deDepartamento
-                        if (!departamento) {
-                            departamento = doc.tramite.de.departamento
-                        }
-                        def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
-                        try {
-                            doc.delete(flush: true)
-                            def file = new File(path)
-                            file.delete()
-                        } catch (e) {
-                            println "Error al eliminar anexo: ${id}: " + e
-                        }
-                    }
-                }
-            }
+//            if (tramite.externo == "0") {
+//                def documentos = DocumentoTramite.findAllByTramite(tramite)
+//                if (documentos.size() > 0) {
+//                    def ids = documentos.id
+//                    ids.each { id ->
+//                        def doc = DocumentoTramite.get(id)
+//                        def departamento = doc.tramite.deDepartamento
+//                        if (!departamento) {
+//                            departamento = doc.tramite.de.departamento
+//                        }
+//                        def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
+//                        try {
+//                            doc.delete(flush: true)
+//                            def file = new File(path)
+//                            file.delete()
+//                        } catch (e) {
+//                            println "Error al eliminar anexo: ${id}: " + e
+//                        }
+//                    }
+//                }
+//            }
 
             if (tramite.padre) {
                 tramite.padre.estado = "C"

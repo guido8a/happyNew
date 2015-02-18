@@ -49,7 +49,7 @@ class RetrasadosController extends Shield {
 
 
     def reporteRetrasadosDetalle() {
-//        println "aqui"
+//        println ">>>>aqui<<<<"
         maxLvl = null
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -125,7 +125,7 @@ class RetrasadosController extends Shield {
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
         Document document = reportesPdfService.crearDocumento("svt", [top: 2, right: 2, bottom: 1.5, left: 2.5])
-        session.tituloReporte = "Reporte detallado de Trámites Retrasados y sin recepción"
+        session.tituloReporte = "Reporte detallado de Trámites Retrasados y Sin Recepción"
         def pdfw = PdfWriter.getInstance(document, baos);
         reportesPdfService.membrete(document)
         document.open();

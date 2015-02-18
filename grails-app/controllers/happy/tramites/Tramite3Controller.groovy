@@ -33,7 +33,17 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
 
-
+            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
+            def tramitesHijos = Tramite.countByPadre(padre)
+//            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
+            if (tramitesHijos != 0) {
+                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
         }
 
 //        println params
@@ -162,27 +172,27 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            println "SAVED!!"
 //            println "externo? " + paramsTramite.externo
 //            println "externo? " + tramite.externo
-            if (tramite.externo == 0) {
-                def documentos = DocumentoTramite.findAllByTramite(tramite)
-                if (documentos.size() > 0) {
-                    def ids = documentos.id
-                    ids.each { id ->
-                        def doc = DocumentoTramite.get(id)
-                        def departamento = doc.tramite.deDepartamento
-                        if (!departamento) {
-                            departamento = doc.tramite.de.departamento
-                        }
-                        def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
-                        try {
-                            doc.delete(flush: true)
-                            def file = new File(path)
-                            file.delete()
-                        } catch (e) {
-                            println "Error al eliminar anexo: ${id}: " + e
-                        }
-                    }
-                }
-            }
+//            if (tramite.externo == 0) {
+//                def documentos = DocumentoTramite.findAllByTramite(tramite)
+//                if (documentos.size() > 0) {
+//                    def ids = documentos.id
+//                    ids.each { id ->
+//                        def doc = DocumentoTramite.get(id)
+//                        def departamento = doc.tramite.deDepartamento
+//                        if (!departamento) {
+//                            departamento = doc.tramite.de.departamento
+//                        }
+//                        def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/" + doc.tramite.codigo + "/" + doc.path
+//                        try {
+//                            doc.delete(flush: true)
+//                            def file = new File(path)
+//                            file.delete()
+//                        } catch (e) {
+//                            println "Error al eliminar anexo: ${id}: " + e
+//                        }
+//                    }
+//                }
+//            }
 
             /*
              * para/cc: si es negativo el id > es a la bandeja de entrada del departamento
@@ -602,7 +612,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def principal = null
         def tp = null
         def tramitesTp = []
-        println "tramite  "+tramite.codigo+" - "+tramite.id+" "+tramite.tramitePrincipal
+        println "tramite  " + tramite.codigo + " - " + tramite.id + " " + tramite.tramitePrincipal
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003"), RolPersonaTramite.findByCodigo("I005")]
         if (tramite) {
             tramites.add(tramite)
@@ -618,14 +628,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 }
             }
-            if(tramite.tramitePrincipal!=0 && tramite.tramitePrincipal!=tramite.id){
+            if (tramite.tramitePrincipal != 0 && tramite.tramitePrincipal != tramite.id) {
                 tp = Tramite.get(tramite.tramitePrincipal)
-                println "tp "+tp.codigo+" - "+tp.id
+                println "tp " + tp.codigo + " - " + tp.id
             }
         }
 
         tramites = tramites.reverse()
-        return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo,tp:tp]
+        return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo, tp: tp]
     }
 
 

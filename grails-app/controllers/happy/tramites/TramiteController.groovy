@@ -335,6 +335,23 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
+
+        if (params.padre) {
+            def padre = Tramite.get(params.padre)
+
+            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
+            def tramitesHijos = Tramite.countByPadre(padre)
+//            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
+            if (tramitesHijos != 0) {
+                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
+        }
+
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def esEditor = persona.puedeEditor
@@ -1064,11 +1081,11 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         if (params.domain == "persDoc") {
-            tramites.sort {it [params.sort]}
+            tramites.sort { it[params.sort] }
         }
 
         if (params.domain == "tramite") {
-            tramites.sort {it.tramite [params.sort]}
+            tramites.sort { it.tramite[params.sort] }
         }
         if (params.order == "desc") {
             tramites = tramites.reverse()
@@ -1268,7 +1285,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         //nuevo
         def pxt = PersonaDocumentoTramite.get(params.id)
-        if(pxt) {
+        if (pxt) {
             def hijos = []
             if (params.tipo == 'archivar') {
                 if (pxt?.departamento) {
@@ -1285,7 +1302,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
             return [pxt: pxt, hijos: hijos]
         } else {
-            return [error:"No se encontró"]
+            return [error: "No se encontró"]
         }
     }
 

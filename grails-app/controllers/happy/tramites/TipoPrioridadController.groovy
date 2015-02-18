@@ -34,7 +34,7 @@ class TipoPrioridadController extends happy.seguridad.Shield {
     }
 
     def list() {
-        if(session.usuario.puedeAdmin) {
+        if (session.usuario.puedeAdmin) {
             params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
             def tipoPrioridadInstanceList = getLista(params, false)
             def tipoPrioridadInstanceCount = getLista(params, true).size()
@@ -43,8 +43,8 @@ class TipoPrioridadController extends happy.seguridad.Shield {
             }
             tipoPrioridadInstanceList = getLista(params, false)
             return [tipoPrioridadInstanceList: tipoPrioridadInstanceList, tipoPrioridadInstanceCount: tipoPrioridadInstanceCount, params: params]
-        }else{
-            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
 
@@ -121,14 +121,31 @@ class TipoPrioridadController extends happy.seguridad.Shield {
         render "NO_No se encontró TipoPrioridad."
     } //notFound para ajax
 
-    def validarCodigo_ajax(){
+//    def validarCodigo_ajax(){
+//        params.codigo = params.codigo.toString().trim()
+//        def tipo = TipoPrioridad.findAllByCodigo(params.codigo.toUpperCase())
+//
+//        render tipo.size() == 0
+//        return
+//
+//
+//    }
+
+    def validarCodigo_ajax() {
         params.codigo = params.codigo.toString().trim()
-        def tipo = TipoPrioridad.findAllByCodigo(params.codigo.toUpperCase())
-
-        render tipo.size() == 0
-        return
-
-
+        if (params.id) {
+            def obj = TipoPrioridad.get(params.id)
+            if (obj.codigo.toLowerCase() == params.codigo.toLowerCase()) {
+                render true
+                return
+            } else {
+                render TipoPrioridad.countByCodigoIlike(params.codigo) == 0
+                return
+            }
+        } else {
+            render TipoPrioridad.countByCodigoIlike(params.codigo) == 0
+            return
+        }
     }
 
 }

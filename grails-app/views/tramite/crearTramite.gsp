@@ -118,69 +118,70 @@
 
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre || principal}">
-                <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
+                <g:if test="${principal.id != tramite.id}">
+                    <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
-                    <p class="css-vertical-text">D. Principal</p>
+                        <p class="css-vertical-text">D. Principal</p>
 
-                    <div class="linea"></div>
+                        <div class="linea"></div>
 
-                    <div class="row">
-                        <div class="col-xs-1 negrilla">Documento:</div>
-
-                        <div class="col-xs-2">${principal.codigo}</div>
-
-                        <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
-
-                        <div class="col-xs-2">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
-
-                        <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
-
-                        <div class="col-xs-3">
-                            <g:if test="${principal.tipoDocumento.codigo == 'DEX'}">
-                                <td>${principal.paraExterno}</td>
-                            </g:if>
-                            <g:else>
-                                ${principal.deDepartamento ? principal.deDepartamento.codigo : "" + principal.de.departamento.codigo + ":" + principal.de.nombre + ' ' + principal.de.apellido}
-                            </g:else>
-                        </div>
-                    </div>
-
-                    <div class="row ">
-                        <div class="col-xs-10">
-                            <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
-                                <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
-                                <span style="margin-right: 10px">
-                                    ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
-                                    ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}
-                                </span>
-                            </g:each>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-1 negrilla">Asunto:</div>
-
-                        <div class="col-md-11">${principal.asunto}</div>
-                    </div>
-                    <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim()?.size() > 0}">
                         <div class="row">
-                            <div class="col-md-1 negrilla">Texto:</div>
+                            <div class="col-xs-1 negrilla">Documento:</div>
 
-                            <div class="col-md-11 texto">
-                                <util:renderHTML html="${principal.texto}"/>
+                            <div class="col-xs-2">${principal.codigo}</div>
+
+                            <div class="col-xs-1 negrilla" style="width: 55px">Fecha:</div>
+
+                            <div class="col-xs-2">${principal.fechaCreacion.format("dd-MM-yyyy")}</div>
+
+                            <div class="col-xs-1 negrilla" style="width: 32px">De:</div>
+
+                            <div class="col-xs-3">
+                                <g:if test="${principal.tipoDocumento.codigo == 'DEX'}">
+                                    <td>${principal.paraExterno}</td>
+                                </g:if>
+                                <g:else>
+                                    ${principal.deDepartamento ? principal.deDepartamento.codigo : "" + principal.de.departamento.codigo + ":" + principal.de.nombre + ' ' + principal.de.apellido}
+                                </g:else>
                             </div>
                         </div>
-                    </g:if>
 
-                    <g:if test="${principal.observaciones && principal.observaciones?.trim()?.size() > 0}">
-                        <div class="row">
-                            <div class="col-md-1 negrilla">Obs:</div>
-
-                            <div class="col-md-11">${principal.observaciones}</div>
+                        <div class="row ">
+                            <div class="col-xs-10">
+                                <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
+                                    <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
+                                    <span style="margin-right: 10px">
+                                        ${(pdt.departamento) ? pdt.departamento : "" + pdt.persona.departamento.codigo + ":" + pdt.persona}
+                                        ${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}
+                                    </span>
+                                </g:each>
+                            </div>
                         </div>
-                    </g:if>
 
-                </div>
+                        <div class="row">
+                            <div class="col-md-1 negrilla">Asunto:</div>
+
+                            <div class="col-md-11">${principal.asunto}</div>
+                        </div>
+                        <g:if test="${principal.personaPuedeLeer(session.usuario) && principal.texto?.trim()?.size() > 0}">
+                            <div class="row">
+                                <div class="col-md-1 negrilla">Texto:</div>
+
+                                <div class="col-md-11 texto">
+                                    <util:renderHTML html="${principal.texto}"/>
+                                </div>
+                            </div>
+                        </g:if>
+
+                        <g:if test="${principal.observaciones && principal.observaciones?.trim()?.size() > 0}">
+                            <div class="row">
+                                <div class="col-md-1 negrilla">Obs:</div>
+
+                                <div class="col-md-11">${principal.observaciones}</div>
+                            </div>
+                        </g:if>
+                    </div>
+                </g:if>
                 <g:if test="${padre && padre != principal}">
                     <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 

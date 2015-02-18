@@ -33,18 +33,18 @@ class EstadoTramiteExternoController extends happy.seguridad.Shield {
 
     def list() {
         if (session.usuario.puedeAdmin) {
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-        def estadoTramiteExternoInstanceList = getLista(params, false)
-        def estadoTramiteExternoInstanceCount = getLista(params, true).size()
-        if (estadoTramiteExternoInstanceList.size() == 0 && params.offset && params.max) {
-            params.offset = params.offset - params.max
+            params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
+            def estadoTramiteExternoInstanceList = getLista(params, false)
+            def estadoTramiteExternoInstanceCount = getLista(params, true).size()
+            if (estadoTramiteExternoInstanceList.size() == 0 && params.offset && params.max) {
+                params.offset = params.offset - params.max
+            }
+            estadoTramiteExternoInstanceList = getLista(params, false)
+            return [estadoTramiteExternoInstanceList: estadoTramiteExternoInstanceList, estadoTramiteExternoInstanceCount: estadoTramiteExternoInstanceCount, params: params]
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
-        estadoTramiteExternoInstanceList = getLista(params, false)
-        return [estadoTramiteExternoInstanceList: estadoTramiteExternoInstanceList, estadoTramiteExternoInstanceCount: estadoTramiteExternoInstanceCount, params: params]
-    } else {
-        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
-        response.sendError(403)
-    }
     } //list
 
     def show_ajax() {
@@ -117,5 +117,22 @@ class EstadoTramiteExternoController extends happy.seguridad.Shield {
     protected void notFound_ajax() {
         render "NO_No se encontró EstadoTramiteExterno."
     } //notFound para ajax
+
+    def validarCodigo_ajax() {
+        params.codigo = params.codigo.toString().trim()
+        if (params.id) {
+            def obj = EstadoTramite.get(params.id)
+            if (obj.codigo.toLowerCase() == params.codigo.toLowerCase()) {
+                render true
+                return
+            } else {
+                render EstadoTramite.countByCodigoIlike(params.codigo) == 0
+                return
+            }
+        } else {
+            render EstadoTramite.countByCodigoIlike(params.codigo) == 0
+            return
+        }
+    }
 
 }
