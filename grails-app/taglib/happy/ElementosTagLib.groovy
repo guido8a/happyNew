@@ -222,8 +222,10 @@ class ElementosTagLib {
             }
         } else {
             if (session.usuario.puedeTramitar) {
+//                println "1"
                 disp = Departamento.list([sort: 'descripcion'])
             } else {
+//                println "2"
                 disp = [persona.departamento]
             }
 //            println "DISP::: " + disp

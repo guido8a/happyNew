@@ -230,6 +230,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def getPara_ajax() {
+//        println "Get para: " + params
         Tramite tramite = null
         if (params.tramite) {
             tramite = Tramite.get(params.tramite)
@@ -240,6 +241,7 @@ class TramiteController extends happy.seguridad.Shield {
             html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
             html += "</div>"
         } else {
+//            println "tipoDoc: " + tipoDoc.codigo
             switch (tipoDoc.codigo) {
                 case "CIR":
                     html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"

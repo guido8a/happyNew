@@ -10,6 +10,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def tramitesService
 
     def save() {
+//        println "PARAMS: " + params
+        /*
+          tramite.asunto:sdfg sdfg sdf g,
+          tramite:[
+                    padre.id:535,
+                    padre:[id:535],
+                    id:536,
+                    hiddenCC:, aQuienContesta.id:, aQuienContesta:[id:], esRespuesta:0, tramitePrincipal:0, para:5517, prioridad.id:3, prioridad:[id:3], asunto:sdfg sdfg sdf g, numeroDocExterno:, telefono:, contacto:], tramite.id:536, tramite.padre.id:535, tramite.prioridad.id:3, tramite.telefono:, tramite.contacto:, tramite.aQuienContesta.id:, tramite.tramitePrincipal:0, tramite.numeroDocExterno:, tramite.hiddenCC:, tramite.esRespuesta:0, paraExt:, tramite.para:5517, action:save, format:null, controller:tramite3]
+         */
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
@@ -28,13 +37,18 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
-        println "aaa " + paramsTramite.aQuienContesta.id
+//        println "aaa " + paramsTramite.aQuienContesta.id
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
 
             //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
-            def tramitesHijos = Tramite.countByPadre(padre)
+            def tramitesHijos
+            if (paramsTramite.id) {
+                tramitesHijos = Tramite.countByPadreAndIdNotEqual(padre, paramsTramite.id.toLong())
+            } else {
+                tramitesHijos = Tramite.countByPadre(padre)
+            }
 //            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
             if (tramitesHijos != 0) {
                 flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +

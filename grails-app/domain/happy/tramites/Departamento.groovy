@@ -16,7 +16,7 @@ class Departamento {
 
     Integer activo //1-> activo 0-> inactivo
 
-    String objectguid=""
+    String objectguid = ""
 
     static mapping = {
         table 'dpto'
@@ -46,7 +46,7 @@ class Departamento {
         extension(maxSize: 7, blank: true, nullable: true, attributes: [title: 'extension'])
         direccion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'direccion'])
         estado(blank: true, nullable: true, size: 1..1)
-        objectguid(blank: true,nullable: true,size: 1..128)
+        objectguid(blank: true, nullable: true, size: 1..128)
     }
 
     String toString() {
@@ -59,8 +59,10 @@ class Departamento {
 
     def getTriangulos() {
         def triangulos = []
+//        println "TRIANGULOS <><><><>"
         Persona.findAllByDepartamento(this).each { pr ->
-            if (pr.estaActivo && pr.esTriangulo) {
+//            println "\t" + pr.login + " " + pr.estaActivo + " " + pr.esTrianguloOff()
+            if (pr.estaActivo && pr.esTrianguloOff()) {
                 triangulos.add(pr)
 //                def prm = PermisoUsuario.findAllByPersonaAndPermisoTramite(pr, PermisoTramite.findByCodigo("E001")).findAll {
 //                    it.estaActivo

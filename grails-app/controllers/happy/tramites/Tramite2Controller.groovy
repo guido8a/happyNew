@@ -1320,7 +1320,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def padre = Tramite.get(paramsTramite.padre.id)
 
             //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
-            def tramitesHijos = Tramite.countByPadre(padre)
+            def tramitesHijos
+            if (paramsTramite.id) {
+                tramitesHijos = Tramite.countByPadreAndIdNotEqual(padre, paramsTramite.id.toLong())
+            } else {
+                tramitesHijos = Tramite.countByPadre(padre)
+            }
 //            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
             if (tramitesHijos != 0) {
                 flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
