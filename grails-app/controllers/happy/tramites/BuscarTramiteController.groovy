@@ -542,12 +542,18 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         res = PersonaDocumentoTramite.withCriteria {
 
             eq("estado", EstadoTramite.findByCodigo("E006"))
-            inList("rolPersonaTramite", rolPara, rolCopia)
+
 
             if (persona?.esTriangulo()) {
-                eq("departamento", departamento)
+                tramite{
+                    eq("deDepartamento", departamento)
+                }
+
             } else {
-                eq("persona", persona)
+                tramite{
+                    eq("de", persona)
+                }
+
             }
 
             if (params.fechaDesde) {
