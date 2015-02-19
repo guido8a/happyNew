@@ -26,13 +26,17 @@ th, td {
                 <tbody>
                 <!-- <hr>Hola ${lista}</hr> -->
                     <g:each in="${datos}" status="i" var="d">
-                        <tr>
-                            <td><input type="checkbox" name="cdgo" class="chkAccn" value="${d[0].encodeAsHTML()}"></td>
-                            <td>${d[1]}</td>
-                            <td><input type="text" id="mn${d[0]}" value="${d[2]?.encodeAsHTML()}">
-                                <input class="ok btn btn-default btn-xs" type="button" id="${d[0]}" value="Grabar"></td>
-                            <td>${d[3]?.encodeAsHTML()}</td>
-                        </tr>
+                        <g:if test="${!d[1].toLowerCase().contains('ajax')}">
+                            <tr>
+                                <td><input type="checkbox" name="cdgo" class="chkAccn" value="${d[0].encodeAsHTML()}">
+                                </td>
+                                <td>${d[1]}</td>
+                                <td><input type="text" id="mn${d[0]}" value="${d[2]?.encodeAsHTML()}">
+                                    <input class="ok btn btn-default btn-xs" type="button" id="${d[0]}" value="Grabar">
+                                </td>
+                                <td>${d[3]?.encodeAsHTML()}</td>
+                            </tr>
+                        </g:if>
                     </g:each>
                 </tbody>
             </table>
@@ -93,21 +97,19 @@ th, td {
             });
         });
 
-
-        $("#cambia").click(function() {
-                if (confirm("Cambiar las acciones señaladas de Menú a Proceso o Viceversa ??")) {
-                    var data = armarAccn()
-                    alert('datos armados:' + data)
-                    $.ajax({
-                        type: "POST", url: "${createLink(controller:'acciones', action:'cambiaAccn')}",
-                        data: "&ids=" + data + "&mdlo=" + $('#mdlo__id').val() + "&tipo=" + $(".tipo.active").find("input").val(),
-                        success: function(msg) {
-                            $("#ajx").html(msg)
-                        }
-                    });
-                }
+        $("#cambia").click(function () {
+            if (confirm("Cambiar las acciones señaladas de Menú a Proceso o Viceversa ??")) {
+                var data = armarAccn()
+                alert('datos armados:' + data)
+                $.ajax({
+                    type    : "POST", url : "${createLink(controller:'acciones', action:'cambiaAccn')}",
+                    data    : "&ids=" + data + "&mdlo=" + $('#mdlo__id').val() + "&tipo=" + $(".tipo.active").find("input").val(),
+                    success : function (msg) {
+                        $("#ajx").html(msg)
+                    }
+                });
+            }
         });
-
 
         $(".ok").click(function () {
             //var datos = armar()

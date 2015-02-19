@@ -16,8 +16,8 @@ class AccionesController extends happy.seguridad.Shield {
         if(session.usuario.puedeAdmin) {
             def modulos = Modulo.list([sort: 'orden'])
             return [modulos: modulos]
-        }else{
-            flash.message="Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será reportada"
             response.sendError(403)
         }
     }
@@ -60,7 +60,6 @@ class AccionesController extends happy.seguridad.Shield {
         cn.close()
         render("la accion '${dscr}' ha sido modificada")
     }
-
 
 
     def moverAccn = {
@@ -121,37 +120,37 @@ class AccionesController extends happy.seguridad.Shield {
 
     def configurarAcciones = {
         if (session.usuario.puedeAdmin) {
-        def modulos = Modulo.list([sort: "orden"])
-        def controladores = []
-        def cn = dbConnectionService.getConnection()
-        cn.eachRow("select distinct ctrlnmbr from ctrl where ctrl__id in (select  ctrl__id from accn where mdlo__id is not null)") {
-            controladores.add(it.ctrlnmbr)
+            def modulos = Modulo.list([sort: "orden"])
+            def controladores = []
+            def cn = dbConnectionService.getConnection()
+            cn.eachRow("select distinct ctrlnmbr from ctrl where ctrl__id in (select  ctrl__id from accn where mdlo__id is not null)") {
+                controladores.add(it.ctrlnmbr)
+            }
+            def tp = 1
+            cn.eachRow("select tpac__id from tpac where upper(tpacdscr) like '%MENU%'") {
+                tp = it.tpac__id
+            }
+            [modulos: modulos, controladores: controladores, tipo_tpac: tp, titulo: 'Men&uacute;s por M&oacute;dulo']
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
         }
-        def tp = 1
-        cn.eachRow("select tpac__id from tpac where upper(tpacdscr) like '%MENU%'") {
-            tp = it.tpac__id
-        }
-        [modulos: modulos, controladores: controladores, tipo_tpac: tp, titulo: 'Men&uacute;s por M&oacute;dulo']
-    } else {
-        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
-        response.sendError(403)
-    }
     }
 
     def procesos = {
         if (session.usuario.puedeAdmin) {
-        def modulos = Modulo.list([sort: "orden"])
-        def controladores = []
-        def cn = dbConnectionService.getConnection()
-        cn.eachRow("select distinct ctrlnmbr from ctrl where ctrl__id in (select  ctrl__id from accn where mdlo__id is not null)") {
-            controladores.add(it.ctrlnmbr)
-        }
-        def tp = 2  //hallar el valor desde la BD
-        cn.eachRow("select tpac__id from tpac where upper(tpacdscr) like '%PROC%'") {
-            tp = it.tpac__id
-        }
-        render(view: "configurarAcciones", model: [modulos: modulos, controladores: controladores, tipo_tpac: tp,
-                titulo: 'Procesos por M&oacute;dulo'])
+            def modulos = Modulo.list([sort: "orden"])
+            def controladores = []
+            def cn = dbConnectionService.getConnection()
+            cn.eachRow("select distinct ctrlnmbr from ctrl where ctrl__id in (select  ctrl__id from accn where mdlo__id is not null)") {
+                controladores.add(it.ctrlnmbr)
+            }
+            def tp = 2  //hallar el valor desde la BD
+            cn.eachRow("select tpac__id from tpac where upper(tpacdscr) like '%PROC%'") {
+                tp = it.tpac__id
+            }
+            render(view: "configurarAcciones", model: [modulos: modulos, controladores: controladores, tipo_tpac: tp,
+                                                       titulo : 'Procesos por M&oacute;dulo'])
         } else {
             flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
             response.sendError(403)
@@ -161,12 +160,12 @@ class AccionesController extends happy.seguridad.Shield {
 
     def perfiles = {
         if (session.usuario.puedeAdmin) {
-        def modulos = Modulo.list([sort: "orden"])
-        [modulos: modulos]
-    } else {
-        flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
-        response.sendError(403)
-    }
+            def modulos = Modulo.list([sort: "orden"])
+            [modulos: modulos]
+        } else {
+            flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
+            response.sendError(403)
+        }
     }
 
 
@@ -247,46 +246,47 @@ class AccionesController extends happy.seguridad.Shield {
 
     def cargarAcciones = {
         if (session.usuario.puedeAdmin) {
-        def ac = []
-        def accs = [:]
-        def i = 0
-        def ignore = ["afterInterceptor", "beforeInterceptor"]
-        grailsApplication.controllerClasses.each { ct ->
-            def t = []
-            ct.getURIs().each {
-                def s = it.split("/")
-                if (s.size() > 2)
-                    if (!t.contains(s[2]))
-                        if (!ignore.contains(s[2]))
-                            if (!(s[2] =~ "Service")) {
+            def ac = []
+            def accs = [:]
+            def i = 0
+            def ignore = ["afterInterceptor", "beforeInterceptor"]
+            grailsApplication.controllerClasses.each { ct ->
+                def t = []
+                ct.getURIs().each {
+                    def s = it.split("/")
+                    println "*    " + s
+                    if (s.size() > 2)
+                        if (!t.contains(s[2]))
+                            if (!ignore.contains(s[2]))
+                                if (!(s[2] =~ "Service")) {
 
-                                def accn = Accn.findByAccnNombreAndControl(s[2], Ctrl.findByCtrlNombre(ct.getName()))
+                                    def accn = Accn.findByAccnNombreAndControl(s[2], Ctrl.findByCtrlNombre(ct.getName()))
 
-                                if (accn == null) {
-                                    accn = new Accn()
-                                    accn.accnNombre = s[2]
-                                    accn.control = Ctrl.findByCtrlNombre(ct.getName())
-                                    accn.accnDescripcion = s[2]
-                                    accn.accnAuditable = 1
-                                    if (s[2] =~ "save" || s[2] =~ "update" || s[2] =~ "delete" || s[2] =~ "guardar")
-                                        accn.tipo = Tpac.get(2)
-                                    else
-                                        accn.tipo = Tpac.get(1)
-                                    accn.modulo = Modulo.findByDescripcionIlike("no%asignado")
-                                    if (!accn.save(flush: true)) {
-                                        println "errores accn" + accn.errors
-                                    } else {
-                                        i++
+                                    if (accn == null) {
+                                        accn = new Accn()
+                                        accn.accnNombre = s[2]
+                                        accn.control = Ctrl.findByCtrlNombre(ct.getName())
+                                        accn.accnDescripcion = s[2]
+                                        accn.accnAuditable = 1
+                                        if (s[2] =~ "save" || s[2] =~ "update" || s[2] =~ "delete" || s[2] =~ "guardar")
+                                            accn.tipo = Tpac.get(2)
+                                        else
+                                            accn.tipo = Tpac.get(1)
+                                        accn.modulo = Modulo.findByDescripcionIlike("no%asignado")
+                                        if (!accn.save(flush: true)) {
+                                            println "errores accn" + accn.errors
+                                        } else {
+                                            i++
+                                        }
                                     }
+                                    t.add(s.getAt(2))
                                 }
-                                t.add(s.getAt(2))
-                            }
 
+                }
+                accs.put(ct.getName(), t)
+                t = null
             }
-            accs.put(ct.getName(), t)
-            t = null
-        }
-        render("Se han agregado ${i} acciones")
+            render("Se han agregado ${i} acciones")
 
         } else {
             flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."

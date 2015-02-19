@@ -559,7 +559,7 @@
                  icon            : "fa fa-gears",
                  separator_after : true,
                  url             : "
-                ${createLink(action: 'ausentismo')}/" + id
+                %{--${createLink(action: 'ausentismo')}/" + id--}%
                  };
                  */
 
@@ -567,7 +567,7 @@
                  var desactivar = {
                  label  : 'Desactivar',
                  icon   : "fa
-                ${iconDesactivar}'",
+                %{--${iconDesactivar}'",--}%
                  action : function (e) {
                  cambiarEstadoRow(id, false, tramites);
                  }
@@ -576,7 +576,7 @@
                  var activar = {
                  label  : 'Activar',
                  icon   : "fa
-                ${iconActivar}",
+                %{--${iconActivar}",--}%
                  action : function (e) {
                  cambiarEstadoRow(id, true, tramites);
                  }
