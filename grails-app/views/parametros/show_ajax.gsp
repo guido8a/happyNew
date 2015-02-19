@@ -122,7 +122,7 @@
 
         </g:if>
 
-        <g:if test="${parametrosInstance?.validaLDAP}">
+        %{--<g:if test="${parametrosInstance?.validaLDAP}">--}%
 
                 <div class="col-md-3 text-info">
                     Validar usuarios contra LDAP
@@ -134,7 +134,7 @@
                     %{--<g:fieldValue bean="${parametrosInstance}" field="validaLDAP"/>--}%
                 </div>
 
-        </g:if>
+        %{--</g:if>--}%
     </div>
 
 
