@@ -80,8 +80,10 @@
                 </div>
 
                 <div class="btn-group pull-right ui-corner-all leyenda">
-                    <i class="fa fa-user text-info"></i> Usuario<br/>
-                    <i class="fa fa-user text-warning"></i> Autoridad
+                    <i class="fa fa-user text-info"></i> Usuario activo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-user text-warning"></i> Jefe<br/>
+                    <i class="fa fa-user text-muted"></i> Usuario inactivo&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-user text-danger"></i> Director<br/>
                 </div>
             </div>
 
@@ -344,7 +346,7 @@
                 }).on("select_node.jstree", function (node, selected, event) {
 //                    $('#tree').jstree('toggle_node', selected.selected[0]);
                 }).jstree({
-                    plugins     : [ "types", "state", "contextmenu", "wholerow" , "search"],
+                    plugins     : ["types", "state", "contextmenu", "wholerow", "search"],
                     core        : {
                         multiple       : false,
                         check_callback : true,
@@ -386,55 +388,67 @@
                         }
                     },
                     types       : {
-                        root                     : {
+                        root                      : {
                             icon : "fa fa-folder text-warning"
                         },
-                        padreActivo              : {
+                        padreActivo               : {
                             icon : "fa fa-building-o text-info"
                         },
-                        padreInactivo            : {
+                        padreInactivo             : {
                             icon : "fa fa-building-o text-muted"
                         },
-                        padreExternoActivo       : {
+                        padreExternoActivo        : {
                             icon : "fa fa-paper-plane text-info"
                         },
-                        padreExternoInactivo     : {
+                        padreExternoInactivo      : {
                             icon : "fa fa-paper-plane text-muted"
                         },
-                        hijoActivo               : {
+                        hijoActivo                : {
                             icon : "fa fa-home text-success"
                         },
-                        hijoInactivo             : {
+                        hijoInactivo              : {
                             icon : "fa fa-home text-muted"
                         },
-                        hijoExternoActivo        : {
+                        hijoExternoActivo         : {
                             icon : "fa fa-paper-plane-o text-success"
                         },
-                        hijoExternoInactivo      : {
+                        hijoExternoInactivo       : {
                             icon : "fa fa-paper-plane-o text-muted"
                         },
-                        usuarioActivo            : {
+                        usuarioActivo             : {
                             icon : "fa fa-user text-info"
                         },
-                        usuarioInactivo          : {
+                        usuarioInactivo           : {
                             icon : "fa fa-user text-muted"
                         },
-                        jefeActivo               : {
+                        jefeActivo                : {
                             icon : "fa fa-user text-warning"
                         },
-                        jefeInactivo             : {
+                        jefeInactivo              : {
                             icon : "fa fa-user text-muted"
                         },
-                        usuarioTrianguloActivo   : {
+                        directorActivo            : {
+                            icon : "fa fa-user text-danger"
+                        },
+                        directorInactivo          : {
+                            icon : "fa fa-user text-muted"
+                        },
+                        usuarioTrianguloActivo    : {
                             icon : "fa fa-download text-info"
                         },
-                        usuarioTrianguloInactivo : {
+                        usuarioTrianguloInactivo  : {
                             icon : "fa fa-download text-muted"
                         },
-                        jefeTrianguloActivo      : {
+                        jefeTrianguloActivo       : {
                             icon : "fa fa-cloud-download text-warning"
                         },
-                        jefeTrianguloInactivo    : {
+                        jefeTrianguloInactivo     : {
+                            icon : "fa fa-cloud-download text-muted"
+                        },
+                        directorTrianguloActivo   : {
+                            icon : "fa fa-cloud-download text-danger"
+                        },
+                        directorTrianguloInactivo : {
                             icon : "fa fa-cloud-download text-muted"
                         }
                     }
