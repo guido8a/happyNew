@@ -78,18 +78,28 @@ table {
                             </g:if>
                             ${tramite?.tramite?.codigo}
                         </td>
-                        <g:if test="${tramite?.tramite?.deDepartamento}">
-                            <td style="width: 180px">${tramite?.tramite?.deDepartamento?.descripcion}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 180px">${tramite?.tramite?.de?.nombre + " " + tramite?.tramite?.de?.apellido}</td>
-                        </g:else>
-                        <g:if test="${tramite?.tramite?.para?.persona}">
-                            <td style="width: 180px">${tramite?.tramite?.para?.persona?.nombre + " " + tramite?.tramite?.para?.persona?.apellido}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 180px">${tramite?.tramite?.para?.departamento?.descripcion}</td>
-                        </g:else>
+                        <td style="width: 180px">
+                            <g:if test="${tramite?.tramite?.deDepartamento}">
+                                ${tramite?.tramite?.deDepartamento?.descripcion}
+                            </g:if>
+                            <g:else>
+                                ${tramite?.tramite?.de?.nombre + " " + tramite?.tramite?.de?.apellido}
+                            </g:else>
+                        </td>
+                        <td style="width: 180px">
+                            %{--<g:if test="${tramite?.tramite?.para?.persona}">--}%
+                            %{--${tramite?.tramite?.para?.persona?.nombre + " " + tramite?.tramite?.para?.persona?.apellido}--}%
+                            %{--</g:if>--}%
+                            %{--<g:else>--}%
+                            %{--${tramite?.tramite?.para?.departamento?.descripcion}--}%
+                            %{--</g:else>--}%
+                            <g:if test="${tramite.persona}">
+                                ${tramite.persona}
+                            </g:if>
+                            <g:else>
+                                ${tramite.departamento}
+                            </g:else>
+                        </td>
                         <td style="width: 70px">${tramite?.rolPersonaTramite?.descripcion}</td>
                         <td style="width: 190px">${tramite?.tramite?.asunto}</td>
                         <td style="width: 67px">${tramite?.tramite?.prioridad?.descripcion}</td>

@@ -301,7 +301,10 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 if (persona.esTriangulo()) {
                     eq('deDepartamento', departamento)
                 } else {
-                    eq('de', persona)
+                    and {
+                        eq('de', persona)
+                        isNull("deDepartamento")
+                    }
                 }
 //                order('codigo', 'desc')
 //                order('estadoTramite', 'desc')
@@ -540,32 +543,26 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 
         res = PersonaDocumentoTramite.withCriteria {
-
             eq("estado", EstadoTramite.findByCodigo("E006"))
-
-
             if (persona?.esTriangulo()) {
-                tramite{
+                tramite {
                     eq("deDepartamento", departamento)
                 }
-
             } else {
-                tramite{
-                    eq("de", persona)
+                tramite {
+                    and {
+                        eq("de", persona)
+                        isNull("deDepartamento")
+                    }
                 }
-
             }
-
             if (params.fechaDesde) {
                 ge('fechaAnulacion', params.fechaDesde)
-
             }
             if (params.fechaHasta) {
                 le('fechaAnulacion', params.fechaHasta)
             }
-
             isNotNull("fechaAnulacion")
-
             tramite {
                 if (params.asunto) {
                     ilike('asunto', '%' + params.asunto + '%')
@@ -573,7 +570,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 if (params.memorando) {
                     ilike('codigo', '%' + params.memorando + '%')
                 }
-
 //                order('codigo', 'desc')
             }
             maxResults(20)

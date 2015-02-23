@@ -15,6 +15,7 @@ table {
     font-size : 9pt;
 }
 </style>
+
 <div style="height: 30px; overflow: hidden;" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
@@ -69,18 +70,22 @@ table {
                             </g:if>
                             ${tramite?.tramite?.codigo}
                         </td>
-                        <g:if test="${tramite?.tramite?.deDepartamento}">
-                            <td style="width: 190px">${tramite?.tramite?.deDepartamento?.descripcion}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 190px">${tramite?.tramite?.de?.nombre + " " + tramite?.tramite?.de?.apellido}</td>
-                        </g:else>
-                        <g:if test="${tramite?.departamento}">
-                            <td style="width: 200px">${tramite?.departamento?.descripcion + ' [' + tramite?.rolPersonaTramite?.descripcion + '] '}</td>
-                        </g:if>
-                        <g:else>
-                            <td style="width: 200px">${tramite?.persona?.nombre + " " + tramite?.persona?.apellido + ' [' + tramite?.rolPersonaTramite?.descripcion + ' ] '}</td>
-                        </g:else>
+                        <td style="width: 190px">
+                            <g:if test="${tramite?.tramite?.deDepartamento}">
+                                ${tramite?.tramite?.deDepartamento?.descripcion}
+                            </g:if>
+                            <g:else>
+                                ${tramite?.tramite?.de?.nombre + " " + tramite?.tramite?.de?.apellido}
+                            </g:else>
+                        </td>
+                        <td style="width: 200px">
+                            <g:if test="${tramite?.departamento}">
+                                ${tramite?.departamento?.descripcion + ' [' + tramite?.rolPersonaTramite?.descripcion + '] '}
+                            </g:if>
+                            <g:else>
+                                ${tramite?.persona?.nombre + " " + tramite?.persona?.apellido + ' [' + tramite?.rolPersonaTramite?.descripcion + ' ] '}
+                            </g:else>
+                        </td>
                         <td style="width: 190px">${tramite?.tramite?.asunto}</td>
                         <td style="width: 115px">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                         <g:if test="${tramite?.rolPersonaTramite?.codigo == 'R002'}">
