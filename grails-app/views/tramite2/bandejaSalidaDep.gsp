@@ -853,6 +853,7 @@
 //                            console.log(msg);
                             var parts = msg.split('_');
                             if (parts[0] == 'ok') {
+                                if(!imprimir)
                                 resetValues();
 //                        cargarBandeja(true);
                                 log('Trámites Enviados', 'success');
@@ -860,6 +861,8 @@
                                     openLoader();
                                     location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
                                     closeLoader();
+//                                    console.log("llego")
+                                    resetValues()
                                 }
                             } else {
                                 log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
