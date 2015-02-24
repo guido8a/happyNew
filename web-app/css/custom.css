@@ -13,6 +13,7 @@ body {
 .bloqueo {
     width    : 200px;
     height   : 240px;
+    top      : 180px;
     position : absolute;
     z-index  : 1022;
     left     : 20px;
@@ -22,6 +23,7 @@ body {
 .bloqueoUsu {
     width    : 200px;
     height   : 240px;
+    top      : 150px;
     position : absolute;
     z-index  : 1022;
     right     : 20px;
