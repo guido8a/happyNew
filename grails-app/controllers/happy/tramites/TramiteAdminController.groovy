@@ -701,10 +701,12 @@ class TramiteAdminController extends Shield {
     }
 
     private String makeLeaf(PersonaDocumentoTramite pdt) {
-        def html = "", clase = "", rel = "para", data = ""
+        def html = "", clase = "para", rel = "para", data = ""
         if (pdt.rolPersonaTramite.codigo == "R002") {
             rel = "copia"
+            clase = "copia"
         }
+        clase += " t${pdt.tramite.id}"
         def hijos = Tramite.findAllByAQuienContesta(pdt, [sort: "fechaCreacion", order: "asc"])
         if (hijos.size() > 0) {
             clase += " jstree-open"
