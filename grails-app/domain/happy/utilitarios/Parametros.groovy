@@ -18,6 +18,7 @@ class Parametros {
     String institucion
     Integer bloqueo
     Integer validaLDAP
+    String telefono
 
     static mapping = {
         table 'prmt'
@@ -38,6 +39,7 @@ class Parametros {
             institucion column: 'prmtinst'
             bloqueo column: 'prmtblqo'
             validaLDAP column: 'prmtvlda'
+            telefono column: 'prmttelf'
         }
     }
     static constraints = {
@@ -55,6 +57,7 @@ class Parametros {
         institucion(blank: false, nullable: false, attributes: [title: 'Nombre de la Institución'])
         bloqueo(blank: false, nullable: false, attributes: [title: 'Bloqueo de la bandeja de entrada en horas'])
         validaLDAP(blank: false, nullable: false, inList: [1, 0], attributes: [title: 'Validar contra LDAP'])
+        telefono(blank: false, nullable: false, size:7..15, attributes: [title: 'Teléfono para consulta de trámites externos'])
     }
 
     def getInicioJornada() {
