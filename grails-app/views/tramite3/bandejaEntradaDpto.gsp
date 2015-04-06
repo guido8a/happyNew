@@ -288,7 +288,7 @@
                 var remitenteId = remitenteParts[1];
 
                 var esCopia = $tr.hasClass("R002");
-                var esExterno = $tr.hasClass("estadoExterno")
+                var esExterno = $tr.hasClass("estadoExterno");
                 var porRecibir = $tr.hasClass("porRecibir");
                 var sinRecepcion = $tr.hasClass("sinRecepcion");
                 var recibido = $tr.hasClass("recibido");
@@ -505,8 +505,8 @@
                             id      : "dlgJefe",
                             title   : "Añadir observaciones al trámite",
                             message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
-                                    "Escriba las observaciones: " +
-                                    "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                                      "Escriba las observaciones: " +
+                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',
@@ -609,6 +609,12 @@
                     }
                 };
 
+                var editarExterno = {
+                    label : "Editar",
+                    icon  : "fa fa-pencil",
+                    url   : "${g.createLink(controller: 'tramite2',action: 'crearTramiteDep')}/" + id
+                }; //editar sumilla
+
                 items.header.label = "Acciones";
 
                 items.infoRemitente = infoRemitente;
@@ -657,6 +663,11 @@
                     items.arbol = arbol;
                     </g:if>
                 }
+
+                if (esExterno) {
+                    items.editar = editarExterno;
+                }
+
                 return items
             }
 
