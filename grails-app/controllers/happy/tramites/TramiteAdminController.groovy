@@ -1382,9 +1382,10 @@ class TramiteAdminController extends Shield {
 
         def listaDesanular = [pdt]
 
-        if (pdt.rolPersonaTramite.codigo == "R001") {// es PARA
-            listaDesanular = (copias + pdt)
-        }
+        // 06-04-2015: ya no quieren que desanular PARA desanule COPIAS
+//        if (pdt.rolPersonaTramite.codigo == "R001") {// es PARA
+//            listaDesanular = (copias + pdt)
+//        }
 //        (copias + pdt).each { p ->
         listaDesanular.each { p ->
             println "desanular: " + p.rolPersonaTramite.descripcion
