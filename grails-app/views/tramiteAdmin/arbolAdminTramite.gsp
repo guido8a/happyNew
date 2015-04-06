@@ -405,7 +405,8 @@
 
                                         $.ajax({
                                             type    : "POST",
-                                            url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
+                                            %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",--}%
+                                            url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
                                             data    : {
                                                 id  : tramiteId,
                                                 msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
@@ -488,7 +489,8 @@
                                     }
                                     $.ajax({
                                         type    : "POST",
-                                        url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
+                                        %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",--}%
+                                        url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
                                         data    : {
                                             id  : tramiteId,
                                             msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
@@ -830,7 +832,8 @@
                             action           : function () {
                                 $.ajax({
                                     type    : "POST",
-                                    url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
+                                    %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",--}%
+                                    url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
                                     data    : {
                                         id   : tramiteId,
                                         msg  : "<p class='lead'>Está por quitar el recibido del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",

@@ -648,9 +648,50 @@ class TramiteAdminController extends Shield {
                 personas.add(m)
             }
         }
-        println msg
-        println icon
+//        println msg
+//        println icon
+
+
         return [tramite: tramite, icon: icon, msg: msg, personas: personas]
+    }
+
+    def dialogAnulados () {
+
+        def tramite = Tramite.get(params.id)
+        def icon = params.icon
+        def msg = params.msg
+        def personas = []
+        Persona.findAllByDepartamento(tramite.de?.departamento).each { p ->
+            if (p.estaActivo) {
+                def m = [:]
+                m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
+                m.value = p.nombre + " " + p.apellido + " (" + p.login + ")"
+                personas.add(m)
+            }
+        }
+//        println msg
+//        println icon
+
+        def personasRec = []
+
+        if(tramite?.de?.departamento != tramite?.para?.departamento){
+            Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
+                if (r.estaActivo) {
+                    def n = [:]
+                    n.key = r.nombre + " " + r.apellido + " (funcionario de ${r.departamento.codigo})"
+                    n.value = r.nombre + " " + r.apellido + " (" + r.login + ")"
+                    personasRec.add(n)
+                }
+            }
+        }
+
+
+        def todas = personas + personasRec
+
+//        println("personas Reciben " + personasRec)
+
+        return [tramite: tramite, icon: icon, msg: msg, personas: todas]
+
     }
 
     private String makeNewTreeExtended(Tramite principal) {
