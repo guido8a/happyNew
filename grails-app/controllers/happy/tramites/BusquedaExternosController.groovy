@@ -2,12 +2,17 @@ package happy.tramites
 
 import happy.seguridad.Persona
 import happy.seguridad.Shield
+import happy.utilitarios.Parametros
 
 class BusquedaExternosController {
 
     def index() {}
 
     def buscarExternos() {
+        def parametros = Parametros.list().last()
+
+        return [parametros : parametros]
+
     }
 
     def tablaBusquedaExternos() {
@@ -98,6 +103,23 @@ class BusquedaExternosController {
                     }
                 }
             }
+
+            def departamento = prsnPara?.departamento
+
+            def jefes = []
+            Persona.findAllByDepartamento(prsnPara?.departamento).each { p ->
+                if (p.estaActivo && p.puedeJefe) {
+                    jefes += (p.nombre + " " + p.apellido)
+                }
+            }
+            if(jefes.size == 0){
+                Persona.findAllByDepartamento(prsnPara?.departamento).each { p ->
+                    if (p.estaActivo && p.puedeDirector) {
+                        jefes += (p.nombre + " " + p.apellido)
+                    }
+                }
+            }
+
             def msg = "<div class='well well-lg text-left'>"
             msg += "<h4>Trámite ${externo.codigo}</h4>"
             if (tram.para.estado?.codigo == "E005") { //Archivado
@@ -112,8 +134,9 @@ class BusquedaExternosController {
             } else {
                 msg += "<p>Con documento: <strong><em>${tram.codigo}</em></strong> "
                 msg += "desde el <strong><em>${tram.fechaEnvio.format('dd-MMM-yyyy HH:mm')}</em></strong> "
-                msg += "se encuentra en manos del funcionario: <strong><em>${strPara}</em></strong></p>"
+                msg += "está bajo la responsabilidad de: <strong><em>${strPara}</em></strong></p>"
                 msg += "<p>Quien labora en: <strong><em>${prsnPara.departamento.descripcion ?: ''}</em></strong></p>"
+                msg += "<p>Jefe de la Oficina: <strong><em>${ jefes.join(', ')}</em></strong></p>"
                 msg += "<p>Teléfono: <strong><em>${prsnPara.departamento.telefono ?: ' '}</em></strong></p>"
                 msg += "<p>Ubicación: <strong><em>${prsnPara.departamento.direccion ?: ''}</em></strong></p>"
                 msg += "<hr style='border-color:#999 !important;'/>"

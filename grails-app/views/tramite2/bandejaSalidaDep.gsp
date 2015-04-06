@@ -636,6 +636,8 @@
                                         label     : "Aceptar",
                                         className : "btn-primary",
                                         callback  : function () {
+                                            openLoader();
+                                            location.reload(true);
                                         }
                                     }
                                 } else {
@@ -682,8 +684,7 @@
                                                 });
                                             } else {
                                                 log('No seleccionó ninguna persona', 'error')
-//                                                    openLoader("Por favor espere");
-//                                                    location.reload(true);
+//
                                             }
                                         }
                                     };
@@ -840,6 +841,7 @@
 
                 function doEnviar(imprimir, strIds) {
 //            console.log("enviar????")
+                    openLoader("Enviando trámites");
                     $.ajax({
                         type    : "POST",
                         url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",

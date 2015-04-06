@@ -136,6 +136,17 @@
 
         %{--</g:if>--}%
     </div>
+    <div class="row">
+        <g:if test="${parametrosInstance?.telefono}">
+            <div class="col-md-3 text-info">
+                Teléfono para trámites Externos
+            </div>
+
+            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="telefono"/>
+            </div>
+        </g:if>
+    </div>
 
 
 

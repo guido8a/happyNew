@@ -120,11 +120,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "criteria "+new Date().format("hh:mm:ss.SSS ")
         trams.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            def agrega = false
             pdt.each { pd ->
                 if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    if (!tramites.contains(tr))
-                        tramites += tr
+                    agrega = true
+//                    if (!tramites.contains(tr))
+//                        tramites += tr
                 }
+                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
+                    agrega = false
+                }
+            }
+            if(agrega) {
+                tramites += tr
             }
         }
 //        println "fin each "+new Date().format("hh:mm:ss.SSS ")
@@ -622,7 +630,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def contestados = ""
 
-        tramites.each { pr ->
+        def paraRecibio = ""
+
+        tramites.each { PersonaDocumentoTramite pr ->
+
+            if(pr.rolPersonaTramite.codigo == "R001") {
+                if(pr.estado.codigo != "E003"){
+                    paraRecibio = "El documento está en estado ${pr.estado.descripcion} por lo que no puede ser tramitado."
+                }
+            }
+
             def respuestas = Tramite.findAllByAQuienContesta(pr)
 //            println "pr: " + pr.persona + "   " + pr.departamento + "   " + respuestas.de + "   " + respuestas.deDepartamento
             respuestas.each { rs ->
@@ -637,7 +654,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            }
         }
 
-        return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados]
+        return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio]
     }
 
     def permisoImprimir_ajax() {
@@ -761,15 +778,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println tramites.size()
         tramites.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            def agrega = false
             pdt.each { pd ->
                 if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    if (!trams.contains(tr)) {
-//                        println ""+tr.codigo
-                        trams += tr
-                    }
-
-
+                   agrega = true
+//                    if (!trams.contains(tr)) {
+//                        trams += tr
+//                    }
                 }
+                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
+                    agrega = false
+                }
+            }
+            if(agrega){
+                trams += tr
             }
         }
 //        println " "+trams.size()

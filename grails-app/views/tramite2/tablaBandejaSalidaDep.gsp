@@ -68,6 +68,7 @@
             </g:each>
         </g:else>
 
+
         <g:set var="desenviar" value=""/>
         <g:if test="${tramite.fechaEnvio}">
             <g:if test="${recibidos < enviados}">
@@ -131,7 +132,7 @@
                 </g:else>
             </td>
 
-            <td title="${infoExtra}">
+            <td class="titleEspecial" title="<div style='max-height:150px; overflow-y:auto;'>${infoExtra}</div>">
                 <g:set var="dest" value="${0}"/>
                 <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                     ${tramite.paraExterno}
@@ -218,6 +219,22 @@
         position : {
             my : "bottom center",
             at : "top center"
+        }
+    });
+    $('.titleEspecial').qtip({
+        style    : {
+            classes : 'qtip-tipsy'
+        },
+        position : {
+            my : "bottom center",
+            at : "top center"
+        },
+        show: {
+            solo: true
+        },
+        hide: {
+            fixed: true,
+            delay: 300
         }
     });
 

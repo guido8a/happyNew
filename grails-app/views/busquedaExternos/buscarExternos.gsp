@@ -156,7 +156,7 @@
                         </div>
 
                         <div class="col-md-10" style="text-align: left; margin-left: 20px; margin-top: 5px;">
-                            <p class="text-info"> Si desconoce el número o código del trámite, por favor comuníquese con la Secretaría General al teléfono: 2499508</p>
+                            <p class="text-info"> Si desconoce el número o código del trámite, por favor comuníquese  al teléfono: ${parametros?.telefono}</p>
                         </div>
 
 

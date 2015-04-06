@@ -650,73 +650,156 @@
                         id : id
                     },
                     success : function (msg) {
+                        //s.indexOf("oo") > -1
+                        var buttons = {};
+                        if (msg.indexOf("No puede quitar el enviado") > -1) {
+                            buttons.aceptar = {
+                                label     : "Aceptar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                    openLoader();
+                                    location.reload(true);
+                                }
+                            }
+                        } else {
+                            buttons.cancelar = {
+                                label     : "Cancelar",
+                                className : "btn-primary",
+                                callback  : function () {
+                                }
+                            };
+                            buttons.desenviar = {
+                                label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                className : "btn-danger",
+                                callback  : function () {
+                                    var ids = "";
+                                    $(".chkOne").each(function () {
+                                        if ($(this).hasClass("fa-check-square")) {
+                                            if (ids != "") {
+                                                ids += "_"
+                                            }
+                                            ids += $(this).attr("id");
+                                        }
+                                    });
+                                    if (ids) {
+                                        openLoader("Quitando enviado");
+                                        $.ajax({
+                                            type    : "POST",
+                                            url     : '${createLink(action:'desenviar_ajax')}',
+                                            data    : {
+                                                id  : id,
+                                                ids : ids
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                if (parts[0] == "OK") {
+                                                    location.reload(true);
+                                                } else {
+                                                    resetValues()
+//                                                        cargarBandeja(true)
+                                                    log("Envío del trámite cancelado correctamente", 'success')
+                                                    closeLoader();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        log('No seleccionó ninguna persona', 'error')
+//
+                                    }
+                                }
+                            };
+                        }
+
                         bootbox.dialog({
                             title   : "Alerta",
                             message : msg,
-                            buttons : {
-                                cancelar  : {
-                                    label     : "Cancelar",
-                                    className : "btn-primary",
-                                    callback  : function () {
-                                    }
-                                },
-                                desenviar : {
-                                    label     : "<i class='fa fa-magic'></i> Quitar enviado",
-                                    className : "btn-danger",
-                                    callback  : function () {
-                                        var ids = "";
-                                        var $txt = $("#aut");
-                                        $(".chkOne").each(function () {
-                                            if ($(this).hasClass("fa-check-square")) {
-                                                if (ids != "") {
-                                                    ids += "_"
-                                                }
-                                                ids += $(this).attr("id");
-                                            }
-                                        });
-                                        if (ids) {
-//                                                    if (validaAutorizacion($txt)) {
-                                            openLoader("Quitando enviado");
-                                            $.ajax({
-                                                type    : "POST",
-                                                url     : '${createLink(action:'desenviar_ajax')}',
-                                                data    : {
-                                                    id  : id,
-                                                    ids : ids/*,
-                                                     aut : $.trim($txt.val())*/
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("_");
-                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                    if (parts[0] == "OK") {
-                                                        resetValues()
-                                                        closeLoader();
-//                                                        cargarBandeja(true)
-                                                        log("Envío del trámite cancelado correctamente", 'success')
-
-                                                    }else{
-                                                        if(parts[0] == 'NO'){
-                                                            log(parts[1], "error")
-                                                            closeLoader();
-                                                        }
-                                                    }
-                                                }
-                                            });
-//                                                    } else {
-//                                                        return false;
-//                                                    }
-                                        } else {
-                                            log('No seleccionó ninguna persona ', 'error')
-                                        }
-
-                                    }
-                                }
-                            }
+                            buttons : buttons
                         });
                     }
                 });
             }
         };
+
+
+        %{--var desenviar = {--}%
+            %{--label  : "Quitar el enviado",--}%
+            %{--icon   : "fa fa-magic text-danger",--}%
+            %{--action : function () {--}%
+                %{--$.ajax({--}%
+                    %{--type    : "POST",--}%
+                    %{--url     : '${createLink(action:'desenviarLista_ajax')}',--}%
+                    %{--data    : {--}%
+                        %{--id : id--}%
+                    %{--},--}%
+                    %{--success : function (msg) {--}%
+                        %{--bootbox.dialog({--}%
+                            %{--title   : "Alerta",--}%
+                            %{--message : msg,--}%
+                            %{--buttons : {--}%
+                                %{--cancelar  : {--}%
+                                    %{--label     : "Cancelar",--}%
+                                    %{--className : "btn-primary",--}%
+                                    %{--callback  : function () {--}%
+                                    %{--}--}%
+                                %{--},--}%
+                                %{--desenviar : {--}%
+                                    %{--label     : "<i class='fa fa-magic'></i> Quitar enviado",--}%
+                                    %{--className : "btn-danger",--}%
+                                    %{--callback  : function () {--}%
+                                        %{--var ids = "";--}%
+                                        %{--var $txt = $("#aut");--}%
+                                        %{--$(".chkOne").each(function () {--}%
+                                            %{--if ($(this).hasClass("fa-check-square")) {--}%
+                                                %{--if (ids != "") {--}%
+                                                    %{--ids += "_"--}%
+                                                %{--}--}%
+                                                %{--ids += $(this).attr("id");--}%
+                                            %{--}--}%
+                                        %{--});--}%
+                                        %{--if (ids) {--}%
+%{--//                                                    if (validaAutorizacion($txt)) {--}%
+                                            %{--openLoader("Quitando enviado");--}%
+                                            %{--$.ajax({--}%
+                                                %{--type    : "POST",--}%
+                                                %{--url     : '${createLink(action:'desenviar_ajax')}',--}%
+                                                %{--data    : {--}%
+                                                    %{--id  : id,--}%
+                                                    %{--ids : ids/*,--}%
+                                                     %{--aut : $.trim($txt.val())*/--}%
+                                                %{--},--}%
+                                                %{--success : function (msg) {--}%
+                                                    %{--var parts = msg.split("_");--}%
+                                                    %{--log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)--}%
+                                                    %{--if (parts[0] == "OK") {--}%
+                                                        %{--resetValues()--}%
+                                                        %{--closeLoader();--}%
+%{--//                                                        cargarBandeja(true)--}%
+                                                        %{--log("Envío del trámite cancelado correctamente", 'success')--}%
+
+                                                    %{--}else{--}%
+                                                        %{--if(parts[0] == 'NO'){--}%
+                                                            %{--log(parts[1], "error")--}%
+                                                            %{--closeLoader();--}%
+                                                        %{--}--}%
+                                                    %{--}--}%
+                                                %{--}--}%
+                                            %{--});--}%
+%{--//                                                    } else {--}%
+%{--//                                                        return false;--}%
+%{--//                                                    }--}%
+                                        %{--} else {--}%
+                                            %{--log('No seleccionó ninguna persona ', 'error')--}%
+                                        %{--}--}%
+
+                                    %{--}--}%
+                                %{--}--}%
+                            %{--}--}%
+                        %{--});--}%
+                    %{--}--}%
+                %{--});--}%
+            %{--}--}%
+        %{--};--}%
 
 //                if (!revisado) {
         items.header.label = "Acciones";
