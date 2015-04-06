@@ -652,6 +652,24 @@
                         $divAnexos.addClass("hide");
                         $divExterno.removeClass("hide");
                         break;
+                    case "CIR2":
+//                        $divPara.html("");
+//                        $divPara.addClass("hide");
+//                        $divBotonInfo.addClass("hide");
+                        $divCopia.removeClass("hide");
+                        $divCc.addClass("hide");
+                        //addAllDisponibles
+//                        $("#ulDisponibles li").removeClass("selected").appendTo($("#ulSeleccionados"));
+//                        var $ul = $("#ulDisponibles");
+//                        $ul.find("li").addClass("selected");
+//                        moveSelected($ul, $("#ulSeleccionados"), false);
+
+                        $tituloCopia.text("Circular");
+//                        $divConfidencial.addClass("hide");
+                        $divConfidencial.removeClass("hide");
+                        $divAnexos.addClass("hide");
+                        $divExterno.removeClass("hide");
+                        break;
                     case "OFI":
 //                        $divPara.html($selParaExt).prepend("Para:");
 //                        $divPara.removeClass("hide");

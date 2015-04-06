@@ -474,6 +474,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     def verTramite() {
+        println "VER TRAMITE"
         def tramite = Tramite.get(params.id)
 
         def primerTramite = tramite
@@ -616,6 +617,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     def infoRemitente() {
+        println "info remitente aqui"
         def tramite = Tramite.get(params.id)
         return [tramite: tramite]
     }
