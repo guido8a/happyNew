@@ -1069,6 +1069,16 @@
 
                 validarCheck();
 
+                $("#ulDisponibles").find("li").dblclick(function () {
+                    $(this).addClass("selected");
+                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false);
+
+                    $("#ulSeleccionados").find("li").dblclick(function () {
+                        $(this).addClass("selected");
+                        moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false);
+                    });
+                });
+
                 $(".selectable li").click(function () {
                     $(this).toggleClass("selected");
                 });

@@ -60,18 +60,18 @@
                 </div>
             </g:if>
 
-            <g:if test="${departamentoInstance?.padre}">
-                <div class="row">
-                    <div class="col-md-3 text-info">
-                        Dirección/Secretaría
-                    </div>
+        %{--<g:if test="${departamentoInstance?.padre}">--}%
+        %{--<div class="row">--}%
+        %{--<div class="col-md-3 text-info">--}%
+        %{--Dirección/Secretaría--}%
+        %{--</div>--}%
 
-                    <div class="col-md-9">
-                        ${departamentoInstance?.padre?.encodeAsHTML()}
-                    </div>
+        %{--<div class="col-md-9">--}%
+        %{--${departamentoInstance?.padre?.encodeAsHTML()}--}%
+        %{--</div>--}%
 
-                </div>
-            </g:if>
+        %{--</div>--}%
+        %{--</g:if>--}%
 
 
             <g:if test="${departamentoInstance?.telefono}">
