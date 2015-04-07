@@ -489,7 +489,7 @@
 
             <div class="divFieldsListas">
                 <fieldset class="ui-corner-all fieldLista">
-                    <legend style="margin-bottom: 1px">
+                    <legend style="margin-bottom: 1px; width: 115px;" >
                         Disponibles
                     </legend>
 
@@ -527,7 +527,7 @@
                 </div>
 
                 <fieldset class="ui-corner-all fieldLista">
-                    <legend style="margin-bottom: 1px">
+                    <legend style="margin-bottom: 1px; width: 145px;">
                         Seleccionados
                     </legend>
 
@@ -1015,6 +1015,7 @@
                 });
 
                 validarCheck();
+                validarTipoDoc();
 
                 $("#ulDisponibles").find("li").dblclick(function () {
                     $(this).addClass("selected");
