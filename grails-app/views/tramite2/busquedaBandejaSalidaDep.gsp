@@ -205,4 +205,30 @@
             }
         });
 
+        $('[title!=""]').qtip({
+            style    : {
+                classes : 'qtip-tipsy'
+            },
+            position : {
+                my : "bottom center",
+                at : "top center"
+            }
+        });
+        $('.titleEspecial').qtip({
+            style    : {
+                classes : 'qtip-tipsy'
+            },
+            position : {
+                my : "bottom center",
+                at : "top center"
+            },
+            show: {
+                solo: true
+            },
+            hide: {
+                fixed: true,
+                delay: 300
+            }
+        });
+
 </script>

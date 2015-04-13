@@ -108,6 +108,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def cc = RolPersonaTramite.findByCodigo("R002")
         def max = params.max.toInteger()
         def offset = params.actual.toInteger()
+        def prueba = []
 //        println "max "+max+"  off "+offset
         def trams = Tramite.withCriteria {
             eq("deDepartamento", persona.departamento)
@@ -118,26 +119,59 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 //        println "trams "+trams.size()
 //        println "criteria "+new Date().format("hh:mm:ss.SSS ")
+
+        def codAnulado
+        def codArchivado
+
         trams.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
             def agrega = false
+            def paraRecibio = false
+
             pdt.each { pd ->
-                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    agrega = true
-//                    if (!tramites.contains(tr))
-//                        tramites += tr
+
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
+                    //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
+//                        if (!tramites.contains(tr))
+//                            tramites += tr
+
+                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
+                    //                      si COPIA recibió pero el PARA: se muestra
+                    //                      si PARA recibió: ya no muestra
+                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+
+                    if(!paraRecibio) {
+                        agrega = true
+                    }
+                    if(estaPorEnviar) {
+                        if(!paraRecibio) {
+                            agrega = true
+                        }
+                    } else {
+                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                            agrega = false
+                            paraRecibio = true
+                        }
+                    }
+                } else {
+
+                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                        agrega = false
+                        paraRecibio = true
+                    }
                 }
-                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
-                    agrega = false
-                }
+
             }
+
             if(agrega) {
                 tramites += tr
             }
         }
 //        println "fin each "+new Date().format("hh:mm:ss.SSS ")
 
-        return [persona: persona, tramites: tramites]
+//        println("tramites dep sal " + tramites)
+
+        return [persona: persona, tramites: tramites.unique()]
     }
 
     def desenviar_ajax_old() {
@@ -776,24 +810,74 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def trams = []
         def trams2 = []
 //        println tramites.size()
+//        tramites.each { tr ->
+//            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+//            def agrega = false
+//            pdt.each { pd ->
+//                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+//                    agrega = true
+////                    if (!trams.contains(tr)) {
+////                        trams += tr
+////                    }
+//                }
+//                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
+//                    agrega = false
+//                }
+//            }
+//            if(agrega){
+//                trams += tr
+//            }
+//        }
+
+
+
         tramites.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
             def agrega = false
+            def paraRecibio = false
+
             pdt.each { pd ->
-                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                   agrega = true
-//                    if (!trams.contains(tr)) {
-//                        trams += tr
-//                    }
+
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
+                    //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
+//                        if (!tramites.contains(tr))
+//                            tramites += tr
+
+                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
+                    //                      si COPIA recibió pero el PARA: se muestra
+                    //                      si PARA recibió: ya no muestra
+                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+
+                    if(!paraRecibio) {
+                        agrega = true
+                    }
+                    if(estaPorEnviar) {
+                        if(!paraRecibio) {
+                            agrega = true
+                        }
+                    } else {
+                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                            agrega = false
+                            paraRecibio = true
+                        }
+                    }
+                } else {
+
+                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                        agrega = false
+                        paraRecibio = true
+                    }
                 }
-                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
-                    agrega = false
-                }
+
             }
-            if(agrega){
+
+            if(agrega) {
                 trams += tr
             }
         }
+
+
+
 //        println " "+trams.size()
         return [persona: persona, tramites: trams, esEditor: persona.puedeEditor]
     }
@@ -980,15 +1064,65 @@ class Tramite2Controller extends happy.seguridad.Shield {
         tramites = tramites?.reverse()
         def trams = []
         def trams2 = []
+
+//        tramites.each { tr ->
+//            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+//            pdt.each { pd ->
+//                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+//                    if (!trams.contains(tr))
+//                        trams += tr
+//                }
+//            }
+//        }
+
+
         tramites.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            def agrega = false
+            def paraRecibio = false
+
             pdt.each { pd ->
-                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    if (!trams.contains(tr))
-                        trams += tr
+
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
+                    //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
+//                        if (!tramites.contains(tr))
+//                            tramites += tr
+
+                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
+                    //                      si COPIA recibió pero el PARA: se muestra
+                    //                      si PARA recibió: ya no muestra
+                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+
+                    if(!paraRecibio) {
+                        agrega = true
+                    }
+                    if(estaPorEnviar) {
+                        if(!paraRecibio) {
+                            agrega = true
+                        }
+                    } else {
+                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                            agrega = false
+                            paraRecibio = true
+                        }
+                    }
+                } else {
+
+                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                        agrega = false
+                        paraRecibio = true
+                    }
                 }
+
+            }
+
+            if(agrega) {
+                trams += tr
             }
         }
+
+
+
 
 //busqueda
 
@@ -1818,18 +1952,68 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         }
 
+//        trams.tramite.each { tr ->
+//            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+//            pdt.each { pd ->
+//                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+//                    if (!tramites.contains(tr))
+//                        tramites += tr
+//                }
+//            }
+//        }
+
+
+
+
         trams.tramite.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
+            def agrega = false
+            def paraRecibio = false
+
             pdt.each { pd ->
-                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                    if (!tramites.contains(tr))
-                        tramites += tr
+
+                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
+                    //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
+//                        if (!tramites.contains(tr))
+//                            tramites += tr
+
+                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
+                    //                      si COPIA recibió pero el PARA: se muestra
+                    //                      si PARA recibió: ya no muestra
+                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+
+                    if(!paraRecibio) {
+                        agrega = true
+                    }
+                    if(estaPorEnviar) {
+                        if(!paraRecibio) {
+                            agrega = true
+                        }
+                    } else {
+                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                            agrega = false
+                            paraRecibio = true
+                        }
+                    }
+                } else {
+
+                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+                        agrega = false
+                        paraRecibio = true
+                    }
                 }
+
+            }
+
+            if(agrega) {
+                tramites += tr
             }
         }
-        println "each pdt " + new Date().format("hh:mm:ss ")
-        println "salio " + new Date().format("hh:mm:ss ")
 
-        return [tramites: tramites]
+//
+//        println "each pdt " + new Date().format("hh:mm:ss ")
+//        println "salio " + new Date().format("hh:mm:ss ")
+
+        return [tramites: tramites.unique()]
     }
 }
