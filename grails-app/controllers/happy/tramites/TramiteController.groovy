@@ -243,10 +243,13 @@ class TramiteController extends happy.seguridad.Shield {
         } else {
 //            println "tipoDoc: " + tipoDoc.codigo
             switch (tipoDoc.codigo) {
+            //*** deba aparecer el para ****   gdo */
+/*
                 case "CIR":
                     html = "<div class=\"col-xs-4 negrilla\" id=\"divPara\" style=\"margin-top: -10px\">"
                     html += "</div>"
                     break;
+*/
                 case "OFI":
                     html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px; margin-left: -25px\"> "
                     html += "<b>Para:</b>"

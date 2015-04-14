@@ -326,6 +326,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             def texto = log + obsTram
                             tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
                             tramite.save(flush: true)
+
+                            /**** gdo ***/
+/*
                             if (tramiteEsCircular) {
                                 if (tramite.copias.size() > 1) {
                                     persDoc.delete(flush: true)
@@ -347,6 +350,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                             } else {
                                 persDoc.delete(flush: true)
                             }
+*/
+
+                            persDoc.delete(flush: true)   /*** lo mismo para todos ***/
+
+
                             if (pers)
                                 alerta = Alerta.findByPersonaAndTramite(pers, tram)
                             else
