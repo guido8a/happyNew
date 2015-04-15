@@ -444,7 +444,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
     }
 
-    private String desenviar(PersonaDocumentoTramite pdt, String strEnvioPrevio, boolean esCircular) {
+//    private String desenviar(PersonaDocumentoTramite pdt, String strEnvioPrevio, boolean esCircular) {
+    private String desenviar(PersonaDocumentoTramite pdt, String strEnvioPrevio) {
 //        println "\tdesenviar, circular? " + esCircular
         if (pdt) {
 //            println "\texiste pdt"
@@ -485,7 +486,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     idsCopias.each { idCopia ->
                         def persTram = PersonaDocumentoTramite.get(idCopia)
                         if (persTram) {
-                            desenviar(persTram, strEnvioPrevio, esCircular)
+//                            desenviar(persTram, strEnvioPrevio, esCircular)
+                            desenviar(persTram, strEnvioPrevio)
                         }
                     }
                 }
@@ -498,6 +500,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } // era una copia: se creo el log y se genero una alerta
                 //al final se elimina el pdt
                 //si es cirucular tengo que dejar una copia viva
+/*
                 if (esCircular && pdt.rolPersonaTramite.codigo == codigoRolCc) {
                     if (tramite.allCopias.size() > 1) {
                         pdt.delete(flush: true)
@@ -515,6 +518,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
                     pdt.delete(flush: true)
                 }
+*/
+                pdt.delete(flush: true)
+
                 return errores
             } //no es PARA
         } //existe el pdt
@@ -565,7 +571,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 //        ([para] + copias).each { pdt ->
         listaDesenviar.each { pdt ->
-            def contestaciones = Tramite.findAllByAQuienContesta(pdt)
+//            def contestaciones = Tramite.findAllByAQuienContesta(pdt)
+              def contestaciones = pdt.respuestasVivas    /* TODO: si hay respuestas anuladas se debe eliminarlas **/
 //            println "contestaciones de " + pdt.persona + " " + pdt.departamento + "      " + contestaciones.size()
 //            if (Tramite.countByAQuienContesta(pdt) > 0) {
             if (contestaciones.size() > 0) {
@@ -575,7 +582,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         contestaron += "<li>El departamento ${c.deDepartamento.descripcion} " +
                                 "(${c.deDepartamento.codigo}) ya contestó el documento</li>"
                     } else if (c.de) {
-//                    println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
+                    println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
                         contestaron += "<li>El usuario ${c.de.nombre} ${c.de.apellido} (${c.de.login}) " +
                                 "ya contestó el documento</li>"
                     }
@@ -600,7 +607,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 //        println "si puede desenviar"
         // nadie ha contestado todavía: puedo desenviar
-        def tramiteEsCircular = tramite.tipoDocumento.codigo == "CIR"
+//        def tramiteEsCircular = tramite.tipoDocumento.codigo == "CIR"
         def errores = ""
         def rolEnvia = RolPersonaTramite.findByCodigo("E004")
         def strEnvioPrevio = ""
@@ -619,7 +626,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 // si el estado no esta enviado no puede quitar el enviado
 //                if (persDoc.estado.codigo == codigoEnviado) {
                 if (codigosOK.contains(persDoc.estado.codigo)) {
-                    errores += desenviar(persDoc, strEnvioPrevio, tramiteEsCircular)
+//                    errores += desenviar(persDoc, strEnvioPrevio, tramiteEsCircular)
+                    errores += desenviar(persDoc, strEnvioPrevio)
                 } //el tramite esta enviado
                 else {
 //                    println "pdt no existe"
@@ -700,14 +708,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (rs.deDepartamento) {
                         contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
                     } else if (rs.de) {
+                        println "contestado: $rs.estadoTramite"
                         contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
                     }
                 }
 
             }
         }
-
-//        println("--> "+ cont)
 
         return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio, cont: cont]
     }
