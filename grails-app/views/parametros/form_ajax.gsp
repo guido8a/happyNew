@@ -157,12 +157,12 @@
                 </div>
             </span>
         </div>
-        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'telefono', 'error')} required">
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'telefono', 'error')} ">
             <span class="grupo">
-                <label for="telefono" class="col-md-2 control-label text-info">
+                <label for="telefono" class="col-md-6 control-label text-info">
                     Teléfono para trámites Externos
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-6 required">
                     <g:textField name="telefono" required="" class="form-control required"
                                  value="${parametrosInstance?.telefono}" style="width:180px;" min-lenght="7"  maxlength="15"/>
                 </div>
