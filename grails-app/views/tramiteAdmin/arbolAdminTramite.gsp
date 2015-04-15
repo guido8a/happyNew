@@ -394,77 +394,78 @@
                     if (!estaAnulado && !estaArchivado) {
                         if (esCircular) {
                             if (estaEnviado) {
-                                items.anularCircular = {
-                                    label  : "Anular todo",
-                                    icon   : "fa fa-ban",
-                                    action : function () {
-                                        var hijosAnular = findAllHijos($node);
-                                        if (hijosAnular != "") {
-                                            hijosAnular = "<p>Se anularán todos los hijos asociados a la circular</p>"
-                                        }
 
-                                        $.ajax({
-                                            type    : "POST",
+                                %{--items.anularCircular = {--}%
+                                    %{--label  : "Anular todo",--}%
+                                    %{--icon   : "fa fa-ban",--}%
+                                    %{--action : function () {--}%
+                                        %{--var hijosAnular = findAllHijos($node);--}%
+                                        %{--if (hijosAnular != "") {--}%
+                                            %{--hijosAnular = "<p>Se anularán todos los hijos asociados a la circular</p>"--}%
+                                        %{--}--}%
+
+                                        %{--$.ajax({--}%
+                                            %{--type    : "POST",--}%
                                             %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",--}%
-                                            url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
-                                            data    : {
-                                                id  : tramiteId,
-                                                msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +
-                                                     hijosAnular,
-                                                icon : "fa-ban"
-                                            },
-                                            success : function (msg) {
-                                                bootbox.dialog({
-                                                    id      : "dlgAnular",
-                                                    title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',
-                                                    message : msg,
-                                                    buttons : {
-                                                        cancelar : {
-                                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                                            className : 'btn-danger',
-                                                            callback  : function () {
-                                                            }
-                                                        },
-                                                        anular   : {
-                                                            id        : 'btnArchivar',
-                                                            label     : '<i class="fa fa-check"></i> Anular',
-                                                            className : "btn-success",
-                                                            callback  : function () {
-                                                                var $txt = $("#aut");
-                                                                if (validaAutorizacion($txt)) {
-                                                                    openLoader("Anulando");
-                                                                    $.ajax({
-                                                                        type    : 'POST',
-                                                                        url     : '${createLink(controller: "tramiteAdmin", action: "anularCircular")}',
-                                                                        data    : {
-                                                                            id    : nodeId,
-                                                                            texto : $("#observacion").val(),
-                                                                            aut   : $txt.val()
-                                                                        },
-                                                                        success : function (msg) {
-                                                                            var parts = msg.split("*");
-                                                                            if (parts[0] == 'OK') {
-                                                                                log("Trámite anulado correctamente", 'success');
-                                                                                setTimeout(function () {
-                                                                                    location.reload(true);
-                                                                                }, 500);
-                                                                            } else if (parts[0] == 'NO') {
-                                                                                closeLoader();
-                                                                                log("Error al anular el trámite!", 'error');
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    return false;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                };
+                                            %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",--}%
+                                            %{--data    : {--}%
+                                                %{--id  : tramiteId,--}%
+                                                %{--msg : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser anulado.</p>" +--}%
+                                                     %{--hijosAnular,--}%
+                                                %{--icon : "fa-ban"--}%
+                                            %{--},--}%
+                                            %{--success : function (msg) {--}%
+                                                %{--bootbox.dialog({--}%
+                                                    %{--id      : "dlgAnular",--}%
+                                                    %{--title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',--}%
+                                                    %{--message : msg,--}%
+                                                    %{--buttons : {--}%
+                                                        %{--cancelar : {--}%
+                                                            %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
+                                                            %{--className : 'btn-danger',--}%
+                                                            %{--callback  : function () {--}%
+                                                            %{--}--}%
+                                                        %{--},--}%
+                                                        %{--anular   : {--}%
+                                                            %{--id        : 'btnArchivar',--}%
+                                                            %{--label     : '<i class="fa fa-check"></i> Anular',--}%
+                                                            %{--className : "btn-success",--}%
+                                                            %{--callback  : function () {--}%
+                                                                %{--var $txt = $("#aut");--}%
+                                                                %{--if (validaAutorizacion($txt)) {--}%
+                                                                    %{--openLoader("Anulando");--}%
+                                                                    %{--$.ajax({--}%
+                                                                        %{--type    : 'POST',--}%
+                                                                        %{--url     : '${createLink(controller: "tramiteAdmin", action: "anularCircular")}',--}%
+                                                                        %{--data    : {--}%
+                                                                            %{--id    : nodeId,--}%
+                                                                            %{--texto : $("#observacion").val(),--}%
+                                                                            %{--aut   : $txt.val()--}%
+                                                                        %{--},--}%
+                                                                        %{--success : function (msg) {--}%
+                                                                            %{--var parts = msg.split("*");--}%
+                                                                            %{--if (parts[0] == 'OK') {--}%
+                                                                                %{--log("Trámite anulado correctamente", 'success');--}%
+                                                                                %{--setTimeout(function () {--}%
+                                                                                    %{--location.reload(true);--}%
+                                                                                %{--}, 500);--}%
+                                                                            %{--} else if (parts[0] == 'NO') {--}%
+                                                                                %{--closeLoader();--}%
+                                                                                %{--log("Error al anular el trámite!", 'error');--}%
+                                                                            %{--}--}%
+                                                                        %{--}--}%
+                                                                    %{--});--}%
+                                                                %{--} else {--}%
+                                                                    %{--return false;--}%
+                                                                %{--}--}%
+                                                            %{--}--}%
+                                                        %{--}--}%
+                                                    %{--}--}%
+                                                %{--});--}%
+                                            %{--}--}%
+                                        %{--});--}%
+                                    %{--}--}%
+                                %{--};--}%
                             }
                         }
                         if (estaEnviado) {
