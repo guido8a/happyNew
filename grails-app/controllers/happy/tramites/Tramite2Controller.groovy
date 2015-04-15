@@ -670,11 +670,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         tramites += tramite.allCopias
 
+
         def contestados = ""
 
         def paraRecibio = ""
 
+        def cont = 0
+
         tramites.each { PersonaDocumentoTramite pr ->
+
+            def respv = pr.respuestasVivas
+            cont += respv.size()
+
 
             if(pr.rolPersonaTramite.codigo == "R001") {
                 if(pr.estado.codigo != "E003"){
@@ -682,21 +689,27 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
 
-            def respuestas = Tramite.findAllByAQuienContesta(pr)
-//            println "pr: " + pr.persona + "   " + pr.departamento + "   " + respuestas.de + "   " + respuestas.deDepartamento
-            respuestas.each { rs ->
-                if (rs.deDepartamento) {
-                    contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
-                } else if (rs.de) {
-                    contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
+            def respuestas
+
+
+            if(pr.respuestasVivas){
+
+                respuestas = Tramite.findAllByAQuienContesta(pr)
+
+                respuestas.each { rs ->
+                    if (rs.deDepartamento) {
+                        contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
+                    } else if (rs.de) {
+                        contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
+                    }
                 }
+
             }
-//            if (Tramite.countByAQuienContesta(pr) > 0) {
-//                contestados += "<li>El usuario " + pr?.persona?.nombre + " " + pr?.persona?.apellido + " ya contestó el documento</li>"
-//            }
         }
 
-        return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio]
+//        println("--> "+ cont)
+
+        return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio, cont: cont]
     }
 
     def permisoImprimir_ajax() {
