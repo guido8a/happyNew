@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>ERROR</title>
+        <title>Cerrar año</title>
     </head>
 
     <body>
