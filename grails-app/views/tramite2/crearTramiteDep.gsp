@@ -836,20 +836,34 @@
 //                $('#respuesta').text(limite.toString("dd-MM-yyyy HH:mm"));
             }
 
-            function moveSelected($from, $to, muevePara) {
-                var para = $("#para").val();
-                $from.find("li.selected").removeClass("selected").each(function () {
-                    var id = $(this).data("id");
-                    if ((id == para && muevePara) || id != para) {
-                        $(this).appendTo($to);
+            function moveSelected($from, $to, muevePara, override) {
+                if (override == undefined) {
+                    var para = $("#para").val();
+                    $from.find("li.selected").removeClass("selected").each(function () {
+                        var id = $(this).data("id");
+                        if ((id == para && muevePara) || id != para) {
+                            $(this).appendTo($to);
+                        }
+                    });
+                } else {
+                    if ($("#para") && $("#para").is(":visible")) {
+                        var para = $("#para").val();
+                        $from.find("li.selected").removeClass("selected").each(function () {
+                            var id = $(this).data("id");
+                            if ((id == para && muevePara) || id != para) {
+                                $(this).appendTo($to);
+                            }
+                        });
+                    } else {
+                        bootbox.alert("Por favor espere a que se cargue el destinatario antes de modificar las copias");
                     }
-                });
+                }
             }
 
-            function removeAll() {
+            function removeAll(override) {
                 var $ul = $("#ulSeleccionados");
                 $ul.find("li").addClass("selected");
-                moveSelected($ul, $("#ulDisponibles"), true);
+                moveSelected($ul, $("#ulDisponibles"), true, override);
             }
 
             function validarExterno(remove) {
@@ -1015,11 +1029,11 @@
 
                 $("#ulDisponibles").find("li").dblclick(function () {
                     $(this).addClass("selected");
-                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false);
+                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
 
                     $("#ulSeleccionados").find("li").dblclick(function () {
                         $(this).addClass("selected");
-                        moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false);
+                        moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false, true);
                     });
                 });
 
@@ -1029,22 +1043,22 @@
                 $("#btnAddAll").click(function () {
                     var $ul = $("#ulDisponibles");
                     $ul.find("li").addClass("selected");
-                    moveSelected($ul, $("#ulSeleccionados"), false);
+                    moveSelected($ul, $("#ulSeleccionados"), false, true);
                     return false;
                 });
                 $("#btnAddSelected").click(function () {
-                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false);
+                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
                     return false;
                 });
                 $("#btnRemoveSelected").click(function () {
-                    moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), true);
+                    moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), true, true);
                     return false;
                 });
                 $("#btnRemoveAll").click(function () {
 //                    var $ul = $("#ulSeleccionados");
 //                    $ul.find("li").addClass("selected");
 //                    moveSelected($ul, $("#ulDisponibles"), true);
-                    removeAll();
+                    removeAll(true);
                     return false;
                 });
 
