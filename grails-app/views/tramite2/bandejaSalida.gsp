@@ -698,7 +698,7 @@
                                                 } else {
                                                     resetValues()
 //                                                        cargarBandeja(true)
-                                                    log("Envío del trámite cancelado correctamente", 'success')
+                                                    log("Envío del trámite cancelado", 'error')
                                                     closeLoader();
                                                 }
                                             }
