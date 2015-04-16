@@ -53,14 +53,31 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
             def hijos = Tramite.findAllByPadre(padre)
+            println paramsTramite
+            println "hijos "+hijos
+
+            if(paramsTramite.aQuienContesta.id) {
+                def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+                def respv = aQuienEstaContestando.respuestasVivas
+                println "RESPV "+respv
+                if (respv.size() != 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                "Volver a la bandeja de entrada"
+                            }
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }
+            }
 
             def a = PersonaDocumentoTramite.findAllByTramiteInList(hijos)
             def cont = 0
             a.each {
                 def respv = it.respuestasVivas
+                println "\t"+respv
                 cont += respv.size()
             }
-
+            println "cont "+cont
 
 
 //            if (tramitesHijos != 0) {

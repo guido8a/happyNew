@@ -141,6 +141,11 @@ class DepartamentoController extends happy.seguridad.Shield {
     def arbolSearch_ajax() {
         def search = params.str.trim()
         if (search != "") {
+
+            def deps = Departamento.findAllByCodigoIlikeOrDescripcionIlike("%" + search + "%", "%" + search + "%")
+
+//            println "busca "+search+    "    deps "+deps
+
             def c = Persona.createCriteria()
             def find = c.list(params) {
                 or {
@@ -150,6 +155,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                     departamento {
                         or {
                             ilike("descripcion", "%" + search + "%")
+                            ilike("codigo", "%" + search + "%")
                         }
                     }
                 }
@@ -169,7 +175,26 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
                 }
             }
+
+            deps.each {d->
+//                if(!departamentos.contains(d)) {
+                    departamentos.add(d)
+                    def dep = d
+                    def padre = dep.padre
+                    while (padre) {
+                        dep = padre
+                        padre = dep.padre
+//                        if (!departamentos.contains(dep)) {
+                            departamentos.add(dep)
+//                        }
+                    }
+//                }
+            }
+
             departamentos = departamentos.reverse()
+
+//            println "final     "+departamentos
+
             def ids = "["
             if (find.size() > 0) {
                 ids += "\"#root\","
@@ -179,6 +204,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                 ids = ids[0..-2]
             }
             ids += "]"
+//            println "ids    "+ids
             render ids
         } else {
             render ""

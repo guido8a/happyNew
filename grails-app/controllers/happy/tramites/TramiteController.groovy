@@ -344,6 +344,21 @@ class TramiteController extends happy.seguridad.Shield {
         if (params.padre) {
             def padre = Tramite.get(params.padre)
 
+            if(params.pdt) {
+                def aQuienEstaContestando = PersonaDocumentoTramite.get(params.pdt)
+                def respv = aQuienEstaContestando.respuestasVivas
+                println "RESPV "+respv
+                if (respv.size() != 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                "Volver a la bandeja de entrada"
+                            }
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }
+            }
+
+
             //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
             def tramitesHijos = Tramite.countByPadre(padre)
             //            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"

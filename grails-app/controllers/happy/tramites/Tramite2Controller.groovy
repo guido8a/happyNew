@@ -1213,6 +1213,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def tramitesHijos = Tramite.countByPadre(padre)
 //            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
 
+            if(params.pdt) {
+                def aQuienEstaContestando = PersonaDocumentoTramite.get(params.pdt)
+                def respv = aQuienEstaContestando.respuestasVivas
+                println "RESPV "+respv
+                if (respv.size() != 0) {
+                    flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                            g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
+                                "Volver a la bandeja de entrada"
+                            }
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }
+            }
+
+
+
             def hijos = Tramite.findAllByPadre(padre)
 
             def a = PersonaDocumentoTramite.findAllByTramiteInList(hijos)
@@ -1490,6 +1506,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //
 //        nombre = nombre.replaceAll(/</, /&lt;/)
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
+
+        if(paramsTramite.aQuienContesta.id) {
+            def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+            def respv = aQuienEstaContestando.respuestasVivas
+            println "RESPV "+respv
+            if (respv.size() != 0) {
+                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
+        }
+
 
         if (params.tramite.aQuienContesta.id) {
             if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006') {

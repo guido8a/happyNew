@@ -68,7 +68,12 @@
             background : #EFE4D1;
             padding    : 3px;
         }
-        </style>
+
+        .claseMin {
+            max-height: 100px;
+            overflow: auto;
+        }
+    </style>
     </head>
 
     <body>
@@ -147,8 +152,8 @@
                             </div>
                         </div>
 
-                        <div class="row ">
-                            <div class="col-xs-10">
+                        <div class="row claseMin">
+                            <div class="col-xs-12">
                                 <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(principal, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                                     <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                                     <span style="margin-right: 10px">
@@ -175,7 +180,7 @@
                         </g:if>
 
                         <g:if test="${principal.observaciones && principal.observaciones?.trim()?.size() > 0}">
-                            <div class="row">
+                            <div class="row claseMin">
                                 <div class="col-md-1 negrilla">Obs:</div>
 
                                 <div class="col-md-11">${principal.observaciones}</div>

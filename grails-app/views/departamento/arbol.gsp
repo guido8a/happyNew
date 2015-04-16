@@ -653,6 +653,9 @@
 
                     var estaAusente = $node.hasClass("ausente");
 
+//                    console.log(node, nodeType, nodeHasChildren, nodeOcupado, nodeTramites, nodeTramitess, estaAusente);
+
+
                     if (nodeType == "root") {
                         var items = {
                             crear    : {
@@ -848,7 +851,7 @@
                         }
 
                     }
-                    else if (nodeType.contains('usuario') || nodeType.contains('jefe')) {
+                    else if (nodeType.contains('usuario') || nodeType.contains('jefe') || nodeType.contains('director')) {
                         items = {
                             editar : {
                                 label  : "Editar persona",
