@@ -489,7 +489,7 @@
 
             <div class="divFieldsListas">
                 <fieldset class="ui-corner-all fieldLista">
-                    <legend style="margin-bottom: 1px; width: 115px;" >
+                    <legend style="margin-bottom: 1px; width: 115px;">
                         Disponibles
                     </legend>
 
@@ -633,8 +633,11 @@
                 removeAll();
                 </g:else>
 
+//                console.log("validar tipo doc: " + cod);
+
                 switch (cod) {
-                    case "CIR":   /*** gdo ***/
+                    case "CIR":
+                        /*** gdo ***/
 //                        $divPara.html("");
 //                        $divPara.addClass("hide");
 //                        $divBotonInfo.addClass("hide");
@@ -652,16 +655,16 @@
                         $divAnexos.addClass("hide");
                         $divExterno.removeClass("hide");
                         break;
-/*
-                    case "CIR2":
-                        $divCopia.removeClass("hide");
-                        $divCc.addClass("hide");
-                        $tituloCopia.text("Circular");
-                        $divConfidencial.removeClass("hide");
-                        $divAnexos.addClass("hide");
-                        $divExterno.removeClass("hide");
-                        break;
-*/
+                    /*
+                     case "CIR2":
+                     $divCopia.removeClass("hide");
+                     $divCc.addClass("hide");
+                     $tituloCopia.text("Circular");
+                     $divConfidencial.removeClass("hide");
+                     $divAnexos.addClass("hide");
+                     $divExterno.removeClass("hide");
+                     break;
+                     */
                     case "OFI":
 //                        $divPara.html($selParaExt).prepend("Para:");
 //                        $divPara.removeClass("hide");
@@ -748,6 +751,7 @@
             }
 
             function validarCheck() {
+//                console.log("validar check: muestra");
                 var checked = $("#cc").is(":checked") && $("#cc").is(":visible");
                 if (checked) {
                     $("#divCopia").removeClass("hide");
@@ -1007,7 +1011,7 @@
                 });
 
                 validarCheck();
-                validarTipoDoc();
+//                validarTipoDoc();
 
                 $("#ulDisponibles").find("li").dblclick(function () {
                     $(this).addClass("selected");
