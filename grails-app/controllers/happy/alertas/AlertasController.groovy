@@ -5,13 +5,13 @@ class AlertasController extends happy.seguridad.Shield {
     def list() {
         def alertas
         if (session.usuario.esTriangulo()) {
-            alertas = Alerta.findAllByDepartamentoAndFechaRecibidoIsNull(session.departamento, [sort: "fechaCreacion"])
+            alertas = Alerta.findAllByDepartamentoAndFechaRecibidoIsNull(session.departamento, [sort: "fechaCreacion", order: 'desc'])
         } else {
-            alertas = Alerta.findAllByPersonaAndFechaRecibidoIsNull(session.usuario, [sort: "fechaCreacion"])
+            alertas = Alerta.findAllByPersonaAndFechaRecibidoIsNull(session.usuario, [sort: "fechaCreacion", order: 'desc'])
         }
-        alertas.sort {
-            it.fechaCreacion
-        }
+//        alertas.sort {
+//            it.fechaCreacion
+//        }
         return [alertas: alertas]
     }
 

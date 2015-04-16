@@ -94,8 +94,12 @@
             /*font-family: "Arial Black", arial-black;*/
             /*background-color : #eacb89;*/
             background-color : #8fc6f3;
-
         }
+
+        .ancho1 {
+            width: 360px;
+        }
+
         </style>
         <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
     </head>
@@ -193,7 +197,7 @@
                             <th>De</th>
                             <th class="cabecera">Fec. Creación</th>
                             <th class="cabecera">Para</th>
-                            <th class="cabecera">Destinatario</th>
+                            <th class="cabecera ancho1">Destinatario</th>
                             <th class="cabecera">Prioridad</th>
                             <th class="cabecera">Fecha Envio</th>
                             <th class="cabecera">F. Límite Recepción</th>
