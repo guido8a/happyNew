@@ -1,4 +1,12 @@
 <%@ page import="happy.tramites.DocumentoTramite; happy.seguridad.Persona" %>
+
+<style type="text/css">
+    .claseMin {
+        max-height: 100px;
+        overflow: auto;
+    }
+</style>
+
 <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;font-size: 11px">
     <g:if test="${tp}">
         <div style="margin-bottom: 20px;min-height: 140px" class="vertical-container">
@@ -32,7 +40,7 @@
                     </g:else>
                 </div>
 
-                <div class="col-xs-6">
+                <div class="col-xs-6 claseMin">
                     <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(tp, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                     %{--${pdt?.estado?.descripcion}--}%
                     %{--${pdt?.id}--}%
@@ -101,7 +109,7 @@
                 <div class="row" style="margin-bottom: 10px">
                     <div class="col-xs-1 negrilla">Obser:</div>
 
-                    <div class="col-xs-10">${tp.observaciones}</div>
+                    <div class="col-xs-10  claseMin">${tp.observaciones}</div>
                 </div>
             </g:if>
             <g:if test="${tp.anexo == 1}">
@@ -160,7 +168,7 @@
                         </g:else>
                     </div>
 
-                    <div class="col-xs-6">
+                    <div class="col-xs-6 claseMin">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                             %{--${pdt?.estado?.descripcion}--}%
                             %{--${pdt?.id}--}%
@@ -231,7 +239,7 @@
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Obser:</div>
 
-                        <div class="col-xs-10">${t.observaciones}</div>
+                        <div class="col-xs-10  claseMin">${t.observaciones}</div>
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
@@ -289,7 +297,7 @@
                         </g:else>
                     </div>
 
-                    <div class="col-xs-6">
+                    <div class="col-xs-6 claseMin">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                         %{--${pdt.estado.descripcion}${pdt.id}${pdt.estado?.codigo}--}%
                             <g:set var="fecha" value=""></g:set>
@@ -360,7 +368,7 @@
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Obser:</div>
 
-                        <div class="col-xs-10">${tramite.observaciones}</div>
+                        <div class="col-xs-10  claseMin">${tramite.observaciones}</div>
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
@@ -385,21 +393,24 @@
 
 </div>
 <script type="text/javascript">
-    $(".bajar").click(function () {
-        var id = $(this).attr("iden");
-        openLoader();
-        $.ajax({
-            type    : "POST",
-            url     : "${g.createLink(controller: 'documentoTramite',action: 'generateKey')}",
-            data    : "id=" + id,
-            success : function (msg) {
-                closeLoader();
-                if (msg == "ok") {
-                    location.href = "${g.createLink(controller: 'documentoTramite', action: 'descargarDoc')}/" + id
-                } else {
-                    bootbox.alert("No se ha encontrado el archivo solicitado");
+
+    $(function() {
+        $(".bajar").click(function () {
+            var id = $(this).attr("iden");
+            openLoader();
+            $.ajax({
+                type    : "POST",
+                url     : "${g.createLink(controller: 'documentoTramite',action: 'generateKey')}",
+                data    : "id=" + id,
+                success : function (msg) {
+                    closeLoader();
+                    if (msg == "ok") {
+                        location.href = "${g.createLink(controller: 'documentoTramite', action: 'descargarDoc')}/" + id
+                    } else {
+                        bootbox.alert("No se ha encontrado el archivo solicitado");
+                    }
                 }
-            }
+            });
         });
-    })
+    });
 </script>
