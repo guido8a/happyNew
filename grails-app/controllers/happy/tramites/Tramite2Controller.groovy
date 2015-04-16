@@ -571,8 +571,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 //        ([para] + copias).each { pdt ->
         listaDesenviar.each { pdt ->
-//            def contestaciones = Tramite.findAllByAQuienContesta(pdt)
-              def contestaciones = pdt.respuestasVivas    /* TODO: si hay respuestas anuladas se debe eliminarlas **/
+            def contestaciones = Tramite.findAllByAQuienContesta(pdt)
+//              def contestaciones = pdt.respuestasVivas    /* TODO: si hay respuestas anuladas se debe eliminarlas **/
 //            println "contestaciones de " + pdt.persona + " " + pdt.departamento + "      " + contestaciones.size()
 //            if (Tramite.countByAQuienContesta(pdt) > 0) {
             if (contestaciones.size() > 0) {
