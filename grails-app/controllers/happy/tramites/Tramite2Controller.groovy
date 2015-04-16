@@ -692,7 +692,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def respuestas
 
 
-            if(pr.respuestasVivas){
+//            if(pr.respuestasVivas){
 
                 respuestas = Tramite.findAllByAQuienContesta(pr)
 
@@ -705,7 +705,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     }
                 }
 
-            }
+//            }
         }
 
         return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio, cont: cont]

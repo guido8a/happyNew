@@ -20,8 +20,8 @@ td {
     <div class="alert alert-danger" style="padding: 5px;">${paraRecibio}</div>
 </g:if>
 <g:else>
-    %{--<g:if test="${contestados != ''}">--}%
-    <g:if test="${cont != 0}">
+    <g:if test="${contestados != ''}">
+    %{--<g:if test="${cont != 0}">--}%
         <h5>No puede quitar el enviado del trámite ${tramite.codigo}</h5>
         <ul>
             <util:renderHTML html="${contestados}"/>
