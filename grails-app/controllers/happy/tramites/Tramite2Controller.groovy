@@ -587,15 +587,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 "ya contestó el documento</li>"
                     }
                 }
-//                if (tramite.deDepartamento) {
-////                    println "dep ${tramite.deDepartamento.descripcion} contesto"
-//                    contestaron += "<li>El departamento ${tramite.deDepartamento.descripcion} " +
-//                            "(${tramite.deDepartamento.codigo}) ya contestó el documento</li>"
-//                } else if (tramite.de) {
-////                    println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
-//                    contestaron += "<li>El usuario ${tramite.de.nombre} ${tramite.de.apellido} (${tramite.de.login}) " +
-//                            "ya contestó el documento</li>"
-//                }
+
             }
         }
         if (contestaron != "") {
