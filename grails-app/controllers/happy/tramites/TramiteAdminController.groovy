@@ -1427,27 +1427,30 @@ class TramiteAdminController extends Shield {
 
     def getCadenaDown(pdt, funcion) {
         def res = []
-        def tramite = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "tramite " + tramite
+        def tramites = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
+        println "* tramites " + tramites+"     "+tramites.codigo
         def roles = [RolPersonaTramite.findByCodigo("R002"), RolPersonaTramite.findByCodigo("R001")]
         def lvl
         funcion pdt
-        if (tramite) {
-            tramite = tramite.pop()
-            def tmp = [:]
-            tmp.put("nodo", tramite)
-            tmp.put("tipo", "tramite")
-            def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, roles)
-            tmp.put("hijos", [])
+        if (tramites.size()>0) {
+//            tramite = tramite.pop()
+            tramites.each { tramite->
+                def tmp = [:]
+                tmp.put("nodo", tramite)
+                tmp.put("tipo", "tramite")
+                def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, roles)
+                tmp.put("hijos", [])
 
-            pdts.each {
-                def r = getHijos(it, roles, funcion)
-                if (r.size() > 0)
-                    tmp["hijos"] += r
+                pdts.each {
+                    def r = getHijos(it, roles, funcion)
+                    if (r.size() > 0)
+                        tmp["hijos"] += r
+                }
+                tmp.put("origen", pdt)
+                res.add(tmp)
+                res = getHermanos(tramite, res, roles, funcion)
             }
-            tmp.put("origen", pdt)
-            res.add(tmp)
-            res = getHermanos(tramite, res, roles, funcion)
+
         } else {
             return []
         }
