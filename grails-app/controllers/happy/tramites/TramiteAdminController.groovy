@@ -2,6 +2,7 @@ package happy.tramites
 
 import happy.alertas.Alerta
 import happy.seguridad.Persona
+import happy.seguridad.Sesn
 import happy.seguridad.Shield
 
 class TramiteAdminController extends Shield {
@@ -447,7 +448,32 @@ class TramiteAdminController extends Shield {
                 it.estaActivo
             }
         }
-        return [persona: persona, tramites: tramites, personas: personas, dep: dep]
+
+
+
+//        println("normal " + personas)
+
+        def filtradas = []
+        def sesion
+
+        personas.each {
+
+            sesion = Sesn.findAllByUsuario(it)
+
+//            println("sesion " + sesion.size())
+
+            if(it.esTriangulo() && sesion.size() == 1){
+
+            }else{
+                filtradas += it
+            }
+
+        }
+
+//        println("filtradas " + filtradas)
+
+
+        return [persona: persona, tramites: tramites, personas: personas, dep: dep, filtradas: filtradas]
     }
 
     def redireccionarTramite_ajax() {
