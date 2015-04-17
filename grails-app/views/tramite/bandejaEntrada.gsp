@@ -476,8 +476,8 @@
                             id      : "dlgJefe",
                             title   : "Añadir observaciones al trámite",
                             message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
-                                    "Escriba las observaciones: " +
-                                    "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                                      "Escriba las observaciones: " +
+                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
                             buttons : {
                                 cancelar : {
                                     label     : '<i class="fa fa-times"></i> Cancelar',

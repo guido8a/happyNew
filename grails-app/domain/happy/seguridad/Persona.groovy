@@ -106,7 +106,7 @@ class Persona {
     }
 
     def puedePermiso(String codigoPermiso) {
-//        println "puede permiso " + codigoPermiso + "    " + this.permisos
+//        println "puede permiso " + codigoPermiso + "    " + this.permisos + "   " + this.permisos.codigo
         if (this.permisos.size() > 0) {
             def perm = null
             this.permisos.each {
@@ -130,11 +130,14 @@ class Persona {
             }
             if (perm) {
                 if (perm.estaActivo) {
+//                    println "\ttrue"
                     return true
                 } else {
+//                    println "\tfalse"
                     return false
                 }
             } else {
+//                println "\tfalse"
                 return false
             }
         } else {
@@ -143,13 +146,15 @@ class Persona {
                 eq("permisoTramite", PermisoTramite.findByCodigo(codigoPermiso))
             }
             def perms = perm.findAll { it.estaActivo }
+//            println "\t"+(perms.size() > 0)
             return perms.size() > 0
         }
     }
 
     def getEstaActivo() {
-        if (this.activo != 1)
+        if (this.activo != 1) {
             return false
+        }
         def now = new Date()
         def accs = Accs.findAllByUsuarioAndAccsFechaFinalGreaterThanEquals(this, now)
 //        println "accs "+accs?.accsFechaInicial+"  "+accs?.accsFechaFinal
