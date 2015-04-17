@@ -85,7 +85,7 @@ table {
                         <g:set var="clase" value="${clase + ' externo'}"/>
                     </g:if>
 
-                    <g:if test="${tramite.de == session.usuario.id}">
+                    <g:if test="${tramite.deId == session.usuario.id}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
@@ -106,6 +106,7 @@ table {
                         %{--</g:if>--}%
                         %{--</td>--}%
                         <td style="width: 165px">
+                        %{--${tramite.deId} ${session.usuario.id} ${tramite.deId == session.usuario.id}<br/>--}%
                             <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
                                 <i class="fa fa-eye-slash"></i>
                             </g:if>

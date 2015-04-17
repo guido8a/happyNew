@@ -167,6 +167,15 @@ li {
             $(".selectable li").not(".disabled").click(function () {
                 $(this).toggleClass("selected");
             });
+            $("#ulDisponibles").find("li").dblclick(function () {
+                $(this).addClass("selected");
+                moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
+
+                $("#ulSeleccionados").find("li").dblclick(function () {
+                    $(this).addClass("selected");
+                    moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false, true);
+                });
+            });
             $("#btnAddAll").click(function () {
                 var $ul = $("#ulDisponibles");
                 $ul.find("li").not(".disabled").addClass("selected");
