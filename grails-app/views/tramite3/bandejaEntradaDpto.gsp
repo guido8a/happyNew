@@ -296,6 +296,8 @@
                 var conAnexo = $tr.hasClass("conAnexo");
                 var jefe = $tr.hasClass("jefe");
 
+                var esDex = $tr.hasClass("dex");
+
                 var infoRemitente = {
                     label           : 'Información remitente',
                     icon            : "fa fa-search",
@@ -664,7 +666,7 @@
                     </g:if>
                 }
 
-                if (esExterno) {
+                if (esDex) {
                     items.editar = editarExterno;
                 }
 

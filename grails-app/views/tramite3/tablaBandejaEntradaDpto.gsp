@@ -72,6 +72,10 @@
                     <g:set var="clase" value="${clase + ' sinAnexo'}"/>
                 </g:else>
 
+                <g:if test="${tramite.tramite.tipoDocumento.codigo == 'DEX'}">
+                    <g:set var="clase" value="${clase + ' dex'}"/>
+                </g:if>
+
             %{--<g:if test="${tramite.tramite.estadoTramite.codigo == 'E007'}">--}%
             %{--<g:set var="type" value="${type} jefe"/>--}%
             %{--<g:set var="clase" value="${clase} alert-azul"/>--}%
