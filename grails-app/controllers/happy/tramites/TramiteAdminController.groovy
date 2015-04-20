@@ -1191,7 +1191,14 @@ class TramiteAdminController extends Shield {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estados = [estadoArchivado]
 
-        if (estados.contains(persDocTram.estado)) {
+
+        if(persDocTram == null){
+            render "NO*el trámite no se puede anular"
+            return
+        }
+
+
+        if (estados.contains(persDocTram?.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede anular el trámite archivado"
 
         } else {

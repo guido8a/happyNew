@@ -536,6 +536,9 @@
                                                                         } else if (parts[0] == 'NO') {
                                                                             closeLoader();
                                                                             log("Error al anular el trámite!", 'error');
+                                                                            setTimeout(function () {
+                                                                                location.reload(true);
+                                                                            }, 600);
                                                                         }
                                                                     }
                                                                 });
