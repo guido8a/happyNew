@@ -592,6 +592,7 @@
                                                                 url     : '${createLink(controller: "tramiteAdmin", action: "guardarEstado")}',
                                                                 data    : {
                                                                     id     : tramiteId,
+                                                                    prtr : nodeId,
                                                                     estado : nuevoEstado
                                                                 },
                                                                 success : function (msg) {
@@ -604,6 +605,9 @@
                                                                     } else if (parts[0] == 'NO') {
                                                                         closeLoader();
                                                                         log(parts[1], 'error');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 700);
                                                                     }
                                                                 }
                                                             });

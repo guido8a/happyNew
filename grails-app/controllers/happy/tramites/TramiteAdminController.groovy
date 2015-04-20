@@ -391,10 +391,22 @@ class TramiteAdminController extends Shield {
     }
 
     def guardarEstado() {
+
+        def persDocTram = PersonaDocumentoTramite.get(params.prtr)
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estados = [estadoArchivado, estadoAnulado]
+
+        if (estados.contains(persDocTram?.estado)) {
+            render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede cambiar el estado"
+            return
+        }
+
         def tramite = Tramite.get(params.id)
         def estado = EstadoTramiteExterno.get(params.estado)
 
         tramite.estadoTramiteExterno = estado
+
         if (tramite.save(flush: true)) {
             render "OK*Estado cambiado exitosamente"
         } else {
