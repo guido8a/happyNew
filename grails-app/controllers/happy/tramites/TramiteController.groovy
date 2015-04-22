@@ -346,6 +346,17 @@ class TramiteController extends happy.seguridad.Shield {
 
             if(params.pdt) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(params.pdt)
+
+                if(aQuienEstaContestando == null){
+                    flash.message = "No se puede contestar este documento.<br/>" +
+                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                "Volver a la bandeja de entrada"
+                            }
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }
+
+
                 def respv = aQuienEstaContestando.respuestasVivas
                 println "RESPV "+respv
                 if (respv.size() != 0) {
@@ -355,6 +366,7 @@ class TramiteController extends happy.seguridad.Shield {
                             }
                     redirect(controller: 'tramite', action: "errores")
                     return
+
                 }
             }
 
