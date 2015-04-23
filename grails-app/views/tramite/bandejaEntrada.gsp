@@ -536,7 +536,9 @@
                                             label     : '<i class="fa fa-times"></i> Cancelar',
                                             className : 'btn-danger',
                                             callback  : function () {
-
+                                                openLoader();
+                                                cargarBandeja();
+                                                closeLoader();
                                             }
                                         },
                                         archivar : {

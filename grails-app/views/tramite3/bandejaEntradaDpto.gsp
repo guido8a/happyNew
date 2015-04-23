@@ -457,7 +457,9 @@
                                             label     : '<i class="fa fa-times"></i> Cancelar',
                                             className : 'btn-danger',
                                             callback  : function () {
-
+                                                openLoader();
+                                            cargarBandeja();
+                                                closeLoader()
                                             }
                                         },
                                         archivar : {
@@ -490,7 +492,12 @@
                                         }
                                     }
                                 })
-
+                                setTimeout(function () {
+                                    if (msg.indexOf("error") > -1) {
+                                        b.find(".btn-success").remove();
+                                        b.find(".btn-danger").removeClass("btn-danger").addClass("btn-default").html("Cerrar");
+                                    }
+                                }, 300);
                             }
 
                         });

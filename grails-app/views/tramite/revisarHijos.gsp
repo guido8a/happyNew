@@ -1,6 +1,6 @@
 <g:if test="${error}">
     <div id="error" class="alert alert-danger">
-        El trámite ha sido desenviado. Por favor actualice su bandeja.
+        Ha ocurrido un error. El trámite ya ha sido desenviado.
     </div>
 </g:if>
 <g:else>
