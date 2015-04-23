@@ -132,40 +132,40 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
                     //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
-//                        if (!tramites.contains(tr))
-//                            tramites += tr
+                        if (!tramites.contains(tr))
+                            tramites += tr
 
                     //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
                     //                      si COPIA recibió pero el PARA: se muestra
                     //                      si PARA recibió: ya no muestra
-                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
-
-                    if(!paraRecibio) {
-                        agrega = true
-                    }
-                    if(estaPorEnviar) {
-                        if(!paraRecibio) {
-                            agrega = true
-                        }
-                    } else {
-                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-                            agrega = false
-                            paraRecibio = true
-                        }
-                    }
+//                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+//
+//                    if(!paraRecibio) {
+//                        agrega = true
+//                    }
+//                    if(estaPorEnviar) {
+//                        if(!paraRecibio) {
+//                            agrega = true
+//                        }
+//                    } else {
+//                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+//                            agrega = false
+//                            paraRecibio = true
+//                        }
+//                    }
                 } else {
 
-                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-                        agrega = false
-                        paraRecibio = true
-                    }
+//                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+//                        agrega = false
+//                        paraRecibio = true
+//                    }
                 }
 
             }
 
-            if(agrega) {
-                tramites += tr
-            }
+//            if(agrega) {
+//                tramites += tr
+//            }
         }
 //        println "fin each "+new Date().format("hh:mm:ss.SSS ")
 
@@ -860,40 +860,40 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") { //No esta anulado ni archivado
                     //ORIGINAL: muestra todos los por enviar, enviados, recibidos si al menos un receptor falta por recibir
-//                        if (!tramites.contains(tr))
-//                            tramites += tr
+                        if (!tramites.contains(tr))
+                            tramites += tr
 
                     //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
                     //                      si COPIA recibió pero el PARA: se muestra
                     //                      si PARA recibió: ya no muestra
-                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
+//                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
 
-                    if(!paraRecibio) {
-                        agrega = true
-                    }
-                    if(estaPorEnviar) {
-                        if(!paraRecibio) {
-                            agrega = true
-                        }
-                    } else {
-                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-                            agrega = false
-                            paraRecibio = true
-                        }
-                    }
+//                    if(!paraRecibio) {
+//                        agrega = true
+//                    }
+//                    if(estaPorEnviar) {
+//                        if(!paraRecibio) {
+//                            agrega = true
+//                        }
+//                    } else {
+//                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+//                            agrega = false
+//                            paraRecibio = true
+//                        }
+//                    }
                 } else {
 
-                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-                        agrega = false
-                        paraRecibio = true
-                    }
+//                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
+//                        agrega = false
+//                        paraRecibio = true
+//                    }
                 }
 
             }
 
-            if(agrega) {
-                trams += tr
-            }
+//            if(agrega) {
+//                trams += tr
+//            }
         }
 
 
