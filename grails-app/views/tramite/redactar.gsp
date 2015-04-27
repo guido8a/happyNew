@@ -203,6 +203,34 @@
         </div>
         <script>
 
+            /* deshabilita navegación --inicailiza */
+            $(document).ready(function(){
+                initControls();
+            });
+
+            /* deshabilita navegación hacia atras */
+            function initControls(){
+//                console.log("hola");
+                window.location.hash = "red";
+                window.location.hash = "Red" //chrome
+                window.onhashchange = function(){window.location.hash="Red";}
+            }
+
+            /* deshabilita navegación por teclas */
+            $(document).keyup(function(e) {
+                switch(e.keyCode) {
+                    case 37 : window.location = $('.prev').attr('href'); break;
+                    case 39 : window.location = $('.next').attr('href'); break;
+                }
+            });
+
+            /* deshabilita navegación hacia adelante */
+            $('.disableNav').bind('focus', function (event) {
+                navEnabled = false;
+            }).bind('blur', function (event) {
+                navEnabled = true;
+            });
+
             function arreglarTexto(texto) {
                 texto = $.trim(texto);
                 texto = texto.replace(/(?:\&)/g, "&amp;");

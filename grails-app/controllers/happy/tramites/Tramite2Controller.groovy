@@ -82,8 +82,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def bandejaSalidaDep() {
-        println "--------------------------------------------------------"
-        println "inicio bandeja " + new Date().format("hh:mm:ss.SSS ")
+//        println "--------------------------------------------------------"
+//        println "inicio bandeja " + new Date().format("hh:mm:ss.SSS ")
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
         def revisar = false
