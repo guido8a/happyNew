@@ -356,7 +356,7 @@
                     label  : 'Contestar Documento',
                     icon   : "fa fa-external-link",
                     action : function (e) {
-                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id + "&pdt=" + idPxt + "&esRespuesta=1";
+                        location.href = '${createLink(controller: 'tramite2', action: 'crearTramiteDep')}?padre=' + id + "&pdt=" + idPxt + "&esRespuesta=1&esRespuestaNueva=S";
                     }
                 };
 

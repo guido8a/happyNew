@@ -1,12 +1,8 @@
 package happy.tramites
 
-import groovy.json.JsonBuilder
-import groovy.time.TimeCategory
 import happy.alertas.Alerta
 import happy.seguridad.Persona
 import happy.utilitarios.DiaLaborable
-import happy.utilitarios.DiaLaborableController
-
 
 class TramiteController extends happy.seguridad.Shield {
 
@@ -340,14 +336,14 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
-
+        println "CREAR TRAMITE: " + params
         if (params.padre) {
             def padre = Tramite.get(params.padre)
 
-            if(params.pdt) {
+            if (params.pdt) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(params.pdt)
 
-                if(aQuienEstaContestando == null){
+                if (aQuienEstaContestando == null) {
                     flash.message = "No se puede contestar este documento.<br/>" +
                             g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
                                 "Volver a la bandeja de entrada"
@@ -356,20 +352,20 @@ class TramiteController extends happy.seguridad.Shield {
                     return
                 }
 
+                if (params.esRespuestaNueva == 'S') {
+                    def respv = aQuienEstaContestando.respuestasVivas
+                    println "RESPV " + respv
+                    if (respv.size() != 0) {
+                        flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                                g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                    "Volver a la bandeja de entrada"
+                                }
+                        redirect(controller: 'tramite', action: "errores")
+                        return
 
-                def respv = aQuienEstaContestando.respuestasVivas
-                println "RESPV "+respv
-                if (respv.size() != 0) {
-                    flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
-                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
-                                "Volver a la bandeja de entrada"
-                            }
-                    redirect(controller: 'tramite', action: "errores")
-                    return
-
+                    }
                 }
             }
-
 
 //            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
 //            def tramitesHijos = Tramite.countByPadre(padre)
@@ -463,8 +459,9 @@ class TramiteController extends happy.seguridad.Shield {
 //                        println "hijo -> "+h
                         PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if (pq.estado?.codigo != "E006")
+                            if (pq.estado?.codigo != "E006") {
                                 tiene = true
+                            }
                         }
                     }
 //                    println hijos
@@ -581,11 +578,12 @@ class TramiteController extends happy.seguridad.Shield {
         } else if (params.hermano) {
             def herm = Tramite.get(params.hermano)
             def p = herm
-            while (p.padre) {
-                p = p.padre
-            }
+//            while (p.padre) {
+//                p = p.padre
+//            }
             pdt = p.para
-            padre = p
+            padre = herm.padre
+            pdt = herm.aQuienContesta
             if (!pdt) {
                 pdt = p.copias
                 if (pdt.size() == 0) {
@@ -604,15 +602,15 @@ class TramiteController extends happy.seguridad.Shield {
             }
         }
         tramite.tramitePrincipal = 0
-        if (params.buscar == '1') {
-            def p = padre
-            while (p.padre) {
-                p = p.padre
-            }
-            tramite.tramitePrincipal = p.tramitePrincipal
-            padre = null
-            pdt = null
-        }
+//        if (params.buscar == '1') {
+//            def p = padre
+//            while (p.padre) {
+//                p = p.padre
+//            }
+//            tramite.tramitePrincipal = p.tramitePrincipal
+//            padre = null
+//            pdt = null
+//        }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
                 persona: persona, bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
@@ -1065,10 +1063,11 @@ class TramiteController extends happy.seguridad.Shield {
         tramite.save(flush: true)
         pxt.save(flush: true)
         def alerta
-        if (pxt.persona)
+        if (pxt.persona) {
             alerta = Alerta.findByPersonaAndTramite(pxt.persona, pxt.tramite)
-        else
+        } else {
             alerta = Alerta.findByDepartamentoAndTramite(pxt.departamento, pxt.tramite)
+        }
         if (alerta) {
             if (!alerta.fechaRecibido) {
                 alerta.mensaje += " - Recibido"

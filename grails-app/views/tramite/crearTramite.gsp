@@ -68,9 +68,10 @@
             background : #EFE4D1;
             padding    : 3px;
         }
+
         .claseMin {
-            max-height: 100px;
-            overflow: auto;
+            max-height : 100px;
+            overflow   : auto;
         }
         </style>
     </head>
@@ -109,11 +110,26 @@
 
         <g:form class="frmTramite" controller="tramite3" action="save">
         %{--<g:form class="frmTramite" action="saveDep">--}%
+        %{--Padre.id--}%
+        %{--<g:textField name="tramite.padre.id" value="${padre?.id}"/>--}%
+        %{--<br/>Tramite.id--}%
+        %{--<g:textField name="tramite.id" value="${tramite?.id}"/>--}%
+        %{--<br/>hiddenCC--}%
+        %{--<g:textField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>--}%
+        %{--<br/>a quien contesta.id--}%
+        %{--<g:textField name="tramite.aQuienContesta.id" value="${pxt}"/>--}%
+        %{--<br/>esRespuesta--}%
+        %{--<g:textField name="tramite.esRespuesta" value="${params.esRespuesta}"/>--}%
+        %{--<br/>es respuesta nueva--}%
+        %{--<g:textField name="tramite.esRespuestaNueva" value="${params.esRespuestaNueva}"/>--}%
+        %{--<br/>Tramite principal--}%
+        %{--<g:textField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>--}%
             <g:hiddenField name="tramite.padre.id" value="${padre?.id}"/>
             <g:hiddenField name="tramite.id" value="${tramite?.id}"/>
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
             <g:hiddenField name="tramite.aQuienContesta.id" value="${pxt}"/>
             <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
+            <g:hiddenField name="tramite.esRespuestaNueva" value="${params.esRespuestaNueva}"/>
             <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
 
             <g:if test="${tramite.tramitePrincipal > 0}">

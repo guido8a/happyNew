@@ -256,10 +256,10 @@
                     icon   : "fa fa-paste",
                     action : function () {
                         <g:if test="${session.usuario.esTriangulo}">
-                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1";
+                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";
                         </g:if>
                         <g:else>
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1";
+                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";
                         </g:else>
                     }
                 };

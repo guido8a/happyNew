@@ -601,7 +601,7 @@
                 var crearHermano = {
                     label : "Agregar documento al trámite",
                     icon  : "fa fa-paste",
-                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1"
+                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N"
                 }; //crear hermano
 
                 var editar = {
@@ -720,7 +720,7 @@
                         items.editar = editar;
                     }
                 }
-                if (tienePadre || tienePrincipal) {
+                if (tienePadre) {
                     items.hermano = crearHermano;
                 }
                 if (tieneAnexo) {

@@ -325,10 +325,10 @@
                             success : function (msg) {
                                 if (msg == "OK") {
                                     <g:if test="${session.usuario.esTriangulo}">
-                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + "&hermano=" + id + "&buscar=1";
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
                                     </g:if>
                                     <g:else>
-                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + "&hermano=" + id + "&buscar=1";
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
                                     </g:else>
                                 } else {
                                     bootbox.alert("No puede agregar documentos a este trámite");
@@ -520,7 +520,8 @@
                 <g:if test="${session.usuario.getPuedeAdmin()}">
                 items.administrar = administrar;
                 </g:if>
-                if (conPadre || tienePrincipal || esPrincipal) {
+//                if (conPadre || tienePrincipal || esPrincipal) {
+                if (conPadre) {
                     items.crearHermano = crearHermano;
                 }
 //                if (esPrincipal) {
@@ -535,7 +536,6 @@
                 if (recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId)) {
                     items.plazo = ampliarPlazo;
                 }
-
 
                 <g:if test="${session.usuario.getPuedeCopiar()}">
                 if (esMio) {

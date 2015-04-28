@@ -52,6 +52,8 @@ class Tramite {
 
     Integer tramitePrincipal = 0
 
+    String esRespuestaNueva = "N"
+
     def diasLaborablesService
 
     static mapping = {
@@ -103,6 +105,8 @@ class Tramite {
             departamento column: 'dpto__id'
 
             tramitePrincipal column: 'trmttrpr'
+
+            esRespuestaNueva column: 'trmtesrn'
         }
     }
     static constraints = {
@@ -140,6 +144,8 @@ class Tramite {
         estadoTramiteExterno(blank: true, nullable: true)
 
         conMembrete(blank: true, nullable: true, maxSize: 1)
+
+        esRespuestaNueva(blank: true, nullable: true, maxSize: 1)
     }
 
     def beforeValidate(List propertiesBeingValidated) {
@@ -188,11 +194,12 @@ class Tramite {
         def res = []
         hijos.each { t ->
             if (t.para) {
-                if (!para.estado)
+                if (!para.estado) {
                     res.add(t)
-                else {
-                    if (t.para.estado?.codigo != "E006")
+                } else {
+                    if (t.para.estado?.codigo != "E006") {
                         res.add(t)
+                    }
                 }
             }
         }
@@ -359,17 +366,19 @@ class Tramite {
     }
 
     def getDeTexto() {
-        if (this.deDepartamento)
+        if (this.deDepartamento) {
             return ["codigo": this.deDepartamento.codigo, "nombre": this.deDepartamento.descripcion]
-        else
+        } else {
             return ["codigo": this.de.login, "nombre": this.de.toString()]
+        }
     }
 
     def personaPuedeLeer(Persona persona) {
         def tienePermiso = persona.puedeVer
         def departamento = persona.departamento
-        if (this.tipoTramite.codigo == "C")
+        if (this.tipoTramite.codigo == "C") {
             return false
+        }
         if (this.de == persona) {
             return true
         }

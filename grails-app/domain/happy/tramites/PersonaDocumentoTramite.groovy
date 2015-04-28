@@ -168,4 +168,18 @@ class PersonaDocumentoTramite {
         }
         return respuestasVivas
     }
+
+    def getRespuestasVivasTipoRespuesta() {
+        def respuestasVivas = []
+        Tramite.findAllByAQuienContestaAndEsRespuestaNueva(this,"S").each { tr ->
+            def para = tr.para
+            def copias = tr.allCopias
+            (copias + para).each { p ->
+                if (p?.estado?.codigo != 'E006') {
+                    respuestasVivas += p
+                }
+            }
+        }
+        return respuestasVivas
+    }
 }

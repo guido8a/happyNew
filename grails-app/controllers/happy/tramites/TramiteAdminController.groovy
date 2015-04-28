@@ -671,7 +671,7 @@ class TramiteAdminController extends Shield {
                     }
                 }
                 html = "<ul>" + "\n"
-                html += makeNewTreeExtended(principal)
+                html += makeTreeExtended(principal)
                 html += "</ul>" + "\n"
             }
             url = createLink(controller: "buscarTramite", action: "busquedaTramite")

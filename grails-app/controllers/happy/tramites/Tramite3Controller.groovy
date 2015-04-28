@@ -54,19 +54,21 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             def hijos = Tramite.findAllByPadre(padre)
             println paramsTramite
-            println "hijos "+hijos
+            println "hijos " + hijos
 
-            if(paramsTramite.aQuienContesta.id) {
+            if (paramsTramite.aQuienContesta.id) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
-                def respv = aQuienEstaContestando.respuestasVivas
-                println "RESPV "+respv
-                if (respv.size() != 0) {
-                    flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
-                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
-                                "Volver a la bandeja de entrada"
-                            }
-                    redirect(controller: 'tramite', action: "errores")
-                    return
+                if (paramsTramite.esRespuestaNueva == 'S') {
+                    def respv = aQuienEstaContestando.respuestasVivas
+                    println "RESPV " + respv
+                    if (respv.size() != 0) {
+                        flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                                g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                    "Volver a la bandeja de entrada"
+                                }
+                        redirect(controller: 'tramite', action: "errores")
+                        return
+                    }
                 }
             }
 
@@ -89,7 +91,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                redirect(controller: 'tramite', action: "errores")
 //                return
 //            }
-
 
 
         }
@@ -182,8 +183,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                        println "hijo -> "+h
                         PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(h, [RolPersonaTramite.findByCodigo("E001"), RolPersonaTramite.findByCodigo("E002")]).each { pq ->
 //                            println "pq "+pq.estado?.descripcion
-                            if (pq.estado?.codigo != "E006")
+                            if (pq.estado?.codigo != "E006") {
                                 tiene = true
+                            }
                         }
                     }
 //                    println hijos
@@ -200,16 +202,18 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "ANTES DEL SAVE " + paramsTramite
 
         tramite.properties = paramsTramite
-        if (tramite.tipoDocumento.codigo == "DEX")
+        if (tramite.tipoDocumento.codigo == "DEX") {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
+        }
 
         def externos = ["DEX", "OFI"]
         if (externos.contains(tramite.tipoDocumento.codigo)) {
             tramite.externo = '1'
         }
         tramite.departamento = tramite.de.departamento
-        if (tramite.aQuienContesta == null)
+        if (tramite.aQuienContesta == null) {
             tramite.aQuienContesta = aqc
+        }
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
@@ -249,9 +253,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (tramite.padre) {
                 tramite.padre.estado = "C"
                 tramite.aQuienContesta = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
-                if (tramite.aQuienContesta == null)
+                if (tramite.aQuienContesta == null) {
                     tramite.aQuienContesta = aqc
-                else {
+                } else {
                     aqc = tramite.aQuienContesta
                 }
                 tramite.padre.save(flush: true)
@@ -437,8 +441,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 tramite.fechaEnvio = ahora
                 tramite.estadoTramite = estadoRecibido
-                if (tramite.aQuienContesta == null)
+                if (tramite.aQuienContesta == null) {
                     tramite.aQuienContesta = aqc
+                }
                 if (tramite.save(flush: true)) {
 //                    def realPath = servletContext.getRealPath("/")
 //                    def mensaje = message(code: 'pathImages').toString();
@@ -670,9 +675,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 principal = tramite.padre
                 while (true) {
                     tramites.add(principal)
-                    if (!principal.padre)
+                    if (!principal.padre) {
                         break
-                    else {
+                    } else {
                         principal = principal.padre
                     }
 
@@ -849,8 +854,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def rolCC = RolPersonaTramite.findByCodigo("R002")
             def rolImprimir = RolPersonaTramite.findByCodigo("I005")
             def triangulo = false
-            if (params.source == "bed")
+            if (params.source == "bed") {
                 triangulo = true
+            }
             def estadoRecibido = EstadoTramite.findByCodigo('E004') //recibido
             def estadoAnulado = EstadoTramite.findByCodigo('E006') //recibido
             def estadoArchivado = EstadoTramite.findByCodigo('E005') //recibido
@@ -1164,15 +1170,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (tramite.padre) {
             principal = tramite.padre
             while (true) {
-                if (!principal.padre)
+                if (!principal.padre) {
                     break
-                else {
+                } else {
                     principal = principal.padre
                 }
             }
         }
         def html2 = "<ul>" + "\n"
-        html2 += makeNewTreeExtended(principal)
+        html2 += makeTreeExtended(principal)
         html2 += "</ul>" + "\n"
 
         def url = ""
@@ -1271,6 +1277,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 clase += " jstree-open"
             }
             data += ',"tramite":"' + pdt.tramiteId + '"'
+            if (pdt.tramite.esRespuestaNueva == "N") {
+                if (rel == "para") {
+                    data += ',"icon":"fa fa-file-o text-warning"'
+                } else if (rel == "copia") {
+                    data += ',"icon":"fa fa-files-o text-warning"'
+                }
+            }
             html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
             if (pdt.fechaAnulacion) {
                 html += "<span class='text-muted'>"
@@ -1428,8 +1441,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             pdts.each {
                 def r = getHijos(it, roles, funcion)
-                if (r.size() > 0)
+                if (r.size() > 0) {
                     tmp["hijos"] += r
+                }
             }
             tmp.put("origen", pdt)
             res.add(tmp)
@@ -1474,8 +1488,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tmp.put("hijos", [])
             pdts.each {
                 def r = getHijos(it, roles, funcion)
-                if (r.size() > 0)
+                if (r.size() > 0) {
                     tmp["hijos"] += r
+                }
             }
             res = getHermanos(t, res, roles, funcion)
             res.add(tmp)

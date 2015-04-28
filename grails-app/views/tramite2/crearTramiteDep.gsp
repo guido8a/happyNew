@@ -116,6 +116,7 @@
             <g:hiddenField name="tramite.hiddenCC" id="hiddenCC" value="${cc}"/>
             <g:hiddenField name="tramite.aQuienContesta.id" value="${pxt}"/>
             <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
+            <g:hiddenField name="tramite.esRespuestaNueva" value="${params.esRespuestaNueva}"/>
             <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
 
             <g:if test="${tramite.tramitePrincipal > 0}">
