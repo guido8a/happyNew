@@ -579,12 +579,12 @@
                     <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
                         <g:each in="${disponibles}" var="disp">
                             <g:if test="${disp.id.toInteger() < 0}">
-                                <li data-id="${disp.id}" class="${disp.externo ? 'externo' : 'interno'}">
+                                <li data-id="${disp.id}" class="clickable ${disp.externo ? 'externo' : 'interno'}">
                                     <i class="fa fa-li ${disp.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.label}
                                 </li>
                             </g:if>
                             <g:else>
-                                <li data-id="${disp.id}" class="interno">
+                                <li data-id="${disp.id}" class="clickable interno">
                                     <i class="fa fa-li fa-user"></i> ${disp.label}
                                 </li>
                             </g:else>
@@ -618,7 +618,7 @@
                         <g:if test="${tramite.id}">
                             <g:each in="${tramite.copias}" var="disp">
                                 <g:if test="${disp.persona}">
-                                    <li data-id="${disp.persona.id}" class="interno">
+                                    <li data-id="${disp.persona.id}" class="clickable interno">
                                         <i class="fa fa-li fa-user"></i> ${disp.persona.toString()}
                                     </li>
                                 </g:if>
@@ -626,7 +626,7 @@
                                 %{--<li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">--}%
                                 %{--<i class="fa fa-li fa-building-o"></i> ${disp.departamento.descripcion}--}%
                                 %{--</li>--}%
-                                    <li data-id="-${disp.departamento.id}" class="${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
+                                    <li data-id="-${disp.departamento.id}" class="clickable ${disp.departamento.externo == 1 ? 'externo' : 'interno'}">
                                         <i class="fa fa-li ${disp.departamento.externo ? 'fa-paper-plane' : 'fa-building-o'}"></i> ${disp.departamento.descripcion}
                                     </li>
                                 </g:else>
@@ -929,6 +929,7 @@
                         bootbox.alert("Por favor espere a que se cargue el destinatario antes de modificar las copias");
                     }
                 }
+                $("li.selected").removeClass("selected");
             }
 
             function removeAll(override) {
@@ -1096,14 +1097,13 @@
 
                 validarCheck();
 
-                $("#ulDisponibles").find("li").dblclick(function () {
+                $(".clickable").dblclick(function () {
                     $(this).addClass("selected");
-                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
-
-                    $("#ulSeleccionados").find("li").dblclick(function () {
-                        $(this).addClass("selected");
+                    if ($(this).parents("ul").attr("id") == "ulSeleccionados") {
                         moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false, true);
-                    });
+                    } else if ($(this).parents("ul").attr("id") == "ulDisponibles") {
+                        moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
+                    }
                 });
 
                 $(".selectable li").click(function () {

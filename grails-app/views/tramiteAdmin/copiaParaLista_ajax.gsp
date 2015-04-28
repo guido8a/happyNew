@@ -93,12 +93,12 @@ li {
         <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
             <g:each in="${disponibles}" var="disp">
                 <g:if test="${disp.id.toInteger() < 0}">
-                    <li data-id="${disp.id}">
+                    <li data-id="${disp.id}" class="clickable">
                         <i class="fa fa-li fa-building-o"></i> ${disp.label}
                     </li>
                 </g:if>
                 <g:else>
-                    <li data-id="${disp.id}">
+                    <li data-id="${disp.id}" class="clickable">
                         <i class="fa fa-li fa-user"></i> ${disp.label}
                     </li>
                 </g:else>
@@ -155,6 +155,7 @@ li {
                     $(this).appendTo($to);
                 }
             });
+            $("li.selected").removeClass("selected");
         }
 
         function removeAll() {
@@ -167,14 +168,13 @@ li {
             $(".selectable li").not(".disabled").click(function () {
                 $(this).toggleClass("selected");
             });
-            $("#ulDisponibles").find("li").dblclick(function () {
+            $(".clickable").dblclick(function () {
                 $(this).addClass("selected");
-                moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
-
-                $("#ulSeleccionados").find("li").dblclick(function () {
-                    $(this).addClass("selected");
+                if ($(this).parents("ul").attr("id") == "ulSeleccionados") {
                     moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), false, true);
-                });
+                } else if ($(this).parents("ul").attr("id") == "ulDisponibles") {
+                    moveSelected($("#ulDisponibles"), $("#ulSeleccionados"), false, true);
+                }
             });
             $("#btnAddAll").click(function () {
                 var $ul = $("#ulDisponibles");
