@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="layout" content="main">
+        <meta name="layout" content="main2">
         <title>
             <g:if test="${tramite.id}">
                 Modificar datos del trámite

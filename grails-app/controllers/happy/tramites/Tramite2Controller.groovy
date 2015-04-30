@@ -1533,7 +1533,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
         if (params.tramite.aQuienContesta.id) {
-            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006') {
+            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E006') {
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite3', action: "bandejaEntradaDpto")
@@ -1550,6 +1550,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (paramsTramite.aQuienContesta.id) {
             def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+
+
+            if(aQuienEstaContestando == null){
+
+                flash.message = "No se puede contestar este documento.<br/>" +
+                        g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
+                            "Volver a la bandeja de entrada"
+                        }
+                redirect(controller: 'tramite', action: "errores")
+                return
+            }
+
+
+
+
             if (paramsTramite.esRespuestaNueva == 'S') {
                 def respv = aQuienEstaContestando.respuestasVivas
                 println "RESPV " + respv

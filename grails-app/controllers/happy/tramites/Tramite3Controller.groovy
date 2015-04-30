@@ -10,7 +10,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def tramitesService
 
     def save() {
-//        println "PARAMS: " + params
+        println "PARAMS: " + params
         /*
           tramite.asunto:sdfg sdfg sdf g,
           tramite:[
@@ -23,8 +23,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
 
+        println("error " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
+
+
+
+
+
         if (params.tramite.aQuienContesta.id) {
-            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id).estado.codigo == 'E006') {
+            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E006') {
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite', action: "bandejaEntrada")
@@ -56,10 +62,25 @@ class Tramite3Controller extends happy.seguridad.Shield {
             println paramsTramite
             println "hijos " + hijos
 
+
+
+
             if (paramsTramite.aQuienContesta.id) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
+
+                if(aQuienEstaContestando == null){
+
+                    flash.message = "No se puede contestar este documento.<br/>" +
+                            g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
+                                "Volver a la bandeja de entrada"
+                            }
+                    redirect(controller: 'tramite', action: "errores")
+                    return
+                }
+
+
                 if (paramsTramite.esRespuestaNueva == 'S') {
-                    def respv = aQuienEstaContestando.respuestasVivas
+                    def respv = aQuienEstaContestando?.respuestasVivas
                     println "RESPV " + respv
                     if (respv.size() != 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +

@@ -9,7 +9,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <meta name="layout" content="main">
+        <meta name="layout" content="main2">
         <title>Redactar trámite</title>
 
         <script src="${resource(dir: 'js/plugins/ckeditor', file: 'ckeditor.js')}"></script>
@@ -201,37 +201,49 @@
 
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
         </div>
-        <script>
+
+
+
+        <script type="text/javascript">
 
             /* deshabilita navegación --inicailiza */
-            $(document).ready(function(){
-                initControls();
-            });
+//            $(document).ready(function(){
+//                initControls();
+//            });
+//
+//            /* deshabilita navegación hacia atras */
+//            function initControls(){
+////                console.log("hola");
+////                window.location.hash = "red";
+////                window.location.hash = "Red" //chrome
+////                window.onhashchange = function(){window.location.hash="Red";}
+//
+//
+//                window.location.hash="no-back-button";
+//                window.location.hash="Again-No-back-button" //chrome
+//                window.onhashchange=function(){window.location.hash="no-back-button";}
+//            }
+//
+//            /* deshabilita navegación por teclas */
+//            $(document).keyup(function(e) {
+//                switch(e.keyCode) {
+//                    case 37 : window.location = $('.prev').attr('href'); break;
+//                    case 39 : window.location = $('.next').attr('href'); break;
+//                }
+//            });
+//
+//            /* deshabilita navegación hacia adelante */
+//            $('.disableNav').bind('focus', function (event) {
+//                navEnabled = false;
+//            }).bind('blur', function (event) {
+//                navEnabled = true;
+//            });
 
-            /* deshabilita navegación hacia atras */
-            function initControls(){
-//                console.log("hola");
-                window.location.hash = "red";
-                window.location.hash = "Red" //chrome
-                window.onhashchange = function(){window.location.hash="Red";}
-            }
 
-            /* deshabilita navegación por teclas */
-            $(document).keyup(function(e) {
-                switch(e.keyCode) {
-                    case 37 : window.location = $('.prev').attr('href'); break;
-                    case 39 : window.location = $('.next').attr('href'); break;
-                }
-            });
 
-            /* deshabilita navegación hacia adelante */
-            $('.disableNav').bind('focus', function (event) {
-                navEnabled = false;
-            }).bind('blur', function (event) {
-                navEnabled = true;
-            });
 
-            function arreglarTexto(texto) {
+
+           function arreglarTexto(texto) {
                 texto = $.trim(texto);
                 texto = texto.replace(/(?:\&)/g, "&amp;");
                 texto = texto.replace(/(?:<)/g, "&lt;");

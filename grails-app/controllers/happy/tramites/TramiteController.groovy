@@ -1359,7 +1359,7 @@ class TramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def pdt = PersonaDocumentoTramite.get(params.id)
 
-        if (pdt.estado.codigo == 'E003') {
+        if (pdt?.estado?.codigo == 'E003' || pdt == null) {
             render 'no'
             return
         }

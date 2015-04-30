@@ -8,7 +8,7 @@
 <%@ page import="happy.seguridad.Persona; happy.tramites.Departamento" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
-        <meta name="layout" content="main">
+        <meta name="layout" content="main2">
         <title>Administración de trámite</title>
         <script src="${resource(dir: 'js/plugins/jstree-e22db21/dist', file: 'jstree.min.js')}"></script>
         <link href="${resource(dir: 'js/plugins/jstree-e22db21/dist/themes/default', file: 'style.min.css')}" rel="stylesheet">

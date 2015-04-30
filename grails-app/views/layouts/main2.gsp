@@ -102,43 +102,6 @@
 
     <g:layoutHead/>
 
-
-
-
-    <script type="text/javascript">
-        /* deshabilita navegación --inicailiza */
-//        $(document).ready(function(){
-//            initControls();
-//        });
-//
-//        /* deshabilita navegación hacia atras */
-//        function initControls(){
-//
-//            window.location.hash="no-back-button";
-//            window.location.hash="Again-No-back-button" //chrome
-//            window.onhashchange=function(){window.location.hash="no-back-button";}
-//
-//        }
-
-
-
-
-        /* deshabilita navegación por teclas */
-        $(document).keyup(function(e) {
-            switch(e.keyCode) {
-                case 37 : window.location = $('.prev').attr('href'); break;
-                case 39 : window.location = $('.next').attr('href'); break;
-            }
-        });
-
-        /* deshabilita navegación hacia adelante */
-        $('.disableNav').bind('focus', function (event) {
-            navEnabled = false;
-        }).bind('blur', function (event) {
-            navEnabled = true;
-        });
-    </script>
-
 </head>
 
 <body>
@@ -229,6 +192,21 @@
 <!-- funciones de ui (tooltips, maxlength, bootbox, contextmenu, validacion en keydown para los numeros) -->
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <script type="text/javascript">
+
+
+    $(document).ready(function(){
+        initControls();
+    });
+
+    /* deshabilita navegación hacia atras */
+    function initControls(){
+
+        window.location.hash="no-back-button";
+        window.location.hash="Again-No-back-button" //chrome
+        window.onhashchange=function(){window.location.hash="no-back-button";}
+
+    }
+
 
 
     var ot = document.title;
