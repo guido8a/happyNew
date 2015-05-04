@@ -70,7 +70,7 @@
         }
 
         .claseMin {
-            max-height : 100px;
+            max-height : 60px;
             overflow   : auto;
         }
         </style>
@@ -246,7 +246,7 @@
                         </g:if>
 
                         <g:if test="${padre.observaciones && padre.observaciones?.trim()?.size() > 0}">
-                            <div class="row">
+                            <div class="row claseMin">
                                 <div class="col-md-1 negrilla">Obs:</div>
 
                                 <div class="col-md-11">${padre.observaciones}</div>

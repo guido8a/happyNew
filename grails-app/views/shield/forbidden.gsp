@@ -26,6 +26,13 @@
     <g:else>
         <p style="font-size: 16px; margin-top: 25px;text-shadow: none">La página solicitada no está disponible.</p>
     </g:else>
+
+    <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
+        <div class="btn-group btn btn-primary">
+            <g:link controller="inicio" action="index" style="color: #ffffff">Inicio</g:link>
+        </div>
+    </div>
+
 %{--
     <p style="font-size: 16px; margin-top: 25px;text-shadow: none">Por favor utilice el menú de navegación para acceder a
     las diferentes pantallas del sistema.</p>

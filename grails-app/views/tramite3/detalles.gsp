@@ -2,7 +2,7 @@
 
 <style type="text/css">
     .claseMin {
-        max-height: 100px;
+        max-height: 60px;
         overflow: auto;
     }
 </style>
