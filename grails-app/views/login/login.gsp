@@ -100,9 +100,6 @@
                                 </div>
                             </div>
 
-                        %{--<input name="login" type="text" class="form-control required " placeholder="Usuario" required autofocus>--}%
-                        %{--<input name="pass" type="password" class="form-control required" placeholder="Contraseña" required>--}%
-
                             <div class="divBtn" style="width: 100%">
                                 <a href="#" class="btn btn-primary btn-lg btn-block" id="btn-login"
                                    style="width: 140px; margin: auto">
@@ -110,54 +107,12 @@
                                 </a>
                             </div>
 
-                            <div class="control-group" style="margin-top: 20px;">
-                                <a href="#" id="btnOlvidoPass"
-                                   style="color: #223;margin-left: 70px;text-decoration: none;font-family: 'Open Sans Condensed', serif;font-weight: bold">
-                                    Olvidó su contraseña?
-                                </a>
-                            </div>
-
                         </g:form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="recuperarPass-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-            <div class="modal-dialog" id="modalRcps" style="width: 380px;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Recuperar la contraseña</h4>
-                    </div>
-
-                    <div class="modal-body" style="width: 280px; margin: auto">
-                        <g:form name="frmPass" action="olvidoPass" class="form-horizontal">
-                            <div class="form-group">
-                                <div>
-                                    Ingrese el email registrado en su usuario para enviarle una nueva contraseña
-                                    para ingresar al sistema.<br>
-                                </div>
-
-                                <div>
-
-                                    <input name="email" id="mail" type="text" class="form-control required"
-                                           placeholder="mail" required autofocus style="width: 270px; margin-top: 10px;">
-                                </div>
-                            </div>
-
-                            <div class="divBtn" style="width: 100%">
-                                <a href="#" class="btn btn-primary" id="btn-pass" type="button"
-                                   style="width: 140px; margin: auto">
-                                    <i class="fa fa-lock"></i> Aceptar
-                                </a>
-                            </div>
-
-                        </g:form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div id="divCreditos" class="hidden">
             <div class="creditos">
