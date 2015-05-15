@@ -165,7 +165,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps" />
                     </div>
 
                     <div class="col-md-2">
@@ -255,13 +255,14 @@
                         if (band) {
                             closeLoader();
                             log("Datos actualizados", "success");
+
                         }
                         $(".counter").each(function () {
                             var clase = $(this).data("class");
                             var cant = $("tr." + clase).size();
                             $(this).text("(" + cant + ")");
                         });
-                    }
+                     }
                 });
             }
 
@@ -734,14 +735,20 @@
                     location.href = '${createLink(controller: 'tramite', action: 'archivados')}?dpto=' + 'si';
                 });
 
-                cargarBandeja(true);
+                cargarBandeja();
             });
 
             $(".btnSalir").click(function () {
 //                console.log("entro!")
                 $(".buscar").attr("hidden", true);
+                $("#memorando").val("");
+                $("#asunto").val("");
+                $("#fechaBusqueda_input").val("");
+                $("#fechaBusqueda_day").val("");
+                $("#fechaBusqueda_month").val("");
+                $("#fechaBusqueda_year").val("");
                 openLoader();
-                cargarBandeja(true);
+                cargarBandeja();
                 closeLoader();
             });
 
