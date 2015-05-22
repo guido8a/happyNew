@@ -339,10 +339,13 @@ class Tramite {
 //        println "limite "+limite
         if (limite) {
             def par = Parametros.list([sort: "id", order: "desc"])
+//            println("-->" + par.bloqueo)
+
             def tiempoBloqueo = 1
             if (par.size() > 0) {
                 par = par.pop()
                 tiempoBloqueo = par.bloqueo
+
             }
 
 //            println "tiempo Bloqueo "+tiempoBloqueo

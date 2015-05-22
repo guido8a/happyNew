@@ -91,9 +91,9 @@ class BloqueosJob {
                 if(!it.save(flush: true))
                     println "error bloq usu"
             }
-
         }
         warningUsu.each {
+            println("----->>>>>>" + it?.estado)
             if(it.estado!="B"){
                 it.estado="W"
                 it.save(flush: true)

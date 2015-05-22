@@ -677,7 +677,12 @@
                                                         var parts = msg.split("_");
                                                         log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
                                                         if (parts[0] == "OK") {
-                                                            location.reload(true);
+                                                            setTimeout(function () {
+//                                                                location.reload(true);
+                                                                $("#bloqueo-warning").hide();
+                                                                location.href="${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                            }, 1000);
+                                                            cargarBandeja();
                                                         } else {
                                                             resetValues()
 //                                                        cargarBandeja(true)
