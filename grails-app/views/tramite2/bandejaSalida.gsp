@@ -1022,6 +1022,7 @@
 //                }, 300000);
 
                 $(".btnBusqueda").click(function () {
+                    openLoader();
 //            $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                     if (cargando) {
                         breakingPoint = true
@@ -1040,6 +1041,7 @@
                         success : function (msg) {
 //                    $("#bandeja").html(msg);
                             $("#tabla_salida").append(msg);
+                            closeLoader();
                         }
                     });
                 });
