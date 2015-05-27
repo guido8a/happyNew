@@ -125,7 +125,7 @@
 
         %{--<g:hiddenField name="dpto" id="hiddenCC" value="${dpto}"/>--}%
             <g:if test="${padre || principal}">
-                <g:if test="${principal.id != tramite.id}">
+                <g:if test="${principal?.id != tramite.id}">
                     <div style="margin-top: 30px; min-height: 100px;font-size: 11px" class="vertical-container">
 
                         <p class="css-vertical-text">D. Principal</p>

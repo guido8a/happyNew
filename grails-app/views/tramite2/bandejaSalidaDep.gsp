@@ -97,7 +97,7 @@
         }
 
         .ancho1 {
-            width: 360px;
+            width : 360px;
         }
 
         </style>
@@ -598,11 +598,63 @@
                     url   : '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bsp"
                 }; //arbol
 
+                %{--var crearHermano = {--}%
+                %{--label : "Agregar documento al trámite",--}%
+                %{--icon  : "fa fa-paste",--}%
+                %{--url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N"--}%
+                %{--}; //crear hermano--}%
+
                 var crearHermano = {
-                    label : "Agregar documento al trámite",
-                    icon  : "fa fa-paste",
-                    url   : '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N"
-                }; //crear hermano
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    <g:if test="${session.usuario.esTriangulo}">
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:if>
+                                    <g:else>
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:else>
+                                } else {
+                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                }
+                            }
+                        });
+                    }
+                };
+
+                var crearHijo = {
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    <g:if test="${session.usuario.esTriangulo}">
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:if>
+                                    <g:else>
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:else>
+                                } else {
+                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                }
+                            }
+                        });
+                    }
+                };
 
                 var editar = {
                     label : "Editar",
@@ -680,7 +732,7 @@
                                                             setTimeout(function () {
 //                                                                location.reload(true);
                                                                 $("#bloqueo-warning").hide();
-                                                                location.href="${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                                location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
                                                             }, 1000);
                                                             cargarBandeja();
                                                         } else {
@@ -727,6 +779,8 @@
                 }
                 if (tienePadre) {
                     items.hermano = crearHermano;
+                } else {
+                    items.hijo = crearHijo;
                 }
                 if (tieneAnexo) {
                     items.anexos = anexos;
@@ -864,8 +918,8 @@
 //                            console.log(msg);
                             var parts = msg.split('_');
                             if (parts[0] == 'ok') {
-                                if(!imprimir)
-                                resetValues();
+                                if (!imprimir)
+                                    resetValues();
 //                        cargarBandeja(true);
                                 log('Trámites Enviados', 'success');
                                 if (imprimir) {

@@ -84,7 +84,7 @@
 
         <div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
 
-            <p class="css-vertical-text">Resultado - Buscar Trámites Enviados </p>
+            <p class="css-vertical-text">Resultado - Buscar Trámites Enviados</p>
 
             <div class="linea"></div>
 
@@ -165,9 +165,11 @@
 
                 var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaDesde=" + fechaRecepcion + "&fechaHasta=" + fecha
 
-                $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
-                    data      : datos,
-                    success   : function (msg) {
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
+                    data    : datos,
+                    success : function (msg) {
                         $("#bandeja").html(msg);
                     }
                 });
@@ -183,9 +185,11 @@
                     var fechaRecepcion = $("#fechaRecepcion_input").val();
 
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaDesde=" + fechaRecepcion + "&fechaHasta=" + fecha
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
-                        data      : datos,
-                        success   : function (msg) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaEnviados')}",
+                        data    : datos,
+                        success : function (msg) {
                             $("#bandeja").html(msg);
                         }
                     });
@@ -223,6 +227,8 @@
                 var tieneAlerta = $tr.hasClass("alerta");
                 var enviado = $tr.hasClass("estado");
 
+                var esMio = $tr.hasClass("mio");
+
                 var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
 
                 var arbol = {
@@ -251,16 +257,68 @@
                     }
                 };
 
+                %{--var crearHermano = {--}%
+                %{--label  : "Agregar documento al trámite",--}%
+                %{--icon   : "fa fa-paste",--}%
+                %{--action : function () {--}%
+                %{--<g:if test="${session.usuario.esTriangulo}">--}%
+                %{--location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";--}%
+                %{--</g:if>--}%
+                %{--<g:else>--}%
+                %{--location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";--}%
+                %{--</g:else>--}%
+                %{--}--}%
+                %{--};--}%
+
                 var crearHermano = {
                     label  : "Agregar documento al trámite",
                     icon   : "fa fa-paste",
                     action : function () {
-                        <g:if test="${session.usuario.esTriangulo}">
-                        location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";
-                        </g:if>
-                        <g:else>
-                        location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + '&hermano=' + id + "&buscar=1&esRespuestaNueva=N";
-                        </g:else>
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    <g:if test="${session.usuario.esTriangulo}">
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:if>
+                                    <g:else>
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:else>
+                                } else {
+                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                }
+                            }
+                        });
+                    }
+                };
+
+                var crearHijo = {
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    <g:if test="${session.usuario.esTriangulo}">
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:if>
+                                    <g:else>
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:else>
+                                } else {
+                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                }
+                            }
+                        });
                     }
                 };
 
@@ -344,8 +402,15 @@
                 items.administrar = administrar;
                 </g:if>
 
-                if (padre || tienePrincipal) {
-                    items.hermano = crearHermano;
+//                if (padre || tienePrincipal) {
+//                    items.hermano = crearHermano;
+//                }
+                if (esMio) {
+                    if (padre) {
+                        items.crearHermano = crearHermano;
+                    } else {
+                        items.crearHijo = crearHijo;
+                    }
                 }
 
 //        if((enviado == 'E003') || tieneAlerta){

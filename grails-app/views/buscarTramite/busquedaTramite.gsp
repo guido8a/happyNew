@@ -338,6 +338,32 @@
                     }
                 };
 
+                var crearHijo = {
+                    label  : "Agregar documento al trámite",
+                    icon   : "fa fa-paste",
+                    action : function () {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'buscarTramite', action: 'verificarAgregarDoc')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    <g:if test="${session.usuario.esTriangulo}">
+                                    location.href = '${createLink(controller: "tramite2", action: "crearTramiteDep")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:if>
+                                    <g:else>
+                                    location.href = '${createLink(controller: "tramite", action: "crearTramite")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
+                                    </g:else>
+                                } else {
+                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                }
+                            }
+                        });
+                    }
+                };
+
                 %{--var contestar = {--}%
                 %{--label  : "Agregar documento al trámite",--}%
                 %{--icon   : "fa fa-paste",--}%
@@ -521,8 +547,12 @@
                 items.administrar = administrar;
                 </g:if>
 //                if (conPadre || tienePrincipal || esPrincipal) {
-                if (conPadre) {
-                    items.crearHermano = crearHermano;
+                if (esMio) {
+                    if (conPadre) {
+                        items.crearHermano = crearHermano;
+                    } else {
+                        items.crearHijo = crearHijo;
+                    }
                 }
 //                if (esPrincipal) {
 //                    items.contestar = contestar;

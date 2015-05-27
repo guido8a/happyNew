@@ -581,9 +581,32 @@ class TramiteController extends happy.seguridad.Shield {
 //            while (p.padre) {
 //                p = p.padre
 //            }
+            padre = p
             pdt = p.para
             padre = herm.padre
-            pdt = herm.aQuienContesta
+
+            println "Hermano: " + herm
+
+            if (!padre) {
+                padre = herm
+                println "en realidad es padre..."
+                def rolPara = RolPersonaTramite.findByCodigo("R001")
+                def quienRecibePadre = PersonaDocumentoTramite.withCriteria {
+                    eq("tramite", padre)
+                    eq("rolPersonaTramite", rolPara)
+                }
+                if (quienRecibePadre.size() == 1) {
+                    pdt = quienRecibePadre.first()
+                    println "PDT 1: " + pdt
+                } else {
+                    flash.message = "No puede agregar un documento a este tramite."
+                    response.sendError(403)
+                    return
+                }
+            } else {
+                println "PDT 2: " + pdt
+                pdt = herm.aQuienContesta
+            }
             if (!pdt) {
                 pdt = p.copias
                 if (pdt.size() == 0) {
@@ -600,6 +623,7 @@ class TramiteController extends happy.seguridad.Shield {
             } else {
                 pdt = pdt.id
             }
+
         }
         tramite.tramitePrincipal = 0
 //        if (params.buscar == '1') {

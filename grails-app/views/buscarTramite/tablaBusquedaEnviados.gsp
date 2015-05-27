@@ -66,6 +66,10 @@ table {
                         </g:if>
                     </g:if>
 
+                    <g:if test="${tramite.tramite.deId == session.usuario.id}">
+                        <g:set var="clase" value="${clase + ' mio'}"/>
+                    </g:if>
+
                     <tr id="${tramite?.tramite?.id}" data-id="${tramite?.tramite?.id}" padre="${padre}" principal="${tramite?.tramite?.tramitePrincipal}"
                         class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite?.tramite?.estadoTramite?.codigo) : tramite?.tramite?.estadoTramite?.codigo + " " + clase}" estado="${tramite?.tramite?.estadoTramite?.codigo}">
                         %{--<td style="width: 110px">${tramite?.tramite?.codigo}</td>--}%
