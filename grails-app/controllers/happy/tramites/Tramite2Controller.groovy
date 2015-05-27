@@ -1561,12 +1561,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
 
-
         if (paramsTramite.aQuienContesta.id) {
             def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
 
-
-            if(aQuienEstaContestando == null){
+            if (aQuienEstaContestando == null) {
 
                 flash.message = "No se puede contestar este documento.<br/>" +
                         g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {
@@ -1575,9 +1573,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 redirect(controller: 'tramite', action: "errores")
                 return
             }
-
-
-
 
             if (paramsTramite.esRespuestaNueva == 'S') {
                 def respv = aQuienEstaContestando.respuestasVivas
@@ -1950,6 +1945,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     tramite.aQuienContesta = aqc
                 }
                 if (tramite.save(flush: true)) {
+
                 } else {
                     println tramite.errors
                 }
@@ -1966,6 +1962,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
+
+//        println "**" + paramsTramite
+        if (paramsTramite.esRespuestaNueva == "N") {
+//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
+
+            def observacionOriginalObs = tramite.observaciones
+            def accionObs = "Documento agregado al trámite " + tramite.padre.codigo
+            def solicitadoPorObs = ""
+            def usuarioObs = "por " + session.usuario.login
+            def textoObs = ""
+            def nuevaObservacionObs = ""
+            tramite.observaciones = tramitesService.observaciones(observacionOriginalObs, accionObs, solicitadoPorObs, usuarioObs, textoObs, nuevaObservacionObs)
+            tramite.save(flush: true)
+        }
+
         if (tramite.tipoDocumento.codigo == "SUM" /*|| tramite.tipoDocumento.codigo == "DEX"*/) {
             redirect(controller: "tramite2", action: "bandejaSalidaDep", id: tramite.id)
             return

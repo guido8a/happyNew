@@ -8,10 +8,9 @@ import happy.tramites.Tramite
 @Transactional
 class TramitesService {
 
-    /*
-    <fecha> - <accion> - solicitado por técnico <solicitadoPor> <texto> observaciones: <observaciones> ||
+    /**
+     <fecha> - <accion> - solicitado por técnico <solicitadoPor> <texto> observaciones: <observaciones> ||
      */
-
     String observaciones(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion) {
         def fecha = new Date().format('dd-MM-yyyy HH:mm')
         observacionOriginal = observacionOriginal ? observacionOriginal.trim() : ""
@@ -119,16 +118,17 @@ class TramitesService {
                 def pdts = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(t, roles)
                 pdts.each { pd ->
 //                    println "pdt del hijo "+t.codigo+"  --> "+pd+"   "+pd.estado?.descripcion+"    "+(pd.estado!=estado)
-                    if (!pd.estado)
+                    if (!pd.estado) {
                         res = true
-                    else {
+                    } else {
                         if (!res) {
                             if (pd.estado?.codigo != estado.codigo) {
                                 res = true
                             } else {
 //                                println "dentro del bucle"
-                                if (verificaHijos(pd, estado))
+                                if (verificaHijos(pd, estado)) {
                                     res = true
+                                }
                             }
                         }
 

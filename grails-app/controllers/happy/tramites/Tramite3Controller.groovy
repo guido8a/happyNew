@@ -25,10 +25,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         println("error " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
 
-
-
-
-
         if (params.tramite.aQuienContesta.id) {
             if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E006') {
                 flash.tipo = "error"
@@ -59,16 +55,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
             def hijos = Tramite.findAllByPadre(padre)
-            println paramsTramite
-            println "hijos " + hijos
-
-
-
+//            println paramsTramite
+//            println "hijos " + hijos
 
             if (paramsTramite.aQuienContesta.id) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
 
-                if(aQuienEstaContestando == null){
+                if (aQuienEstaContestando == null) {
 
                     flash.message = "No se puede contestar este documento.<br/>" +
                             g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
@@ -77,7 +70,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     redirect(controller: 'tramite', action: "errores")
                     return
                 }
-
 
                 if (paramsTramite.esRespuestaNueva == 'S') {
                     def respv = aQuienEstaContestando?.respuestasVivas
@@ -112,8 +104,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                redirect(controller: 'tramite', action: "errores")
 //                return
 //            }
-
-
         }
 
 //        println params
@@ -517,6 +507,20 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //
 //        println "DESPUES u: " + tramite.aQuienContesta
 //        println "DESPUES u: " + tramite.aQuienContesta.id
+
+//        println "**" + paramsTramite
+        if (paramsTramite.esRespuestaNueva == "N") {
+//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
+
+            def observacionOriginalObs = tramite.observaciones
+            def accionObs = "Documento agregado al trámite " + tramite.padre.codigo
+            def solicitadoPorObs = ""
+            def usuarioObs = "por " + session.usuario.login
+            def textoObs = ""
+            def nuevaObservacionObs = ""
+            tramite.observaciones = tramitesService.observaciones(observacionOriginalObs, accionObs, solicitadoPorObs, usuarioObs, textoObs, nuevaObservacionObs)
+            tramite.save(flush: true)
+        }
 
         if (tramite.tipoDocumento.codigo == "SUM"/* || tramite.tipoDocumento.codigo == "DEX"*/) {
             redirect(controller: "tramite2", action: "bandejaSalida", id: tramite.id)
