@@ -586,6 +586,7 @@ class TramiteController extends happy.seguridad.Shield {
             padre = herm.padre
 
             println "Hermano: " + herm
+            tramite.agregadoA = herm
 
             if (!padre) {
                 padre = herm

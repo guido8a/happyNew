@@ -118,6 +118,7 @@
             <g:hiddenField name="tramite.esRespuesta" value="${params.esRespuesta}"/>
             <g:hiddenField name="tramite.esRespuestaNueva" value="${params.esRespuestaNueva}"/>
             <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
+            <g:hiddenField name="tramite.agregadoA.id" value="${tramite.agregadoA?.id}"/>
 
             <g:if test="${tramite.tramitePrincipal > 0}">
                 <g:set var="principal" value="${Tramite.get(tramite.tramitePrincipal)}"/>

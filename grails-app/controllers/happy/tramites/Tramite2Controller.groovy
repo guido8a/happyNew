@@ -1499,6 +1499,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             padre = herm.padre
 
             println "Hermano: " + herm
+            tramite.agregadoA = herm
 
             if (!padre) {
                 padre = herm
@@ -1579,8 +1580,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
 
 
-        if (params.tramite.aQuienContesta.id) {
-            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E006') {
+        if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
+            def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
+            if (aa?.estado?.codigo == 'E003' || aa?.estado?.codigo == 'E005' || aa?.estado?.codigo == 'E006') {
+                println "AQUI: " + aa?.estado?.codigo + "  " + aa?.estado?.descripcion
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite3', action: "bandejaEntradaDpto")
@@ -2001,7 +2004,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
-            def accionObs = "Documento agregado al trámite " + tramite.padre.codigo
+            def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
             def solicitadoPorObs = ""
             def usuarioObs = "por " + session.usuario.login
             def textoObs = ""

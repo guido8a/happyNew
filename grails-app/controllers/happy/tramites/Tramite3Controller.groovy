@@ -25,8 +25,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         println("error " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
 
-        if (params.tramite.aQuienContesta.id) {
-            if (PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E003' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E005' || PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)?.estado?.codigo == 'E006') {
+        if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
+            def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
+            if (aa?.estado?.codigo == 'E003' || aa?.estado?.codigo == 'E005' || aa?.estado?.codigo == 'E006') {
+                println "AQUI: " + aa?.estado?.codigo + "  " + aa?.estado?.descripcion
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite', action: "bandejaEntrada")
@@ -210,8 +212,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
         }
-//        println "ANTES DEL SAVE " + paramsTramite
-
+        println "ANTES DEL SAVE " + paramsTramite
         tramite.properties = paramsTramite
         if (tramite.tipoDocumento.codigo == "DEX") {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
@@ -513,7 +514,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
-            def accionObs = "Documento agregado al trámite " + tramite.padre.codigo
+            def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
             def solicitadoPorObs = ""
             def usuarioObs = "por " + session.usuario.login
             def textoObs = ""
