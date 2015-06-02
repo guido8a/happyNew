@@ -107,7 +107,7 @@ class TramitesService {
      * @return
      */
     Boolean verificaHijos(pdt, estado) {
-        def hijos = Tramite.findAllByAQuienContesta(pdt)
+        def hijos = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pdt, "S")
         def res = false
 //        println "-------------------!!---------------------------"
 //        println "tramite ver hijos "+pdt.id+"   "+pdt.persona+"   "+pdt.departamento+"  "+pdt.tramite.codigo+"   "+estado.descripcion+"   "+estado.codigo
