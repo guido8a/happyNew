@@ -271,7 +271,7 @@ class TramiteController extends happy.seguridad.Shield {
                     html += "</div>"
                     html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\" style=\"margin-left: 30px\">\n" +
                             "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
-                            "                    <i class=\"fa fa-search\"></i>\n" +
+                            "                    <i class=\"fa fa-info-circle\"></i>\n" +
                             "                    </a>\n" +
                             "                    </div>"
                     html += "<script type='text/javascript'>"
