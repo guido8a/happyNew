@@ -368,7 +368,7 @@
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-xs-1 negrilla">Obser:</div>
 
-                        <div class="col-xs-10  claseMin">${tramite.observaciones}</div>
+                        <div class="col-xs-10  claseMin">${t.observaciones}</div>
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
