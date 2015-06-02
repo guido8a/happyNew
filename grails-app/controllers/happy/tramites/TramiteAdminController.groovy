@@ -60,7 +60,9 @@ class TramiteAdminController extends Shield {
                     }
                 }
             }
-            if (contador) data.tieneTrmt = 'S'
+            if (contador) {
+                data.tieneTrmt = 'S'
+            }
             resultado.add(data)
         }
         return [personas: resultado]
@@ -393,13 +395,11 @@ class TramiteAdminController extends Shield {
     def guardarEstado() {
 
 
-
         def persDocTram = PersonaDocumentoTramite.get(params.prtr)
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
-        def estados = [estadoArchivado, estadoAnulado,estadoEnviado]
-
+        def estados = [estadoArchivado, estadoAnulado, estadoEnviado]
 
 //        println("estado " + persDocTram.estado.codigo)
 
@@ -467,29 +467,23 @@ class TramiteAdminController extends Shield {
             }
         }
 
-
-
 //        println("normal " + personas)
 
         def filtradas = []
         def sesion
 
         personas.each {
-
             sesion = Sesn.findAllByUsuario(it)
-
 //            println("sesion " + sesion.size())
-
-            if(it.esTriangulo() && sesion.size() == 1){
-
-            }else{
-                filtradas += it
+            if (it.esTriangulo() && sesion.size() == 1) {
+            } else {
+                if (it.puedeRecibirOff) {
+                    filtradas += it
+                }
             }
-
         }
 
 //        println("filtradas " + filtradas)
-
 
         return [persona: persona, tramites: tramites, personas: personas, dep: dep, filtradas: filtradas]
     }
@@ -663,9 +657,9 @@ class TramiteAdminController extends Shield {
                 if (tramite.padre) {
                     principal = tramite.padre
                     while (true) {
-                        if (!principal.padre)
+                        if (!principal.padre) {
                             break
-                        else {
+                        } else {
                             principal = principal.padre
                         }
                     }
@@ -699,7 +693,7 @@ class TramiteAdminController extends Shield {
         return [tramite: tramite, icon: icon, msg: msg, personas: personas]
     }
 
-    def dialogAnulados () {
+    def dialogAnulados() {
 
         def tramite = Tramite.get(params.id)
         def icon = params.icon
@@ -718,7 +712,7 @@ class TramiteAdminController extends Shield {
 
         def personasRec = []
 
-        if(tramite?.de?.departamento != tramite?.para?.departamento){
+        if (tramite?.de?.departamento != tramite?.para?.departamento) {
             Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
                 if (r.estaActivo) {
                     def n = [:]
@@ -1210,7 +1204,7 @@ class TramiteAdminController extends Shield {
         def estados = [estadoArchivado]
 
 
-        if(persDocTram == null){
+        if (persDocTram == null) {
             render "NO*el trámite no se puede anular"
             return
         }
@@ -1453,13 +1447,13 @@ class TramiteAdminController extends Shield {
     def getCadenaDown(pdt, funcion) {
         def res = []
         def tramites = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "* tramites " + tramites+"     "+tramites.codigo
+        println "* tramites " + tramites + "     " + tramites.codigo
         def roles = [RolPersonaTramite.findByCodigo("R002"), RolPersonaTramite.findByCodigo("R001")]
         def lvl
         funcion pdt
-        if (tramites.size()>0) {
+        if (tramites.size() > 0) {
 //            tramite = tramite.pop()
-            tramites.each { tramite->
+            tramites.each { tramite ->
                 def tmp = [:]
                 tmp.put("nodo", tramite)
                 tmp.put("tipo", "tramite")
@@ -1468,8 +1462,9 @@ class TramiteAdminController extends Shield {
 
                 pdts.each {
                     def r = getHijos(it, roles, funcion)
-                    if (r.size() > 0)
+                    if (r.size() > 0) {
                         tmp["hijos"] += r
+                    }
                 }
                 tmp.put("origen", pdt)
                 res.add(tmp)
@@ -1509,8 +1504,9 @@ class TramiteAdminController extends Shield {
             tmp.put("hijos", [])
             pdts.each {
                 def r = getHijos(it, roles, funcion)
-                if (r.size() > 0)
+                if (r.size() > 0) {
                     tmp["hijos"] += r
+                }
             }
             res = getHermanos(t, res, roles, funcion)
             res.add(tmp)
