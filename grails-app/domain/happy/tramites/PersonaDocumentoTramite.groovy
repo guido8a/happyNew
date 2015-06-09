@@ -114,6 +114,7 @@ class PersonaDocumentoTramite {
         return null
     }
 
+    /** retorna la fecha a la que se debe blkoquear la bandeja **/
     def getFechaBloqueo() {
 
         if (this.fechaRecepcion)
@@ -127,7 +128,7 @@ class PersonaDocumentoTramite {
             def tiempoBloqueo = 1
             if (par.size() > 0) {
                 par = par.pop()
-                tiempoBloqueo = par.bloqueo
+                tiempoBloqueo = par.bloqueo  // valor de horas antes del bloqueo
             }
 //            println "tiempo Bloqueo " + tiempoBloqueo
             def fechaLimite = []
@@ -136,7 +137,6 @@ class PersonaDocumentoTramite {
                 fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
 //                println("limite "+ fechaLimite)
             } else {
-
                 fechaLimite[0] = false
             }
 
@@ -147,8 +147,6 @@ class PersonaDocumentoTramite {
                 return null
             }
         }
-
-
     }
 
     def getFechaCreacion() {

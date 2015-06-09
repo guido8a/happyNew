@@ -339,10 +339,10 @@ class Tramite {
     }
 
     def getFechaBloqueo() {
-
-
-        def limite = this.getFechaLimite()
-//        println "limite "+limite
+//        println "get getFechaBloqueo"
+        def ahora = new Date()
+        def limite = this.getFechaLimite()   //fecha de envio
+//        println "--limite "+limite
         if (limite) {
             def par = Parametros.list([sort: "id", order: "desc"])
 //            println("-->" + par.bloqueo)
@@ -354,7 +354,7 @@ class Tramite {
 
             }
 
-//            println "tiempo Bloqueo "+tiempoBloqueo
+//            println "tiempo Bloqueo " + tiempoBloqueo
             def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
 //            println "fecha limite "+fechaLimite
             if (fechaLimite[0]) {

@@ -947,7 +947,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-        println("params enviar varios " + params + "  " + request.getMethod())
+//        println("params enviar varios " + params + "  " + request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         if (request.getMethod() == "POST") {
@@ -1567,6 +1567,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def saveDep() {
 //        println("params" + params)
+        //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
@@ -1912,6 +1913,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 paraFinal.tramite.save(flush: true)
                             }
                         }
+                    }
+                }
+//                println "comprueba si es externo"
+                def deExterno = session.usuario.departamento.externo == 1
+//                println "esExterno: $deExterno"
+                if (deExterno) {
+                    if (session.usuario.esTriangulo) {
+                        tramite.externo = "1"
+                    } else {
+                        tramite.externo = "0"
                     }
                 }
             }
