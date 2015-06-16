@@ -76,28 +76,26 @@
 
         <div class="form-group ${hasErrors(bean: departamentoInstance, field: 'externo', 'error')} required">
             <span class="grupo">
+
                 <label for="externo" class="col-md-2 control-label text-info">
                     Externo
                 </label>
-
                 <div class="col-md-3">
-                <div class="col-md-2">
-                    <g:select name="externo" from="${[1: 'SI', 0: 'NO']}" optionKey="key" optionValue="value"
+                <g:select name="externo" from="${[1: 'SI', 0: 'NO']}" optionKey="key" optionValue="value"
                               class="form-control" value="${departamentoInstance.externo}" style="width: 80px;"/>
                 </div>
-                <span style="margin-left: 100px">*</span>
-                </div>
+                *
             </span>
             <span class="grupo" style="margin-left: 30px">
+
                 <label for="externo" class="col-md-2 control-label text-info">
                     Remoto
                 </label>
-
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <g:select name="remoto" from="${[1: 'SI', 0: 'NO']}" optionKey="key" optionValue="value"
                               class="form-control" value="${departamentoInstance.remoto}"/>
                 </div>
-                *
+                <span style="margin-left: -320px">*</span>
             </span>
         </div>
 

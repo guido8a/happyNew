@@ -1045,6 +1045,12 @@
                             padreExternoInactivo      : {
                                 icon : "fa fa-paper-plane text-muted"
                             },
+                            padreRemotoActivo        : {
+                                icon : "fa fa-wifi text-info"
+                            },
+                            padreRemotoInactivo      : {
+                                icon : "fa fa-wifi text-muted"
+                            },
                             hijoActivo                : {
                                 icon : "fa fa-home text-success"
                             },
@@ -1056,6 +1062,12 @@
                             },
                             hijoExternoInactivo       : {
                                 icon : "fa fa-paper-plane-o text-muted"
+                            },
+                            hijoRemotoActivo         : {
+                                icon : "fa fa-rss text-success"
+                            },
+                            hijoRemotoInactivo       : {
+                                icon : "fa fa-rss text-muted"
                             },
                             usuarioActivo             : {
                                 icon : "fa fa-user text-info"

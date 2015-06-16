@@ -343,6 +343,9 @@ class DepartamentoController extends happy.seguridad.Shield {
                     if (hijo.externo == 1) {
                         rel += "Externo"
                     }
+                    if (hijo.remoto == 1) {
+                        rel += "Remoto"
+                    }
 
                 } else if (hijo instanceof Persona) {
                     switch (params.sort) {
