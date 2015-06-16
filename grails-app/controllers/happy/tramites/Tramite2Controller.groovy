@@ -1915,7 +1915,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         }
                     }
                 }
-//                println "comprueba si es externo"
+
+                /** esta marca puede servir si se elimina el bloque desde y hasta externos,
+                 *  pero el externo confirma el recibido quien envía
+                 */
+//                println "comprueba si es externo -- debe ser REMOTO"
+/*
+
                 def deExterno = session.usuario.departamento.externo == 1
 //                println "esExterno: $deExterno"
                 if (deExterno) {
@@ -1925,6 +1931,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         tramite.externo = "0"
                     }
                 }
+*/
+                /** fn externos **/
             }
             if (tipoDoc.codigo == "DEX") {
                 //aqui envia y recibe automaticamente el tramite

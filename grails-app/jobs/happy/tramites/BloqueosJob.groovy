@@ -18,8 +18,8 @@ class BloqueosJob {
         def bloquearUsu = []
         def warning = []
         def warningUsu = []
-        def rolEnvia = RolPersonaTramite.findByCodigo("E004")
-        def rolRecibe = RolPersonaTramite.findByCodigo("I005")
+        def rolEnvia = RolPersonaTramite.findByCodigo("E004")  //envia
+        def rolRecibe = RolPersonaTramite.findByCodigo("I005") //imprime
         def anulado = EstadoTramite.findByCodigo("E006")
 
 //        PersonaDocumentoTramite.findAllByFechaEnvioIsNotNullAndFechaRecepcionIsNull()
@@ -35,14 +35,15 @@ class BloqueosJob {
             *  2-- si recibe   un departamento externo no se bloquea --> trámite externo = 1
             *  en ambos casos el trámite es marcado como externo*/
 
-            if(pdt.tramite.externo.toString() != "1"){  // no se bloquea trámites externos
+            /** quitar departamentos remotos estos no se bloquean o trámites de departamentos remotos **/
+            if((pdt.tramite.externo.toString() != "1") && !esRemoto(pdt)){  // no se bloquea trámites externos ni remotos
 //                println "no es externo ${pdt.tramite.codigo} -- ${pdt.tramite.externo}"
               //  if(!pdt.persona && !pdt.departamento)
 
                 def fechaBloqueo = pdt.fechaBloqueo
 
                 if(fechaBloqueo && (fechaBloqueo < ahora)){
-//                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
+                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                     if(pdt.tramite.deDepartamento){
                         if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
                             warning.add(pdt.tramite.deDepartamento)
@@ -66,7 +67,8 @@ class BloqueosJob {
             }
         }
 
-//        println "departamentos a bloquear: $bloquear"
+        println "departamentos a bloquear: $bloquear"
+
 
         Departamento.list().each {dep ->
             dep.estado = ""
@@ -112,6 +114,36 @@ class BloqueosJob {
 //        println "fin bloqueo bandeja salida "+new Date().format("dd-MM-yyyy hh:mm:ss")
     }
 
+    /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
+    def esRemoto(pdt) {
+        def remoto = false
+        def rolEnvia = RolPersonaTramite.findByCodigo("E004")  //envia
+        def rolRecibe = RolPersonaTramite.findByCodigo("E003") //recibe
+        def rolCopia = RolPersonaTramite.findByCodigo("R002") //con copia
+        def anulado = EstadoTramite.findByCodigo("E006")
+        def trmt = pdt.tramite
+//        def prtr = PersonaDocumentoTramite.findAllByTramite(trmt)
+        def prtr = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where tramite = ${trmt.id} and " +
+                "fechaEnvio is not null and fechaRecepcion is null and (estado is null or estado != ${anulado.id}) and " +
+                "rolPersonaTramite in (${rolEnvia.id}, ${rolRecibe.id}, ${rolCopia.id})")
+        prtr.each { pt ->
+            /** viene de un departamento remoto **/
+            if(pt.rolPersonaTramite.codigo == 'E004') {  // envía
+                if(pdt.persona.esTriangulo)  {
+                    // compruena si el departamento es remoto
+                    remoto = (pdt.departamento.remoto == 1)
+                }
+            }
+            /** para un departamento remoto **/
+            if (pdt.rolPersonaTramite.codigo == 'R001') {  // para recibe
+                if(pdt.persona.esTriangulo)  {
+                    // compruena si el departamento es remoto
+                    remoto = (pdt.departamento.remoto == 1)
+                }
+            }
+        }
+        return remoto
+    }
 
     def executeRecibir(depar,persona){
         def ahora = new Date()
