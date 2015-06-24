@@ -336,7 +336,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def crearTramite() {
-        println "CREAR TRAMITE: " + params
+//        println "CREAR TRAMITE: " + params
         if (params.padre) {
             def padre = Tramite.get(params.padre)
 
