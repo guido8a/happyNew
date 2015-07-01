@@ -1,5 +1,6 @@
 package happy.tramites
 
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
 
@@ -123,22 +124,22 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 if (fecha != persDocTram.fechaLimiteRespuesta) {
                     def para = ""
                     if (persDocTram.departamento) {
-                        para = "para " + persDocTram.departamento.codigo
+                        para = "para: " + persDocTram.departamento.codigo
                     } else if (persDocTram.persona) {
-                        para = "para " + persDocTram.persona.login
+                        para = "para: " + persDocTram.persona.login
                     }
-                    para += " (${persDocTram.rolPersonaTramite.descripcion})"
+//                    para += " (${persDocTram.rolPersonaTramite.descripcion})"
 
-                    def l = " hasta: ${fecha.format('dd-MM-yyyy HH:mm')}, " +
+                    def l = ", hasta: ${fecha.format('dd-MM-yyyy HH:mm')}, " +
                             "plazo anterior: ${persDocTram.fechaLimiteRespuesta.format('dd-MM-yyyy HH:mm')}"
                     def log = "Ampliado el plazo" + l
-                    def log2 = "Ampliado el plazo ${para}" + l
+                    def log2 = para + l
 
                     //(String observacionOriginal, String accion, String solicitadoPor, String usuario, String texto, String nuevaObservacion)
                     def observacionOriginal = persDocTram.observaciones
                     def accion = "Ampliación de plazo"
                     def solicitadoPor = ""
-                    def usuario = "por " + session.usuario.login
+                    def usuario = "por: " + session.usuario.login
                     def texto = log
                     def nuevaObservacion = ""
                     persDocTram.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
@@ -182,7 +183,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
     }
 
     def tablaBusquedaTramite() {
-
+//        def inicio = new Date()
         def persona = session.usuario.id
 
         if (params.fecha) {
@@ -227,13 +228,19 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
             maxResults(200)
         }
+//        println "registros....: ${res.size()}"
         def tramitesFiltrados = res.tramite.unique()
+//        println "registros.... filtrados: ${tramitesFiltrados.size()}"
         tramitesFiltrados.sort { it.codigo }
         def msg = ""
         if (tramitesFiltrados.size() > 20) {
             tramitesFiltrados = tramitesFiltrados[0..19]
             msg = "<div class='alert alert-danger'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 20 resultados. Por favor utilice los filtros.</div>"
         }
+
+//        def fin = new Date()
+//        println "${TimeCategory.minus(fin, inicio)}"
+
         return [tramites: tramitesFiltrados, persona: persona, msg: msg]
     }
 

@@ -1,5 +1,6 @@
 package happy.reportes
 
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
 import happy.tramites.Departamento
 import happy.tramites.EstadoTramite
@@ -14,7 +15,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
     def maxLvl = null
 
     def reporteRetrasadosConsolidadoDir() {
-        println "retrasados consol dir "+params
+//        def pruebasInicio = new Date()
+//        def pruebasFin
+
+//        println "retrasados consol dir "+params
         def datosGrafico = [:]
         def estadoR = EstadoTramite.findByCodigo("E004")
         def estadoE = EstadoTramite.findByCodigo("E003")
@@ -50,6 +54,10 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 "and rolPersonaTramite in (${rolPara.id},${rolCopia.id}) " +
                 "and estado in (${estadoR.id},${estadoE.id}) ${usuario ? extraPersona : ''} ")
 
+//        pruebasFin = new Date()
+//        println "tiempo... 1 reporteRetrasadosConsolidadoDir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
+
         if (pdt) {
             pdt.each { pd ->
                 pd.refresh()
@@ -62,6 +70,11 @@ class RetrasadosWebController extends happy.seguridad.Shield {
                 }
             }
         }
+
+        // este es el problema demora el 99% del reporte
+//        pruebasFin = new Date()
+//        println "tiempo...2 reporteRetrasadosConsolidadoDir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
 
         def total = 0
         def totalSr = 0
@@ -79,6 +92,7 @@ class RetrasadosWebController extends happy.seguridad.Shield {
 
         tabla += "<tbody>"
 
+//        println "+++++ hijos: $hijos"
         hijos.each { lvl ->
             if (puedeVer.size() == 0 || (puedeVer.id.contains(lvl["objeto"].id))) {
                 datosGrafico.put(lvl["objeto"].toString(), [:])
@@ -167,7 +181,12 @@ class RetrasadosWebController extends happy.seguridad.Shield {
         if (params.inicio)
             inicio = true
 
-        print("datos " + datos["objeto"] + "  " + datos["rezagados"] + "  " + datos["retrasados"])
+
+//        pruebasFin = new Date()
+//        println "tiempo...fin reporteRetrasadosConsolidadoDir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
+
+//        print("datos " + datos["objeto"] + "  " + datos["rezagados"] + "  " + datos["retrasados"])
         return [tabla: tabla, params: params, inicio: inicio]
     }
 
