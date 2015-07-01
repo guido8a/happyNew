@@ -239,6 +239,17 @@
 
                 var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
 
+                var paraMiDep = false;
+                var para = $tr.attr("para");
+                var respuestas = $tr.attr("respuestas");
+                var paras = para.split(",");
+                for (var i = 0; i < paras.length; i++) {
+                    var p = parseInt(paras[i]);
+                    if (p == ${session.usuario.departamentoId}) {
+                        paraMiDep = true;
+                    }
+                }
+
                 var infoRemitente = {
                     label           : 'Información remitente',
                     icon            : "fa fa-search",
@@ -563,7 +574,15 @@
                 %{--items.plazo = ampliarPlazo;--}%
                 %{--</g:if>--}%
                 %{--console.log(!externo && recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId));--}%
-                if (recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId)) {
+
+                %{--if (recibido && parseInt(anulados) == 0 && ${session.usuario.getPuedePlazo()} && parseInt("${session.usuario.departamentoId}") == parseInt(depId)) {--}%
+                %{--items.plazo = ampliarPlazo;--}%
+                %{--}--}%
+
+                %{--console.log(paras, ${session.usuario.departamentoId}, paraMiDep, respuestas, recibido, ${session.usuario.getPuedePlazo()});--}%
+
+                /* cambiado el 01-07-2015 de la version anterior ^ */
+                if (recibido && parseInt(respuestas) == 0 && ${session.usuario.puedePlazo} && paraMiDep) {
                     items.plazo = ampliarPlazo;
                 }
 

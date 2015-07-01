@@ -123,9 +123,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 if (fecha != persDocTram.fechaLimiteRespuesta) {
                     def para = ""
                     if (persDocTram.departamento) {
-                        para = "para el dpto. " + persDocTram.departamento.codigo
+                        para = "para " + persDocTram.departamento.codigo
                     } else if (persDocTram.persona) {
-                        para = "para el usuario " + persDocTram.persona.login
+                        para = "para " + persDocTram.persona.login
                     }
                     para += " (${persDocTram.rolPersonaTramite.descripcion})"
 
@@ -138,7 +138,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     def observacionOriginal = persDocTram.observaciones
                     def accion = "Ampliación de plazo"
                     def solicitadoPor = ""
-                    def usuario = session.usuario.login
+                    def usuario = "por " + session.usuario.login
                     def texto = log
                     def nuevaObservacion = ""
                     persDocTram.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)

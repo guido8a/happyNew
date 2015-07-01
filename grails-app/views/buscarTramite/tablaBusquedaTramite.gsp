@@ -89,8 +89,15 @@ table {
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
+                    <g:set var="para" value="${tramite.para.persona ? tramite.para.persona.departamentoId : tramite.para.departamentoId}"/>
+                    <g:each in="${tramite.copias}" var="copia">
+                        <g:set var="para" value="${para + ',' + (copia.persona ? copia.persona?.departamentoId : copia.departamentoId)}"/>
+                    </g:each>
+
+                    <g:set var="respuestas" value="${tramite.respuestas.size()}"/>
+
                     <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}" anulados="${receptoresAnulados.size()}"
-                        dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}"
+                        dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
                         %{--<td style="width: 110px">--}%
@@ -149,6 +156,19 @@ table {
                                     <g:elseif test="${tramite.para.departamento}">
                                         ${tramite.para.departamento.descripcion}
                                     </g:elseif>
+                                </g:if>
+                                <g:if test="${tramite.copias && tramite.copias.size() > 0}">
+                                    <span class="small">
+                                        <strong>CC:</strong>
+                                        <g:each in="${tramite.copias}" var="c" status="i">
+                                            <g:if test="${c.persona}">
+                                                ${c.persona.nombre} ${c.persona.apellido} (${c.persona.departamento?.codigo})${i < tramite.copias.size() - 1 ? ', ' : ''}
+                                            </g:if>
+                                            <g:elseif test="${c.departamento}">
+                                                ${c.departamento.codigo}${i < tramite.copias.size() - 1 ? ', ' : ''}
+                                            </g:elseif>
+                                        </g:each>
+                                    </span>
                                 </g:if>
                             </g:else>
                         </td>
