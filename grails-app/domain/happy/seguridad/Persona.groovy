@@ -106,8 +106,14 @@ class Persona {
     }
 
     def puedePermiso(String codigoPermiso) {
-//        println "puede permiso " + codigoPermiso + "    " + this.permisos + "   " + this.permisos.codigo
+//        if (id == 5513L) {
+//            println "puede permiso " + codigoPermiso + "    " + this.permisos + "   " + this.permisos.codigo
+//        }
         if (this.permisos.size() > 0) {
+
+//            if (id == 5513L) {
+//                println "AQUI"
+//            }
             def perm = null
             this.permisos.each {
                 if (!perm) {
@@ -115,7 +121,9 @@ class Persona {
                         perm = PermisoUsuario.findAllByPermisoTramiteAndPersona(it, this)
                         def perm2 = null
                         perm.each { pr ->
-//                            println "${pr.id} "+pr.permisoTramite.descripcion + "   " + pr.estaActivo
+//                            if (id == 5513L) {
+//                                println "${pr.id} " + pr.permisoTramite.descripcion + "   " + pr.estaActivo
+//                            }
                             if (!pr.estaActivo) {
                                 perm2 = null
                             } else {
@@ -130,14 +138,20 @@ class Persona {
             }
             if (perm) {
                 if (perm.estaActivo) {
-//                    println "\ttrue"
+//                    if (id == 5513L) {
+//                        println "\ttrue"
+//                    }
                     return true
                 } else {
-//                    println "\tfalse"
+//                    if (id == 5513L) {
+//                        println "\tfalse"
+//                    }
                     return false
                 }
             } else {
-//                println "\tfalse"
+//                if (id == 5513L) {
+//                    println "\tfalse"
+//                }
                 return false
             }
         } else {
@@ -146,7 +160,14 @@ class Persona {
                 eq("permisoTramite", PermisoTramite.findByCodigo(codigoPermiso))
             }
             def perms = perm.findAll { it.estaActivo }
-//            println "\t"+(perms.size() > 0)
+//            if (id == 5513L) {
+//                perm.each {
+//                    println "\t\t" + it.permisoTramite.descripcion + "  " + it.fechaInicio + " - " + it.fechaFin + "   " + it.estaActivo
+//                }
+//            }
+//            if (id == 5513L) {
+//                println "\t" + (perms.size() > 0)
+//            }
             return perms.size() > 0
         }
     }

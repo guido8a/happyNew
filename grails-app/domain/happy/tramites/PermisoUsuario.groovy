@@ -48,8 +48,14 @@ class PermisoUsuario {
     boolean getEstaActivo() {
         def now = new Date()
 
-        def fi = new Date().parse("dd-MM-yyyy HH:mm", fechaInicio.format("dd-MM-yyyy 00:01"))
-        def ff = fechaFin ? new Date().parse("dd-MM-yyyy HH:mm", fechaFin.format("dd-MM-yyyy 23:59")) : null
+//        def fi = new Date().parse("dd-MM-yyyy HH:mm", fechaInicio.format("dd-MM-yyyy 00:01"))
+//        def ff = fechaFin ? new Date().parse("dd-MM-yyyy HH:mm", fechaFin.format("dd-MM-yyyy 23:59")) : null
+        def fi = fechaInicio
+        def ff = fechaFin
+
+//        if (persona.id == 5513L) {
+//            println "\t\t" + permisoTramite.descripcion + " fecha ini: " + fi + "   fecha fin: " + ff + "  now: " + now
+//        }
 
 //        println "permiso esta activo? now=" + now + "   fi=" + fi + "   ff=" + ff +
 //                "   (ff == null)=" + (ff == null) + "   (fi <= now)=" +
@@ -58,10 +64,12 @@ class PermisoUsuario {
 //                "   (fechaFin?.clearTime() > now.clearTime())=" + (ff > now) +
 //                "   if2=" + (fi <= now && ff > now)
 
-        if (ff == null && fi <= now)
+        if (ff == null && fi <= now) {
             return true
-        if (fi <= now && ff > now)
+        }
+        if (fi <= now && ff > now) {
             return true
+        }
         return false
 //        return (this.fechaInicio <= now && this.fechaFin == null)
 //        return (this.fechaInicio <= now && (this.fechaFin >= now || this.fechaFin == null))
