@@ -155,7 +155,7 @@ class RetrasadosExcelController extends Shield{
                 if (lvl["tramites"].size() > 0) {
                     def triangulo=""
                     if(lvl["triangulos"] && lvl["triangulos"].size()>0){
-                        triangulo = lvl["triangulos"].get(0)+" (Oficina)"
+                        triangulo = lvl["triangulos"].get(0).toString()+" (Oficina)"
                     }else{
                         triangulo="Oficina"
                     }
@@ -163,7 +163,7 @@ class RetrasadosExcelController extends Shield{
                     lvl["tramites"].each { t ->
                         num++
                         row = sheet.createRow((short) num);
-                        row.createCell((int) 1).setCellValue(${(t.fechaRecepcion)?'Retrasado':'Sin recepción'})
+                        row.createCell((int) 1).setCellValue("${(t.fechaRecepcion)?'Retrasado':'Sin recepción'}")
                         row.createCell((int) 0).setCellValue(triangulo)
                         row.createCell((int) 2).setCellValue("${t.tramite.codigo} ${t.rolPersonaTramite.codigo == 'R002' ? '[CC]' : ''}")
                         row.createCell((int) 3).setCellValue("${t.tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}")
