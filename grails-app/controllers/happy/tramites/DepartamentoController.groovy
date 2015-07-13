@@ -679,6 +679,16 @@ class DepartamentoController extends happy.seguridad.Shield {
             if (departamentoInstance) {
                 def personas = Persona.countByDepartamento(departamentoInstance)
                 if (personas == 0) {
+                    def tddp = TipoDocumentoDepartamento.findAllByDepartamento(departamentoInstance)
+                    if(tddp.size() > 0) {
+                        tddp.each {td ->
+                            try {
+                                td.delete(flush: true)
+                            } catch (e) {
+                                render "NO_No se pudo eliminar Tipo de Documento por Departamento."
+                            }
+                        }
+                    }
                     try {
                         departamentoInstance.delete(flush: true)
                         render "OK_Eliminación de Departamento exitosa."
