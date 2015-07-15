@@ -76,7 +76,7 @@
         </g:if>
 
     %{--${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''}--}%
-        <g:set var="copiasExternas" value="${tramite.copias.findAll { it.departamento.externo == 1 }}"/>
+        <g:set var="copiasExternas" value="${tramite.copias.findAll { it.departamento?.externo == 1 }}"/>
         <g:set var="externo" value=""/>
         <g:if test="${tramite.externo == '1'}">
             <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
