@@ -730,6 +730,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def departamento = persona?.departamento
 
+        //** forzar actualización de bloqueos al Actualizar
+        def job = new BloqueosJob()
+        job.executeRecibir(persona.departamento, session.usuario)
+        job = null
+        //** fin forzar actualización de bloqueos al Actualizar
+
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
 //        def rolImprimir = RolPersonaTramite.findByCodigo('I005');

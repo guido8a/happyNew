@@ -1,5 +1,6 @@
 package happy.tramites
 
+import groovy.time.TimeCategory
 import happy.seguridad.Persona
 
 
@@ -149,6 +150,10 @@ class BloqueosJob {
         def ahora = new Date()
 //        println "----------------------------------"
 //        println "bloqueo bandeja recibir!!! "+ahora
+
+//        def pruebasInicio = new Date()
+//        def pruebasFin
+
         def bloquear = []
         def bloquearUsu = []
         def warning = []
@@ -182,7 +187,7 @@ class BloqueosJob {
                                 bloquearUsu.add(pdt.persona)
                         }else if (!esRemoto(pdt)){ // no se bloquea de y para remotos
 //                        println "add bloquear dep "+pdt.departamento+" "+pdt.id
-                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}"
+//                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}"
                             if(!bloquear?.id?.contains(pdt.departamento?.id))
                                 bloquear.add(pdt.departamento)
                         }/*else{
@@ -232,6 +237,8 @@ class BloqueosJob {
             }
         }
 
+//        pruebasFin = new Date()
+//        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
 //        println "fin bloqueo bandeja salida recibir "+new Date()
     }
