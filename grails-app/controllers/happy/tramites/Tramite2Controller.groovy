@@ -670,6 +670,19 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
     }
 
+    def recibirExternoLista_ajax() {
+        def tramite = Tramite.get(params.id)
+        def copiasExternas = []
+        if (tramite.externo == '1') {
+            copiasExternas += tramite.para
+        }
+        copiasExternas += tramite.copias.findAll { it.departamento.externo == 1 }
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadosNo = [estadoAnulado, estadoArchivado]
+        return [tramite: tramite, copias: copiasExternas, estadosNo: estadosNo]
+    }
+
     def desenviarLista_ajax() {
         def tramite = Tramite.get(params.id)
         def estadoAnulado = EstadoTramite.findByCodigo("E006")

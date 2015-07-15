@@ -68,7 +68,6 @@
             </g:each>
         </g:else>
 
-
         <g:set var="desenviar" value=""/>
         <g:if test="${tramite.fechaEnvio}">
             <g:if test="${recibidos < enviados}">
@@ -76,9 +75,25 @@
             </g:if>
         </g:if>
 
+    %{--${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''}--}%
+        <g:set var="copiasExternas" value="${tramite.copias.findAll { it.departamento.externo == 1 }}"/>
+        <g:set var="externo" value=""/>
+        <g:if test="${tramite.externo == '1'}">
+            <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
+                <g:set var="externo" value="DEX"/>
+            </g:if>
+            <g:else>
+                <g:set var="externo" value="externo"/>
+            </g:else>
+        </g:if>
+
+        <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
+            <g:set var="externo" value="${externo} externoCC"/>
+        </g:if>
+
         <tr id="${tramite?.id}" data-id="${tramite?.id}"
             class="trTramite ${clase} ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
-            ${desenviar} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''} "
+            ${desenviar} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${externo} "
             codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
             principal="${tramite.tramitePrincipal}"
             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
@@ -92,6 +107,7 @@
                     <i class="fa fa-paperclip"></i>
                 </g:if>
                 ${tramite?.codigo}
+
             %{--<g:if test="${tramite?.anexo == 1}">--}%
             %{--<g:if test="${anexos > 0}">--}%
             %{--<i class="fa fa-paperclip" style="margin-left: 10px"></i>--}%
@@ -229,12 +245,12 @@
             my : "bottom center",
             at : "top center"
         },
-        show: {
-            solo: true
+        show     : {
+            solo : true
         },
-        hide: {
-            fixed: true,
-            delay: 300
+        hide     : {
+            fixed : true,
+            delay : 300
         }
     });
 

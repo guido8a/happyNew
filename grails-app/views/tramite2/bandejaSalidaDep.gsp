@@ -412,6 +412,7 @@
 
                 var esSumilla = $tr.hasClass("sumilla");
                 var esExterno = $tr.hasClass("externo");
+                var esExternoCC = $tr.hasClass("externoCC");
                 var esOficio = $tr.hasClass("OFI");
                 var tieneEstado = $tr.hasClass("estado");
                 var esDex = $tr.hasClass("DEX");
@@ -500,7 +501,7 @@
                     }
                 };
 
-                var recibirExterno = {
+                var recibirExterno_old = {
                     label  : 'Confirmar recepción',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
@@ -524,6 +525,89 @@
                             }
                         }); //ajax
 
+                    } //action
+                };
+
+                var recibirExterno = {
+                    label  : 'Confirmar recepción destinatarios externos',
+                    icon   : "fa fa-check-square-o",
+                    action : function (e) {
+                        $.ajax({
+                            type    : "POST",
+                            url     : '${createLink(action:'recibirExternoLista_ajax')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                //s.indexOf("oo") > -1
+                                var buttons = {};
+                                if (msg.indexOf("No puede") > -1) {
+                                    buttons.aceptar = {
+                                        label     : "Aceptar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                            openLoader();
+                                            location.reload(true);
+                                        }
+                                    }
+                                } else {
+                                    buttons.cancelar = {
+                                        label     : "Cancelar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    };
+                                    buttons.desenviar = {
+                                        label     : "<i class='fa fa-check-square-o'></i> Confirmar recepción",
+                                        className : "btn-default",
+                                        callback  : function () {
+                                            var ids = "";
+                                            $(".chkOne").each(function () {
+                                                if ($(this).hasClass("fa-check-square")) {
+                                                    if (ids != "") {
+                                                        ids += "_"
+                                                    }
+                                                    ids += $(this).attr("id");
+                                                }
+                                            });
+                                            if (ids) {
+                                                openLoader("");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(controller: 'externos', action:'recibirTramitesExternos_ajax')}',
+                                                    data    : {
+                                                        id  : id,
+                                                        ids : ids
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            setTimeout(function () {
+                                                                $("#bloqueo-warning").hide();
+                                                                location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                            }, 1000);
+                                                            cargarBandeja();
+                                                        } else {
+                                                            resetValues();
+                                                            closeLoader();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                log('No seleccionó ninguna persona', 'error');
+                                            }
+                                        }
+                                    };
+                                }
+
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : buttons
+                                });
+                            }
+                        });
                     } //action
                 };
 
@@ -792,7 +876,7 @@
                 if (esDex && porEnviar) {
                     items.enviarDex = enviarDex
                 }
-                if (esExterno && (enviado || tieneAlerta)) {
+                if ((esExterno && (enviado || tieneAlerta)) || esExternoCC) {
                     items.recibirExterno = recibirExterno
                 }
                 if (enviado || tieneAlerta) {
