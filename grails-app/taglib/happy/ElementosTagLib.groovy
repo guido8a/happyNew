@@ -153,13 +153,13 @@ class ElementosTagLib {
             attrs.id = attrs.name
         }
 
-        if (!attrs.tramite || !attrs.tramite.padre) {
-            tipos.remove(TipoDocumento.findByCodigo("SUM"))
-        } else {
-            if (attrs.esRespuesta?.toInteger() == 1) {
-                tipos.remove(TipoDocumento.findByCodigo("DEX"))
-            }
+//        if (!attrs.tramite || !attrs.tramite.padre) {
+//            tipos.remove(TipoDocumento.findByCodigo("SUM"))
+//        } else {
+        if (attrs.esRespuesta?.toInteger() == 1) {
+            tipos.remove(TipoDocumento.findByCodigo("DEX"))
         }
+//        }
 
         if (attrs.tipo && (attrs.tipo.toLowerCase() == "pers" || attrs.tipo.toLowerCase() == "personal")) {
             tipos.remove(TipoDocumento.findByCodigo("DEX"))
@@ -1006,11 +1006,17 @@ class ElementosTagLib {
         def action = (attrs.action ? attrs.action : (params.action ? params.action : "list"))
 
         def linkParams = [:]
-        if (attrs.params) linkParams.putAll(attrs.params)
+        if (attrs.params) {
+            linkParams.putAll(attrs.params)
+        }
 //        linkParams.offset = offset - max
         linkParams.max = max
-        if (params.sort) linkParams.sort = params.sort
-        if (params.order) linkParams.order = params.order
+        if (params.sort) {
+            linkParams.sort = params.sort
+        }
+        if (params.order) {
+            linkParams.order = params.order
+        }
 
         def linkTagAttrs = [action: action]
         if (attrs.controller) {
@@ -1220,16 +1226,22 @@ class ElementosTagLib {
                         writer << "class='" << message.encodeAsHTML() << "'"
                     } else if (keyValue && keys) {
                         def s = el.toString()
-                        if (s) writer << "class='" << s.encodeAsHTML() << "'"
+                        if (s) {
+                            writer << "class='" << s.encodeAsHTML() << "'"
+                        }
                     } else if (keyValue) {
                         writer << "class='" << keyValue.encodeAsHTML() << "'"
                     } else {
                         def s = el.toString()
-                        if (s) writer << "class='" << s.encodeAsHTML() << "'"
+                        if (s) {
+                            writer << "class='" << s.encodeAsHTML() << "'"
+                        }
                     }
                 } else {
                     def s = el.toString()
-                    if (s) writer << "class='" << s.encodeAsHTML() << "'"
+                    if (s) {
+                        writer << "class='" << s.encodeAsHTML() << "'"
+                    }
                 }
                 /** **********************************************************************************************************************************************************/
 
@@ -1248,16 +1260,22 @@ class ElementosTagLib {
                         writer << message.encodeAsHTML()
                     } else if (keyValue && keys) {
                         def s = el.toString()
-                        if (s) writer << s.encodeAsHTML()
+                        if (s) {
+                            writer << s.encodeAsHTML()
+                        }
                     } else if (keyValue) {
                         writer << keyValue.encodeAsHTML()
                     } else {
                         def s = el.toString()
-                        if (s) writer << s.encodeAsHTML()
+                        if (s) {
+                            writer << s.encodeAsHTML()
+                        }
                     }
                 } else {
                     def s = el.toString()
-                    if (s) writer << s.encodeAsHTML()
+                    if (s) {
+                        writer << s.encodeAsHTML()
+                    }
                 }
                 writer << '</option>'
                 writer.println()
