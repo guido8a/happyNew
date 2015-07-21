@@ -1699,6 +1699,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (params.paraExt2) {
             paramsTramite.paraExterno = params.paraExt2
         }
+        //println "PARAMS TRAM: " + paramsTramite
+        def tipoDocParaExterno = TipoDocumento.get(paramsTramite["tipoDocumento.id"])
+        if (paramsTramite.id) {
+            tipoDocParaExterno = Tramite.get(paramsTramite.id).tipoDocumento
+        }
+        if (tipoDocParaExterno.codigo == "DEX") {
+            paramsTramite.paraExterno = params.paraExt3
+        }
 
         paramsTramite.de = persona
         paramsTramite.deDepartamento = persona.departamento

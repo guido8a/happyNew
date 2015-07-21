@@ -429,7 +429,7 @@
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Institución/Remitente:</b>
-                            <g:textField name="paraExt" id="paraExt" class="form-control required" maxlength="127"
+                            <g:textField name="paraExt3" id="paraExt3" class="form-control required" maxlength="127"
                                          value="${tramite.paraExterno}"/>
                             %{--<g:textField name="origen.nombre" id="nombreOrigen" class="origenTram form-control required" maxlength="127"--}%
                             %{--value="${origen?.nombre}"/>--}%
@@ -1082,6 +1082,7 @@
                             log("No ha ingresado ningun destinatario!", 'error')
                         } else {
                             $("#hiddenCC").val(cc);
+                            console.log($(".frmTramite"), $(".frmTramite").serialize());
                             $(".frmTramite").submit();
                         }
 
