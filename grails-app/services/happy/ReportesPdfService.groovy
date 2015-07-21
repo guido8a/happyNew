@@ -299,7 +299,7 @@ class ReportesPdfService {
         def chunkLeyenda = new Chunk(leyenda, fontEncabezado)
         def chunkPieDireccion = new Chunk("Manuel Larrea N13-45 y Antonio Ante • Teléfonos troncal: (593-2) 2527077 • 2549163 • ", fontPiePagina)
         def chunkPieWeb = new Chunk("www.pichincha.gob.ec", fontPiePaginaBold)
-        def chunkNumPag = new Chunk(espacio + "pág. ")
+        def chunkNumPag = new Chunk(espacio + "pág. ", fontPiePagina)
 
         Image logo = Image.getInstance(imagen);
         logo.setAlignment(Image.LEFT);
@@ -318,7 +318,7 @@ class ReportesPdfService {
         paragraphHeader.add(new Paragraph(phraseHeader))
         paragraphHeader.add(new Paragraph("SISTEMA DE ADMINISTRACIÓN DOCUMENTAL", fontSubtituloGad))
         paragraphHeader.add(new Paragraph(tituloReporte, fontSubtituloGad))
-        def parFecha = new Paragraph("Reporte generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy").toString(), fontFecha)
+        def parFecha = new Paragraph("Reporte generado el " + util.fechaConFormato(fecha: new Date(), formato: "dd MMMM yyyy HH:mm:ss").toString(), fontFecha)
         parFecha.setAlignment(Element.ALIGN_RIGHT)
         parFecha.setSpacingAfter(15)
         paragraphHeader.add(parFecha)
@@ -330,7 +330,7 @@ class ReportesPdfService {
 
 //        println "AQUI::::::::::::::::::::::::::"
 
-        Phrase phrasePiePagina = new Phrase();
+        Phrase phrasePiePagina = new Phrase("", fontFooter);
         phrasePiePagina.add(chunkPieDireccion)
         phrasePiePagina.add(chunkPieWeb)
         phrasePiePagina.add(chunkNumPag)
@@ -701,10 +701,11 @@ class ReportesPdfService {
                         }
 
                         if (actual["personas"].size() == 0) {
-                            if (!pdt.fechaRecepcion)
+                            if (!pdt.fechaRecepcion) {
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                            else
+                            } else {
                                 actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                            }
                             actual["personas"] = actual["personas"].sort { it.objeto.nombre }
 //                            actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                         } else {
@@ -715,17 +716,19 @@ class ReportesPdfService {
                                 }
                             }
                             if (per) {
-                                if (!pdt.fechaRecepcion)
+                                if (!pdt.fechaRecepcion) {
                                     per["retrasados"]++
-                                else
+                                } else {
                                     per["rezagados"]++
+                                }
                                 per["tramites"].add(pdt)
                                 per["tramites"] = per["tramites"].sort { it.fechaEnvio }
                             } else {
-                                if (!pdt.fechaRecepcion)
+                                if (!pdt.fechaRecepcion) {
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                                else
+                                } else {
                                     actual["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                                }
                                 actual["personas"] = actual["personas"].sort { it.objeto.nombre }
 //                                actual["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                             }
@@ -783,10 +786,11 @@ class ReportesPdfService {
                         temp["tramites"] = temp["tramites"].sort { it.fechaEnvio }
 
                     } else {
-                        if (!pdt.fechaRecepcion)
+                        if (!pdt.fechaRecepcion) {
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 1, "rezagados": 0])
-                        else
+                        } else {
                             temp["personas"].add(["id": pdt.persona.id.toString(), "objeto": pdt.persona, "tramites": [pdt], "retrasados": 0, "rezagados": 1])
+                        }
                         temp["personas"] = temp["personas"].sort { it.objeto.nombre }
 //                    temp["personas"].add(["id":pdt.persona.id.toString(),"objeto":pdt.persona,"tramites":[pdt],"retrasados":0,"rezagados":0])
                     }

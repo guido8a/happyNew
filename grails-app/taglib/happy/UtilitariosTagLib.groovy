@@ -159,6 +159,9 @@ class UtilitariosTagLib {
                 case "dd MMMM yyyy":
                     strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
                     break;
+                case "dd MMMM yyyy HH:mm:ss":
+                    strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy") + " a las " + fecha.format("HH:mm:ss")
+                    break;
                 case "CCC, dd MMMM yyyy":
                     strFecha = attrs.ciudad + ", " + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
                     break;
@@ -173,10 +176,11 @@ class UtilitariosTagLib {
 
     def textoTramite = { attrs ->
         def tramite = Tramite.get(attrs.tramite)
-        if (tramite.texto)
+        if (tramite.texto) {
             out << util.clean(str: tramite.texto)
-        else
+        } else {
             out << ""
+        }
     }
 
     def renderHTML = { attrs ->
