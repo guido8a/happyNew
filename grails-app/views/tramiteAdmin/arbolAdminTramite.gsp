@@ -468,6 +468,7 @@
                                 %{--};--}%
                             }
                         }
+                        //quitado el 21-07-2015
 //                        if (estaEnviado) {
                         items.anular = {
                             label  : "Anular",
