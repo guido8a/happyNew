@@ -148,6 +148,7 @@ class LoginController {
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
 //                println "pone valores " + session.usuario
+//                println  "sesion ingreso: $session.id"  //activo
                 def perf = Sesn.findAllByUsuario(user)
                 def perfiles = []
                 perf.each { p ->
@@ -326,6 +327,7 @@ class LoginController {
     }
 
     def logout() {
+//        println "sesion out: $session.id"  //activo
         session.usuario = null
         session.perfil = null
         session.permisos = null
@@ -333,6 +335,7 @@ class LoginController {
         session.an = null
         session.cn = null
         session.invalidate()
+
         redirect(controller: 'login', action: 'login')
     }
 

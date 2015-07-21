@@ -212,7 +212,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
         }
-        println "ANTES DEL SAVE " + paramsTramite
+//        println "ANTES DEL SAVE " + paramsTramite
         tramite.properties = paramsTramite
         if (tramite.tipoDocumento.codigo == "DEX") {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
