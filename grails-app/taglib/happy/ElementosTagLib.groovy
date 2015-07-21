@@ -283,6 +283,7 @@ class ElementosTagLib {
     }
 
     def headerTramite = { attrs ->
+        println "HEADER: " + attrs
         def tramite = attrs.tramite
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')
@@ -357,7 +358,9 @@ class ElementosTagLib {
                     html += "                    ${tramite.de.departamento.descripcion}"
 
                 } else {
-                    html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+                    //cambiado el 21-07-2015
+//                    html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
+                    html += "                    ${tramite.de.departamento.descripcion}"
                 }
 
             }
@@ -433,7 +436,9 @@ class ElementosTagLib {
                 if (tramite.tipoDocumento.codigo == "DEX") {
                     html += "<td>${tramite.paraExterno} (ext.)</td>"
                 } else {
-                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                    //cambiado el 21-07-2015
+//                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                    html += "<td>${tramite.de.departamento.descripcion}</td>"
                 }
                 html += "</tr>"
                 //fecha
