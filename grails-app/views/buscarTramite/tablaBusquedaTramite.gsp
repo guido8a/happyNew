@@ -85,9 +85,10 @@ table {
                         <g:set var="clase" value="${clase + ' externo'}"/>
                     </g:if>
 
-                    <g:if test="${tramite.deId == session.usuario.id}">
+                    <g:if test="${tramite.deId == session.usuario.id || tramite.deDepartamentoId == session.departamento.id}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
+
 
                     <g:set var="para" value="${tramite.para.persona ? tramite.para.persona.departamentoId : tramite.para.departamentoId}"/>
                     <g:each in="${tramite.copias}" var="copia">

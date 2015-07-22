@@ -879,7 +879,7 @@
                 if ((esExterno && (enviado || tieneAlerta)) || esExternoCC) {
                     items.recibirExterno = recibirExterno
                 }
-                if (enviado || tieneAlerta) {
+                if (enviado || recibido || tieneAlerta) {
                     <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
                     </g:if>
