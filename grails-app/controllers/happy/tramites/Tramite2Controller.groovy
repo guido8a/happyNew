@@ -676,7 +676,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (tramite.externo == '1') {
             copiasExternas += tramite.para
         }
-        copiasExternas += tramite.copias.findAll { it.departamento.externo == 1 }
+        copiasExternas += tramite.copias.findAll { it?.departamento?.externo == 1 }
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
