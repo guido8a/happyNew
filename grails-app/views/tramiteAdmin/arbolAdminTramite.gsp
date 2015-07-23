@@ -120,6 +120,8 @@
 
                 var puedeDesanular = true;
 
+                var esAgregado = $node.hasClass("agregado");
+
                 if (esCopia) {
                     var para = $(".para.t" + tramiteId);
                     if (para.hasClass("anulado")) {
@@ -622,12 +624,12 @@
                             };
                         }
                     }
-//                    console.log(estaAnulado, tienePadre, padreEstaArchivado, padreEstaRecibido, padreEstaAnulado);
-//                    console.log(estaAnulado, !tienePadre, padreEstaArchivado || padreEstaRecibido, !padreEstaAnulado);
-//                    console.log(estaAnulado, !tienePadre || (padreEstaArchivado || padreEstaRecibido), !padreEstaAnulado);
-//                    console.log(estaAnulado, !tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado));
-//                    console.log(estaAnulado && (!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado)));
-                    if (estaAnulado && (!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado))) {
+//                    console.log("anulado", estaAnulado, "tiene padre", tienePadre, "padre archivado", padreEstaArchivado, "padre recibido", padreEstaRecibido, "padre anulado", padreEstaAnulado);
+//                    console.log("anulado", estaAnulado, "!tiene padre", !tienePadre, "padre archivado or padre recibido", padreEstaArchivado || padreEstaRecibido, "!padre anulado", !padreEstaAnulado);
+//                    console.log("anulado", estaAnulado, "!tiene padre or (padre archivado or padre recibido)", !tienePadre || (padreEstaArchivado || padreEstaRecibido), "!padre anulado", !padreEstaAnulado);
+//                    console.log("anulado", estaAnulado, "!tiene padre or ((padre archivado or padre recibido) and !padre anulado)", !tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado));
+//                    console.log("anulado and (!tiene padre or ((padre archivado or padre recibido) and !padre anulado))", estaAnulado && (!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado)));
+                    if (estaAnulado && ((!tienePadre || ((padreEstaArchivado || padreEstaRecibido) && !padreEstaAnulado)) || esAgregado)) {
                         if (puedeDesanular) {
                             items.desAnular = {
                                 separator_before : true,

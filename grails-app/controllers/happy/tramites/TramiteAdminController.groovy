@@ -819,6 +819,10 @@ class TramiteAdminController extends Shield {
         }
         rel += estado
 
+        if (pdt.tramite.esRespuestaNueva != "S") {
+            clase += " agregado"
+        }
+
         def rol = pdt.rolPersonaTramite
         def duenioPrsn = pdt.tramite.de.id
         def duenioDpto = pdt.tramite.deDepartamento?.id
@@ -845,6 +849,7 @@ class TramiteAdminController extends Shield {
             //false: no tiene hijos vivos
             clase += " tieneHijos"
         }
+//        println "****** " + pdt.tramite + "   " + pdt.tramite.padre
         if (pdt.tramite.padre) {
             clase += " tienePadre"
         }
