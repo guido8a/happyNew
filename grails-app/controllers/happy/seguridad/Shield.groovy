@@ -49,8 +49,10 @@ class Shield {
 //            }
             def usu = Persona.get(session.usuario.id)
             if (usu.estaActivo) {
+
 //                println "AQUI??????"
-//                println controllerName + "    " + actionName
+//                println "controlador: $controllerName acción: $actionName"
+
                 session.departamento = Departamento.get(session.departamento.id).refresh()
                 def perms = session.usuario.permisos
                 session.usuario = Persona.get(session.usuario.id).refresh()

@@ -4,6 +4,7 @@ class InicioController extends happy.seguridad.Shield {
     def dbConnectionService
 
     def index() {
+/*
         if (session.usuario.getPuedeDirector()) {
             redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])
         } else {
@@ -13,6 +14,7 @@ class InicioController extends happy.seguridad.Shield {
             }
 
         }
+*/
     }
 
     def parametros = {

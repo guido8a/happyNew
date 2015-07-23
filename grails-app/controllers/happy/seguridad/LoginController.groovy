@@ -222,7 +222,10 @@ class LoginController {
 
                         if (count > 0)
                             redirect(controller: 'alertas', action: 'list')
-                        else {//
+                        else {// llama a reporte
+                            redirect(controller: 'inicio', action: 'index')
+
+/*
                             if (session.usuario.getPuedeDirector()) {
                                 redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])
                             } else {
@@ -233,6 +236,8 @@ class LoginController {
                                 }
 
                             }
+*/
+
                         }
 //                    redirect(controller: cn, action: an)
 

@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona" %>
+
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <title>S.A.D. Web</title>
@@ -18,10 +20,26 @@
         border: none;
 
     }
+    .item_doble {
+        width: 660px;
+        height: 360px;
+        float: left;
+        margin: 4px;
+        font-family: 'open sans condensed';
+        border: none;
+
+    }
 
     .imagen {
         width: 160px;
         height: 160px;
+        margin: auto;
+        margin-top: 10px;
+    }
+
+    .imagen_doble {
+        width: 640px;
+        height: 330px;
         margin: auto;
         margin-top: 10px;
     }
@@ -49,7 +67,6 @@
         /*background-color: #317fbf; */
         background-color: rgba(200, 200, 200, 0.9);
         border: none;
-
     }
 
     .desactivado {
@@ -73,6 +90,8 @@
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA<br/>
         Sistema de Administración de Documentos</h2>
     </div>
+
+    <g:if test="${!(session.usuario.getPuedeDirector() || session.usuario.getPuedeJefe())}">
 
     <div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 40px;height: 280px; ">
     %{--<div class="body ui-corner-all" style="width: 575px;position: relative;margin: auto;margin-top: 0px;height: 280px; background: #40709a;">--}%
@@ -113,15 +132,27 @@
         </div>
     </a>
 
+    </g:if>
 
-        %{--<g:if test="${prms.contains('seguimientoExternos')}">--}%
-        %{--<a href= "${createLink(controller:'busquedaExternos', action: 'seguimientoExternos')}" style="text-decoration: none">--}%
-        %{--</g:if>--}%
-        %{--<div class="ui-corner-all item fuera">--}%
-        %{--<div class="ui-corner-all ui-widget-content item">--}%
-        %{--<div class="imagen">--}%
-        %{--<img src="${resource(dir: 'images', file: 'ingreso.jpeg')}" width="100%" height="100%"/>--}%
-        %{--</div>--}%
+        <g:if test="${session.usuario.getPuedeDirector()}">
+        <a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidadoDir',
+                params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])}" style="text-decoration: none">
+        <div class="ui-corner-all item_doble fuera" style="margin-left: 150px;">
+        <div class="ui-corner-all ui-widget-content item_doble">
+        <div class="imagen_doble">
+        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="100%" height="100%"/>
+        </div>
+        </g:if>
+
+        <g:if test="${session.usuario.getPuedeJefe()}">
+        <a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidado',
+                params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1"])}" style="text-decoration: none">
+        <div class="ui-corner-all item_doble fuera" style="margin-left: 150px;">
+        <div class="ui-corner-all ui-widget-content item_doble">
+        <div class="imagen_doble">
+        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="100%" height="100%"/>
+        </div>
+        </g:if>
 
         %{--<div class="texto"><b>Trámites externos</b>: recepción de documentos externos</div>--}%
         %{--</div>--}%
