@@ -56,6 +56,8 @@ class Tramite {
 
     Tramite agregadoA = null
 
+    String mail
+
     def diasLaborablesService
 
     static mapping = {
@@ -111,6 +113,7 @@ class Tramite {
             esRespuestaNueva column: 'trmtesrn'
 
             agregadoA column: 'trmtagrg'
+            mail column: 'trmtmail'
         }
     }
     static constraints = {
@@ -152,6 +155,8 @@ class Tramite {
         esRespuestaNueva(blank: true, nullable: true, maxSize: 1)
 
         agregadoA(blank: true, nullable: true)
+
+        mail(blank: true, nullable: true, maxSize: 40)
     }
 
     def beforeValidate(List propertiesBeingValidated) {

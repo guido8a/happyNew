@@ -446,7 +446,7 @@
                         </span>
                     </div>
 
-                    <div class="col-xs-3 ">
+                    <div class="col-xs-2 ">
                         <span class="grupo">
                             <b>Teléfono:</b>
 
@@ -476,7 +476,7 @@
                     %{--</div>--}%
 
 
-                    <div class="col-xs-3 ">
+                    <div class="col-xs-2 ">
                         <span class="grupo">
                             <b>Contacto:</b>
                             <g:textField id="contacto" name="tramite.contacto" class="form-control required" maxlength="31"
@@ -485,6 +485,13 @@
                             %{--value="${origen?.nombreContacto}"/>--}%
                         </span>
                     </div>
+                <div class="col-xs-2 ">
+                    <span class="grupo">
+                        <b>Email:</b>
+                        <g:textField id="mail" name="tramite.mail" class="form-control required email" maxlength="40"
+                                     value="${tramite.mail}"/>
+                    </span>
+                </div>
                 </div>
             </div>
         </g:form>

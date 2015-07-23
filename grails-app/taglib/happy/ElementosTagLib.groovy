@@ -291,8 +291,13 @@ class ElementosTagLib {
         def para = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolPara)
         def cc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolCC)
 
+//
+//        println("tramite " + tramite?.id)
+//        println("copiasf " + cc)
+
         def strPara = ""
         def strDepa = ""
+        def strCopia = ""
         para.each { p ->
             if (p.persona) {
                 if (strPara != "") {
@@ -308,6 +313,23 @@ class ElementosTagLib {
                 strPara += p.departamento.descripcion
             }
         }
+
+        cc.each { c->
+            if(c.persona){
+                if (strCopia != "") {
+                    strCopia += ", "
+                }
+                strCopia += util.nombrePersona(persona: c.persona)
+                strCopia += c.persona.departamento.descripcion
+            }
+            if (c.departamento) {
+                if (strCopia != "") {
+                    strCopia += ", "
+                }
+                strCopia += "(" + c.departamento.descripcion + ")"
+            }
+        }
+
         def html
 
         if (!attrs.pdf) {
@@ -345,6 +367,18 @@ class ElementosTagLib {
                 html += "                    </div>"
                 html += "                </div>"
             }
+//            //copias
+//            if(cc){
+//                html += "                <div class=\"row row-low-margin-top\">"
+//                html += "                    <div class=\"col-xs-1  negrilla negrilla-puntos\">"
+//                html += "                        CC:"
+//                html += "                    </div>"
+//                html += ""
+//                html += "                    <div class=\"col-xs-10  col-buen-height\">"
+//                html += strCopia
+//                html += "                    </div>"
+//                html += "                </div>"
+//            }
             //de
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
@@ -423,6 +457,29 @@ class ElementosTagLib {
                     }
 
                     html += "</td>"
+                    html += "</tr>"
+                }
+                //copias
+                if(cc){
+                    html += "<tr style=\"vertical-align: top\">"
+                    html += "<th>CC:</th>"
+//                    html += "<td>"
+                    cc.each {d->
+                        if(d.persona){
+                            html += "<tr>"
+                            html += util.nombrePersona(persona: d.persona)
+                            html += "("
+                            html += d.persona.departamento.descripcion
+                            html += ")"
+                            html += "</tr>"
+                        }
+                        if (d.departamento) {
+                            html += "<tr>"
+                            html += d.persona.departamento.descripcion
+                            html += "</tr>"
+                        }
+                    }
+//                    html += "                    </td>"
                     html += "</tr>"
                 }
                 //de
