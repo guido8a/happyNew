@@ -48,16 +48,20 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     }
 
     def cargaDocs() {
-
         def tramite = Tramite.get(params.id)
         if (tramite) {
             if (tramite.anexo == 1) {
                 def docs = DocumentoTramite.findAllByTramite(tramite)
                 def editable = false
-                if (tramite.estadoTramite.codigo == "E001" || tramite.estadoTramite.codigo == "E002")
+                if (tramite.estadoTramite.codigo == "E001" || tramite.estadoTramite.codigo == "E002") {
                     editable = true
-                if (params.ver)
+                }
+                if (tramite.tipoDocumento.codigo == "DEX") {
+                    editable = true
+                }
+                if (params.ver) {
                     editable = false
+                }
                 return [tramite: tramite, docs: docs, editable: editable]
             }
         }
@@ -70,8 +74,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
-            if (!departamento)
+            if (!departamento) {
                 departamento = doc.tramite.de.departamento
+            }
             if (doc.tramite.estadoTramite.codigo == "E001" || doc.tramite.estadoTramite.codigo == "E002") {
                 def band = true
                 try {
@@ -95,6 +100,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         }
 
     }
+
     def borrarDocNoFile() {
         if (request.getMethod() == "POST") {
             def doc = DocumentoTramite.get(params.id)
@@ -110,14 +116,14 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         if (request.getMethod() == "POST") {
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
-            def anio =doc.fecha.format("yyyy")
-            try{
+            def anio = doc.fecha.format("yyyy")
+            try {
                 def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
                 def file = new File(path)
                 def b = file.getBytes()
                 session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
                 render "ok"
-            }catch(e){
+            } catch (e) {
                 render "error"
             }
 
@@ -129,9 +135,10 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def descargarDoc() {
         def doc = DocumentoTramite.get(params.id)
         def departamento = doc.tramite.deDepartamento
-        def anio =doc.fecha.format("yyyy")
-        if (!departamento)
+        def anio = doc.fecha.format("yyyy")
+        if (!departamento) {
             departamento = doc.tramite.de.departamento
+        }
         if (session.key == (doc.path.size() + doc.descripcion?.encodeAsMD5().substring(0, 10))) {
             session.key = null
             def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
@@ -168,7 +175,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 response.setHeader("Content-disposition", "attachment; filename=" + (doc.path))
                 response.setContentLength(b.length)
                 response.getOutputStream().write(b)
-            }catch(e){
+            } catch (e) {
                 response.sendError(404)
             }
         } else {
@@ -180,7 +187,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     def uploadSvt() {
         def tramite = Tramite.get(params.id)
         def anio = new Date().format("yyyy")
-        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/"+anio+"/"+ tramite.codigo + "/"
+        def path = servletContext.getRealPath("/") + "anexos/${session.departamento.codigo}/" + anio + "/" + tramite.codigo + "/"
         //web-app/archivos
         new File(path).mkdirs()
         def f = request.getFile('file')  //archivo = name del input type file
@@ -192,6 +199,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
 
                 'application/pdf'                                                          : 'pdf',
                 'application/download'                                                     : 'pdf',
+                'application/vnd.ms-pdf'                                                   : 'pdf',
 
                 'application/excel'                                                        : 'xls',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'        : 'xlsx',

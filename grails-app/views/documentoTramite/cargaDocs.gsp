@@ -59,7 +59,6 @@
                         </div>
                     </div>
 
-
                 </div>
             </g:else>
         </g:each>
@@ -136,7 +135,7 @@
                     closeLoader()
                     if (msg == "ok") {
                         location.href = "${g.createLink(action: 'descargarDoc')}/" + id
-                    }else{
+                    } else {
                         bootbox.confirm("El archivo solicitado no se encuentra en el servidor. Desea borrar el anexo?", function (result) {
                             if (result) {
 //                    openLoader("Borrando")
