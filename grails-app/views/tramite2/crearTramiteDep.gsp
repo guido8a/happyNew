@@ -488,7 +488,7 @@
                 <div class="col-xs-2 ">
                     <span class="grupo">
                         <b>Email:</b>
-                        <g:textField id="mail" name="tramite.mail" class="form-control required email" maxlength="40"
+                        <g:textField id="mail" name="tramite.mail" class="form-control email" maxlength="40"
                                      value="${tramite.mail}"/>
                     </span>
                 </div>

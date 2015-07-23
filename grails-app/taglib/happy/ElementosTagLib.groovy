@@ -293,7 +293,7 @@ class ElementosTagLib {
 
 //
 //        println("tramite " + tramite?.id)
-//        println("copiasf " + cc)
+//        println "copiasf " + cc
 
         def strPara = ""
         def strDepa = ""
@@ -314,11 +314,12 @@ class ElementosTagLib {
             }
         }
 
-        cc.each { c->
+        cc.each { c ->
             if(c.persona){
                 if (strCopia != "") {
                     strCopia += ", "
                 }
+//                println "strCopia: $strCopia"
                 strCopia += util.nombrePersona(persona: c.persona)
                 strCopia += c.persona.departamento.descripcion
             }
@@ -475,7 +476,8 @@ class ElementosTagLib {
                         }
                         if (d.departamento) {
                             html += "<tr>"
-                            html += d.persona.departamento.descripcion
+//                            html += d.persona.departamento.descripcion
+                            html += d.departamento.descripcion
                             html += "</tr>"
                         }
                     }
