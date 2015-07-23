@@ -25,7 +25,9 @@ class RetrasadosWebController /*extends Shield */ {
             return
         }
 
-        def res = reportesTramitesRetrasadosService.datos(params.dpto)
+        def res1 = reportesTramitesRetrasadosService.datos(params.dpto)
+        def res = res1.res
+        def resGraph = res1.resGraph
 
         def tabla = "<table class='table table-bordered table-condensed tabl-hover'>"
         tabla += "<thead>"
@@ -43,7 +45,8 @@ class RetrasadosWebController /*extends Shield */ {
         tabla += "</tbody>"
         tabla += "</table>"
 
-        def resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, params.prsn)
+//        def jsonGraph = ""
+//        def resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, params.prsn)
         def jsonGraph = new JsonBuilder(resGraph)
 
         return [tabla: tabla, dep: Departamento.get(params.dpto.toLong()), jsonGraph: jsonGraph.toString(), params: params]
@@ -56,17 +59,20 @@ class RetrasadosWebController /*extends Shield */ {
         }
         def res = [], resGraph = [], dep = null, per = null
         if (params.dpto) {
-            res = reportesTramitesRetrasadosService.datos(params.dpto)
-            resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, null)
+            def res1 = reportesTramitesRetrasadosService.datos(params.dpto)
+            res = res1.res
+            resGraph = res1.resGraph
             dep = Departamento.get(params.dpto.toLong())
         } else if (params.prsn) {
             per = Persona.get(params.prsn)
             if (per.esTrianguloOff()) {
-                res = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
-                resGraph = reportesTramitesRetrasadosService.datosGraph(per.departamentoId, params.prsn)
+                def res1 = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+                res = res1.res
+                resGraph = res1.resGraph
             } else {
-                res = reportesTramitesRetrasadosService.datosPersona(params.prsn)
-                resGraph = reportesTramitesRetrasadosService.datosGraph(null, params.prsn)
+                def res1 = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+                res = res1.res
+                resGraph = res1.resGraph
             }
         }
         def jsonGraph = new JsonBuilder(resGraph)
@@ -188,8 +194,8 @@ class RetrasadosWebController /*extends Shield */ {
             fila += "</td>"
             fila += "<td>$nombre</td>"
         }
-        fila += "<td class='text-right'>$tr</td>"
-        fila += "<td class='text-right'>$tn</td>"
+        fila += "<td class='text-right ret'>$tr</td>"
+        fila += "<td class='text-right norec'>$tn</td>"
         fila += "</tr>"
         return fila
     }

@@ -179,15 +179,15 @@ class RetrasadosExcelController extends Shield {
         if (params.dpto) {
             def dep = Departamento.get(params.dpto.toLong())
             ttl += "\ndel dpto. $dep.descripcion ($dep.codigo)"
-            results = reportesTramitesRetrasadosService.datos(params.dpto)
+            results = reportesTramitesRetrasadosService.datos(params.dpto).res
         } else if (params.prsn) {
             def per = Persona.get(params.prsn.toLong())
             ttl += "\ndel usuario $per.nombre $per.apellido ($per.login)"
             if (per.esTrianguloOff()) {
                 ttl += "\n[Bandeja de entrada del departamento]"
-                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn).res
             } else {
-                results = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+                results = reportesTramitesRetrasadosService.datosPersona(params.prsn).res
             }
         }
 
@@ -256,15 +256,15 @@ class RetrasadosExcelController extends Shield {
         if (params.dpto) {
             def dep = Departamento.get(params.dpto.toLong())
             ttl += "\ndel dpto. $dep.descripcion ($dep.codigo)"
-            results = reportesTramitesRetrasadosService.datos(params.dpto)
+            results = reportesTramitesRetrasadosService.datos(params.dpto).res
         } else if (params.prsn) {
             def per = Persona.get(params.prsn.toLong())
             ttl += "\ndel usuario $per.nombre $per.apellido ($per.login)"
             if (per.esTrianguloOff()) {
                 ttl += "\n[Bandeja de entrada del departamento]"
-                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn).res
             } else {
-                results = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+                results = reportesTramitesRetrasadosService.datosPersona(params.prsn).res
             }
         }
         def path = servletContext.getRealPath("/") + "xls/"

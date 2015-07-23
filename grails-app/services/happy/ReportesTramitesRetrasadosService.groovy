@@ -49,105 +49,105 @@ class ReportesTramitesRetrasadosService {
         return [ret: sqlRet, norec: sqlNoRec]
     }
 
-    def datosGraph(depId, perId) {
-        def depStr = null
-
-        if (depId) {
-            depStr = departamentosPuedeVer(depId)
-        }
-
-        def sqls = armaSqls(depStr, perId)
-
-        def cn = dbConnectionService.getConnection()
-
-//        println "GRAPH"
-//        println sqls.ret
-//        println sqls.norec
-
-        def res = [:]
-        res.ret = [:]
-        res.norec = [:]
-        if (sqls.ret) {
-            cn.eachRow(sqls.ret.toString()) { r2 ->
-                def r = r2.toRowResult()
-                r.tipo = "ret"
-                // la lista de tramites retrasados se hace por el que recibe: dptopara
-                def dptoPara = "" + r.dptopara
-                def dep = null
-                // la lista de tramites retrasados se hace por el que recibe:  dptopara, dptopacd, dptopads, prsnpaid, prsnpara
-                if (!res.ret[dptoPara]) {
-                    dep = Departamento.get(dptoPara.toLong())
-                    res.ret[dptoPara] = [:]
-                    res.ret[dptoPara].nombre = dep.descripcion
-                    res.ret[dptoPara].codigo = dep.codigo
-                    res.ret[dptoPara].total = 0
-                    res.ret[dptoPara].det = [:]
-                }
-                res.ret[dptoPara].total++
-                if (r.dptopacd) {
-                    //es para la oficina
-                    if (!res.ret[dptoPara].det.oficina) {
-                        res.ret[dptoPara].det.oficina = [:]
-                        res.ret[dptoPara].det.oficina.nombre = "Oficina "
-                        res.ret[dptoPara].det.oficina.total = 0
-                    }
-                    res.ret[dptoPara].det.oficina.total++
-                } else {
-                    //es para persona
-                    def prsnPara = "" + r.prsnpaid
-                    if (!res.ret[dptoPara].det[prsnPara]) {
-                        def prsn = Persona.get(prsnPara.toLong())
-                        res.ret[dptoPara].det[prsnPara] = [:]
-                        res.ret[dptoPara].det[prsnPara].nombre = prsn.login
-                        res.ret[dptoPara].det[prsnPara].total = 0
-                    }
-                    res.ret[dptoPara].det[prsnPara].total++
-                }
-            }
-        }
-
-        if (sqls.norec) {
-            cn.eachRow(sqls.norec.toString()) { r2 ->
-                def r = r2.toRowResult()
-                r.tipo = "norec"
-                // la lista de trámites no recibidos se hace por quien envio: dpto__de
-                def dptoDe = "" + r.dpto__de
-                def dep = null
-                // la lista de trámites no recibidos se hace por quien envio: dptodedp, dpto__de, dptodecd, dptodeds, prsndeid, prsn__de
-                if (!res.norec[dptoDe]) {
-                    dep = Departamento.get(dptoDe.toLong())
-                    res.norec[dptoDe] = [:]
-                    res.norec[dptoDe].nombre = dep.descripcion
-                    res.norec[dptoDe].codigo = dep.codigo
-                    res.norec[dptoDe].total = 0
-                    res.norec[dptoDe].det = [:]
-                }
-                res.norec[dptoDe].total++
-                if (r.dptodedp) {
-                    //es del dpto
-                    if (!res.norec[dptoDe].det.oficina) {
-                        res.norec[dptoDe].det.oficina = [:]
-                        res.norec[dptoDe].det.oficina.nombre = "Oficina "
-                        res.norec[dptoDe].det.oficina.total = 0
-                    }
-                    res.norec[dptoDe].det.oficina.total++
-                } else {
-                    //es de persona
-                    def prsnDe = "" + r.prsndeid
-                    if (!res.norec[dptoDe].det[prsnDe]) {
-                        def prsn = Persona.get(prsnDe.toLong())
-                        res.norec[dptoDe].det[prsnDe] = [:]
-                        res.norec[dptoDe].det[prsnDe].nombre = prsn.login
-                        res.norec[dptoDe].det[prsnDe].total = 0
-                    }
-                    res.norec[dptoDe].det[prsnDe].total++
-                }
-            }
-        }
-
-        cn.close()
-        return res
-    }
+//    def datosGraph(depId, perId) {
+//        def depStr = null
+//
+//        if (depId) {
+//            depStr = departamentosPuedeVer(depId)
+//        }
+//
+//        def sqls = armaSqls(depStr, perId)
+//
+//        def cn = dbConnectionService.getConnection()
+//
+////        println "GRAPH"
+////        println sqls.ret
+////        println sqls.norec
+//
+//        def resGraph = [:]
+//        resGraph.ret = [:]
+//        resGraph.norec = [:]
+//        if (sqls.ret) {
+//            cn.eachRow(sqls.ret.toString()) { r2 ->
+//                def r = r2.toRowResult()
+//                r.tipo = "ret"
+//                // la lista de tramites retrasados se hace por el que recibe: dptopara
+//                def dptoPara = "" + r.dptopara
+//                def dep = null
+//                // la lista de tramites retrasados se hace por el que recibe:  dptopara, dptopacd, dptopads, prsnpaid, prsnpara
+//                if (!resGraph.ret[dptoPara]) {
+//                    dep = Departamento.get(dptoPara.toLong())
+//                    resGraph.ret[dptoPara] = [:]
+//                    resGraph.ret[dptoPara].nombre = dep.descripcion
+//                    resGraph.ret[dptoPara].codigo = dep.codigo
+//                    resGraph.ret[dptoPara].total = 0
+//                    resGraph.ret[dptoPara].det = [:]
+//                }
+//                resGraph.ret[dptoPara].total++
+//                if (r.dptopacd) {
+//                    //es para la oficina
+//                    if (!resGraph.ret[dptoPara].det.oficina) {
+//                        resGraph.ret[dptoPara].det.oficina = [:]
+//                        resGraph.ret[dptoPara].det.oficina.nombre = "Oficina "
+//                        resGraph.ret[dptoPara].det.oficina.total = 0
+//                    }
+//                    resGraph.ret[dptoPara].det.oficina.total++
+//                } else {
+//                    //es para persona
+//                    def prsnPara = "" + r.prsnpaid
+//                    if (!resGraph.ret[dptoPara].det[prsnPara]) {
+//                        def prsn = Persona.get(prsnPara.toLong())
+//                        resGraph.ret[dptoPara].det[prsnPara] = [:]
+//                        resGraph.ret[dptoPara].det[prsnPara].nombre = prsn.login
+//                        resGraph.ret[dptoPara].det[prsnPara].total = 0
+//                    }
+//                    resGraph.ret[dptoPara].det[prsnPara].total++
+//                }
+//            }
+//        }
+//
+//        if (sqls.norec) {
+//            cn.eachRow(sqls.norec.toString()) { r2 ->
+//                def r = r2.toRowResult()
+//                r.tipo = "norec"
+//                // la lista de trámites no recibidos se hace por quien envio: dpto__de
+//                def dptoDe = "" + r.dpto__de
+//                def dep = null
+//                // la lista de trámites no recibidos se hace por quien envio: dptodedp, dpto__de, dptodecd, dptodeds, prsndeid, prsn__de
+//                if (!resGraph.norec[dptoDe]) {
+//                    dep = Departamento.get(dptoDe.toLong())
+//                    resGraph.norec[dptoDe] = [:]
+//                    resGraph.norec[dptoDe].nombre = dep.descripcion
+//                    resGraph.norec[dptoDe].codigo = dep.codigo
+//                    resGraph.norec[dptoDe].total = 0
+//                    resGraph.norec[dptoDe].det = [:]
+//                }
+//                resGraph.norec[dptoDe].total++
+//                if (r.dptodedp) {
+//                    //es del dpto
+//                    if (!resGraph.norec[dptoDe].det.oficina) {
+//                        resGraph.norec[dptoDe].det.oficina = [:]
+//                        resGraph.norec[dptoDe].det.oficina.nombre = "Oficina "
+//                        resGraph.norec[dptoDe].det.oficina.total = 0
+//                    }
+//                    resGraph.norec[dptoDe].det.oficina.total++
+//                } else {
+//                    //es de persona
+//                    def prsnDe = "" + r.prsndeid
+//                    if (!resGraph.norec[dptoDe].det[prsnDe]) {
+//                        def prsn = Persona.get(prsnDe.toLong())
+//                        resGraph.norec[dptoDe].det[prsnDe] = [:]
+//                        resGraph.norec[dptoDe].det[prsnDe].nombre = prsn.login
+//                        resGraph.norec[dptoDe].det[prsnDe].total = 0
+//                    }
+//                    resGraph.norec[dptoDe].det[prsnDe].total++
+//                }
+//            }
+//        }
+//
+//        cn.close()
+//        return resGraph
+//    }
 
     def datos(depId) {
         return datos(depId, null)
@@ -171,6 +171,10 @@ class ReportesTramitesRetrasadosService {
 //        println "TABLAS"
 //        println sqls.ret
 //        println sqls.norec
+
+        def resGraph = [:]
+        resGraph.ret = [:]
+        resGraph.norec = [:]
 
         def res = [:]
         if (sqls.ret) {
@@ -202,6 +206,7 @@ class ReportesTramitesRetrasadosService {
                     nivel:1                                     nivel:2
                  */
 
+                // parte 1: mapa para hacer las tablas
                 def cadena = r.ruta.split(",")
                 // la lista de tramites retrasados se hace por el que recibe: dptopara
                 cadena += r.dptopara
@@ -260,6 +265,39 @@ class ReportesTramitesRetrasadosService {
                     rr.trams[kp].trams += r
                 }
 //            rr.trams += r
+
+                //parte 2: mapa para los graficos
+                // la lista de tramites retrasados se hace por el que recibe: dptopara
+                def dptoPara = "" + r.dptopara
+                // la lista de tramites retrasados se hace por el que recibe:  dptopara, dptopacd, dptopads, prsnpaid, prsnpara
+                if (!resGraph.ret[dptoPara]) {
+                    def dep = Departamento.get(dptoPara.toLong())
+                    resGraph.ret[dptoPara] = [:]
+                    resGraph.ret[dptoPara].nombre = dep.descripcion
+                    resGraph.ret[dptoPara].codigo = dep.codigo
+                    resGraph.ret[dptoPara].total = 0
+                    resGraph.ret[dptoPara].det = [:]
+                }
+                resGraph.ret[dptoPara].total++
+                if (r.dptopacd) {
+                    //es para la oficina
+                    if (!resGraph.ret[dptoPara].det.oficina) {
+                        resGraph.ret[dptoPara].det.oficina = [:]
+                        resGraph.ret[dptoPara].det.oficina.nombre = "Oficina "
+                        resGraph.ret[dptoPara].det.oficina.total = 0
+                    }
+                    resGraph.ret[dptoPara].det.oficina.total++
+                } else {
+                    //es para persona
+                    def prsnPara = "" + r.prsnpaid
+                    if (!resGraph.ret[dptoPara].det[prsnPara]) {
+//                        def prsn = Persona.get(prsnPara.toLong())
+                        resGraph.ret[dptoPara].det[prsnPara] = [:]
+                        resGraph.ret[dptoPara].det[prsnPara].nombre = r.prsnpalg
+                        resGraph.ret[dptoPara].det[prsnPara].total = 0
+                    }
+                    resGraph.ret[dptoPara].det[prsnPara].total++
+                }
             }
         }
 
@@ -291,6 +329,7 @@ class ReportesTramitesRetrasadosService {
                     ruta:11,                                                    ruta:11,728,
                     nivel:1                                                     nivel:2
                  */
+                //parte 1: mapa para las tablas
                 def cadena = r.ruta.split(",")
                 // la lista de trámites no recibidos se hace por quien envio: dpto__de
                 cadena += r.dpto__de
@@ -362,10 +401,43 @@ class ReportesTramitesRetrasadosService {
                 }
 
 //            rr.trams += r
+
+                //parte 2: mapa para los graficos
+                // la lista de trámites no recibidos se hace por quien envio: dpto__de
+                def dptoDe = "" + r.dpto__de
+                // la lista de trámites no recibidos se hace por quien envio: dptodedp, dpto__de, dptodecd, dptodeds, prsndeid, prsn__de
+                if (!resGraph.norec[dptoDe]) {
+                    def dep = Departamento.get(dptoDe.toLong())
+                    resGraph.norec[dptoDe] = [:]
+                    resGraph.norec[dptoDe].nombre = dep.descripcion
+                    resGraph.norec[dptoDe].codigo = dep.codigo
+                    resGraph.norec[dptoDe].total = 0
+                    resGraph.norec[dptoDe].det = [:]
+                }
+                resGraph.norec[dptoDe].total++
+                if (r.dptodedp) {
+                    //es del dpto
+                    if (!resGraph.norec[dptoDe].det.oficina) {
+                        resGraph.norec[dptoDe].det.oficina = [:]
+                        resGraph.norec[dptoDe].det.oficina.nombre = "Oficina "
+                        resGraph.norec[dptoDe].det.oficina.total = 0
+                    }
+                    resGraph.norec[dptoDe].det.oficina.total++
+                } else {
+                    //es de persona
+                    def prsnDe = "" + r.prsndeid
+                    if (!resGraph.norec[dptoDe].det[prsnDe]) {
+//                        def prsn = Persona.get(prsnDe.toLong())
+                        resGraph.norec[dptoDe].det[prsnDe] = [:]
+                        resGraph.norec[dptoDe].det[prsnDe].nombre = r.prsndelg
+                        resGraph.norec[dptoDe].det[prsnDe].total = 0
+                    }
+                    resGraph.norec[dptoDe].det[prsnDe].total++
+                }
             }
         }
 //        println res
         cn.close()
-        return res
+        return [res: res, resGraph: resGraph]
     }
 }

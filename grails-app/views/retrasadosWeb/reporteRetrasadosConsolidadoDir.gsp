@@ -61,36 +61,11 @@
             var jsonGraph = ${raw(jsonGraph)};
 
             function getData(tipo) {
-//                var data = [], arr = [];
-//                var deps = $(".data.dir." + tipo).size();
-//                var totalDirs = $(".data.dir").size();
-//                var title = tipo == "tn" ? "<p class='text-danger'><strong> Trámites sin recepción " : "<p class='text-warning'><strong>Trámites retrasados";
-//                title += (totalDirs > 1 ? " por dirección </strong></p>" : "");
-//                $("#tb").find("tr").each(function () {
-//                    var $tr = $(this);
-//                    var valor = $tr.data(tipo);
-//                    if (valor) {
-//                        if (totalDirs == 1) {
-//                            if ($tr.data("tipo") == "per") {
-//                                arr = [$tr.data("value"), valor];
-//                                data.push(arr);
-//                            } else {
-//                                title += " de " + $tr.data("value");
-//                                arr = [$tr.data("value"), valor];
-//                                data.push(arr);
-//                            }
-//                        } else {
-//                            if ($tr.data("tipo") == "dir") {
-//                                arr = [$tr.data("value"), valor];
-//                                data.push(arr);
-//                            }
-//                        }
-//                    }
-//                });
+//                console.log(jsonGraph);
 
-                console.log(jsonGraph);
+                var limiteCant = 15;
+                var limitePorc = 5;
 
-                var arr = [];
                 var title = tipo == "norec" ? "<p class='text-danger'><strong> Trámites sin recepción " : "<p class='text-warning'><strong>Trámites retrasados";
                 var json = jsonGraph[tipo];
 //                    console.log(tipo, data, json, Object.keys(json), Object.keys(json).length);
@@ -104,23 +79,53 @@
                 title += (cant > 1 ? " por departamento </strong></p>" : "");
                 </g:else>
 
+                var totalOtros = 0;
+                var conOtros = false;
+                if (cant > limiteCant) {
+                    conOtros = true;
+                }
+
+                var total = $(".prefectura").find("." + tipo).text();
+
                 $.each(json, function (k, v) {
 //                        console.log(k, v, v.codigo);
+                    var prct = (v.total * 100) / total;
                     if (cant > 1) {
-                        arr = [v.codigo, v.total];
-                        dataOk.push(arr);
+                        if (conOtros && prct < limitePorc) {
+                            totalOtros += v.total;
+                        } else {
+                            var arr = [v.codigo, v.total];
+                            dataOk.push(arr);
+                        }
                     } else {
+                        cant = Object.keys(v.det).length;
+                        totalOtros = 0;
+                        conOtros = false;
+                        if (cant > limiteCant) {
+                            conOtros = true;
+                        }
                         $.each(v.det, function (k1, v1) {
+                            prct = (v1.total * 100) / total;
                             var n = v1.nombre;
                             if (n == "Oficina ") {
                                 n += v.codigo;
                             }
-                            arr = [n, v1.total];
-                            dataOk.push(arr);
+                            if (conOtros && prct < limitePorc) {
+                                totalOtros += v1.total;
+                            } else {
+                                var arr = [n, v1.total];
+                                dataOk.push(arr);
+                            }
                         });
                     }
                 });
-//                    console.log(">>>>>>", dataOk);
+
+                if (conOtros && totalOtros > 0) {
+                    var arr = ["Otros (<" + limitePorc + "%)", totalOtros];
+                    dataOk.push(arr);
+                }
+
+//                console.log(">>>>>>", dataOk);
                 return {
                     data  : dataOk,
                     title : title

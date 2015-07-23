@@ -293,16 +293,16 @@ class RetrasadosController extends Shield {
         if (params.dpto) {
             def dep = Departamento.get(params.dpto.toLong())
             session.tituloReporte += "\ndel dpto. $dep.descripcion ($dep.codigo)"
-            results = reportesTramitesRetrasadosService.datos(params.dpto)
+            results = reportesTramitesRetrasadosService.datos(params.dpto).res
         } else if (params.prsn) {
             def per = Persona.get(params.prsn.toLong())
             def esTriangulo = per.esTrianguloOff()
             session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
             if (esTriangulo) {
                 session.tituloReporte += "\n[Bandeja de entrada del departamento]"
-                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn).res
             } else {
-                results = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+                results = reportesTramitesRetrasadosService.datosPersona(params.prsn).res
             }
         }
         def pdfw = PdfWriter.getInstance(document, baos);
@@ -334,19 +334,22 @@ class RetrasadosController extends Shield {
         if (params.dpto) {
             def dep1 = Departamento.get(params.dpto.toLong())
             session.tituloReporte += "\ndel dpto. $dep1.descripcion ($dep1.codigo)"
-            results = reportesTramitesRetrasadosService.datos(params.dpto)
-            resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, null)
+            def res = reportesTramitesRetrasadosService.datos(params.dpto)
+            results = res.res
+            resGraph = res.resGraph
             dep = Departamento.get(params.dpto.toLong())
         } else if (params.prsn) {
             per = Persona.get(params.prsn)
             session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
             if (per.esTrianguloOff()) {
                 session.tituloReporte += "\n[Bandeja de entrada del departamento]"
-                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
-                resGraph = reportesTramitesRetrasadosService.datosGraph(per.departamentoId, params.prsn)
+                def res = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+                results = res.res
+                resGraph = res.resGraph
             } else {
-                results = reportesTramitesRetrasadosService.datosPersona(params.prsn)
-                resGraph = reportesTramitesRetrasadosService.datosGraph(null, params.prsn)
+                def res = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+                results = res.res
+                resGraph = res.resGraph
             }
         }
         reportesPdfService.membrete(document)
@@ -381,39 +384,96 @@ class RetrasadosController extends Shield {
             def existeSinRecepcion = false
             def existeRetrasados = false
 
+            def limiteCant = 15
+            def limitePorc = 5
+            def totalOtrosRet = 0
+            def totalOtrosNorec = 0
+            def conOtrosRet = false
+            def conOtrosNorec = false
+
             def cantRet = resGraph.ret.size()
             def cantNorec = resGraph.norec.size()
 
+            if (cantRet > limiteCant) {
+                conOtrosRet = true;
+            }
+            if (cantNorec > limiteCant) {
+                conOtrosNorec = true;
+            }
+
+            def totalRet = results["11"].totalRet
+            def totalNorec = results["11"].totalNoRec
+
             resGraph.ret.each { k, v ->
+                def prct = (v.total * 100) / totalRet
                 if (cantRet > 1) {
-                    dataSetRet.setValue(v.codigo, v.total)
+                    if (conOtrosRet && prct < limitePorc) {
+                        totalOtrosRet += v.total
+                    } else {
+                        dataSetRet.setValue(v.codigo, v.total)
+                    }
                     existeRetrasados = true
                 } else {
+                    cantRet = v.det.size()
+                    totalOtrosRet = 0
+                    conOtrosRet = false
+                    if (cantRet > limiteCant) {
+                        conOtrosRet = true
+                    }
                     v.det.each { k1, v1 ->
+                        prct = (v1.total * 100) / totalRet
                         def n = v1.nombre
                         if (n == "Oficina ") {
                             n += v.codigo
                         }
-                        dataSetRet.setValue(n, v1.total)
+                        if (conOtrosRet && prct < limitePorc) {
+                            totalOtrosRet += v1.total
+                        } else {
+                            dataSetRet.setValue(n, v1.total)
+                        }
                         existeRetrasados = true
                     }
                 }
             }
             resGraph.norec.each { k, v ->
+                def prct = (v.total * 100) / totalNorec
                 if (cantNorec > 1) {
-                    dataSetNoRec.setValue(v.codigo, v.total)
+                    if (conOtrosNorec && prct < limitePorc) {
+                        totalOtrosNorec += v.total
+                    } else {
+                        dataSetNoRec.setValue(v.codigo, v.total)
+                    }
                     existeSinRecepcion = true
                 } else {
+                    cantNorec = v.det.size()
+                    totalOtrosNorec = 0
+                    conOtrosNorec = false
+                    if (cantNorec > limiteCant) {
+                        conOtrosNorec = true
+                    }
                     v.det.each { k1, v1 ->
+                        prct = (v1.total * 100) / totalNorec
                         def n = v1.nombre
                         if (n == "Oficina ") {
                             n += v.codigo
                         }
-                        dataSetNoRec.setValue(n, v1.total)
+                        if (conOtrosNorec && prct < limitePorc) {
+                            totalOtrosNorec += v1.total
+                        } else {
+                            dataSetNoRec.setValue(n, v1.total)
+                        }
                         existeSinRecepcion = true
                     }
                 }
             }
+
+            if (conOtrosRet && totalOtrosRet > 0) {
+                dataSetRet.setValue("Otros (<$limitePorc%)", totalOtrosRet)
+            }
+            if (conOtrosNorec && totalOtrosNorec > 0) {
+                dataSetNoRec.setValue("Otros (<$limitePorc%)", totalOtrosNorec)
+            }
+
 //            results.each { k, v ->
 //                def tr = v.totalRet ?: 0
 //                def tn = v.totalNoRec ?: 0
