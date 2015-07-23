@@ -283,7 +283,7 @@ class ElementosTagLib {
     }
 
     def headerTramite = { attrs ->
-        println "HEADER: " + attrs
+//        println "HEADER: " + attrs
         def tramite = attrs.tramite
         def rolPara = RolPersonaTramite.findByCodigo('R001')
         def rolCC = RolPersonaTramite.findByCodigo('R002')

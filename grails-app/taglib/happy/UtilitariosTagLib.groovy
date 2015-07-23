@@ -74,9 +74,9 @@ class UtilitariosTagLib {
     }
 
     Closure numero = { attrs ->
-        if (attrs.debug == "true" || attrs.debug == true) {
-            println "AQUI: " + attrs
-        }
+//        if (attrs.debug == "true" || attrs.debug == true) {
+//            println "AQUI: " + attrs
+//        }
         if (!attrs.decimales) {
             if (!attrs["format"]) {
                 attrs["format"] = "##,##0"

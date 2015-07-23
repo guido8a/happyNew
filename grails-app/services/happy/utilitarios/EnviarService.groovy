@@ -202,7 +202,7 @@ class EnviarService {
                     "</div>"
         }
         content += "<div class='hoja'>\n"
-        println "AQUI"
+//        println "AQUI"
         content += new ElementosTagLib().headerTramite(tramite: tramite, pdf: true)
         content += text
         content += "</div>\n"

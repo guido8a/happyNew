@@ -233,8 +233,6 @@ class TramiteExportController extends Shield{
             }
         }
 
-        println "???"
-
         render enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), realPath.toString(), mensaje)
     }
 

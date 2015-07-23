@@ -1597,7 +1597,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
             def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
             if (aa?.estado?.codigo == 'E003' || aa?.estado?.codigo == 'E005' || aa?.estado?.codigo == 'E006') {
-                println "AQUI: " + aa?.estado?.codigo + "  " + aa?.estado?.descripcion
+//                println "AQUI: " + aa?.estado?.codigo + "  " + aa?.estado?.descripcion
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
                 redirect(controller: 'tramite3', action: "bandejaEntradaDpto")

@@ -148,7 +148,7 @@ class LoginController {
                 session.departamento = user.departamento
                 session.triangulo = user.esTriangulo()
 //                println "pone valores " + session.usuario
-//                println  "sesion ingreso: $session.id"  //activo
+
                 def perf = Sesn.findAllByUsuario(user)
                 def perfiles = []
                 perf.each { p ->
@@ -235,12 +235,38 @@ class LoginController {
                             }
                         }
 //                    redirect(controller: cn, action: an)
+
+                        // registra sesion
+                        //                println  "sesion ingreso: $session.id  desde ip: ${request.getRemoteAddr()}"  //activo
+                        def activo = new SesionActiva()
+                        activo.idSesion = session.id
+                        activo.fechaInicio = new Date()
+                        activo.activo = 'S'
+                        activo.dirIP = request.getRemoteAddr()
+                        activo.login = user.login
+                        activo.save()
+                        // pone X en las no .... cerradas del mismo login e ip
+                        def abiertas = SesionActiva.findAllByLoginAndDirIPAndFechaFinIsNullAndIdSesionNotEqual(session.usuario.login,
+                                request.getRemoteAddr(), session.id)
+                        if(abiertas.size() > 0){
+                            abiertas.each {sa ->
+                                sa.fechaFin = new Date()
+                                sa.activo = 'X'
+                                sa.save()
+                            }
+                        }
+                        // -------------------
+
+
+
                         return
                     } else {
                         session.usuario.vaciarPermisos()
                         redirect(action: "perfiles")
                         return
                     }
+
+
                 }
             }
 
@@ -328,6 +354,19 @@ class LoginController {
 
     def logout() {
 //        println "sesion out: $session.id"  //activo
+        def activo = SesionActiva.findByIdSesion(session.id)
+        if(activo){
+            activo.fechaFin = new Date()
+            activo.activo = 'N'
+            activo.save()
+        } else {
+            activo = SesionActiva.findByLoginAndDirIP(session.usuario.login, request.getRemoteAddr())
+            if(activo) {
+                activo.fechaFin = new Date()
+                activo.activo = 'X'
+                activo.save()
+            }
+        }
         session.usuario = null
         session.perfil = null
         session.permisos = null
