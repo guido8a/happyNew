@@ -359,14 +359,8 @@ class LoginController {
             activo.fechaFin = new Date()
             activo.activo = 'N'
             activo.save()
-        } else {
-            activo = SesionActiva.findByLoginAndDirIP(session.usuario.login, request.getRemoteAddr())
-            if(activo) {
-                activo.fechaFin = new Date()
-                activo.activo = 'X'
-                activo.save()
-            }
         }
+
         session.usuario = null
         session.perfil = null
         session.permisos = null

@@ -1263,8 +1263,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
 
                 if (params.esRespuestaNueva == 'S') {
-                    def respv = aQuienEstaContestando.respuestasVivas
-//                    println "RESPV " + respv
+                    def respv = aQuienEstaContestando.respuestasVivasEsrn
+                    println "RESPV " + respv
                     if (respv.size() != 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
                                 g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {

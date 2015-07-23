@@ -153,6 +153,20 @@ class PersonaDocumentoTramite {
         return this.tramite.fechaCreacion
     }
 
+    def getRespuestasVivasEsrn() {
+        def respuestasVivas = []
+        Tramite.findAllByAQuienContestaAndEsRespuestaNueva(this, 'S').each { tr ->
+            def para = tr.para
+            def copias = tr.allCopias
+            (copias + para).each { p ->
+                if (p?.estado?.codigo != 'E006') {
+                    respuestasVivas += p
+                }
+            }
+        }
+        return respuestasVivas
+    }
+
     def getRespuestasVivas() {
         def respuestasVivas = []
         Tramite.findAllByAQuienContesta(this).each { tr ->
