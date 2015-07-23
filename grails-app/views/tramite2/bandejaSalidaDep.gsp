@@ -425,6 +425,8 @@
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
+                var esRespuestaNueva = $tr.attr("ern");
+
                 var copia = {
                     separator_before : true,
                     label            : "Crear Copia",
@@ -749,7 +751,7 @@
                 var editarSumilla = {
                     label : "Editar",
                     icon  : "fa fa-pencil",
-                    url   : "${g.createLink(controller: 'tramite2', action: 'crearTramiteDep')}/" + id
+                    url   : "${g.createLink(controller: 'tramite2', action: 'crearTramiteDep')}/" + id + "?esRespuestaNueva=" + esRespuestaNueva
                 }; //editar sumilla
 
                 var anexos = {
@@ -845,7 +847,7 @@
                     }
                 };
 
-//                if (!revisado) {
+                //                if (!revisado) {
                 items.header.label = "Acciones";
                 if (!esSumilla) {
                     items.ver = ver;
@@ -872,7 +874,7 @@
                 if (puedeDesenviar) {
                     items.desenviar = desenviar;
                 }
-//                }
+                //                }
                 if (esDex && porEnviar) {
                     items.enviarDex = enviarDex
                 }

@@ -95,7 +95,7 @@
             class="trTramite ${clase} ${(limite) ? ((limite < new Date()) ? 'alerta' : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo}
             ${desenviar} ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${externo} "
             codigo="${tramite.codigo}" departamento="${tramite.de?.departamento?.codigo}"
-            principal="${tramite.tramitePrincipal}"
+            principal="${tramite.tramitePrincipal}" ern="${tramite.esRespuestaNueva}"
             estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}"
             anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
 

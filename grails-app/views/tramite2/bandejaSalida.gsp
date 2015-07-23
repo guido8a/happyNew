@@ -421,6 +421,8 @@
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
+                var esRespuestaNueva = $tr.attr("ern");
+
                 var copia = {
                     separator_before : true,
                     label            : "Copia para",
@@ -682,7 +684,7 @@
                 var editarSumilla = {
                     label : "Editar",
                     icon  : "fa fa-pencil",
-                    url   : "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id
+                    url   : "${g.createLink(action: 'crearTramite',controller: 'tramite')}/" + id + "?esRespuestaNueva=" + esRespuestaNueva
                 }; //editar sumilla
 
                 var anexos = {

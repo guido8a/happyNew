@@ -39,7 +39,7 @@
         ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
         ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno ? 'estado' : ''} ${tramite?.tipoDocumento?.codigo} ${tramite.externo == '1' ? ((tramite.tipoDocumento.codigo == 'DEX') ? 'DEX' : 'externo') : ''}  "
         estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
-        principal="${tramite.tramitePrincipal}"
+        principal="${tramite.tramitePrincipal}" ern="${tramite.esRespuestaNueva}"
         departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
         <td title="${tramite.asunto.decodeHTML()}" style="width: 145px;">
             <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
@@ -188,12 +188,12 @@
                 my : "bottom center",
                 at : "top center"
             },
-            show: {
-                solo: true
+            show     : {
+                solo : true
             },
-            hide: {
-                fixed: true,
-                delay: 300
+            hide     : {
+                fixed : true,
+                delay : 300
             }
         });
     });
