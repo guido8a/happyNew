@@ -683,8 +683,12 @@
 //                        $divPara.html($selParaExt).prepend("Para:");
 //                        $divPara.removeClass("hide");
 //                        $divBotonInfo.removeClass("hide");
+                        //CAMBIADO EL 23-07-2015
+//                        $divCopia.addClass("hide");
+//                        $divCc.addClass("hide");
                         $divCopia.addClass("hide");
-                        $divCc.addClass("hide");
+                        $divCc.removeClass("hide");
+
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
@@ -860,7 +864,7 @@
                         }
                     });
                 } else {
-                    if ($("#para") && $("#para").is(":visible")) {
+                    if ($("#tipoDocumento").find("option:selected").hasClass("OFI") || ($("#para") && $("#para").is(":visible"))) {
                         var para = $("#para").val();
                         $from.find("li.selected").removeClass("selected").each(function () {
                             var id = $(this).data("id");

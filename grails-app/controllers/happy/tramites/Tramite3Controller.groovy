@@ -556,7 +556,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def enter = "\n"
         def html = "<div class=\"panel panel-${inicial ? 'primary' : 'info'}\">" + enter
         def de = tramite.de.departamento.descripcion
-        println "de " + de
+//        println "de " + de
         if (tramite.fechaEnvio) {
             de += " (enviado el " + tramite.fechaEnvio.format("dd-MM-yyyy HH:mm") + ")"
         }
@@ -797,13 +797,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def band = false
         def anulado = EstadoTramite.findByCodigo("E006")
         pxtTodos.each { tr ->
-            if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
-                band = tramitesService.verificaHijos(tr, anulado)
+//            if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
+            band = tramitesService.verificaHijos(tr, anulado)
 //            println "estado!!! " + band + "   " + tr.id
-                if (!band) {
-                    tramitesSinHijos += tr
-                }
+            if (!band) {
+                tramitesSinHijos += tr
             }
+//            }
 
         }
 

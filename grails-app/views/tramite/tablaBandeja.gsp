@@ -40,7 +40,7 @@
                     </g:else>
                 </g:if>
                 <g:else>
-                    <g:if test="${tramite.fechaBloqueo < now}">
+                    <g:if test="${tramite.fechaBloqueo && tramite.fechaBloqueo < now}">
                         <g:set var="clase" value="sinRecepcion"/>
                     </g:if>
                     <g:else>
@@ -62,26 +62,28 @@
                         (tramite.tramite?.deDepartamento ? 'D_' + tramite.tramite?.deDepartamento?.id : 'P_' + tramite.tramite?.de?.id)}"
                     codigo="${tramite.tramite.codigo}" departamento="${tramite?.tramite?.de?.departamento?.codigo}"
                     anexo="${anexo}" prtr="${tramite?.id}">
-                    <g:if test="${tramite?.tramite?.anexo == 1}">
-
-                        <td title="${tramite?.tramite?.asunto}" style="width: 145px;">
-                            <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
-                                <i class="fa fa-eye-slash"></i>
-                            </g:if>
-                            <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
-                                <i class="fa fa-paperclip"></i>
-                            </g:if>
-                            ${tramite?.tramite?.codigo}
-                        </td>
-                    </g:if>
-                    <g:else>
-                        <td title="${tramite?.tramite?.asunto}">
-                            <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
-                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
-                            </g:if>
-                            ${tramite?.tramite?.codigo}
-                        </td>
-                    </g:else>
+                    %{--<g:if test="${tramite?.tramite?.anexo == 1}">--}%
+                    %{--<td title="${tramite?.tramite?.asunto}" style="width: 145px;">--}%
+                    %{--<g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">--}%
+                    %{--<i class="fa fa-eye-slash"></i>--}%
+                    %{--</g:if>--}%
+                    %{--<g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">--}%
+                    %{--<i class="fa fa-paperclip"></i>--}%
+                    %{--</g:if>--}%
+                    %{--${tramite?.tramite?.codigo}--}%
+                    %{--</td>--}%
+                    %{--</g:if>--}%
+                    %{--<g:else>--}%
+                    <td title="${tramite?.tramite?.asunto}">
+                        <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">
+                            <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                        </g:if>
+                        <g:if test="${DocumentoTramite.countByTramite(tramite.tramite) > 0}">
+                            <i class="fa fa-paperclip"></i>
+                        </g:if>
+                        ${tramite?.tramite?.codigo}
+                    </td>
+                    %{--</g:else>--}%
                     <td style="width: 115px;">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                     <td style="width: 115px;">${tramite?.fechaRecepcion?.format('dd-MM-yyyy HH:mm')}</td>
                     <td title="${tramite?.tramite?.de?.departamento?.descripcion}">${tramite?.tramite?.de?.departamento?.codigo}</td>

@@ -94,6 +94,22 @@
             <g:set var="dest" value="${0}"/>
             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                 ${tramite.paraExterno}
+                <span class="small">
+                    <g:each in="${copias}" var="copia" status="i">
+                        <g:set var="dest" value="${dest + 1}"/>
+                        [CC]
+                        <g:if test="${copia.departamento}">
+                            ${copia.departamento.codigo}
+                        </g:if>
+                        <g:elseif test="${copia.persona}">
+                            ${copia.persona.login}
+                        </g:elseif>
+                    %{--[CC] ${copia.persona ? copia.persona.login : copia.departamento.codigo}--}%
+                        <g:if test="${i < copias.size() - 1}">
+                            ,
+                        </g:if>
+                    </g:each>
+                </span>
                 <g:set var="dest" value="${tramite.paraExterno ? 1 : 0}"/>
             </g:if>
             <g:else>
