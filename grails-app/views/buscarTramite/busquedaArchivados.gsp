@@ -161,9 +161,11 @@
 
                 var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-                $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
-                    data      : datos,
-                    success   : function (msg) {
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
+                    data    : datos,
+                    success : function (msg) {
                         $("#bandeja").html(msg);
                     }
                 });
@@ -180,16 +182,18 @@
 
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
 
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
-                        data      : datos,
-                        success   : function (msg) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaArchivados')}",
+                        data    : datos,
+                        success : function (msg) {
                             $("#bandeja").html(msg);
                         }
                     });
                 }
             });
 
-            var padre
+            var padre;
 
             function createContextMenu(node) {
                 var $tr = $(node);
@@ -262,73 +266,76 @@
                 %{--}--}%
                 %{--};--}%
 
-                %{--var copia = {--}%
-                %{--separator_before : true,--}%
-                %{--label            : "Crear Copia",--}%
-                %{--icon             : "fa fa-files-o",--}%
-                %{--action           : function () {--}%
-                %{--$.ajax({--}%
-                %{--type    : "POST",--}%
-                %{--url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",--}%
-                %{--data    : {--}%
-                %{--tramite : id--}%
-                %{--},--}%
-                %{--success : function (msg) {--}%
-                %{--bootbox.dialog({--}%
-                %{--id      : "dlgCopiaPara",--}%
-                %{--title   : '<i class="fa fa-files-o"></i> Copia para',--}%
-                %{--class   : "long",--}%
-                %{--message : msg,--}%
-                %{--buttons : {--}%
-                %{--cancelar : {--}%
-                %{--label     : '<i class="fa fa-times"></i> Cancelar',--}%
-                %{--className : 'btn-danger',--}%
-                %{--callback  : function () {--}%
-                %{--}--}%
-                %{--},--}%
-                %{--enviar   : {--}%
-                %{--id        : 'btnEnviarCopia',--}%
-                %{--label     : '<i class="fa fa-check"></i> Enviar copias',--}%
-                %{--className : "btn-success",--}%
-                %{--callback  : function () {--}%
-                %{--var cc = "";--}%
-                %{--$("#ulSeleccionados li").not(".disabled").each(function () {--}%
-                %{--cc += $(this).data("id") + "_";--}%
-                %{--});--}%
-                %{--openLoader("Enviando copias");--}%
-                %{--$.ajax({--}%
-                %{--type    : "POST",--}%
-                %{--url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",--}%
-                %{--data    : {--}%
-                %{--tramite : id,--}%
-                %{--copias  : cc--}%
-                %{--},--}%
-                %{--success : function (msg) {--}%
-                %{--var parts = msg.split("*");--}%
-                %{--if (parts[0] == 'OK') {--}%
-                %{--log("Copias enviadas exitosamente", 'success');--}%
-                %{--setTimeout(function () {--}%
-                %{--location.reload(true);--}%
-                %{--}, 500);--}%
-                %{--} else if (msg == 'NO') {--}%
-                %{--closeLoader();--}%
-                %{--log(parts[1], 'error');--}%
-                %{--}--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--}--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--});--}%
-                %{--}--}%
-                %{--};--}%
+                var copia = {
+                    separator_before : true,
+                    label            : "Crear Copia",
+                    icon             : "fa fa-files-o",
+                    action           : function () {
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'tramiteAdmin', action:'copiaParaLista_ajax')}",
+                            data    : {
+                                tramite : id
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    id      : "dlgCopiaPara",
+                                    title   : '<i class="fa fa-files-o"></i> Copia para',
+                                    class   : "long",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        enviar   : {
+                                            id        : 'btnEnviarCopia',
+                                            label     : '<i class="fa fa-check"></i> Enviar copias',
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var cc = "";
+                                                $("#ulSeleccionados li").not(".disabled").each(function () {
+                                                    cc += $(this).data("id") + "_";
+                                                });
+                                                openLoader("Enviando copias");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : "${createLink(controller: 'tramiteAdmin', action:'enviarCopias_ajax')}",
+                                                    data    : {
+                                                        tramite : id,
+                                                        copias  : cc
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("*");
+                                                        if (parts[0] == 'OK') {
+                                                            log("Copias enviadas exitosamente", 'success');
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
+                                                        } else if (msg == 'NO') {
+                                                            closeLoader();
+                                                            log(parts[1], 'error');
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };
 
                 items.header.label = "Acciones";
                 <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
                 items.arbol = arbol;
+                </g:if>
+                <g:if test="${session.usuario.getPuedeCopiar()}">
+                items.copia = copia;
                 </g:if>
 
                 return items

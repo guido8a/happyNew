@@ -232,7 +232,7 @@ class TramiteAdminController extends Shield {
         def paraTramite = tramite.para
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
-        def estadosNo = [estadoAnulado, estadoArchivado]
+        def estadosNo = [estadoAnulado/*, estadoArchivado*/]
 
 //        def puede = true
 
@@ -328,7 +328,7 @@ class TramiteAdminController extends Shield {
         }
 
         if (tramite.para) {
-            if (tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado || tramite.para?.estado == estadoPorEnviar) {
+            if (tramite.para?.estado == estadoAnulado /*|| tramite.para?.estado == estadoArchivado */ || tramite.para?.estado == estadoPorEnviar) {
                 render "NO*" + "El trámite se encuentra <strong>${tramite.para?.estado.descripcion}</strong>, no puede crear copias"
                 return
             }
