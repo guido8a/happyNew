@@ -6,7 +6,7 @@ import happy.seguridad.Persona
 
 class BloqueosJob {
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000*60, repeatInterval: 1000*60*5
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
     }
 
     def execute() {
@@ -33,31 +33,35 @@ class BloqueosJob {
 //                    " bloqueo ${pdt.fechaBloqueo?.format('dd-MM-yyyy hh:mm')}   ${pdt.rolPersonaTramite.codigo}"
 
             /** quitar departamentos remotos estos no se bloquean o trámites de departamentos remotos **/
-            if((pdt.tramite.externo.toString() != "1") ){  // no se bloquea trámites externos ni remotos
+            if ((pdt.tramite.externo.toString() != "1")) {  // no se bloquea trámites externos ni remotos
 //                println "no es externo ${pdt.tramite.codigo} -- ${pdt.tramite.externo}"
-              //  if(!pdt.persona && !pdt.departamento)
+                //  if(!pdt.persona && !pdt.departamento)
 
                 def fechaBloqueo = pdt.fechaBloqueo
 
-                if(fechaBloqueo && (fechaBloqueo < ahora)){
+                if (fechaBloqueo && (fechaBloqueo < ahora)) {
 //                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
-                    if(pdt.tramite.deDepartamento){
-                        if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
+                    if (pdt.tramite.deDepartamento) {
+                        if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
                             warning.add(pdt.tramite.deDepartamento)
+                        }
                     } else {
-                        if(!warningUsu?.id?.contains(pdt.tramite.de.id))
+                        if (!warningUsu?.id?.contains(pdt.tramite.de.id)) {
                             warningUsu.add(pdt.tramite.de)
+                        }
                     }
 
-                    if(pdt.persona){
+                    if (pdt.persona) {
 //                        println "add bloquear " + pdt.persona + "  " + pdt.persona.login
-                        if(!bloquearUsu?.id?.contains(pdt.persona.id))
+                        if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
                             bloquearUsu.add(pdt.persona)
-                    }else if (!esRemoto(pdt)){ // no se bloquea de y para remotos
+                        }
+                    } else if (!esRemoto(pdt)) { // no se bloquea de y para remotos
 //                        println "add bloquear dep "+pdt.departamento+" "+pdt.id
 //                        println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}"
-                        if(!bloquear?.id?.contains(pdt.departamento?.id))
+                        if (!bloquear?.id?.contains(pdt.departamento?.id)) {
                             bloquear.add(pdt.departamento)
+                        }
                     }
 //                    println "---------------------"
                 }
@@ -67,53 +71,55 @@ class BloqueosJob {
 //        println "departamentos a bloquear: $bloquear"
 
 
-        Departamento.list().each {dep ->
+        Departamento.list().each { dep ->
             dep.estado = ""
 //            println "iter dep "+dep.codigo+"  "+dep.estado
-            if(bloquear.id.contains(dep.id)){
+            if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
                 dep.estado = "B"
             } else {
-                if(warning.id.contains(dep.id)){
-                    if(dep.estado!="B") {
+                if (warning.id.contains(dep.id)) {
+                    if (dep.estado != "B") {
 //                        println "warning dep "+dep
                         dep.estado = "W"
 
                     }
                 }
             }
-            if(!dep.save(flush: true))
-                println "errores save dep "+dep.errors
+            if (!dep.save(flush: true)) {
+                println "errores save dep " + dep.errors
+            }
         }
 
 //        println "personas a bloquear: $bloquearUsu"
 
-        Persona.findAllByEstadoInList(["B","W"]).each {
-           // println "desbloq "+it.login
-            it.estado=""
-            if(!it.save(flush: true))
-                println "error desbloq prsn "+it.errors
+        Persona.findAllByEstadoInList(["B", "W"]).each {
+            // println "desbloq "+it.login
+            it.estado = ""
+            if (!it.save(flush: true)) {
+                println "error desbloq prsn " + it.errors
+            }
 //            else println "si desbloq !!! "+it.estado+"  "+it.id+"   "+it.errors
         }
         bloquearUsu.each {
 //            println "bloqueando usu "+it+"   puede admin "+it.puedeAdmin
-            if(!(it.puedeAdmin)){
+            if (!(it.puedeAdmin)) {
 //                println "entro"
-                it.estado="B"
-                if(!it.save(flush: true))
+                it.estado = "B"
+                if (!it.save(flush: true)) {
                     println "error bloq usu"
+                }
             }
         }
         warningUsu.each {
 //            println("----->>>>>>" + it?.estado)
-            if(it.estado!="B"){
-                it.estado="W"
+            if (it.estado != "B") {
+                it.estado = "W"
                 it.save(flush: true)
             }
         }
 //        println "fin bloqueo bandeja salida "+new Date().format("dd-MM-yyyy hh:mm:ss")
     }
-
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
     def esRemoto(pdt) {
@@ -143,7 +149,7 @@ class BloqueosJob {
     def enviaRemoto(trmt) {
         def envia = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trmt, RolPersonaTramite.findByCodigo("E004"))
 //        println "enviaRemoto... envia: $envia"
-        if(envia){
+        if (envia) {
             return envia.departamento?.remoto == 1
         } else {
             return false
@@ -151,7 +157,7 @@ class BloqueosJob {
     }
 
 
-    def executeRecibir(depar, persona){
+    def executeRecibir(depar, persona) {
         def ahora = new Date()
 //        println "----------------------------------"
 //        println "bloqueo bandeja recibir!!! "+ahora
@@ -171,30 +177,34 @@ class BloqueosJob {
 
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and fechaRecepcion is null " +
                 "and (departamento = ${depar.id} or persona = ${persona.id}) and (estado is null or estado != ${anulado.id}) and " +
-                "rolPersonaTramite not in (${rolEnvia.id}, ${rolRecibe.id})").each {pdt->
-            if(pdt.tramite.externo != "1"){
+                "rolPersonaTramite not in (${rolEnvia.id}, ${rolRecibe.id})").each { pdt ->
+            if (pdt.tramite.externo != "1") {
                 def fechaBloqueo = pdt.fechaBloqueo
-                if(fechaBloqueo && (fechaBloqueo < ahora)){
-                    if(pdt.rolPersonaTramite.codigo !="E004" && pdt.rolPersonaTramite.codigo != "I005" ){
+                if (fechaBloqueo && (fechaBloqueo < ahora)) {
+                    if (pdt.rolPersonaTramite.codigo != "E004" && pdt.rolPersonaTramite.codigo != "I005") {
 //                    println "PDT "+pdt.id+" tramite "+pdt.tramite.id +" : "+pdt.tramite.codigo+" envio "+pdt.fechaEnvio.format("dd-MM-yyyy hh:mm")+" bloqueo "+pdt.tramite.fechaBloqueo?.format("dd-MM-yyyy hh:mm")
 
-                        if(pdt.tramite.deDepartamento){
-                            if(!warning?.id?.contains(pdt.tramite.deDepartamento.id))
+                        if (pdt.tramite.deDepartamento) {
+                            if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
                                 warning.add(pdt.tramite.deDepartamento)
-                        }else{
-                            if(!warningUsu?.id?.contains(pdt.tramite.de.id))
+                            }
+                        } else {
+                            if (!warningUsu?.id?.contains(pdt.tramite.de.id)) {
                                 warningUsu.add(pdt.tramite.de)
+                            }
                         }
 
-                        if(pdt.persona){
+                        if (pdt.persona) {
 //                        println "add bloquear "+pdt.persona
-                            if(!bloquearUsu?.id?.contains(pdt.persona.id))
+                            if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
                                 bloquearUsu.add(pdt.persona)
-                        }else if (!esRemoto(pdt)){ // no se bloquea de y para remotos
+                            }
+                        } else if (!esRemoto(pdt)) { // no se bloquea de y para remotos
 //                        println "add bloquear dep "+pdt.departamento+" "+pdt.id
 //                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}"
-                            if(!bloquear?.id?.contains(pdt.departamento?.id))
+                            if (!bloquear?.id?.contains(pdt.departamento?.id)) {
                                 bloquear.add(pdt.departamento)
+                            }
                         }/*else{
 //                        println "add bloquear "+pdt.departamento
                             if(!bloquear?.id?.contains(pdt.departamento.id))
@@ -205,30 +215,31 @@ class BloqueosJob {
                 }
             }
         }
-        deps.each {dep->
+        deps.each { dep ->
             dep.estado = ""
 //            println "iter dep "+dep.codigo+"  "+dep.estado
-            if(bloquear.id.contains(dep.id)){
+            if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
-                dep.estado="B"
-            }else{
-                if(warning.id.contains(dep.id)){
-                    if(dep.estado!="B") {
+                dep.estado = "B"
+            } else {
+                if (warning.id.contains(dep.id)) {
+                    if (dep.estado != "B") {
 //                        println "warning dep "+dep
                         dep.estado = "W"
                     }
                 }
             }
-            if(!dep.save(flush: true))
-                println "errores save dep "+dep.errors
+            if (!dep.save(flush: true)) {
+                println "errores save dep " + dep.errors
+            }
         }
-        Persona.findAllByEstadoInListAndDepartamento(["B","W"],depar).each {
-            it.estado=""
+        Persona.findAllByEstadoInListAndDepartamento(["B", "W"], depar).each {
+            it.estado = ""
             it.save(flush: true)
         }
         bloquearUsu.each {
 //            println "bloqueando usu recibir "+it
-            if(!(it.getPuedeAdminOff() )) {
+            if (!(it.getPuedeAdminOff())) {
 //                println "entro"
                 it.estado = "B"
                 it.save(flush: true)
@@ -236,7 +247,7 @@ class BloqueosJob {
         }
         warningUsu.each {
 //            println "warning usu "+it
-            if(it.estado!="B") {
+            if (it.estado != "B") {
                 it.estado = "W"
                 it.save(flush: true)
             }
