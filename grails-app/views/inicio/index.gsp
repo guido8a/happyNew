@@ -20,15 +20,6 @@
         border: none;
 
     }
-    .item_doble {
-        width: 660px;
-        height: 360px;
-        float: left;
-        margin: 4px;
-        font-family: 'open sans condensed';
-        border: none;
-
-    }
 
     .imagen {
         width: 160px;
@@ -37,28 +28,14 @@
         margin-top: 10px;
     }
 
-    .imagen_doble {
-        width: 640px;
-        height: 330px;
-        margin: auto;
-        margin-top: 10px;
-    }
-
     .texto {
         width: 90%;
         height: 50px;
         padding-top: 0px;
-        /*border: solid 1px black;*/
         margin: auto;
         margin: 8px;
-        /*font-family: fantasy; */
         font-size: 16px;
-
-        /*
-                font-weight: bolder;
-        */
         font-style: normal;
-        /*text-align: justify;*/
     }
 
     .fuera {
@@ -67,10 +44,6 @@
         /*background-color: #317fbf; */
         background-color: rgba(200, 200, 200, 0.9);
         border: none;
-    }
-
-    .desactivado {
-        color: #bbc;
     }
 
     .titl {
@@ -134,25 +107,21 @@
 
     </g:if>
 
+    <div style="text-align: center; margin-top: 40px">
+
         <g:if test="${session.usuario.getPuedeDirector()}">
         <a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidadoDir',
                 params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])}" style="text-decoration: none">
-        <div class="ui-corner-all item_doble fuera" style="margin-left: 150px;">
-        <div class="ui-corner-all ui-widget-content item_doble">
-        <div class="imagen_doble">
-        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="100%" height="100%"/>
-        </div>
+        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
         </g:if>
 
         <g:if test="${session.usuario.getPuedeJefe()}">
         <a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidado',
                 params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1"])}" style="text-decoration: none">
-        <div class="ui-corner-all item_doble fuera" style="margin-left: 150px;">
-        <div class="ui-corner-all ui-widget-content item_doble">
-        <div class="imagen_doble">
-        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="100%" height="100%"/>
-        </div>
+        <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
         </g:if>
+
+    </div>
 
         %{--<div class="texto"><b>Trámites externos</b>: recepción de documentos externos</div>--}%
         %{--</div>--}%
