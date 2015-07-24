@@ -975,6 +975,14 @@ class TramiteController extends happy.seguridad.Shield {
         order by p.fechaEnvio desc
         */
 
+        //** forzar actualización de bloqueos al Actualizar
+//        println "tablaBandeja... persona: $persona, dpto: ${persona.departamento}"
+        def job = new BloqueosJob()
+        job.executeRecibir(persona.departamento, session.usuario)
+        job = null
+        //** fin forzar actualización de bloqueos al Actualizar
+
+
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"
         params.order = params.order ?: "desc"

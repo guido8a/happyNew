@@ -142,7 +142,12 @@ class BloqueosJob {
 
     def enviaRemoto(trmt) {
         def envia = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trmt, RolPersonaTramite.findByCodigo("E004"))
-        return envia.departamento?.remoto == 1
+//        println "enviaRemoto... envia: $envia"
+        if(envia){
+            return envia.departamento?.remoto == 1
+        } else {
+            return false
+        }
     }
 
 
