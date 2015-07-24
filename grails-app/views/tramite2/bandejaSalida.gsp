@@ -780,6 +780,52 @@
                     }
                 };
 
+                var observaciones = {
+                    label  : 'Añadir observaciones al trámite',
+                    icon   : "fa fa-eye",
+                    action : function (e) {
+
+                        var b = bootbox.dialog({
+                            id      : "dlgJefe",
+                            title   : "Añadir observaciones al trámite",
+                            message : "¿Está seguro de querer añadir observaciones al trámite <b>" + codigo + "</b>?</br><br/>" +
+                                      "Escriba las observaciones: " +
+                                      "<textarea id='txaObsJefe' style='height: 130px;' class='form-control'></textarea>",
+                            buttons : {
+                                cancelar : {
+                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                    className : 'btn-danger',
+                                    callback  : function () {
+                                    }
+                                },
+                                recibir  : {
+                                    id        : 'btnEnviar',
+                                    label     : '<i class="fa fa-thumbs-o-up"></i> Guardar',
+                                    className : 'btn-success',
+                                    callback  : function () {
+                                        var obs = $("#txaObsJefe").val();
+                                        openLoader();
+                                        $.ajax({
+                                            type    : 'POST',
+                                            url     : '${createLink(controller: 'tramite3', action: 'enviarTramiteJefe')}',
+                                            data    : {
+                                                id  : id,
+                                                obs : obs
+                                            },
+                                            success : function (msg) {
+                                                var parts = msg.split("_");
+                                                cargarBandeja();
+                                                closeLoader();
+                                                log(parts[1], parts[0] == "NO" ? "error" : "success");
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        })
+                    }
+                };
+
                 %{--var desenviar = {--}%
                 %{--label  : "Quitar el enviado",--}%
                 %{--icon   : "fa fa-magic text-danger",--}%
@@ -908,7 +954,7 @@
                 if (esOficio) {
                     delete items.copia;
                 }
-
+                items.observaciones = observaciones;
                 </g:if>
 
                 return items;
