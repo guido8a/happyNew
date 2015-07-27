@@ -4,8 +4,8 @@ dataSource {
     dialect = org.hibernate.dialect.PostgreSQLDialect
 }
 hibernate {
-    cache.use_second_level_cache = false
-    cache.use_query_cache = false
+    cache.use_second_level_cache = true
+    cache.use_query_cache = true
     cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 }
 // environment specific settings
@@ -13,12 +13,27 @@ environments {
     development {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:postgresql://10.0.0.2:5432/sadweb_brre"
+            url = "jdbc:postgresql://10.0.0.2:5432/sadweb_brre2"
 //            url = "jdbc:postgresql://10.0.0.2:5432/sadweb_prdc"
 //            url = "jdbc:postgresql://127.0.0.1:5432/sadweb_prdc"
 //            url = "jdbc:postgresql://10.0.0.2:5432/happy10"
             username = "postgres"
             password = "postgres"
+
+/*
+            properties {
+                maxActive = -1
+                minEvictableIdleTimeMillis=1800000
+                timeBetweenEvictionRunsMillis=1800000
+                numTestsPerEvictionRun=3
+                testOnBorrow=true
+                testWhileIdle=true
+                testOnReturn=false
+                validationQuery="SELECT 1"
+                jdbcInterceptors="ConnectionState"
+            }
+*/
+
         }
     }
     test {
@@ -51,6 +66,19 @@ environments {
             url = "jdbc:postgresql://127.0.0.1:5432/sadweb"
             username = "postgres"
             password = "janus"
+/*
+            properties {
+                maxActive = -1
+                minEvictableIdleTimeMillis=1800000
+                timeBetweenEvictionRunsMillis=1800000
+                numTestsPerEvictionRun=3
+                testOnBorrow=true
+                testWhileIdle=true
+                testOnReturn=false
+                validationQuery="SELECT 1"
+                jdbcInterceptors="ConnectionState"
+            }
+*/
         }
     }
 

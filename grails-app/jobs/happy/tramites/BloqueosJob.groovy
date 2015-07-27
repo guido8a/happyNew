@@ -200,8 +200,8 @@ class BloqueosJob {
                                 bloquearUsu.add(pdt.persona)
                             }
                         } else if (!esRemoto(pdt)) { // no se bloquea de y para remotos
-//                        println "add bloquear dep "+pdt.departamento+" "+pdt.id
-//                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}"
+//                            println "add bloquear dep "+pdt.departamento+" "+pdt.id
+//                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}, esremoto: ${esRemoto(pdt)}, trmite: ${pdt.tramite.id}"
                             if (!bloquear?.id?.contains(pdt.departamento?.id)) {
                                 bloquear.add(pdt.departamento)
                             }
@@ -217,7 +217,7 @@ class BloqueosJob {
         }
         deps.each { dep ->
             dep.estado = ""
-//            println "iter dep "+dep.codigo+"  "+dep.estado
+//            println "a bloquear: $bloquear"
             if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
                 dep.estado = "B"
