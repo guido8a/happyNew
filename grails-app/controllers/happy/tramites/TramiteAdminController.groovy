@@ -689,8 +689,23 @@ class TramiteAdminController extends Shield {
 //        println msg
 //        println icon
 
+        def personasRec = []
 
-        return [tramite: tramite, icon: icon, msg: msg, personas: personas]
+        if (tramite?.de?.departamento != tramite?.para?.departamento) {
+            Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
+                if (r.estaActivo) {
+                    def n = [:]
+                    n.key = r.nombre + " " + r.apellido + " (funcionario de ${r.departamento.codigo})"
+                    n.value = r.nombre + " " + r.apellido + " (" + r.login + ")"
+                    personasRec.add(n)
+                }
+            }
+        }
+
+        def todas = personas + personasRec
+        todas = todas.sort { it.value }
+
+        return [tramite: tramite, icon: icon, msg: msg, personas: todas]
     }
 
     def dialogAnulados() {
@@ -725,6 +740,7 @@ class TramiteAdminController extends Shield {
 
 
         def todas = personas + personasRec
+        todas = todas.sort { it.value }
 
 //        println("personas Reciben " + personasRec)
 
