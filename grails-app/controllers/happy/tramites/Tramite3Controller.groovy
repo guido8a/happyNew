@@ -74,10 +74,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
 
                 if (paramsTramite.esRespuestaNueva == 'S') {
-                    def respv = aQuienEstaContestando?.respuestasVivas
+                    def respv = aQuienEstaContestando?.respuestasVivasEsrn
                     println "RESPV " + respv
                     if (respv.size() != 0) {
-                        flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
+                        flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra3.<br/>" +
                                 g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
                                     "Volver a la bandeja de entrada"
                                 }
@@ -843,7 +843,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-//        println "recibir tramite " + params
+        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
 
             def persona = Persona.get(session.usuario.id)
@@ -853,9 +853,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-            // println tramite.estadoTramite.descripcion
+            println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
-                render "ERROR_Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
+                render "ERROR_*Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return
             }
             def paraDpto = tramite.para?.departamento
