@@ -9,6 +9,7 @@ class TramiteController extends happy.seguridad.Shield {
     def diasLaborablesService
     def enviarService
     def tramitesService
+    def dbConnectionService
 
     def index() {
         redirect(action: "list", params: params)
@@ -223,6 +224,83 @@ class TramiteController extends happy.seguridad.Shield {
         } else {
             render "NO_" + fechaEsperada[1]
         }
+    }
+
+    def getParaNuevo_ajax() {
+        def sql = "SELECT * FROM trmt_para($session.usuario.id)"
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+
+        Tramite tramite = null
+        if (params.tramite) {
+            tramite = Tramite.get(params.tramite)
+        }
+
+        def html = "<div class=\"col-xs-3 negrilla\" id=\"divPara\" style=\"margin-top: -25px;margin-left: -25px\">"
+        html += "<b>Para:</b>"
+        html += g.select(name: "tramite.para", id: "para", optionKey: "id", optionValue: "dscr", from: rows,
+                value: tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId,
+                style: "width:300px;", class: "form-control label-shared required")
+        html += "</div>"
+        html += "    <div class=\"col-xs-1 negrilla\" id=\"divBotonInfo\" style=\"margin-left: 30px\">\n" +
+                "                    <a href=\"#\" id=\"btnInfoPara\" class=\"btn btn-sm btn-info\">\n" +
+                "                    <i class=\"fa fa-info-circle\"></i>\n" +
+                "                    </a>\n" +
+                "                    </div>"
+        html += "<script type='text/javascript'>"
+        html += " \$(\"#para\").change(function () {\n" +
+                "            var paraId = \$(this).val();\n" +
+                "            \$(\"#ulSeleccionados\").children().each(function () {\n" +
+                "                if(\$(this).data(\"id\") == paraId ){\n" +
+                "                    \$(this).addClass('selected')\n" +
+                "                    moveSelected(\$(\"#ulSeleccionados\"), \$(\"#ulDisponibles\"), true);\n" +
+                "                }\n" +
+                "            });\n" +
+                "        });"
+        html += " \$(\"#btnInfoPara\").click(function () {\n" +
+                "                    var para = \$(\"#para\").val();\n" +
+                "                    var paraExt = \$(\"#paraExt\").val();\n" +
+                "                    var id;\n" +
+                "                    var url = \"\";\n" +
+                "                    if (para) {\n" +
+                "                        if (parseInt(para) > 0) {\n" +
+                "                            url = \"${createLink(controller: 'persona', action: 'show_ajax')}\";\n" +
+                "                            id = para;\n" +
+                "                        } else {\n" +
+                "                            url = \"${createLink(controller: 'departamento', action: 'show_ajax')}\";\n" +
+                "                            id = parseInt(para) * -1;\n" +
+                "                        }\n" +
+                "                    }\n" +
+                "                    if (paraExt) {\n" +
+                "                        url = \"${createLink(controller: 'origenTramite', action: 'show_ajax')}\";\n" +
+                "                        id = paraExt;\n" +
+                "                    }\n" +
+                "                    \$.ajax({\n" +
+                "                        type    : \"POST\",\n" +
+                "                        url     : url,\n" +
+                "                        data    : {\n" +
+                "                            id : id\n" +
+                "                        },\n" +
+                "                        success : function (msg) {\n" +
+                "                            bootbox.dialog({\n" +
+                "                                title   : \"Información\",\n" +
+                "                                message : msg,\n" +
+                "                                buttons : {\n" +
+                "                                    aceptar : {\n" +
+                "                                        label     : \"Aceptar\",\n" +
+                "                                        className : \"btn-primary\",\n" +
+                "                                        callback  : function () {\n" +
+                "                                        }\n" +
+                "                                    }\n" +
+                "                                }\n" +
+                "                            });\n" +
+                "                        }\n" +
+                "                    });\n" +
+                "                    return false;\n" +
+                "                });"
+        html += "</script>"
+        cn.close()
+        render html
     }
 
     def getPara_ajax() {

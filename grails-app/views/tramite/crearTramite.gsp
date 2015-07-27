@@ -670,6 +670,7 @@
 
             function validarTipoDoc() {
                 var $tipoDoc = $("#tipoDocumento");
+                var codigoTipoDoc = $tipoDoc.find("option:selected").attr("class");
                 var $divPara = $("#divPara");
                 var $divCopia = $("#divCopia");
                 var $divCc = $("#divCc");
@@ -690,19 +691,27 @@
 
                 $divPara.html(spinner);
                 $divBotonInfo.remove();
-                $.ajax({
-                    type    : "POST",
-                    url     : "${createLink(controller:'tramite', action:'getPara_ajax')}",
-                    data    : {
-                        tramite : "${tramite.id}",
-                        tipo    : 'pers',
-                        doc     : $tipoDoc.val()
-                    },
-                    success : function (msg) {
-                        $divPara.replaceWith(msg);
-                        validarExterno(false);
-                    }
-                });
+
+                switch (codigoTipoDoc) {
+//                    case "CIR":
+                    case "OFI":
+                    case "DEX":
+                        $divPara.html("");
+                        break;
+                    default:
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller:'tramite', action:'getParaNuevo_ajax')}",
+                            data    : {
+                                tramite : "${tramite.id}"
+                            },
+                            success : function (msg) {
+                                $divPara.replaceWith(msg);
+                                validarExterno(false);
+                            }
+                        });
+                        break;
+                }
 
                 //removeAllSelected
                 <g:if test="${tramite.id}">

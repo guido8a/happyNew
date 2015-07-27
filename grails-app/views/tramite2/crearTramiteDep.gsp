@@ -485,13 +485,14 @@
                             %{--value="${origen?.nombreContacto}"/>--}%
                         </span>
                     </div>
-                <div class="col-xs-2 ">
-                    <span class="grupo">
-                        <b>Email:</b>
-                        <g:textField id="mail" name="tramite.mail" class="form-control email" maxlength="40"
-                                     value="${tramite.mail}"/>
-                    </span>
-                </div>
+
+                    <div class="col-xs-2 ">
+                        <span class="grupo">
+                            <b>Email:</b>
+                            <g:textField id="mail" name="tramite.mail" class="form-control email" maxlength="40"
+                                         value="${tramite.mail}"/>
+                        </span>
+                    </div>
                 </div>
             </div>
         </g:form>
@@ -601,6 +602,7 @@
 
             function validarTipoDoc() {
                 var $tipoDoc = $("#tipoDocumento");
+                var codigoTipoDoc = $tipoDoc.find("option:selected").attr("class");
                 var $divPara = $("#divPara");
                 var $divCopia = $("#divCopia");
                 var $divCc = $("#divCc");
@@ -621,24 +623,63 @@
 
                 $divPara.html(spinner);
                 $divBotonInfo.remove();
-                $.ajax({
-                    type    : "POST",
-                    url     : "${createLink(controller:'tramite', action:'getPara_ajax')}",
-                    data    : {
-                        tramite : "${tramite.id}",
-                        tipo    : 'departamento',
-                        doc     : $tipoDoc.val()
-                    },
-                    success : function (msg) {
-                        $divPara.replaceWith(msg);
-//                        var op = $("#para option:selected");
-//                        $("#para").remove($("#para option:selected"));
-//                        $("#para").prepend(op);
-//                        //console.log($("#para"),$("#para").val(),$("#para option:selected").attr("value"));
-//                        $("#para").val(""+$("#para option:selected").attr("value"));
-                        validarExterno(false);
-                    }
-                });
+
+                var html = null;
+
+//                console.log(codigoTipoDoc);
+
+                switch (codigoTipoDoc) {
+//                    case "CIR":
+//                        $divPara.html("");
+//                        break;
+                    case "OFI":
+                        html = $("<div class='col-xs-3 negrilla' id='divPara' style='margin-top: -25px; margin-left:-25px;'></div>");
+                        html.append("<b>Para:</b>");
+                        html.append("<input type='text' name='paraExt' id='paraExt' class='form-control label-shared required' value='${tramite?.paraExterno}' style='width: 300px;'/>");
+                        $divPara.replaceWith(html);
+                        break;
+                    case "DEX":
+                        html = $("<div class='col-xs-3 negrilla' id='divPara' style='margin-top: -25px; margin-left:-25px;'></div>");
+                        html.append("<b>Para:</b>");
+                    <g:set var="prdp" value="${tramite&&tramite.id?(tramite?.para?.departamento ? tramite.para.departamentoId * -1 : tramite?.para?.personaId):''}"/>
+                        var $sel = $("<select name='tramite.para' id='para' class='form-control label-shared required' value='" + "${prdp}" + "' style='width:300px;' />");
+                        $sel.append("<option value='-${session.departamento.id}'>${session.departamento.descripcion}</option>");
+                        html.append($sel);
+                        $divPara.replaceWith(html);
+                        break;
+                    default:
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller:'tramite', action:'getParaNuevo_ajax')}",
+                            data    : {
+                                tramite : "${tramite.id}"
+                            },
+                            success : function (msg) {
+                                $divPara.replaceWith(msg);
+                                validarExterno(false);
+                            }
+                        });
+                        break;
+                }
+
+                %{--$.ajax({--}%
+                %{--type    : "POST",--}%
+                %{--url     : "${createLink(controller:'tramite', action:'getPara_ajax')}",--}%
+                %{--data    : {--}%
+                %{--tramite : "${tramite.id}",--}%
+                %{--tipo    : 'departamento',--}%
+                %{--doc     : $tipoDoc.val()--}%
+                %{--},--}%
+                %{--success : function (msg) {--}%
+                %{--$divPara.replaceWith(msg);--}%
+                %{--//                        var op = $("#para option:selected");--}%
+                %{--//                        $("#para").remove($("#para option:selected"));--}%
+                %{--//                        $("#para").prepend(op);--}%
+                %{--//                        //console.log($("#para"),$("#para").val(),$("#para option:selected").attr("value"));--}%
+                %{--//                        $("#para").val(""+$("#para option:selected").attr("value"));--}%
+                %{--validarExterno(false);--}%
+                %{--}--}%
+                %{--});--}%
 
                 //removeAllSelected
                 <g:if test="${tramite.id}">
