@@ -302,9 +302,19 @@ class PersonaController extends happy.seguridad.Shield {
         def usuario = Persona.get(session.usuario.id)
         def dep = usuario.departamento
         def triangulos = dep.getTriangulos()
-        def personas = Persona.findAllByDepartamentoAndActivo(dep, 1)
-        personas.remove(usuario)
-        return [usuario: usuario, params: params, triangulos: triangulos, personas: personas]
+
+        def personas = Persona.findAllByDepartamentoAndActivo(dep, 1, [sort: 'apellido', order: 'apellido'])
+        def personasFiltradas = []
+
+        personas.each {
+            if(it?.estaActivo){
+               personasFiltradas += it
+            }
+
+        }
+
+        personasFiltradas.remove(usuario)
+        return [usuario: usuario, params: params, triangulos: triangulos, personas: personasFiltradas]
     }
     def personalAdm() {
         if(session.usuario.puedeAdmin){
@@ -474,13 +484,25 @@ class PersonaController extends happy.seguridad.Shield {
                 }
                 if (perfil) {
                     def asignado = Persona.get(params.nuevoTriangulo)
-                    accs.accsObservaciones += "; Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
+                    if(accs.accsObservaciones != null){
+                        accs.accsObservaciones += "; Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
+
+                    }else{
+                        accs.accsObservaciones = "Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
+                    }
                     def sesion = new Sesn()
                     sesion.perfil = perfil
                     sesion.usuario = asignado
                     sesion.fechaInicio = accs.accsFechaInicial
                     sesion.fechaFin = accs.accsFechaFinal
                     sesion.save(flush: true)
+                    def sesion2 = new Sesn()
+                    sesion2.perfil = perfil
+                    def usuarioOriginal = Persona.get(session.usuario.id)
+                    sesion2.usuario = usuarioOriginal
+                    sesion2.fechaInicio = accs.accsFechaFinal
+                    sesion2.fechaFin = null
+                    sesion2.save(flush: true)
                     Prpf.findAllByPerfil(perfil).each { pr ->
                         def permUsu = new PermisoUsuario()
                         permUsu.persona = asignado
