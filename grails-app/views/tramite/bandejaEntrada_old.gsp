@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: luz
-  Date: 28/07/15
-  Time: 10:09 AM
+  User: fabricio
+  Date: 1/16/14
+  Time: 11:31 AM
 --%>
 
 <%@ page import="happy.seguridad.Persona" contentType="text/html;charset=UTF-8" %>
@@ -203,33 +203,14 @@
 
         </div>
 
+
         %{--//bandeja--}%
-        <div id="" style=";height: 600px;overflow: auto;position: relative">
+
+
+        <div>
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
-            <div id="bandeja">
-                <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
-                <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
-
-                <table class="table table-bordered  table-condensed table-hover">
-                    <thead>
-                        <tr>
-                            <th class="cabecera sortable ${params.sort == 'codigo' ? (params.order) : ''}" data-domain="tramite" data-sort="codigo" data-order="${params.order}">Documento</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaEnvio' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaEnvio" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaRecepcion' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaRecepcion" data-order="${params.order}">Fecha Recepción</th>
-                            <th class="cabecera sortable ${params.sort == 'de' ? (params.order) : ''}" data-domain="tramite" data-sort="de" data-order="${params.order}">De</th>
-                            <th class="cabecera" data-domain="tramite" data-sort="creadoPor" data-order="${params.order}">Creado por</th>
-                            <th class="cabecera">Para</th>
-                            <th class="cabecera sortable ${params.sort == 'prioridad' ? (params.order) : ''}" data-domain="tramite" data-sort="prioridad" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaLimiteRespuesta' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaLimiteRespuesta" data-order="${params.order}">Fecha Límite</th>
-                            <th class="cabecera sortable ${params.sort == 'rolPersonaTramite' ? (params.order) : ''}" data-domain="persDoc" data-sort="rolPersonaTramite" data-order="${params.order}">Rol</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla_bandeja">
-
-                    </tbody>
-                </table>
-            </div>
+            <div id="bandeja"></div>
         </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -259,7 +240,7 @@
                     var memorando = $("#memorando").val();
                     var asunto = $("#asunto").val();
                     var fecha = $("#fechaBusqueda_input").val();
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
                     $.ajax({
                         type    : "POST", url : "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
@@ -275,7 +256,7 @@
 
             function cargarBandeja(band, datos) {
                 $(".qtip").hide();
-                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 if (!datos) {
                     datos = {};
                 }
@@ -284,12 +265,11 @@
                 }
                 $.ajax({
                     type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
+                    url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja_old')}",
                     data    : datos,
-//                    async   : false,
+                    async   : false,
                     success : function (msg) {
-//                        $("#bandeja").html(msg);
-                        $("#tabla_bandeja").html(msg);
+                        $("#bandeja").html(msg);
                         cargarAlertas();
                         if (band) {
                             closeLoader();

@@ -4,7 +4,7 @@ import happy.alertas.Alerta
 import happy.seguridad.Persona
 import happy.utilitarios.DiaLaborable
 
-class TramiteController extends happy.seguridad.Shield {
+class TramiteController /*extends happy.seguridad.Shield*/ {
 
     def diasLaborablesService
     def enviarService
@@ -1007,9 +1007,7 @@ class TramiteController extends happy.seguridad.Shield {
 
     //fin alertas bandeja entrada
 
-    //BANDEJA PERSONAL
-
-
+    //bandeja entrada personal nueva con el procedure
     def bandejaEntrada() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -1030,11 +1028,40 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         return [persona: persona, bloqueo: bloqueo]
+    }
 
+    def tablaBandeja() {
+        def sql = "SELECT * FROM entrada_prsn($session.usuario.id) order by trmtfcen desc"
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+        return [rows: rows]
+    }
+
+    //BANDEJA PERSONAL
+    def bandejaEntrada_old() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def esEditor = persona.puedeEditor
+        if (esEditor) {
+            redirect(controller: "tramite2", action: "bandejaSalida")
+            return
+        }
+        def bloqueo = false
+        if (session.usuario.esTriangulo()) {
+            flash.message = "Su perfil no le permite ingresar a la bandeja de entrada personal"
+            redirect(controller: 'tramite3', action: 'bandejaEntradaDpto')
+            return
+        }
+        if (!session.usuario.puedeRecibir) {
+            flash.message = "Su perfil no tiene acceso a la bandeja de entrada personal"
+            response.sendError(403)
+        }
+
+        return [persona: persona, bloqueo: bloqueo]
     }
 
 
-    def tablaBandeja() {
+    def tablaBandeja_old() {
 //        println "1.... --- " + System.currentTimeMillis()/1000
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
