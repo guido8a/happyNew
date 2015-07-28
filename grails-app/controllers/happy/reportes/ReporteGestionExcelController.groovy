@@ -21,8 +21,8 @@ class ReporteGestionExcelController extends Shield {
         def departamento = Departamento.get(params.id)
         def departamentos = [departamento]
 
-        def fileName = "gestion_" + departamento.codigo
-        def titulo = "Reporte de gestión de trámites del dpto. ${departamento.descripcion} del ${params.desde} al ${params.hasta}"
+        def fileName = "gestion_" + departamento?.codigo
+        def titulo = "Reporte de gestión de trámites del dpto. ${departamento?.descripcion} del ${params.desde} al ${params.hasta}"
 
         def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
 
@@ -96,6 +96,8 @@ class ReporteGestionExcelController extends Shield {
                 }
             }
 
+//            println("tramites " + tramitesPrincipales)
+
             tramitesPrincipales.each { principal ->
                 def pdts = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", principal)
@@ -103,6 +105,7 @@ class ReporteGestionExcelController extends Shield {
                         eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
                         eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
                     }
+
                 }
 
                 def j = 0
@@ -151,9 +154,9 @@ class ReporteGestionExcelController extends Shield {
                 i++
 
                 pdts.each { prtr ->
-                    if ((departamentos.id).contains(prtr.departamentoId)) {
+//                    if ((departamentos.id).contains(prtr.departamentoId)) {
                         i = rowTramite(prtr, sheet, i)
-                    }
+//                    }
                     i = llenaTablaTramite(prtr, departamentos, sheet, i)
                 }
                 i += 2
@@ -182,7 +185,7 @@ class ReporteGestionExcelController extends Shield {
     def rowTramite(PersonaDocumentoTramite pdt, XSSFSheet sheet, int i) {
         def tramite = pdt.tramite
 
-        println "rowTRamite    " + tramite.codigo + "       i=" + i
+//        println "rowTRamite    " + tramite.codigo + "       i=" + i
 
         def de, dias, para = "", codigo = tramite.codigo
         if (tramite.deDepartamento) {
@@ -198,6 +201,7 @@ class ReporteGestionExcelController extends Shield {
             } else {
                 dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaEnvio, new Date())
             }
+//            println("diffff " + dif)
             if (dif[0]) {
                 def d = dif[1]
                 if (d.dias > 0) {
@@ -212,6 +216,8 @@ class ReporteGestionExcelController extends Shield {
         } else {
             dias = "No enviado"
         }
+
+        ////
         if (pdt.departamento) {
             para = pdt.departamento.codigo
         } else if (pdt.persona) {
@@ -221,10 +227,13 @@ class ReporteGestionExcelController extends Shield {
             codigo += " [CC]"
         }
         def contestacionRetraso = "Sin respuesta"
+
         def respuestas = Tramite.withCriteria {
             eq("aQuienContesta", pdt)
             order("fechaCreacion", "asc")
         }
+
+
         def dif2
         if (respuestas.size() > 0) {
             def respuesta = respuestas.last()
@@ -291,6 +300,10 @@ class ReporteGestionExcelController extends Shield {
             eq("aQuienContesta", prtr)
             order("fechaCreacion", "asc")
         }
+
+//        def respuestas = Tramite.findAll("from Tramite where aQuienContesta = ${prtr.id} order by fechaCreacion")
+
+//        println("respuestas " + respuestas)
         if (respuestas.size() > 0) {
             respuestas.each { h ->
                 def rolPara = RolPersonaTramite.findByCodigo("R001")
@@ -298,12 +311,12 @@ class ReporteGestionExcelController extends Shield {
 
                 def paras = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(h, rolPara)
                 def ccs = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(h, rolCc)
-
                 (paras + ccs).each { pdt ->
-                    if ((departamentos.id).contains(pdt.departamentoId) || (departamentos.id).contains(pdt.persona?.departamentoId) ||
-                            (departamentos.id).contains(pdt.tramite.departamentoId)) {
+
+//                    if ((departamentos.id).contains(pdt.departamentoId) || (departamentos.id).contains(pdt.persona?.departamentoId) ||
+//                            (departamentos.id).contains(pdt.tramite.departamentoId)) {
                         i = rowTramite(pdt, sheet, i)
-                    }
+//                    }
                     i = llenaTablaTramite(pdt, departamentos, sheet, i)
                 }
             }
