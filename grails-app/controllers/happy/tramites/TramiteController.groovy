@@ -4,7 +4,7 @@ import happy.alertas.Alerta
 import happy.seguridad.Persona
 import happy.utilitarios.DiaLaborable
 
-class TramiteController /*extends happy.seguridad.Shield*/ {
+class TramiteController extends happy.seguridad.Shield {
 
     def diasLaborablesService
     def enviarService
@@ -1031,10 +1031,48 @@ class TramiteController /*extends happy.seguridad.Shield*/ {
     }
 
     def tablaBandeja() {
-        def sql = "SELECT * FROM entrada_prsn($session.usuario.id) order by trmtfcen desc"
+        println params
+        def busca = false
+        def where = ""
+
+        if (!params.sort || params.sort == "") {
+            params.sort = "trmtfcen"
+        }
+        if (!params.order || params.order == "" || params.order == null) {
+            params.order = "DESC"
+        }
+
+        if (params.fecha) {
+            busca = true
+            def fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            def fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+            where += "WHERE (trmtfcen >= '${fechaIni.format('yyyy-MM-dd HH:mm:ss')}'" +
+                    " AND trmtfcen <= '${fechaFin.format('yyyy-MM-dd HH:mm:ss')}')"
+        }
+        if (params.asunto) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtasnt ilike '%${params.asunto.trim()}%')"
+        }
+        if (params.memorando) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
+        }
+
+        def sql = "SELECT * FROM entrada_prsn($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
+        println sql
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
-        return [rows: rows]
+        return [rows: rows, busca: busca]
     }
 
     //BANDEJA PERSONAL

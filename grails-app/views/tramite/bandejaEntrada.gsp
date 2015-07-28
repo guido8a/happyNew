@@ -86,9 +86,6 @@
             /*background-color: #7eb75e;*/
             background-color : #8fe6c3;
         }
-
-        #7aaedb
-
         </style>
 
     </head>
@@ -214,15 +211,15 @@
                 <table class="table table-bordered  table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th class="cabecera sortable ${params.sort == 'codigo' ? (params.order) : ''}" data-domain="tramite" data-sort="codigo" data-order="${params.order}">Documento</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaEnvio' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaEnvio" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaRecepcion' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaRecepcion" data-order="${params.order}">Fecha Recepción</th>
-                            <th class="cabecera sortable ${params.sort == 'de' ? (params.order) : ''}" data-domain="tramite" data-sort="de" data-order="${params.order}">De</th>
-                            <th class="cabecera" data-domain="tramite" data-sort="creadoPor" data-order="${params.order}">Creado por</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order) : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order) : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcrc' ? (params.order) : ''}" data-sort="trmtfcrc" data-order="${params.order}">Fecha Recepción</th>
+                            <th class="cabecera sortable ${params.sort == 'deprdpto' ? (params.order) : ''}" data-sort="deprdpto" data-order="${params.order}">De</th>
+                            <th class="cabecera sortable ${params.sort == 'deprlogn' ? (params.order) : ''}" data-sort="deprlogn" data-order="${params.order}">Creado por</th>
                             <th class="cabecera">Para</th>
-                            <th class="cabecera sortable ${params.sort == 'prioridad' ? (params.order) : ''}" data-domain="tramite" data-sort="prioridad" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == 'fechaLimiteRespuesta' ? (params.order) : ''}" data-domain="persDoc" data-sort="fechaLimiteRespuesta" data-order="${params.order}">Fecha Límite</th>
-                            <th class="cabecera sortable ${params.sort == 'rolPersonaTramite' ? (params.order) : ''}" data-domain="persDoc" data-sort="rolPersonaTramite" data-order="${params.order}">Rol</th>
+                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order) : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfclr' ? (params.order) : ''}" data-sort="trmtfclr" data-order="${params.order}">Fecha Límite</th>
+                            <th class="cabecera sortable ${params.sort == 'rltrdscr' ? (params.order) : ''}" data-sort="rltrdscr" data-order="${params.order}">Rol</th>
                         </tr>
                     </thead>
                     <tbody id="tabla_bandeja">
@@ -253,25 +250,18 @@
 
         <script type="text/javascript">
 
-            $("input").keyup(function (ev) {
-                if (ev.keyCode == 13) {
-//                    submitForm($(".btnBusqueda"));
-                    var memorando = $("#memorando").val();
-                    var asunto = $("#asunto").val();
-                    var fecha = $("#fechaBusqueda_input").val();
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+            function buscar() {
+                var memorando = $("#memorando").val();
+                var asunto = $("#asunto").val();
+                var fecha = $("#fechaBusqueda_input").val();
 
-                    $.ajax({
-                        type    : "POST", url : "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
-                        data    : datos,
-                        success : function (msg) {
-                            openLoader();
-                            $("#bandeja").html(msg);
-                            closeLoader();
-                        }
-                    });
-                }
-            });
+                var datos = {
+                    memorando : memorando,
+                    asunto    : asunto,
+                    fecha     : fecha
+                };
+                cargarBandeja(false, datos);
+            }
 
             function cargarBandeja(band, datos) {
                 $(".qtip").hide();
@@ -298,6 +288,13 @@
                     }
                 });
             }
+
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+//                    submitForm($(".btnBusqueda"));
+                    buscar();
+                }
+            });
 
             function cargarAlertas() {
                 $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
@@ -831,6 +828,25 @@
             //old
             $(function () {
 
+                $(".cabecera").click(function () {
+                    var $col = $(this);
+                    var order = "";
+                    if ($col.data("order") == "asc") {
+                        order = "desc";
+                        $col.data("order", "desc");
+                        $col.removeClass("asc").addClass("desc");
+                    } else if ($col.data("order") == "desc") {
+                        order = "asc";
+                        $col.data("order", "asc");
+                        $col.removeClass("desc").addClass("asc");
+                    }
+                    var data = {
+                        sort  : $col.data("sort"),
+                        order : order
+                    };
+                    cargarBandeja(false, data);
+                });
+
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false);
                 });
@@ -879,19 +895,8 @@
                 });
 
                 $(".btnBusqueda").click(function () {
-                    $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-                    var memorando = $("#memorando").val();
-                    var asunto = $("#asunto").val();
-                    var fecha = $("#fechaBusqueda_input").val();
-                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
-
-                    $.ajax({
-                        type    : "POST", url : "${g.createLink(controller: 'tramite', action: 'busquedaBandeja')}",
-                        data    : datos,
-                        success : function (msg) {
-                            $("#bandeja").html(msg);
-                        }
-                    });
+                    buscar();
+                    return false;
                 });
             });
 
