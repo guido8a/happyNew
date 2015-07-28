@@ -126,7 +126,7 @@
         <g:if test="${tramite.padre}">
             <g:if test="${tramite.padre.personaPuedeLeer(session.usuario)}">
                 <div class="nota padre ui-corner-all" id="divInfo">
-                    <h4 class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
+                    <h4 style="height: 150px" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
 
                     <div class="contenido" id="divInfoContenido">
                         %{--<g:each in="${0..15}" var="i">--}%
