@@ -342,7 +342,7 @@
                 <div class="row">
                 <div class="col-xs-12 ">
                     <span class="grupo">
-                        <b>Texto Adicional:</b>
+                        <b>Adicional Para:</b>
                         <input type="text" name="textoPara" class="form-control" id="textoPara" maxlength="1023"
                                style="width: 850px;display: inline" value="${tramite?.textoPara}"/>
                     </span>
