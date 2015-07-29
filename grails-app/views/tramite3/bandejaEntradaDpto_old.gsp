@@ -103,7 +103,7 @@
     </head>
 
     <body>
-        <div class="row" style="margin-top: 0; margin-left: 1px">
+        <div class="row" style="margin-top: 0px; margin-left: 1px">
 
             <span class="grupo">
                 <label class="well well-sm letra" style="text-align: center">
@@ -113,14 +113,10 @@
 
 
             <span class="grupo">
-                <label class="well well-sm"
-                       style="text-align: center">
-                    Departamento: ${persona?.departamento?.descripcion}
-                </label>
+                <label class="well well-sm" style="text-align: center">Departamento: ${persona?.departamento?.descripcion}</label>
             </span>
+            ${flash.message}
         </div>
-
-        <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
@@ -135,34 +131,26 @@
             </div>
 
             <div style="float: right">
-                %{--<div>--}%
-                <div data-type="pendiente" class="alert alert-blanco alertas" clase="porRecibir">
-                    (<span id="numEnv"></span>)
-                Por recibir
-                </div>
-                %{--</div>--}%
 
-
-                %{--<div>--}%
-                <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
-                    (<span id="numPen"></span>)
-                Sin Recepción
+                <div data-type="pendiente" class="alert alert-blanco alertas">
+                    <span id="spanPendientes" class="counter" data-class="porRecibir">(0)</span>
+                    Por recibir
                 </div>
-                %{--</div>--}%
 
-                %{--<div>--}%
-                <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
-                    (<span id="numRec"></span>)
-                Recibidos
+                <div data-type="noRecibido" class="alert alert-otroRojo alertas">
+                    <span id="spanNoRecibidos" class="counter" data-class="sinRecepcion">(0)</span>
+                    Sin Recepción
                 </div>
-                %{--</div>--}%
 
-                %{--<div>--}%
-                <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
-                    (<span id="numRet"></span>)
-                Retrasados
+                <div data-type="recibido" class="alert alert-info alertas">
+                    <span id="spanRecibidos" class="counter" data-class="recibido">(0)</span>
+                    Recibidos
                 </div>
-                %{--</div>--}%
+
+                <div data-type="retrasado" class="alert alert-danger alertas">
+                    <span id="spanRetrasados" class="counter" data-class="retrasado">(0)</span>
+                    Retrasados
+                </div>
             </div>
 
             %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
@@ -177,7 +165,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps" />
                     </div>
 
                     <div class="col-md-2">
@@ -221,86 +209,60 @@
         </div>
         %{--//bandeja--}%
 
-        <div id="" style=";height: 600px;overflow: auto;position: relative">
+        <div>
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
-            <div id="bandeja">
-                <table class="table table-bordered  table-condensed table-hover">
-                    <thead>
-                        <tr>
-                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcrc' ? (params.order + ' sorted') : ''}" data-sort="trmtfcrc" data-order="${params.order}">Fecha Recepción</th>
-                            <th class="cabecera sortable ${params.sort == 'deprdpto' ? (params.order + ' sorted') : ''}" data-sort="deprdpto" data-order="${params.order}">De</th>
-                            <th class="cabecera sortable ${params.sort == 'deprlogn' ? (params.order + ' sorted') : ''}" data-sort="deprlogn" data-order="${params.order}">Creado por</th>
-                            <th class="cabecera">Para</th>
-                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfclr' ? (params.order + ' sorted') : ''}" data-sort="trmtfclr" data-order="${params.order}">Fecha Límite</th>
-                            <th class="cabecera sortable ${params.sort == 'rltrdscr' ? (params.order + ' sorted') : ''}" data-sort="rltrdscr" data-order="${params.order}">Rol</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla_bandeja">
-
-                    </tbody>
-                </table>
-            </div>
+            <div id="bandeja"></div>
         </div>
 
         <script type="text/javascript">
 
-            //            function buscar() {
-            //                var memorando = $("#memorando").val();
-            //                var asunto = $("#asunto").val();
-            //                var fecha = $("#fechaBusqueda_input").val();
-            //
-            //                var datos = {
-            //                    memorando : memorando,
-            //                    asunto    : asunto,
-            //                    fecha     : fecha
-            //                };
-            //                cargarBandeja(false, datos);
-            //            }
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda_input").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
 
-            function cargarAlertas() {
-                $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
-                $("#numRet").html($(".retrasado").size()); //retrasado
-                $("#numEnv").html($(".porRecibir").size()); //porRecibir
-                $("#numRec").html($(".recibido").size()); //recibido
-            }
+                    $.ajax({
+                        type    : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                        data    : datos,
+                        success : function (msg) {
+                            $("#bandeja").html(msg);
 
-            function cargarBandeja() {
-                var memorando = $("#memorando").val();
-                var asunto = $("#asunto").val();
-                var fecha = $("#fechaBusqueda_input").val();
-                var $sorted = $(".sorted");
-                var sort = $sorted.data("sort");
-                var order = $sorted.data("order");
+                        }
+                    });
+                }
+            });
 
+            var intervalBandeja;
+
+            function cargarBandeja(band, datos) {
                 $(".qtip").hide();
-                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-
-                var datos = {
-                    memorando : memorando,
-                    asunto    : asunto,
-                    fecha     : fecha,
-                    sort      : sort,
-                    order     : order
-                };
-
+                if (!datos) {
+                    datos = {};
+                }
+                if (band) {
+                    openLoader("Cargando");
+                }
                 $.ajax({
                     type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
+                    url     : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto_old')}",
                     data    : datos,
-//                    async   : false,
                     success : function (msg) {
-//                        $("#bandeja").html(msg);
-                        $("#tabla_bandeja").html(msg);
-                        cargarAlertas();
-//                        if (band) {
-//                            closeLoader();
-//                            log("Datos actualizados", "success");
-//                        }
-                    }
+                        resetTimer();
+                        $("#bandeja").html(msg);
+                        if (band) {
+                            closeLoader();
+                            log("Datos actualizados", "success");
+
+                        }
+                        $(".counter").each(function () {
+                            var clase = $(this).data("class");
+                            var cant = $("tr." + clase).size();
+                            $(this).text("(" + cant + ")");
+                        });
+                     }
                 });
             }
 
@@ -497,7 +459,7 @@
                                             className : 'btn-danger',
                                             callback  : function () {
                                                 openLoader();
-                                                cargarBandeja();
+                                            cargarBandeja();
                                                 closeLoader()
                                             }
                                         },
@@ -633,7 +595,7 @@
                                                     url     : '${createLink(controller: "tramiteAdmin", action: "guardarEstado")}',
                                                     data    : {
                                                         id     : id,
-                                                        prtr   : idPxt,
+                                                        prtr : idPxt,
                                                         estado : nuevoEstado
                                                     },
                                                     success : function (msg) {
@@ -731,38 +693,24 @@
 
             $(function () {
 
-                $("input").keyup(function (ev) {
-                    if (ev.keyCode == 13) {
-//                    submitForm($(".btnBusqueda"));
-                        cargarBandeja();
-                    }
-                });
-
-                $(".cabecera").click(function () {
-                    var $col = $(this);
-                    $(".sorted").each(function () {
-                        $(this).removeClass("asc").removeClass("desc");
-                    });
-                    $col.addClass("sorted");
-                    var order = "";
-                    if ($col.data("order") == "asc") {
-                        order = "desc";
-                        $col.data("order", "desc");
-                        $col.removeClass("asc").addClass("desc");
-                    } else if ($col.data("order") == "desc") {
-                        order = "asc";
-                        $col.data("order", "asc");
-                        $col.removeClass("desc").addClass("asc");
-                    }
-                    cargarBandeja();
-                });
-
 //                intervalBandeja = setInterval(function () {
 //                    openLoader();
 //                    cargarBandeja(false);
 //                    closeLoader()
 //                    $(".qtip").hide();
 //                }, 1000 * 60);
+                var id, codigo;
+
+                $(".alertas").click(function () {
+                    if (!$(this).hasClass("trHighlight")) {
+                        var clase = $(this).data("type");
+                        $(".trHighlight").removeClass("trHighlight");
+                        $("tr." + clase).addClass("trHighlight");
+                        $(this).addClass("trHighlight");
+                    } else {
+                        $(".trHighlight").removeClass("trHighlight");
+                    }
+                });
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)
@@ -805,8 +753,20 @@
             });
 
             $(".btnBusqueda").click(function () {
-                cargarBandeja();
-                return false;
+                openLoader();
+                var memorando = $("#memorando").val();
+                var asunto = $("#asunto").val();
+                var fecha = $("#fechaBusqueda_input").val();
+                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha
+                $.ajax({
+                    type    : "POST", url : "${g.createLink(controller: 'tramite3', action: 'busquedaBandeja')}",
+                    data    : datos,
+                    success : function (msg) {
+
+                        $("#bandeja").html(msg);
+                        closeLoader();
+                    }
+                });
             });
 
 

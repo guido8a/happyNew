@@ -4,10 +4,11 @@ import groovy.time.TimeCategory
 import happy.alertas.Alerta
 import happy.seguridad.Persona
 
-class Tramite3Controller extends happy.seguridad.Shield {
+class Tramite3Controller /*extends happy.seguridad.Shield*/ {
 
     def diasLaborablesService
     def tramitesService
+    def dbConnectionService
 
     def save() {
         println "PARAMS: " + params
@@ -670,17 +671,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return html
     }
 
-    def bandejaEntradaDpto() {
-        def usu = Persona.get(session.usuario.id)
-//        def triangulo = PermisoTramite.findByCodigo("E001")
-        def bloqueo = false
-        if (!session.usuario.esTriangulo()) {
-            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
-            response.sendError(403)
-        }
-        return [persona: usu, bloqueo: bloqueo]
-    }
-
     def infoRemitente() {
         println "info remitente aqui"
         def tramite = Tramite.get(params.id)
@@ -720,8 +710,77 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [tramite: tramite, principal: principal, tramites: tramites, rolesNo: rolesNo, tp: tp]
     }
 
+    def bandejaEntradaDpto() {
+        def usu = Persona.get(session.usuario.id)
+//        def triangulo = PermisoTramite.findByCodigo("E001")
+        def bloqueo = false
+        if (!session.usuario.esTriangulo()) {
+            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
+            response.sendError(403)
+        }
+
+        params.sort = "trmtfcen"
+        params.order = "desc"
+        return [persona: usu, bloqueo: bloqueo, params: params]
+    }
 
     def tablaBandejaEntradaDpto() {
+//        println params
+        def busca = false
+        def where = ""
+
+        if (!params.sort || params.sort == "") {
+            params.sort = "trmtfcen"
+        }
+        if (!params.order || params.order == "" || params.order == null) {
+            params.order = "DESC"
+        }
+
+        if (params.fecha) {
+            busca = true
+            def fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            def fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+            where += "WHERE (trmtfcen >= '${fechaIni.format('yyyy-MM-dd HH:mm:ss')}'" +
+                    " AND trmtfcen <= '${fechaFin.format('yyyy-MM-dd HH:mm:ss')}')"
+        }
+        if (params.asunto) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtasnt ilike '%${params.asunto.trim()}%')"
+        }
+        if (params.memorando) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
+        }
+
+        def sql = "SELECT * FROM entrada_dpto($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
+        println sql
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+        return [rows: rows, busca: busca]
+    }
+
+    def bandejaEntradaDpto_old() {
+        def usu = Persona.get(session.usuario.id)
+//        def triangulo = PermisoTramite.findByCodigo("E001")
+        def bloqueo = false
+        if (!session.usuario.esTriangulo()) {
+            flash.message = "Su perfil (${session.perfil}), no tiene acceso a la bandeja de entrada departamental"
+            response.sendError(403)
+        }
+        return [persona: usu, bloqueo: bloqueo]
+    }
+
+    def tablaBandejaEntradaDpto_old() {
 //        println "1dpto.... --- " + System.currentTimeMillis()/1000
         params.domain = params.domain ?: "persDoc"
         params.sort = params.sort ?: "fechaEnvio"

@@ -92,7 +92,7 @@
 
     <body>
 
-        <div class="row" style="margin-top: 0px; margin-left: 1px">
+        <div class="row" style="margin-top: 0; margin-left: 1px">
             <span class="grupo">
                 <label class="well well-sm letra" style="text-align: center">
                     BANDEJA DE ENTRADA PERSONAL
@@ -107,7 +107,6 @@
                             persona?.departamento?.descripcion}
                 </label>
             </span>
-
         </div>
 
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
@@ -205,21 +204,18 @@
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
             <div id="bandeja">
-                <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
-                <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
-
                 <table class="table table-bordered  table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order) : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order) : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcrc' ? (params.order) : ''}" data-sort="trmtfcrc" data-order="${params.order}">Fecha Recepción</th>
-                            <th class="cabecera sortable ${params.sort == 'deprdpto' ? (params.order) : ''}" data-sort="deprdpto" data-order="${params.order}">De</th>
-                            <th class="cabecera sortable ${params.sort == 'deprlogn' ? (params.order) : ''}" data-sort="deprlogn" data-order="${params.order}">Creado por</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcrc' ? (params.order + ' sorted') : ''}" data-sort="trmtfcrc" data-order="${params.order}">Fecha Recepción</th>
+                            <th class="cabecera sortable ${params.sort == 'deprdpto' ? (params.order + ' sorted') : ''}" data-sort="deprdpto" data-order="${params.order}">De</th>
+                            <th class="cabecera sortable ${params.sort == 'deprlogn' ? (params.order + ' sorted') : ''}" data-sort="deprlogn" data-order="${params.order}">Creado por</th>
                             <th class="cabecera">Para</th>
-                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order) : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfclr' ? (params.order) : ''}" data-sort="trmtfclr" data-order="${params.order}">Fecha Límite</th>
-                            <th class="cabecera sortable ${params.sort == 'rltrdscr' ? (params.order) : ''}" data-sort="rltrdscr" data-order="${params.order}">Rol</th>
+                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfclr' ? (params.order + ' sorted') : ''}" data-sort="trmtfclr" data-order="${params.order}">Fecha Límite</th>
+                            <th class="cabecera sortable ${params.sort == 'rltrdscr' ? (params.order + ' sorted') : ''}" data-sort="rltrdscr" data-order="${params.order}">Rol</th>
                         </tr>
                     </thead>
                     <tbody id="tabla_bandeja">
@@ -250,28 +246,38 @@
 
         <script type="text/javascript">
 
-            function buscar() {
+            //            function buscar() {
+            //                var memorando = $("#memorando").val();
+            //                var asunto = $("#asunto").val();
+            //                var fecha = $("#fechaBusqueda_input").val();
+            //
+            //                var datos = {
+            //                    memorando : memorando,
+            //                    asunto    : asunto,
+            //                    fecha     : fecha
+            //                };
+            //                cargarBandeja(false, datos);
+            //            }
+
+            function cargarBandeja() {
                 var memorando = $("#memorando").val();
                 var asunto = $("#asunto").val();
                 var fecha = $("#fechaBusqueda_input").val();
+                var $sorted = $(".sorted");
+                var sort = $sorted.data("sort");
+                var order = $sorted.data("order");
+
+                $(".qtip").hide();
+                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
 
                 var datos = {
                     memorando : memorando,
                     asunto    : asunto,
-                    fecha     : fecha
+                    fecha     : fecha,
+                    sort      : sort,
+                    order     : order
                 };
-                cargarBandeja(false, datos);
-            }
 
-            function cargarBandeja(band, datos) {
-                $(".qtip").hide();
-                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
-                if (!datos) {
-                    datos = {};
-                }
-                if (band) {
-                    openLoader();
-                }
                 $.ajax({
                     type    : "POST",
                     url     : "${g.createLink(controller: 'tramite',action:'tablaBandeja')}",
@@ -281,20 +287,13 @@
 //                        $("#bandeja").html(msg);
                         $("#tabla_bandeja").html(msg);
                         cargarAlertas();
-                        if (band) {
-                            closeLoader();
-                            log("Datos actualizados", "success");
-                        }
+//                        if (band) {
+//                            closeLoader();
+//                            log("Datos actualizados", "success");
+//                        }
                     }
                 });
             }
-
-            $("input").keyup(function (ev) {
-                if (ev.keyCode == 13) {
-//                    submitForm($(".btnBusqueda"));
-                    buscar();
-                }
-            });
 
             function cargarAlertas() {
                 $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
@@ -828,8 +827,19 @@
             //old
             $(function () {
 
+                $("input").keyup(function (ev) {
+                    if (ev.keyCode == 13) {
+//                    submitForm($(".btnBusqueda"));
+                        cargarBandeja();
+                    }
+                });
+
                 $(".cabecera").click(function () {
                     var $col = $(this);
+                    $(".sorted").each(function () {
+                        $(this).removeClass("asc").removeClass("desc");
+                    });
+                    $col.addClass("sorted");
                     var order = "";
                     if ($col.data("order") == "asc") {
                         order = "desc";
@@ -840,11 +850,7 @@
                         $col.data("order", "asc");
                         $col.removeClass("desc").addClass("asc");
                     }
-                    var data = {
-                        sort  : $col.data("sort"),
-                        order : order
-                    };
-                    cargarBandeja(false, data);
+                    cargarBandeja();
                 });
 
                 $(".btnBuscar").click(function () {
@@ -865,7 +871,7 @@
 
                 $(".btnActualizar").click(function () {
 //                    openLoader();
-                    cargarBandeja(false);
+                    cargarBandeja();
 //                    closeLoader();
                     return false;
                 });
@@ -895,7 +901,7 @@
                 });
 
                 $(".btnBusqueda").click(function () {
-                    buscar();
+                    cargarBandeja();
                     return false;
                 });
             });

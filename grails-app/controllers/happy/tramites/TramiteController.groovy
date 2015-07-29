@@ -1027,11 +1027,14 @@ class TramiteController extends happy.seguridad.Shield {
             response.sendError(403)
         }
 
-        return [persona: persona, bloqueo: bloqueo]
+        params.sort = "trmtfcen"
+        params.order = "desc"
+
+        return [persona: persona, bloqueo: bloqueo, params: params]
     }
 
     def tablaBandeja() {
-        println params
+//        println params
         def busca = false
         def where = ""
 
