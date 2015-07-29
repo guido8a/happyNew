@@ -1574,6 +1574,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "pxt: " + pdt
 //        println "params: " + params
 
+        if (tramite.id && tramite.esRespuestaNueva) {
+            params.esRespuestaNueva = tramite.esRespuestaNueva
+        }
+
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
                 bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }

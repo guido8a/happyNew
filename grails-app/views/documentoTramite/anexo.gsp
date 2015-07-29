@@ -96,12 +96,14 @@
 
         <g:if test="${tramite.tipoDocumento.codigo != 'DEX'}">
             <g:if test="${tramite.deDepartamento}">
-                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite2" action="crearTramiteDep" id="${tramite.id}" class=" btn-editar btn  btn-azul btnRegresar" title="Editar encabezado">
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite2" action="crearTramiteDep" params="[esRespuestaNueva: tramite.esRespuestaNueva]"
+                        id="${tramite.id}" class=" btn-editar btn  btn-azul btnRegresar" title="Editar encabezado">
                     Editar encabezado
                 </g:link>
             </g:if>
             <g:else>
-                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="crearTramite" id="${tramite.id}" class="  btn-editar btn btn-azul btnRegresar" title="Editar encabezado">
+                <g:link style="position: relative;height: 40px;margin-top: 10px" controller="tramite" action="crearTramite" params="[esRespuestaNueva: tramite.esRespuestaNueva]"
+                        id="${tramite.id}" class="  btn-editar btn btn-azul btnRegresar" title="Editar encabezado">
                     Editar encabezado
                 </g:link>
             </g:else>
