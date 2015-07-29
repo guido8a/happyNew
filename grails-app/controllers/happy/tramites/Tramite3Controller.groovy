@@ -24,6 +24,19 @@ class Tramite3Controller /*extends happy.seguridad.Shield*/ {
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
 
+
+        def ccLista = []
+        if(params.tramite.hiddenCC){
+            params.tramite.hiddenCC.split("_").each { ccl->
+                if(ccl.toInteger() > 0){
+                    ccLista += (Persona.get(ccl).nombre + " " + Persona.get(ccl).apellido)
+                }else{
+                    ccLista += (Departamento.get(ccl.toInteger() * -1).descripcion)
+                }
+
+            }
+        }
+
         println("error " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
 
         if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
@@ -215,6 +228,27 @@ class Tramite3Controller /*extends happy.seguridad.Shield*/ {
         }
 //        println "ANTES DEL SAVE " + paramsTramite
         tramite.properties = paramsTramite
+
+        tramite.textoPara = params?.textoPara
+
+        if(ccLista.size() > 0){
+            tramite.texto = '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += "cc: "
+
+            ccLista.each {n->
+                tramite.texto += n
+
+                if(n != ccLista.last()){
+                    tramite.texto += ' - '
+                }
+
+            }
+        }
+
         if (tramite.tipoDocumento.codigo == "DEX") {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
         }

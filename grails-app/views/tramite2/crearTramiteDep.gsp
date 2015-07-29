@@ -119,6 +119,7 @@
             <g:hiddenField name="tramite.esRespuestaNueva" value="${params.esRespuestaNueva}"/>
             <g:hiddenField name="tramite.tramitePrincipal" value="${tramite.tramitePrincipal}"/>
             <g:hiddenField name="tramite.agregadoA.id" value="${tramite.agregadoA?.id}"/>
+            %{--<g:hiddenField name="tramite.textoPara" value="${tramite?.textoPara}"/>--}%
 
             <g:if test="${tramite.tramitePrincipal > 0}">
                 <g:set var="principal" value="${Tramite.get(tramite.tramitePrincipal)}"/>
@@ -332,6 +333,20 @@
                     %{--<div class="col-xs-2 negrilla hide" id="divAnexos">--}%
                     %{--<label for="anexo"><input type="checkbox" name="anexo" id="anexo"/> Con anexos</label>--}%
                     %{--</div>--}%
+                </div>
+
+
+                %{--Inutil texto adicional--}%
+
+
+                <div class="row">
+                <div class="col-xs-12 ">
+                    <span class="grupo">
+                        <b>Texto Adicional:</b>
+                        <input type="text" name="textoPara" class="form-control" id="textoPara" maxlength="1023"
+                               style="width: 850px;display: inline" value="${tramite?.textoPara}"/>
+                    </span>
+                </div>
                 </div>
 
                 <div class="row">

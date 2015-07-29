@@ -364,7 +364,7 @@ class ElementosTagLib {
                         strPara = tramite.paraExterno
                     }
                 }
-                html += strPara
+                html += (strPara + " - " + tramite?.textoPara)
                 html += "                    </div>"
                 html += "                </div>"
             }
@@ -443,7 +443,7 @@ class ElementosTagLib {
 //            html += "<td>${strPara}</td>"
 //            html += "</tr>"
                 if (para || tramite.paraExterno) {
-                    html += "<tr>"
+                    html += "<tr style='vertical-align: top'>"
                     html += "<th>Para:</th>"
                     html += "<td>"
                     if (tramite.tipoDocumento.codigo != "DEX") {
@@ -452,38 +452,35 @@ class ElementosTagLib {
                         }
                     }
                     if (strDepa != '') {
-                        html += strPara + " (" + strDepa + ")"
+                        html += strPara + " (" + strDepa + ")" + " - " + tramite?.textoPara
                     } else {
-                        html += strPara
+                        html += strPara + " - " + tramite?.textoPara
                     }
 
                     html += "</td>"
                     html += "</tr>"
                 }
                 //copias
-                if(cc){
-                    html += "<tr style=\"vertical-align: top\">"
-                    html += "<th>CC:</th>"
-//                    html += "<td>"
-                    cc.each {d->
-                        if(d.persona){
-                            html += "<tr>"
-                            html += util.nombrePersona(persona: d.persona)
-                            html += "("
-                            html += d.persona.departamento.descripcion
-                            html += ")"
-                            html += "</tr>"
-                        }
-                        if (d.departamento) {
-                            html += "<tr>"
+//                if(cc){
+//                    html += "<tr style=\"vertical-align: top\">"
+//                    html += "<th>CC:</th>"
+//                    cc.each {d->
+//                        if(d.persona){
+//                            html += "<tr>"
+//                            html += util.nombrePersona(persona: d.persona)
+//                            html += "("
 //                            html += d.persona.departamento.descripcion
-                            html += d.departamento.descripcion
-                            html += "</tr>"
-                        }
-                    }
-//                    html += "                    </td>"
-                    html += "</tr>"
-                }
+//                            html += ")"
+//                            html += "</tr>"
+//                        }
+//                        if (d.departamento) {
+//                            html += "<tr>"
+//                            html += d.departamento.descripcion
+//                            html += "</tr>"
+//                        }
+//                    }
+//                    html += "</tr>"
+//                }
                 //de
                 html += "<tr>"
                 html += "<th>De:</th>"

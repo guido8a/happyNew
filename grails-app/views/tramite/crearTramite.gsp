@@ -370,6 +370,16 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-xs-12 ">
+                        <span class="grupo">
+                            <b>Texto Adicional:</b>
+                            <input type="text" name="textoPara" class="form-control" id="textoPara" maxlength="1023"
+                                   style="width: 850px;display: inline" value="${tramite?.textoPara}"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row">
                     %{--<div class="col-xs-3">--}%
                     %{--<b>Tipo de documento:</b>--}%
                     %{--<elm:select id="tipoDocumento" name="tramite.tipoDocumento.id" class="many-to-one form-control required"--}%

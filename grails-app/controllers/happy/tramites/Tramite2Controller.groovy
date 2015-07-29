@@ -1579,7 +1579,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def saveDep() {
-//        println("params" + params)
+//        println("params savedep" + params)
         //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
@@ -1593,6 +1593,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        nombre = nombre.replaceAll(/</, /&lt;/)
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
 //        def respv = aQuienEstaContestando.respuestasVivasEsrn
+
+
+        //CC en el texto
+
+        def ccLista = []
+        if(params.tramite.hiddenCC){
+            params.tramite.hiddenCC.split("_").each { ccl->
+                if(ccl.toInteger() > 0){
+                    ccLista += (Persona.get(ccl).nombre + " " + Persona.get(ccl).apellido)
+                }else{
+                    ccLista += (Departamento.get(ccl.toInteger() * -1).descripcion)
+                }
+
+            }
+        }
 
         if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
             def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
@@ -1773,6 +1788,29 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         tramite.departamento = tramite.de.departamento
+
+        tramite.textoPara = params?.textoPara
+
+        if(ccLista.size() > 0){
+            tramite.texto = '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += '<p></p>'
+            tramite.texto += "cc: "
+
+            ccLista.each {n->
+                tramite.texto += n
+
+                if(n != ccLista.last()){
+                    tramite.texto += ' - '
+                }
+
+            }
+        }
+
+
+
         if (!tramite.save(flush: true)) {
             println "error save tramite " + tramite.errors
             flash.tipo = "error"
