@@ -4,14 +4,14 @@ import groovy.time.TimeCategory
 import happy.alertas.Alerta
 import happy.seguridad.Persona
 
-class Tramite3Controller /*extends happy.seguridad.Shield*/ {
+class Tramite3Controller extends happy.seguridad.Shield {
 
     def diasLaborablesService
     def tramitesService
     def dbConnectionService
 
     def save() {
-        println "PARAMS: " + params
+        println "save params: " + params
         /*
           tramite.asunto:sdfg sdfg sdf g,
           tramite:[
@@ -359,6 +359,7 @@ class Tramite3Controller /*extends happy.seguridad.Shield*/ {
                 if (para > 0) {
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
+                    paraDocumentoTramite.departamentoPersona = Persona.get(para).departamento  //***  departamentoPersona
                     paraDocumentoTramite.departamento = null
                 } else {
                     //departamento
@@ -402,6 +403,7 @@ class Tramite3Controller /*extends happy.seguridad.Shield*/ {
                     if (cc.toInteger() > 0) {
                         //persona
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
+                        ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento //***  departamentoPersona
                     } else {
                         //departamento
                         ccDocumentoTramite.departamento = Departamento.get(cc.toInteger() * -1)

@@ -625,6 +625,30 @@ class DiasLaborablesService {
         return tiempoLaborableEntre(fecha1, fecha2, true)
     }
 
+    def tmpoLaborableEntre(Date fcin, Date fcfn) {
+        // si fcfn < fcin se cambia el orde para que la diferencia sea positiva
+        if (fcfn < fcin) {
+            def fechaTemp = fcin
+            fcin = fcfn
+            fcfn = fechaTemp
+        }
+
+        def fchafcin = new Date()
+        def fchafcfn = new Date()
+        fchafcin = corrigeHora(fcin).clone();
+        println "retorna: $fchafcin"
+        fchafcfn = corrigeHora(fcfn).clone();
+        println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
+
+        def dias = DiaLaborable.findByFecha(fchafcfn.clearTime()).ordinal - DiaLaborable.findByFecha(fchafcin.clearTime()).ordinal
+        def horas = (fchafcfn.time - fchafcin.time)/(1000*3600)
+        def minutos = (fchafcfn.time - fchafcin.time)/(1000*60)
+        println "tiempo transcurrido: horas: $horas, $minutos, dias: $dias"
+
+    }
+
+
+
     def validarLaborable(DiaLaborable diaLaborable, boolean noLaborables) {
 //        println "**" + diaLaborable
         def mensaje = ""
@@ -684,5 +708,34 @@ class DiasLaborablesService {
 //        println "----------dm " + difMins
         return [horas: difHoras, minutos: difMins]
     }
+
+    def corrigeHora(fcha){
+        println "corrigeHora: llega: $fcha"
+        def prmt = Parametros.list([sort: "id"]).last()
+        def anio = fcha.format("yyyy").toInteger()
+        def mes  = fcha.format("MM").toInteger() -1
+        def dias = fcha.format("dd").toInteger()
+
+        def horaIni = Calendar.instance
+        horaIni.set(anio, mes, dias, prmt.horaInicio, prmt.minutoInicio, 0)
+        def horaFin = Calendar.instance
+        horaFin.set(anio, mes, dias, prmt.horaFin, prmt.minutoFin, 0)
+
+        println "fechas refeerencia: $horaIni.time y $horaFin.time"
+        def cal = Calendar.instance
+        cal.set(anio, mes, dias, fcha.format("HH").toInteger(), fcha.format("mm").toInteger(), 0)
+
+        def fecha = Calendar.instance
+        fecha.time = fcha
+
+        if(fecha < horaIni) {
+            fecha = horaIni
+        }
+        if (fecha > horaFin) {
+            fecha = horaFin
+        }
+        fecha.time
+    }
+
 
 }

@@ -1583,7 +1583,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def saveDep() {
-//        println("params savedep" + params)
+        println("params savedep" + params)
         //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
@@ -1900,6 +1900,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (para > 0) {
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
+                    paraDocumentoTramite.departamentoPersona = Persona.get(para).departamento  //***  departamentoPersona
                     paraDocumentoTramite.departamento = null
                 } else {
                     //departamento
@@ -1937,6 +1938,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (cc.toInteger() > 0) {
                         //persona
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
+                        ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento //***  departamentoPersona
                     } else {
                         //departamento
                         ccDocumentoTramite.departamento = Departamento.get(cc.toInteger() * -1)

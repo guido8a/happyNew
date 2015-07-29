@@ -116,6 +116,9 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
         if (request.getMethod() == "POST") {
             def doc = DocumentoTramite.get(params.id)
             def departamento = doc.tramite.deDepartamento
+            if(!departamento) {
+                departamento = doc.tramite.de.departamento
+            }
             def anio = doc.fecha.format("yyyy")
             try {
                 def path = servletContext.getRealPath("/") + "anexos/${departamento.codigo}/${anio}/" + doc.tramite.codigo + "/" + doc.path
@@ -124,6 +127,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
                 render "ok"
             } catch (e) {
+                e.printStackTrace()
                 render "error"
             }
 
@@ -202,6 +206,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 'application/vnd.ms-pdf'                                                   : 'pdf',
 
                 'application/excel'                                                        : 'xls',
+                'application/vnd.ms-excel'                                                 : 'xls',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'        : 'xlsx',
 
                 'application/mspowerpoint'                                                 : 'pps',

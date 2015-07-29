@@ -188,6 +188,7 @@
                 'application/vnd.ms-pdf' : 'pdf',
 
                 'application/excel'                                                 : 'xls',
+                'application/vnd.ms-excel'                                          : 'xls',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'xlsx',
 
                 'application/mspowerpoint'                                                  : 'pps',

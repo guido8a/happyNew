@@ -172,6 +172,7 @@
                         </g:else>
                     </div>
 
+                    %{--Actualizar con datos del trámite--}%
                     <div class="col-xs-6 claseMin">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                             %{--${pdt?.estado?.descripcion}--}%
@@ -211,7 +212,8 @@
                                 ${t.paraExterno} (EXT)
                             </g:if>
                             <g:else>
-                                ${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}
+                                %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}--}%
+                                ${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}
                             </g:else>
 
                             <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>

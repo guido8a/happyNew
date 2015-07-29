@@ -8,6 +8,7 @@ class PersonaDocumentoTramite {
     Tramite tramite
 
     Persona persona                         // persona q envia/recibe el tramite
+    Departamento departamentoPersona
     Departamento departamento
     // departamento q recibe el tramite (para la bandeja de entrada de los triangulos)
 
@@ -42,6 +43,7 @@ class PersonaDocumentoTramite {
             id column: 'prtr__id'
             rolPersonaTramite column: 'rltr__id'
             persona column: 'prsn__id'
+            departamentoPersona column: 'dptoprsn'
             departamento column: 'dpto__id'
             tramite column: 'trmt__id'
             observaciones column: 'prtrobsr'
@@ -59,6 +61,7 @@ class PersonaDocumentoTramite {
     static constraints = {
         rolPersonaTramite(blank: false, nullable: false, attributes: [title: 'rolPersonaTramite'])
         persona(blank: true, nullable: true, attributes: [title: 'persona'])
+        departamentoPersona(blank: true, nullable: true, attributes: [title: 'departamento de la Persona destinataria'])
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
         tramite(blank: false, nullable: false, attributes: [title: 'Tramite'])
         observaciones(blank: true, nullable: true, attributes: [title: 'observaciones'])

@@ -40,6 +40,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def saveDEX() {
+        println "saveDEX"
         def tramite = Tramite.get(params.id)
         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
         tramite.fechaModificacion = new Date()
@@ -148,6 +149,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def saveTramite() {
+        println "saveTramite, params: $params"
 
         def tramite = Tramite.get(params.id)
         def paratr = tramite.para

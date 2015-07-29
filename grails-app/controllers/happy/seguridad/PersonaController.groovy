@@ -947,6 +947,8 @@ class PersonaController extends happy.seguridad.Shield {
 
                 def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
                 def cantTramites = tramites.size()
+                println "cambioDpto_ajax: $tramites"
+
                 if (params.departamento.id != personaInstance.departamentoId)
                     msgDpto = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
                             "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
