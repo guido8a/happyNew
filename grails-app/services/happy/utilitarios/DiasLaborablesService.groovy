@@ -619,6 +619,8 @@ class DiasLaborablesService {
 
     }
 
+
+
     def tiempoLaborableEntre(Date fecha1, Date fecha2) {
         return tiempoLaborableEntre(fecha1, fecha2, true)
     }

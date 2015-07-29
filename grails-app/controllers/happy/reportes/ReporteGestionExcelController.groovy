@@ -1,5 +1,6 @@
 package happy.reportes
 
+import groovy.time.TimeCategory
 import happy.seguridad.Shield
 import happy.tramites.Departamento
 import happy.tramites.PersonaDocumentoTramite
@@ -196,10 +197,17 @@ class ReporteGestionExcelController extends Shield {
 
         def dif
         if (pdt.fechaEnvio) {
+            def pruebasInicio = new Date()
+            def pruebasFin
+
             if (pdt.fechaRecepcion) {
                 dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
+                pruebasFin = new Date()
+                println "tiempo ejecución tiempoLaborableEntre if: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
             } else {
                 dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaEnvio, new Date())
+                pruebasFin = new Date()
+                println "tiempo ejecución tiempoLaborableEntre else: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
             }
 //            println("diffff " + dif)
             if (dif[0]) {
