@@ -47,9 +47,7 @@ class Tramite {
     EstadoTramiteExterno estadoTramiteExterno
 
     Integer esRespuesta = 0
-
     String conMembrete
-
     Integer tramitePrincipal = 0
 
     String esRespuestaNueva = "N"
