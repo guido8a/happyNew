@@ -364,7 +364,12 @@ class ElementosTagLib {
                         strPara = tramite.paraExterno
                     }
                 }
-                html += (strPara + " - " + tramite?.textoPara)
+                if(tramite?.textoPara){
+                    html += (strPara + " - " + tramite?.textoPara)
+                }else{
+                    html += strPara
+                }
+
                 html += "                    </div>"
                 html += "                </div>"
             }
@@ -425,18 +430,20 @@ class ElementosTagLib {
             //tipo documento
             if (tramite?.tipoDocumento?.codigo != 'OFI') {
 
+                def cadenaCodigo = tramite.codigo.toString()
+                def nuevaCadena
+                nuevaCadena = cadenaCodigo.split('-')[1] + "-" + cadenaCodigo.split('-')[2] + "-" + cadenaCodigo.split('-')[3]
+                println("cadena " + nuevaCadena + " " + tramite.codigo)
+
                 html = "<div class=\"titulo-azul titulo-horizontal\">"
-                html += tramite.tipoDocumento?.descripcion
+                html += tramite.tipoDocumento?.descripcion + "-" + nuevaCadena
                 html += "</div>"
                 html += "<table class='tramiteHeader'>"
                 //no. documento
-                html += "<tr>"
-                html += "<th>No.</th>"
-                html += "<td>${tramite.codigo}</td>"
-//            html += "<td colspan='2'>"
-//            html += "<b>No.</b> ${tramite.codigo}"
-//            html += "</td>"
-                html += "</tr>"
+//                html += "<tr>"
+//                html += "<th>No.</th>"
+//                html += "<td>${tramite.codigo}</td>"
+//                html += "</tr>"
                 //para
 //            html += "<tr>"
 //            html += "<td class='negrilla'><b>Para:</b></td>"
@@ -452,9 +459,19 @@ class ElementosTagLib {
                         }
                     }
                     if (strDepa != '') {
-                        html += strPara + " (" + strDepa + ")" + " - " + tramite?.textoPara
+                        if(tramite?.textoPara){
+                            html += strPara + " (" + strDepa + ")" + " - " + tramite?.textoPara
+                        }else{
+                            html += strPara + " (" + strDepa + ")"
+                        }
+
                     } else {
-                        html += strPara + " - " + tramite?.textoPara
+                        if(tramite?.textoPara){
+                            html += strPara + " - " + tramite?.textoPara
+                        }else{
+                            html += strPara
+                        }
+
                     }
 
                     html += "</td>"
