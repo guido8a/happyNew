@@ -11,7 +11,7 @@
     <data-source source="LOCAL" name="happyNew dev" uuid="e0d38a05-e046-446e-b3c6-6b3b51f47d1c">
       <driver-ref>postgresql</driver-ref>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://10.0.0.2:5432/sadweb_brre</jdbc-url>
+      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/sadweb_prdc</jdbc-url>
       <libraries>
         <library>
           <url>file://$PROJECT_DIR$/lib/postgresql-9.1-903.jdbc4.jar</url>
