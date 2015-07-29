@@ -5,6 +5,37 @@
   Time: 09:25 AM
 --%>
 
+<%--
+
+    trmt__id:11123,
+    trmtcdgo:SUM-20413-AP-15,
+    trmtasnt:cm-9165  PAGO SERVICIO DE TELÉFONÍA MÓVIL $45.54,
+    tpdccdgo:SUM,
+    rltrcdgo:R001,
+    rltrdscr:PARA,
+    deprdscr:María Belén León Cadena,
+    depr__id:5564,
+    deprlogn:mleon,
+    deprdpto:AP,
+    deprdpds:ADMINISTRACION PRESUPUESTARIA,
+    dedpdscr:null,
+    dedp__id:741,
+    prtr__id:35720,
+    tptrcdgo:N,
+    trmtprex:null,
+    prtrprsn:null,
+    prtrdpto:null,
+    prtrdpds:ADMINISTRACION PRESUPUESTARIA,
+    trmttppd:BAJA,
+    trmtfcrc:null,
+    trmtfcen:2015-07-28 16:27:45.954,
+    trmtfclr:null,
+    trmtfcbq:2015-07-29 09:57:00.0,
+    trmtanxo:null,
+    trmtdctr:0,
+    edtxcdgo:null
+
+--%>
 
 <g:set var="now" value="${new Date()}"/>
 <g:if test="${rows.size() == 0}">
