@@ -1123,20 +1123,20 @@
 
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {
-                    var tpdc = $("#tipoDocumento").val()
+                    var tpdc = $("#tipoDocumento").val();
                     if ($(".frmTramite").valid()) {
                         var cc = "";
                         $("#ulSeleccionados li").each(function () {
                             cc += $(this).data("id") + "_";
                         });
 
-                        if (!cc && tpdc == 4) {
-                            log("No ha ingresado ningun destinatario!", 'error')
-                        } else {
-                            $("#hiddenCC").val(cc);
-                            console.log($(".frmTramite"), $(".frmTramite").serialize());
-                            $(".frmTramite").submit();
-                        }
+//                        if (!cc && tpdc == 4) {
+//                            log("No ha ingresado ningun destinatario!", 'error')
+//                        } else {
+                        $("#hiddenCC").val(cc);
+//                            console.log($(".frmTramite"), $(".frmTramite").serialize());
+                        $(".frmTramite").submit();
+//                        }
 
 //                        console.log("-->" + cc)
                     }
