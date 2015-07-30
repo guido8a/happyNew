@@ -232,7 +232,7 @@ class TramiteExportController extends Shield{
                 }
             }
         }
-
+        println "envia a crear pdf con params: $params.enviar"
         render enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), realPath.toString(), mensaje)
     }
 

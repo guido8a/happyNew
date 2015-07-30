@@ -149,7 +149,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def saveTramite() {
-        println "saveTramite, params: $params"
+//        println "saveTramite, params: $params"
 
         def tramite = Tramite.get(params.id)
         def paratr = tramite.para

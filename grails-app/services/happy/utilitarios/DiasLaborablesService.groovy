@@ -635,15 +635,20 @@ class DiasLaborablesService {
 
         def fchafcin = new Date()
         def fchafcfn = new Date()
-        fchafcin = corrigeHora(fcin).clone();
-        println "retorna: $fchafcin"
-        fchafcfn = corrigeHora(fcfn).clone();
+        fchafcin = corrigeHora(fcin)
+        fchafcfn = corrigeHora(fcfn)
         println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
+
         def horas = Math.round((fchafcfn.time - fchafcin.time)/(1000*3600))
         def minutos = ((fchafcfn.time - fchafcin.time)/(1000*60)).toInteger() % 60
         println "horas: $horas, minutos: $minutos"
         // borra la pare te horas y muntos.
-        def dias = DiaLaborable.findByFecha(fchafcfn.clearTime()).ordinal - DiaLaborable.findByFecha(fchafcin.clearTime()).ordinal
+        def diaIni = DiaLaborable.executeQuery("select min(ordinal) from DiaLaborable where fecha >= :f and ordinal > 0", [f: fchafcin.clone().clearTime()])[0]
+        def diaFin = DiaLaborable.executeQuery("select min(ordinal) from DiaLaborable where fecha >= :f and ordinal > 0", [f: fchafcfn.clone().clearTime()])[0]
+        def diaFf = DiaLaborable.findByFechaGreaterThanEqualsAndOrdinalGreaterThan(fchafcin.clone().clearTime(), 0)
+        println "dias: inicio: $diaIni, fin: $diaFin, ... $diaFf.ordinal"
+        def dias = diaFin - diaIni -1
+
         println "dias: $dias, despues de clear time: tiempo fchafcfn: ${fchafcfn.getTime()} y fchafcin: ${fchafcin.getTime()}"
         /** todo: sacar fracion de horas que no supere las 8 de la jornada, expresando fcin como fcfn -1 (fraccion del día anterior)
          *  fcfn - 8:00 ()fraccion de d¿ia actual
@@ -715,30 +720,39 @@ class DiasLaborablesService {
 
     def corrigeHora(fcha){
         println "corrigeHora: llega: $fcha"
-        def prmt = Parametros.list([sort: "id"]).last()
         def anio = fcha.format("yyyy").toInteger()
         def mes  = fcha.format("MM").toInteger() -1
         def dias = fcha.format("dd").toInteger()
 
-        def horaIni = Calendar.instance
-        horaIni.set(anio, mes, dias, prmt.horaInicio, prmt.minutoInicio, 0)
-        def horaFin = Calendar.instance
-        horaFin.set(anio, mes, dias, prmt.horaFin, prmt.minutoFin, 0)
+        def horaIni = horaParametros(fcha, 'inicio')
+        def horaFin = horaParametros(fcha, 'fin')
 
-        println "fechas refeerencia: $horaIni.time y $horaFin.time"
         def cal = Calendar.instance
         cal.set(anio, mes, dias, fcha.format("HH").toInteger(), fcha.format("mm").toInteger(), 0)
 
         def fecha = Calendar.instance
         fecha.time = fcha
 
-        if(fecha < horaIni) {
-            fecha = horaIni
-        }
-        if (fecha > horaFin) {
-            fecha = horaFin
-        }
+        if(fecha < horaIni) fecha = horaIni
+        if (fecha > horaFin) fecha = horaFin
+
         fecha.time
+    }
+
+    def horaParametros(fcha, tipo){
+        def prmt = Parametros.list([sort: "id"]).last()
+        def anio = fcha.format("yyyy").toInteger()
+        def mes  = fcha.format("MM").toInteger() -1
+        def dias = fcha.format("dd").toInteger()
+
+        def hora = Calendar.instance
+        if(tipo == 'inicio'){
+            hora.set(anio, mes, dias, prmt.horaInicio, prmt.minutoInicio, 0)
+        }
+        if(tipo == 'fin'){
+            hora.set(anio, mes, dias, prmt.horaFin, prmt.minutoInicio, 0)
+        }
+        hora
     }
 
 

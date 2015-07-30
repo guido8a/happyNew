@@ -79,7 +79,7 @@ class EnviarService {
 
         def text = (tramite?.texto ?: '')
 //        println "--------------------------------------------------------------"
-//        println text
+//        println "texto del tramite: $text"
         text = text.replaceAll("&lt;", "*lt*")
         text = text.replaceAll("&gt;", "*gt*")
 //        println "--------------------------------------------------------------"
