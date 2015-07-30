@@ -66,7 +66,7 @@
             </g:if>
             ${tramite?.codigo} ${tramite.externo}
         </td>
-        <td title="${tramite.de.departamento}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
+        <td title="${tramite?.departamento?.descripcion}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
         <td style="width: 115px;">${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
         <td>
             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">

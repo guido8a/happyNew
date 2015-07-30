@@ -161,14 +161,15 @@
                     </div>
                 </g:if>
                 <div class="row">
-                    <div class="col-xs-1 negrilla">De1:</div>
+                    <div class="col-xs-1 negrilla">De:</div>
 
                     <div class="col-xs-3">
                         <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
                             ${t.paraExterno} (EXT)
                         </g:if>
                         <g:else>
-                            ${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}
+                            %{--${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}--}%
+                            ${t?.departamento?.codigo  + ":" + t?.de?.nombre + ' ' + t?.de?.apellido}
                         </g:else>
                     </div>
 
