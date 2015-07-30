@@ -16,11 +16,13 @@ class InicioController extends happy.seguridad.Shield {
 
         }
 */
-        def fcha = new Date()
-        def fa = new Date(fcha.time - 8*60*60*1000)
-        def fb = new Date(fcha.time + 8*60*60*1000)
-        println "fechas: fa: $fa, fb: $fb"
-        def nada = diasLaborablesService.tmpoLaborableEntre(fa,fb)
+
+//        def fcha = new Date()
+//        def fa = new Date(fcha.time - 8*60*60*1000)
+//        def fb = new Date(fcha.time + 36*60*60*1000)
+//        println "fechas: fa: $fa, fb: $fb"
+//        def nada = diasLaborablesService.tmpoLaborableEntre(fa,fb)
+
     }
 
     def parametros = {

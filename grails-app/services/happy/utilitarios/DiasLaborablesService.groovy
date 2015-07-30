@@ -639,11 +639,15 @@ class DiasLaborablesService {
         println "retorna: $fchafcin"
         fchafcfn = corrigeHora(fcfn).clone();
         println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
-
+        def horas = Math.round((fchafcfn.time - fchafcin.time)/(1000*3600))
+        def minutos = ((fchafcfn.time - fchafcin.time)/(1000*60)).toInteger() % 60
+        println "horas: $horas, minutos: $minutos"
+        // borra la pare te horas y muntos.
         def dias = DiaLaborable.findByFecha(fchafcfn.clearTime()).ordinal - DiaLaborable.findByFecha(fchafcin.clearTime()).ordinal
-        def horas = (fchafcfn.time - fchafcin.time)/(1000*3600)
-        def minutos = (fchafcfn.time - fchafcin.time)/(1000*60)
-        println "tiempo transcurrido: horas: $horas, $minutos, dias: $dias"
+        println "dias: $dias, despues de clear time: tiempo fchafcfn: ${fchafcfn.getTime()} y fchafcin: ${fchafcin.getTime()}"
+        /** todo: sacar fracion de horas que no supere las 8 de la jornada, expresando fcin como fcfn -1 (fraccion del día anterior)
+         *  fcfn - 8:00 ()fraccion de d¿ia actual
+         */
 
     }
 
