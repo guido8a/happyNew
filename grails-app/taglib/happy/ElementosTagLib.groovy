@@ -433,7 +433,7 @@ class ElementosTagLib {
                 def cadenaCodigo = tramite.codigo.toString()
                 def nuevaCadena
                 nuevaCadena = cadenaCodigo.split('-')[1] + "-" + cadenaCodigo.split('-')[2] + "-" + cadenaCodigo.split('-')[3]
-                println("cadena " + nuevaCadena + " " + tramite.codigo)
+//                println("cadena " + nuevaCadena + " " + tramite.codigo)
 
                 html = "<div class=\"titulo-azul titulo-horizontal\">"
                 html += tramite.tipoDocumento?.descripcion + "-" + nuevaCadena
@@ -444,32 +444,39 @@ class ElementosTagLib {
 //                html += "<th>No.</th>"
 //                html += "<td>${tramite.codigo}</td>"
 //                html += "</tr>"
+                //de
+                html += "<tr>"
+                html += "<th>DE:</th>"
+                if (tramite.tipoDocumento.codigo == "DEX") {
+                    html += "<td>${tramite.paraExterno.toUpperCase()} (ext.)</td>"
+                } else {
+                    //cambiado el 21-07-2015
+//                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                    html += "<td>${tramite.de.departamento.descripcion.toUpperCase()}</td>"
+                }
+                html += "</tr>"
                 //para
-//            html += "<tr>"
-//            html += "<td class='negrilla'><b>Para:</b></td>"
-//            html += "<td>${strPara}</td>"
-//            html += "</tr>"
                 if (para || tramite.paraExterno) {
                     html += "<tr style='vertical-align: top'>"
-                    html += "<th>Para:</th>"
+                    html += "<th>PARA:</th>"
                     html += "<td>"
                     if (tramite.tipoDocumento.codigo != "DEX") {
                         if (tramite.paraExterno) {
-                            strPara = tramite.paraExterno
+                            strPara = tramite.paraExterno.toUpperCase()
                         }
                     }
                     if (strDepa != '') {
                         if(tramite?.textoPara){
-                            html += strPara + " (" + strDepa + ")" + " - " + tramite?.textoPara
+                            html += strPara.toUpperCase() + " (" + strDepa.toUpperCase() + ")" + " - " + tramite?.textoPara?.toUpperCase()
                         }else{
-                            html += strPara + " (" + strDepa + ")"
+                            html += strPara.toUpperCase() + " (" + strDepa.toUpperCase() + ")"
                         }
 
                     } else {
                         if(tramite?.textoPara){
-                            html += strPara + " - " + tramite?.textoPara
+                            html += strPara.toUpperCase() + " - " + tramite?.textoPara?.toUpperCase()
                         }else{
-                            html += strPara
+                            html += strPara.toUpperCase()
                         }
 
                     }
@@ -498,33 +505,18 @@ class ElementosTagLib {
 //                    }
 //                    html += "</tr>"
 //                }
-                //de
-                html += "<tr>"
-                html += "<th>De:</th>"
-//            if (tramite?.de?.nombre) {
-//                html += "<td>${tramite.de.departamento.descripcion} - (${tramite?.de?.nombre} ${tramite?.de?.apellido})</td>"
-//            } else {
-//                html += "<td>${tramite.de.departamento.descripcion}</td>"
-//            }
-                if (tramite.tipoDocumento.codigo == "DEX") {
-                    html += "<td>${tramite.paraExterno} (ext.)</td>"
-                } else {
-                    //cambiado el 21-07-2015
-//                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
-                    html += "<td>${tramite.de.departamento.descripcion}</td>"
-                }
-                html += "</tr>"
+
                 //fecha
                 html += "<tr>"
-                html += "<th>Fecha:</th>"
+                html += "<th>FECHA:</th>"
                 html += "<td>"
-                html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO")
                 html += "</td>"
                 html += "</tr>"
                 //asunto
                 html += "<tr>"
-                html += "<th>Asunto:</th>"
-                html += "<td>${tramite.asunto ?: ''}</td>"
+                html += "<th>ASUNTO:</th>"
+                html += "<td>${tramite.asunto.toUpperCase() ?: ''}</td>"
                 html += "</tr>"
                 html += "</table>"
             } else {
@@ -534,12 +526,12 @@ class ElementosTagLib {
                 html += "</div>"
                 //no. documento
                 html += "<tr>"
-                html += "<td>Oficio N°: ${tramite.codigo}</td>"
+                html += "<td>OFICIO N°: ${tramite.codigo.toUpperCase()}</td>"
                 html += "</tr>"
                 //fecha
                 html += "<tr>"
                 html += "<td>"
-                html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO")
                 html += "</td>"
                 html += "</tr>"
                 //espacios

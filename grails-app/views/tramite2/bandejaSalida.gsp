@@ -422,6 +422,7 @@
                 var puedeDesenviar = $tr.hasClass("desenviar");
 
                 var esRespuestaNueva = $tr.attr("ern");
+                var esExternoCC = $tr.hasClass("externoCC");
 
                 var copia = {
                     separator_before : true,
@@ -500,33 +501,114 @@
                     }
                 };
 
+                //old
+                %{--var recibirExterno = {--}%
+                    %{--label  : 'Confirmar recepción',--}%
+                    %{--icon   : "fa fa-check-square-o",--}%
+                    %{--action : function (e) {--}%
+                        %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            %{--url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,--}%
+                            %{--success : function (msg) {--}%
+                                %{--var parts = msg.split('_')--}%
+                                %{--resetValues();--}%
+                                %{--if (parts[0] == 'NO') {--}%
+                                    %{--log(parts[1], "error");--}%
+                                %{--} else if (parts[0] == "OK") {--}%
+                                    %{--log(parts[1], "success")--}%
+                                %{--} else if (parts[0] == "ERROR") {--}%
+                                    %{--bootbox.alert(parts[1]);--}%
+                                %{--}--}%
+                            %{--}--}%
+                        %{--}); //ajax--}%
+
+                    %{--} //action--}%
+                %{--};--}%
+
                 var recibirExterno = {
-                    label  : 'Confirmar recepción',
+                    label  : 'Confirmar recepción destinatarios externos',
                     icon   : "fa fa-check-square-o",
                     action : function (e) {
                         $.ajax({
-                            type    : 'POST',
-                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,
+                            type    : "POST",
+                            url     : '${createLink(action:'recibirExternoLista_ajax')}',
+                            data    : {
+                                id : id
+                            },
                             success : function (msg) {
-                                var parts = msg.split('_')
-//                        openLoader();
-                                resetValues();
-//                        cargarBandeja(true);
-
-//                        closeLoader();
-                                if (parts[0] == 'NO') {
-                                    log(parts[1], "error");
-                                } else if (parts[0] == "OK") {
-                                    log(parts[1], "success")
-                                } else if (parts[0] == "ERROR") {
-                                    bootbox.alert(parts[1]);
+                                //s.indexOf("oo") > -1
+                                var buttons = {};
+                                if (msg.indexOf("No puede") > -1) {
+                                    buttons.aceptar = {
+                                        label     : "Aceptar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                            openLoader();
+                                            location.reload(true);
+                                        }
+                                    }
+                                } else {
+                                    buttons.cancelar = {
+                                        label     : "Cancelar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    };
+                                    buttons.desenviar = {
+                                        label     : "<i class='fa fa-check-square-o'></i> Confirmar recepción",
+                                        className : "btn-default",
+                                        callback  : function () {
+                                            var ids = "";
+                                            $(".chkOne").each(function () {
+                                                if ($(this).hasClass("fa-check-square")) {
+                                                    if (ids != "") {
+                                                        ids += "_"
+                                                    }
+                                                    ids += $(this).attr("id");
+                                                }
+                                            });
+                                            if (ids) {
+                                                openLoader("");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(controller: 'externos', action:'recibirTramitesExternos_ajax')}',
+                                                    data    : {
+                                                        id  : id,
+                                                        ids : ids
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            setTimeout(function () {
+                                                                $("#bloqueo-warning").hide();
+                                                                location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";
+                                                            }, 1000);
+                                                            cargarBandeja();
+                                                        } else {
+                                                            resetValues();
+                                                            closeLoader();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                log('No seleccionó ninguna persona', 'error');
+                                            }
+                                        }
+                                    };
                                 }
-                            }
-                        }); //ajax
 
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : buttons
+                                });
+                            }
+                        });
                     } //action
                 };
+
 
                 var permisoImprimir = {
                     label  : "Permiso de Imprimir",
@@ -941,10 +1023,15 @@
                 if ((enviado || tieneAlerta) && puedeDesenviar) {
                     items.desenviar = desenviar;
                 }
+//                if (esExterno && (enviado || tieneAlerta)) {
+//                    items.recibirExterno = recibirExterno
 //                }
-                if (esExterno && (enviado || tieneAlerta)) {
+
+                if ((esExterno && (enviado || tieneAlerta)) || esExternoCC) {
                     items.recibirExterno = recibirExterno
                 }
+
+
                 if (enviado || tieneAlerta) {
                     <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
@@ -1100,6 +1187,7 @@
                                 if (imprimir) {
                                     openLoader();
                                     location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    cargarBandeja(true);
                                     closeLoader();
                                 }
                             } else {

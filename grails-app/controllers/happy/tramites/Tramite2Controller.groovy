@@ -1958,7 +1958,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             if (externos.contains(tramite.tipoDocumento.codigo)) {
                 tramite.externo = '1'
             } else {
+                println("entro else")
                 def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R001'))
+                println("-->" + paraFinal?.departamento.externo)
                 if (paraFinal) {
                     if (paraFinal.departamento) {
                         if (paraFinal.departamento.externo == 1) {

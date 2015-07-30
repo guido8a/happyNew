@@ -253,10 +253,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
         }
 
-        def externos = ["DEX", "OFI"]
-        if (externos.contains(tramite.tipoDocumento.codigo)) {
-            tramite.externo = '1'
-        }
+        tramite.save(flush: true)
+
+
+
+
+
         tramite.departamento = tramite.de.departamento
         if (tramite.aQuienContesta == null) {
             tramite.aQuienContesta = aqc
@@ -413,6 +415,56 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     }
                 }
             }
+
+
+            def externos = ["DEX", "OFI"]
+            def rolPP = RolPersonaTramite.findByCodigo('R001')
+            if (externos.contains(tramite.tipoDocumento.codigo)) {
+                tramite.externo = '1'
+            } else {
+                def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolPP)
+                if (paraFinal) {
+                    if (paraFinal.departamento) {
+                        if (paraFinal.departamento.externo == 1) {
+                            paraFinal.tramite.externo = "1"
+                            paraFinal.tramite.save(flush: true)
+                        } else {
+                            paraFinal.tramite.externo = "0"
+                            paraFinal.tramite.save(flush: true)
+                        }
+                    } else {
+                        if (paraFinal.persona) {
+                            if (paraFinal.persona.departamento.externo == 1) {
+                                paraFinal.tramite.externo = "1"
+                                paraFinal.tramite.save(flush: true)
+                            } else {
+                                paraFinal.tramite.externo = "0"
+                                paraFinal.tramite.save(flush: true)
+                            }
+                        }
+                    }
+                }
+
+                /** esta marca puede servir si se elimina el bloque desde y hasta externos,
+                 *  pero el externo confirma el recibido quien envía
+                 */
+//                println "comprueba si es externo -- debe ser REMOTO"
+/*
+
+                def deExterno = session.usuario.departamento.externo == 1
+//                println "esExterno: $deExterno"
+                if (deExterno) {
+                    if (session.usuario.esTriangulo) {
+                        tramite.externo = "1"
+                    } else {
+                        tramite.externo = "0"
+                    }
+                }
+*/
+                /** fn externos **/
+            }
+
+
 //            println "DESPUES hc: " + tramite.aQuienContesta
 //            println "DESPUES hc: " + tramite.aQuienContesta.id
 //            if (params.cc == "on") {

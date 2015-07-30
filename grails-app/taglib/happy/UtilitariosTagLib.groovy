@@ -174,6 +174,48 @@ class UtilitariosTagLib {
         out << strFecha
     }
 
+    Closure fechaConFormatoMayusculas = { attrs ->
+        def fecha = attrs.fecha
+        def formato = attrs.formato ?: "dd-MMM-yy"
+        def meses = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        def mesesLargo = ["", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
+        def strFecha = ""
+        if (attrs.ciudad) {
+            formato = "CCC, dd MMMM yyyy"
+        }
+//        println ">>" + fecha + "    " + formato
+        if (fecha) {
+            switch (formato) {
+                case "MMM-yy":
+                    strFecha = meses[fecha.format("MM").toInteger()] + "-" + fecha.format("yy")
+                    break;
+                case "dd-MM-yyyy":
+                    strFecha = "" + fecha.format("dd-MM-yyyy")
+                    break;
+                case "dd-MMM-yyyy":
+                    strFecha = "" + fecha.format("dd") + "-" + meses[fecha.format("MM").toInteger()] + "-" + fecha.format("yyyy")
+                    break;
+                case "dd-MMM-yy":
+                    strFecha = "" + fecha.format("dd") + "-" + meses[fecha.format("MM").toInteger()] + "-" + fecha.format("yy")
+                    break;
+                case "dd MMMM yyyy":
+                    strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
+                    break;
+                case "dd MMMM yyyy HH:mm:ss":
+                    strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy") + " a las " + fecha.format("HH:mm:ss")
+                    break;
+                case "CCC, dd MMMM yyyy":
+                    strFecha = attrs.ciudad + ", " + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
+                    break;
+                default:
+                    strFecha = "Formato " + formato + " no reconocido"
+                    break;
+            }
+        }
+//        println ">>>>>>" + strFecha
+        out << strFecha
+    }
+
     def textoTramite = { attrs ->
         def tramite = Tramite.get(attrs.tramite)
         if (tramite.texto) {
