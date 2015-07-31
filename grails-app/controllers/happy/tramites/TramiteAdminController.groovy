@@ -1186,8 +1186,10 @@ class TramiteAdminController extends Shield {
             if (pdt.tramite.aQuienContesta) {
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
-                } else {
+                } else if (pdt.tramite.aQuienContesta.fechaEnvio) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")
+                } else {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E001")
                 }
                 pdt.tramite.aQuienContesta.fechaAnulacion = null
                 pdt.tramite.aQuienContesta.fechaArchivo = null
@@ -1343,8 +1345,10 @@ class TramiteAdminController extends Shield {
             if (pdt.tramite.aQuienContesta) {
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
-                } else {
+                } else if (pdt.tramite.aQuienContesta.fechaEnvio) {
                     pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")
+                } else {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E001")
                 }
                 pdt.tramite.aQuienContesta.fechaAnulacion = null
                 pdt.tramite.aQuienContesta.fechaArchivo = null
