@@ -37,10 +37,25 @@
                     <g:set var="padre" value="${tramite.padreId}"/>
                 </g:if>
 
+                <g:set var="copiasExternas" value="${tramite.copias.findAll { it.departamento?.externo == 1 }}"/>
+                <g:set var="externo" value=""/>
+                <g:if test="${tramite.externo == '1'}">
+                    <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
+                        <g:set var="externo" value="DEX"/>
+                    </g:if>
+                    <g:else>
+                        <g:set var="externo" value="externo"/>
+                    </g:else>
+                </g:if>
+
+                <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
+                    <g:set var="externo" value="${externo} externoCC"/>
+                </g:if>
+
                 <tr id="${tramite?.id}" data-id="${tramite?.id}"
                     class=" trTramite ${esImprimir ? 'imprimir' : ''}
                     ${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite.estadoTramite.codigo) : tramite.estadoTramite.codigo + ' ' + clase}
-                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno?'estado':''} ${tramite.externo=='1'?((tramite.tipoDocumento.codigo=='DEX')?'DEX':'externo'):''}  "
+                    ${tramite.fechaEnvio /*&& tramite.noRecibido*/ ? 'desenviar' + ' ' + clase : ''}  ${tramite.estadoTramiteExterno?'estado':''} ${externo} "
                     estado="${tramite.estadoTramite.codigo}" de="${tramite.de.id}" codigo="${tramite.codigo}"
                     principal="${tramite.tramitePrincipal}"
                     departamento="${tramite.de?.departamento?.codigo}" anio="${tramite.fechaCreacion.format('yyyy')}" padre="${padre}">
