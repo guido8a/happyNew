@@ -64,7 +64,7 @@
             <g:if test="${tramite?.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">
                 <i class="fa fa-paperclip"></i>
             </g:if>
-            ${tramite?.codigo} ${tramite.externo}
+            ${tramite?.codigo}
         </td>
         <td title="${tramite?.departamento?.descripcion}">${(tramite.deDepartamento) ? tramite.deDepartamento.codigo : tramite.de}</td>
         <td style="width: 115px;">${tramite.fechaCreacion?.format("dd-MM-yyyy")}</td>
