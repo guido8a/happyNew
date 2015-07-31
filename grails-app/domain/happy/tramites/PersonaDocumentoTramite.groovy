@@ -35,8 +35,8 @@ class PersonaDocumentoTramite {
     def diasLaborablesService
 
     String personaNombre
-    String departamentoPersonaNombre
-    String departamentoPersonaSigla
+//    String departamentoPersonaNombre
+//    String departamentoPersonaSigla
     String departamentoNombre
     String departamentoSigla
 
@@ -64,8 +64,8 @@ class PersonaDocumentoTramite {
             estado column: 'edtr__id'
 
             personaNombre column: 'prtrprsn'
-            departamentoPersonaNombre column: 'prtrdppr'
-            departamentoPersonaSigla  column: 'prtrdpds'
+//            departamentoPersonaNombre column: 'prtrdppr'
+//            departamentoPersonaSigla  column: 'prtrdpds'
             departamentoNombre column: 'prtrdpto'
             departamentoSigla  column: 'prtrdpsg'
 
@@ -89,8 +89,8 @@ class PersonaDocumentoTramite {
         estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
 
         personaNombre(blank: true, nullable: true)
-        departamentoPersonaNombre(blank: true, nullable: true)
-        departamentoPersonaSigla(blank: true, nullable: true)
+//        departamentoPersonaNombre(blank: true, nullable: true)
+//        departamentoPersonaSigla(blank: true, nullable: true)
         departamentoNombre(blank: true, nullable: true)
         departamentoSigla(blank: true, nullable: true)
     }

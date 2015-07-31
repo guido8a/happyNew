@@ -76,7 +76,7 @@ class Tramite {
             anio column: 'anio__id'
             padre column: 'trmtpdre'
             tipoDocumento column: 'tpdc__id'
-            de column: 'prsn__de'
+            de column: 'prsn__de'              //el trámite envía una persona
             paraExterno column: 'trmtprex'
             prioridad column: 'tppd__id'
             estadoTramite column: 'edtr__id'
@@ -97,7 +97,7 @@ class Tramite {
             fechaModificacion column: 'trmtfcmd'
             fechaRevision column: 'trmtfcrv'
             fechaEnvio column: 'trmtfcen'
-            deDepartamento column: 'dpto__de'
+            deDepartamento column: 'dpto__de'  //el trámite envía el departamento
 //            guia column: 'trmtguia'
 
             aQuienContesta column: 'prtrcnts'
