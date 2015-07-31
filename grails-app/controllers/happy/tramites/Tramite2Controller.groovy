@@ -816,8 +816,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def recibido = EstadoTramite.findByCodigo("E004")
         def para = RolPersonaTramite.findByCodigo("R001")
         def cc = RolPersonaTramite.findByCodigo("R002")
-        def max = params.max.toInteger()
-        def offset = params.actual.toInteger()
+//        def max = params.max.toInteger()
+//        def offset = params.actual.toInteger()
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def estados = [porEnviar, revisado, enviado, recibido]
@@ -827,16 +827,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
 //                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])
-                def t = Tramite.findAll("from Tramite where deDepartamento is null and de=${p.id} and estadoTramite in (${porEnviar.id},${revisado.id},${enviado.id},${recibido.id}) order by fechaCreacion desc", [max: max, offset: offset])
+                def t = Tramite.findAll("from Tramite where deDepartamento is null and de=${p.id} and estadoTramite in (${porEnviar.id},${revisado.id},${enviado.id},${recibido.id}) order by fechaCreacion desc"/*, [max: max, offset: offset]*/)
                 if (t.size() > 0) {
                     tramites += t
                 }
             }
 
-            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc", max: max, offset: offset])
+//            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc", max: max, offset: offset])
+            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
             if (t.size() > 0) {
                 tramites += t
-
             }
 
         } else {
@@ -845,8 +845,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 isNull("deDepartamento")
                 inList("estadoTramite", estados)
                 order("fechaCreacion", "desc")
-                maxResults(max)
-                firstResult(offset)
+//                maxResults(max)
+//                firstResult(offset)
             }
         }
         tramites?.sort { it.fechaCreacion }
@@ -854,26 +854,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def trams = []
         def trams2 = []
-//        println( "tramites " + tramites.size())
-//        tramites.each { tr ->
-//            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
-//            def agrega = false
-//            pdt.each { pd ->
-//                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-//                    agrega = true
-////                    if (!trams.contains(tr)) {
-////                        trams += tr
-////                    }
-//                }
-//                if(pd.rolPersonaTramite?.codigo == "R001" && pd.estado?.codigo!="E003") {
-//                    agrega = false
-//                }
-//            }
-//            if(agrega){
-//                trams += tr
-//            }
-//        }
-
 
         tramites.each { tr ->
             def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
@@ -890,40 +870,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         trams += tr
                     }
 
-                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
-                    //                      si COPIA recibió pero el PARA: se muestra
-                    //                      si PARA recibió: ya no muestra
-//                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
-
-//                    if(!paraRecibio) {
-//                        agrega = true
-//                    }
-//                    if(estaPorEnviar) {
-//                        if(!paraRecibio) {
-//                            agrega = true
-//                        }
-//                    } else {
-//                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-//                            agrega = false
-//                            paraRecibio = true
-//                        }
-//                    }
                 } else {
 
-//                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-//                        agrega = false
-//                        paraRecibio = true
-//                    }
                 }
 
             }
 
-//            if(agrega) {
-//                trams += tr
-//            }
         }
 
-//        println "-> "+trams
+//        println "bandeja salida "+trams
         return [persona: persona, tramites: trams, esEditor: persona.puedeEditor]
     }
 
@@ -1089,8 +1044,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
-
-
         if (persona.puedeEditor) {
 //            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
@@ -1114,7 +1067,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                firstResult(offset)
             }
         }
-
         tramites?.sort { it.fechaCreacion }
         tramites = tramites?.reverse()
 
@@ -1122,16 +1074,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def trams = []
         def trams2 = []
-
-//        tramites.each { tr ->
-//            def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [para, cc])
-//            pdt.each { pd ->
-//                if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-//                    if (!trams.contains(tr))
-//                        trams += tr
-//                }
-//            }
-//        }
 
 
         tramites.each { tr ->
@@ -1147,38 +1089,16 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (!trams.contains(tr)) {
                         trams += tr
                     }
-                    //NUEVO: 13-04-2015: muestra todos los por enviar, recibidos solo si falta por recibir el PARA
-                    //                      si COPIA recibió pero el PARA: se muestra
-                    //                      si PARA recibió: ya no muestra
-//                    def estaPorEnviar = pd.estado == null || (pd.estado && pd.estado.codigo == porEnviar.codigo)
-//
-//                    if (!paraRecibio) {
-//                        agrega = true
-//                    }
-//                    if (estaPorEnviar) {
-//                        if (!paraRecibio) {
-//                            agrega = true
-//                        }
-//                    } else {
-//                        if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-//                            agrega = false
-//                            paraRecibio = true
-//                        }
-//                    }
+
                 } else {
 
-//                    if (pd.rolPersonaTramite?.codigo == para.codigo && pd.estado?.codigo != enviado.codigo) {
-//                        agrega = false
-//                        paraRecibio = true
-//                    }
                 }
 
             }
 
-//            if (agrega) {
-//                trams += tr
-//            }
         }
+
+//        println("trams " + trams)
 
 //busqueda
 
@@ -1202,7 +1122,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
 //        println("res " + res)
-//        println("trams " + trams)
+
 
         return [tramites: res.tramite.unique(), pxtTramites: trams]
 

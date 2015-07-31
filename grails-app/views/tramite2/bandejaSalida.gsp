@@ -283,83 +283,94 @@
                 }
 
             }
+
             function cargarBandeja(band) {
+                openLoader()
                 $(".qtip").hide();
-                cargando = true
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
+                    data    : '',
+//                    async   : false,
+                    success : function (msg) {
+                        $("#tabla_salida").html(msg);
 
-//        console.log("pass "+pass)
-                if (!breakingPoint) {
+                        cargarAlertas();
+                        closeLoader();
 
-                    $.ajax({
-                        type    : "POST",
-                        url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
-                        data    : {
-                            actual : actual,
-                            max    : max
-                        },
-                        async   : true,
-                        success : function (msg) {
-                            times++
-                            if (!breakingPoint)
-                                $("#tabla_salida").append(msg);
-
-                            cargarAlertas();
-                            nowSize = $(".trTramite").length
-
-                            actual += max
-//                console.log("cargar bandeja ",nowSize,actual)
-
-                            if (lastSize != 0) {
-                                if (nowSize > lastSize) {
-                                    if (max > salto) {
-                                        max = max - salto
-                                        check = false
-                                    }
-                                    lastSize = nowSize
-                                    cargarBandeja(false)
-                                } else {
-//                        console.log("tiempo del check "+check)
-                                    if (!check) {
-                                        check = true
-                                        max = max + salto
-                                        cargarBandeja(false)
-//                            actual+=salto
-//                            console.log("max "+max)
-                                    } else {
-                                        cargando = false
-                                        if (breakingPoint) {
-                                            resetValues()
-                                        }
-
-                                    }
-
-                                }
-                            } else {
-                                lastSize = nowSize
-//                    actual=nowSize
-                                cargarBandeja(false)
-                            }
-
-                        }
-                    });
-                } else {
-                    lastSize = 0
-                    nowSize = 0
-                    times = 0
-                    max = 10
-                    salto = 40
-                    actual = 0
-                    check = false
-                    cargando = false
-                    breakingPoint = false
-                    if (!externalSource)
-                        cargarBandeja(true)
-                    else
-                        externalSource = false
-//            cargarBandeja(true)
-                }
-
+                    }
+                });
             }
+            %{--function cargarBandeja(band) {--}%
+                %{--$(".qtip").hide();--}%
+                %{--cargando = true--}%
+
+                %{--if (!breakingPoint) {--}%
+
+                    %{--$.ajax({--}%
+                        %{--type    : "POST",--}%
+                        %{--url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",--}%
+                        %{--data    : {--}%
+                            %{--actual : actual,--}%
+                            %{--max    : max--}%
+                        %{--},--}%
+                        %{--async   : true,--}%
+                        %{--success : function (msg) {--}%
+                            %{--times++--}%
+                            %{--if (!breakingPoint)--}%
+                                %{--$("#tabla_salida").append(msg);--}%
+
+                            %{--cargarAlertas();--}%
+                            %{--nowSize = $(".trTramite").length--}%
+
+                            %{--actual += max--}%
+                            %{--if (lastSize != 0) {--}%
+                                %{--if (nowSize > lastSize) {--}%
+                                    %{--if (max > salto) {--}%
+                                        %{--max = max - salto--}%
+                                        %{--check = false--}%
+                                    %{--}--}%
+                                    %{--lastSize = nowSize--}%
+                                    %{--cargarBandeja(false)--}%
+                                %{--} else {--}%
+                                    %{--if (!check) {--}%
+                                        %{--check = true--}%
+                                        %{--max = max + salto--}%
+                                        %{--cargarBandeja(false)--}%
+
+                                    %{--} else {--}%
+                                        %{--cargando = false--}%
+                                        %{--if (breakingPoint) {--}%
+                                            %{--resetValues()--}%
+                                        %{--}--}%
+
+                                    %{--}--}%
+
+                                %{--}--}%
+                            %{--} else {--}%
+                                %{--lastSize = nowSize--}%
+                                %{--cargarBandeja(false)--}%
+                            %{--}--}%
+
+                        %{--}--}%
+                    %{--});--}%
+                %{--} else {--}%
+                    %{--lastSize = 0--}%
+                    %{--nowSize = 0--}%
+                    %{--times = 0--}%
+                    %{--max = 10--}%
+                    %{--salto = 40--}%
+                    %{--actual = 0--}%
+                    %{--check = false--}%
+                    %{--cargando = false--}%
+                    %{--breakingPoint = false--}%
+                    %{--if (!externalSource)--}%
+                        %{--cargarBandeja(true)--}%
+                    %{--else--}%
+                        %{--externalSource = false--}%
+                %{--}--}%
+
+            %{--}--}%
 
             function cargarAlertas() {
                 cargarAlertaRevisados();
