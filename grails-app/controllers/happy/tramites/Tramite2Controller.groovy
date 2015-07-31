@@ -816,8 +816,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def recibido = EstadoTramite.findByCodigo("E004")
         def para = RolPersonaTramite.findByCodigo("R001")
         def cc = RolPersonaTramite.findByCodigo("R002")
-//        def max = params.max.toInteger()
-//        def offset = params.actual.toInteger()
+        def max = params.max.toInteger()
+        def offset = params.actual.toInteger()
         def persona = Persona.get(session.usuario.id)
         def tramites = []
         def estados = [porEnviar, revisado, enviado, recibido]
@@ -827,14 +827,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
 //                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])
-                def t = Tramite.findAll("from Tramite where deDepartamento is null and de=${p.id} and estadoTramite in (${porEnviar.id},${revisado.id},${enviado.id},${recibido.id}) order by fechaCreacion desc"/*, [max: max, offset: offset]*/)
+                def t = Tramite.findAll("from Tramite where deDepartamento is null and de=${p.id} and estadoTramite in (${porEnviar.id},${revisado.id},${enviado.id},${recibido.id}) order by fechaCreacion desc", [max: max, offset: offset])
                 if (t.size() > 0) {
                     tramites += t
                 }
             }
 
-//            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc", max: max, offset: offset])
-            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
+            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc", max: max, offset: offset])
+//            def t = Tramite.findAllByDeDepartamentoAndEstadoTramiteInList(persona.departamento, estados, [sort: "fechaCreacion", order: "desc"])
             if (t.size() > 0) {
                 tramites += t
             }
@@ -845,8 +845,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 isNull("deDepartamento")
                 inList("estadoTramite", estados)
                 order("fechaCreacion", "desc")
-//                maxResults(max)
-//                firstResult(offset)
+                maxResults(max)
+                firstResult(offset)
             }
         }
         tramites?.sort { it.fechaCreacion }

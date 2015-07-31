@@ -257,7 +257,7 @@
 
         <script type="text/javascript">
             var actual = 0;
-            var max = 10;
+            var max = 15;
             var lastSize = 0;
             var nowSize = 0;
             var times = 0;
@@ -273,7 +273,7 @@
                     lastSize = 0
                     nowSize = 0
                     times = 0
-                    max = 10
+                    max = 15
                     salto = 40
                     actual = 0
                     check = false
@@ -284,93 +284,93 @@
 
             }
 
-            function cargarBandeja(band) {
-                openLoader()
-                $(".qtip").hide();
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
-                    data    : '',
-//                    async   : false,
-                    success : function (msg) {
-                        $("#tabla_salida").html(msg);
-
-                        cargarAlertas();
-                        closeLoader();
-
-                    }
-                });
-            }
             %{--function cargarBandeja(band) {--}%
+                %{--openLoader()--}%
                 %{--$(".qtip").hide();--}%
-                %{--cargando = true--}%
+                %{--$.ajax({--}%
+                    %{--type    : "POST",--}%
+                    %{--url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",--}%
+                    %{--data    : '',--}%
+                    %{--success : function (msg) {--}%
+                        %{--$("#tabla_salida").html(msg);--}%
 
-                %{--if (!breakingPoint) {--}%
+                        %{--cargarAlertas();--}%
+                        %{--closeLoader();--}%
 
-                    %{--$.ajax({--}%
-                        %{--type    : "POST",--}%
-                        %{--url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",--}%
-                        %{--data    : {--}%
-                            %{--actual : actual,--}%
-                            %{--max    : max--}%
-                        %{--},--}%
-                        %{--async   : true,--}%
-                        %{--success : function (msg) {--}%
-                            %{--times++--}%
-                            %{--if (!breakingPoint)--}%
-                                %{--$("#tabla_salida").append(msg);--}%
-
-                            %{--cargarAlertas();--}%
-                            %{--nowSize = $(".trTramite").length--}%
-
-                            %{--actual += max--}%
-                            %{--if (lastSize != 0) {--}%
-                                %{--if (nowSize > lastSize) {--}%
-                                    %{--if (max > salto) {--}%
-                                        %{--max = max - salto--}%
-                                        %{--check = false--}%
-                                    %{--}--}%
-                                    %{--lastSize = nowSize--}%
-                                    %{--cargarBandeja(false)--}%
-                                %{--} else {--}%
-                                    %{--if (!check) {--}%
-                                        %{--check = true--}%
-                                        %{--max = max + salto--}%
-                                        %{--cargarBandeja(false)--}%
-
-                                    %{--} else {--}%
-                                        %{--cargando = false--}%
-                                        %{--if (breakingPoint) {--}%
-                                            %{--resetValues()--}%
-                                        %{--}--}%
-
-                                    %{--}--}%
-
-                                %{--}--}%
-                            %{--} else {--}%
-                                %{--lastSize = nowSize--}%
-                                %{--cargarBandeja(false)--}%
-                            %{--}--}%
-
-                        %{--}--}%
-                    %{--});--}%
-                %{--} else {--}%
-                    %{--lastSize = 0--}%
-                    %{--nowSize = 0--}%
-                    %{--times = 0--}%
-                    %{--max = 10--}%
-                    %{--salto = 40--}%
-                    %{--actual = 0--}%
-                    %{--check = false--}%
-                    %{--cargando = false--}%
-                    %{--breakingPoint = false--}%
-                    %{--if (!externalSource)--}%
-                        %{--cargarBandeja(true)--}%
-                    %{--else--}%
-                        %{--externalSource = false--}%
-                %{--}--}%
-
+                    %{--}--}%
+                %{--});--}%
             %{--}--}%
+
+            function cargarBandeja(band) {
+                $(".qtip").hide();
+                cargando = true
+
+                if (!breakingPoint) {
+
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
+                        data    : {
+                            actual : actual,
+                            max    : max
+                        },
+                        async   : true,
+                        success : function (msg) {
+                            times++
+                            if (!breakingPoint)
+                                $("#tabla_salida").append(msg);
+
+                            cargarAlertas();
+                            nowSize = $(".trTramite").length
+
+                            actual += max
+                            if (lastSize != 0) {
+                                if (nowSize > lastSize) {
+                                    if (max > salto) {
+                                        max = max - salto
+                                        check = false
+                                    }
+                                    lastSize = nowSize
+                                    cargarBandeja(false)
+                                } else {
+                                    if (!check) {
+                                        check = true
+                                        max = max + salto
+                                        cargarBandeja(false)
+
+                                    } else {
+                                        cargando = false
+                                        if (breakingPoint) {
+                                            resetValues()
+                                        }
+
+                                    }
+
+                                }
+                            } else {
+                                lastSize = nowSize
+                                cargarBandeja(false)
+                            }
+
+                        }
+                    });
+                } else {
+                    lastSize = 0
+                    nowSize = 0
+                    times = 0
+                    max = 10
+                    salto = 40
+                    actual = 0
+                    check = false
+                    cargando = false
+                    breakingPoint = false
+                    if (!externalSource)
+                        cargarBandeja(true)
+                    else
+                        externalSource = false
+                }
+
+            }
 
             function cargarAlertas() {
                 cargarAlertaRevisados();
