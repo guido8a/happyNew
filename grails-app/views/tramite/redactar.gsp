@@ -482,7 +482,8 @@
                         para          : $("#para").val(),
                         asunto        : $("#asunto").val(),
                         type          : "download",
-                        enviar        : 1
+                        enviar        : 1,
+                        timestamp     : new Date().getTime()
                     };
                     $.ajax({
                         type     : "POST",
