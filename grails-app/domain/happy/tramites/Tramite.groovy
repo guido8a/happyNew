@@ -55,10 +55,13 @@ class Tramite {
     Tramite agregadoA = null
 
     String mail
-
     /*Texto para colocar al lado del PARA*/
-
     String textoPara
+
+    String persona
+    String departamentoNombre
+    String departamentoSigla
+
 
     def diasLaborablesService
 
@@ -117,6 +120,10 @@ class Tramite {
             agregadoA column: 'trmtagrg'
             mail column: 'trmtmail'
             textoPara column: 'trmtpara'
+            persona column: 'trmtprsn'
+            departamentoNombre column: 'trmtdpto'
+            departamentoSigla  column: 'trmtdpsg'
+
         }
     }
     static constraints = {
@@ -162,6 +169,14 @@ class Tramite {
         mail(blank: true, nullable: true, maxSize: 40)
 
         textoPara(blank: true, nullable: true)
+/*
+        persona(blank: false, nullable: false)
+        departamentoNombre(blank: false, nullable: false)
+        departamentoSigla(blank: false, nullable: false)
+*/
+        persona(blank: true, nullable: true)
+        departamentoNombre(blank: true, nullable: true)
+        departamentoSigla(blank: true, nullable: true)
     }
 
     def beforeValidate(List propertiesBeingValidated) {

@@ -33,6 +33,13 @@ class PersonaDocumentoTramite {
 
     EstadoTramite estado
     def diasLaborablesService
+
+    String personaNombre
+    String departamentoPersonaNombre
+    String departamentoPersonaSigla
+    String departamentoNombre
+    String departamentoSigla
+
     static mapping = {
         table 'prtr'
         cache usage: 'read-write', include: 'non-lazy'
@@ -54,8 +61,14 @@ class PersonaDocumentoTramite {
             fechaRespuesta column: 'prtrfcrs'
             fechaArchivo column: 'prtrfcar'
             fechaAnulacion column: 'prtrfcan'
-
             estado column: 'edtr__id'
+
+            personaNombre column: 'prtrprsn'
+            departamentoPersonaNombre column: 'prtrdppr'
+            departamentoPersonaSigla  column: 'prtrdpds'
+            departamentoNombre column: 'prtrdpto'
+            departamentoSigla  column: 'prtrdpsg'
+
         }
     }
     static constraints = {
@@ -74,6 +87,12 @@ class PersonaDocumentoTramite {
         fechaAnulacion(nullable: true, blank: true)
 
         estado(blank: true, nullable: true, attributes: [title: 'estadoTramite'])
+
+        personaNombre(blank: true, nullable: true)
+        departamentoPersonaNombre(blank: true, nullable: true)
+        departamentoPersonaSigla(blank: true, nullable: true)
+        departamentoNombre(blank: true, nullable: true)
+        departamentoSigla(blank: true, nullable: true)
     }
 
     def beforeValidate(List propertiesBeingValidated) {
