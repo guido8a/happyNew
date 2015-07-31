@@ -132,7 +132,7 @@
                 </g:if>
                 ${row.trmtcdgo}%{-- tramite cdgo --}%
             </td>
-            <td style="width: 115px;">${row.trmtfcen.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha envio --}%
+            <td style="width: 115px;">${row.trmtfcen?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha envio --}%
             <td style="width: 115px;">${row.trmtfcrc?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha recepcion --}%
             <td title="${row.deprdpds}">${row.deprdpto}</td>%{-- de.dpto descripcion y cdgo --}%
             <td title="${row.deprdscr}">${row.deprlogn ?: row.deprdscr}</td>%{-- de nombres y login--}%
