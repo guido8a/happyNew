@@ -641,6 +641,8 @@
                                         url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
                                         data    : {
                                             id   : tramiteId,
+                                            copia: esCopia,
+                                            prtr: nodeId,
                                             msg  : "<p class='lead'>Está por quitar el anulado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",
                                             icon : "fa-magic"
                                         },
