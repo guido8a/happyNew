@@ -11,7 +11,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def dbConnectionService
 
     def save() {
-        println "save params: " + params
+//        println "save params: " + params
         /*
           tramite.asunto:sdfg sdfg sdf g,
           tramite:[
@@ -851,7 +851,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM entrada_dpto($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
-        println sql
+        println "badeja de entrada: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 //        println rows

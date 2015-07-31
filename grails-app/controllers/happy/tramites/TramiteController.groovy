@@ -40,7 +40,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def saveDEX() {
-        println "saveDEX"
+//        println "saveDEX"
         def tramite = Tramite.get(params.id)
         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
         tramite.fechaModificacion = new Date()
@@ -434,7 +434,7 @@ class TramiteController extends happy.seguridad.Shield {
 
                 if (params.esRespuestaNueva == 'S') {
                     def respv = aQuienEstaContestando.respuestasVivasEsrn
-                    println "RESPV " + respv
+//                    println "RESPV " + respv
                     if (respv.size() != 0) {
                         flash.message = "*Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
                                 g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
@@ -496,7 +496,7 @@ class TramiteController extends happy.seguridad.Shield {
             redirect(action: "errores")
             return
         } else if (anio.size() > 1) {
-            println "HAY MAS DE 1 ANIO ${new Date().format('yyyy')}!!!!!: ${anio}"
+            println "HAY MAS DE 1 AÑO ${new Date().format('yyyy')}!!!!!: ${anio}"
         }
 
         if (anio.findAll { it.estado == 1 }.size() == 0) {
@@ -665,12 +665,12 @@ class TramiteController extends happy.seguridad.Shield {
             pdt = p.para
             padre = herm.padre
 
-            println "Hermano: " + herm
+//            println "Hermano: " + herm
             tramite.agregadoA = herm
 
             if (!padre) {
                 padre = herm
-                println "en realidad es padre..."
+//                println "en realidad es padre..."
                 def rolPara = RolPersonaTramite.findByCodigo("R001")
                 def quienRecibePadre = PersonaDocumentoTramite.withCriteria {
                     eq("tramite", padre)
@@ -678,14 +678,14 @@ class TramiteController extends happy.seguridad.Shield {
                 }
                 if (quienRecibePadre.size() == 1) {
                     pdt = quienRecibePadre.first()
-                    println "PDT 1: " + pdt
+//                    println "PDT 1: " + pdt
                 } else {
                     flash.message = "No puede agregar un documento a este tramite."
                     response.sendError(403)
                     return
                 }
             } else {
-                println "PDT 2: " + pdt
+//                println "PDT 2: " + pdt
                 pdt = herm.aQuienContesta
             }
             if (!pdt) {
@@ -867,7 +867,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         totalPendientes.each {
             if (it.fechaEnvio) {
-                println("fecha envio" + it.fechaEnvio)
+//                println("fecha envio" + it.fechaEnvio)
                 fechaEnvio = it.fechaEnvio
                 fecha = fechaEnvio.getTime()
                 fechaRoja = diasLaborablesService.fechaMasTiempo(fecha, 2)
@@ -1078,7 +1078,7 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM entrada_prsn($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
-        println sql
+        println "badeja de entrada: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
         return [rows: rows, busca: busca]
@@ -1227,7 +1227,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def guardarRecibir() {
-        println "GUARDAR RECIBIR " + params
+//        println "GUARDAR RECIBIR " + params
         def persona = session.usuario
 
         def tramite = Tramite.get(params.id)
