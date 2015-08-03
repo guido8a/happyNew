@@ -85,6 +85,11 @@ class TramiteController extends happy.seguridad.Shield {
             pdt.tramite = tramite
             pdt.persona = session.usuario
             pdt.departamento = session.departamento
+
+            pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
+            pdt.departamentoNombre = pdt.departamento.descripcion
+            pdt.departamentoSigla = pdt.departamento.codigo
+
             pdt.fechaEnvio = ahora
             pdt.rolPersonaTramite = rolEnvia
             if (!pdt.save(flush: true)) {
@@ -95,6 +100,11 @@ class TramiteController extends happy.seguridad.Shield {
             pdt2.tramite = tramite
             pdt2.persona = session.usuario
             pdt2.departamento = session.departamento
+
+            pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
+            pdt2.departamentoNombre = pdt2.departamento.descripcion
+            pdt2.departamentoSigla = pdt2.departamento.codigo
+
             pdt2.fechaEnvio = ahora
             pdt2.fechaRecepcion = ahora
             pdt2.rolPersonaTramite = rolRecibe

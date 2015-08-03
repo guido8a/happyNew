@@ -898,6 +898,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
             pdt.departamento = session.departamento
             pdt.fechaEnvio = envio
             pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+
+            pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
+            pdt.departamentoNombre = pdt.departamento.descripcion
+            pdt.departamentoSigla = pdt.departamento.codigo
+
             pdt.save(flush: true)
             tramite.fechaEnvio = envio
             tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
@@ -985,6 +990,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         pdt.departamento = session.departamento
                         pdt.fechaEnvio = envio
                         pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+
+                        pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
+                        pdt.departamentoNombre = pdt.departamento.descripcion
+                        pdt.departamentoSigla = pdt.departamento.codigo
+
                         pdt.save(flush: true)
                         tramite.fechaEnvio = envio
                         tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
@@ -1518,15 +1528,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        nombre = nombre.replaceAll(/>/, /&gt;/)
 //        def respv = aQuienEstaContestando.respuestasVivasEsrn
 
-
         //CC en el texto
 
         def ccLista = []
-        if(params.tramite.hiddenCC){
-            params.tramite.hiddenCC.split("_").each { ccl->
-                if(ccl.toInteger() > 0){
+        if (params.tramite.hiddenCC) {
+            params.tramite.hiddenCC.split("_").each { ccl ->
+                if (ccl.toInteger() > 0) {
                     ccLista += (Persona.get(ccl).nombre + " " + Persona.get(ccl).apellido)
-                }else{
+                } else {
                     ccLista += (Departamento.get(ccl.toInteger() * -1).descripcion)
                 }
 
@@ -1713,9 +1722,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         tramite.departamento = tramite.de.departamento
 
+        tramite.persona = persona.nombre + " " + persona.apellido
+        tramite.departamentoNombre = tramite.de.departamento.descripcion
+        tramite.departamentoSigla = tramite.de.departamento.codigo
+
         tramite.textoPara = params?.textoPara
 
-        if(ccLista.size() > 0){
+        if (ccLista.size() > 0) {
             tramite.texto = '<p></p>'
             tramite.texto += '<p></p>'
             tramite.texto += '<p></p>'
@@ -1723,10 +1736,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.texto += '<p></p>'
             tramite.texto += "cc: "
 
-            ccLista.each {n->
+            ccLista.each { n ->
                 tramite.texto += n
 
-                if(n != ccLista.last()){
+                if (n != ccLista.last()) {
                     tramite.texto += ' - '
                 }
 
@@ -1820,12 +1833,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (para > 0) {
                     //persona
                     paraDocumentoTramite.persona = Persona.get(para)
-                    paraDocumentoTramite.departamentoPersona = Persona.get(para).departamento  //***  departamentoPersona
+                    paraDocumentoTramite.departamentoPersona = Persona.get(para).departamento
+                    //***  departamentoPersona
                     paraDocumentoTramite.departamento = null
+
+                    paraDocumentoTramite.personaNombre = paraDocumentoTramite.persona.nombre + " " + paraDocumentoTramite.persona.apellido
+                    paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.persona.departamento.descripcion
+                    paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.persona.departamento.codigo
                 } else {
                     //departamento
                     paraDocumentoTramite.persona = null
                     paraDocumentoTramite.departamento = Departamento.get(para * -1)
+
+                    paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.departamento.descripcion
+                    paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.departamento.codigo
                 }
                 if (!paraDocumentoTramite.save(flush: true)) {
                     println "error para: " + paraDocumentoTramite.errors
@@ -1858,10 +1879,18 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     if (cc.toInteger() > 0) {
                         //persona
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
-                        ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento //***  departamentoPersona
+                        ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento
+
+                        ccDocumentoTramite.personaNombre = ccDocumentoTramite.persona.nombre + " " + ccDocumentoTramite.persona.apellido
+                        ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.persona.departamento.descripcion
+                        ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.persona.departamento.codigo
+                        //***  departamentoPersona
                     } else {
                         //departamento
                         ccDocumentoTramite.departamento = Departamento.get(cc.toInteger() * -1)
+
+                        ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.departamento.descripcion
+                        ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.departamento.codigo
                     }
                     if (!ccDocumentoTramite.save(flush: true)) {
                         println "error cc: " + ccDocumentoTramite.errors
@@ -1935,6 +1964,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt.tramite = tramite
                 pdt.persona = session.usuario
                 pdt.departamento = session.departamento
+
+                pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
+                pdt.departamentoNombre = pdt.departamento.descripcion
+                pdt.departamentoSigla = pdt.departamento.codigo
+
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
                 if (!pdt.save(flush: true)) {
@@ -1945,6 +1979,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt2.tramite = tramite
                 pdt2.persona = session.usuario
                 pdt2.departamento = session.departamento
+
+                pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
+                pdt2.departamentoNombre = pdt2.departamento.descripcion
+                pdt2.departamentoSigla = pdt2.departamento.codigo
+
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
                 pdt2.rolPersonaTramite = rolRecibe
@@ -2072,6 +2111,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         personaDoc.tramite = tramite
         personaDoc.persona = persona
+
+        personaDoc.personaNombre = personaDoc.persona.nombre + " " + personaDoc.persona.apellido
+        personaDoc.departamentoNombre = personaDoc.persona.departamento.descripcion
+        personaDoc.departamentoSigla = personaDoc.persona.departamento.codigo
 
         def observacionOriginal = personaDoc.observaciones
         def accion = "Asignación de permiso imprimir"

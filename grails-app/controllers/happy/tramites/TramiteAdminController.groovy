@@ -347,8 +347,15 @@ class TramiteAdminController extends Shield {
                 def copiaPers = new PersonaDocumentoTramite()
                 if (id > 0) {
                     copiaPers.persona = Persona.get(id)
+
+                    copiaPers.personaNombre = copiaPers.persona.nombre + " " + copiaPers.persona.apellido
+                    copiaPers.departamentoNombre = copiaPers.persona.departamento.descripcion
+                    copiaPers.departamentoSigla = copiaPers.persona.departamento.codigo
                 } else {
                     copiaPers.departamento = Departamento.get(id * -1)
+
+                    copiaPers.departamentoNombre = copiaPers.departamento.descripcion
+                    copiaPers.departamentoSigla = copiaPers.departamento.codigo
                 }
                 copiaPers.fechaEnvio = new Date()
                 copiaPers.tramite = tramite
@@ -680,41 +687,41 @@ class TramiteAdminController extends Shield {
         def personasRec = []
 
 
-        if(params.copia){
+        if (params.copia) {
             def prtrCopia = PersonaDocumentoTramite.get(params.prtr)
 
-                println("entro")
-                if (prtrCopia?.persona) {
-                    if (tramite?.de?.departamento != prtrCopia.persona.departamento) {
-                        Persona.findAllByDepartamento(prtrCopia?.persona?.departamento).each { rc ->
-                            if (rc.estaActivo) {
-                                def k = [:]
-                                k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
-                                k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
-                                personasRec.add(k)
-                            }
-                        }
-                    }
-                } else {
-                    if (tramite?.de?.departamento != prtrCopia.departamento) {
-                        Persona.findAllByDepartamento(prtrCopia?.departamento).each { rc ->
-                            if (rc.estaActivo) {
-                                def k = [:]
-                                k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
-                                k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
-                                personasRec.add(k)
-                            }
+            println("entro")
+            if (prtrCopia?.persona) {
+                if (tramite?.de?.departamento != prtrCopia.persona.departamento) {
+                    Persona.findAllByDepartamento(prtrCopia?.persona?.departamento).each { rc ->
+                        if (rc.estaActivo) {
+                            def k = [:]
+                            k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
+                            k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
+                            personasRec.add(k)
                         }
                     }
                 }
+            } else {
+                if (tramite?.de?.departamento != prtrCopia.departamento) {
+                    Persona.findAllByDepartamento(prtrCopia?.departamento).each { rc ->
+                        if (rc.estaActivo) {
+                            def k = [:]
+                            k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
+                            k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
+                            personasRec.add(k)
+                        }
+                    }
+                }
+            }
 
-        }else{
+        } else {
             if (tramite?.de?.departamento != tramite?.para?.departamento) {
                 Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
                     if (r.estaActivo) {
                         def n = [:]
                         n.key = r.nombre + " " + r.apellido + " (funcionario de ${r.departamento.codigo})"
-                        n.value = r.nombre + " " + r.apellido + " (" + r.login + " - "  + r.departamento.codigo + ")"
+                        n.value = r.nombre + " " + r.apellido + " (" + r.login + " - " + r.departamento.codigo + ")"
                         personasRec.add(n)
                     }
                 }
@@ -728,7 +735,7 @@ class TramiteAdminController extends Shield {
             if (p.estaActivo) {
                 def m = [:]
                 m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
-                m.value = p.nombre + " " + p.apellido + " (" + p.login +  " - "  + p.departamento.codigo + ")"
+                m.value = p.nombre + " " + p.apellido + " (" + p.login + " - " + p.departamento.codigo + ")"
                 personas.add(m)
             }
         }

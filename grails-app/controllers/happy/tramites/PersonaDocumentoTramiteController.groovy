@@ -103,6 +103,16 @@ class PersonaDocumentoTramiteController extends happy.seguridad.Shield {
             }
         } //update
         personaDocumentoTramiteInstance.properties = params
+
+        if (personaDocumentoTramiteInstance.persona) {
+            personaDocumentoTramiteInstance.personaNombre = personaDocumentoTramiteInstance.persona.nombre + " " + personaDocumentoTramiteInstance.persona.apellido
+            personaDocumentoTramiteInstance.departamentoNombre = personaDocumentoTramiteInstance.persona.departamento.descripcion
+            personaDocumentoTramiteInstance.departamentoSigla = personaDocumentoTramiteInstance.persona.departamento.codigo
+        } else {
+            personaDocumentoTramiteInstance.departamentoNombre = personaDocumentoTramiteInstance.departamento.descripcion
+            personaDocumentoTramiteInstance.departamentoSigla = personaDocumentoTramiteInstance.departamento.codigo
+        }
+
         if (!personaDocumentoTramiteInstance.save(flush: true)) {
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} PersonaDocumentoTramite."
             msg += renderErrors(bean: personaDocumentoTramiteInstance)

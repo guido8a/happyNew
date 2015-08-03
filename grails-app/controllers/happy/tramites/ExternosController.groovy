@@ -82,6 +82,11 @@ class ExternosController extends Shield {
                 def pdtRecibe = new PersonaDocumentoTramite()
                 pdtRecibe.tramite = pdt.tramite
                 pdtRecibe.persona = persona
+
+                pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
+                pdtRecibe.departamentoNombre = persona.departamento.descripcion
+                pdtRecibe.departamentoSigla = persona.departamento.codigo
+
                 pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
                 pdtRecibe.fechaRecepcion = new Date()
                 pdtRecibe.save(flush: true)
@@ -134,6 +139,11 @@ class ExternosController extends Shield {
                         def pdtRecibe = new PersonaDocumentoTramite()
                         pdtRecibe.tramite = tramite
                         pdtRecibe.persona = persona
+
+                        pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
+                        pdtRecibe.departamentoNombre = persona.departamento.descripcion
+                        pdtRecibe.departamentoSigla = persona.departamento.codigo
+
                         pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
                         pdtRecibe.fechaRecepcion = new Date()
                         pdtRecibe.save(flush: true)
