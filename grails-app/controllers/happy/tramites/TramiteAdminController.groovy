@@ -681,7 +681,7 @@ class TramiteAdminController extends Shield {
     }
 
     def dialogAdmin() {
-        println("params quitar" + params)
+//        println("params quitar" + params)
 
         def tramite = Tramite.get(params.id)
         def personasRec = []
@@ -690,38 +690,38 @@ class TramiteAdminController extends Shield {
         if (params.copia) {
             def prtrCopia = PersonaDocumentoTramite.get(params.prtr)
 
-            println("entro")
-            if (prtrCopia?.persona) {
-                if (tramite?.de?.departamento != prtrCopia.persona.departamento) {
-                    Persona.findAllByDepartamento(prtrCopia?.persona?.departamento).each { rc ->
-                        if (rc.estaActivo) {
-                            def k = [:]
-                            k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
-                            k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
-                            personasRec.add(k)
+//                println("entro")
+                if (prtrCopia?.persona) {
+                    if (tramite?.de?.departamento != prtrCopia.persona.departamento) {
+                        Persona.findAllByDepartamento(prtrCopia?.persona?.departamento).each { rc ->
+                            if (rc.estaActivo) {
+                                def k = [:]
+                                k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
+                                k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
+                                personasRec.add(k)
+                            }
+                        }
+                    }
+                } else {
+                    if (tramite?.de?.departamento != prtrCopia.departamento) {
+                        Persona.findAllByDepartamento(prtrCopia?.departamento).each { rc ->
+                            if (rc.estaActivo) {
+                                def k = [:]
+                                k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
+                                k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
+                                personasRec.add(k)
+                            }
                         }
                     }
                 }
-            } else {
-                if (tramite?.de?.departamento != prtrCopia.departamento) {
-                    Persona.findAllByDepartamento(prtrCopia?.departamento).each { rc ->
-                        if (rc.estaActivo) {
-                            def k = [:]
-                            k.key = rc.nombre + " " + rc.apellido + " (funcionario de ${rc.departamento.codigo})"
-                            k.value = rc.nombre + " " + rc.apellido + " (" + rc.login + " - " + rc.departamento.codigo + ")"
-                            personasRec.add(k)
-                        }
-                    }
-                }
-            }
 
-        } else {
+        }else{
             if (tramite?.de?.departamento != tramite?.para?.departamento) {
                 Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
                     if (r.estaActivo) {
                         def n = [:]
                         n.key = r.nombre + " " + r.apellido + " (funcionario de ${r.departamento.codigo})"
-                        n.value = r.nombre + " " + r.apellido + " (" + r.login + " - " + r.departamento.codigo + ")"
+                        n.value = r.nombre + " " + r.apellido + " (" + r.login + " - "  + r.departamento.codigo + ")"
                         personasRec.add(n)
                     }
                 }
@@ -735,7 +735,7 @@ class TramiteAdminController extends Shield {
             if (p.estaActivo) {
                 def m = [:]
                 m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
-                m.value = p.nombre + " " + p.apellido + " (" + p.login + " - " + p.departamento.codigo + ")"
+                m.value = p.nombre + " " + p.apellido + " (" + p.login +  " - "  + p.departamento.codigo + ")"
                 personas.add(m)
             }
         }

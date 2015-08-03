@@ -168,7 +168,6 @@
                             ${t.paraExterno} (EXT)
                         </g:if>
                         <g:else>
-                            %{--${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}--}%
                             ${t?.departamento?.codigo  + ":" + t?.de?.nombre + ' ' + t?.de?.apellido}
                         </g:else>
                     </div>
@@ -224,6 +223,23 @@
                         </g:each>
                     </div>
                 </div>
+
+            <div class="row">
+                <div class="col-xs-1 negrilla">De Original:</div>
+
+                <div class="col-xs-3">
+                    <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
+                        ${t.paraExterno} (EXT)
+                    </g:if>
+                    <g:else>
+                        <g:if test="${t?.departamentoSigla && t?.persona}">
+                            ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
+                        </g:if>
+                    </g:else>
+                </div>
+            </div>
+
+
 
                 <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
                 <div class="row">
@@ -291,8 +307,6 @@
                             </g:if>
                         </g:if>
                     </g:if>
-
-
                 </g:if>
             </div>
         </g:if>
@@ -377,6 +391,23 @@
                         </g:each>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-xs-1 negrilla">De Original:</div>
+
+                    <div class="col-xs-3">
+                        <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
+                            ${t.paraExterno} (EXT)
+                        </g:if>
+                        <g:else>
+                            <g:if test="${t?.departamentoSigla && t?.persona}">
+                                ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
+                            </g:if>
+                        </g:else>
+                    </div>
+                </div>
+
+
 
                 <div class="row">
                     <div class="col-xs-1 negrilla">Asunto:</div>

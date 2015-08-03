@@ -19,6 +19,8 @@ class Departamento {
 
     String objectguid = ""
 
+    Integer dptoDesde
+
     static mapping = {
         table 'dpto'
         cache usage: 'read-write', include: 'non-lazy'
@@ -38,6 +40,8 @@ class Departamento {
             externo column: 'dptoextr'
             objectguid column: 'dptoobid'
             remoto column: 'dptormto'
+            dptoDesde column: 'dptodsde'
+
         }
     }
     static constraints = {
@@ -50,6 +54,7 @@ class Departamento {
         estado(blank: true, nullable: true, size: 1..1)
         remoto(blank: true, nullable: true, size: 1..1)
         objectguid(blank: true, nullable: true, size: 1..128)
+        dptoDesde(blank: true, nullable: true)
     }
 
     String toString() {
