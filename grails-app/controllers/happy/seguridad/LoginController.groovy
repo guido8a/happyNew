@@ -12,6 +12,58 @@ class LoginController {
 
     def mail
 
+    def dbConnectionService
+
+    private int borrarAlertas() {
+        def esTriangulo = session.usuario.esTriangulo()
+        def fecha = new Date() - 3
+
+        def fechaStr = fecha.format("yyyy-MM-dd")
+
+        def sqlDeleteRecibidos, sqlDeleteAntiguos
+
+        if (esTriangulo) {
+            sqlDeleteRecibidos = "DELETE FROM alrt WHERE dpto__id = ${session.departamento.id} AND altrfcrc IS NOT NULL"
+            sqlDeleteAntiguos = "DELETE FROM alrt WHERE dpto__id = ${session.departamento.id} AND altrfcrc IS NULL AND altrfccr < '${fechaStr}'"
+        } else {
+            sqlDeleteRecibidos = "DELETE FROM alrt WHERE prsn__id = ${session.usuario.id} AND altrfcrc IS NOT NULL"
+            sqlDeleteAntiguos = "DELETE FROM alrt WHERE prsn__id = ${session.usuario.id} AND altrfcrc IS NULL AND altrfccr < '${fechaStr}'"
+        }
+
+//        println sqlDeleteRecibidos
+//        println sqlDeleteAntiguos
+
+        def cn = dbConnectionService.getConnection()
+        cn.execute(sqlDeleteRecibidos)
+        cn.execute(sqlDeleteAntiguos)
+        cn.close()
+//        Alerta.withCriteria {
+//            if (esTriangulo) {
+//                eq("departamento", session.departamento)
+//            } else {
+//                eq("persona", session.usuario)
+//            }
+//            or {
+//                isNotNull("fechaRecibido")
+//                and {
+//                    isNull("fechaRecibido")
+//                    le("fechaCreacion", fecha)
+//                }
+//            }
+//        }.each { al ->
+//            al.delete(flush: true)
+//        }
+
+        return Alerta.withCriteria {
+            if (esTriangulo) {
+                eq("departamento", session.departamento)
+            } else {
+                eq("persona", session.usuario)
+            }
+            isNull("fechaRecibido")
+        }.size()
+    }
+
     def conecta(user, pass) {
 
         def prmt = Parametros.findAll()[0]
@@ -153,8 +205,9 @@ class LoginController {
                 def perfiles = []
                 perf.each { p ->
 //                    println "verf perfil "+p+" "+p.estaActivo
-                    if (p.estaActivo)
+                    if (p.estaActivo) {
                         perfiles.add(p)
+                    }
                 }
                 if (perfiles.size() == 0) {
                     flash.message = "No puede ingresar porque no tiene ningun perfil asignado a su usuario. Comuníquese con el administrador."
@@ -172,8 +225,9 @@ class LoginController {
                         def par = Parametros.list([sort: "id", order: "desc"])
                         if (par.size() > 0) {
                             par = par.pop()
-                            if (par.validaLDAP == 0)
+                            if (par.validaLDAP == 0) {
                                 admin = true
+                            }
                         }
                     }
 
@@ -204,7 +258,7 @@ class LoginController {
                         cargarPermisos()
                         def cn = "inicio"
                         def an = "index"
-                        def count = 0
+//                        def count = 0
                         def permisos = Prpf.findAllByPerfil(session.perfil)
                         permisos.each {
                             def perm = PermisoUsuario.findAllByPersonaAndPermisoTramite(session.usuario, it.permiso)
@@ -214,15 +268,17 @@ class LoginController {
                                 }
                             }
                         }
-                        if (session.usuario.esTriangulo()) {
-                            count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-                        } else {
-                            count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
-                        }
+//                        if (session.usuario.esTriangulo()) {
+//                            count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+//                        } else {
+//                            count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+//                        }
 
-                        if (count > 0)
+                        def count = borrarAlertas()
+
+                        if (count > 0) {
                             redirect(controller: 'alertas', action: 'list')
-                        else {// llama a reporte
+                        } else {// llama a reporte
                             redirect(controller: 'inicio', action: 'index')
 
 /*
@@ -253,15 +309,14 @@ class LoginController {
                         // pone X en las no .... cerradas del mismo login e ip
                         def abiertas = SesionActiva.findAllByLoginAndDirIPAndFechaFinIsNullAndIdSesionNotEqual(session.usuario.login,
                                 request.getRemoteAddr(), session.id)
-                        if(abiertas.size() > 0){
-                            abiertas.each {sa ->
+                        if (abiertas.size() > 0) {
+                            abiertas.each { sa ->
                                 sa.fechaFin = new Date()
                                 sa.activo = 'X'
                                 sa.save()
                             }
                         }
                         // -------------------
-
 
 
                         return
@@ -284,8 +339,9 @@ class LoginController {
         def perfilesUsr = Sesn.findAllByUsuario(usuarioLog, [sort: 'perfil'])
         def perfiles = []
         perfilesUsr.each { p ->
-            if (p.estaActivo)
+            if (p.estaActivo) {
                 perfiles.add(p)
+            }
         }
         return [perfilesUsr: perfiles]
     }
@@ -329,16 +385,17 @@ class LoginController {
 //                    redirect(controller: session.cn, action: session.an, params: session.pr)
 //                }
 //            } else {
-            def count = 0
-            if (session.usuario.esTriangulo()) {
-                count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
-            } else {
-                count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
-            }
+//            def count = 0
+//            if (session.usuario.esTriangulo()) {
+//                count = Alerta.countByDepartamentoAndFechaRecibidoIsNull(session.departamento)
+//            } else {
+//                count = Alerta.countByPersonaAndFechaRecibidoIsNull(session.usuario)
+//            }
 
-            if (count > 0)
+            def count = borrarAlertas()
+            if (count > 0) {
                 redirect(controller: 'alertas', action: 'list')
-            else {//
+            } else {//
 //                redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidado", params: [dpto: Persona.get(session.usuario.id).departamento.id,inicio:"1"])
                 if (session.usuario.getPuedeDirector()) {
                     redirect(controller: "retrasadosWeb", action: "reporteRetrasadosConsolidadoDir", params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])
@@ -360,7 +417,7 @@ class LoginController {
     def logout() {
 //        println "sesion out: $session.id"  //activo
         def activo = SesionActiva.findByIdSesion(session.id)
-        if(activo){
+        if (activo) {
             activo.fechaFin = new Date()
             activo.activo = 'N'
             activo.save()
