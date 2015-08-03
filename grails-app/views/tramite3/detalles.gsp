@@ -168,7 +168,8 @@
                             ${t.paraExterno} (EXT)
                         </g:if>
                         <g:else>
-                            ${t?.departamento?.codigo  + ":" + t?.de?.nombre + ' ' + t?.de?.apellido}
+                            %{--${t?.departamento?.codigo  + ":" + t?.de?.nombre + ' ' + t?.de?.apellido}--}%
+                        ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
                         </g:else>
                     </div>
 
@@ -214,6 +215,7 @@
                             <g:else>
                                 %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}--}%
                                 ${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}
+                                %{--${pdt?.departamentoSigla +}--}%
                             </g:else>
 
                             <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
@@ -224,20 +226,20 @@
                     </div>
                 </div>
 
-            <div class="row">
-                <div class="col-xs-1 negrilla">De Original:</div>
+            %{--<div class="row">--}%
+                %{--<div class="col-xs-1 negrilla">De Original:</div>--}%
 
-                <div class="col-xs-3">
-                    <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
-                        ${t.paraExterno} (EXT)
-                    </g:if>
-                    <g:else>
-                        <g:if test="${t?.departamentoSigla && t?.persona}">
-                            ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
-                        </g:if>
-                    </g:else>
-                </div>
-            </div>
+                %{--<div class="col-xs-3">--}%
+                    %{--<g:if test="${t.tipoDocumento.codigo == 'DEX'}">--}%
+                        %{--${t.paraExterno} (EXT)--}%
+                    %{--</g:if>--}%
+                    %{--<g:else>--}%
+                        %{--<g:if test="${t?.departamentoSigla && t?.persona}">--}%
+                            %{--${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}--}%
+                        %{--</g:if>--}%
+                    %{--</g:else>--}%
+                %{--</div>--}%
+            %{--</div>--}%
 
 
 
@@ -338,7 +340,8 @@
                             ${t.paraExterno} (EXT)
                         </g:if>
                         <g:else>
-                            ${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}
+                            %{--${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}--}%
+                        ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
                         </g:else>
                     </div>
 
@@ -392,20 +395,20 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-1 negrilla">De Original:</div>
+                %{--<div class="row">--}%
+                    %{--<div class="col-xs-1 negrilla">De Original:</div>--}%
 
-                    <div class="col-xs-3">
-                        <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
-                            ${t.paraExterno} (EXT)
-                        </g:if>
-                        <g:else>
-                            <g:if test="${t?.departamentoSigla && t?.persona}">
-                                ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
-                            </g:if>
-                        </g:else>
-                    </div>
-                </div>
+                    %{--<div class="col-xs-3">--}%
+                        %{--<g:if test="${t.tipoDocumento.codigo == 'DEX'}">--}%
+                            %{--${t.paraExterno} (EXT)--}%
+                        %{--</g:if>--}%
+                        %{--<g:else>--}%
+                            %{--<g:if test="${t?.departamentoSigla && t?.persona}">--}%
+                                %{--${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}--}%
+                            %{--</g:if>--}%
+                        %{--</g:else>--}%
+                    %{--</div>--}%
+                %{--</div>--}%
 
 
 
