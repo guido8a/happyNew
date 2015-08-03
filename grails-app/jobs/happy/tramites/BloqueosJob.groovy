@@ -162,8 +162,8 @@ class BloqueosJob {
 //        println "----------------------------------"
 //        println "bloqueo bandeja recibir!!! "+ahora
 
-//        def pruebasInicio = new Date()
-//        def pruebasFin
+        def pruebasInicio = new Date()
+        def pruebasFin
 
         def bloquear = []
         def bloquearUsu = []
@@ -253,8 +253,8 @@ class BloqueosJob {
             }
         }
 
-//        pruebasFin = new Date()
-//        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+        pruebasFin = new Date()
+        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
 //        println "fin bloqueo bandeja salida recibir "+new Date()
     }

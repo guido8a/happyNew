@@ -707,7 +707,8 @@
                     case "OFI":
                         html = $("<div class='col-xs-3 negrilla' id='divPara' style='margin-top: -25px; margin-left:-25px;'></div>");
                         html.append("<b>Para:</b>");
-                        html.append("<input type='text' name='paraExt' id='paraExt' class='form-control label-shared required' value='${tramite?.paraExterno}' style='width: 300px;'/>");
+                        html.append("<input type='text' name='paraExt' id='paraExt' class='form-control label-shared required' " +
+                        "value='${tramite?.paraExterno}' style='width: 300px;' maxlength='1000' />");
                         $divPara.replaceWith(html);
                         break;
 
