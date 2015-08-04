@@ -39,6 +39,7 @@ class PersonaDocumentoTramite {
 //    String departamentoPersonaSigla
     String departamentoNombre
     String departamentoSigla
+    String personaSigla
 
     static mapping = {
         table 'prtr'
@@ -68,6 +69,7 @@ class PersonaDocumentoTramite {
 //            departamentoPersonaSigla  column: 'prtrdpds'
             departamentoNombre column: 'prtrdpto'
             departamentoSigla  column: 'prtrdpsg'
+            personaSigla column: 'prtrprsg'
 
         }
     }
@@ -93,6 +95,7 @@ class PersonaDocumentoTramite {
 //        departamentoPersonaSigla(blank: true, nullable: true)
         departamentoNombre(blank: true, nullable: true)
         departamentoSigla(blank: true, nullable: true)
+        personaSigla(blank: true, nullable: true)
     }
 
     def beforeValidate(List propertiesBeingValidated) {

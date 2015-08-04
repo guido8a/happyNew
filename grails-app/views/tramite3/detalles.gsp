@@ -214,8 +214,14 @@
                             </g:if>
                             <g:else>
                                 %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}--}%
-                                ${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}
-                                %{--${pdt?.departamentoSigla +}--}%
+                                %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}--}%
+                                <g:if test="${pdt?.persona}">
+                                    ${pdt?.departamentoSigla + ":" + pdt?.personaSigla}
+                                </g:if>
+                                <g:else>
+                                    ${pdt?.departamentoSigla}
+                                </g:else>
+
                             </g:else>
 
                             <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>

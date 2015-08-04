@@ -902,6 +902,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
             pdt.departamentoNombre = pdt.departamento.descripcion
             pdt.departamentoSigla = pdt.departamento.codigo
+            pdt.personaSigla = pdt.persona.login
 
             pdt.save(flush: true)
             tramite.fechaEnvio = envio
@@ -984,16 +985,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     }
 
                     if (band) {
+
+
                         def pdt = new PersonaDocumentoTramite()
                         pdt.tramite = tramite
                         pdt.persona = session.usuario
                         pdt.departamento = session.departamento
                         pdt.fechaEnvio = envio
                         pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+                        pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
 
                         pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                         pdt.departamentoNombre = pdt.departamento.descripcion
                         pdt.departamentoSigla = pdt.departamento.codigo
+                        pdt.personaSigla = pdt.persona.login
 
                         pdt.save(flush: true)
                         tramite.fechaEnvio = envio
@@ -1726,6 +1731,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         tramite.departamentoNombre = tramite.de.departamento.descripcion
         tramite.departamentoSigla = tramite.de.departamento.codigo
 
+
         tramite.textoPara = params?.textoPara
 
 //        println("tramite texto " + tramite)
@@ -1883,6 +1889,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     paraDocumentoTramite.personaNombre = paraDocumentoTramite.persona.nombre + " " + paraDocumentoTramite.persona.apellido
                     paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.persona.departamento.descripcion
                     paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.persona.departamento.codigo
+                    paraDocumentoTramite.personaSigla = paraDocumentoTramite.persona.login
                 } else {
                     //departamento
                     paraDocumentoTramite.persona = null
@@ -1927,6 +1934,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         ccDocumentoTramite.personaNombre = ccDocumentoTramite.persona.nombre + " " + ccDocumentoTramite.persona.apellido
                         ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.persona.departamento.descripcion
                         ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.persona.departamento.codigo
+                        ccDocumentoTramite.personaSigla = ccDocumentoTramite.persona.login
                         //***  departamentoPersona
                     } else {
                         //departamento
@@ -2012,6 +2020,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
+                pdt.personaSigla = pdt.persona.login
 
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
@@ -2027,6 +2036,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
+                pdt2.personaSigla = pdt2.persona.login
 
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
@@ -2159,6 +2169,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         personaDoc.personaNombre = personaDoc.persona.nombre + " " + personaDoc.persona.apellido
         personaDoc.departamentoNombre = personaDoc.persona.departamento.descripcion
         personaDoc.departamentoSigla = personaDoc.persona.departamento.codigo
+        personaDoc.personaSigla = personaDoc.persona.login
 
         def observacionOriginal = personaDoc.observaciones
         def accion = "Asignación de permiso imprimir"

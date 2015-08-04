@@ -369,6 +369,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     paraDocumentoTramite.personaNombre = paraDocumentoTramite.persona.nombre + " " + paraDocumentoTramite.persona.apellido
                     paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.persona.departamento.descripcion
                     paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.persona.departamento.codigo
+                    paraDocumentoTramite.personaSigla = paraDocumentoTramite.persona.login
                 } else {
                     //departamento
                     paraDocumentoTramite.persona = null
@@ -419,6 +420,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                         ccDocumentoTramite.personaNombre = ccDocumentoTramite.persona.nombre + " " + ccDocumentoTramite.persona.apellido
                         ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.persona.departamento.descripcion
                         ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.persona.departamento.codigo
+                        ccDocumentoTramite.personaSigla = ccDocumentoTramite.persona.login
                         //***  departamentoPersona
                     } else {
                         //departamento
@@ -438,6 +440,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def rolPP = RolPersonaTramite.findByCodigo('R001')
             if (externos.contains(tramite.tipoDocumento.codigo)) {
                 tramite.externo = '1'
+                tramite.save(flush: true)
             } else {
                 def paraFinal = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolPP)
                 if (paraFinal) {
@@ -509,6 +512,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
+                pdt2.personaSigla = pdt.persona.login
 
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
@@ -524,6 +528,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
+                pdt2.personaSigla = pdt2.persona.login
 
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
@@ -1026,7 +1031,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        println "recibir tramite " + params
+//        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
 
             def persona = Persona.get(session.usuario.id)
@@ -1036,7 +1041,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-            println tramite.estadoTramite.descripcion
+//            println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
                 render "ERROR_*Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
                 return
@@ -1193,8 +1198,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                     pdt.departamentoNombre = pdt.persona.departamento.descripcion
                     pdt.departamentoSigla = pdt.persona.departamento.codigo
+                    pdt.personaSigla = pdt.persona.login
 
                     pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+                    pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
+
                     pdt.fechaRecepcion = hoy
                     pdt.fechaLimiteRespuesta = limite
                     def alerta
