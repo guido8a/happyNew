@@ -1518,7 +1518,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def saveDep() {
-        println("params savedep" + params)
+//        println("params savedep" + params)
         //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
