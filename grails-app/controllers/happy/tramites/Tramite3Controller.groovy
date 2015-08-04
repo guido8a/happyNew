@@ -853,7 +853,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
         //** fin forzar actualización de bloqueos al Actualizar
 
 
-
         def busca = false
         def where = ""
 
@@ -1456,6 +1455,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 paraStr = tramiteParaInfo.departamento.codigo
             } else if (tramiteParaInfo.persona) {
                 paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+            }
+            if (tramiteParaInfo.tramite.tipoDocumento.codigo == "OFI") {
+                paraStr = tramiteParaInfo.tramite.paraExterno + " (ext.)"
             }
 
             def deStr = tramiteParaInfo.tramite.deDepartamento ? tramiteParaInfo.tramite.deDepartamento.codigo : tramiteParaInfo.tramite.de.departamento.codigo + ":" + tramiteParaInfo.tramite.de.login
