@@ -123,13 +123,14 @@ class Shield {
                 return true
             }
 //            println "is allowed Accion: ${actionName.toLowerCase()} ---  Controlador: ${controllerName.toLowerCase()} --- Permisos de ese controlador: "+session.permisos[controllerName.toLowerCase()]
-            if (!session.permisos[controllerName.toLowerCase()])
+            if (!session.permisos[controllerName.toLowerCase()]) {
                 return false
-            else {
-                if (session.permisos[controllerName.toLowerCase()].contains(actionName.toLowerCase()))
+            } else {
+                if (session.permisos[controllerName.toLowerCase()].contains(actionName.toLowerCase())) {
                     return true
-                else
+                } else {
                     return false
+                }
             }
 
         } catch (e) {
@@ -142,20 +143,25 @@ class Shield {
     }
 
     boolean isAllowedBloqueo() {
-        def permitidas = ["inicio"          : ["index"],
-                          "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar", "saveTramite"],
-                          "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente", "busquedaBandeja"],
-                          "documentoTramite": ["verAnexos", "cargaDocs"],
-                          "alertas"         : ["list", "revisar"],
-                          "persona"         : ["show_ajax"],
-                          "departamento"    : ["show_ajax"]]
+        def permitidas = [
+                "inicio"          : ["index"],
+                "tramite"         : ["bandejaEntrada", "tablaBandeja", "busquedaBandeja", "revisarConfidencial", "revisarHijos", "archivar", "saveTramite"],
+                "tramite3"        : ["detalles", "arbolTramite", "recibirTramite", "bandejaEntradaDpto", "tablaBandejaEntradaDpto", "enviarTramiteJefe", "infoRemitente", "busquedaBandeja"],
+                "documentoTramite": ["verAnexos", "cargaDocs"],
+                "alertas"         : ["list", "revisar"],
+                "persona"         : ["show_ajax"],
+                "departamento"    : ["show_ajax"],
+                "tramiteExport"   : ["crearPdf"]
+        ]
 
         try {
 
-            if (!permitidas[controllerName])
+            if (!permitidas[controllerName]) {
                 return false
-            if (permitidas[controllerName].contains(actionName))
+            }
+            if (permitidas[controllerName].contains(actionName)) {
                 return true
+            }
         } catch (e) {
             println "Shield execption e: " + e
             return false
