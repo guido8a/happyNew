@@ -70,7 +70,7 @@
         }
 
         .claseMin {
-            max-height : 100px;
+            max-height : 60px;
             overflow   : auto;
         }
         </style>
@@ -260,7 +260,7 @@
                         </g:if>
 
                         <g:if test="${padre.observaciones && padre.observaciones?.trim()?.size() > 0}">
-                            <div class="row">
+                            <div class="row claseMin">
                                 <div class="col-md-1 negrilla">Obs:</div>
 
                                 <div class="col-md-11">${padre.observaciones}</div>
@@ -475,7 +475,7 @@
                     <div class="col-xs-3 ">
                         <span class="grupo">
                             <b>Institución/Remitente:</b>
-                            <g:textField name="paraExt" id="paraExt" class="form-control required" maxlength="127"
+                            <g:textField name="paraExt3" id="paraExt3" class="form-control required" maxlength="127"
                                          value="${tramite.paraExterno}"/>
                             %{--<g:textField name="origen.nombre" id="nombreOrigen" class="origenTram form-control required" maxlength="127"--}%
                             %{--value="${origen?.nombre}"/>--}%
@@ -492,7 +492,7 @@
                         </span>
                     </div>
 
-                    <div class="col-xs-3 ">
+                    <div class="col-xs-2 ">
                         <span class="grupo">
                             <b>Teléfono:</b>
 
@@ -1048,7 +1048,7 @@
                             $("#dialog-body").html(msg)
                         }
                     });
-                    $("#dialog").modal("show")
+                    $("#dialog").modal("show");
                     return false;
                 });
 
