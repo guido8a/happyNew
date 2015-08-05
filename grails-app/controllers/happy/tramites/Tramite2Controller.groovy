@@ -921,7 +921,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-//        println("params enviar varios " + params + "  " + request.getMethod())
+        println("params enviar varios " + params + "  " + request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         if (request.getMethod() == "POST") {
@@ -1740,9 +1740,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.texto = tramite.texto ?: ''
 
             def parts = tramite.texto.split('\\[cc\\]')
-            if(parts.size() == 2){
+            if (parts.size() == 2) {
                 tramite.texto = parts[0]
-            }else{
+            } else {
                 tramite.texto += '<p></p>'
                 tramite.texto += '<p></p>'
                 tramite.texto += '<p></p>'
@@ -1794,7 +1794,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            }
 //
 //        }
-
 
 
         if (!tramite.save(flush: true)) {
