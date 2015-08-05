@@ -33,6 +33,9 @@ class Persona {
     String estado
     static hasMany = [perfiles: Sesn]
 
+    int departamentoDesde
+
+
     /*
     * Campos no persistentes para el control de permisos
     */
@@ -73,6 +76,7 @@ class Persona {
 //            codigo column: 'prsncdgo'
             connect column: 'prsncnec'
             estado column: 'prsnetdo'
+            departamentoDesde column: 'dptodsde'
         }
     }
     static constraints = {
@@ -99,6 +103,7 @@ class Persona {
 //        codigo(size: 1..50, unique: true, blank: true, nullable: true, attributes: [title: 'codigo'])
         connect(nullable: true, blank: true, size: 1..512)
         estado(nullable: true, blank: true, size: 1..1)
+        departamentoDesde(nullable: true, blank: true)
     }
 
     def vaciarPermisos() {

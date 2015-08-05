@@ -160,7 +160,7 @@
                     }}"/>
 
                     <tr data-id="${personaInstance.id}" data-tramites="${tramites.size()}"
-                        class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}">
+                        class="${personaInstance.activo == 1 ? 'activo' : 'inactivo'} ${del ? 'eliminar' : ''}" id="trPersona">
                         <td class="text-center">
                             <g:if test="${personaInstance.puedeAdmin}">
                                 <i class="fa fa-user text-${!personaInstance.estaActivo ? 'muted' : 'success'}"></i>
@@ -196,6 +196,7 @@
             function submitForm() {
                 var $form = $("#frmPersona");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
+                var idPersona = $("#trPersona").data("id");
                 if ($form.valid()) {
                     $btn.replaceWith(spinner);
                     openLoader("Grabando");
@@ -238,7 +239,7 @@
                                                         type    : "POST",
                                                         url     : '${createLink(action:'cambioDpto_ajax')}',
                                                         data    : {
-                                                            id   : id,
+                                                            id   : idPersona,
                                                             dpto : dpto
                                                         },
                                                         success : function (msg) {

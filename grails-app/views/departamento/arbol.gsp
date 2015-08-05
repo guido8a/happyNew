@@ -393,6 +393,7 @@
                 } //createEditPersona
 
                 function cambiarEstadoRowPersonaAjax(itemId, activar) {
+//                    console.log("cambiar ajax")
                     var textLoader, url;
                     if (activar) {
                         textLoader = "Activando";
@@ -510,7 +511,7 @@
                             clase = "danger";
                             icon = "${iconDesactivar}";
                             textMsg = "<p>¿Está seguro que desea desactivar la persona seleccionada?</p>";
-                            textBtn = "Desactivar";
+                            textBtn = "Desactivar1";
                             botones = {
                                 cancelar   : {
                                     label     : "Cancelar",
