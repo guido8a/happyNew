@@ -451,46 +451,85 @@ class TramiteAdminController extends Shield {
         }
         tramites = tramites.findAll { Tramite.countByAQuienContesta(it) == 0 }
         def personas
-        def dep = persona.departamento
-        if (persona.estaActivo) {
-            personas = Persona.withCriteria {
-                eq("departamento", persona.departamento)
-                ne("id", persona.id)
-                order("apellido", "asc")
-            }.findAll {
-                it.estaActivo
-            }
-        } else {
-            def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
-            if (deps.size() > 0) {
-                dep = deps.departamento.first()
-            }
-            personas = Persona.withCriteria {
-                eq("departamento", dep)
-                ne("id", persona.id)
-                order("apellido", "asc")
-            }.findAll {
-                it.estaActivo
-            }
-        }
 
-//        println("normal " + personas)
+        def dep = persona.departamento
 
         def filtradas = []
         def sesion
 
-        personas.each {
-            sesion = Sesn.findAllByUsuario(it)
-//            println("sesion " + sesion.size())
-            if (it.esTriangulo() && sesion.size() == 1) {
+        if(persona.departamento.id == persona.departamentoDesde){
+            println("entro 1")
+
+            if (persona.estaActivo) {
+                personas = Persona.withCriteria {
+                    eq("departamento", persona.departamento)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
             } else {
-                if (it.puedeRecibirOff) {
-                    filtradas += it
+                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                if (deps.size() > 0) {
+                    dep = deps.departamento.first()
+                }
+                println("dep " + dep)
+                personas = Persona.withCriteria {
+                    eq("departamento", dep)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
                 }
             }
+            personas.each {
+                sesion = Sesn.findAllByUsuario(it)
+                if (it.esTriangulo() && sesion.size() == 1) {
+                } else {
+                    if (it.puedeRecibirOff) {
+                        filtradas += it
+                    }
+                }
+            }
+
+        }else{
+            println("entro 2")
+
+            def depaDesde = Departamento.get(persona.departamentoDesde)
+
+            if (persona.estaActivo) {
+                personas = Persona.withCriteria {
+                    eq("departamento", depaDesde)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            } else {
+                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                if (deps.size() > 0) {
+                    dep = deps.departamento.first()
+                }
+                personas = Persona.withCriteria {
+                    eq("departamento", dep)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            }
+            personas.each {
+                sesion = Sesn.findAllByUsuario(it)
+                if (it.esTriangulo() && sesion.size() == 1) {
+                } else {
+                    if (it.puedeRecibirOff) {
+                        filtradas += it
+                    }
+                }
+            }
+
         }
 
-//        println("filtradas " + filtradas)
 
         return [persona: persona, tramites: tramites, personas: personas, dep: dep, filtradas: filtradas]
     }

@@ -176,13 +176,13 @@
                     <g:if test="${!esEditor}">
                         <g:if test="${tramite.deDepartamento}">
                             <g:link controller="tramite2" action="crearTramiteDep" id="${tramite.id}" params="[esRespuesta: tramite.esRespuesta, esRespuestaNueva: tramite.esRespuestaNueva]"
-                                    class="leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                                    class="leave btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
                                 <i class="fa fa-pencil"></i>
                             </g:link>
                         </g:if>
                         <g:else>
                             <g:link action="crearTramite" id="${tramite.id}" params="[esRespuesta: tramite.esRespuesta, esRespuestaNueva: tramite.esRespuestaNueva]"
-                                    class=" leave  btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
+                                    class="leave btn-editar btn btn-sm btn-azul btnRegresar" title="Editar encabezado">
                                 <i class="fa fa-pencil"></i>
                             </g:link>
                         </g:else>
