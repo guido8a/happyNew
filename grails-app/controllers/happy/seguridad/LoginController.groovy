@@ -20,7 +20,8 @@ class LoginController {
 
         def fechaStr = fecha.format("yyyy-MM-dd")
 
-        def sqlDeleteRecibidos, sqlDeleteAntiguos
+        def sqlDeleteRecibidos = ""
+        def sqlDeleteAntiguos = ""
 
         if (esTriangulo) {
             sqlDeleteRecibidos = "DELETE FROM alrt WHERE dpto__id = ${session.departamento.id} AND altrfcrc IS NOT NULL"
@@ -34,8 +35,8 @@ class LoginController {
 //        println sqlDeleteAntiguos
 
         def cn = dbConnectionService.getConnection()
-        cn.execute(sqlDeleteRecibidos)
-        cn.execute(sqlDeleteAntiguos)
+        cn.execute(sqlDeleteRecibidos.toString())
+        cn.execute(sqlDeleteAntiguos.toString())
         cn.close()
 //        Alerta.withCriteria {
 //            if (esTriangulo) {

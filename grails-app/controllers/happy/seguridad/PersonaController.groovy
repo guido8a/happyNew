@@ -1163,7 +1163,7 @@ class PersonaController extends happy.seguridad.Shield {
                             dep.save(flush: true)
                         }
 
-                    }else{
+                    } else {
                         println "save del objectuid "+entry["objectguid"]?.encodeAsHex()+" en "+dep+"  "+dep.id
                         dep.objectguid=entry["objectguid"]?.encodeAsHex()
                         if(!dep.save(flush: true)){
@@ -1261,6 +1261,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     if (!dpto)
                                         dpto = sinDep
                                     if (prsn.departamento != dpto) {
+                                        prsn.departamentoDesde = prsn.departamento
                                         prsn.departamento = dpto
                                         prsn.activo = 0
                                     }
@@ -1392,6 +1393,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     dpto = datos[1].split("=")
                                 dpto = Departamento.findByDescripcion(dpto[1])
                                 if (prsn.departamento != dpto) {
+                                    prsn.departamentoDesde = prsn.departamento
                                     prsn.departamento = dpto
                                     prsn.activo = 0
                                 }
