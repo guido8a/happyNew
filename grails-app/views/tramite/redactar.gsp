@@ -252,37 +252,37 @@
 
             var textoInicial = "${tramite.texto}";
 
-            window.onbeforeunload = function (e) {
-                textoInicial = textoInicial.replace(/(?:\r\n|\r|\n)/g, '');
-                var textoActual = arreglarTexto($("#editorTramite").val());
-                var esIgual = textoInicial == textoActual;
-                if (esIgual && textoActual != "") {
-                    return null;
-                } else {
-                    return "Alerta";
-                }
-
-//                var textoActual = $("#editorTramite").val();
-//                var textoActual2 = textoActual.replace("\\n", "");
-//                var textoActual3 = textoActual.strReplaceAll("\\n", "");
-//                var textoActual4 = textoActual.replace(/(?:\r\n|\r|\n)/g, '');
-//                console.log(textoInicial);
-//                console.log(textoActual);
-//                console.log(textoActual2);
-//                console.log(textoActual3);
-//                console.log(textoActual4);
-//                console.log(textoInicial == textoActual);
-//                console.log(textoInicial == textoActual2);
-//                console.log(textoInicial == textoActual3);
-//                console.log(textoInicial == textoActual4);
-//                return "ASDFASDFASDFASD";
-//                if (esIgual) {
-////                    return null;
-//                    return "Alert";
+//            window.onbeforeunload = function (e) {
+//                textoInicial = textoInicial.replace(/(?:\r\n|\r|\n)/g, '');
+//                var textoActual = arreglarTexto($("#editorTramite").val());
+//                var esIgual = textoInicial == textoActual;
+//                if (esIgual && textoActual != "") {
+//                    return null;
 //                } else {
 //                    return "Alerta";
 //                }
-            };
+//
+////                var textoActual = $("#editorTramite").val();
+////                var textoActual2 = textoActual.replace("\\n", "");
+////                var textoActual3 = textoActual.strReplaceAll("\\n", "");
+////                var textoActual4 = textoActual.replace(/(?:\r\n|\r|\n)/g, '');
+////                console.log(textoInicial);
+////                console.log(textoActual);
+////                console.log(textoActual2);
+////                console.log(textoActual3);
+////                console.log(textoActual4);
+////                console.log(textoInicial == textoActual);
+////                console.log(textoInicial == textoActual2);
+////                console.log(textoInicial == textoActual3);
+////                console.log(textoInicial == textoActual4);
+////                return "ASDFASDFASDFASD";
+////                if (esIgual) {
+//////                    return null;
+////                    return "Alert";
+////                } else {
+////                    return "Alerta";
+////                }
+//            };
 
             function doSave(url) {
                 openLoader("Guardando");

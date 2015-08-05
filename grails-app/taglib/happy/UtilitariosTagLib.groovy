@@ -178,7 +178,7 @@ class UtilitariosTagLib {
         def fecha = attrs.fecha
         def formato = attrs.formato ?: "dd-MMM-yy"
         def meses = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-        def mesesLargo = ["", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
+        def mesesLargo = ["", "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
         def strFecha = ""
         if (attrs.ciudad) {
             formato = "CCC, dd MMMM yyyy"
@@ -199,13 +199,13 @@ class UtilitariosTagLib {
                     strFecha = "" + fecha.format("dd") + "-" + meses[fecha.format("MM").toInteger()] + "-" + fecha.format("yy")
                     break;
                 case "dd MMMM yyyy":
-                    strFecha = "" + fecha.format("dd") + " DE " + mesesLargo[fecha.format("MM").toInteger()] + " DE " + fecha.format("yyyy")
+                    strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
                     break;
                 case "dd MMMM yyyy HH:mm:ss":
-                    strFecha = "" + fecha.format("dd") + " DE " + mesesLargo[fecha.format("MM").toInteger()] + " DE " + fecha.format("yyyy") + " A LAS " + fecha.format("HH:mm:ss")
+                    strFecha = "" + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy") + " a las " + fecha.format("HH:mm:ss")
                     break;
                 case "CCC, dd MMMM yyyy":
-                    strFecha = attrs.ciudad + ", " + fecha.format("dd") + " DE " + mesesLargo[fecha.format("MM").toInteger()] + " DE " + fecha.format("yyyy")
+                    strFecha = attrs.ciudad + ", " + fecha.format("dd") + " de " + mesesLargo[fecha.format("MM").toInteger()] + " de " + fecha.format("yyyy")
                     break;
                 default:
                     strFecha = "Formato " + formato + " no reconocido"
