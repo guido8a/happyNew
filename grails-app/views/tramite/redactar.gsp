@@ -142,10 +142,12 @@
             <div class="btn-toolbar toolbar">
                 <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-success btnSave">
-                        <i class="fa fa-save"></i> Guardar
+                        <i class="fa fa-save"></i> Guardar texto
                     </a>
+                </div>
+                <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-primary btnPrint">
-                        <i class="fa fa-file"></i> PDF
+                        <i class="fa fa-file"></i> ver PDF
                     </a>
                     %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
                     %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
@@ -161,7 +163,7 @@
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
                         %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
-                            <i class="fa fa-list-ul"></i> Guardar y Salir
+                            <i class="fa fa-list-ul"></i> Guardar texto y Salir
                         </g:link>
                     </g:if>
                     <g:else>
@@ -170,7 +172,7 @@
                     %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
                         %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
-                            <i class="fa fa-list-ul"></i> Guardar y Salir
+                            <i class="fa fa-list-ul"></i> Guardar texto y Salir
                         </g:link>
                     </g:else>
                     <g:if test="${!esEditor}">
