@@ -33,7 +33,7 @@ class Persona {
     String estado
     static hasMany = [perfiles: Sesn]
 
-    int departamentoDesde
+    Departamento departamentoDesde
 
 
     /*

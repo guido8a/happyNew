@@ -971,7 +971,7 @@ class PersonaController extends happy.seguridad.Shield {
             params.jefe = 0
         } //create
         personaInstance.properties = params
-        personaInstance.departamentoDesde = params.departamento.id
+        personaInstance.departamentoDesde = params.departamento
         if (!personaInstance.save(flush: true)) {
             println "ERROR"
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Persona."
@@ -1213,8 +1213,8 @@ class PersonaController extends happy.seguridad.Shield {
                                 if (!dpto)
                                     dpto = sinDep
                                 prsn.departamento = dpto
-                                println "al crear persona pone dptodsde: ${dpto}"
-                                prsn.departamentoDesde = dpto
+//                                println "al crear persona pone dptodsde: ${dpto}"
+//                                prsn.departamentoDesde = dpto
                                 if (!prsn.save(flush: true)) {
 //                                    println "error save prns " + prsn.errors
                                 } else {
@@ -1264,7 +1264,7 @@ class PersonaController extends happy.seguridad.Shield {
                                         dpto = sinDep
                                     if (prsn.departamento != dpto) {
                                         println "actualiza depatamento(1) con ${dpto}, antes: ${prsn.departamento.id}"
-                                        prsn.departamentoDesde = prsn.departamento.id
+                                        prsn.departamentoDesde = prsn.departamento
                                         prsn.departamento = dpto
                                         prsn.activo = 0
                                     }
@@ -1368,8 +1368,8 @@ class PersonaController extends happy.seguridad.Shield {
                         if (!dpto)
                             dpto = sinDep
                         prsn.departamento = dpto
-                        println "al crear persona buscado por login... pone dptodsde: ${dpto}"
-                        prsn.departamentoDesde = dpto
+//                        println "al crear persona buscado por login... pone dptodsde: ${dpto}"
+//                        prsn.departamentoDesde = dpto
                         if (!prsn.save(flush: true)) {
 //                            println "error save prns " + prsn.errors
                         } else {
@@ -1399,7 +1399,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 dpto = Departamento.findByDescripcion(dpto[1])
                                 if (prsn.departamento != dpto) {
                                     println "actualiza depatamento(2) con ${dpto}, antes: ${prsn.departamento.id}"
-                                    prsn.departamentoDesde = prsn.departamento.id
+                                    prsn.departamentoDesde = prsn.departamento
                                     prsn.departamento = dpto
                                     prsn.activo = 0
                                 }
