@@ -29,7 +29,7 @@ class EnviarService {
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
 //        println "INTENTANDO CREAR PDF DEL TRAMITE " + tramite.id + "  " + tramite.codigo + "  creado por: " +
-//                tramite.de.login + " el " + tramite.fechaCreacion.format("dd-MM-yyyy HH:mm:ss")
+//                tramite.de.login + " el " + tramite.fechaCreacion.format("dd-MM-yyyy HH:mm:ss") + "  con contenido: " + tramite.texto
 
         def conMembrete = tramite.conMembrete ?: "0"
 //        println "con/sin: " + conMembrete
@@ -83,11 +83,24 @@ class EnviarService {
 //        println "texto del tramite: $text"
         text = text.replaceAll("&lt;", "*lt*")
         text = text.replaceAll("&gt;", "*gt*")
+        text = text.replaceAll("&amp;", "*amp*")
 //        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
+
+//        println "TEXTO ANTES"
+//        println text
+
         text = text.decodeHTML()
+
+//        println "TEXTO DESPUES"
+//        println text
+
         text = text.replaceAll("\\*lt\\*", "&lt;")
         text = text.replaceAll("\\*gt\\*", "&gt;")
+        text = text.replaceAll("\\*amp\\*", "&amp;")
+
+//        println "TEXTO DESPUES AGAIN"
+//        println text
 
 //        println "html:" + tramite.texto.decodeHTML()
 //        println "\n\n" + text

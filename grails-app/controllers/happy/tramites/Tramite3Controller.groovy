@@ -373,6 +373,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     //***  departamentoPersona
                     paraDocumentoTramite.departamento = null
 
+                    paraDocumentoTramite.personaSigla = paraDocumentoTramite.persona.login
                     paraDocumentoTramite.personaNombre = paraDocumentoTramite.persona.nombre + " " + paraDocumentoTramite.persona.apellido
                     paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.persona.departamento.descripcion
                     paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.persona.departamento.codigo
@@ -424,6 +425,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
                         ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento
 
+                        ccDocumentoTramite.personaSigla = ccDocumentoTramite.persona.login
                         ccDocumentoTramite.personaNombre = ccDocumentoTramite.persona.nombre + " " + ccDocumentoTramite.persona.apellido
                         ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.persona.departamento.descripcion
                         ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.persona.departamento.codigo
@@ -516,6 +518,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt.persona = session.usuario
                 pdt.departamento = session.departamento
 
+                pdt.personaSigla = pdt.persona.login
                 pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
@@ -532,6 +535,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt2.persona = session.usuario
                 pdt2.departamento = session.departamento
 
+                pdt2.personaSigla = pdt2.persona.login
                 pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
@@ -1201,6 +1205,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     pdt.tramite = tramite
                     pdt.persona = persona
 
+                    pdt.personaSigla = pdt.persona.login
                     pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                     pdt.departamentoNombre = pdt.persona.departamento.descripcion
                     pdt.departamentoSigla = pdt.persona.departamento.codigo

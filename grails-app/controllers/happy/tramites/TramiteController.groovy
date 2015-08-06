@@ -86,6 +86,7 @@ class TramiteController extends happy.seguridad.Shield {
             pdt.persona = session.usuario
             pdt.departamento = session.departamento
 
+            pdt.personaSigla = pdt.persona.login
             pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
             pdt.departamentoNombre = pdt.departamento.descripcion
             pdt.departamentoSigla = pdt.departamento.codigo
@@ -101,6 +102,7 @@ class TramiteController extends happy.seguridad.Shield {
             pdt2.persona = session.usuario
             pdt2.departamento = session.departamento
 
+            pdt2.personaSigla = pdt2.persona.login
             pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
             pdt2.departamentoNombre = pdt2.departamento.descripcion
             pdt2.departamentoSigla = pdt2.departamento.codigo

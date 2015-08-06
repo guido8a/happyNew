@@ -88,6 +88,7 @@ class PruebasController {
                         pdt.persona = session.usuario
                         pdt.departamento = session.departamento
 
+                        pdt.personaSigla = pdt.persona.login
                         pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                         pdt.departamentoNombre = pdt.departamento.descripcion
                         pdt.departamentoSigla = pdt.departamento.codigo

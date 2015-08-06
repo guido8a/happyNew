@@ -105,6 +105,7 @@ class PersonaDocumentoTramiteController extends happy.seguridad.Shield {
         personaDocumentoTramiteInstance.properties = params
 
         if (personaDocumentoTramiteInstance.persona) {
+            personaDocumentoTramiteInstance.personaSigla = personaDocumentoTramiteInstance.persona.login
             personaDocumentoTramiteInstance.personaNombre = personaDocumentoTramiteInstance.persona.nombre + " " + personaDocumentoTramiteInstance.persona.apellido
             personaDocumentoTramiteInstance.departamentoNombre = personaDocumentoTramiteInstance.persona.departamento.descripcion
             personaDocumentoTramiteInstance.departamentoSigla = personaDocumentoTramiteInstance.persona.departamento.codigo

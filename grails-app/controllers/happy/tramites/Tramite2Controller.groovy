@@ -899,6 +899,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             pdt.fechaEnvio = envio
             pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
 
+            pdt.personaSigla = pdt.persona.login
             pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
             pdt.departamentoNombre = pdt.departamento.descripcion
             pdt.departamentoSigla = pdt.departamento.codigo
@@ -921,7 +922,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-        println("params enviar varios " + params + "  " + request.getMethod())
+//        println("params enviar varios " + params + "  " + request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         if (request.getMethod() == "POST") {
@@ -995,6 +996,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
                         pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
 
+                        pdt.personaSigla = pdt.persona.login
                         pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                         pdt.departamentoNombre = pdt.departamento.descripcion
                         pdt.departamentoSigla = pdt.departamento.codigo
@@ -1885,6 +1887,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     //***  departamentoPersona
                     paraDocumentoTramite.departamento = null
 
+                    paraDocumentoTramite.personaSigla = paraDocumentoTramite.persona.login
                     paraDocumentoTramite.personaNombre = paraDocumentoTramite.persona.nombre + " " + paraDocumentoTramite.persona.apellido
                     paraDocumentoTramite.departamentoNombre = paraDocumentoTramite.persona.departamento.descripcion
                     paraDocumentoTramite.departamentoSigla = paraDocumentoTramite.persona.departamento.codigo
@@ -1930,6 +1933,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         ccDocumentoTramite.persona = Persona.get(cc.toInteger())
                         ccDocumentoTramite.departamentoPersona = Persona.get(cc.toInteger()).departamento
 
+                        ccDocumentoTramite.personaSigla = ccDocumentoTramite.persona.login
                         ccDocumentoTramite.personaNombre = ccDocumentoTramite.persona.nombre + " " + ccDocumentoTramite.persona.apellido
                         ccDocumentoTramite.departamentoNombre = ccDocumentoTramite.persona.departamento.descripcion
                         ccDocumentoTramite.departamentoSigla = ccDocumentoTramite.persona.departamento.codigo
@@ -2016,6 +2020,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt.persona = session.usuario
                 pdt.departamento = session.departamento
 
+                pdt.personaSigla = pdt.persona.login
                 pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
@@ -2032,6 +2037,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt2.persona = session.usuario
                 pdt2.departamento = session.departamento
 
+                pdt2.personaSigla = pdt2.persona.login
                 pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
@@ -2165,6 +2171,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         personaDoc.tramite = tramite
         personaDoc.persona = persona
 
+        personaDoc.personaSigla = personaDoc.persona.login
         personaDoc.personaNombre = personaDoc.persona.nombre + " " + personaDoc.persona.apellido
         personaDoc.departamentoNombre = personaDoc.persona.departamento.descripcion
         personaDoc.departamentoSigla = personaDoc.persona.departamento.codigo

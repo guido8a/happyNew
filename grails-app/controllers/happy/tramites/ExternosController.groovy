@@ -83,6 +83,7 @@ class ExternosController extends Shield {
                 pdtRecibe.tramite = pdt.tramite
                 pdtRecibe.persona = persona
 
+                pdtRecibe.personaSigla = persona.login
                 pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
                 pdtRecibe.departamentoNombre = persona.departamento.descripcion
                 pdtRecibe.departamentoSigla = persona.departamento.codigo
@@ -140,6 +141,7 @@ class ExternosController extends Shield {
                         pdtRecibe.tramite = tramite
                         pdtRecibe.persona = persona
 
+                        pdtRecibe.personaSigla = persona.login
                         pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
                         pdtRecibe.departamentoNombre = persona.departamento.descripcion
                         pdtRecibe.departamentoSigla = persona.departamento.codigo
