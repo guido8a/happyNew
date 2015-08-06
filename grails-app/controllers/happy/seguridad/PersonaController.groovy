@@ -1253,7 +1253,7 @@ class PersonaController extends happy.seguridad.Shield {
                                         //println "dpto "+dpto
                                         if (dpto.size() > 1)
                                             dpto = Departamento.findByDescripcion(dpto[1])
-                                        println "departamento   " + dpto
+                                        println "departamento(1)   " + dpto
 
                                     } else {
                                         dpto = null
@@ -1261,7 +1261,8 @@ class PersonaController extends happy.seguridad.Shield {
                                     if (!dpto)
                                         dpto = sinDep
                                     if (prsn.departamento != dpto) {
-                                        prsn.departamentoDesde = prsn.departamento
+                                        println "actualiza depatamento(1) con ${dpto}, antes: ${prsn.departamento.id}"
+                                        prsn.departamentoDesde = prsn.departamento.id
                                         prsn.departamento = dpto
                                         prsn.activo = 0
                                     }
@@ -1393,7 +1394,8 @@ class PersonaController extends happy.seguridad.Shield {
                                     dpto = datos[1].split("=")
                                 dpto = Departamento.findByDescripcion(dpto[1])
                                 if (prsn.departamento != dpto) {
-                                    prsn.departamentoDesde = prsn.departamento
+                                    println "actualiza depatamento(2) con ${dpto}, antes: ${prsn.departamento.id}"
+                                    prsn.departamentoDesde = prsn.departamento.id
                                     prsn.departamento = dpto
                                     prsn.activo = 0
                                 }
