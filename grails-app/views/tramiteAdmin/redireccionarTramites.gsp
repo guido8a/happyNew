@@ -130,6 +130,7 @@
                                 1   <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${filtradas}" optionKey="id"/>
                             </g:if>
                             <g:else>
+
                             %{--<g:set var="pers2" value="${personas - tr.tramite.de}"/>--}%
                                 <g:set var="pers2" value="${filtradas - tr.tramite.de}"/>
                                 2  <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${pers2}" optionKey="id"

@@ -460,7 +460,7 @@ class TramiteAdminController extends Shield {
 
         println()
 
-        if (persona.departamento.id == persona.departamentoDesde) {
+        if (persona?.departamento?.id == persona?.departamentoDesde) {
 //            println("entro 1")
 
             if (persona.estaActivo) {
@@ -497,7 +497,13 @@ class TramiteAdminController extends Shield {
         } else {
 //            println("entro 2")
 
-            def depaDesde = persona.departamentoDesde
+            def depaDesde
+
+            if(persona?.departamentoDesde){
+                depaDesde = persona.departamentoDesde
+            }        else{
+                depaDesde = persona.departamento
+            }
 
             if (persona.estaActivo) {
                 personas = Persona.withCriteria {
@@ -612,7 +618,7 @@ class TramiteAdminController extends Shield {
                 }
                 if (prtrExisten.size() == 0) {
                     pr.persona = redPrsn
-                    obs += " al usuario ${pr.persona.login}"
+                    obs += " al usuario ${pr?.persona?.login}"
                 } else {
                     if (pr.rolPersonaTramiteId == rolCopia.id) {
                         //si es copia, la anulo

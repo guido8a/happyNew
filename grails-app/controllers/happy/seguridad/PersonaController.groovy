@@ -971,7 +971,10 @@ class PersonaController extends happy.seguridad.Shield {
             params.jefe = 0
         } //create
         personaInstance.properties = params
-        personaInstance.departamentoDesde = params.departamento
+
+
+        personaInstance.departamentoDesde = Departamento.get(params.departamento.id)
+
         if (!personaInstance.save(flush: true)) {
             println "ERROR"
             def msg = "NO_No se pudo ${params.id ? 'actualizar' : 'crear'} Persona."
