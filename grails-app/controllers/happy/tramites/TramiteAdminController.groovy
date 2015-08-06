@@ -458,6 +458,8 @@ class TramiteAdminController extends Shield {
         def filtradas = []
         def sesion
 
+        println()
+
         if (persona.departamento.id == persona.departamentoDesde) {
 //            println("entro 1")
 
@@ -495,7 +497,7 @@ class TramiteAdminController extends Shield {
         } else {
 //            println("entro 2")
 
-            def depaDesde = Departamento.get(persona.departamentoDesde)
+            def depaDesde = persona.departamentoDesde
 
             if (persona.estaActivo) {
                 personas = Persona.withCriteria {

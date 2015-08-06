@@ -319,7 +319,6 @@
                             times++
                             if (!breakingPoint)
                                 $("#tabla_salida").append(msg);
-
                             cargarAlertas();
                             nowSize = $(".trTramite").length
 
@@ -358,7 +357,7 @@
                     lastSize = 0
                     nowSize = 0
                     times = 0
-                    max = 10
+                    max = 15
                     salto = 40
                     actual = 0
                     check = false
