@@ -1213,6 +1213,8 @@ class PersonaController extends happy.seguridad.Shield {
                                 if (!dpto)
                                     dpto = sinDep
                                 prsn.departamento = dpto
+                                println "al crear persona pone dptodsde: ${dpto}"
+                                prsn.departamentoDesde = dpto
                                 if (!prsn.save(flush: true)) {
 //                                    println "error save prns " + prsn.errors
                                 } else {
@@ -1366,6 +1368,8 @@ class PersonaController extends happy.seguridad.Shield {
                         if (!dpto)
                             dpto = sinDep
                         prsn.departamento = dpto
+                        println "al crear persona buscado por login... pone dptodsde: ${dpto}"
+                        prsn.departamentoDesde = dpto
                         if (!prsn.save(flush: true)) {
 //                            println "error save prns " + prsn.errors
                         } else {
