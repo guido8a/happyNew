@@ -178,7 +178,7 @@
                 <div>
                     <div class="col-md-2">
                         <label>Documento</label>
-                        <g:textField name="memorando" value="" maxlength="15" class="form-control"/>
+                        <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps"/>
                     </div>
 
                     <div class="col-md-2">
@@ -215,16 +215,16 @@
                 <table class="table table-bordered  table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Documento</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
                             <th>De</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Fec. Creación</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Para</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Destinatario</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">F. Límite Recepción</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Estado</th>
-                            <th class="cabecera">Enviar</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfccr' ? (params.order + ' sorted') : ''}" data-sort="trmtfccr" data-order="${params.order}">Fec. Creación</th>
+                            <th>Para</th>
+                            <th>Destinatario</th>
+                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
+                            <th class="cabecera sortable ${params.sort == 'trmtfcbq' ? (params.order + ' sorted') : ''}" data-sort="trmtfcbq" data-order="${params.order}">F. Límite Recepción</th>
+                            <th class="cabecera sortable ${params.sort == 'edtrdscr' ? (params.order + ' sorted') : ''}" data-sort="edtrdscr" data-order="${params.order}">Estado</th>
+                            <th>Enviar</th>
                         </tr>
                     </thead>
                     <tbody id="tabla_bandeja">
