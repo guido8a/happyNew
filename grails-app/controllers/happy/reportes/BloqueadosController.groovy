@@ -109,6 +109,9 @@ class BloqueadosController  extends Shield{
         cell = new PdfPCell(new Paragraph("Usuario", times8bold));
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
+        cell = new PdfPCell(new Paragraph("Trámite", times8bold));
+        cell.setBorderColor(Color.WHITE)
+        tablaTramites.addCell(cell);
         def par
        deps.each {d->
            if(d.estado=="B"){
@@ -131,6 +134,24 @@ class BloqueadosController  extends Shield{
                cell = new PdfPCell(par);
                cell.setBorderColor(Color.WHITE)
                tablaTramites.addCell(cell);
+
+               PersonaDocumentoTramite.findAllByPersona(p).each {pt->
+
+                   if(pt?.fechaBloqueo){
+
+                       println("fecha envio" + pt?.fechaEnvio)
+                       println("fecha limite" + pt?.fechaLimiteRespuesta)
+                       println("fecha bloque" + pt?.fechaBloqueo)
+
+                       par = new Paragraph(""+pt, times8normal)
+                       cell = new PdfPCell(par);
+                       cell.setBorderColor(Color.WHITE)
+                       tablaTramites.addCell(cell);
+                   }
+
+               }
+
+
                total++
            }
        }

@@ -234,7 +234,7 @@
         <script type="text/javascript">
 
             var actual = 0;
-            var max = 10;
+            var max = 20;
             var lastSize = 0;
             var nowSize = 0;
             var times = 0;
@@ -251,7 +251,7 @@
                     lastSize = 0
                     nowSize = 0
                     times = 0
-                    max = 10
+                    max = 20
                     salto = 40
                     actual = 0
                     check = false
@@ -261,6 +261,20 @@
                 }
 
             }
+
+            %{--function cargarBandeja(band){--}%
+                %{--$.ajax({--}%
+                    %{--type: "POST",--}%
+                    %{--url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",--}%
+                    %{--data: '',--}%
+                    %{--success: function (msg) {--}%
+
+                        %{--$("#tablaTramites").append(msg);--}%
+
+                        %{--cargarAlertas();--}%
+                    %{--}--}%
+                %{--})--}%
+            %{--};--}%
 
             function cargarBandeja(band) {
                 $(".qtip").hide();
@@ -285,7 +299,7 @@
                                 $("#tablaTramites").append(msg);
 
                             cargarAlertas();
-                            nowSize = $(".trTramite").length
+                            nowSize = $(".trTramite").size()
 
                             actual += max
 //                console.log("cargar bandeja ",nowSize,actual)
@@ -297,6 +311,7 @@
                                         check = false
                                     }
                                     lastSize = nowSize
+//                                    console.log("last " + lastSize)
                                     cargarBandeja(false)
                                 } else {
 //                        console.log("tiempo del check "+check)
@@ -307,6 +322,7 @@
 //                            actual+=salto
 //                            console.log("max "+max)
                                     } else {
+
                                         cargando = false
                                         if (breakingPoint) {
                                             resetValues()
@@ -327,7 +343,7 @@
                     lastSize = 0
                     nowSize = 0
                     times = 0
-                    max = 10
+                    max = 15
                     salto = 40
                     actual = 0
                     check = false
@@ -339,6 +355,9 @@
                         externalSource = false
                 }
             }
+
+
+
             $("input").keyup(function (ev) {
                 if (ev.keyCode == 13) {
                     if (cargando) {

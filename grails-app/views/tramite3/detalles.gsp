@@ -169,7 +169,7 @@
                         </g:if>
                         <g:else>
                             %{--${t?.departamento?.codigo  + ":" + t?.de?.nombre + ' ' + t?.de?.apellido}--}%
-                        ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
+                        ${(t?.departamentoNombre ?: '') + ":" + (t?.persona ?: '')}
                         </g:else>
                     </div>
 
@@ -216,10 +216,10 @@
                                 %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}--}%
                                 %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}--}%
                                 <g:if test="${pdt?.persona}">
-                                    ${pdt?.departamentoSigla + ":" + pdt?.personaSigla}
+                                    ${pdt?.persona}
                                 </g:if>
                                 <g:else>
-                                    ${pdt?.departamentoSigla}
+                                    ${pdt?.departamentoNombre}
                                 </g:else>
 
                             </g:else>
@@ -347,7 +347,7 @@
                         </g:if>
                         <g:else>
                             %{--${t.deDepartamento ? t.deDepartamento.codigo : "" + t.de.departamento.codigo + ":" + t.de.nombre + ' ' + t.de.apellido}--}%
-                        ${(t?.departamentoSigla ?: '') + ":" + (t?.persona ?: '')}
+                        ${(t?.departamentoNombre ?: '') + ":" + (t?.persona ?: '')}
                         </g:else>
                     </div>
 
@@ -389,7 +389,13 @@
                             </g:if>
                             <g:else>
                                 %{--${(pdt.departamento) ? pdt?.departamento?.codigo : "" + pdt.persona?.departamento?.codigo + ":" + pdt.persona?.login}--}%
-                                ${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}
+                                %{--${(pdt.departamento) ? pdt?.departamento?.codigo : " " + pdt.departamentoPersona?.codigo + ":" + pdt.persona?.login}--}%
+                                <g:if test="${pdt?.persona}">
+                                    ${pdt?.persona}
+                                </g:if>
+                                <g:else>
+                                    ${pdt?.departamentoNombre}
+                                </g:else>
                             </g:else>
 
                             <b>
