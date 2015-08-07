@@ -32,6 +32,7 @@ import happy.seguridad.Shield;
 
 class BloqueadosController  extends Shield{
     def reportesPdfService
+    def dbConnectionService
 
     Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
     Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
@@ -99,62 +100,112 @@ class BloqueadosController  extends Shield{
         def total = 0
 
         PdfPTable tablaTramites
-        tablaTramites = new PdfPTable(2);
-        tablaTramites.setWidths(70,30)
+        tablaTramites = new PdfPTable(3);
+        tablaTramites.setWidths(50,25,25)
         tablaTramites.setWidthPercentage(100);
-        def parH = new Paragraph("Departamento", times8bold)
+        def parH = new Paragraph("Departamento", times10bold)
         def cell = new PdfPCell(parH);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
-        cell = new PdfPCell(new Paragraph("Usuario", times8bold));
+        cell = new PdfPCell(new Paragraph("Usuario", times10bold));
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
-        cell = new PdfPCell(new Paragraph("Trámite", times8bold));
+        cell = new PdfPCell(new Paragraph("Trámite", times10bold));
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
         def par
-       deps.each {d->
-           if(d.estado=="B"){
-               par = new Paragraph(""+d, times8normal)
-               cell = new PdfPCell(par);
-               cell.setBorderColor(Color.WHITE)
-               tablaTramites.addCell(cell);
-               par = new Paragraph("(Oficina)", times8normal)
-               cell = new PdfPCell(par);
-               cell.setBorderColor(Color.WHITE)
-               tablaTramites.addCell(cell);
-               total++
-           }
-           Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
-               par = new Paragraph(""+d, times8normal)
-               cell = new PdfPCell(par);
-               cell.setBorderColor(Color.WHITE)
-               tablaTramites.addCell(cell);
-               par = new Paragraph(""+p, times8normal)
-               cell = new PdfPCell(par);
-               cell.setBorderColor(Color.WHITE)
-               tablaTramites.addCell(cell);
+        deps.each {d->
+            if(d.estado=="B"){
+                par = new Paragraph(""+d, times8normal)
+                cell = new PdfPCell(par);
+                cell.setBorderColor(Color.WHITE)
+                tablaTramites.addCell(cell);
+                par = new Paragraph("(Oficina)", times8normal)
+                cell = new PdfPCell(par);
+                cell.setBorderColor(Color.WHITE)
+                tablaTramites.addCell(cell);
 
-               PersonaDocumentoTramite.findAllByPersona(p).each {pt->
+                def triangulos = []
+                Persona.findAllByDepartamento(d).each {
+                    if(it?.esTriangulo() && it.activo == 1){
+                        triangulos += it.id
+                    }
+                }
+                def cnDpto = dbConnectionService.getConnection();
+                def sqlDpto = ""
+                def resultDpto = []
+                sqlDpto = "select * from  entrada_dpto(" + triangulos.first() + ") where trmtfcbq < now() and trmtfcrc is NULL"
+                def ind = 0
+                cnDpto.eachRow(sqlDpto) { row ->
+//                           resultDpto.add(dp.toRowResult())
+                    if(ind == 0){
+                        par = new Paragraph(row?.trmtcdgo, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                    }else{
+                        par = new Paragraph('', times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph('', times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph(row?.trmtcdgo, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                    }
+                    ind ++
+                }
+                total++
+            }
 
-                   if(pt?.fechaBloqueo){
+            Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
+                par = new Paragraph(""+d, times8normal)
+                cell = new PdfPCell(par);
+                cell.setBorderColor(Color.WHITE)
+                tablaTramites.addCell(cell);
+                par = new Paragraph(""+p, times8normal)
+                cell = new PdfPCell(par);
+                cell.setBorderColor(Color.WHITE)
+                tablaTramites.addCell(cell);
 
-                       println("fecha envio" + pt?.fechaEnvio)
-                       println("fecha limite" + pt?.fechaLimiteRespuesta)
-                       println("fecha bloque" + pt?.fechaBloqueo)
+                def cn = dbConnectionService.getConnection();
+                def sql = ""
+                def result = []
+                sql = "select * from  entrada_prsn(" + p?.id + ") where trmtfcbq < now() and trmtfcrc is NULL"
+                def ind2 = 0
+                cn.eachRow(sql) { re ->
+                    result.add(re.toRowResult())
+                }
 
-                       par = new Paragraph(""+pt, times8normal)
-                       cell = new PdfPCell(par);
-                       cell.setBorderColor(Color.WHITE)
-                       tablaTramites.addCell(cell);
-                   }
+                result.eachWithIndex{ pers, j->
+                    if(j == 0){
+                        par = new Paragraph(pers?.trmtcdgo, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                    }else{
+                        par = new Paragraph('', times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph('', times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                        par = new Paragraph(pers?.trmtcdgo, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        tablaTramites.addCell(cell);
+                    }
+                }
+                total++
+            }
+        }
 
-               }
-
-
-               total++
-           }
-       }
         par = new Paragraph("Gran Total", times8bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
