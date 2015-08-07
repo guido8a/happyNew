@@ -824,8 +824,8 @@
                 return items
             }
 
-            //old
             $(function () {
+                cargarBandeja();
 
                 $("input").keyup(function (ev) {
                     if (ev.keyCode == 13) {
@@ -866,7 +866,6 @@
                     $("#fechaBusqueda_month").val("");
                     $("#fechaBusqueda_year").val("");
                     cargarBandeja();
-
                 });
 
                 $(".btnActualizar").click(function () {
@@ -875,8 +874,6 @@
 //                    closeLoader();
                     return false;
                 });
-
-                cargarBandeja();
 
 //                setInterval(function () {
 //                    openLoader();

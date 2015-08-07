@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: luz
-  Date: 07/08/15
-  Time: 09:10 AM
+  User: gato
+  Date: 18/02/14
+  Time: 12:52 PM
 --%>
 
 
@@ -25,17 +25,8 @@
             /*margin-top: 5px;*/
         }
 
-        /*.alert {*/
-        /*padding : 0;*/
-        /*}*/
-        .alertas {
-            float       : left;
-            /*width       : 100px;*/
-            /*height      : 40px;*/
-            margin-left : 20px;
-            padding     : 10px;
-            cursor      : pointer;
-            /*margin-top: -5px;*/
+        .alert {
+            padding : 0;
         }
 
         .alert-blanco {
@@ -44,24 +35,25 @@
             border-color     : #d0d0d0;
         }
 
+        /*.alertas {*/
+        /*float       : left;*/
+        /*width       : 100px;*/
+        /*height      : 40px;*/
+        /*margin-left : 20px;*/
+        /*cursor      : pointer;*/
+        /*}*/
+
         .cabecera {
             text-align : center;
             font-size  : 13px;
         }
 
-        .cabecera.sortable {
-            cursor : pointer;
-        }
-
         .container-celdas {
-            width    : 1070px;
-            height   : 310px;
-            float    : left;
-            overflow : auto;
-        }
-
-        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-            background-color : #FFBD4C;
+            width      : 1070px;
+            height     : 310px;
+            float      : left;
+            overflow   : auto;
+            overflow-y : auto;
         }
 
         .enviado {
@@ -72,6 +64,10 @@
         .borrador {
             background-color : #FFFFCC;
             border           : 1px solid #eaeab7;
+        }
+
+        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+            background-color : #FFBD4C;
         }
 
         tr.E002, tr.revisadoColor td {
@@ -91,6 +87,16 @@
             font-weight      : bold;
         }
 
+        .alertas {
+            float       : left;
+            /*width       : 100px;*/
+            /*height      : 40px;*/
+            margin-left : 20px;
+            padding     : 10px;
+            cursor      : pointer;
+            /*margin-top: -5px;*/
+        }
+
         .letra {
 
             /*font-family: "Arial Black", arial-black;*/
@@ -99,20 +105,13 @@
             background-color : #8fe6c3;
         }
 
-        .para {
-            font-weight : bold;
-            font-size   : 9pt;
-        }
-
-        .copias {
-            font-size : 8pt;
-        }
+        #c99671
         </style>
-        %{--<link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">--}%
+        <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
     </head>
 
     <body>
-        <div class="row" style="margin-top: 0; margin-left: 1px">
+        <div class="row" style="margin-top: 0px; margin-left: 1px">
             <span class="grupo">
                 <label class="well well-sm letra" style="text-align: center">
                     BANDEJA DE SALIDA PERSONAL
@@ -123,8 +122,7 @@
             <span class="grupo">
                 <label class="well well-sm" style="text-align: center">
                     Usuario:
-                    ${persona?.nombre + " " + persona?.apellido + " - " +
-                            persona?.departamento?.descripcion}
+                    ${persona?.nombre + " " + persona?.apellido + " - " + persona?.departamento?.descripcion}
                 </label>
             </span>
         </div>
@@ -212,22 +210,25 @@
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
             <div id="bandeja">
+                <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+                <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
+
                 <table class="table table-bordered  table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Documento</th>
+                            <th class="cabecera">Documento</th>
                             <th>De</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Fec. Creación</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Para</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Destinatario</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">F. Límite Recepción</th>
-                            <th class="cabecera sortable ${params.sort == '' ? (params.order + ' sorted') : ''}" data-sort="" data-order="${params.order}">Estado</th>
+                            <th class="cabecera">Fec. Creación</th>
+                            <th class="cabecera">Para</th>
+                            <th class="cabecera">Destinatario</th>
+                            <th class="cabecera">Prioridad</th>
+                            <th class="cabecera">Fecha Envío</th>
+                            <th class="cabecera">F. Límite Recepción</th>
+                            <th class="cabecera">Estado</th>
                             <th class="cabecera">Enviar</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla_bandeja">
+                    <tbody id="tabla_salida">
                     </tbody>
                 </table>
             </div>
@@ -255,75 +256,142 @@
 
 
         <script type="text/javascript">
-            function cargarBandeja() {
-                var memorando = $("#memorando").val();
-                var asunto = $("#asunto").val();
-                var fecha = $("#fechaBusqueda_input").val();
-                var $sorted = $(".sorted");
-                var sort = $sorted.data("sort");
-                var order = $sorted.data("order");
+            var actual = 0;
+            var max = 15;
+            var lastSize = 0;
+            var nowSize = 0;
+            var times = 0;
+            var check = false;
+            var salto = 40
+            var breakingPoint = false
+            var cargando = false
+            var externalSource = false
+            function resetValues() {
+                if (cargando) {
+                    breakingPoint = true;
+                } else {
+                    lastSize = 0
+                    nowSize = 0
+                    times = 0
+                    max = 15
+                    salto = 40
+                    actual = 0
+                    check = false
+                    breakingPoint = false
+                    $(".trTramite").remove()
+                    cargarBandeja(true)
+                }
 
+            }
+
+            %{--function cargarBandeja(band) {--}%
+                %{--openLoader()--}%
+                %{--$(".qtip").hide();--}%
+                %{--$.ajax({--}%
+                    %{--type    : "POST",--}%
+                    %{--url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",--}%
+                    %{--data    : '',--}%
+                    %{--success : function (msg) {--}%
+                        %{--$("#tabla_salida").html(msg);--}%
+
+                        %{--cargarAlertas();--}%
+                        %{--closeLoader();--}%
+
+                    %{--}--}%
+                %{--});--}%
+            %{--}--}%
+
+            function cargarBandeja(band) {
                 $(".qtip").hide();
-                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                cargando = true
 
-                var datos = {
-                    memorando : memorando,
-                    asunto    : asunto,
-                    fecha     : fecha,
-                    sort      : sort,
-                    order     : order
-                };
+                if (!breakingPoint) {
 
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida')}",
-                    data    : datos,
-                    success : function (msg) {
-                        $("#tabla_bandeja").html(msg);
-                        cargarAlertas();
-                    }
-                });
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalida_old')}",
+                        data    : {
+                            actual : actual,
+                            max    : max
+                        },
+                        async   : true,
+                        success : function (msg) {
+                            times++
+                            if (!breakingPoint)
+                                $("#tabla_salida").append(msg);
+                            cargarAlertas();
+                            nowSize = $(".trTramite").length
+
+                            actual += max
+                            if (lastSize != 0) {
+                                if (nowSize > lastSize) {
+                                    if (max > salto) {
+                                        max = max - salto
+                                        check = false
+                                    }
+                                    lastSize = nowSize
+                                    cargarBandeja(false)
+                                } else {
+                                    if (!check) {
+                                        check = true
+                                        max = max + salto
+                                        cargarBandeja(false)
+
+                                    } else {
+                                        cargando = false
+                                        if (breakingPoint) {
+                                            resetValues()
+                                        }
+
+                                    }
+
+                                }
+                            } else {
+                                lastSize = nowSize
+                                cargarBandeja(false)
+                            }
+
+                        }
+                    });
+                } else {
+                    lastSize = 0
+                    nowSize = 0
+                    times = 0
+                    max = 15
+                    salto = 40
+                    actual = 0
+                    check = false
+                    cargando = false
+                    breakingPoint = false
+                    if (!externalSource)
+                        cargarBandeja(true)
+                    else
+                        externalSource = false
+                }
+
             }
 
             function cargarAlertas() {
-                $("#numRev").html($(".E002").size()); //revisados
-                $("#numEnv").html($(".E003").size()); //enviados
-                $("#numNoRec").html($(".alerta").size()); //no recibidos
-                $("#numBor").html($(".E001").size()); //borradores
+                cargarAlertaRevisados();
+                cargarAlertaEnviados();
+                cargarAlertaNoRecibidos();
+                cargarBorrador();
             }
 
-            function doEnviar(imprimir, strIds) {
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
-                    data    : {
-                        ids    : strIds,
-                        enviar : '1',
-                        type   : 'download'
-                    },
-                    success : function (msg) {
-                        closeLoader();
-//                                                console.log(msg);
-                        var parts = msg.split("_");
+            function cargarAlertaRevisados() {
+                $("#numRev").html($(".E002").size())
+            }
 
-                        if (parts[0] == 'ok') {
-//                        cargarBandeja(true);
-                            log('Trámites Enviados' + parts[1], 'success');
-                            if (imprimir) {
-                                openLoader();
-                                location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
-                                cargarBandeja(true);
-                                closeLoader();
-                            }
-                        } else {
-//                        cargarBandeja(true);
-                            log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
-                            %{--location.href = "${g.createLink(action: 'errores1')}";--}%
+            function cargarAlertaEnviados() {
+                $("#numEnv").html($(".E003").size())
+            }
 
-//                                closeLoader();
-                        }
-                    }
-                });
+            function cargarAlertaNoRecibidos() {
+                $("#numNoRec").html($(".alerta").size())
+            }
+            function cargarBorrador() {
+//        console.log($(".E001"),$(".E001").size())
+                $("#numBor").html($(".E001").size())
             }
 
             function createContextMenu(node) {
@@ -445,27 +513,27 @@
 
                 //old
                 %{--var recibirExterno = {--}%
-                %{--label  : 'Confirmar recepción',--}%
-                %{--icon   : "fa fa-check-square-o",--}%
-                %{--action : function (e) {--}%
-                %{--$.ajax({--}%
-                %{--type    : 'POST',--}%
-                %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                %{--url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,--}%
-                %{--success : function (msg) {--}%
-                %{--var parts = msg.split('_')--}%
-                %{--resetValues();--}%
-                %{--if (parts[0] == 'NO') {--}%
-                %{--log(parts[1], "error");--}%
-                %{--} else if (parts[0] == "OK") {--}%
-                %{--log(parts[1], "success")--}%
-                %{--} else if (parts[0] == "ERROR") {--}%
-                %{--bootbox.alert(parts[1]);--}%
-                %{--}--}%
-                %{--}--}%
-                %{--}); //ajax--}%
+                    %{--label  : 'Confirmar recepción',--}%
+                    %{--icon   : "fa fa-check-square-o",--}%
+                    %{--action : function (e) {--}%
+                        %{--$.ajax({--}%
+                            %{--type    : 'POST',--}%
+                            %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
+                            %{--url     : '${createLink(controller: 'externos', action: 'recibirTramiteExterno')}/' + id,--}%
+                            %{--success : function (msg) {--}%
+                                %{--var parts = msg.split('_')--}%
+                                %{--resetValues();--}%
+                                %{--if (parts[0] == 'NO') {--}%
+                                    %{--log(parts[1], "error");--}%
+                                %{--} else if (parts[0] == "OK") {--}%
+                                    %{--log(parts[1], "success")--}%
+                                %{--} else if (parts[0] == "ERROR") {--}%
+                                    %{--bootbox.alert(parts[1]);--}%
+                                %{--}--}%
+                            %{--}--}%
+                        %{--}); //ajax--}%
 
-                %{--} //action--}%
+                    %{--} //action--}%
                 %{--};--}%
 
                 var recibirExterno = {
@@ -529,6 +597,7 @@
                                                             }, 1000);
                                                             cargarBandeja();
                                                         } else {
+                                                            resetValues();
                                                             closeLoader();
                                                         }
                                                     }
@@ -549,6 +618,7 @@
                         });
                     } //action
                 };
+
 
                 var permisoImprimir = {
                     label  : "Permiso de Imprimir",
@@ -777,6 +847,7 @@
                                                             }, 1000);
                                                             cargarBandeja();
                                                         } else {
+                                                            resetValues()
 //                                                        cargarBandeja(true)
                                                             log("Envío del trámite cancelado", 'error')
                                                             closeLoader();
@@ -970,6 +1041,7 @@
                     items.recibirExterno = recibirExterno
                 }
 
+
                 if (enviado || tieneAlerta) {
                     <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
@@ -986,36 +1058,51 @@
             }
 
             $(function () {
-                cargarBandeja();
 
                 $("input").keyup(function (ev) {
                     if (ev.keyCode == 13) {
-                        cargarBandeja();
+//                $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                        if (cargando) {
+                            breakingPoint = true
+                            externalSource = true
+                        }
+                        $(".trTramite").remove()
+                        $(".trTramite").remove()
+                        var memorando = $("#memorando").val();
+                        var asunto = $("#asunto").val();
+                        var fecha = $("#fechaBusqueda_input").val();
+                        var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
+                            data    : datos,
+                            success : function (msg) {
+//                        $("#bandeja").html(msg);
+                                $("#tabla_salida").append(msg);
+                            }
+                        });
                     }
-                });
-
-                $(".cabecera").click(function () {
-                    var $col = $(this);
-                    $(".sorted").each(function () {
-                        $(this).removeClass("asc").removeClass("desc");
-                    });
-                    $col.addClass("sorted");
-                    var order = "";
-                    if ($col.data("order") == "asc") {
-                        order = "desc";
-                        $col.data("order", "desc");
-                        $col.removeClass("asc").addClass("desc");
-                    } else if ($col.data("order") == "desc") {
-                        order = "asc";
-                        $col.data("order", "asc");
-                        $col.removeClass("desc").addClass("asc");
-                    }
-                    cargarBandeja();
                 });
 
                 <g:if test="${bloqueo}">
                 $("#bloqueo-salida").show();
                 </g:if>
+
+                $(".alertas").click(function () {
+
+                    var clase = $(this).attr("clase");
+                    $("tr").each(function () {
+                        if ($(this).hasClass(clase)) {
+                            if ($(this).hasClass("trHighlight"))
+                                $(this).removeClass("trHighlight");
+                            else
+                                $(this).addClass("trHighlight")
+                        } else {
+                            $(this).removeClass("trHighlight")
+                        }
+                    });
+
+                });
 
                 $(".btnBuscar").click(function () {
                     $(".buscar").attr("hidden", false)
@@ -1029,26 +1116,21 @@
                     $("#fechaBusqueda_day").val("");
                     $("#fechaBusqueda_month").val("");
                     $("#fechaBusqueda_year").val("");
-                    cargarBandeja();
-                });
+                    resetValues();
+//            cargarBandeja(true);
 
+                });
                 $(".btnActualizar").click(function () {
-                    cargarBandeja();
-                    return false;
-                });
-
-                $(".alertas").click(function () {
-                    var clase = $(this).attr("clase");
-                    $("tr").each(function () {
-                        if ($(this).hasClass(clase)) {
-                            if ($(this).hasClass("trHighlight"))
-                                $(this).removeClass("trHighlight");
-                            else
-                                $(this).addClass("trHighlight")
-                        } else {
-                            $(this).removeClass("trHighlight")
-                        }
-                    });
+                    if (!cargando) {
+                        openLoader();
+                        resetValues()
+//                cargarBandeja(true);
+                        closeLoader();
+                        return false;
+                    } else {
+                        log('La bandeja se esta cargando, no se puede actualizar en este momento', 'info');
+                        return false
+                    }
                 });
 
                 $(".btnEnviar").click(function () {
@@ -1094,9 +1176,74 @@
                     return false;
                 });
 
+                function doEnviar(imprimir, strIds) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
+                        data    : {
+                            ids    : strIds,
+                            enviar : '1',
+                            type   : 'download'
+                        },
+                        success : function (msg) {
+                            closeLoader();
+//                                                console.log(msg);
+                            var parts = msg.split("_");
+
+                            if (parts[0] == 'ok') {
+                                resetValues();
+//                        cargarBandeja(true);
+                                log('Trámites Enviados' + parts[1], 'success');
+                                if (imprimir) {
+                                    openLoader();
+                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    cargarBandeja(true);
+                                    closeLoader();
+                                }
+                            } else {
+                                resetValues();
+//                        cargarBandeja(true);
+                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                %{--location.href = "${g.createLink(action: 'errores1')}";--}%
+
+//                                closeLoader();
+                            }
+                        }
+                    });
+                }
+
+                cargarBandeja(false);
+
+//                setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader();
+//                    $(".qtip").hide();
+//                }, 300000);
+
                 $(".btnBusqueda").click(function () {
-                    cargarBandeja();
-                    return false;
+                    openLoader();
+//            $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+                    if (cargando) {
+                        breakingPoint = true
+                        externalSource = true
+                    }
+                    $(".trTramite").remove()
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda_input").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    $(".trTramite").remove()
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalida')}",
+                        data    : datos,
+                        success : function (msg) {
+//                    $("#bandeja").html(msg);
+                            $("#tabla_salida").append(msg);
+                            closeLoader();
+                        }
+                    });
                 });
             });
         </script>

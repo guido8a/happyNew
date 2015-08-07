@@ -19,6 +19,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
     def diasLaborablesService
     def enviarService
     def tramitesService
+    def dbConnectionService
 
     def verTramite() {
         /*comentar esto*/
@@ -796,6 +797,46 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(action: 'bandejaSalidaDep')
             return
         }
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: persona.puedeEditor]
+    }
+
+    def tablaBandejaSalida() {
+//        println "BANDEJA SALIDA PERSONAL"
+//        println params
+
+        def persona = Persona.get(session.usuario.id)
+        def busca = false
+        def procedure = "salida_prsn"
+        def where = ""
+
+        if (!params.sort || params.sort == "") {
+            params.sort = "trmtfcrc"
+        }
+        if (!params.order || params.order == "" || params.order == null) {
+            params.order = "DESC"
+        }
+
+        if (persona.puedeEditor) {
+            procedure = "salida_editor"
+        }
+
+        def sql = "SELECT * FROM $procedure($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
+        println "badeja de salida: $sql"
+
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+        return [rows: rows, busca: busca, esEditor: persona.puedeEditor]
+    }
+
+    def bandejaSalida_old() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        if (session.usuario.esTriangulo()) {
+            redirect(action: 'bandejaSalidaDep')
+            return
+        }
 
         def departamento = Persona.get(usuario.id).departamento
         def personal = Persona.findAllByDepartamento(departamento)
@@ -808,8 +849,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: persona.puedeEditor]
     }
 
-
-    def tablaBandejaSalida() {
+    def tablaBandejaSalida_old() {
         def porEnviar = EstadoTramite.findByCodigo("E001")
         def revisado = EstadoTramite.findByCodigo("E002")
         def enviado = EstadoTramite.findByCodigo("E003")
