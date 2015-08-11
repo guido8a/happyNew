@@ -38,7 +38,7 @@ class Alerta {
     static constraints = {
         persona(nullable: true, blank: true)
         departamento(nullable: true, blank: true)
-        mensaje(size: 1..512, nullable: false, blank: false)
+        mensaje(size: 1..550, nullable: false, blank: false)
         datos(size: 1..20, nullable: true, blank: true)
         accion(size: 1..50, nullable: true, blank: true)
         controlador(size: 1..30, nullable: true, blank: true)

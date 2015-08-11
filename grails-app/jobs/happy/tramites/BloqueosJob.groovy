@@ -160,7 +160,7 @@ class BloqueosJob {
     def executeRecibir(depar, persona) {
         def ahora = new Date()
 //        println "----------------------------------"
-//        println "bloqueo bandeja recibir!!! "+ahora
+        println "ejecuta executeRecibir con: dpto: $depar.id (${depar?.codigo}), persona: $persona.id (${persona?.login})"
 
         def pruebasInicio = new Date()
         def pruebasFin
