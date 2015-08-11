@@ -14,7 +14,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-class Tramite2Controller extends happy.seguridad.Shield {
+class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
     def diasLaborablesService
     def enviarService
@@ -86,6 +86,69 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def bandejaSalidaDep() {
+        def usuario = session.usuario
+        def persona = Persona.get(usuario.id)
+        def revisar = false
+        def bloqueo = false
+        if (!session.usuario.esTriangulo()) {
+            redirect(action: 'bandejaSalida')
+            return
+        }
+
+        params.sort = "trmtfccr"
+        params.order = "desc"
+
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: persona.puedeEditor]
+
+    }
+
+    def tablaBandejaSalidaDep() {
+        def persona = Persona.get(session.usuario.id)
+        def busca = false
+        def where = ""
+
+        if (!params.sort || params.sort == "") {
+            params.sort = "trmtfcrc"
+        }
+        if (!params.order || params.order == "" || params.order == null) {
+            params.order = "DESC"
+        }
+
+        if (params.fecha) {
+            busca = true
+            def fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            def fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+            where += "WHERE (trmtfcen >= '${fechaIni.format('yyyy-MM-dd HH:mm:ss')}'" +
+                    " AND trmtfcen <= '${fechaFin.format('yyyy-MM-dd HH:mm:ss')}')"
+        }
+        if (params.asunto) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtasnt ilike '%${params.asunto.trim()}%')"
+        }
+        if (params.memorando) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
+        }
+
+        def sql = "SELECT * FROM salida_dpto($persona.id) ${where} ORDER BY ${params.sort} ${params.order}"
+        println "badeja de salida: $sql"
+
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+        return [rows: rows, busca: busca]
+    }
+
+    def bandejaSalidaDep_old() {
 //        println "--------------------------------------------------------"
 //        println "inicio bandeja " + new Date().format("hh:mm:ss.SSS ")
         def usuario = session.usuario
@@ -95,11 +158,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def triangulo = PermisoTramite.findByCodigo("E001")
 
         return [persona: persona, revisar: revisar, bloqueo: bloqueo]
-
     }
 
 
-    def tablaBandejaSalidaDep() {
+    def tablaBandejaSalidaDep_old() {
 //        println "inicio tabla bandeja "+new Date().format("hh:mm:ss.SSS ")
 //        println "params "+params
         def persona = Persona.get(session.usuario.id)
@@ -851,7 +913,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
         }
 
-        def sql = "SELECT * FROM $procedure($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
+        def sql = "SELECT * FROM $procedure($persona.id) ${where} ORDER BY ${params.sort} ${params.order}"
         println "badeja de salida: $sql"
 
         def cn = dbConnectionService.getConnection()

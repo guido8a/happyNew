@@ -6,38 +6,63 @@
 --%>
 
 <%--
-    * trmt__id=7175,
-    * trmtcdgo=MEM-3430-DGCP-15,
-    * trmtpdre=null,
-    * trmtasnt=Circular instruyendo para que en pedido de pago incluya valor a pagarse,
-    * tpdccdgo=MEM,
-    * edtrcdgo=E001,
-    * deprdscr=José Alcides López Rosero,
-    * depr__id=5356,
-    * deprdpto=DGCP,
-    dedpdscr=DIRECCION DE GESTION DE COMPRAS PUBLICAS,
-    * tptrcdgo=N,
+    trmt__id=20521,
+    trmtcdgo=MEM-568-GSTI-15,
+    trmtpdre=null,
+    trmtasnt=Prueba de memo que vuele a aparecer en la Bandeja de hhhnetrada al quitar el enviado,
+    tpdccdgo=MEM,
+    edtrcdgo=E001,
+    edtrdscr=POR ENVIAR,
+    deprdscr=Ramiro Segundo Marcillo Lasso,
+    depr__id=5515,
+    deprdpto=GSTI,
+    dedpdscr=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,
+    tptrcdgo=N,
     trmtprex=null,
-    * trmtextr=0,
-    * prtrprsn=,
-    * prtrprdp=DGCU,
-    * prtrdpto=DGCU,
-    * trmttppd=MEDIA,
-    * paradpto=María Del Pilar Velasco Guerron,
-    * copiprsn=,
-    * copidpto=cc:DGA, cc:DGAP, cc:DGFZ, cc:DGRP, cc:DGV, cc:GLI,
-             cc:ACCPM, cc:DGES, cc:GTH, cc:UGCR,
-    * paratitl= PARA: DGCU COPIA: DGA COPIA: DGAP COPIA: DGFZ COPIA: DGRP
-              COPIA: DGV COPIA: GLI COPIA: ACCPM COPIA: DGES COPIA: GTH COPIA: UGCR,
-    * trmtfccr=2015-07-24 12:36:00.602,
-    * trmtfcen=null,
-    * trmtfcbq=null,
-    * trmtanxo=0,
-    * trmtdctr=0,
-    * edtxcdgo=null,
-    * trmtimpr=null,
-    * copiextr=0
-    * trmtesrn=N
+    trmtextr=0,
+    trmtesrn=null,
+    prtrprsn=Adriana Michell Cardenas Cueva,
+    prtrdpto=GSTI,
+    trmttppd=MEDIA,
+    paradpto=,
+    copiprsn=,
+    copidpto=,
+    paratitl= PARA: cardenasm,
+    trmtfccr=2015-08-11 10:56:49.113,
+    trmtfcrc=null,
+    trmtfcen=null,
+    trmtfcbq=null,
+    trmtanxo=0,
+    trmtdctr=0,
+    edtxcdgo=null,
+    trmtimpr=null,
+    copiextr=0
+
+    trmt__id=20519,
+    trmtcdgo=OFI-9-GSTI-15,
+    trmtpdre=null,
+    trmtasnt=Prueba de memo que vuele a aparecer en la Bandeja de hhhnetrada al quitar el enviado,
+    tpdccdgo=OFI,
+    edtrcdgo=E003,
+    edtrdscr=ENVIADO,
+    deprdscr=Margarita Elizabeth Espinosa Burbano,
+    depr__id=5519,
+    deprdpto=GSTI,
+    dedpdscr=GESTION DE SISTEMAS Y TECNOLOGIAS DE INFORMACION,
+    tptrcdgo=N,
+    trmtprex=null,
+    trmtextr=1,
+    trmtesrn=null,
+    prtrprsn=Linux Mint 17.2 is a long term sLinux Mint 17.2 is a long term support release which will be supported until 2019. It comes with updated software and brings refinements and many new features to make your desktop even more comfortLinux Mint 17.2 is a long term support release which will be supported until 2019.able to use.upport release which will be supported until 2019. It comes with updated software and brings refinements and many new features to make your desktop even more comfortable to use5, prtrdpto=, trmttppd=MEDIA, paradpto=, copiprsn=, copidpto=, paratitl=Linux Mint 17.2 is a long term sLinux Mint 17.2 is a long term support release which will be supported until 2019. It comes with updated software and brings refinements and many new features to make your desktop even more comfortLinux Mint 17.2 is a long term support release which will be supported until 2019.able to use.upport release which will be supported until 2019. It comes with updated software and brings refinements and many new features to make your desktop even more comfortable to use5,
+    trmtfccr=2015-08-07 11:22:08.161,
+    trmtfcrc=null,
+    trmtfcen=2015-08-07 11:53:16.035,
+    trmtfcbq=2015-08-07 13:53:16.035,
+    trmtanxo=0,
+    trmtdctr=0,
+    edtxcdgo=null,
+    trmtimpr=null,
+    copiextr=0
 --%>
 <g:set var="now" value="${new Date()}"/>
 <g:if test="${rows.size() == 0}">
@@ -129,7 +154,7 @@
                 ${row.trmtcdgo}
             </td>
             <td>
-                ${row.deprdscr}
+                ${row.deprdscr ?: row.deprdpto}
             </td>
             <td style="width: 115px;">
                 ${row.trmtfccr.format("dd-MM-yyyy HH:mm")}

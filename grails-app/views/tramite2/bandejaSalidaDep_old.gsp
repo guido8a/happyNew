@@ -22,11 +22,19 @@
             /*width: 100px;*/
             margin-left : 5px;
             /*margin-top: 5px;*/
+
         }
 
-        /*.alert {*/
-        /*padding : 0;*/
-        /*}*/
+        .alert {
+            padding : 0;
+        }
+
+        .alert-blanco {
+            color            : #666;
+            background-color : #ffffff;
+            border-color     : #d0d0d0;
+        }
+
         .alertas {
             float       : left;
             /*width       : 100px;*/
@@ -37,33 +45,17 @@
             /*margin-top: -5px;*/
         }
 
-        .alert-blanco {
-            color            : #666;
-            background-color : #ffffff;
-            border-color     : #d0d0d0;
-        }
-
-        th {
-            text-align : center;
-        }
-
         .cabecera {
-            font-size : 13px;
-        }
-
-        .cabecera.sortable {
-            cursor : pointer;
+            text-align : center;
+            font-size  : 13px;
         }
 
         .container-celdas {
-            width    : 1070px;
-            height   : 310px;
-            float    : left;
-            overflow : auto;
-        }
-
-        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-            background-color : #FFBD4C;
+            width      : 1070px;
+            height     : 310px;
+            float      : left;
+            overflow   : auto;
+            overflow-y : auto;
         }
 
         .enviado {
@@ -74,6 +66,10 @@
         .borrador {
             background-color : #FFFFCC;
             border           : 1px solid #eaeab7;
+        }
+
+        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+            background-color : #FFBD4C;
         }
 
         tr.E002, tr.revisadoColor td {
@@ -96,22 +92,16 @@
         .letra {
 
             /*font-family: "Arial Black", arial-black;*/
-            /*background-color: #7eb75e;*/
-            /*background-color:#faebc9;*/
+            /*background-color : #eacb89;*/
             background-color : #8fc6f3;
         }
 
-        .para {
-            font-weight : bold;
-            font-size   : 9pt;
-        }
-
-        .copias {
-            font-size : 8pt;
+        .ancho1 {
+            width : 360px;
         }
 
         </style>
-        %{--<link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">--}%
+        <link href="${resource(dir: 'css', file: 'custom/loader.css')}" rel="stylesheet">
     </head>
 
     <body>
@@ -197,23 +187,25 @@
             <div class="modalTabelGray" id="bloqueo-salida"></div>
 
             <div id="bandeja">
+                <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
+                <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
                 <table class="table table-bordered  table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
+                            <th class="cabecera">Documento</th>
                             <th>De</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfccr' ? (params.order + ' sorted') : ''}" data-sort="trmtfccr" data-order="${params.order}">Fec. Creación</th>
-                            <th class="cabecera sortable ${params.sort == 'prtrdpto' ? (params.order + ' sorted') : ''}" data-sort="prtrdpto" data-order="${params.order}">Para</th>
-                            <th>Destinatario</th>
-                            <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
-                            <th class="cabecera sortable ${params.sort == 'trmtfcbq' ? (params.order + ' sorted') : ''}" data-sort="trmtfcbq" data-order="${params.order}">F. Límite Recepción</th>
-                            <th class="cabecera sortable ${params.sort == 'edtrdscr' ? (params.order + ' sorted') : ''}" data-sort="edtrdscr" data-order="${params.order}">Estado</th>
-                            <th>Enviar</th>
+                            <th class="cabecera">Fec. Creación</th>
+                            <th class="cabecera">Para</th>
+                            <th class="cabecera ancho1">Destinatario</th>
+                            <th class="cabecera">Prioridad</th>
+                            <th class="cabecera">Fecha Envio</th>
+                            <th class="cabecera">F. Límite Recepción</th>
+                            <th class="cabecera">Estado</th>
+                            <th class="cabecera">Enviar</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla_bandeja">
+                    <tbody id="tablaTramites">
                     </tbody>
                 </table>
 
@@ -240,76 +232,178 @@
         </div>
 
         <script type="text/javascript">
-            function cargarBandeja() {
-                var memorando = $("#memorando").val();
-                var asunto = $("#asunto").val();
-                var fecha = $("#fechaBusqueda_input").val();
-                var $sorted = $(".sorted");
-                var sort = $sorted.data("sort");
-                var order = $sorted.data("order");
 
-                $(".qtip").hide();
-                $("#tabla_bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+            var actual = 0;
+            var max = 20;
+            var lastSize = 0;
+            var nowSize = 0;
+            var times = 0;
+            var check = false;
+            var salto = 40
+            var breakingPoint = false
+            var cargando = false
+            var externalSource = false
+            function resetValues() {
+//        console.log("reset values",cargando)
+                if (cargando) {
+                    breakingPoint = true;
+                } else {
+                    lastSize = 0
+                    nowSize = 0
+                    times = 0
+                    max = 20
+                    salto = 40
+                    actual = 0
+                    check = false
+                    breakingPoint = false
+                    $(".trTramite").remove()
+                    cargarBandeja(true)
+                }
 
-                var datos = {
-                    memorando : memorando,
-                    asunto    : asunto,
-                    fecha     : fecha,
-                    sort      : sort,
-                    order     : order
-                };
-
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",
-                    data    : datos,
-                    success : function (msg) {
-                        $("#tabla_bandeja").html(msg);
-                        cargarAlertas();
-                    }
-                });
             }
+
+            %{--function cargarBandeja(band){--}%
+                %{--$.ajax({--}%
+                    %{--type: "POST",--}%
+                    %{--url: "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep')}",--}%
+                    %{--data: '',--}%
+                    %{--success: function (msg) {--}%
+
+                        %{--$("#tablaTramites").append(msg);--}%
+
+                        %{--cargarAlertas();--}%
+                    %{--}--}%
+                %{--})--}%
+            %{--};--}%
+
+            function cargarBandeja(band) {
+                $(".qtip").hide();
+//        $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
+//        console.log("cargar bandeja ",band,breakingPoint)
+                cargando = true
+
+//        console.log("pass "+pass)
+                if (!breakingPoint) {
+//            console.log("paso")
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action:'tablaBandejaSalidaDep_old')}",
+                        data    : {
+                            actual : actual,
+                            max    : max
+                        },
+                        async   : true,
+                        success : function (msg) {
+                            times++
+                            if (!breakingPoint)
+                                $("#tablaTramites").append(msg);
+
+                            cargarAlertas();
+                            nowSize = $(".trTramite").size()
+
+                            actual += max
+//                console.log("cargar bandeja ",nowSize,actual)
+
+                            if (lastSize != 0) {
+                                if (nowSize > lastSize) {
+                                    if (max > salto) {
+                                        max = max - salto
+                                        check = false
+                                    }
+                                    lastSize = nowSize
+//                                    console.log("last " + lastSize)
+                                    cargarBandeja(false)
+                                } else {
+//                        console.log("tiempo del check "+check)
+                                    if (!check) {
+                                        check = true
+                                        max = max + salto
+                                        cargarBandeja(false)
+//                            actual+=salto
+//                            console.log("max "+max)
+                                    } else {
+
+                                        cargando = false
+                                        if (breakingPoint) {
+                                            resetValues()
+                                        }
+
+                                    }
+
+                                }
+                            } else {
+                                lastSize = nowSize
+//                    actual=nowSize
+                                cargarBandeja(false)
+                            }
+
+                        }
+                    });
+                } else {
+                    lastSize = 0
+                    nowSize = 0
+                    times = 0
+                    max = 15
+                    salto = 40
+                    actual = 0
+                    check = false
+                    cargando = false
+                    breakingPoint = false
+                    if (!externalSource)
+                        cargarBandeja(true)
+                    else
+                        externalSource = false
+                }
+            }
+
+
+
+            $("input").keyup(function (ev) {
+                if (ev.keyCode == 13) {
+                    if (cargando) {
+                        breakingPoint = true
+                        externalSource = true
+                    }
+                    $(".trTramite").remove()
+                    $(".trTramite").remove()
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
+                        data    : datos,
+                        success : function (msg) {
+//                    $("#bandeja").html(msg);
+                            $("#tablaTramites").append(msg);
+                        }
+
+                    });
+                }
+            });
 
             function cargarAlertas() {
-                $("#numRev").html($(".E002").size()); //revisados
-                $("#numEnv").html($(".E003").size()); //enviados
-                $("#numNoRec").html($(".alerta").size()); //no recibidos
-                $("#numBor").html($(".E001").size()); //borradores
+                cargarAlertaRevisados();
+                cargarAlertaEnviados();
+                cargarAlertaNoRecibidos();
+                cargarBorrador();
             }
 
-            function doEnviar(imprimir, strIds) {
-//            console.log("enviar????")
-                openLoader("Enviando trámites");
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
-                    data    : {
-                        ids    : strIds,
-                        enviar : '1',
-                        type   : 'download'
-                    },
-                    success : function (msg) {
-                        closeLoader();
-//                            console.log(msg);
-                        var parts = msg.split('_');
-                        if (parts[0] == 'ok') {
-                            if (!imprimir)
-//                        cargarBandeja(true);
-                                log('Trámites Enviados', 'success');
-                            if (imprimir) {
-                                openLoader();
-                                location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
-                                closeLoader();
-//                                    console.log("llego")
-                            }
-                        } else {
-                            log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
-//                        cargarBandeja(true);
-                            %{--location.href = "${g.createLink(action: 'errores1')}";--}%
-                        }
-                        cargarBandeja();
-                    }
-                });
+            function cargarAlertaRevisados() {
+                $("#numRev").html($(".E002").size())
+            }
+
+            function cargarAlertaEnviados() {
+                $("#numEnv").html($(".E003").size())
+            }
+
+            function cargarAlertaNoRecibidos() {
+                $("#numNoRec").html($(".alerta").size())
+            }
+            function cargarBorrador() {
+//        console.log($(".E001"),$(".E001").size())
+                $("#numBor").html($(".E001").size())
             }
 
             function createContextMenu(node) {
@@ -345,7 +439,7 @@
                 var tieneAlerta = $tr.hasClass("alerta");
                 var tieneAnexo = $tr.hasClass("conAnexo");
 
-//                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
+                var tienePrincipal = $tr.attr("principal").toString() != '0' && $tr.attr("principal").toString() != $tr.attr("id");
 
                 var puedeImprimir = $tr.hasClass("imprimir");
                 var puedeDesenviar = $tr.hasClass("desenviar");
@@ -868,56 +962,10 @@
             }
 
             $(function () {
-                cargarBandeja();
-
-                $("input").keyup(function (ev) {
-                    if (ev.keyCode == 13) {
-                        cargarBandeja();
-                    }
-                });
-
-                $(".cabecera").click(function () {
-                    var $col = $(this);
-                    $(".sorted").each(function () {
-                        $(this).removeClass("asc").removeClass("desc");
-                    }).removeClass("sorted");
-                    $col.addClass("sorted");
-                    var order = "";
-                    if ($col.data("order") == "asc") {
-                        order = "desc";
-                        $col.data("order", "desc");
-                        $col.removeClass("asc").addClass("desc");
-                    } else if ($col.data("order") == "desc") {
-                        order = "asc";
-                        $col.data("order", "asc");
-                        $col.removeClass("desc").addClass("asc");
-                    }
-                    cargarBandeja();
-                });
 
                 <g:if test="${bloqueo}">
                 $("#bloqueo-salida").show();
                 </g:if>
-
-                $(".btnBuscar").click(function () {
-                    $(".buscar").attr("hidden", false)
-                });
-
-                $(".btnSalir").click(function () {
-                    $(".buscar").attr("hidden", true);
-                    $("#memorando").val("");
-                    $("#asunto").val("");
-                    $("#fechaBusqueda_input").val("");
-                    $("#fechaBusqueda_day").val("");
-                    $("#fechaBusqueda_month").val("");
-                    $("#fechaBusqueda_year").val("");
-                    cargarBandeja();
-                });
-
-                $(".btnActualizar").click(function () {
-                    cargarBandeja();
-                    return false;
-                });
 
                 $(".alertas").click(function () {
                     var clase = $(this).attr("clase");
@@ -931,6 +979,36 @@
                             $(this).removeClass("trHighlight")
                         }
                     });
+                });
+
+                $(".btnBuscar").click(function () {
+                    $(".buscar").attr("hidden", false)
+                });
+
+                $(".btnSalir").click(function () {
+                    $(".buscar").attr("hidden", true);
+                    $("#memorando").val("");
+                    $("#asunto").val("");
+                    $("#fechaBusqueda_input").val("");
+                    $("#fechaBusqueda_day").val("");
+                    $("#fechaBusqueda_month").val("");
+                    $("#fechaBusqueda_year").val("");
+                    resetValues()
+//            cargarBandeja(true);
+                });
+
+                $(".btnActualizar").click(function () {
+                    if (!cargando) {
+                        openLoader();
+                        resetValues()
+//                cargarBandeja(true);
+                        closeLoader();
+                        return false;
+                    } else {
+                        log('La bandeja se esta cargando, no se puede actualizar en este momento', 'info');
+                        return false
+                    }
+
                 });
 
                 $(".btnEnviar").click(function () {
@@ -976,9 +1054,77 @@
                     return false;
                 });
 
+                function doEnviar(imprimir, strIds) {
+//            console.log("enviar????")
+                    openLoader("Enviando trámites");
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2',action: 'enviarVarios')}",
+                        data    : {
+                            ids    : strIds,
+                            enviar : '1',
+                            type   : 'download'
+                        },
+                        success : function (msg) {
+                            closeLoader();
+//                            console.log(msg);
+                            var parts = msg.split('_');
+                            if (parts[0] == 'ok') {
+                                if (!imprimir)
+                                    resetValues();
+//                        cargarBandeja(true);
+                                log('Trámites Enviados', 'success');
+                                if (imprimir) {
+                                    openLoader();
+                                    location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
+                                    closeLoader();
+//                                    console.log("llego")
+                                    resetValues()
+                                }
+                            } else {
+                                log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                                resetValues()
+//                        cargarBandeja(true);
+                                %{--location.href = "${g.createLink(action: 'errores1')}";--}%
+                            }
+                        }
+                    });
+                }
+
+                cargarBandeja(false);
+
+//                setInterval(function () {
+//                    openLoader();
+//                    cargarBandeja(false);
+//                    closeLoader();
+//                    $(".qtip").hide();
+//                }, 300000);
+
                 $(".btnBusqueda").click(function () {
-                    cargarBandeja();
-                    return false;
+                    openLoader();
+//            console.log("buscar")
+                    if (cargando) {
+                        breakingPoint = true
+                        externalSource = true
+                    }
+                    $(".trTramite").remove()
+
+                    var memorando = $("#memorando").val();
+                    var asunto = $("#asunto").val();
+                    var fecha = $("#fechaBusqueda_input").val();
+                    var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha;
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'tramite2', action: 'busquedaBandejaSalidaDep')}",
+                        data    : datos,
+                        success : function (msg) {
+//                    console.log(msg)
+//                    $("#bandeja").html(msg);
+                            $("#tablaTramites").append(msg);
+                            closeLoader()
+                        }
+
+                    });
                 });
             });
         </script>

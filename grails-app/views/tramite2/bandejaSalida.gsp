@@ -99,7 +99,7 @@
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
             /*background-color:#faebc9;*/
-            background-color : #8fe6c3;
+            background-color : #8fc6f3;
         }
 
         .para {
@@ -316,7 +316,6 @@
                             if (imprimir) {
                                 openLoader();
                                 location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
-                                cargarBandeja(true);
                                 closeLoader();
                             }
                         } else {
@@ -326,6 +325,7 @@
 
 //                                closeLoader();
                         }
+                        cargarBandeja();
                     }
                 });
             }
