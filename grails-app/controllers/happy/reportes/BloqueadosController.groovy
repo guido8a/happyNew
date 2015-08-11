@@ -103,27 +103,36 @@ class BloqueadosController extends Shield {
         def total = 0
 
         PdfPTable tablaTramites
-        tablaTramites = new PdfPTable(3);
-        tablaTramites.setWidths(50, 25, 25)
+//        tablaTramites = new PdfPTable(3);
+//        tablaTramites.setWidths(35, 35, 35)
+
+        tablaTramites = new PdfPTable(1);
+        tablaTramites.setWidths(100)
+
         tablaTramites.setWidthPercentage(100);
         def parH = new Paragraph("Departamento", times10bold)
         def cell = new PdfPCell(parH);
-        cell.setBorderColor(Color.WHITE)
-        tablaTramites.addCell(cell);
-        cell = new PdfPCell(new Paragraph("Usuario", times10bold));
-        cell.setBorderColor(Color.WHITE)
-        tablaTramites.addCell(cell);
-        cell = new PdfPCell(new Paragraph("Trámite", times10bold));
-        cell.setBorderColor(Color.WHITE)
-        tablaTramites.addCell(cell);
+//        cell.setBorderColor(Color.WHITE)
+//        tablaTramites.addCell(cell);
+//        cell = new PdfPCell(new Paragraph("Usuario", times10bold));
+//        cell.setBorderColor(Color.WHITE)
+//        tablaTramites.addCell(cell);
+//        cell = new PdfPCell(new Paragraph("Trámite", times10bold));
+//        cell.setBorderColor(Color.WHITE)
+//        tablaTramites.addCell(cell);
         def par
         deps.each { d ->
             if (d.estado == "B") {
-                par = new Paragraph("" + d, times8normal)
-                cell = new PdfPCell(par);
-                cell.setBorderColor(Color.WHITE)
-                tablaTramites.addCell(cell);
-                par = new Paragraph("(Oficina)", times8normal)
+//                par = new Paragraph("" + d, times8normal)
+//                cell = new PdfPCell(par);
+//                cell.setBorderColor(Color.WHITE)
+//                tablaTramites.addCell(cell);
+//                par = new Paragraph("(Oficina)", times8normal)
+//                cell = new PdfPCell(par);
+//                cell.setBorderColor(Color.WHITE)
+//                tablaTramites.addCell(cell);
+
+                par = new Paragraph("" + d + " - (Oficina)", times8bold)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -137,40 +146,60 @@ class BloqueadosController extends Shield {
                 def cnDpto = dbConnectionService.getConnection();
                 def sqlDpto = ""
                 def resultDpto = []
+                def cadenaTramites = ''
                 sqlDpto = "select * from  entrada_dpto(" + triangulos.first() + ") where trmtfcbq < now() and trmtfcrc is NULL"
                 def ind = 0
                 cnDpto.eachRow(sqlDpto) { row ->
-//                           resultDpto.add(dp.toRowResult())
-                    if (ind == 0) {
-                        par = new Paragraph(row?.trmtcdgo, times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                    } else {
-                        par = new Paragraph('', times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                        par = new Paragraph('', times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                        par = new Paragraph(row?.trmtcdgo, times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
+
+                    if(ind == 0){
+                        cadenaTramites += (row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+                    }else{
+                        cadenaTramites += (' - ' +row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
                     }
+
+
+//                           resultDpto.add(dp.toRowResult())
+//                    if (ind == 0) {
+//                        par = new Paragraph(row?.trmtcdgo, times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                    } else {
+//                        par = new Paragraph('', times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                        par = new Paragraph('', times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                        par = new Paragraph(row?.trmtcdgo, times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                    }
                     ind++
                 }
+
+                        par = new Paragraph(cadenaTramites, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        cell.setPaddingLeft(15)
+                        tablaTramites.addCell(cell);
                 total++
             }
 
             Persona.findAllByDepartamentoAndEstado(d, "B").each { p ->
-                par = new Paragraph("" + d, times8normal)
-                cell = new PdfPCell(par);
-                cell.setBorderColor(Color.WHITE)
-                tablaTramites.addCell(cell);
-                par = new Paragraph("" + p, times8normal)
+//                par = new Paragraph("" + d, times8normal)
+//                cell = new PdfPCell(par);
+//                cell.setBorderColor(Color.WHITE)
+//                tablaTramites.addCell(cell);
+//                par = new Paragraph("" + p, times8normal)
+//                cell = new PdfPCell(par);
+//                cell.setBorderColor(Color.WHITE)
+//                tablaTramites.addCell(cell);
+
+                par = new Paragraph("" + d + ' - ' + p, times8bold)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -180,44 +209,60 @@ class BloqueadosController extends Shield {
                 def result = []
                 sql = "select * from  entrada_prsn(" + p?.id + ") where trmtfcbq < now() and trmtfcrc is NULL"
                 def ind2 = 0
+                def cadenaPersona = ""
                 cn.eachRow(sql) { re ->
                     result.add(re.toRowResult())
                 }
 
                 result.eachWithIndex { pers, j ->
-                    if (j == 0) {
-                        par = new Paragraph(pers?.trmtcdgo, times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                    } else {
-                        par = new Paragraph('', times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                        par = new Paragraph('', times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
-                        par = new Paragraph(pers?.trmtcdgo, times8normal)
-                        cell = new PdfPCell(par);
-                        cell.setBorderColor(Color.WHITE)
-                        tablaTramites.addCell(cell);
+
+                    if(j==0){
+                        cadenaPersona += (pers?.trmtcdgo + " (" + pers?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+                    }else{
+                        cadenaPersona += (" - " + pers?.trmtcdgo + " (" + pers?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+
                     }
+
+//                    if (j == 0) {
+//                        par = new Paragraph(pers?.trmtcdgo, times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                    } else {
+//                        par = new Paragraph('', times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                        par = new Paragraph('', times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                        par = new Paragraph(pers?.trmtcdgo, times8normal)
+//                        cell = new PdfPCell(par);
+//                        cell.setBorderColor(Color.WHITE)
+//                        tablaTramites.addCell(cell);
+//                    }
                 }
+
+                        par = new Paragraph(cadenaPersona, times8normal)
+                        cell = new PdfPCell(par);
+                        cell.setBorderColor(Color.WHITE)
+                        cell.setPaddingLeft(15)
+                        tablaTramites.addCell(cell);
+
                 total++
             }
         }
 
-        par = new Paragraph("Gran Total", times8bold)
+        par = new Paragraph("Gran Total: " + total + " trámites." , times10bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
-        par = new Paragraph("" + total, times8bold)
-        cell = new PdfPCell(par);
-        cell.setBorderColor(Color.WHITE)
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
-        tablaTramites.addCell(cell);
+//        par = new Paragraph("" + total, times8bold)
+//        cell = new PdfPCell(par);
+//        cell.setBorderColor(Color.WHITE)
+//        cell.setHorizontalAlignment(Element.ALIGN_RIGHT)
+//        tablaTramites.addCell(cell);
         contenido.add(tablaTramites)
         document.add(contenido)
         document.close();
