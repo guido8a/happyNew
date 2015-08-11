@@ -312,6 +312,7 @@
                         if (parts[0] == 'ok') {
 //                        cargarBandeja(true);
                             log('Trámites Enviados' + parts[1], 'success');
+                            cargarBandeja(true);
                             if (imprimir) {
                                 openLoader();
                                 location.href = "${g.createLink(controller: 'tramiteExport' ,action: 'imprimirGuia')}?ids=" + strIds + "&departamento=" + '${persona?.departamento?.descripcion}';
