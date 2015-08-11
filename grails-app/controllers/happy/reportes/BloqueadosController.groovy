@@ -255,7 +255,7 @@ class BloqueadosController extends Shield {
             }
         }
 
-        par = new Paragraph("Gran Total: " + total, times10bold)
+        par = new Paragraph("Gran Total: " + total + " bandejas bloqueadas.", times10bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
