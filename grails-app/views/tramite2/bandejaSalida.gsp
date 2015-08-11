@@ -44,9 +44,12 @@
             border-color     : #d0d0d0;
         }
 
-        .cabecera {
+        th {
             text-align : center;
-            font-size  : 13px;
+        }
+
+        .cabecera {
+            font-size : 13px;
         }
 
         .cabecera.sortable {
@@ -218,7 +221,7 @@
                             <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
                             <th>De</th>
                             <th class="cabecera sortable ${params.sort == 'trmtfccr' ? (params.order + ' sorted') : ''}" data-sort="trmtfccr" data-order="${params.order}">Fec. Creación</th>
-                            <th>Para</th>
+                            <th class="cabecera sortable ${params.sort == 'prtrdpto' ? (params.order + ' sorted') : ''}" data-sort="prtrdpto" data-order="${params.order}">Para</th>
                             <th>Destinatario</th>
                             <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
                             <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
@@ -998,7 +1001,7 @@
                     var $col = $(this);
                     $(".sorted").each(function () {
                         $(this).removeClass("asc").removeClass("desc");
-                    });
+                    }).removeClass("sorted");
                     $col.addClass("sorted");
                     var order = "";
                     if ($col.data("order") == "asc") {

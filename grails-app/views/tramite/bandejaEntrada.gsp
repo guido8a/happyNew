@@ -838,7 +838,7 @@
                     var $col = $(this);
                     $(".sorted").each(function () {
                         $(this).removeClass("asc").removeClass("desc");
-                    });
+                    }).removeClass("sorted");
                     $col.addClass("sorted");
                     var order = "";
                     if ($col.data("order") == "asc") {

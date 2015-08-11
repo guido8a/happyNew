@@ -145,20 +145,15 @@
             <td class="titleEspecial"
                 title="<div style='max-height:150px; overflow-y:auto;'>${row.paratitl}</div>">%{--el title con los destinatarios y si recibieron o no--}%
                 <span class="para">
-                    <g:if test="${row.tpdccdgo == 'OFI'}">
+                    <g:if test="${row.prtrprsn}">%{--para persona (squi guarda la persona, interna o externa)--}%
                         ${row.prtrprsn}
                     </g:if>
                     <g:else>
-                        <g:if test="${row.prtrprsn}">%{--para persona--}%
-                            ${row.prtrprsn}
-                        </g:if>
-                        <g:else>
-                            <g:set var="triangulos" value="${row.paradpto.split(',')}"/>
-                            <g:each in="${triangulos}" var="t" status="i">%{--para dpto--}%
-                                <i class="fa fa-download"></i>
-                                ${t}${i < triangulos.size() - 1 ? ', ' : ''}
-                            </g:each>
-                        </g:else>
+                        <g:set var="triangulos" value="${row.paradpto.split(',')}"/>
+                        <g:each in="${triangulos}" var="t" status="i">%{--para dpto--}%
+                            <i class="fa fa-download"></i>
+                            ${t}${i < triangulos.size() - 1 ? ', ' : ''}
+                        </g:each>
                     </g:else>
                 </span>
                 <span class="copias">

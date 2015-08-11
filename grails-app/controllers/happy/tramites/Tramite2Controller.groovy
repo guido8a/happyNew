@@ -14,7 +14,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-class Tramite2Controller extends happy.seguridad.Shield {
+class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
     def diasLaborablesService
     def enviarService
@@ -797,6 +797,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
             redirect(action: 'bandejaSalidaDep')
             return
         }
+
+        params.sort = "trmtfccr"
+        params.order = "desc"
+
         return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: persona.puedeEditor]
     }
 
@@ -818,6 +822,33 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (persona.puedeEditor) {
             procedure = "salida_editor"
+        }
+
+
+        if (params.fecha) {
+            busca = true
+            def fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
+            def fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+            where += "WHERE (trmtfcen >= '${fechaIni.format('yyyy-MM-dd HH:mm:ss')}'" +
+                    " AND trmtfcen <= '${fechaFin.format('yyyy-MM-dd HH:mm:ss')}')"
+        }
+        if (params.asunto) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtasnt ilike '%${params.asunto.trim()}%')"
+        }
+        if (params.memorando) {
+            busca = true
+            if (where == "") {
+                where = "WHERE "
+            } else {
+                where += " AND "
+            }
+            where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
         }
 
         def sql = "SELECT * FROM $procedure($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
