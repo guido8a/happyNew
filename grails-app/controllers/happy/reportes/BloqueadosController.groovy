@@ -122,7 +122,8 @@ class BloqueadosController extends Shield {
 //        tablaTramites.addCell(cell);
         def par
         deps.each { d ->
-            if (d.estado == "B") {
+            if (d.estado == "B" && d.codigo != 'X-EXT' && d.remoto == 0) {
+
 //                par = new Paragraph("" + d, times8normal)
 //                cell = new PdfPCell(par);
 //                cell.setBorderColor(Color.WHITE)
@@ -254,7 +255,7 @@ class BloqueadosController extends Shield {
             }
         }
 
-        par = new Paragraph("Gran Total: " + total + " trámites." , times10bold)
+        par = new Paragraph("Gran Total: " + total, times10bold)
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
