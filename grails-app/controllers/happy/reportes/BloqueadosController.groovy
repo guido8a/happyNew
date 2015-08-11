@@ -1,4 +1,5 @@
 package happy.reportes
+
 import com.lowagie.text.pdf.DefaultFontMapper
 import com.lowagie.text.pdf.PdfContentByte
 import com.lowagie.text.pdf.PdfPCell
@@ -30,7 +31,7 @@ import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import happy.seguridad.Shield;
 
-class BloqueadosController  extends Shield{
+class BloqueadosController extends Shield {
     def reportesPdfService
     def dbConnectionService
 
@@ -43,40 +44,42 @@ class BloqueadosController  extends Shield{
     Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
     def datosGrafico
 
-    def reporteWeb(){
-        if(!params.dpto)
-            params.dpto=session.usuario.departamentoId
+    def reporteWeb() {
+        if (!params.dpto) {
+            params.dpto = session.usuario.departamentoId
+        }
 
         def dep = Departamento.get(params.dpto)
         def deps = []
         deps = getHijos(dep)
         def total = 0
         def tabla = "<table class='table table-bordered table-condensed table-hover'><thead><tr><th>Departamento</th><th>Usuario</th></tr></thead><tbody>"
-        deps.each {d->
-            if(d.estado=="B"){
-                tabla+="<tr>"
-                tabla+="<td>${d}</td>"
-                tabla+="<td>(Oficina)</td>"
-                tabla+="</tr>"
+        deps.each { d ->
+            if (d.estado == "B") {
+                tabla += "<tr>"
+                tabla += "<td>${d}</td>"
+                tabla += "<td>(Oficina)</td>"
+                tabla += "</tr>"
                 total++
             }
-            Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
-                tabla+="<tr>"
-                tabla+="<td>${d}</td>"
-                tabla+="<td>${p}</td>"
-                tabla+="</tr>"
+            Persona.findAllByDepartamentoAndEstado(d, "B").each { p ->
+                tabla += "<tr>"
+                tabla += "<td>${d}</td>"
+                tabla += "<td>${p}</td>"
+                tabla += "</tr>"
                 total++
             }
         }
-        tabla+="<tr><td style='font-weight:bold'>TOTAL</td><td style='text-align: right;font-weight:bold'>${total}</td></tr>"
-        tabla+="</tbody></table>"
-        return [tabla:tabla]
+        tabla += "<tr><td style='font-weight:bold'>TOTAL</td><td style='text-align: right;font-weight:bold'>${total}</td></tr>"
+        tabla += "</tbody></table>"
+        return [tabla: tabla]
     }
 
 
     def reporteConsolidado() {
-        if(!params.dpto)
-            params.dpto=session.usuario.departamentoId
+        if (!params.dpto) {
+            params.dpto = session.usuario.departamentoId
+        }
 
         def datos = []
         def dep = Departamento.get(params.dpto)
@@ -92,7 +95,7 @@ class BloqueadosController  extends Shield{
         Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
 
         def pdfw = PdfWriter.getInstance(document, baos);
-        session.tituloReporte="Reporte de Usuarios Bloqueados"
+        session.tituloReporte = "Reporte de Usuarios Bloqueados"
         reportesPdfService.membrete(document)
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteUsuariosBloqueados")
@@ -101,7 +104,7 @@ class BloqueadosController  extends Shield{
 
         PdfPTable tablaTramites
         tablaTramites = new PdfPTable(3);
-        tablaTramites.setWidths(50,25,25)
+        tablaTramites.setWidths(50, 25, 25)
         tablaTramites.setWidthPercentage(100);
         def parH = new Paragraph("Departamento", times10bold)
         def cell = new PdfPCell(parH);
@@ -114,9 +117,9 @@ class BloqueadosController  extends Shield{
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
         def par
-        deps.each {d->
-            if(d.estado=="B"){
-                par = new Paragraph(""+d, times8normal)
+        deps.each { d ->
+            if (d.estado == "B") {
+                par = new Paragraph("" + d, times8normal)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -127,7 +130,7 @@ class BloqueadosController  extends Shield{
 
                 def triangulos = []
                 Persona.findAllByDepartamento(d).each {
-                    if(it?.esTriangulo() && it.activo == 1){
+                    if (it?.esTriangulo() && it.activo == 1) {
                         triangulos += it.id
                     }
                 }
@@ -138,12 +141,12 @@ class BloqueadosController  extends Shield{
                 def ind = 0
                 cnDpto.eachRow(sqlDpto) { row ->
 //                           resultDpto.add(dp.toRowResult())
-                    if(ind == 0){
+                    if (ind == 0) {
                         par = new Paragraph(row?.trmtcdgo, times8normal)
                         cell = new PdfPCell(par);
                         cell.setBorderColor(Color.WHITE)
                         tablaTramites.addCell(cell);
-                    }else{
+                    } else {
                         par = new Paragraph('', times8normal)
                         cell = new PdfPCell(par);
                         cell.setBorderColor(Color.WHITE)
@@ -157,17 +160,17 @@ class BloqueadosController  extends Shield{
                         cell.setBorderColor(Color.WHITE)
                         tablaTramites.addCell(cell);
                     }
-                    ind ++
+                    ind++
                 }
                 total++
             }
 
-            Persona.findAllByDepartamentoAndEstado(d,"B").each {p->
-                par = new Paragraph(""+d, times8normal)
+            Persona.findAllByDepartamentoAndEstado(d, "B").each { p ->
+                par = new Paragraph("" + d, times8normal)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
-                par = new Paragraph(""+p, times8normal)
+                par = new Paragraph("" + p, times8normal)
                 cell = new PdfPCell(par);
                 cell.setBorderColor(Color.WHITE)
                 tablaTramites.addCell(cell);
@@ -181,13 +184,13 @@ class BloqueadosController  extends Shield{
                     result.add(re.toRowResult())
                 }
 
-                result.eachWithIndex{ pers, j->
-                    if(j == 0){
+                result.eachWithIndex { pers, j ->
+                    if (j == 0) {
                         par = new Paragraph(pers?.trmtcdgo, times8normal)
                         cell = new PdfPCell(par);
                         cell.setBorderColor(Color.WHITE)
                         tablaTramites.addCell(cell);
-                    }else{
+                    } else {
                         par = new Paragraph('', times8normal)
                         cell = new PdfPCell(par);
                         cell.setBorderColor(Color.WHITE)
@@ -226,12 +229,12 @@ class BloqueadosController  extends Shield{
         response.getOutputStream().write(b)
     }
 
-    def getHijos(dep){
+    def getHijos(dep) {
         def res = [dep]
-        def hijos =  Departamento.findAllByPadre(dep)
-        if(hijos.size()>0){
-            hijos.each {h->
-                res+=getHijos(h)
+        def hijos = Departamento.findAllByPadre(dep)
+        if (hijos.size() > 0) {
+            hijos.each { h ->
+                res += getHijos(h)
             }
         }
         return res
