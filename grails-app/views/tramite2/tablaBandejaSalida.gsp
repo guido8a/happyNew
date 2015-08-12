@@ -85,7 +85,7 @@
 %{--${rows}--}%
     <g:each in="${rows}" var="row">
         <g:set var="clase" value="${row.tpdccdgo}"/> %{--tipo documento codigo--}%
-        <g:if test="${row.trmtimpr && row.trmtimpr > 0}">%{--es imprimir o no--}%
+        <g:if test="${row.trmtimpr && row.trmtimpr?.toInteger() > 0}">%{--es imprimir o no--}%
             <g:set var="clase" value="${clase + ' imprimir'}"/>
         </g:if>
 
@@ -104,7 +104,7 @@
             <g:set var="clase" value="${clase + ' estado'}"/>
         </g:if>
 
-        <g:if test="${row.trmtextr == 1}">%{--es externo--}%
+        <g:if test="${row.trmtextr?.toInteger() == 1}">%{--es externo--}%
             <g:if test="${row.tpdccdgo == 'DEX'}">%{--tipo doc. codigo--}%
                 <g:set var="clase" value="${clase + ' DEX'}"/>
             </g:if>
@@ -113,11 +113,11 @@
             </g:else>
         </g:if>
 
-        <g:if test="${row.copiextr > 0}">%{--cantidad de copias a dptos. externos--}%
+        <g:if test="${row.copiextr?.toInteger() > 0}">%{--cantidad de copias a dptos. externos--}%
             <g:set var="clase" value="${clase + ' externoCC'}"/>
         </g:if>
 
-        <g:if test="${row.trmtanxo == 1 || row.trmtdctr > 0}">%{--anexo y cant. de documentos anexos--}%
+        <g:if test="${row.trmtanxo?.toInteger() == 1 || row.trmtdctr?.toInteger() > 0}">%{--anexo y cant. de documentos anexos--}%
             <g:set var="clase" value="${clase + ' conAnexo'}"/>
         </g:if>
         <g:else>
