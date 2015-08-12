@@ -807,7 +807,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
 
         if (tramite.para) {
-            println("--> " + tramite?.para?.estado?.codigo)
+//            println("--> " + tramite?.para?.estado?.codigo)
             if (tramite.para?.estado == estadoAnulado || tramite.para?.estado == estadoArchivado) {
                 render "El trámite se encuentra <strong>${tramite?.para?.estado?.descripcion}</strong>, no puede asignar el permiso de imprimir"
                 return
@@ -852,11 +852,16 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
     def bandejaSalida() {
         def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
+        def persona = Persona.get(usuario?.id)
         def revisar = false
         def bloqueo = false
-        if (session.usuario.esTriangulo()) {
-            redirect(action: 'bandejaSalidaDep')
+        if(session.usuario){
+            if (session.usuario.esTriangulo()) {
+                redirect(action: 'bandejaSalidaDep')
+                return
+            }
+        }else{
+            redirect(controller: 'login', action: 'login')
             return
         }
 
