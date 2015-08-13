@@ -168,6 +168,20 @@
                 </div>
             </span>
         </div>
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'departamentos', 'error')} ">
+            <span class="grupo">
+                <label for="telefono" class="col-md-2 control-label text-info">
+                    Departamentos Externos
+                </label>
+                <div class="col-md-6">
+                    <g:textField name="departamentos" class="form-control allCaps" value="${parametrosInstance?.departamentos}" maxlength="20" style="width: 400px"/>
+
+                </div>
+            </span>
+            <label class="col-md-12 text-danger" style="margin-left: 90px">
+            * Importante: Coloque las siglas de los departamentos separadas por comas.
+        </label>
+        </div>
 
     </g:form>
 
