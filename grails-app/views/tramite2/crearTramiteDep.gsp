@@ -340,7 +340,7 @@
 
 
                 <div class="row">
-                <div class="col-xs-12 ">
+                <div class="col-xs-12 hide" id="divTextoPara">
                     <span class="grupo">
                         <b>Adicional Para:</b>
                         <input type="text" name="textoPara" class="form-control" id="textoPara" maxlength="1023"
@@ -1074,6 +1074,14 @@
 
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc();
+                    var valorTD = $("#tipoDocumento").val();
+                    if(valorTD == '5'){
+                        $("#divTextoPara").addClass('hide');
+                        $("#divTextoPara").removeClass('show')
+                    }else{
+                        $("#divTextoPara").addClass('show');
+                        $("#divTextoPara").removeClass('hide')
+                    }
 
                 }).change();
 
