@@ -1074,6 +1074,7 @@
 
                 $("#tipoDocumento").change(function () {
                     validarTipoDoc();
+
                 }).change();
 
                 $("#cedulaOrigen").blur(function () {

@@ -94,6 +94,7 @@
         <g:set var="de" value=""/>
         <g:if test="${row.tpdccdgo == 'DEX'}">%{-- tipo doc codigo --}%
             <g:set var="de" value="E_${row.trmt__id}"/> %{-- tramite id --}%
+            <g:set var="clase" value="${clase + ' dex'}"/>
         </g:if>
         <g:else>
             <g:if test="${row.dedp__id}">%{-- de departamento id --}%
