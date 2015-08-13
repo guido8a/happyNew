@@ -228,6 +228,7 @@
                 var recibido = $tr.hasClass("recibido");
                 var retrasado = $tr.hasClass("retrasado");
                 var externo = $tr.hasClass("externo");
+                var externoCC = $tr.hasClass("externoCC");
                 var conAnexo = $tr.hasClass("conAnexo");
                 var conPadre = $tr.hasClass("padre");
                 var esPrincipal = $tr.hasClass("principal");
@@ -565,6 +566,13 @@
                         items.crearHijo = crearHijo;
                     }
                 }
+
+                %{--if (externo || externoCC) {--}%
+                %{--<g:if test="${puedeAgregarExternos}">--}%
+//                items.asociarExterno = agregarPadre;
+                %{--</g:if>--}%
+                %{--}--}%
+
 //                if (esPrincipal) {
 //                    items.contestar = contestar;
 //                }

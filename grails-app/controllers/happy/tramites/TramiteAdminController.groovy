@@ -68,6 +68,110 @@ class TramiteAdminController extends Shield {
         return [personas: resultado]
     }
 
+    def asociarTramiteExterno_ajax() {
+        def dep = Departamento.get(session.departamento.id)
+
+        def codigo = params.codigo;
+        def trmt = Tramite.get(params.original)
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+//        def persDoc = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tramite, [rolPara, rolCopia])
+        def persDoc = PersonaDocumentoTramite.withCriteria {
+            eq("tramite", trmt)
+            inList("rolPersonaTramite", [rolPara, rolCc])
+            eq("departamento", dep)
+        }
+        def msg = ""
+
+        if (persDoc.size() == 1) {
+            def original = persDoc.first()
+            def tramites = Tramite.findAllByCodigoIlike(codigo)
+            if (tramites.size() > 0) {
+                def estadoArchivado = EstadoTramite.findByCodigo("E005")
+                def estadoAnulado = EstadoTramite.findByCodigo("E006")
+                def estadoEnviado = EstadoTramite.findByCodigo("E003")
+                def estadoRecibido = EstadoTramite.findByCodigo("E004")
+
+                msg = "<p>Seleccione el trámite al que se asociará <strong>${original.tramite.codigo}</strong> "
+                msg += "(creado el ${original.fechaCreacion.format('dd-MM-yyyy HH:mm')}, asunto: <strong>${original.tramite.asunto}</strong>)</p>"
+                msg += "<table class='table table-condensed table-bordered'>"
+                msg += "<thead>"
+                msg += "<tr>"
+                msg += "<th>Trámite</th>"
+                msg += "<th>De</th>"
+                msg += "<th>Para</th>"
+                msg += "<th>Info.</th>"
+                msg += "<th>Seleccionar</th>"
+                msg += "</tr>"
+                msg += "</thead>"
+                def algo = false
+                tramites.each { tr ->
+                    def cod = tr.codigo
+                    def de = tr.deDepartamento ? tr.deDepartamento.codigo : tr.de.login
+                    def asunto = tr.asunto
+
+                    def personas = PersonaDocumentoTramite.withCriteria {
+                        eq("tramite", tr)
+                        or {
+                            eq("rolPersonaTramite", rolPara)
+                            eq("rolPersonaTramite", rolCc)
+                        }
+                        eq("estado", estadoRecibido)
+                        tramite {
+                            lt("fechaEnvio", original.tramite.fechaCreacion)
+                        }
+                    }
+                    personas.each { cc ->
+                        algo = true
+                        msg += "<tr>"
+                        msg += "<td>${cod}</td>"
+                        msg += "<td>${de}</td>"
+                        msg += "<td>${cc.rolPersonaTramite.descripcion} ${cc.departamento ? cc.departamento.codigo : cc.persona.login}</td>"
+                        msg += "<td><strong>Asunto: ${asunto}</strong><br/>${tramiteFechas(cc)}</td>"
+                        msg += "<td><a href='#' class='btn btn-success select' id='${cc.id}'><i class='fa fa-check'></i></a></td>"
+                        msg += "</tr>"
+                    }
+                }
+                msg += "</table>"
+
+                msg += "<script type='text/javascript'>"
+                msg += '$(function(){'
+                msg += '$(".select").click(function() {'
+                msg += "openLoader('Asociando trámites');"
+                msg += '$.ajax({\n' +
+                        '   type: "POST",\n' +
+                        '   url: "' + createLink(controller: 'tramiteAdmin', action: 'guardarAsociarTramite') + '",\n' +
+                        '   data: {\n' +
+                        '\tid: $(this).attr("id"),\n' +
+                        '\toriginal: ' + original.id + '\n' +
+                        '\t},\n' +
+                        '   success: function(msg){\n' +
+                        '     location.reload(true);\n' +
+                        '   }\n' +
+                        ' });'
+                msg += "return false;"
+                msg += '});'
+                msg += '});'
+                msg += "</script>"
+
+                if (!algo) {
+                    msg = "<div class='alert alert-danger'>"
+                    msg += "No se encontró un trámite con código " + codigo.toUpperCase() + " que cumpla las condiciones necesarias."
+                    msg += "</div>"
+                }
+
+            } else {
+                msg = "<div class='alert alert-danger'>"
+                msg += "No se encontró un trámite disponible con código " + codigo.toUpperCase()
+                msg += "</div>"
+            }
+        } else {
+            msg = "<div class='alert alert-danger'>Ha ocurrido un error grave</div>"
+            println "se encontraron ${persDoc.size()} personas doc tram: tramite: ${params.original}, PARA o COPIA el departamento ${dep.codigo} (${dep.id}); ${persDoc}"
+        }
+        render msg
+    }
+
     def asociarTramite_ajax() {
         def original = PersonaDocumentoTramite.get(params.original)
         def duenioDep = original.tramite.deDepartamento
@@ -499,9 +603,9 @@ class TramiteAdminController extends Shield {
 
             def depaDesde
 
-            if(persona?.departamentoDesde){
+            if (persona?.departamentoDesde) {
                 depaDesde = persona.departamentoDesde
-            }        else{
+            } else {
                 depaDesde = persona.departamento
             }
 

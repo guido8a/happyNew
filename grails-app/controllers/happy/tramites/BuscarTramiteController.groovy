@@ -2,6 +2,7 @@ package happy.tramites
 
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
+import happy.utilitarios.Parametros
 
 
 class BuscarTramiteController extends happy.seguridad.Shield {
@@ -72,6 +73,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             paras.each { para ->
                 if (!puede) {
+                    println "4.1: " + persona
                     puede = hijosPdt(para, persona, esDepartamento, puede)
                 }
             }
@@ -79,6 +81,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             if (!puede) {
                 ccs.each { para ->
                     if (!puede) {
+                        println "4.2: " + persona
                         puede = hijosPdt(para, persona, esDepartamento, puede)
                     }
                 }

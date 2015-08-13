@@ -1014,9 +1014,9 @@
                             show_at_node : false,
                             items        : createContextMenu
                         },
-                        state       : {
-                            key : "departamentos"
-                        },
+//                        state       : {
+//                            key : "departamentos"
+//                        },
                         search      : {
                             fuzzy             : false,
                             show_only_matches : true,

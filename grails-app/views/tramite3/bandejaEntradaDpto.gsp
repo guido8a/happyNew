@@ -96,7 +96,7 @@
 
             /*font-family: "Arial Black", arial-black;*/
             /*background-color: #7eb75e;*/
-            background-color : #8fc6f3;
+            background-color : #8fe6c3;
 
         }
         </style>
@@ -667,6 +667,110 @@
                     url   : "${g.createLink(controller: 'tramite2',action: 'crearTramiteDep')}/" + id
                 }; //editar sumilla
 
+                var agregarPadre = {
+                    label            : "Asociar trámite",
+                    icon             : "fa fa-gift",
+                    separator_before : true,
+                    action           : function () {
+                        var tramiteCodigo = $.trim($tr.find(".codigo").text());
+                        var tramiteDe = $.trim($tr.find(".de").text());
+                        var tramiteRol = $.trim($tr.find(".rol").text());
+                        var tramitePara = $.trim($tr.find(".para").text());
+                        var tramiteInfo = "";
+
+                        tramiteInfo += tramiteCodigo;
+                        tramiteInfo += " (DE: " + tramiteDe + ", ";
+                        tramiteInfo += tramiteRol + " : " + tramitePara + ")";
+
+                        var $container = $("<div>");
+                        $container.append("<i class='fa fa-gift fa-3x pull-left text-shadow'></i>");
+                        var $p = $("<p class='lead'>");
+                        $p.html("Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>");
+                        $container.append($p);
+
+                        var $alert = $("<div class='alert alert-info'>");
+                        $alert.html("Para poder asociar un trámite a otro se deben cumplir las siguientes condiciones:");
+                        var $ul = $("<ul>");
+                        $ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +
+                                     "a la fecha de envío del trámite al que se lo quiere asociar.</li>"));
+//                        $ul.append($("<li>El trámite " + tramiteCodigo + " debe estar recibido. </li>"));
+                        $alert.append($ul);
+                        $container.append($alert);
+
+                        var $row = $("<div class='row'>");
+                        var $col = $("<div class='col-md-6'>");
+                        $col.append("<label for='nuevoPadre'>Código trámite padre:</label>");
+                        var $inputGroup = $("<div class='input-group'>");
+                        var $input = $("<input type='text' name='nuevoPadre' id='nuevoPadre' class='form-control allCaps'/>");
+                        $inputGroup.append($input);
+                        var $span = $("<span class='input-group-btn'>");
+                        var $btn = $("<a href='#' class='btn btn-azul' id='btnBuscar'><i class='fa fa-search'></i>&nbsp;</a>");
+                        $span.append($btn);
+                        $inputGroup.append($span);
+                        $col.append($inputGroup);
+                        $row.append($col);
+                        $container.append($row);
+                        var $res = $("<div>").css({
+                            marginTop : 5,
+                            maxHeight : 200,
+                            overflow  : "auto"
+                        });
+                        $container.append($res);
+
+                        function buscarAsociar() {
+                            $res.html(spinner);
+                            var np = $.trim($input.val());
+                            $.ajax({
+                                type    : "POST",
+                                url     : "${createLink(controller: 'tramiteAdmin', action:'asociarTramiteExterno_ajax')}",
+                                data    : {
+                                    codigo   : np,
+                                    original : id
+                                },
+                                success : function (msg) {
+                                    $res.html(msg);
+                                },
+                                error   : function (jqXHR, textStatus, errorThrown) {
+                                    $res.html("<div class='alert alert-danger'>" + errorThrown + "</div>");
+                                }
+                            });
+                        }
+
+                        $input.keyup(function (e) {
+                            if (e.keyCode == 13) {
+                                buscarAsociar();
+                            }
+                        });
+
+                        $btn.click(function () {
+                            buscarAsociar();
+                            return false;
+                        });
+
+                        bootbox.dialog({
+                            id      : "dlgAsociar",
+                            title   : '<i class="fa fa-gift"></i> Asociar Trámite',
+                            message : $container,
+                            buttons : {
+                                cancelar : {
+                                    label     : '<i class="fa fa-times"></i> Aceptar',
+                                    className : 'btn-default',
+                                    callback  : function () {
+                                    }
+                                }
+//                                        asociar  : {
+//                                            id        : 'btnAsociar',
+//                                            label     : '<i class="fa fa-check"></i> Asociar',
+//                                            className : "btn-success",
+//                                            callback  : function () {
+//
+//                                            }
+//                                        }
+                            }
+                        });
+                    }
+                };
+
                 items.header.label = "Acciones";
 
                 items.infoRemitente = infoRemitente;
@@ -718,6 +822,10 @@
 
                 if (esDex) {
                     items.editar = editarExterno;
+
+                    <g:if test="${puedeAgregarExternos}">
+                    items.asociarExterno = agregarPadre;
+                    </g:if>
                 }
 
                 return items

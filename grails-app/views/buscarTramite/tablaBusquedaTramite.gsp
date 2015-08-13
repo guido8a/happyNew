@@ -81,8 +81,14 @@ table {
                         <g:set var="clase" value="${clase + ' recibido'}"/>
                     </g:if>
 
+                    <g:set var="copiasExternas" value="${tramite.copias.findAll { it.departamento?.externo == 1 }}"/>
+                    <g:set var="externo" value=""/>
                     <g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">
-                        <g:set var="clase" value="${clase + ' externo'}"/>
+                        <g:set var="externo" value="externo"/>
+                    </g:if>
+
+                    <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
+                        <g:set var="externo" value="${externo} externoCC"/>
                     </g:if>
 
                     <g:if test="${tramite.deId == session.usuario.id || tramite.deDepartamentoId == session.departamento.id}">
@@ -97,7 +103,7 @@ table {
 
                     <g:set var="respuestas" value="${tramite.respuestas.size()}"/>
 
-                    <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase}" anulados="${receptoresAnulados.size()}"
+                    <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase} ${externo}" anulados="${receptoresAnulados.size()}"
                         dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
@@ -113,7 +119,7 @@ table {
                         %{--(ext)--}%
                         %{--</g:if>--}%
                         %{--</td>--}%
-                        <td style="width: 165px">
+                        <td class="codigo" style="width: 165px">
                         %{--${tramite.deId} ${session.usuario.id} ${tramite.deId == session.usuario.id}<br/>--}%
                             <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
                                 <i class="fa fa-eye-slash"></i>
@@ -127,11 +133,11 @@ table {
                             </g:if>
                         </td>
 
-                        <td style="width: 100px">
+                        <td class="creacion" style="width: 100px">
                             ${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}
                         </td>
 
-                        <td style="width: 150px">
+                        <td class="de" style="width: 150px">
                             <g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">
                                 ${tramite.paraExterno} (ext)
                             </g:if>
@@ -145,7 +151,7 @@ table {
                             </g:else>
                         </td>
 
-                        <td style="width: 150px">
+                        <td class="para" style="width: 150px">
                             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                                 ${tramite.paraExterno} (ext)
                             </g:if>
@@ -175,26 +181,26 @@ table {
                         </td>
 
 
-                        <td style="width: 100px">
+                        <td class="asunto" style="width: 100px">
                             ${tramite.asunto}
                         </td>
 
-                        <td style="width: 60px">
+                        <td class="prioridad" style="width: 60px">
                             ${tramite.prioridad.descripcion}
                         </td>
 
-                        <td style="width: 90px">
+                        <td class="envia" style="width: 90px">
                             <g:if test="${envia}">
                                 ${envia.persona.nombre} ${envia.persona.apellido}
                             </g:if>
                         </td>
-                        <td style="width: 110px">
+                        <td class="envio" style="width: 110px">
                             <g:if test="${tramite.fechaEnvio}">
                                 ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')}
                             </g:if>
                         </td>
 
-                        <td style="width: 110px">
+                        <td class="recepcion" style="width: 110px">
                             <g:if test="${recibe && recibe.fechaRecepcion && tramite.estadoTramite == estadoRecibido}">
                                 ${recibe.fechaRecepcion.format('dd-MM-yyyy HH:mm')}
                             </g:if>

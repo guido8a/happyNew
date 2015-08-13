@@ -127,7 +127,7 @@
             codigo="${row.trmtcdgo}" departamento="${row.deprdpto}" %{-- tramite cdgo y de.dpto.cdgo--}%
             prtr="${row.prtr__id}">%{-- id pers doc tram--}%
 
-            <td title="${row.trmtasnt}">%{-- asunto--}%
+            <td class="codigo" title="${row.trmtasnt}">%{-- asunto--}%
                 <g:if test="${row.tptrcdgo == 'C'}">%{-- tipo tramite cdgo --}%
                     <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
                 </g:if>
@@ -136,14 +136,14 @@
                 </g:if>
                 ${row.trmtcdgo}%{-- tramite cdgo --}%
             </td>
-            <td style="width: 115px;">${row.trmtfcen?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha envio --}%
-            <td style="width: 115px;">${row.trmtfcrc?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha recepcion --}%
-            <td title="${row.deprdpds}">${row.deprdpto}</td>%{-- de.dpto descripcion y cdgo --}%
-            <td title="${row.deprdscr}">${row.deprlogn ?: row.deprdscr}</td>%{-- de nombres y login--}%
-            <td title="${paraTitle}">${paraLbl}</td>
-            <td>${row.trmttppd}</td>%{-- prioridad --}%
-            <td>${row.trmtfclr?.format('dd-MM-yyyy HH:mm')}</td>%{-- prioridad --}%
-            <td>${row.rltrdscr}</td>%{-- rol --}%
+            <td class="envio" style="width: 115px;">${row.trmtfcen?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha envio --}%
+            <td class="recepcion" style="width: 115px;">${row.trmtfcrc?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha recepcion --}%
+            <td class="dpto" title="${row.deprdpds}">${row.deprdpto}</td>%{-- de.dpto descripcion y cdgo --}%
+            <td class="de" title="${row.deprdscr}">${row.deprlogn ?: row.deprdscr}</td>%{-- de nombres y login--}%
+            <td class="para" title="${paraTitle}">${paraLbl}</td>
+            <td class="prioridad">${row.trmttppd}</td>%{-- prioridad --}%
+            <td class="limiteRes">${row.trmtfclr?.format('dd-MM-yyyy HH:mm')}</td>%{-- fecha limite respuesta --}%
+            <td class="rol">${row.rltrdscr}</td>%{-- rol --}%
         </tr>
     </g:each>
 

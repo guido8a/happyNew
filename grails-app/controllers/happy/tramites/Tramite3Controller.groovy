@@ -3,6 +3,7 @@ package happy.tramites
 import groovy.time.TimeCategory
 import happy.alertas.Alerta
 import happy.seguridad.Persona
+import happy.utilitarios.Parametros
 
 class Tramite3Controller extends happy.seguridad.Shield {
 
@@ -851,7 +852,21 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         params.sort = "trmtfcen"
         params.order = "desc"
-        return [persona: usu, bloqueo: bloqueo, params: params]
+
+        def deps = "PRF,DGSG"
+        def aux = Parametros.list()
+        if (aux) {
+            aux = aux.first()
+            if (aux.departamentos) {
+                deps = aux.departamentos
+            }
+        }
+        deps = deps.toUpperCase()
+        deps = deps.split(",")*.trim()
+
+        def puedeAgregarExternos = deps.contains(session.departamento.codigo.toUpperCase())
+
+        return [persona: usu, bloqueo: bloqueo, params: params, puedeAgregarExternos: puedeAgregarExternos]
     }
 
     def tablaBandejaEntradaDpto() {
