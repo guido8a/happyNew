@@ -626,6 +626,7 @@ class DiasLaborablesService {
     }
 
     def tmpoLaborableEntre(Date fcin, Date fcfn) {
+        def prmt = Parametros.list([sort: "id"]).last()
         // si fcfn < fcin se cambia el orde para que la diferencia sea positiva
         if (fcfn < fcin) {
             def fechaTemp = fcin
@@ -633,27 +634,54 @@ class DiasLaborablesService {
             fcfn = fechaTemp
         }
 
+
         def fchafcin = new Date()
         def fchafcfn = new Date()
-        fchafcin = corrigeHora(fcin)
-        fchafcfn = corrigeHora(fcfn)
-        println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
+        fchafcin = corrigeHora(fcin, prmt)
+        fchafcfn = corrigeHora(fcfn, prmt)
 
-        def horas = Math.round((fchafcfn.time - fchafcin.time)/(1000*3600))
-        def minutos = ((fchafcfn.time - fchafcin.time)/(1000*60)).toInteger() % 60
-        println "horas: $horas, minutos: $minutos"
+        def fc01 = fechaHoy(fchafcin, prmt).time
+        def fc02 = fechaHoy(fchafcfn, prmt).time
+
+//        println "inicio: $fc01, fin: $fc02"
+
+//        def horas = Math.round((fchafcfn.time - fchafcin.time)/(1000*3600))
+        def horas = 0
+        def minutos = 0
+
+        if(fc01 > fc02) { //la hora de la fecha inicial es superior a la de fcfn
+//            println ">>>> inicio: ${horaParametros(fc02, 'inicio', prmt).time}, fin: ${horaParametros(fc01, 'fin', prmt).time}"
+            minutos = Math.round((horaParametros(fc01, 'fin', prmt).time.time - fc01.time)/(1000*60))
+            minutos += Math.round((fc02.time - horaParametros(fc02, 'inicio', prmt).time.time)/(1000*60))
+//            println "mayor: minutos: $minutos"
+        } else {
+            minutos = Math.round((fc02.time - fc01.time)/(1000*60))
+//            println "menor: minutos: $minutos"
+        }
+
+//        println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
+
+//        def minutos = ((fchafcfn.time - fchafcin.time)/(1000*60)).toInteger() % 60
+//        println "horas: ${(int) minutos/60}, minutos: ${minutos % 60}"
+
+
+        horas = (int) minutos/60
+        minutos = minutos % 60
+
         // borra la pare te horas y muntos.
         def diaIni = DiaLaborable.executeQuery("select min(ordinal) from DiaLaborable where fecha >= :f and ordinal > 0", [f: fchafcin.clone().clearTime()])[0]
         def diaFin = DiaLaborable.executeQuery("select min(ordinal) from DiaLaborable where fecha >= :f and ordinal > 0", [f: fchafcfn.clone().clearTime()])[0]
         def diaFf = DiaLaborable.findByFechaGreaterThanEqualsAndOrdinalGreaterThan(fchafcin.clone().clearTime(), 0)
-        println "dias: inicio: $diaIni, fin: $diaFin, ... $diaFf.ordinal"
-        def dias = diaFin - diaIni -1
+//        println "dias: inicio: $diaIni, fin: $diaFin, ... $diaFf.ordinal"
+        def dias = (diaFin - diaIni -1) > 0 ?: 0
 
-        println "dias: $dias, despues de clear time: tiempo fchafcfn: ${fchafcfn.getTime()} y fchafcin: ${fchafcin.getTime()}"
+//        println "dias: $dias, despues de clear time: tiempo fchafcfn: ${fchafcfn.getTime()} y fchafcin: ${fchafcin.getTime()}"
         /** todo: sacar fracion de horas que no supere las 8 de la jornada, expresando fcin como fcfn -1 (fraccion del día anterior)
          *  fcfn - 8:00 ()fraccion de d¿ia actual
          */
 
+//        println "retorna: dias: $dias, horas: $horas, minutos: $minutos"
+        return [true, [dias: dias, horas: horas, minutos: minutos]]
     }
 
 
@@ -718,14 +746,16 @@ class DiasLaborablesService {
         return [horas: difHoras, minutos: difMins]
     }
 
-    def corrigeHora(fcha){
+
+    // nuevo
+    def corrigeHora(fcha, prmt){
         println "corrigeHora: llega: $fcha"
         def anio = fcha.format("yyyy").toInteger()
         def mes  = fcha.format("MM").toInteger() -1
         def dias = fcha.format("dd").toInteger()
 
-        def horaIni = horaParametros(fcha, 'inicio')
-        def horaFin = horaParametros(fcha, 'fin')
+        def horaIni = horaParametros(fcha, 'inicio', prmt)
+        def horaFin = horaParametros(fcha, 'fin', prmt)
 
         def cal = Calendar.instance
         cal.set(anio, mes, dias, fcha.format("HH").toInteger(), fcha.format("mm").toInteger(), 0)
@@ -739,8 +769,8 @@ class DiasLaborablesService {
         fecha.time
     }
 
-    def horaParametros(fcha, tipo){
-        def prmt = Parametros.list([sort: "id"]).last()
+    def horaParametros(fcha, tipo, prmt){
+//        def prmt = Parametros.list([sort: "id"]).last()
         def anio = fcha.format("yyyy").toInteger()
         def mes  = fcha.format("MM").toInteger() -1
         def dias = fcha.format("dd").toInteger()
@@ -750,8 +780,20 @@ class DiasLaborablesService {
             hora.set(anio, mes, dias, prmt.horaInicio, prmt.minutoInicio, 0)
         }
         if(tipo == 'fin'){
-            hora.set(anio, mes, dias, prmt.horaFin, prmt.minutoInicio, 0)
+            hora.set(anio, mes, dias, prmt.horaFin, prmt.minutoFin, 0)
         }
+        hora
+    }
+
+    def fechaHoy(fcha, prmt){
+//        def prmt = Parametros.list([sort: "id"]).last()
+        def hoy  = new Date()
+        def anio = hoy.format("yyyy").toInteger()
+        def mes  = hoy.format("MM").toInteger() -1
+        def dias = hoy.format("dd").toInteger()
+
+        def hora = Calendar.instance
+        hora.set(anio, mes, dias, fcha.format("HH").toInteger(), fcha.format("mm").toInteger(), 0)
         hora
     }
 
