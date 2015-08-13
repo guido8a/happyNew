@@ -250,27 +250,31 @@
 
 
                 <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
-                <div class="row">
-                    <div class="col-xs-1 negrilla">Institución:</div>
-                    <div class="col-xs-3">${t?.paraExterno}
-                    </div>
+                    <div class="row">
+                        %{--<div class="col-xs-1 negrilla">Institución:</div>--}%
+                        %{--<div class="col-xs-3">${t?.paraExterno}--}%
+                        %{--</div>--}%
 
-                    <div class="col-xs-2 negrilla">Num. Doc.:</div>
-                    <div class="col-xs-3">${t.numeroDocExterno} </div>
-                </div>
-                <div class="row" style="align-content: flex-start">
+                        <div class="col-xs-2 negrilla">Num. Doc.:</div>
+                        <div class="col-xs-3">${t.numeroDocExterno} </div>
+
                         <div class="col-xs-1 negrilla">Teléfono:</div>
                         <div class="col-xs-3">${t?.telefono}
                         </div>
 
+                    </div>
+                    <div class="row" style="align-content: flex-start">
+
                         <div class="col-xs-2 negrilla">Contacto:</div>
                         <div class="col-xs-3">${t?.contacto}
                         </div>
-                 </div>
-                    <div class="row">
+
                         <div class="col-xs-1 negrilla">Email:</div>
                         <div class="col-xs-3">${t?.mail} </div>
                     </div>
+                %{--<div class="row">--}%
+                %{----}%
+                %{--</div>--}%
                 </g:if>
 
                 <div class="row">
@@ -425,26 +429,30 @@
 
                 <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
                     <div class="row">
-                        <div class="col-xs-1 negrilla">Institución:</div>
-                        <div class="col-xs-3">${t?.paraExterno}
-                        </div>
+                        %{--<div class="col-xs-1 negrilla">Institución:</div>--}%
+                        %{--<div class="col-xs-3">${t?.paraExterno}--}%
+                        %{--</div>--}%
 
                         <div class="col-xs-2 negrilla">Num. Doc.:</div>
                         <div class="col-xs-3">${t.numeroDocExterno} </div>
-                    </div>
-                    <div class="row" style="align-content: flex-start">
+
                         <div class="col-xs-1 negrilla">Teléfono:</div>
                         <div class="col-xs-3">${t?.telefono}
                         </div>
 
+                    </div>
+                    <div class="row" style="align-content: flex-start">
+
                         <div class="col-xs-2 negrilla">Contacto:</div>
                         <div class="col-xs-3">${t?.contacto}
                         </div>
-                    </div>
-                    <div class="row">
+
                         <div class="col-xs-1 negrilla">Email:</div>
                         <div class="col-xs-3">${t?.mail} </div>
                     </div>
+                    %{--<div class="row">--}%
+                        %{----}%
+                    %{--</div>--}%
                 </g:if>
 
 
