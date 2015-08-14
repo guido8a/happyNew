@@ -656,7 +656,6 @@
 
 //                    console.log(node, nodeType, nodeHasChildren, nodeOcupado, nodeTramites, nodeTramitess, estaAusente);
 
-
                     if (nodeType == "root") {
                         var items = {
                             crear    : {
@@ -783,7 +782,7 @@
                                     bootbox.dialog({
                                         title   : "Alerta",
                                         message : "<i class='fa fa-trash-o fa-3x pull-left text-danger text-shadow'></i>" +
-                                                "<p>¿Está seguro que desea eliminar el departamento seleccionado? Esta acción no se puede deshacer.</p>",
+                                                  "<p>¿Está seguro que desea eliminar el departamento seleccionado? Esta acción no se puede deshacer.</p>",
                                         buttons : {
                                             cancelar : {
                                                 label     : "Cancelar",
@@ -989,7 +988,7 @@
                     }).on("select_node.jstree", function (node, selected, event) {
 //                    $('#tree').jstree('toggle_node', selected.selected[0]);
                     }).jstree({
-                        plugins     : ["types", "state", "contextmenu", "wholerow", "search"],
+                        plugins     : ["types", /*"state", */"contextmenu", "wholerow", "search"],
                         core        : {
                             multiple       : false,
                             check_callback : true,
@@ -1046,10 +1045,10 @@
                             padreExternoInactivo      : {
                                 icon : "fa fa-paper-plane text-muted"
                             },
-                            padreRemotoActivo        : {
+                            padreRemotoActivo         : {
                                 icon : "fa fa-wifi text-info"
                             },
-                            padreRemotoInactivo      : {
+                            padreRemotoInactivo       : {
                                 icon : "fa fa-wifi text-muted"
                             },
                             hijoActivo                : {
@@ -1064,10 +1063,10 @@
                             hijoExternoInactivo       : {
                                 icon : "fa fa-paper-plane-o text-muted"
                             },
-                            hijoRemotoActivo         : {
+                            hijoRemotoActivo          : {
                                 icon : "fa fa-rss text-success"
                             },
-                            hijoRemotoInactivo       : {
+                            hijoRemotoInactivo        : {
                                 icon : "fa fa-rss text-muted"
                             },
                             usuarioActivo             : {
