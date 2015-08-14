@@ -35,7 +35,6 @@ class Persona {
 
     Departamento departamentoDesde
 
-
     /*
     * Campos no persistentes para el control de permisos
     */
@@ -112,12 +111,12 @@ class Persona {
 
     def puedePermiso(String codigoPermiso) {
 //        if (id == 5513L) {
-//            println "puede permiso " + codigoPermiso + "    " + this.permisos + "   " + this.permisos.codigo
+//        println "puede permiso " + codigoPermiso + "    " + this.permisos + "   " + this.permisos.codigo
 //        }
         if (this.permisos.size() > 0) {
 
 //            if (id == 5513L) {
-//                println "AQUI"
+//            println "AQUI"
 //            }
             def perm = null
             this.permisos.each {
@@ -127,7 +126,7 @@ class Persona {
                         def perm2 = null
                         perm.each { pr ->
 //                            if (id == 5513L) {
-//                                println "${pr.id} " + pr.permisoTramite.descripcion + "   " + pr.estaActivo
+//                            println "${pr.id} " + pr.permisoTramite.descripcion + "   " + pr.estaActivo
 //                            }
                             if (!pr.estaActivo) {
                                 perm2 = null
@@ -144,18 +143,18 @@ class Persona {
             if (perm) {
                 if (perm.estaActivo) {
 //                    if (id == 5513L) {
-//                        println "\ttrue"
+//                    println "\ttrue"
 //                    }
                     return true
                 } else {
 //                    if (id == 5513L) {
-//                        println "\tfalse"
+//                    println "\tfalse"
 //                    }
                     return false
                 }
             } else {
 //                if (id == 5513L) {
-//                    println "\tfalse"
+//                println "\tfalse"
 //                }
                 return false
             }
@@ -166,13 +165,13 @@ class Persona {
             }
             def perms = perm.findAll { it.estaActivo }
 //            if (id == 5513L) {
-//                perm.each {
-//                    println "\t\t" + it.permisoTramite.descripcion + "  " + it.fechaInicio + " - " + it.fechaFin + "   " + it.estaActivo
-//                }
+//            perm.each {
+//                println "\t\t" + it.permisoTramite.descripcion + "  " + it.fechaInicio + " - " + it.fechaFin + "   " + it.estaActivo
+//            }
 //            }
 //            if (id == 5513L) {
-//                println "\t" + (perms.size() > 0)
-//            }
+//            println "\t" + (perms.size() > 0)
+//          d
             return perms.size() > 0
         }
     }

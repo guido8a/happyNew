@@ -617,6 +617,9 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         def codigoArchivado = "E005"
         def codigoRecibido = "E004"
 
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
         def codigosOK = [codigoEnviado, codigoArchivado, codigoAnulado, codigoRecibido]
 
         def porEnviar = EstadoTramite.findByCodigo("E001")
@@ -643,24 +646,39 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
 //        ([para] + copias).each { pdt ->
         listaDesenviar.each { pdt ->
-            def contestaciones = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pdt, "S")
+
+            def trams = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pdt, "S")
+            def respuestas = PersonaDocumentoTramite.findAllByRolPersonaTramiteInListAndTramiteInList([rolPara, rolCc], trams)
+            respuestas.each { rs ->
+//                println "" + rs.id + "   " + rs.tramite.codigo + "  " + rs.estado.codigo + "  " + rs.estado.descripcion + "  " + rs.rolPersonaTramite.descripcion + "  " + (rs.persona ?: rs.departamento)
+                if (rs.estado.codigo != codigoAnulado) { //anulado
+                    if (rs.persona) {
+                        println "contestado persona: $rs.estado $rs.tramite.codigo $rs.persona"
+                        contestaron += "<li>El usuario ${rs.persona.nombre} ${rs.persona.apellido} (${rs.persona.login}) ya contestó el documento"
+                    } else {
+                        println "contestado dpto: $rs.estado $rs.tramite.codigo $rs.departamento"
+                        contestaron += "<li>El departamento ${rs.departamento.descripcion} (${rs.departamento.codigo}) ya contestó el documento</li>"
+                    }
+                }
+            }
+
+//            def contestaciones = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pdt, "S")
 //              def contestaciones = pdt.respuestasVivas    /* TODO: si hay respuestas anuladas se debe eliminarlas **/
 //            println "contestaciones de " + pdt.persona + " " + pdt.departamento + "      " + contestaciones.size()
 //            if (Tramite.countByAQuienContesta(pdt) > 0) {
-            if (contestaciones.size() > 0) {
-                contestaciones.each { c ->
-                    if (c.deDepartamento) {
-//                    println "dep ${tramite.deDepartamento.descripcion} contesto"
-                        contestaron += "<li>El departamento ${c.deDepartamento.descripcion} " +
-                                "(${c.deDepartamento.codigo}) ya contestó el documento</li>"
-                    } else if (c.de) {
-                        println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
-                        contestaron += "<li>El usuario ${c.de.nombre} ${c.de.apellido} (${c.de.login}) " +
-                                "ya contestó el documento</li>"
-                    }
-                }
-
-            }
+//            if (contestaciones.size() > 0) {
+//                contestaciones.each { c ->
+//                    if (c.deDepartamento) {
+////                    println "dep ${tramite.deDepartamento.descripcion} contesto"
+//                        contestaron += "<li>El departamento ${c.deDepartamento.descripcion} " +
+//                                "(${c.deDepartamento.codigo}) ya contestó el documento</li>"
+//                    } else if (c.de) {
+//                        println "pers ${tramite.de.nombre} ${tramite.de.apellido} contesto"
+//                        contestaron += "<li>El usuario ${c.de.nombre} ${c.de.apellido} (${c.de.login}) " +
+//                                "ya contestó el documento</li>"
+//                    }
+//                }
+//            }
         }
         if (contestaron != "") {
 //            println "No puede desenviar"
@@ -752,6 +770,9 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadosNo = [estadoAnulado, estadoArchivado]
 
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
 //        def tramites = ([tramite.para] + tramite.allCopias)
         def tramites = []
         if (tramite.para) {
@@ -771,26 +792,32 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
             def respv = pr.respuestasVivas
             cont += respv.size()
 
-
             if (pr.rolPersonaTramite.codigo == "R001") {
                 if (pr.estado.codigo != "E003") {
                     paraRecibio = "El documento está en estado ${pr.estado.descripcion} por lo que no puede ser tramitado."
                 }
             }
 
-            def respuestas
 
-//            if(pr.respuestasVivas){
-
-            respuestas = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pr, "S")
-
+            def trams = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pr, "S")
+            def respuestas = PersonaDocumentoTramite.findAllByRolPersonaTramiteInListAndTramiteInList([rolPara, rolCc], trams)
             respuestas.each { rs ->
-                if (rs.deDepartamento) {
-                    contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
-                } else if (rs.de) {
-                    println "contestado: $rs.estadoTramite"
-                    contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
+//                println "" + rs.id + "   " + rs.tramite.codigo + "  " + rs.estado.codigo + "  " + rs.estado.descripcion + "  " + rs.rolPersonaTramite.descripcion + "  " + (rs.persona ?: rs.departamento)
+                if (rs.estado.codigo != "E006") { //anulado
+                    if (rs.persona) {
+                        println "contestado persona: $rs.estado $rs.tramite.codigo $rs.persona"
+                        contestados += "<li>El usuario ${rs.persona.nombre} ${rs.persona.apellido} (${rs.persona.login}) ya contestó el documento"
+                    } else {
+                        println "contestado dpto: $rs.estado $rs.tramite.codigo $rs.departamento"
+                        contestados += "<li>El departamento ${rs.departamento.descripcion} (${rs.departamento.codigo}) ya contestó el documento</li>"
+                    }
                 }
+//                if (rs.deDepartamento) {
+//                    contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
+//                } else if (rs.de) {
+//                    println "contestado: $rs.estadoTramite"
+//                    contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
+//                }
             }
 
 //            }
@@ -855,12 +882,12 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         def persona = Persona.get(usuario?.id)
         def revisar = false
         def bloqueo = false
-        if(session.usuario){
+        if (session.usuario) {
             if (session.usuario.esTriangulo()) {
                 redirect(action: 'bandejaSalidaDep')
                 return
             }
-        }else{
+        } else {
             redirect(controller: 'login', action: 'login')
             return
         }
@@ -887,10 +914,9 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
             params.order = "DESC"
         }
 
-        if (persona.puedeEditor) {
+        if (session.usuario.puedeEditor) {
             procedure = "salida_editor"
         }
-
 
         if (params.fecha) {
             busca = true
