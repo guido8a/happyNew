@@ -84,22 +84,23 @@ class EnviarService {
         text = text.replaceAll("&lt;", "*lt*")
         text = text.replaceAll("&gt;", "*gt*")
         text = text.replaceAll("&amp;", "*amp*")
+        text = text.replaceAll("&nbsp;", " ")
 //        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
 
-//        println "TEXTO ANTES"
+//        println "\nTEXTO ANTES"
 //        println text
 
         text = text.decodeHTML()
 
-//        println "TEXTO DESPUES"
+//        println "\nTEXTO DESPUES"
 //        println text
 
         text = text.replaceAll("\\*lt\\*", "&lt;")
         text = text.replaceAll("\\*gt\\*", "&gt;")
         text = text.replaceAll("\\*amp\\*", "&amp;")
 
-//        println "TEXTO DESPUES AGAIN"
+//        println "\nTEXTO DESPUES AGAIN"
 //        println text
 
 //        println "html:" + tramite.texto.decodeHTML()
@@ -108,6 +109,7 @@ class EnviarService {
         text = text.replaceAll(~"\\?\\_debugResources=y\\&n=[0-9]*", "")
 //        text = text.replaceAll(message(code: 'pathImages'), pathImages)
         text = text.replaceAll(mensaje, pathImages)
+//        println "\nTEXTO LISTO PARA IMPRIMIR"
 //        println text
 //        println "--------------------------------------------------------------"
 
@@ -223,6 +225,7 @@ class EnviarService {
         content += "</body>\n"
         content += "</html>"
 
+//        println "CONTENT:::"
 //        println content
 
 //        String content2 = "<html><head><style>\n" +

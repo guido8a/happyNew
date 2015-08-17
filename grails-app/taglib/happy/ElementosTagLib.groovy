@@ -315,7 +315,7 @@ class ElementosTagLib {
         }
 
         cc.each { c ->
-            if(c.persona){
+            if (c.persona) {
                 if (strCopia != "") {
                     strCopia += ", "
                 }
@@ -364,9 +364,9 @@ class ElementosTagLib {
                         strPara = tramite.paraExterno
                     }
                 }
-                if(tramite?.textoPara){
+                if (tramite?.textoPara) {
                     html += (strPara + " - " + tramite?.textoPara)
-                }else{
+                } else {
                     html += strPara
                 }
 
@@ -416,13 +416,26 @@ class ElementosTagLib {
             html += "                </div>"
             html += "            </div>"
             //asunto
+            def asunto = (tramite?.asunto ?: '')
+            asunto = asunto.replaceAll("&nbsp;", " ")
+            asunto = asunto.replaceAll("&lt;", "*lt*")
+            asunto = asunto.replaceAll("&gt;", "*gt*")
+            asunto = asunto.replaceAll("&amp;", "*amp*")
+            asunto = asunto.replaceAll("<", "*lt*")
+            asunto = asunto.replaceAll(">", "*gt*")
+            asunto = asunto.replaceAll("&", "*amp*")
+            asunto = asunto.decodeHTML()
+            asunto = asunto.replaceAll("\\*lt\\*", "&lt;")
+            asunto = asunto.replaceAll("\\*gt\\*", "&gt;")
+            asunto = asunto.replaceAll("\\*amp\\*", "&amp;")
+
             html += "            <div class=\"row row-low-margin-top\">"
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
             html += "                    Asunto:"
             html += "                </div>"
             html += ""
             html += "                <div class=\"col-xs-10  col-buen-height\">"
-            html += "                    ${tramite.asunto}"
+            html += "                    ${asunto}"
             html += "                </div>"
             html += "            </div>"
             html += "        </div>"
@@ -466,16 +479,16 @@ class ElementosTagLib {
                         }
                     }
                     if (strDepa != '') {
-                        if(tramite?.textoPara){
+                        if (tramite?.textoPara) {
                             html += strPara.toUpperCase() + " (" + strDepa.toUpperCase() + ")" + " - " + tramite?.textoPara?.toUpperCase()
-                        }else{
+                        } else {
                             html += strPara.toUpperCase() + " (" + strDepa.toUpperCase() + ")"
                         }
 
                     } else {
-                        if(tramite?.textoPara){
+                        if (tramite?.textoPara) {
                             html += strPara.toUpperCase() + " - " + tramite?.textoPara?.toUpperCase()
-                        }else{
+                        } else {
                             html += strPara.toUpperCase()
                         }
 
@@ -514,9 +527,22 @@ class ElementosTagLib {
                 html += "</td>"
                 html += "</tr>"
                 //asunto
+                def asunto = (tramite?.asunto ? tramite.asunto.toUpperCase() : '')
+                asunto = asunto.replaceAll("&nbsp;", " ")
+                asunto = asunto.replaceAll("&lt;", "*lt*")
+                asunto = asunto.replaceAll("&gt;", "*gt*")
+                asunto = asunto.replaceAll("&amp;", "*amp*")
+                asunto = asunto.replaceAll("<", "*lt*")
+                asunto = asunto.replaceAll(">", "*gt*")
+                asunto = asunto.replaceAll("&", "*amp*")
+                asunto = asunto.decodeHTML()
+                asunto = asunto.replaceAll("\\*lt\\*", "&lt;")
+                asunto = asunto.replaceAll("\\*gt\\*", "&gt;")
+                asunto = asunto.replaceAll("\\*amp\\*", "&amp;")
+
                 html += "<tr>"
                 html += "<th>ASUNTO:</th>"
-                html += "<td>${tramite.asunto.toUpperCase() ?: ''}</td>"
+                html += "<td>${asunto ?: ''}</td>"
                 html += "</tr>"
                 html += "</table>"
             } else {
