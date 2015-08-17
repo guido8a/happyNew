@@ -516,7 +516,7 @@ class DiasLaborablesService {
 
         def dias = 0, difHoras = 0, difMins = 0
 
-        if (dl1.size() == 1 && dl2.size() == 1) {
+        if (dl1.size() == 1 && dl2.size() == 1) {  // se hallan en la tabla ddlb
             dl1 = dl1.first()
             def validar = validarLaborable(dl1, noLaborables)
             if (validar[0]) {
@@ -550,6 +550,7 @@ class DiasLaborablesService {
 
             //1ro saco los dias laborables entre las fechas
             def diasEntre = diasLaborablesEntre(fecha1, fecha2)
+//            println "retorna dias entre: $diasEntre"
             if (diasEntre[0]) {
                 dias = diasEntre[1]
                 if (diasEntre.size() == 3) {
@@ -626,9 +627,11 @@ class DiasLaborablesService {
     }
 
     def tmpoLaborableEntre(Date fcin, Date fcfn) {
+//        println "procesa tiempo entre: $fcin y $fcfn"
         def prmt = Parametros.list([sort: "id"]).last()
         // si fcfn < fcin se cambia el orde para que la diferencia sea positiva
         if (fcfn < fcin) {
+//            println " se cambia <<<<<<<< a >>>>>>>>"
             def fechaTemp = fcin
             fcin = fcfn
             fcfn = fechaTemp
@@ -662,7 +665,7 @@ class DiasLaborablesService {
 //        println "invoca a corrigeHora con $fcin y retorna: $fchafcin, para $fcfn retorna: $fchafcfn"
 
 //        def minutos = ((fchafcfn.time - fchafcin.time)/(1000*60)).toInteger() % 60
-//        println "horas: ${(int) minutos/60}, minutos: ${minutos % 60}"
+//        println "horas calc: ${(int) minutos/60}, minutos: ${minutos % 60}"
 
 
         horas = (int) minutos/60
@@ -673,7 +676,7 @@ class DiasLaborablesService {
         def diaFin = DiaLaborable.executeQuery("select min(ordinal) from DiaLaborable where fecha >= :f and ordinal > 0", [f: fchafcfn.clone().clearTime()])[0]
         def diaFf = DiaLaborable.findByFechaGreaterThanEqualsAndOrdinalGreaterThan(fchafcin.clone().clearTime(), 0)
 //        println "dias: inicio: $diaIni, fin: $diaFin, ... $diaFf.ordinal"
-        def dias = (diaFin - diaIni -1) > 0 ?: 0
+        def dias = (diaFin - diaIni -1) < 0 ? 0 : diaFin - diaIni -1
 
 //        println "dias: $dias, despues de clear time: tiempo fchafcfn: ${fchafcfn.getTime()} y fchafcin: ${fchafcin.getTime()}"
         /** todo: sacar fracion de horas que no supere las 8 de la jornada, expresando fcin como fcfn -1 (fraccion del día anterior)
@@ -749,7 +752,7 @@ class DiasLaborablesService {
 
     // nuevo
     def corrigeHora(fcha, prmt){
-        println "corrigeHora: llega: $fcha"
+//        println "corrigeHora: llega: $fcha"
         def anio = fcha.format("yyyy").toInteger()
         def mes  = fcha.format("MM").toInteger() -1
         def dias = fcha.format("dd").toInteger()

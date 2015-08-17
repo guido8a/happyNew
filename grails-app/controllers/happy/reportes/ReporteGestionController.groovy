@@ -158,7 +158,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
     }
 
     def rowTramite(PersonaDocumentoTramite pdt, tablaTramite) {
-//        println "rowTramite.............."
+//        println "rowTramite..........prueba de nueva función tmpoLaborableEntre...."
         def tramite = pdt.tramite
 
         def de, dias, para = "", codigo = tramite.codigo
@@ -171,11 +171,11 @@ class ReporteGestionController extends happy.seguridad.Shield {
         def dif
         if (pdt.fechaEnvio) {
             if (pdt.fechaRecepcion) {
-                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
-//                 dif = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
+//                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
+                 dif = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, pdt.fechaEnvio)
             } else {
-                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaEnvio, new Date())
-//                dif = diasLaborablesService.tmpoLaborableEntre(pdt.fechaEnvio, new Date())
+//                dif = diasLaborablesService.tiempoLaborableEntre(pdt.fechaEnvio, new Date())
+                dif = diasLaborablesService.tmpoLaborableEntre(pdt.fechaEnvio, new Date())
             }
             if (dif[0]) {
                 def d = dif[1]
@@ -212,13 +212,13 @@ class ReporteGestionController extends happy.seguridad.Shield {
         if (respuestas.size() > 0) {
             def respuesta = respuestas.last()
             if (pdt.fechaRecepcion && respuesta.fechaCreacion) {
-                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
-//                dif2 = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
+//                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
+                dif2 = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, respuesta.fechaCreacion)
             }
         } else {
             if (pdt.fechaRecepcion) {
-                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, new Date())
-//                dif2 = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, new Date())
+//                dif2 = diasLaborablesService.tiempoLaborableEntre(pdt.fechaRecepcion, new Date())
+                dif2 = diasLaborablesService.tmpoLaborableEntre(pdt.fechaRecepcion, new Date())
             }
         }
         if (dif2) {
