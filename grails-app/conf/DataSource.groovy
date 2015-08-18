@@ -96,7 +96,7 @@ environments {
 
             properties {
                 jmxEnabled = true
-                initialSize = 20
+                initialSize = 10
                 maxActive = 100
                 minIdle = 10
                 maxIdle = 100
