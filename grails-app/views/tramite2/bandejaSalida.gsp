@@ -134,7 +134,7 @@
 
         <elm:flashMessage tipo="${flash.tipo}" clase="${flash.clase}">${flash.message}</elm:flashMessage>
 
-        %{--Es editor: ${esEditor}--}%
+        %{--*** Es editor: ${esEditor}--}%
 
         <div class="btn-toolbar toolbar" style="margin-top: 10px !important">
             <div class="btn-group">

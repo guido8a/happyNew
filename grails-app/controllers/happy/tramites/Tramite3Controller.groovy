@@ -1791,7 +1791,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 personalActivo += it
             }
         }
-        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: persona.puedeEditor]
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: session.usuario.puedeEditor]
     }
 
     def tablaBandejaImprimir() {

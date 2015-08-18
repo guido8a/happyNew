@@ -14,7 +14,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-class Tramite2Controller /*extends happy.seguridad.Shield*/ {
+class Tramite2Controller extends happy.seguridad.Shield {
 
     def diasLaborablesService
     def enviarService
@@ -98,7 +98,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         params.sort = "trmtfccr"
         params.order = "desc"
 
-        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: persona.puedeEditor]
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: session.usuario.puedeEditor]
 
     }
 
@@ -895,7 +895,12 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         params.sort = "trmtfccr"
         params.order = "desc"
 
-        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: persona.puedeEditor]
+        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
+        println session.usuario.puedeEditor
+        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
+
+
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: session.usuario.puedeEditor]
     }
 
     def tablaBandejaSalida() {
@@ -949,7 +954,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
 
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
-        return [rows: rows, busca: busca, esEditor: persona.puedeEditor]
+        return [rows: rows, busca: busca, esEditor: session.usuario.puedeEditor]
     }
 
     def bandejaSalida_old() {
@@ -970,7 +975,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
                 personalActivo += it
             }
         }
-        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: persona.puedeEditor]
+        return [persona: persona, revisar: revisar, bloqueo: bloqueo, personal: personalActivo, esEditor: session.usuario.puedeEditor]
     }
 
     def tablaBandejaSalida_old() {
@@ -987,7 +992,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         def estados = [porEnviar, revisado, enviado, recibido]
 //        println "--------------------"
 //        println " max "+max +" off "+offset
-        if (persona.puedeEditor) {
+        if (session.usuario.puedeEditor) {
 //            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
 //                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])
@@ -1043,7 +1048,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
         }
 
 //        println "bandeja salida "+trams
-        return [persona: persona, tramites: trams, esEditor: persona.puedeEditor]
+        return [persona: persona, tramites: trams, esEditor: session.usuario.puedeEditor]
     }
 
     def enviar() {
@@ -1225,7 +1230,7 @@ class Tramite2Controller /*extends happy.seguridad.Shield*/ {
             params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
         }
 
-        if (persona.puedeEditor) {
+        if (session.usuario.puedeEditor) {
 //            println "puede editor"
             Persona.findAllByDepartamento(persona.departamento).each { p ->
 //                def t = Tramite.findAllByDeAndEstadoTramiteInList(p, estados, [sort: "fechaCreacion", order: "desc",max:max,offset:offset])

@@ -29,7 +29,7 @@ class TramiteController extends happy.seguridad.Shield {
     def redactar() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        def esEditor = persona.puedeEditor
+        def esEditor = session.usuario.puedeEditor
         def tramite = Tramite.get(params.id)
         if (tramite?.estadoTramite?.codigo == "E001") { //borrador, por enviar
             return [tramite: tramite, esEditor: esEditor]
@@ -490,7 +490,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        def esEditor = persona.puedeEditor
+        def esEditor = session.usuario.puedeEditor
         if (esEditor) {
             redirect(controller: "tramite2", action: "bandejaSalida")
             return
@@ -1029,7 +1029,7 @@ class TramiteController extends happy.seguridad.Shield {
     def bandejaEntrada() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        def esEditor = persona.puedeEditor
+        def esEditor = session.usuario.puedeEditor
         if (esEditor) {
             redirect(controller: "tramite2", action: "bandejaSalida")
             return
@@ -1107,7 +1107,7 @@ class TramiteController extends happy.seguridad.Shield {
     def bandejaEntrada_old() {
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
-        def esEditor = persona.puedeEditor
+        def esEditor = session.usuario.puedeEditor
         if (esEditor) {
             redirect(controller: "tramite2", action: "bandejaSalida")
             return
