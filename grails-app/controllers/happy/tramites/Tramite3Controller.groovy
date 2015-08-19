@@ -347,7 +347,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
 //                println "DESPUES2: " + tramite.aQuienContesta
 //                println "DESPUES2: " + tramite.aQuienContesta.id
-                println "pdt para " + paraDocumentoTramite
+//                println "pdt para " + paraDocumentoTramite
                 if (paraDocumentoTramite.size() == 0) {
                     paraDocumentoTramite = new PersonaDocumentoTramite()
                     paraDocumentoTramite.tramite = tram
@@ -916,7 +916,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM entrada_dpto($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
-        println "badeja de entrada: $sql"
+//        println "bandeja de entrada: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 //        println rows

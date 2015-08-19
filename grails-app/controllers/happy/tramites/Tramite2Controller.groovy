@@ -141,7 +141,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM salida_dpto($persona.id) ${where} ORDER BY ${params.sort} ${params.order}"
-        println "badeja de salida: $sql"
+//        println "bandeja de salida: $sql"
 
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
@@ -895,9 +895,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         params.sort = "trmtfccr"
         params.order = "desc"
 
-        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
-        println session.usuario.puedeEditor
-        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
+//        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
+//        println session.usuario.puedeEditor
+//        println ":::::::::::::::::::::::::::::::::::::::::::::::::::"
 
 
         return [persona: persona, revisar: revisar, bloqueo: bloqueo, esEditor: session.usuario.puedeEditor]
@@ -950,7 +950,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM $procedure($persona.id) ${where} ORDER BY ${params.sort} ${params.order}"
-        println "badeja de salida: $sql"
+//        println "bandeja de salida: $sql"
 
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
@@ -1370,7 +1370,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 if (params.esRespuestaNueva == 'S') {
                     def respv = aQuienEstaContestando.respuestasVivasEsrn
-                    println "RESPV " + respv
+//                    println "RESPV " + respv
                     if (respv.size() != 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
                                 g.link(controller: 'tramite3', action: 'bandejaEntradaDpto', class: "btn btn-danger") {

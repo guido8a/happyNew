@@ -160,10 +160,10 @@ class BloqueosJob {
     def executeRecibir(depar, persona) {
         def ahora = new Date()
 //        println "----------------------------------"
-        println "ejecuta executeRecibir con: dpto: $depar.id (${depar?.codigo}), persona: $persona.id (${persona?.login})"
+//        println "ejecuta executeRecibir con: dpto: $depar.id (${depar?.codigo}), persona: $persona.id (${persona?.login})"
 
-        def pruebasInicio = new Date()
-        def pruebasFin
+//        def pruebasInicio = new Date()
+//        def pruebasFin
 
         def bloquear = []
         def bloquearUsu = []
@@ -253,8 +253,8 @@ class BloqueosJob {
             }
         }
 
-        pruebasFin = new Date()
-        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+//        pruebasFin = new Date()
+//        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
 //        println "fin bloqueo bandeja salida recibir "+new Date()
     }
