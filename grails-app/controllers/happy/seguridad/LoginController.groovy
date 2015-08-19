@@ -81,7 +81,7 @@ class LoginController {
 //            assert ! ldap.exists("${prmt.textoCn}")
 //            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
         } catch (e) {
-            println "no se conecto error: " + e
+            println "no se conecto ${user.login} error: " + e
             connect = false
         }
         return connect

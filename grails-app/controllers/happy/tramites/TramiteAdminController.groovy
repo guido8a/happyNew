@@ -1663,7 +1663,7 @@ class TramiteAdminController extends Shield {
     def getCadenaDown(pdt, funcion) {
         def res = []
         def tramites = Tramite.findAll("from Tramite where aQuienContesta=${pdt.id}")
-        println "* tramites " + tramites + "     " + tramites.codigo
+//        println "* tramites " + tramites + "     " + tramites.codigo
         def roles = [RolPersonaTramite.findByCodigo("R002"), RolPersonaTramite.findByCodigo("R001")]
         def lvl
         funcion pdt
