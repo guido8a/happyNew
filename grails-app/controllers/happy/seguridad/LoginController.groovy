@@ -77,7 +77,8 @@ class LoginController {
 //            println "connect    " + user.getConnectionString() + "\n ldap://" + prmt.ipLDAP
             // println " " + prmt.textoCn
             /*No borrar esta linea println */
-            println "ingreso LDAP ${user.login}" + ldap.exists("${prmt.textoCn}")
+//            println "ingreso LDAP ${user.login} " + ldap.exists("${prmt.textoCn}")
+            println "ingreso LDAP ${user.login}"
 //            assert ! ldap.exists("${prmt.textoCn}")
 //            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
         } catch (e) {
