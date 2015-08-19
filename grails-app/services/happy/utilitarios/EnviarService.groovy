@@ -84,10 +84,11 @@ class EnviarService {
         text = text.replaceAll("&lt;", "*lt*")
         text = text.replaceAll("&gt;", "*gt*")
         text = text.replaceAll("&amp;", "*amp*")
+        text = text.replaceAll("<p>&nbsp;</p>", "<br/>")
         text = text.replaceAll("&nbsp;", " ")
 //        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
-
+//
 //        println "\nTEXTO ANTES"
 //        println text
 
@@ -99,6 +100,7 @@ class EnviarService {
         text = text.replaceAll("\\*lt\\*", "&lt;")
         text = text.replaceAll("\\*gt\\*", "&gt;")
         text = text.replaceAll("\\*amp\\*", "&amp;")
+        text = text.replaceAll("\\*nbsp\\*", " ")
 
 //        println "\nTEXTO DESPUES AGAIN"
 //        println text
