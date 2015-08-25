@@ -98,15 +98,14 @@ environments {
             username = "postgres"
             password = "janus"
 
-/*
             properties {
                 jmxEnabled = true
                 initialSize = 10
                 maxActive = 100
                 minIdle = 10
-                maxIdle = 100
+                maxIdle = 25
                 maxWait = 60000         // 10 segundos
-//                maxAge = 30 * 60000     // 0 por defecto: No se chequea las conexiones
+                maxAge = 30 * 60000     // 0 por defecto: No se chequea las conexiones
                 timeBetweenEvictionRunsMillis = 60000   //1800000
                 minEvictableIdleTimeMillis = 120000
                 validationQuery = "SELECT 1"
@@ -115,10 +114,9 @@ environments {
                 testOnBorrow = true
                 testWhileIdle = true
                 testOnReturn = false
-                jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
+                jdbcInterceptors = ConnectionState
                 defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
             }
-*/
         }
     }
 
