@@ -713,7 +713,7 @@ class PersonaController extends happy.seguridad.Shield {
             permisosTerminar.each {
                 it.fechaFin = new Date()
                 if (!it.save(flush: true)) {
-                    println it.errors
+                    println "savePerfiles_ajax:" + it.errors
                     errores += "<li>No se pudo terminar permiso ${it.permisoTramite.descripcion}</li>"
                 }
             }

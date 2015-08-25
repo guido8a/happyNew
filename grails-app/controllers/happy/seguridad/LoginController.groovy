@@ -109,7 +109,7 @@ class LoginController {
         usu.password = params.pass.toString().encodeAsMD5()
         usu.fechaCambioPass = new Date() + 30
         if (!usu.save(flush: true)) {
-            println "Error: " + usu.errors
+            println "Error: guardarPass " + usu.errors
             flash.message = "Ha ocurrido un error al guardar su nuevo password"
             flash.tipo = "error"
             redirect(action: 'cambiarPass')

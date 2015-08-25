@@ -21,7 +21,7 @@ class TramiteController extends happy.seguridad.Shield {
         if (tramite.save(flush: true)) {
             render "OK*Se generará el PDF ${params.membrete == '1' ? 'con' : 'sin'} membrete."
         } else {
-            println tramite.errors
+            println "cambiarMembrete" + tramite.errors
             render "NO*Ha ocurrido un error al guardar"
         }
     }

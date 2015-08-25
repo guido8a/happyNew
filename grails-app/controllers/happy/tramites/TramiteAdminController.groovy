@@ -770,7 +770,7 @@ class TramiteAdminController extends Shield {
 //                        println "tr.save ok"
             } else {
                 errores += renderErrors(bean: tramite)
-                println tramite.errors
+                println "redireccionarTramite_ajax" + tramite.errors
             }
             if (!pr.persona && !pr.departamento) {
                 pr.persona = personaAntes

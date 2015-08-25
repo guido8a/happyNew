@@ -528,7 +528,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
                 if (!pdt.save(flush: true)) {
-                    println pdt.errors
+                    println "saveDep" +pdt.errors
                 }
 
                 def pdt2 = new PersonaDocumentoTramite()
@@ -1293,7 +1293,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         if (tramite.save(flush: true)) {
             render "OK_Observaciones agregadas exitosamente"
         } else {
-            println tramite.errors
+            println "enviarTramiteJefe" + tramite.errors
             render "NO_Ha ocurrido un error al agregar las observaciones: " + renderErrors(bean: tramite)
         }
     }

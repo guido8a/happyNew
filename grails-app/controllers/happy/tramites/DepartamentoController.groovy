@@ -94,7 +94,7 @@ class DepartamentoController extends happy.seguridad.Shield {
                 if (tramite.save(flush: true)) {
                 } else {
                     errores += renderErrors(bean: tramite)
-                    println tramite.errors
+                    println "desactivar_ajax:" + tramite.errors
                 }
                 if (pr.save(flush: true)) {
                     ok++

@@ -105,7 +105,7 @@ class PruebasController {
 //                                enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
                             }
                         } else {
-                            println tramite.errors
+                            println "enviar tramite:" + tramite.errors
                             error += renderErrors(bean: tramite)
                         }
                     } else {

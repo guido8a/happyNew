@@ -132,7 +132,7 @@ class ElementosTagLib {
                 "<span class='found'>" + it + "</span>"
             }
         } catch (e) {
-            println e
+            println "textoBusqueda" + e
         }
 
         out << texto

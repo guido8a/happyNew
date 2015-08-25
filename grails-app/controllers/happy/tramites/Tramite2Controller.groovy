@@ -437,7 +437,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 alerta.save(flush: true)
                             }
                         } catch (e) {
-                            println "error: " + e
+                            println "desenviar_ajax_old error: " + e
                         }
                     } //
                 } else {
@@ -1139,7 +1139,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                 }
                             }
                         } else {
-                            println("entro false")
+                            println("tramite anulado o archivado ${t.tramite.codigo}")
                             band = false
                         }
 

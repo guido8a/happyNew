@@ -20,6 +20,7 @@ environments {
             username = "postgres"
             password = "postgres"
 
+/*
             properties {
                 jmxEnabled = true
                 initialSize = 10
@@ -39,6 +40,7 @@ environments {
                 jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
                 defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
             }
+*/
         }
     }
     test {
@@ -57,6 +59,7 @@ environments {
             password = "janus"
         }
 
+/*
         properties {
             jmxEnabled = true
             initialSize = 10
@@ -76,6 +79,7 @@ environments {
             jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
             defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
         }
+*/
     }
 
 
@@ -94,6 +98,7 @@ environments {
             username = "postgres"
             password = "janus"
 
+/*
             properties {
                 jmxEnabled = true
                 initialSize = 10
@@ -113,6 +118,7 @@ environments {
                 jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
                 defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
             }
+*/
         }
     }
 

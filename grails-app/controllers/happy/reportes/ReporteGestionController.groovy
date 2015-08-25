@@ -186,7 +186,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 }
                 dias += "${d.horas} hora${d.horas == 1 ? '' : 's'}, ${d.minutos} minuto${d.minutos == 1 ? '' : 's'}"
             } else {
-                println "error: " + dif
+                println "error rowTramite: " + dif
             }
         } else {
             dias = "No enviado"
@@ -231,7 +231,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
                 }
                 contestacionRetraso += "${d.horas} hora${d.horas == 1 ? '' : 's'}, ${d.minutos} minuto${d.minutos == 1 ? '' : 's'}"
             } else {
-                println "error: " + dif2
+                println "error: rowTramite2" + dif2
             }
         } else {
             contestacionRetraso = "No recibido"

@@ -179,7 +179,7 @@ class AccionesController extends happy.seguridad.Shield {
                 if (!(permisos.contains(accn))) {
                     def perm = new Prms([accion: accn, perfil: perfil])
                     perm.save(flush: true)
-                    println "errors " + perm.errors
+                    println "errors guardarPermisos " + perm.errors
                 }
             }
             permisos.each {
@@ -254,7 +254,7 @@ class AccionesController extends happy.seguridad.Shield {
                 def t = []
                 ct.getURIs().each {
                     def s = it.split("/")
-                    println "*    " + s
+                    println "* cargarAcciones   " + s
                     if (s.size() > 2)
                         if (!t.contains(s[2]))
                             if (!ignore.contains(s[2]))

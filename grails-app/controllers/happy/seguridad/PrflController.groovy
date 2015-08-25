@@ -245,7 +245,7 @@ class PrflController extends happy.seguridad.Shield {
                 cn.execute(tx1)
             }
             catch (Exception ex) {
-                println ex.getMessage()
+                println "grabar: " + ex.getMessage()
             }
         }
         cn.close()

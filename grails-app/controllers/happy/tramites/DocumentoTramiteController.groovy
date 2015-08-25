@@ -359,9 +359,8 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
     }
 
     def uploadFile() {
-        println "UPLOAD"
-        println params
-        println params.file
+        println "UPLOAD: params: $params"
+        println "params.file:" + params.file
         def tramite = Tramite.get(params.id)
         def path = servletContext.getRealPath("/") + "anexos/" + tramite.id + "/"    //web-app/archivos
         new File(path).mkdirs()
