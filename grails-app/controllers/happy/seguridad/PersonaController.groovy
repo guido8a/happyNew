@@ -39,7 +39,9 @@ class PersonaController extends happy.seguridad.Shield {
             tx.size().times() {
                 if (tx[it].toString().getBytes('UTF-8').size() > 1) {
                     println "posibe carácter especial: ${tx[it]} es en utf-8:" + tx[it].toString().getBytes('UTF-8')
-                    if (tx[it].toString().getBytes('UTF-8')[1] == -123) println "llega texto en ISO-8859-1"
+                    if (tx[it].toString().getBytes('UTF-8')[1] == -123) {
+                        println "llega texto en ISO-8859-1"
+                    }
                 }
             }
         }
@@ -92,10 +94,12 @@ class PersonaController extends happy.seguridad.Shield {
         }
 
 
-        if (params.estado == "usuario")
+        if (params.estado == "usuario") {
             lista = lista.findAll { it.estaActivo }
-        if (params.estado == "inactivo")
+        }
+        if (params.estado == "inactivo") {
             lista = lista.findAll { !it.estaActivo }
+        }
         if (params.estado == "admin") {
             lista = lista.findAll { it.puedeAdmin }
             if (!all && /*params.offset && */params.max && lista.size() > params.max.toInteger()) {
@@ -307,8 +311,8 @@ class PersonaController extends happy.seguridad.Shield {
         def personasFiltradas = []
 
         personas.each {
-            if(it?.estaActivo){
-               personasFiltradas += it
+            if (it?.estaActivo) {
+                personasFiltradas += it
             }
 
         }
@@ -316,15 +320,16 @@ class PersonaController extends happy.seguridad.Shield {
         personasFiltradas.remove(usuario)
         return [usuario: usuario, params: params, triangulos: triangulos, personas: personasFiltradas]
     }
+
     def personalAdm() {
-        if(session.usuario.puedeAdmin){
+        if (session.usuario.puedeAdmin) {
             def usuario = Persona.get(params.id)
             def dep = usuario.departamento
             def triangulos = dep.getTriangulos()
             def personas = Persona.findAllByDepartamentoAndActivo(dep, 1)
             personas.remove(usuario)
             return [usuario: usuario, params: params, triangulos: triangulos, personas: personas]
-        }else{
+        } else {
             response.sendError(403)
         }
 
@@ -374,7 +379,8 @@ class PersonaController extends happy.seguridad.Shield {
             render "NO_El password actual no coincide"
         }
     }
-    def saveTelf(){
+
+    def saveTelf() {
         def usuario = Persona.get(session.usuario.id)
         def telefono = params.telefono
         usuario.telefono = params.telefono?.trim()
@@ -405,8 +411,9 @@ class PersonaController extends happy.seguridad.Shield {
         def perfilesUsu = Sesn.findAllByUsuario(usu)
         def pers = []
         perfilesUsu.each {
-            if (it.estaActivo)
+            if (it.estaActivo) {
                 pers.add(it.perfil.id)
+            }
         }
         def permisosUsu = PermisoUsuario.findAllByPersona(usu).permisoTramite.id
         return [usuario: usu, perfilesUsu: pers, permisosUsu: permisosUsu]
@@ -462,7 +469,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def saveAccesos_ajax() {
-        println "asig acc "+params
+        println "asig acc " + params
         params.asignadoPor = session.usuario
         def accs = new Accs(params)
         if (!accs.save(flush: true)) {
@@ -484,10 +491,10 @@ class PersonaController extends happy.seguridad.Shield {
                 }
                 if (perfil) {
                     def asignado = Persona.get(params.nuevoTriangulo)
-                    if(accs.accsObservaciones != null){
+                    if (accs.accsObservaciones != null) {
                         accs.accsObservaciones += "; Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
 
-                    }else{
+                    } else {
                         accs.accsObservaciones = "Nuevo receptor: ${asignado.login} del ${accs.accsFechaInicial.format('dd-MM-yyyy')} al ${accs.accsFechaFinal.format('dd-MM-yyyy')}"
                     }
                     def sesion = new Sesn()
@@ -511,9 +518,9 @@ class PersonaController extends happy.seguridad.Shield {
                         permUsu.fechaInicio = accs.accsFechaInicial
                         permUsu.fechaFin = accs.accsFechaFinal
                         permUsu.acceso = accs
-                        if (!permUsu.save(flush: true))
+                        if (!permUsu.save(flush: true)) {
                             println "error save perm nuevo triangulo " + permUsu.errors
-                        else{
+                        } else {
                         }
                     }
                     def alerta = new Alerta()
@@ -541,7 +548,7 @@ class PersonaController extends happy.seguridad.Shield {
 
             }
             accs.save(flush: true)
-            if(session.usuario.id==accs?.usuario?.id){
+            if (session.usuario.id == accs?.usuario?.id) {
                 if (accs.accsFechaInicial <= new Date()) {
 
                     session.flag = 2
@@ -550,7 +557,7 @@ class PersonaController extends happy.seguridad.Shield {
                 } else {
                     render "OK_Restricción agregada"
                 }
-            }else{
+            } else {
                 render "OK_Restricción agregada"
             }
 
@@ -572,13 +579,14 @@ class PersonaController extends happy.seguridad.Shield {
                 perm.each {
                     it.fechaFin = now;
                     it.save(flush: true)
-                    if (!usu)
+                    if (!usu) {
                         usu = it.persona
+                    }
                 }
                 if (usu) {
                     def sesn = Sesn.findAllByUsuarioAndFechaInicio(usu, accs.accsFechaInicial)
-                    println "session "+sesn
-                    if (sesn.size()>0) {
+                    println "session " + sesn
+                    if (sesn.size() > 0) {
                         sesn.each {
                             it.fechaFin = now
                             it.save(flush: true)
@@ -630,15 +638,27 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def savePerfiles_ajax() {
+//        println "save perfiles: " + params
         def usu = Persona.get(params.id)
-        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
+        def now = new Date()
+//        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
+        def perfilesUsu = Sesn.withCriteria {
+            eq("usuario", usu)
+            ge("fechaInicio", now)
+            or {
+                le("fechaFin", now)
+                isNull("fechaFin")
+            }
+
+        }.perfil.id*.toString()
         def arrRemove = perfilesUsu, arrAdd = []
         def errores = ""
 
         if (params.perfil instanceof java.lang.String) {
             params.perfil = [params.perfil]
         }
-
+//        println "params perfil: " + params.perfil
+//        println "perfiles usu: " + perfilesUsu
         params.perfil.each { pid ->
             if (perfilesUsu.contains(pid)) {
                 //ya tiene este perfil: le quito de la lista de los de eliminar
@@ -648,6 +668,10 @@ class PersonaController extends happy.seguridad.Shield {
                 arrAdd.add(pid)
             }
         }
+
+//        println "ADD " + arrAdd
+//        println "REMOVE " + arrRemove
+
         arrRemove.each { pid ->
             def perf = Prfl.get(pid)
             def sesn = Sesn.findByUsuarioAndPerfil(usu, perf)
@@ -924,9 +948,9 @@ class PersonaController extends happy.seguridad.Shield {
     def save_ajax() {
         def msgDpto = ""
         if (params.password) {
-            if(params.password != 'pandagnaros'){
+            if (params.password != 'pandagnaros') {
                 params.password = params.password.toString().encodeAsMD5()
-            }else{
+            } else {
                 params.password = Persona.get(params.id).password
             }
         }
@@ -949,7 +973,7 @@ class PersonaController extends happy.seguridad.Shield {
                 def cantTramites = tramites.size()
                 println "cambioDpto_ajax: $tramites"
 
-                if (params.departamento.id != personaInstance.departamentoId)
+                if (params.departamento.id != personaInstance.departamentoId) {
                     msgDpto = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
                             "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
                             "de ${WordUtils.capitalizeFully(personaInstance.departamento.descripcion)} a " +
@@ -963,6 +987,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     from: [0: "Cancelar el cambio", 1: "Cambiar y efectuar el redireccionamiento"]) +
                             "</div>" +
                             "</div>"
+                }
                 params.departamento.id = personaInstance.departamentoId
             }
         } //update
@@ -1064,42 +1089,60 @@ class PersonaController extends happy.seguridad.Shield {
         if (params.id) {
             def personaInstance = Persona.get(params.id)
             /** comprueba que se pueda borrar **/
-            if(Tramite.findByDe(personaInstance)) mnsj += "La persona tiene trámites creados\n"
-            if (PersonaDocumentoTramite.findByPersona(personaInstance)) mnsj += "La persona se halla relacionada a trámites\n"
-            if (Accs.findByUsuario(personaInstance)) mnsj += "La persona tiene permisos de ausentismo\n"
-            if (Accs.findByAsignadoPor(personaInstance)) mnsj += "La persona ha registrado ausentismo\n"
-            if (PermisoUsuario.findByAsignadoPor(personaInstance)) mnsj += "La persona ha realizado Asignación de permisos\n"
-            if (PermisoUsuario.findByModificadoPor(personaInstance)) mnsj += "La persona ha realizado Modificación de permisos\n"
-            if (personaInstance.esTriangulo) mnsj += "La persona es recepcionista de oficina\n"
-            if (personaInstance.puedeAdmin) mnsj += "La persona tiene permios de administración\n"
-            if (personaInstance.activo) mnsj += "La persona se halla activa\n"
+            if (Tramite.findByDe(personaInstance)) {
+                mnsj += "La persona tiene trámites creados\n"
+            }
+            if (PersonaDocumentoTramite.findByPersona(personaInstance)) {
+                mnsj += "La persona se halla relacionada a trámites\n"
+            }
+            if (Accs.findByUsuario(personaInstance)) {
+                mnsj += "La persona tiene permisos de ausentismo\n"
+            }
+            if (Accs.findByAsignadoPor(personaInstance)) {
+                mnsj += "La persona ha registrado ausentismo\n"
+            }
+            if (PermisoUsuario.findByAsignadoPor(personaInstance)) {
+                mnsj += "La persona ha realizado Asignación de permisos\n"
+            }
+            if (PermisoUsuario.findByModificadoPor(personaInstance)) {
+                mnsj += "La persona ha realizado Modificación de permisos\n"
+            }
+            if (personaInstance.esTriangulo) {
+                mnsj += "La persona es recepcionista de oficina\n"
+            }
+            if (personaInstance.puedeAdmin) {
+                mnsj += "La persona tiene permios de administración\n"
+            }
+            if (personaInstance.activo) {
+                mnsj += "La persona se halla activa\n"
+            }
 
 //            println "prsn:" + personaInstance.id + personaInstance
 //            println "mnsj:" + mnsj
 
-            if(!mnsj) {
+            if (!mnsj) {
                 def prsn = personaInstance.nombre + " " + personaInstance.apellido
                 if (personaInstance) {
                     try {
-                        Sesn.findAllByUsuario(personaInstance).each {pr ->
+                        Sesn.findAllByUsuario(personaInstance).each { pr ->
                             pr.delete(flush: true)
                         }
 
-                        PermisoUsuario.findAllByPersona(personaInstance).each {pr ->
+                        PermisoUsuario.findAllByPersona(personaInstance).each { pr ->
                             pr.delete(flush: true)
                         }
 
                         personaInstance.delete(flush: true)
                         render "OK_${prsn} ha sido eliminada(o) del sistema"
                     } catch (e) {
-                        render "NO_"+mnsj
+                        render "NO_" + mnsj
                     }
                 } else {
                     notFound_ajax()
                 }
 
             } else {
-                render "NO_"+mnsj
+                render "NO_" + mnsj
             }
         } else {
             notFound_ajax()
@@ -1138,17 +1181,17 @@ class PersonaController extends happy.seguridad.Shield {
                 def ou = entry["ou"]
                 if (ou) {
                     //println "es ou lvl1 " + ou
-               //     println "encode hex "+entry["objectguid"]?.encodeAsHex()
+                    //     println "encode hex "+entry["objectguid"]?.encodeAsHex()
 //                    println "bytes "+entry["objectguid"].encodeAsMD5Bytes()
 //                    println "decode hex "+entry["objectguid"]?.decodeHex()
                     def dep = Departamento.findByDescripcion(ou)
                     if (!dep) {
-                        println "no encontro "+ou
-                        println "buscando por uid "+entry["objectguid"]?.encodeAsHex()
-                        println "busqueda todos "+Departamento.findAllByObjectguid(entry["objectguid"]?.encodeAsHex())
+                        println "no encontro " + ou
+                        println "buscando por uid " + entry["objectguid"]?.encodeAsHex()
+                        println "busqueda todos " + Departamento.findAllByObjectguid(entry["objectguid"]?.encodeAsHex())
                         dep = Departamento.findByObjectguid(entry["objectguid"]?.encodeAsHex())
-                        println "result "+dep
-                        if(!dep){
+                        println "result " + dep
+                        if (!dep) {
                             def sec = new Date().format("ss")
                             dep = new Departamento()
                             dep.descripcion = ou
@@ -1157,20 +1200,21 @@ class PersonaController extends happy.seguridad.Shield {
                             dep.padre = n1
 
 
-                            dep.objectguid=entry["objectguid"]?.encodeAsHex()
-                            if (!dep.save(flush: true))
+                            dep.objectguid = entry["objectguid"]?.encodeAsHex()
+                            if (!dep.save(flush: true)) {
                                 println "errores dep " + dep.errors
-                        }else{
+                            }
+                        } else {
                             println "update del nombre"
-                            dep.descripcion=ou
+                            dep.descripcion = ou
                             dep.save(flush: true)
                         }
 
                     } else {
-                        println "save del objectuid "+entry["objectguid"]?.encodeAsHex()+" en "+dep+"  "+dep.id
-                        dep.objectguid=entry["objectguid"]?.encodeAsHex()
-                        if(!dep.save(flush: true)){
-                            println "error en el save del uid "+dep.errors
+                        println "save del objectuid " + entry["objectguid"]?.encodeAsHex() + " en " + dep + "  " + dep.id
+                        dep.objectguid = entry["objectguid"]?.encodeAsHex()
+                        if (!dep.save(flush: true)) {
+                            println "error en el save del uid " + dep.errors
                         }
                     }
 
@@ -1182,7 +1226,7 @@ class PersonaController extends happy.seguridad.Shield {
                         if (gn) {
                             def logn = e2["samaccountname"]
                             def mail = e2["mail"]
-                          //  println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
+                            //  println "buscando e2 " + logn + "  mail " + mail + "     campo mail  " + entry["mail"]
                             if (!mail || mail == "") {
                                 noMail.add(["nombre": logn])
                             }
@@ -1213,8 +1257,9 @@ class PersonaController extends happy.seguridad.Shield {
                                     dpto = null
                                 }
 
-                                if (!dpto)
+                                if (!dpto) {
                                     dpto = sinDep
+                                }
                                 prsn.departamento = dpto
 //                                println "al crear persona pone dptodsde: ${dpto}"
 //                                prsn.departamentoDesde = dpto
@@ -1241,7 +1286,7 @@ class PersonaController extends happy.seguridad.Shield {
                             } else {
                                 //println "encontro"
                                 if (prsn.nombre != WordUtils.capitalizeFully(e2["givenname"]) || prsn.apellido != WordUtils.capitalizeFully(e2["sn"]) || prsn.mail != e2["mail"] || prsn.connect != e2["dn"] || prsn.departamento == null) {
-                                //    println "update"
+                                    //    println "update"
                                     prsn.nombre = WordUtils.capitalizeFully(e2["givenname"])
                                     prsn.apellido = WordUtils.capitalizeFully(e2["sn"])
                                     prsn.mail = mail
@@ -1253,18 +1298,21 @@ class PersonaController extends happy.seguridad.Shield {
                                     def dpto = null
                                     // println "datos "+datos
                                     if (datos.size() > 1) {
-                                        if (datos)
+                                        if (datos) {
                                             dpto = datos[1].split("=")
+                                        }
                                         //println "dpto "+dpto
-                                        if (dpto.size() > 1)
+                                        if (dpto.size() > 1) {
                                             dpto = Departamento.findByDescripcion(dpto[1])
+                                        }
                                         println "departamento(1)   " + dpto
 
                                     } else {
                                         dpto = null
                                     }
-                                    if (!dpto)
+                                    if (!dpto) {
                                         dpto = sinDep
+                                    }
                                     if (prsn.departamento != dpto) {
                                         println "actualiza depatamento(1) con ${dpto}, antes: ${prsn.departamento.id}"
                                         prsn.departamentoDesde = prsn.departamento
@@ -1273,8 +1321,9 @@ class PersonaController extends happy.seguridad.Shield {
                                     }
 
 
-                                    if (!prsn.apellido)
+                                    if (!prsn.apellido) {
                                         prsn.apellido = "N.A."
+                                    }
                                     // println "update " + prsn.apellido
                                     if (!prsn.save(flush: true)) {
 //                                        println "error save prns " + prsn.errors
@@ -1290,49 +1339,53 @@ class PersonaController extends happy.seguridad.Shield {
                             dep = Departamento.findByDescripcion(ou2)
                             if (!dep) {
 
-                                println "no encontro ou2 "+ou2
-                                println "buscando por uid "+e2["objectguid"]?.encodeAsHex()
-                                println "busqueda todos "+Departamento.findAllByObjectguid(e2["objectguid"]?.encodeAsHex())
+                                println "no encontro ou2 " + ou2
+                                println "buscando por uid " + e2["objectguid"]?.encodeAsHex()
+                                println "busqueda todos " + Departamento.findAllByObjectguid(e2["objectguid"]?.encodeAsHex())
                                 dep = Departamento.findByObjectguid(e2["objectguid"]?.encodeAsHex())
-                                println "result "+dep
-                                if(!dep){
+                                println "result " + dep
+                                if (!dep) {
                                     def sec = new Date().format("ss")
                                     def datos = e2["dn"].split(",")
                                     def padre = null
-                                    if (datos)
+                                    if (datos) {
                                         padre = datos[1].split("=")
+                                    }
                                     padre = Departamento.findByDescripcion(padre[1])
-                                    if (!padre)
+                                    if (!padre) {
                                         padre = n1
+                                    }
                                     dep = new Departamento()
                                     dep.descripcion = ou2
                                     dep.codigo = "NUEVO-" + sec + secuencia++
                                     dep.activo = 1
                                     dep.padre = padre
                                     dep.objectguid = e2["objectguid"]?.encodeAsHex()
-                                    if (!dep.save(flush: true))
+                                    if (!dep.save(flush: true)) {
                                         println "errores dep " + dep.errors
-                                }else{
+                                    }
+                                } else {
                                     println "update del nombre"
-                                    dep.descripcion=ou2
+                                    dep.descripcion = ou2
                                     dep.save(flush: true)
                                 }
 
 
-
                             } else {
-                                println "actualizando uid "+e2["objectguid"]?.encodeAsHex()+" en "+dep+"  "+dep.id
+                                println "actualizando uid " + e2["objectguid"]?.encodeAsHex() + " en " + dep + "  " + dep.id
                                 dep.objectguid = e2["objectguid"]?.encodeAsHex()
-                                if(!dep.save(flush: true)){
-                                    println "error en el save del uid "+dep.errors
+                                if (!dep.save(flush: true)) {
+                                    println "error en el save del uid " + dep.errors
                                 }
                                 def datos = e2["dn"].split(",")
                                 def padre = null
-                                if (datos)
+                                if (datos) {
                                     padre = datos[1].split("=")
+                                }
                                 padre = Departamento.findByDescripcion(padre[1])
-                                if (!padre)
+                                if (!padre) {
                                     padre = n1
+                                }
                                 if (dep.padre?.id != padre.id) {
                                     dep.padre = padre
                                     dep.save(flush: true)
@@ -1365,11 +1418,13 @@ class PersonaController extends happy.seguridad.Shield {
                         prsn.connect = entry["dn"]
                         def datos = entry["dn"].split(",")
                         def dpto = null
-                        if (datos)
+                        if (datos) {
                             dpto = datos[1].split("=")
+                        }
                         dpto = Departamento.findByDescripcion(dpto[1])
-                        if (!dpto)
+                        if (!dpto) {
                             dpto = sinDep
+                        }
                         prsn.departamento = dpto
 //                        println "al crear persona buscado por login... pone dptodsde: ${dpto}"
 //                        prsn.departamentoDesde = dpto
@@ -1388,8 +1443,9 @@ class PersonaController extends happy.seguridad.Shield {
                             if (entry["sn"] && entry["sn"] != "") {
                                 prsn.nombre = WordUtils.capitalizeFully(entry["givenname"])
                                 prsn.apellido = WordUtils.capitalizeFully(entry["sn"])
-                                if (!prsn.apellido)
+                                if (!prsn.apellido) {
                                     prsn.apellido = "N.A."
+                                }
                                 prsn.mail = entry["mail"]
                                 if (prsn.connect != entry["dn"]) {
                                     prsn.connect = entry["dn"]
@@ -1397,8 +1453,9 @@ class PersonaController extends happy.seguridad.Shield {
                                 }
                                 def datos = entry["dn"].split(",")
                                 def dpto = null
-                                if (datos)
+                                if (datos) {
                                     dpto = datos[1].split("=")
+                                }
                                 dpto = Departamento.findByDescripcion(dpto[1])
                                 if (prsn.departamento != dpto) {
                                     println "actualiza depatamento(2) con ${dpto}, antes: ${prsn.departamento.id}"

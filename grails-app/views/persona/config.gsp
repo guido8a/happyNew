@@ -320,6 +320,7 @@
                 });
 
                 function doSave(url, data) {
+                    console.log(url, data);
                     $btnPerfiles.hide().after(spinner);
                     openLoader("Grabando");
                     $.ajax({
