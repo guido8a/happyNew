@@ -17,12 +17,12 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def esDepartamento = persona.esTriangulo
 
         if (!esDepartamento && persona == tramite.de) {
-            println "1.1: " + persona
+//            println "1.1: " + persona
             render "OK"
             return
         }
         if (esDepartamento && tramite.deDepartamento == persona.departamento) {
-            println "1.2: " + persona.departamento
+//            println "1.2: " + persona.departamento
             render "OK"
             return
         }
@@ -30,12 +30,12 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         while (principal.padre) {
             principal = principal.padre
             if (!esDepartamento && persona == principal.de) {
-                println "2.1: " + persona
+//                println "2.1: " + persona
                 render "OK"
                 return
             }
             if (esDepartamento && principal.deDepartamento == persona.departamento) {
-                println "2.2: " + persona.departamento
+//                println "2.2: " + persona.departamento
                 render "OK"
                 return
             }
@@ -73,7 +73,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             paras.each { para ->
                 if (!puede) {
-                    println "4.1: " + persona
+//                    println "4.1: " + persona
                     puede = hijosPdt(para, persona, esDepartamento, puede)
                 }
             }
@@ -81,7 +81,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             if (!puede) {
                 ccs.each { para ->
                     if (!puede) {
-                        println "4.2: " + persona
+//                        println "4.2: " + persona
                         puede = hijosPdt(para, persona, esDepartamento, puede)
                     }
                 }
@@ -96,11 +96,11 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
             hijos.each { h ->
                 if (!esDepartamento && h.de == persona) {
-                    println "3.1: " + persona
+//                    println "3.1: " + persona
                     puede = true
                 }
                 if (esDepartamento && h.deDepartamento == persona.departamento) {
-                    println "3.2: " + persona.departamento
+//                    println "3.2: " + persona.departamento
                     puede = true
                 }
                 if (!puede) {
