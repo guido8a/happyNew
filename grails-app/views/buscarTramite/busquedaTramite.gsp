@@ -40,7 +40,7 @@
             <div style="margin-bottom: 20px">
                 <div class="col-md-2">
                     <label>Documento</label>
-                    <g:textField name="memorando" value="" maxlength="15" class="form-control allCaps"/>
+                    <g:textField name="memorando" value="" maxlength="20" class="form-control allCaps" style="width: 180px;margin-left: -20px"/>
                 </div>
 
                 <div class="col-md-2">

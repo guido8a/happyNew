@@ -39,7 +39,7 @@ class ShieldController {
 
 
     def notFound = {
-        println "notFound"
+//        println "notFound -- Shield  params: $params"
         def msn = "Esta tratando de ingresar a una accion no registrada en el sistema. Por favor use las opciones del menu para navegar por el sistema."
         return [msn: msn]
     }

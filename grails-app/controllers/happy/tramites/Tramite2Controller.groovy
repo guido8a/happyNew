@@ -1349,8 +1349,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def crearTramiteDep() {
-
-        if (params.padre) {
+        def pruebasInicio = new Date()
+        def pruebasFin
+//        println "crearTramiteDep params: $params"
+        if (params.padre) {  // contestar documento
             def padre = Tramite.get(params.padre)
 
             //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
@@ -1445,7 +1447,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
         def tramitetr = Tramite.get(params.id)
         if (tramitetr) {
-            println("entro!")
+//            println("entro!")
             def paratr = tramitetr.para
             def copiastr = tramitetr.copias
             (copiastr + paratr).each { c ->
@@ -1495,6 +1497,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
 
         }
+
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
@@ -1522,15 +1525,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.fechaCreacion = new Date()
         }
 
-        def persona = Persona.get(session.usuario.id)
+        def persona = session.usuario
         def esTriangulo = session.usuario.esTriangulo
 
         def de = session.usuario
-        def disp, disponibles = []
-        def disp2 = []
+//        def disp, disponibles = []
+//        def disp2 = []
         def todos = []
-        def users = []
+//        def users = []
 
+
+/*
         if (session.usuario.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
         } else {
@@ -1540,6 +1545,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (tramite.id) {
             copias = tramite.copias.persona.id*.toLong()
         }
+
         //modificado
         disp.each { dep ->
             if (dep.id == persona.departamento?.id) {
@@ -1595,7 +1601,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-        todos = disponibles + disp2
+  */
+//        pruebasFin = new Date()
+//        println "tiempo 2 ejecución crearTramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
+        def sql = "SELECT id, dscr as label, externo FROM trmt_para($session.usuario.id)"
+        def cn = dbConnectionService.getConnection()
+        todos = cn.rows(sql.toString())
+
+//        todos = disponibles + disp2
+//        println "todos: $todos"
+
         def bloqueo = false
         if (session.departamento.estado == "B") {
             bloqueo = true
@@ -1686,12 +1702,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
             params.esRespuestaNueva = tramite.esRespuestaNueva
         }
 
+//        pruebasFin = new Date()
+//        println "tiempo ejecución crearTramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,
                 bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }
 
     def saveDep() {
-//        println("params savedep" + params)
+//        println("params saveDep" + params)
         //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
@@ -2196,11 +2215,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
                 pdt.personaSigla = pdt.persona.login
+                pdt.departamentoPersona = session.usuario.departamento
 
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
+//                println "registro de envio del trámite ${pdt.tramite.codigo}"
                 if (!pdt.save(flush: true)) {
-                    println pdt.errors
+                    println "error al grabar prtr1" + pdt.errors
                 }
 
                 def pdt2 = new PersonaDocumentoTramite()
@@ -2213,12 +2234,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
                 pdt2.personaSigla = pdt2.persona.login
-
+                pdt.departamentoPersona = session.usuario.departamento
+//                println "registro de envio del trámite ${pdt.tramite.codigo}"
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
                 pdt2.rolPersonaTramite = rolRecibe
                 if (!pdt2.save(flush: true)) {
-                    println pdt2.errors
+                    println "error al grabar prtr2" + pdt2.errors
                 }
 
                 def pdtPara = PersonaDocumentoTramite.withCriteria {
@@ -2255,10 +2277,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (tramite.aQuienContesta == null) {
                     tramite.aQuienContesta = aqc
                 }
-                if (tramite.save(flush: true)) {
-
-                } else {
-                    println tramite.errors
+                if (!tramite.save(flush: true)) {
+                    println "error al grabar trámite:" + tramite.errors
                 }
 
                 if (params.anexo == "on") {

@@ -593,9 +593,10 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         def de = session.usuario
-        def disp, disponibles = []
-        def disp2 = []
         def todos = []
+
+/*        def disp, disponibles = []
+        def disp2 = []
 
         if (session.usuario.puedeTramitar) {
             disp = Departamento.list([sort: 'descripcion'])
@@ -653,6 +654,11 @@ class TramiteController extends happy.seguridad.Shield {
         }
 
         todos = disponibles + disp2
+ */
+        def sql = "SELECT id, dscr as label, externo FROM trmt_para($session.usuario.id)"
+        def cn = dbConnectionService.getConnection()
+        todos = cn.rows(sql.toString())
+
 
         def bloqueo = false
         if (session.usuario.estado == "B") {

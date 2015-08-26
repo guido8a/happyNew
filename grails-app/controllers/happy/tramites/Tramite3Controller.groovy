@@ -12,7 +12,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def dbConnectionService
 
     def save() {
-//        println "save params: " + params
+//        println "save params tramite3: " + params
         /*
           tramite.asunto:sdfg sdfg sdf g,
           tramite:[
@@ -504,7 +504,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 tipoDoc = TipoDocumento.get(paramsTramite.tipoDocumento.id)
             }
             if (tipoDoc.codigo == "DEX") {
-
+                println "tramite DEX"
                 //aqui envia y recibe automaticamente el tramite
                 def ahora = new Date();
                 def rolEnvia = RolPersonaTramite.findByCodigo("E004")
@@ -523,10 +523,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
                 pdt.departamentoNombre = pdt.departamento.descripcion
                 pdt.departamentoSigla = pdt.departamento.codigo
-                pdt2.personaSigla = pdt.persona.login
+                pdt.personaSigla = pdt.persona.login
+                pdt.departamentoPersona = session.usuario.departamento
 
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
+                println "registro de envio del trámite DEX persona ${pdt.tramite.codigo}"
                 if (!pdt.save(flush: true)) {
                     println "saveDep" +pdt.errors
                 }
@@ -541,7 +543,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 pdt2.departamentoNombre = pdt2.departamento.descripcion
                 pdt2.departamentoSigla = pdt2.departamento.codigo
                 pdt2.personaSigla = pdt2.persona.login
-
+                pdt.departamentoPersona = session.usuario.departamento
+                println "registro de recibe del trámite DEX persona ${pdt.tramite.codigo}"
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
                 pdt2.rolPersonaTramite = rolRecibe
@@ -1059,16 +1062,15 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
 
-            def persona = Persona.get(session.usuario.id)
-
+            def persona = session.usuario
             def tramite = Tramite.get(params.id)
-            def porEnviar = EstadoTramite.findByCodigo("E001")
             def enviado = EstadoTramite.findByCodigo("E003")
             def recibido = EstadoTramite.findByCodigo("E004")
+
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
 //            println tramite.estadoTramite.descripcion
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
-                render "ERROR_*Se ha cancelado el proceso de recepción.<br/>Este trámite no puede ser gestionado."
+                render "ERROR_*El trámite aparece como no enviado.<br/>Este trámite no puede ser recibido."
                 return
             }
             def paraDpto = tramite.para?.departamento
@@ -1097,6 +1099,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                return
 //            }
 
+            //ya no se usa
             def esCircular = false
             if (!paraPrsn && !paraDpto) {
                 esCircular = true
@@ -1104,7 +1107,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
             def rolPara = RolPersonaTramite.findByCodigo("R001")
             def rolCC = RolPersonaTramite.findByCodigo("R002")
-            def rolImprimir = RolPersonaTramite.findByCodigo("I005")
             def triangulo = false
             if (params.source == "bed") {
                 triangulo = true
@@ -1147,7 +1149,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 render "ERROR_Este trámite no puede ser gestionado. Por favor actualice su bandeja"
                 return
             }
-//            println "pxt: " + pxt
+//            println "prtr a recibir: ${pxt.size()}, $pxt"
 
 //        println "tramite: " + tramite
 //        println "paraDpto: " + paraDpto
@@ -1227,7 +1229,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     pdt.personaSigla = pdt.persona.login
 
                     pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
-                    pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
+                    pdt.departamentoPersona = persona.departamento
 
                     pdt.fechaRecepcion = hoy
                     pdt.fechaLimiteRespuesta = limite
@@ -1260,7 +1262,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     render "NO_Ocurrió un error al recibir"
                 }
             } else {
-                println "estado 4 " + pxt.id + "  " + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
+                println "error al recibir: estado 4 " + pxt.tramite.codigo + " estado:" + pxt.estado.codigo + "   " + pxt.estado.descripcion + "   " + pxt.fechaRecepcion
                 render "NO_Ocurrió un error al recibir"
             }
 

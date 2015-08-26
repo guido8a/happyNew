@@ -98,6 +98,7 @@ environments {
             username = "postgres"
             password = "janus"
 
+/*
             properties {
                 jmxEnabled = true
                 initialSize = 10
@@ -117,9 +118,11 @@ environments {
                 jdbcInterceptors = ConnectionState
                 defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
             }
+*/
         }
     }
 
 }
 
 
+                                                                                      i
