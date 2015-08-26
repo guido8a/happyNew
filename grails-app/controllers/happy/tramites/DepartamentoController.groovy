@@ -8,6 +8,7 @@ import org.apache.commons.lang.WordUtils
 class DepartamentoController extends happy.seguridad.Shield {
 
     def tramitesService
+    def dbConnectionService
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
@@ -176,18 +177,18 @@ class DepartamentoController extends happy.seguridad.Shield {
                 }
             }
 
-            deps.each {d->
+            deps.each { d ->
 //                if(!departamentos.contains(d)) {
-                    departamentos.add(d)
-                    def dep = d
-                    def padre = dep.padre
-                    while (padre) {
-                        dep = padre
-                        padre = dep.padre
+                departamentos.add(d)
+                def dep = d
+                def padre = dep.padre
+                while (padre) {
+                    dep = padre
+                    padre = dep.padre
 //                        if (!departamentos.contains(dep)) {
-                            departamentos.add(dep)
+                    departamentos.add(dep)
 //                        }
-                    }
+                }
 //                }
             }
 
@@ -212,7 +213,65 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbolReportes() {
-        return [params: params]
+        def data = [:]
+        def sql = "SELECT * FROM trmt_arbol($session.usuario.id)"
+        println "arbol_rep: $sql"
+        def cn = dbConnectionService.getConnection()
+        cn.eachRow(sql.toString()) { row ->
+            println "row: " + row
+            def dptoId = row.dpto__id
+            def dptoPadre = row.dptopdre
+//            if (!data[dptoPadre]) {
+//                data[dptoPadre] = [
+//                        id   : dptoPadre,
+//                        dptos: [],
+//                        prsns: []
+//                ]
+//            }
+            if (!data[dptoId]) {
+                data[dptoId] = [
+                        id         : dptoId,
+                        padre      : row.dptopdre,
+                        codigo     : row.dptocdgo,
+                        descripcion: row.dptodscr,
+                        externo    : row.dptoextr,
+                        remoto     : row.dptormto,
+                        activo     : row.dptoactv,
+                        dptos      : [],
+                        prsns      : []
+                ]
+            }
+            def prsn = [
+                    id         : row.prsn__id,
+                    nombre     : row.prsnnmbr,
+                    apellido   : row.prsnapll,
+                    login      : row.prsnlogn,
+                    esJefe     : row.prsnjefe,
+                    esDirector : row.prsndire,
+                    esTriangulo: row.prsnrcof,
+                    activo     : row.prsnactv
+            ]
+            data[dptoId].prsns += prsn
+
+//            data[dptoPadre].dptos += dpto
+        }
+
+        println data
+
+        def html = "<ul>"
+        def type = "root"       // tipo de nodo: para el ícono
+        def opened = true       // marca el nodo como abierto (true) o cerrado (false)
+        def selected = false    // marca el nodo como seleccionado (true) o no (false)
+        def disabled = false    // marca el nodo como desabilitado (true) o no (false).
+        // Cuando está deshabilitado no se puede hacer click ni seleccionar
+        def id = "root"
+
+        def dataJstree = "\"opened\": $opened, \"selected\": $selected, \"disabled\": $disabled, \"type\": \"$type\""
+        html += "<li id='$id' data-jstree='{$dataJstree}'>"
+        html += "Estructura"
+        html += "<ul>"
+        html += "</ul>"
+        return [params: params, arbol: html]
     }
 
     def arbol() {
@@ -294,52 +353,53 @@ class DepartamentoController extends happy.seguridad.Shield {
                         clase += " ocupado "
                     }
 
-                    //cuenta los tramites de la bandeja de entrada de la oficina
-                    def rolPara = RolPersonaTramite.findByCodigo('R001');
-                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
-                    def rolImprimir = RolPersonaTramite.findByCodigo('I005');
-
-                    def pxtPara = PersonaDocumentoTramite.withCriteria {
-                        eq("departamento", hijo)
-                        eq("rolPersonaTramite", rolPara)
-                        isNotNull("fechaEnvio")
-                        tramite {
-                            or {
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                            }
-                        }
-                    }
-                    def pxtCopia = PersonaDocumentoTramite.withCriteria {
-                        eq("departamento", hijo)
-                        eq("rolPersonaTramite", rolCopia)
-                        isNotNull("fechaEnvio")
-                        tramite {
-                            or {
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                            }
-                        }
-                    }
-                    def pxtImprimir = PersonaDocumentoTramite.withCriteria {
-                        eq("departamento", hijo)
-                        eq("rolPersonaTramite", rolImprimir)
-                        isNotNull("fechaEnvio")
-                        tramite {
-                            or {
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                            }
-                        }
-                    }
-
-                    def pxtTodos = pxtPara
-                    pxtTodos += pxtCopia
-                    pxtTodos += pxtImprimir
-                    data = "data-tramites='${pxtTodos.size()}'"
+//                    //cuenta los tramites de la bandeja de entrada de la oficina
+//                    def rolPara = RolPersonaTramite.findByCodigo('R001');
+//                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
+//                    def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+//
+//                    def pxtPara = PersonaDocumentoTramite.withCriteria {
+//                        eq("departamento", hijo)
+//                        eq("rolPersonaTramite", rolPara)
+//                        isNotNull("fechaEnvio")
+//                        tramite {
+//                            or {
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                            }
+//                        }
+//                    }
+//                    def pxtCopia = PersonaDocumentoTramite.withCriteria {
+//                        eq("departamento", hijo)
+//                        eq("rolPersonaTramite", rolCopia)
+//                        isNotNull("fechaEnvio")
+//                        tramite {
+//                            or {
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                            }
+//                        }
+//                    }
+//                    def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+//                        eq("departamento", hijo)
+//                        eq("rolPersonaTramite", rolImprimir)
+//                        isNotNull("fechaEnvio")
+//                        tramite {
+//                            or {
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                            }
+//                        }
+//                    }
+//
+//                    def pxtTodos = pxtPara
+//                    pxtTodos += pxtCopia
+//                    pxtTodos += pxtImprimir
+//                    data = "data-tramites='${pxtTodos.size()}'"
+                    data = "data-tramites='-1'"
                     if (hijo.externo == 1) {
                         rel += "Externo"
                     }
@@ -370,52 +430,54 @@ class DepartamentoController extends happy.seguridad.Shield {
                         tp = rel = clase = "director"
                     }
 
-                    def rolPara = RolPersonaTramite.findByCodigo('R001');
-                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
-                    def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-                    def estadoEnviado = EstadoTramite.findByCodigo("E003")
-                    def estadoRecibido = EstadoTramite.findByCodigo("E004")
-                    def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
-                    def estadoRevisado = EstadoTramite.findByCodigo("E002")
-                    def tramitesEntrada = PersonaDocumentoTramite.withCriteria {
-                        eq("persona", hijo)
-                        or {
-                            eq("rolPersonaTramite", rolPara)
-                            eq("rolPersonaTramite", rolCopia)
-                        }
-                        or {
-                            eq("estado", estadoEnviado)
-                            eq("estado", estadoRecibido)
-                        }
-                    }
-                    def cantTramEntrada = 0, cantTramSalida = 0
-                    tramitesEntrada.each { tr ->
-                        if (Tramite.countByAQuienContesta(tr) == 0) {
-                            cantTramEntrada++
-                        }
-                    }
-
-                    def tramitesSalida = Tramite.withCriteria {
-                        eq("de", hijo)
-                        isNull("deDepartamento")
-                        inList("estadoTramite", [estadoPorEnviar, estadoRevisado, estadoEnviado, estadoRecibido])
-                        order("fechaCreacion", "desc")
-                    }
-                    def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(hijo, rolImprimir).tramite
-                    if (t.size() > 0) {
-                        tramitesSalida += t
-                    }
-                    def tramsSalida = []
-                    tramitesSalida.each { tr ->
-                        def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [rolPara, rolCopia])
-                        pdt.each { pd ->
-                            if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-                                if (!tramsSalida.contains(tr))
-                                    tramsSalida += tr
-                            }
-                        }
-                    }
-                    cantTramSalida = tramsSalida.size()
+//                    def rolPara = RolPersonaTramite.findByCodigo('R001');
+//                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
+//                    def rolImprimir = RolPersonaTramite.findByCodigo('I005')
+//                    def estadoEnviado = EstadoTramite.findByCodigo("E003")
+//                    def estadoRecibido = EstadoTramite.findByCodigo("E004")
+//                    def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
+//                    def estadoRevisado = EstadoTramite.findByCodigo("E002")
+//                    def tramitesEntrada = PersonaDocumentoTramite.withCriteria {
+//                        eq("persona", hijo)
+//                        or {
+//                            eq("rolPersonaTramite", rolPara)
+//                            eq("rolPersonaTramite", rolCopia)
+//                        }
+//                        or {
+//                            eq("estado", estadoEnviado)
+//                            eq("estado", estadoRecibido)
+//                        }
+//                    }
+//                    def cantTramEntrada = 0, cantTramSalida = 0
+//                    tramitesEntrada.each { tr ->
+//                        if (Tramite.countByAQuienContesta(tr) == 0) {
+//                            cantTramEntrada++
+//                        }
+//                    }
+//
+//                    def tramitesSalida = Tramite.withCriteria {
+//                        eq("de", hijo)
+//                        isNull("deDepartamento")
+//                        inList("estadoTramite", [estadoPorEnviar, estadoRevisado, estadoEnviado, estadoRecibido])
+//                        order("fechaCreacion", "desc")
+//                    }
+//                    def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(hijo, rolImprimir).tramite
+//                    if (t.size() > 0) {
+//                        tramitesSalida += t
+//                    }
+//                    def tramsSalida = []
+//                    tramitesSalida.each { tr ->
+//                        def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [rolPara, rolCopia])
+//                        pdt.each { pd ->
+//                            if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
+//                                if (!tramsSalida.contains(tr)) {
+//                                    tramsSalida += tr
+//                                }
+//                            }
+//                        }
+//                    }
+//                    cantTramSalida = tramsSalida.size()
+                    def cantTramSalida = -1, cantTramEntrada = -1
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"
                     }
@@ -680,8 +742,8 @@ class DepartamentoController extends happy.seguridad.Shield {
                 def personas = Persona.countByDepartamento(departamentoInstance)
                 if (personas == 0) {
                     def tddp = TipoDocumentoDepartamento.findAllByDepartamento(departamentoInstance)
-                    if(tddp.size() > 0) {
-                        tddp.each {td ->
+                    if (tddp.size() > 0) {
+                        tddp.each { td ->
                             try {
                                 td.delete(flush: true)
                             } catch (e) {

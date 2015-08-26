@@ -5,7 +5,7 @@
   Time: 11:18 AM
 --%>
 
-<%@ page import="happy.tramites.Tramite; happy.seguridad.Persona; happy.tramites.DocumentoTramite" contentType="text/html;charset=UTF-8" %>
+<%@ page import="happy.seguridad.Persona; happy.tramites.DocumentoTramite" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="layout" content="main">
@@ -76,21 +76,24 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${rows}" var="row" status="i">
-                    <g:set var="now" value="${new Date()}"/>
+                <g:each in="${tramites}" var="tr" status="i">
+                    <g:set var="now" value="${new java.util.Date()}"/>
 
                     <g:set var="estado" value="Por recibir"/>
 
-                    <g:if test="${row.trmtfcrc}">%{-- fecha de recepcion --}%
-                        <g:if test="${row.trmtfclr < now}">%{-- fecha limite respuesta --}%
+                    <g:if test="${tr.fechaRecepcion}">
+                        <g:if test="${tr.fechaLimiteRespuesta < now}">
                             <g:set var="estado" value="Retrasado"/>
+                            <g:if test="${happy.tramites.Tramite.countByAQuienContesta(tr) > 0}">
+                                <g:set var="estado" value="Recibido"/>
+                            </g:if>
                         </g:if>
                         <g:else>
                             <g:set var="estado" value="Recibido"/>
                         </g:else>
                     </g:if>
                     <g:else>
-                        <g:if test="${row.trmtfcbq && row.trmtfcbq < now}">%{-- fecha bloqueo --}%
+                        <g:if test="${tr.fechaBloqueo < now}">
                             <g:set var="estado" value="Sin recepción"/>
                         </g:if>
                         <g:else>
@@ -101,49 +104,43 @@
                     <tr>
                         <td class="text-center">${i + 1}</td>
                         <td class="text-center">
-                            <g:if test="${row.tptrcdgo == 'C'}">%{-- tipo tramite cdgo --}%
-                                <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                            ${tr.tramite.codigo}
+                            <g:if test="${tr?.tramite?.anexo == 1 && DocumentoTramite.countByTramite(tr.tramite) > 0}">
+                                <i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>
                             </g:if>
-                            <g:if test="${row.trmtdctr > 0}">%{-- DocumentoTramite.count --}%
-                                <i class="fa fa-paperclip"></i>
-                            </g:if>
-                            ${row.trmtcdgo}%{-- tramite cdgo --}%
                         </td>
-                        <td class="text-center">${row.trmtfcen?.format("dd-MM-yyyy HH:mm")}</td>
-                        <td class="text-center">${row.trmtfcrc?.format("dd-MM-yyyy HH:mm")}</td>
-                        <td class="text-center">${row.deprdpto}</td>
+                        <td class="text-center">${tr.fechaEnvio?.format("dd-MM-yyyy HH:mm")}</td>
+                        <td class="text-center">${tr.fechaRecepcion?.format("dd-MM-yyyy HH:mm")}</td>
+                        <td class="text-center">${tr.tramite.de?.departamento?.codigo}</td>
                         <td class="text-center">
-                            <g:if test="${row.dpto__de}">
+                            <g:if test="${tr.tramite.deDepartamento}">
                                 <i class="fa fa-download"></i>
-                                ${row.deprdpto} (${row.deprlogn})
                             </g:if>
                             <g:else>
                                 <i class="fa fa-user"></i>
-                                ${row.deprlogn}
                             </g:else>
-                        %{--${row.deprlogn ?: row.deprdscr}--}%
+                            ${tr.tramite?.de?.login ?: tr?.tramite?.de?.toString()}
                         </td>
-                        <td class="text-center">${row.trmtfclr?.format("dd-MM-yyyy HH:mm")}</td>
-                        <td class="text-center">${row.rltrdscr}</td>
+                        <td class="text-center">${tr.fechaLimiteRespuesta?.format("dd-MM-yyyy HH:mm")}</td>
+                        <td class="text-center">${tr?.rolPersonaTramite?.descripcion}</td>
                         <td class="text-center">${estado}</td>
                         <td class="text-center">
-                            <g:if test="${row.dpto__de}">
+                            <g:if test="${tr.tramite.deDepartamento}">
                             %{--<g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${personas}" optionKey="id"/>--}%
-                                <g:select class="form-control input-sm select" name="cmbRedirect_${row.trmt__id}" from="${filtradas}" optionKey="id"/>
+                                <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${filtradas}" optionKey="id"/>
                             </g:if>
                             <g:else>
 
                             %{--<g:set var="pers2" value="${personas - tr.tramite.de}"/>--}%
-                            %{--<g:set var="pers2" value="${filtradas - tr.tramite.de}"/>--}%
-                                <g:set var="pers2" value="${filtradas - filtradas.find { it.login == row.deprlogn }}"/>
-                                <g:select class="form-control input-sm select" name="cmbRedirect_${row.trmt__id}" from="${pers2}" optionKey="id"
-                                          noSelection="[('-' + dep.id): dep.descripcion]"/>
+                                <g:set var="pers2" value="${filtradas - tr.tramite.de}"/>
+                                <g:select class="form-control input-sm select" name="cmbRedirect_${tr.id}" from="${pers2}" optionKey="id"
+                                             noSelection="[('-' + dep.id): dep.descripcion]"/>
                             </g:else>
                         </td>
                         <td class="text-center">
                             <a href="#" class="btn btn-xs btn-success btn-move"
                                data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
-                               data-id="${row.trmt__id}" title="Enviar">
+                               data-id="${tr.id}" title="Enviar">
                                 <i class="fa fa-plane"></i>&nbsp;
                             </a>
                         </td>

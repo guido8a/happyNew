@@ -5,9 +5,10 @@ import happy.seguridad.Persona
 import happy.seguridad.Sesn
 import happy.seguridad.Shield
 
-class TramiteAdminController extends Shield {
+class TramiteAdminController /*extends Shield*/ {
 
     def tramitesService
+    def dbConnectionService
 
     def redireccionarTramitesUI() {
 
@@ -535,6 +536,101 @@ class TramiteAdminController extends Shield {
     def redireccionarTramites() {
         def persona = Persona.get(params.id)
 
+        if (!params.sort || params.sort == "") {
+            params.sort = "trmtfcen"
+        }
+        if (!params.order || params.order == "" || params.order == null) {
+            params.order = "DESC"
+        }
+
+        def sql = "SELECT * FROM entrada_prsn($persona.id) ORDER BY ${params.sort} ${params.order}"
+//        println "redireccionar tram: $sql"
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+
+        def personas
+        def dep = persona.departamento
+        def filtradas = []
+        def sesion
+
+        if (persona?.departamento?.id == persona?.departamentoDesdeId) {
+            if (persona.estaActivo) {
+                personas = Persona.withCriteria {
+                    eq("departamento", persona.departamento)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            } else {
+                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                if (deps.size() > 0) {
+                    dep = deps.departamento.first()
+                }
+                personas = Persona.withCriteria {
+                    eq("departamento", dep)
+                    ne("id", persona.id)
+                    order("apellido", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            }
+            personas.each {
+                sesion = Sesn.findAllByUsuario(it)
+                if (it.esTriangulo() && sesion.size() == 1) {
+                } else {
+                    if (it.puedeRecibirOff) {
+                        filtradas += it
+                    }
+                }
+            }
+        } else {
+            def depaDesde
+
+            if (persona?.departamentoDesde) {
+                depaDesde = persona.departamentoDesde
+            } else {
+                depaDesde = persona.departamento
+            }
+
+            if (persona.estaActivo) {
+                personas = Persona.withCriteria {
+                    eq("departamento", depaDesde)
+                    ne("id", persona.id)
+                    order("nombre", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            } else {
+                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                if (deps.size() > 0) {
+                    dep = deps.departamento.first()
+                }
+                personas = Persona.withCriteria {
+                    eq("departamento", depaDesde)
+                    ne("id", persona.id)
+                    order("nombre", "asc")
+                }.findAll {
+                    it.estaActivo
+                }
+            }
+            personas.each {
+                sesion = Sesn.findAllByUsuario(it)
+                if (it.esTriangulo() && sesion.size() == 1) {
+                } else {
+                    if (it.puedeRecibirOff) {
+                        filtradas += it
+                    }
+                }
+            }
+        }
+
+        return [persona: persona, rows: rows, personas: personas, dep: dep, filtradas: filtradas]
+    }
+
+    def redireccionarTramites_old() {
+        def persona = Persona.get(params.id)
+
         def rolPara = RolPersonaTramite.findByCodigo('R001');
         def rolCopia = RolPersonaTramite.findByCodigo('R002');
         def rolImprimir = RolPersonaTramite.findByCodigo('I005')
@@ -639,9 +735,7 @@ class TramiteAdminController extends Shield {
                     }
                 }
             }
-
         }
-
 
         return [persona: persona, tramites: tramites, personas: personas, dep: dep, filtradas: filtradas]
     }

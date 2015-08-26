@@ -346,7 +346,7 @@
                 }).on("select_node.jstree", function (node, selected, event) {
 //                    $('#tree').jstree('toggle_node', selected.selected[0]);
                 }).jstree({
-                    plugins     : ["types", /*"state", */"contextmenu", "wholerow", "search"],
+                    plugins     : ["types", "state", "contextmenu", "wholerow", "search"],
                     core        : {
                         multiple       : false,
                         check_callback : true,
@@ -371,9 +371,9 @@
                         show_at_node : false,
                         items        : createContextMenu
                     },
-//                    state       : {
-//                        key : "departamentos"
-//                    },
+                    state       : {
+                        key : "departamentosReportes"
+                    },
                     search      : {
                         fuzzy             : false,
                         show_only_matches : true,

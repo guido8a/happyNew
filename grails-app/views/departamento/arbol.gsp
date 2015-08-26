@@ -421,23 +421,28 @@
 
                 function cambiarEstadoRowPersona(itemId, strUsuario, activar, tramites, tramitess) {
                     var icon, textMsg, textBtn, textLoader, url, clase, botones;
-                    if (tramites > 0) {
+                    if (tramites != 0) {
                         clase = "default";
                         icon = "";
 //                    textMsg = "<p>No puede " + (activar ? 'activar' : 'desactivar') + " la persona seleccionada pues tiene" +
 //                              tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada.</p>" +
 //                              "<p>Por favor redireccione los trámites para continuar</p>";
+//                        textMsg = "<p>" +
+//                                  "El usuario <span class='infoCambioEstado'>" + strUsuario + "</span> que desea " +
+//                                  "<span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') + "</span> tiene " +
+//                                  "<span class='infoCambioEstado entrada'>" + tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada</span> y " +
+//                                  "<span class='infoCambioEstado salida'>" + tramitess + " trámite" + (tramitess == 1 ? '' : "s") + " en su bandeja de salida" +
+//                                  ".</p>";
                         textMsg = "<p>" +
-                                  "El usuario <span class='infoCambioEstado'>" + strUsuario + "</span> que desea " +
+                                  "Por favor verifique si el usuario <span class='infoCambioEstado'>" + strUsuario + "</span> que desea " +
                                   "<span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') + "</span> tiene " +
-                                  "<span class='infoCambioEstado entrada'>" + tramites + " trámite" + (tramites == 1 ? '' : "s") + " en su bandeja de entrada</span> y " +
-                                  "<span class='infoCambioEstado salida'>" + tramitess + " trámite" + (tramitess == 1 ? '' : "s") + " en su bandeja de salida" +
-                                  ".</p>" +
-                                  "<p>" +
-                                  "Puede <span class='infoCambioEstado'> redireccionar los trámites de la bandeja de entrada</span> " +
-                                  "o <span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') +
-                                  " la persona dejando sus trámites intactos.</span>" +
-                                  "</p>";
+                                  "trámites en su bandeja de entrada y de salida" +
+                                  ".</p>";
+                        textMsg += "<p>" +
+                                   "Puede <span class='infoCambioEstado'> redireccionar los trámites de la bandeja de entrada</span> " +
+                                   "o <span class='infoCambioEstado'>" + (activar ? 'activar' : 'desactivar') +
+                                   " la persona dejando sus trámites intactos.</span>" +
+                                   "</p>";
 //                    botones = {
 //                        aceptar : {
 //                            label     : "Aceptar",
@@ -890,7 +895,7 @@
                         };
 
                         if (nodeType.contains("Activo")) {
-                            items.redireccionar = {
+                            items.ausentismo = {
                                 separator_before : true,
                                 label            : "Ausentismo",
                                 icon             : "fa fa-refresh",
