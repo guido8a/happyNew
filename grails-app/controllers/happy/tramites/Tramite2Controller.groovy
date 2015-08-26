@@ -1102,6 +1102,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def ids = params.ids
             ids = ids.split(',')
             def band = true
+            def cantEnviados = 0
             ids.each { d ->
                 def envio = new Date();
                 tramite = Tramite.get(d)
@@ -1111,11 +1112,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
                     def pdtEliminar = []
                     PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
-                        if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") {
+                        if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") { //anulado y archivado
                             t.fechaEnvio = envio
-                            t.estado = EstadoTramite.findByCodigo("E003")
+                            t.estado = EstadoTramite.findByCodigo("E003") //enviado
                             if (t.save(flush: true)) {
+                                cantEnviados++
                                 if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
+                                    //para o copia
                                     def alerta = new Alerta()
                                     if (t.tramite.tipoDocumento.codigo == "OFI") {
                                         alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
@@ -1154,15 +1157,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         pdt.delete(flush: true)
                     }
 
-                    if (band) {
-
-
+//                    if (band) {
+                    if (cantEnviados > 0) {
                         def pdt = new PersonaDocumentoTramite()
                         pdt.tramite = tramite
                         pdt.persona = session.usuario
                         pdt.departamento = session.departamento
                         pdt.fechaEnvio = envio
-                        pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004")
+                        pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004") //envia
                         pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
 
                         pdt.personaSigla = pdt.persona.login
@@ -1173,7 +1175,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                         pdt.save(flush: true)
                         tramite.fechaEnvio = envio
-                        tramite.estadoTramite = EstadoTramite.findByCodigo('E003')
+                        tramite.estadoTramite = EstadoTramite.findByCodigo('E003') //enviado
                         if (tramite.save(flush: true)) {
                             def realPath = servletContext.getRealPath("/")
                             def mensaje = message(code: 'pathImages').toString();
