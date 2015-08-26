@@ -944,7 +944,7 @@
                     $from.find("li.selected").removeClass("selected").each(function () {
                         var id = $(this).data("id");
                         if ((id == para && muevePara) || id != para) {
-                            $(this).appendTo($to);
+                            $(this).prependTo($to);
                         }
                     });
                 } else {
@@ -953,7 +953,7 @@
                         $from.find("li.selected").removeClass("selected").each(function () {
                             var id = $(this).data("id");
                             if ((id == para && muevePara) || id != para) {
-                                $(this).appendTo($to);
+                                $(this).prependTo($to);
                             }
                         });
                     } else {
