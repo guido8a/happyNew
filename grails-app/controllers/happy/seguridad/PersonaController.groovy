@@ -638,19 +638,11 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def savePerfiles_ajax() {
-//        println "save perfiles: " + params
+        println "save perfiles: " + params
         def usu = Persona.get(params.id)
         def now = new Date()
-//        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
-        def perfilesUsu = Sesn.withCriteria {
-            eq("usuario", usu)
-            ge("fechaInicio", now)
-            or {
-                le("fechaFin", now)
-                isNull("fechaFin")
-            }
+        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
 
-        }.perfil.id*.toString()
         def arrRemove = perfilesUsu, arrAdd = []
         def errores = ""
 
@@ -658,7 +650,8 @@ class PersonaController extends happy.seguridad.Shield {
             params.perfil = [params.perfil]
         }
 //        println "params perfil: " + params.perfil
-//        println "perfiles usu: " + perfilesUsu
+        println "perfiles usu: " + perfilesUsu
+
         params.perfil.each { pid ->
             if (perfilesUsu.contains(pid)) {
                 //ya tiene este perfil: le quito de la lista de los de eliminar
@@ -669,8 +662,8 @@ class PersonaController extends happy.seguridad.Shield {
             }
         }
 
-//        println "ADD " + arrAdd
-//        println "REMOVE " + arrRemove
+        println "ADD " + arrAdd
+        println "REMOVE " + arrRemove
 
         arrRemove.each { pid ->
             def perf = Prfl.get(pid)
