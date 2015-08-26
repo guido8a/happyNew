@@ -637,11 +637,19 @@ class PersonaController extends happy.seguridad.Shield {
         }
     }
 
+    /**
+     * los perfiles activos del usaurio deben tener fecha de inicio y fecha de fin en nulo
+     * cada vez que se elimina un perfil del usuario se lo borra de la tabla sesn
+     * hay que manejar las fechas para cuando se elimina un perfil de susuario y no el borrar sesion
+     * validar tambien con el dominio Sesn para los atributos   getEstaActivo
+     * @return
+     */
     def savePerfiles_ajax() {
         println "save perfiles: " + params
         def usu = Persona.get(params.id)
         def now = new Date()
-        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
+//        def perfilesUsu = Sesn.findAllByUsuario(usu).perfil.id*.toString()
+        def perfilesUsu = Sesn.findAllByUsuarioAndFechaInicioLessThanAndFechaFinIsNull(usu, now).perfil.id*.toString()
 
         def arrRemove = perfilesUsu, arrAdd = []
         def errores = ""
@@ -676,7 +684,7 @@ class PersonaController extends happy.seguridad.Shield {
         }
         arrAdd.each { pid ->
             def perf = Prfl.get(pid)
-            def sesn = new Sesn([usuario: usu, perfil: perf])
+            def sesn = new Sesn([usuario: usu, perfil: perf, fechaInicio: new Date()])
             if (!sesn.save(flush: true)) {
                 errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
             }

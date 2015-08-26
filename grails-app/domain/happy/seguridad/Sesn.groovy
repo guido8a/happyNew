@@ -33,10 +33,10 @@ class Sesn {
         def now = new Date()
 //        now = now.plus(5)
 //        println " ${this.perfil} now "+now+" inicio  "+fechaInicio+" fin "+fechaFin
-        if (fechaInicio == null)
+        if (fechaInicio <= now && fechaFin == null)
             return true
         else {
-            if (fechaFin >= now)
+            if (fechaInicio < now && fechaFin > now)
                 return true
             else
                 return false
