@@ -677,7 +677,9 @@ class PersonaController extends happy.seguridad.Shield {
             def perf = Prfl.get(pid)
             def sesn = Sesn.findByUsuarioAndPerfil(usu, perf)
             try {
-                sesn.delete(flush: true)
+                sesn.fechaFin = new Date()
+                sesn.fechaInicio = null
+//                sesn.delete(flush: true)
             } catch (e) {
                 errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
             }

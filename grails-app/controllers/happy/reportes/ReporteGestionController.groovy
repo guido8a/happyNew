@@ -37,6 +37,9 @@ class ReporteGestionController extends happy.seguridad.Shield {
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
 
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+
         def baos = new ByteArrayOutputStream()
         def name = "gestion_" + departamento.codigo + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
@@ -49,62 +52,119 @@ class ReporteGestionController extends happy.seguridad.Shield {
         document.open();
         reportesPdfService.propiedadesDocumento(document, "gestion")
 
-        //los tramites dirigidos al dpto (para y copia)
-        if (departamento) {
-            def tramitesPrincipales = []
 
-            PersonaDocumentoTramite.withCriteria {
-                inList("departamento", departamentos)
-                or {
-                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
-                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
-                }
-                tramite {
-                    ge('fechaCreacion', desde)
-                    le('fechaCreacion', hasta)
-                }
-            }.each { prtr ->
-                def tramite = prtr.tramite
-                def principal = tramite
-                if (tramite.padre) {
-                    principal = tramite.padre
-                    while (true) {
-                        if (!principal.padre)
-                            break
-                        else {
-                            principal = principal.padre
-                        }
-                    }
-                }
-                if (!tramitesPrincipales.contains(principal)) {
-                    tramitesPrincipales += principal
-                }
-            }
-            tramitesPrincipales.each { principal ->
-                def pdts = PersonaDocumentoTramite.withCriteria {
-                    eq("tramite", principal)
-                    or {
-                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
-                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
-                    }
-                }
-                def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+
+        def tramiteitor = reportesPdfService.reporteGestion(desde, hasta, departamento.id)
+        def tramitesPadre = []
+
+//        tramiteitor.each {
+//            if(!it.trmtpdre && ){
+//                tramitesPadre += it
+//            }else{
+//
+//            }
+//        }
+
+
+
+        tramiteitor.each {
+
+
+
+            println("-->" + it)
+
+            def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+
+            if(!it.trmtpdre && it.nivel){
+                println("entrof")
+
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.codigo, font), prmsHeaderHoja2)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsHeaderHoja2)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.asunto, font), prmsHeaderHoja5)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtasnt, font), prmsHeaderHoja5)
                 rowHeaderTramite(tablaTramite, false)
 
-                pdts.each { prtr ->
-                    if ((departamentos.id).contains(prtr.departamentoId)) {
-                        rowTramite(prtr, tablaTramite)
-                    }
-                    llenaTablaTramite(prtr, tablaTramite, departamentos)
-                }
                 tablaTramite.setKeepTogether(true)
-                document.add(tablaTramite)
+                document.add(tablaTramite);
+            }else{
+
+
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it.trmtfccr.format('dd-MM-yyyy HH:mm') : "", font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it?.trmtfcen?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcrc ? it?.trmtfcrc?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph('', font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmt__de, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtasnt, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtpara, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph('', font), prmsTablaHoja)
+
             }
+
+
+
         }
+
+
+        //los tramites dirigidos al dpto (para y copia)
+//        if (departamento) {
+//            def tramitesPrincipales = []
+
+//            PersonaDocumentoTramite.withCriteria {
+//                inList("departamento", departamentos)
+//                or {
+//                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
+//                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
+//                }
+//                tramite {
+//                    ge('fechaCreacion', desde)
+//                    le('fechaCreacion', hasta)
+//                }
+//            }.each { prtr ->
+//                def tramite = prtr.tramite
+//                def principal = tramite
+//                if (tramite.padre) {
+//                    principal = tramite.padre
+//                    while (true) {
+//                        if (!principal.padre)
+//                            break
+//                        else {
+//                            principal = principal.padre
+//                        }
+//                    }
+//                }
+//                if (!tramitesPrincipales.contains(principal)) {
+//                    tramitesPrincipales += principal
+//                }
+//            }
+
+//            tramitesPrincipales.each { principal ->
+//                def pdts = PersonaDocumentoTramite.withCriteria {
+//                    eq("tramite", principal)
+//                    or {
+//                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
+//                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
+//                    }
+//                }
+//                def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja)
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.codigo, font), prmsHeaderHoja2)
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(principal.asunto, font), prmsHeaderHoja5)
+//                rowHeaderTramite(tablaTramite, false)
+//
+//                pdts.each { prtr ->
+//                    if ((departamentos.id).contains(prtr.departamentoId)) {
+//                        rowTramite(prtr, tablaTramite)
+//                    }
+//                    llenaTablaTramite(prtr, tablaTramite, departamentos)
+//                }
+//                tablaTramite.setKeepTogether(true)
+//                document.add(tablaTramite)
+//            }
+
+
+//        }
         document.add(new Phrase("  "))
         document.close();
         pdfw.close()

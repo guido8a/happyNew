@@ -29,6 +29,7 @@ class ReportesPdfService {
     Font fontTd = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
 
     def grailsApplication
+    def dbConnectionService
 
     /**
      * crearDocumento: crea el Documento para hacer pdfs
@@ -827,6 +828,20 @@ class ReportesPdfService {
 ////
 //        println "---------------------fin datos---------------------------------------"
         return datos
+    }
+
+
+    def reporteGestion (fechaDesde, fechaHasta, dpto) {
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from trmt_gestion(" + "'" + fechaDesde + "'" + "," + "'" + fechaHasta +"'" + "," + dpto + ")"
+        def result = []
+
+        cn.eachRow(sql) { re ->
+            result.add(re.toRowResult())
+        }
+        cn.close()
+        return result
     }
 
 

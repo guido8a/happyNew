@@ -2,7 +2,10 @@ package happy.utilitarios
 
 import groovy.time.TimeCategory
 
+
+
 class DiasLaborablesService {
+    def dbConnectionService
 
     def getParametros() {
         def parametros = Parametros.list()
@@ -799,6 +802,18 @@ class DiasLaborablesService {
         hora.set(anio, mes, dias, fcha.format("HH").toInteger(), fcha.format("mm").toInteger(), 0)
         hora
     }
+
+    def tiempoEntre(fechaInicio, fechaFin) {
+
+//         println("fechas " + fechaInicio)
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from tmpo_entre('" + fechaInicio + "', '" + fechaFin + "') "
+        //println "sql " + sql
+        def result
+        result = cn.firstRow(sql)
+        return result
+    }
+
 
 
 }
