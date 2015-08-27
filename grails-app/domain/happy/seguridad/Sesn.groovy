@@ -31,10 +31,13 @@ class Sesn {
 
     boolean getEstaActivo() {
         def now = new Date()
-//        now = now.plus(5)
-//        println " ${this.perfil} now "+now+" inicio  "+fechaInicio+" fin "+fechaFin
-        if (fechaInicio <= now && fechaFin == null)
+        if(fechaInicio == null)
+            return false
+        else
+        if (fechaInicio <= now && fechaFin == null) {
+            println "activo ..."
             return true
+        }
         else {
             if (fechaInicio < now && fechaFin > now)
                 return true
