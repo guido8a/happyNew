@@ -9,6 +9,9 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
+<script type="text/javascript" src="${resource(dir: 'js/plugins/fixed-header-table-1.3', file: 'jquery.fixedheadertable.min.js')}"></script>
+<link href="${resource(dir: 'js/plugins/fixed-header-table-1.3/css', file: 'defaultTheme.css')}" rel="stylesheet">
+
 <util:renderHTML html="${msg}"/>
 
 <style type="text/css">
@@ -17,7 +20,30 @@ table {
 }
 </style>
 
-<div style="height: 30px; overflow: hidden;" class="container-celdas">
+%{--<div style="height: 30px; overflow: hidden;" class="container-celdas">--}%
+%{--<span class="grupo">--}%
+%{--<table class="table table-bordered table-condensed table-hover">--}%
+%{--<thead>--}%
+%{--<tr>--}%
+%{--<th class="alinear" style="width: 165px">Documento</th>--}%
+%{--<th class="alinear" style="width: 100px">Fecha Creación</th>--}%
+%{--<th class="alinear" style="width: 150px">De</th>--}%
+%{--<th class="alinear" style="width: 150px">Para</th>--}%
+%{--<th class="alinear" style="width: 100px">Asunto</th>--}%
+%{--<th class="alinear" style="width: 60px">Prioridad</th>--}%
+%{--<th class="alinear" style="width: 90px">Envia</th>--}%
+%{--<th class="alinear" style="width: 110px">Fecha Envio</th>--}%
+%{--<th class="alinear" style="width: 110px">Fecha Recepción</th>--}%
+%{--</tr>--}%
+%{--</thead>--}%
+%{--<tbody>--}%
+
+%{--</tbody>--}%
+%{--</table>--}%
+%{--</span>--}%
+%{--</div>--}%
+
+<div style="height: ${msg == '' ? 350 : 300}px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
@@ -33,16 +59,6 @@ table {
                     <th class="alinear" style="width: 110px">Fecha Recepción</th>
                 </tr>
             </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-    </span>
-</div>
-
-<div style="height: ${msg == '' ? 350 : 300}px" class="container-celdas">
-    <span class="grupo">
-        <table class="table table-bordered table-condensed table-hover">
             <tbody>
                 <g:set var="estadoAnulado" value="${EstadoTramite.findByCodigo('E006')}"/>
                 <g:set var="estadoRecibido" value="${EstadoTramite.findByCodigo('E004')}"/>
@@ -226,6 +242,10 @@ table {
             onHide : function ($element) {
                 $(".trHighlight").removeClass("trHighlight");
             }
+        });
+
+        $('.table').fixedHeaderTable({
+            height : ${msg == '' ? 350 : 300}
         });
     });
 </script>

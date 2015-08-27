@@ -10,36 +10,39 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
 
+<script type="text/javascript" src="${resource(dir: 'js/plugins/fixed-header-table-1.3', file: 'jquery.fixedheadertable.min.js')}"></script>
+<link href="${resource(dir: 'js/plugins/fixed-header-table-1.3/css', file: 'defaultTheme.css')}" rel="stylesheet">
+
 <style type="text/css">
 table {
     font-size : 9pt;
 }
 </style>
 
-<div style="height: 30px; overflow: hidden;" class="container-celdas">
-    <span class="grupo">
-        <table class="table table-bordered table-condensed table-hover">
-            <thead>
-                <tr>
-                    <th class="cabecera" style="width: 145px">Documento</th>
-                    <th class="cabecera" style="width: 190px">De</th>
-                    <th class="cabecera" style="width: 200px">Para</th>
-                    <th class="cabecera" style="width: 190px">Asunto</th>
-                    <th class="cabecera" style="width: 115px">Fecha Envio</th>
-                    <th class="cabecera" style="width: 110px">Doc. Padre</th>
-                    <th class="cabecera" style="width: 67px">Estado</th>
-                    %{--<th class="cabecera">Observaciones</th>--}%
-                </tr>
+%{--<div style="height: 30px; overflow: hidden;" class="container-celdas">--}%
+%{--<span class="grupo">--}%
+%{--<table class="table table-bordered table-condensed table-hover">--}%
+%{--<thead>--}%
+%{--<tr>--}%
+%{--<th class="cabecera" style="width: 145px">Documento</th>--}%
+%{--<th class="cabecera" style="width: 190px">De</th>--}%
+%{--<th class="cabecera" style="width: 200px">Para</th>--}%
+%{--<th class="cabecera" style="width: 190px">Asunto</th>--}%
+%{--<th class="cabecera" style="width: 115px">Fecha Envio</th>--}%
+%{--<th class="cabecera" style="width: 110px">Doc. Padre</th>--}%
+%{--<th class="cabecera" style="width: 67px">Estado</th>--}%
+%{--<th class="cabecera">Observaciones</th>--}%
+%{--</tr>--}%
 
-            </thead>
-            <tbody>
+%{--</thead>--}%
+%{--<tbody>--}%
 
-            </tbody>
-        </table>
+%{--</tbody>--}%
+%{--</table>--}%
 
-    </span>
+%{--</span>--}%
 
-</div>
+%{--</div>--}%
 
 
 <div style="height: 450px" class="container-celdas">
@@ -47,13 +50,14 @@ table {
         <table class="table table-bordered table-condensed table-hover">
             <thead>
                 <tr>
-                    %{--<th class="cabecera">Documento</th>--}%
-                    %{--<th class="cabecera">Fecha Recepción</th>--}%
-                    %{--<th class="cabecera">De</th>--}%
-                    %{--<th class="cabecera">Creado Por</th>--}%
-                    %{--<th class="cabecera">Prioridad</th>--}%
-                    %{--<th class="cabecera">Fecha Respuesta</th>--}%
-                    %{--<th class="cabecera">Doc. Padre</th>--}%
+                    <th class="cabecera" style="width: 145px">Documento</th>
+                    <th class="cabecera" style="width: 190px">De</th>
+                    <th class="cabecera" style="width: 200px">Para</th>
+                    <th class="cabecera" style="width: 160px">Asunto</th>
+                    <th class="cabecera" style="width: 115px">Fecha Envio</th>
+                    <th class="cabecera" style="width: 110px">Doc. Padre</th>
+                    <th class="cabecera" style="width: 67px">Estado</th>
+                    <th class="cabecera">Observaciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,7 +90,7 @@ table {
                                 ${tramite?.persona?.nombre + " " + tramite?.persona?.apellido + ' [' + tramite?.rolPersonaTramite?.descripcion + ' ] '}
                             </g:else>
                         </td>
-                        <td style="width: 190px">${tramite?.tramite?.asunto}</td>
+                        <td style="width: 170px">${tramite?.tramite?.asunto}</td>
                         <td style="width: 115px">${tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm')}</td>
                         <g:if test="${tramite?.rolPersonaTramite?.codigo == 'R002'}">
                             <g:if test="${tramite?.tramite?.tramitePrincipal}">
@@ -124,6 +128,10 @@ table {
             onHide : function ($element) {
                 $(".trHighlight").removeClass("trHighlight");
             }
+        });
+
+        $('.table').fixedHeaderTable({
+            height : 450
         });
     });
 </script>

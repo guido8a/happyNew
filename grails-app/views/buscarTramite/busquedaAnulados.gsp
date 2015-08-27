@@ -23,11 +23,10 @@
         <style type="text/css">
 
         .container-celdas {
-            width      : 1070px;
-            height     : 310px;
-            float      : left;
-            overflow   : auto;
-            overflow-y : auto;
+            width    : 1070px;
+            height   : 310px;
+            float    : left;
+            overflow : auto;
         }
 
         .alinear {
@@ -167,9 +166,11 @@
 
                 var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaHasta=" + fecha + "&fechaDesde=" + fechaRecepcion
 
-                $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaAnulados')}",
-                    data      : datos,
-                    success   : function (msg) {
+                $.ajax({
+                    type    : "POST",
+                    url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaAnulados')}",
+                    data    : datos,
+                    success : function (msg) {
                         $("#bandeja").html(msg);
                     }
                 });
@@ -186,9 +187,11 @@
 
                     var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fechaHasta=" + fecha + "&fechaDesde=" + fechaRecepcion
 
-                    $.ajax({ type : "POST", url : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaAnulados')}",
-                        data      : datos,
-                        success   : function (msg) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(controller: 'buscarTramite', action: 'tablaBusquedaAnulados')}",
+                        data    : datos,
+                        success : function (msg) {
                             $("#bandeja").html(msg);
                         }
                     });

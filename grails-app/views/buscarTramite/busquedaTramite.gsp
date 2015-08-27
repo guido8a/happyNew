@@ -14,11 +14,10 @@
         <style type="text/css">
 
         .container-celdas {
-            width      : 1070px;
-            height     : 310px;
-            float      : left;
-            overflow   : auto;
-            overflow-y : auto;
+            width    : 1070px;
+            height   : 310px;
+            float    : left;
+            overflow : auto;
         }
 
         .alinear {
