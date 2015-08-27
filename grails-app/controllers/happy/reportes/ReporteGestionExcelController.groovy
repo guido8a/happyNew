@@ -15,12 +15,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 class ReporteGestionExcelController extends Shield {
 
     def diasLaborablesService
+    def reportesPdfService
 
     def reporteGestion() {
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
         def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
         def departamento = Departamento.get(params.id)
         def departamentos = [departamento]
+
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
 
         def fileName = "gestion_" + departamento?.codigo
         def titulo = "Reporte de gestión de trámites del dpto. ${departamento?.descripcion} del ${params.desde} al ${params.hasta}"
@@ -50,82 +54,89 @@ class ReporteGestionExcelController extends Shield {
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue("Reporte generado el " + new Date().format("dd-MM-yyyy HH:mm"));
 
-        if (departamento) {
+        def tramiteitor = reportesPdfService.reporteGestion(desde, hasta, departamento.id)
+
+//        if (departamento) {
 
             def wFechas = 5000
             def wTiempos = 6000
 
             sheet.setColumnWidth(0, 6000)
-            sheet.setColumnWidth(1, wFechas)
+            sheet.setColumnWidth(1, 6000)
             sheet.setColumnWidth(2, wFechas)
             sheet.setColumnWidth(3, wFechas)
-            sheet.setColumnWidth(4, wTiempos)
-            sheet.setColumnWidth(5, 8000)
-            sheet.setColumnWidth(6, 15000)
-            sheet.setColumnWidth(7, 8000)
-            sheet.setColumnWidth(8, wTiempos)
+            sheet.setColumnWidth(4, wFechas)
+            sheet.setColumnWidth(5, wTiempos)
+            sheet.setColumnWidth(6, 8000)
+            sheet.setColumnWidth(7, 15000)
+            sheet.setColumnWidth(8, 8000)
+            sheet.setColumnWidth(9, wTiempos)
 
-            def i = 5
+            def i = 6
 
             def tramitesPrincipales = []
 
-            PersonaDocumentoTramite.withCriteria {
-                inList("departamento", departamentos)
-                or {
-                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
-                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
-                }
-                tramite {
-                    ge('fechaCreacion', desde)
-                    le('fechaCreacion', hasta)
-                }
-            }.each { prtr ->
-                def tramite = prtr.tramite
-                def principal = tramite
-                if (tramite.padre) {
-                    principal = tramite.padre
-                    while (true) {
-                        if (!principal.padre)
-                            break
-                        else {
-                            principal = principal.padre
-                        }
-                    }
-                }
-                if (!tramitesPrincipales.contains(principal)) {
-                    tramitesPrincipales += principal
-                }
-            }
+//            PersonaDocumentoTramite.withCriteria {
+//                inList("departamento", departamentos)
+//                or {
+//                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
+//                    eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
+//                }
+//                tramite {
+//                    ge('fechaCreacion', desde)
+//                    le('fechaCreacion', hasta)
+//                }
+//            }.each { prtr ->
+//                def tramite = prtr.tramite
+//                def principal = tramite
+//                if (tramite.padre) {
+//                    principal = tramite.padre
+//                    while (true) {
+//                        if (!principal.padre)
+//                            break
+//                        else {
+//                            principal = principal.padre
+//                        }
+//                    }
+//                }
+//                if (!tramitesPrincipales.contains(principal)) {
+//                    tramitesPrincipales += principal
+//                }
+//            }
 
 //            println("tramites " + tramitesPrincipales)
 
-            tramitesPrincipales.each { principal ->
-                def pdts = PersonaDocumentoTramite.withCriteria {
-                    eq("tramite", principal)
-                    or {
-                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
-                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
-                    }
+//            tramitesPrincipales.each { principal ->
+//                def pdts = PersonaDocumentoTramite.withCriteria {
+//                    eq("tramite", principal)
+//                    or {
+//                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R001'))
+//                        eq("rolPersonaTramite", RolPersonaTramite.findByCodigo('R002'))
+//                    }
 
-                }
+//                }
 
                 def j = 0
                 XSSFRow row = sheet.createRow((short) i);
                 Cell cell = row.createCell((short) j);
-                cell.setCellValue("DOC PRINCIPAL: ");
-                j += 2
-                cell = row.createCell((short) j);
-                cell.setCellValue(principal.codigo);
-                j += 2
-                cell = row.createCell((short) j);
-                cell.setCellValue("ASUNTO: ");
-                j++
-                cell = row.createCell((short) j);
-                cell.setCellValue(principal.asunto);
+//                cell.setCellValue("DOC PRINCIPAL: ");
+//                j += 2
+//                cell = row.createCell((short) j);
+//                cell.setCellValue(principal.codigo);
+//                j += 2
+//                cell = row.createCell((short) j);
+//                cell.setCellValue("ASUNTO: ");
+//                j++
+//                cell = row.createCell((short) j);
+//                cell.setCellValue(principal.asunto);
+//
+//                i++
 
-                i++
                 j = 0
                 row = sheet.createRow((short) i);
+                cell = row.createCell((short) j);
+                cell.setCellValue("Trámite Principal");
+                j++
                 cell = row.createCell((short) j);
                 cell.setCellValue("Trámite n°");
                 j++
@@ -154,15 +165,21 @@ class ReporteGestionExcelController extends Shield {
                 cell.setCellValue("T. recepción - respuesta");
                 i++
 
-                pdts.each { prtr ->
-//                    if ((departamentos.id).contains(prtr.departamentoId)) {
-                        i = rowTramite(prtr, sheet, i)
-//                    }
-                    i = llenaTablaTramite(prtr, departamentos, sheet, i)
-                }
+                tramiteitor.each {
+                    llenaTablaGestionExcel(sheet,it,i)
+                    i++
+                    }
+
+
+
+
+//                pdts.each { prtr ->
+//                        i = rowTramite(prtr, sheet, i)
+//                    i = llenaTablaTramite(prtr, departamentos, sheet, i)
+//                }
                 i += 2
-            }
-        }
+//            }
+//        }
 
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
@@ -172,16 +189,55 @@ class ReporteGestionExcelController extends Shield {
         File desktopFile = new File(filename);
         PrintWriter pw = response.getWriter();
         FileInputStream fileInputStream = new FileInputStream(desktopFile);
-        int j;
+        int jt;
 
-        while ((j = fileInputStream.read()) != -1) {
-            pw.write(j);
+        while ((jt = fileInputStream.read()) != -1) {
+            pw.write(jt);
         }
         fileInputStream.close();
         response.flushBuffer();
         pw.flush();
         pw.close();
     }
+
+    def llenaTablaGestionExcel ( XSSFSheet sheet, it, int i) {
+
+        def j = 0
+        def row = sheet.createRow((short) i);
+        def cell = row.createCell((short) j);
+        cell.setCellValue(it.trmtpdre ?: it.trmtcdgo);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtcdgo);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtfccr ? it?.trmtfccr?.format('dd-MM-yyyy HH:mm') : "");
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtfcen  ? it?.trmtfcen?.format('dd-MM-yyyy HH:mm') : "");
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtfcrc ? it?.trmtfcrc?.format('dd-MM-yyyy HH:mm') : "");
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmttmer);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmt__de);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtasnt);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmtpara);
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmttmrr);
+        /* ********************************************************************************************* */
+        i++
+
+    }
+
 
     def rowTramite(PersonaDocumentoTramite pdt, XSSFSheet sheet, int i) {
         def tramite = pdt.tramite

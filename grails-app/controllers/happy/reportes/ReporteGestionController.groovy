@@ -52,34 +52,23 @@ class ReporteGestionController extends happy.seguridad.Shield {
         document.open();
         reportesPdfService.propiedadesDocumento(document, "gestion")
 
-
-
         def tramiteitor = reportesPdfService.reporteGestion(desde, hasta, departamento.id)
-        def tramitesPadre = []
 
-//        tramiteitor.each {
-//            if(!it.trmtpdre && ){
-//                tramitesPadre += it
-//            }else{
-//
-//            }
-//        }
-
-
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 10, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+        rowHeaderTramite(tablaTramite, false)
 
         tramiteitor.each {
+                llenaTablaGestion(it, tablaTramite)
+                tablaTramite.setKeepTogether(true)
+        }
 
-                def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+        document.add(tablaTramite);
+
+
 //                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DOC PRINCIPAL :", fontBold), prmsHeaderHoja)
 //                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsHeaderHoja2)
 //                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("ASUNTO :", fontBold), prmsHeaderHoja)
 //                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtasnt, font), prmsHeaderHoja5)
-                rowHeaderTramite(tablaTramite, false)
-                llenaTablaGestion(it, tablaTramite)
-                tablaTramite.setKeepTogether(true)
-                document.add(tablaTramite);
-        }
-
 
         //los tramites dirigidos al dpto (para y copia)
 //        if (departamento) {
@@ -177,11 +166,9 @@ class ReporteGestionController extends happy.seguridad.Shield {
     }
 
     def rowHeaderTramite(tablaTramite, respuesta) {
-        if (respuesta) {
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Contestado con", fontBold), prmsHeaderHoja)
-        } else {
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite n°.", fontBold), prmsHeaderHoja)
-        }
+
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite Principal°.", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite n°.", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. creación", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. envío", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. recepción", fontBold), prmsHeaderHoja)
@@ -195,6 +182,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
     def llenaTablaGestion (it, tablaTramite){
 
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtpdre ?: it.trmtcdgo, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfccr ? it.trmtfccr.format('dd-MM-yyyy HH:mm') : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it?.trmtfcen?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
