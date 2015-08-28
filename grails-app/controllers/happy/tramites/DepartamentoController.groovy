@@ -213,65 +213,65 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbolReportes() {
-        def data = [:]
-        def sql = "SELECT * FROM trmt_arbol($session.usuario.id)"
-        println "arbol_rep: $sql"
-        def cn = dbConnectionService.getConnection()
-        cn.eachRow(sql.toString()) { row ->
-            println "row: " + row
-            def dptoId = row.dpto__id
-            def dptoPadre = row.dptopdre
-//            if (!data[dptoPadre]) {
-//                data[dptoPadre] = [
-//                        id   : dptoPadre,
-//                        dptos: [],
-//                        prsns: []
+//        def data = [:]
+//        def sql = "SELECT * FROM trmt_arbol($session.usuario.id)"
+//        println "arbol_rep: $sql"
+//        def cn = dbConnectionService.getConnection()
+//        cn.eachRow(sql.toString()) { row ->
+//            println "row: " + row
+//            def dptoId = row.dpto__id
+//            def dptoPadre = row.dptopdre
+////            if (!data[dptoPadre]) {
+////                data[dptoPadre] = [
+////                        id   : dptoPadre,
+////                        dptos: [],
+////                        prsns: []
+////                ]
+////            }
+//            if (!data[dptoId]) {
+//                data[dptoId] = [
+//                        id         : dptoId,
+//                        padre      : row.dptopdre,
+//                        codigo     : row.dptocdgo,
+//                        descripcion: row.dptodscr,
+//                        externo    : row.dptoextr,
+//                        remoto     : row.dptormto,
+//                        activo     : row.dptoactv,
+//                        dptos      : [],
+//                        prsns      : []
 //                ]
 //            }
-            if (!data[dptoId]) {
-                data[dptoId] = [
-                        id         : dptoId,
-                        padre      : row.dptopdre,
-                        codigo     : row.dptocdgo,
-                        descripcion: row.dptodscr,
-                        externo    : row.dptoextr,
-                        remoto     : row.dptormto,
-                        activo     : row.dptoactv,
-                        dptos      : [],
-                        prsns      : []
-                ]
-            }
-            def prsn = [
-                    id         : row.prsn__id,
-                    nombre     : row.prsnnmbr,
-                    apellido   : row.prsnapll,
-                    login      : row.prsnlogn,
-                    esJefe     : row.prsnjefe,
-                    esDirector : row.prsndire,
-                    esTriangulo: row.prsnrcof,
-                    activo     : row.prsnactv
-            ]
-            data[dptoId].prsns += prsn
-
-//            data[dptoPadre].dptos += dpto
-        }
-
-        println data
-
-        def html = "<ul>"
-        def type = "root"       // tipo de nodo: para el ícono
-        def opened = true       // marca el nodo como abierto (true) o cerrado (false)
-        def selected = false    // marca el nodo como seleccionado (true) o no (false)
-        def disabled = false    // marca el nodo como desabilitado (true) o no (false).
-        // Cuando está deshabilitado no se puede hacer click ni seleccionar
-        def id = "root"
-
-        def dataJstree = "\"opened\": $opened, \"selected\": $selected, \"disabled\": $disabled, \"type\": \"$type\""
-        html += "<li id='$id' data-jstree='{$dataJstree}'>"
-        html += "Estructura"
-        html += "<ul>"
-        html += "</ul>"
-        return [params: params, arbol: html]
+//            def prsn = [
+//                    id         : row.prsn__id,
+//                    nombre     : row.prsnnmbr,
+//                    apellido   : row.prsnapll,
+//                    login      : row.prsnlogn,
+//                    esJefe     : row.prsnjefe,
+//                    esDirector : row.prsndire,
+//                    esTriangulo: row.prsnrcof,
+//                    activo     : row.prsnactv
+//            ]
+//            data[dptoId].prsns += prsn
+//
+////            data[dptoPadre].dptos += dpto
+//        }
+//
+////        println data
+//
+//        def html = "<ul>"
+//        def type = "root"       // tipo de nodo: para el ícono
+//        def opened = true       // marca el nodo como abierto (true) o cerrado (false)
+//        def selected = false    // marca el nodo como seleccionado (true) o no (false)
+//        def disabled = false    // marca el nodo como desabilitado (true) o no (false).
+//        // Cuando está deshabilitado no se puede hacer click ni seleccionar
+//        def id = "root"
+//
+//        def dataJstree = "\"opened\": $opened, \"selected\": $selected, \"disabled\": $disabled, \"type\": \"$type\""
+//        html += "<li id='$id' data-jstree='{$dataJstree}'>"
+//        html += "Estructura"
+//        html += "<ul>"
+//        html += "</ul>"
+//        return [params: params, arbol: html]
     }
 
     def arbol() {
