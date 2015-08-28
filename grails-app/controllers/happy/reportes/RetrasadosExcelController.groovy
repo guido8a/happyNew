@@ -144,16 +144,20 @@ class RetrasadosExcelController extends Shield {
     }
 
     private int creaTablaTramites(sheet, res, num) {
+
         if (res.size() > 0) {
+//            println("res " + res.oficina)
             num = creaHeaderTablaTramites(sheet, num)
-            num = llenaTablaTramites(sheet, res.oficina.trams, num)
-            res.each { k, tram ->
-                if (k != "oficina") {
-                    def tr = tram.totalRet
-                    def tn = tram.totalNoRec
-                    num = creaTituloPersona(sheet, tram.nombre, tr, tn, num)
-                    num = creaHeaderTablaTramites(sheet, num)
-                    num = llenaTablaTramites(sheet, tram.trams, num)
+            if(res.oficina){
+                num = llenaTablaTramites(sheet, res.oficina.trams, num)
+                res.each { k, tram ->
+                    if (k != "oficina") {
+                        def tr = tram.totalRet
+                        def tn = tram.totalNoRec
+                        num = creaTituloPersona(sheet, tram.nombre, tr, tn, num)
+                        num = creaHeaderTablaTramites(sheet, num)
+                        num = llenaTablaTramites(sheet, tram.trams, num)
+                    }
                 }
             }
         }
