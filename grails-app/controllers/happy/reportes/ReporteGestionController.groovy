@@ -167,7 +167,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
     def rowHeaderTramite(tablaTramite, respuesta) {
 
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite Principal°.", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite Principal.", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite n°.", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. creación", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. envío", fontBold), prmsHeaderHoja)
