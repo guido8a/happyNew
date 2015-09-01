@@ -566,6 +566,7 @@ class PersonaController extends happy.seguridad.Shield {
     }
 
     def terminarAcceso_ajax() {
+        println "terminarAcceso_ajax: $params"
         def accs = Accs.get(params.id)
         def now = new Date()
         if (accs.accsFechaFinal <= now) {
@@ -589,6 +590,7 @@ class PersonaController extends happy.seguridad.Shield {
                     if (sesn.size() > 0) {
                         sesn.each {
                             it.fechaFin = now
+                            println "$it"
                             it.save(flush: true)
                         }
 

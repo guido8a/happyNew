@@ -534,6 +534,7 @@ class TramiteAdminController /*extends Shield*/ {
     }
 
     def redireccionarTramites() {
+//        println "redireccionarTramites: $params"
         def persona = Persona.get(params.id)
 
         if (!params.sort || params.sort == "") {
@@ -740,28 +741,34 @@ class TramiteAdminController /*extends Shield*/ {
         return [persona: persona, tramites: tramites, personas: personas, dep: dep, filtradas: filtradas]
     }
 
+    // no es posible redireccionar trámites de departamento, solo entre personas y de persona a dpto
     def redireccionarTramite_ajax() {
+        println "params: $params"
         def persona = Persona.get(params.id)
+        def trmt = Tramite.get(params.pr)
         def redDpto = null, redPrsn = null
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCopia = RolPersonaTramite.findByCodigo("R002")
+        def rolImprime = EstadoTramite.findByCodigo("I005")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+
         if (params.quien.toString().startsWith("-")) {
             redDpto = Departamento.get(params.quien.toInteger() * -1)
         } else {
             redPrsn = Persona.get(params.quien)
         }
-        def pr = PersonaDocumentoTramite.get(params.pr)
+        def pr = PersonaDocumentoTramite.findByTramiteAndPersonaAndRolPersonaTramiteInList(trmt, persona, [rolPara, rolCopia, rolImprime])
+        println "prtr... ${pr.id}"
 
         def errores = ""
 
-        def rolPara = RolPersonaTramite.findByCodigo("R001")
-        def rolCopia = RolPersonaTramite.findByCodigo("R002")
-        def estadoAnulado = EstadoTramite.findByCodigo("E006")
 
         if (pr.rolPersonaTramite.codigo == "I005") {
             pr.delete(flush: true)
         } else {
             def obs = "Trámite antes dirigido a " + persona.nombre + " " + persona.apellido + ", redireccionado"
 
-            def personaAntes = pr.persona
+//            def personaAntes = pr.persona
             def dptoAntes = pr.departamento
 
             if (redDpto) {
@@ -809,14 +816,18 @@ class TramiteAdminController /*extends Shield*/ {
                     }
                 }
             } else {
+                println " redirecciona a persona: $redPrsn"
                 def prtrExisten = PersonaDocumentoTramite.withCriteria {
-                    eq("tramite", pr.tramite)
+                    eq("tramite", trmt)
                     eq("persona", redPrsn)
                     inList("rolPersonaTramite", [rolPara, rolCopia])
                 }
+                println "si existe otro: $prtrExisten"
                 if (prtrExisten.size() == 0) {
+                    println "no es repetido... ${redPrsn.class}"
                     pr.persona = redPrsn
                     obs += " al usuario ${pr?.persona?.login}"
+                    println "actualizó prsn a ${pr.persona}"
                 } else {
                     if (pr.rolPersonaTramiteId == rolCopia.id) {
                         //si es copia, la anulo
@@ -849,7 +860,7 @@ class TramiteAdminController /*extends Shield*/ {
                     }
                 }
             }
-            def tramite = pr.tramite
+//            def tramite = pr.tramite
             def observacionOriginal = pr.observaciones
             def accion = "Redirección de trámite"
             def solicitadoPor = ""
@@ -857,14 +868,15 @@ class TramiteAdminController /*extends Shield*/ {
             def texto = obs
             def nuevaObservacion = ""
             pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-            observacionOriginal = tramite.observaciones
-            tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+            observacionOriginal = trmt.observaciones
+            trmt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
-            if (tramite.save(flush: true)) {
-//                        println "tr.save ok"
+
+            if (trmt.save(flush: true)) {
+                        println "tr.save ok, i: ${trmt.id}"
             } else {
-                errores += renderErrors(bean: tramite)
-                println "redireccionarTramite_ajax" + tramite.errors
+                errores += renderErrors(bean: trmt)
+                println "redireccionarTramite_ajax" + trmt.errors
             }
             if (!pr.persona && !pr.departamento) {
                 pr.persona = personaAntes
