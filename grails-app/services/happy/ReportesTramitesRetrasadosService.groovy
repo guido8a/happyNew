@@ -33,6 +33,8 @@ class ReportesTramitesRetrasadosService {
         if (depStr && !perId) {
             // la lista de tramites retrasados se hace por el que recibe: dptopara, prsnpaid
             sqlRet = "SELECT * FROM trmt_retrasado() WHERE dptopara IN ($depStr)"
+
+
             // la lista de trámites no recibidos se hace por quien envio: dpto__de, prsndeid y dptodedp = null
             sqlNoRec = "SELECT * FROM trmt_no_recibidos() WHERE dpto__de IN ($depStr)"
         } else if (perId && !depStr) {
@@ -46,6 +48,9 @@ class ReportesTramitesRetrasadosService {
             // la lista de trámites no recibidos se hace por quien envio: dpto__de, prsndeid y dptodedp = null
             sqlNoRec = "SELECT * FROM trmt_no_recibidos() WHERE (dpto__de IN ($depStr) AND dptodedp IS NOT NULL) OR (prsndeid = $perId AND dptodedp IS NULL)"
         }
+
+        println("sql " + sqlRet)
+
         return [ret: sqlRet, norec: sqlNoRec]
     }
 

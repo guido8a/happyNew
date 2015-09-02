@@ -548,6 +548,7 @@
                         %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%
                         filebrowserWindowWidth  : 950,
                         filebrowserWindowHeight : 500,
+
                         %{--serverSave              : {--}%
                         %{--saveUrl  : '${createLink(controller:"tramite", action: "saveTramite")}',--}%
                         %{--saveData : {--}%

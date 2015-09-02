@@ -535,7 +535,6 @@ class TramiteAdminController /*extends Shield*/ {
     }
 
     def redireccionarTramites() {
-//        println "redireccionarTramites: $params"
         def persona = Persona.get(params.id)
 
         if (!params.sort || params.sort == "") {
@@ -874,38 +873,42 @@ class TramiteAdminController /*extends Shield*/ {
 
 
             if (trmt.save(flush: true)) {
-                        println "tr.save ok, i: ${trmt.id}"
-            } else {
-                errores += renderErrors(bean: trmt)
-                println "redireccionarTramite_ajax" + trmt.errors
-            }
-            if (!pr.persona && !pr.departamento) {
-                pr.persona = personaAntes
-                pr.departamento = dptoAntes
-                observacionOriginal = pr.observaciones
-                accion = ""
-                solicitadoPor = ""
-                usuario = ""
-                texto = "Redirección no efectuada a causa de un error."
-                nuevaObservacion = ""
-                pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-                observacionOriginal = tramite.observaciones
-                tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-
+                println "tr.save ok, i: ${trmt.id}"
                 if (tramite.save(flush: true)) {
+                    println "tr.save ok"
+                    println(tramite.id)
+                } else {
+                    errores += renderErrors(bean: trmt)
+                    println "redireccionarTramite_ajax" + trmt.errors
                 }
-                errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
+                if (!pr.persona && !pr.departamento) {
+                    pr.persona = personaAntes
+                    pr.departamento = dptoAntes
+                    observacionOriginal = pr.observaciones
+                    accion = ""
+                    solicitadoPor = ""
+                    usuario = ""
+                    texto = "Redirección no efectuada a causa de un error."
+                    nuevaObservacion = ""
+                    pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = tramite.observaciones
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+                    if (tramite.save(flush: true)) {
+                    }
+                    errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
+                }
+                if (pr.save(flush: true)) {
+                } else {
+                    println pr.errors
+                    errores += renderErrors(bean: pr)
+                }
             }
-            if (pr.save(flush: true)) {
+            if (errores == "") {
+                render "OK"
             } else {
-                println pr.errors
-                errores += renderErrors(bean: pr)
+                render errores
             }
-        }
-        if (errores == "") {
-            render "OK"
-        } else {
-            render errores
         }
     }
 
