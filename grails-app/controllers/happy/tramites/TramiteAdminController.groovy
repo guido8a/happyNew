@@ -280,6 +280,7 @@ class TramiteAdminController /*extends Shield*/ {
         render msg
     }
 
+
     def guardarAsociarTramite() {
         def original = PersonaDocumentoTramite.get(params.original)
         def nuevoPadre = PersonaDocumentoTramite.get(params.id)
