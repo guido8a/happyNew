@@ -54,7 +54,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
 
         def tramiteitor = reportesPdfService.reporteGestion(desde, hasta, departamento.id)
 
-        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 10, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 10, 7, 7, 7, 7, 10, 10, 29, 10, 8]), 15, 0)
         rowHeaderTramite(tablaTramite, false)
 
         tramiteitor.each {
@@ -171,6 +171,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite n°.", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. creación", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. envío", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("T. creación-envio", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("F. recepción", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("T. envío-recepción", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("De", fontBold), prmsHeaderHoja)
@@ -186,6 +187,7 @@ class ReporteGestionController extends happy.seguridad.Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfccr ? it.trmtfccr.format('dd-MM-yyyy HH:mm') : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it?.trmtfcen?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmttmce, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcrc ? it?.trmtfcrc?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmttmer, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmt__de, font), prmsTablaHoja)

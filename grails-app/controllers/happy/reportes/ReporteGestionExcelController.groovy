@@ -65,12 +65,13 @@ class ReporteGestionExcelController extends Shield {
             sheet.setColumnWidth(1, 6000)
             sheet.setColumnWidth(2, wFechas)
             sheet.setColumnWidth(3, wFechas)
-            sheet.setColumnWidth(4, wFechas)
-            sheet.setColumnWidth(5, wTiempos)
-            sheet.setColumnWidth(6, 8000)
-            sheet.setColumnWidth(7, 15000)
-            sheet.setColumnWidth(8, 8000)
-            sheet.setColumnWidth(9, wTiempos)
+            sheet.setColumnWidth(4, 6000)
+            sheet.setColumnWidth(5, wFechas)
+            sheet.setColumnWidth(6, wTiempos)
+            sheet.setColumnWidth(7, 8000)
+            sheet.setColumnWidth(8, 15000)
+            sheet.setColumnWidth(9, 8000)
+            sheet.setColumnWidth(10, wTiempos)
 
             def i = 6
 
@@ -147,6 +148,9 @@ class ReporteGestionExcelController extends Shield {
                 cell.setCellValue("F. envío");
                 j++
                 cell = row.createCell((short) j);
+                cell.setCellValue("T. creacion-envio");
+                j++
+                cell = row.createCell((short) j);
                 cell.setCellValue("F. recepción");
                 j++
                 cell = row.createCell((short) j);
@@ -215,6 +219,9 @@ class ReporteGestionExcelController extends Shield {
         j++
         cell = row.createCell((short) j);
         cell.setCellValue(it?.trmtfcen  ? it?.trmtfcen?.format('dd-MM-yyyy HH:mm') : "");
+        j++
+        cell = row.createCell((short) j);
+        cell.setCellValue(it?.trmttmce);
         j++
         cell = row.createCell((short) j);
         cell.setCellValue(it?.trmtfcrc ? it?.trmtfcrc?.format('dd-MM-yyyy HH:mm') : "");
