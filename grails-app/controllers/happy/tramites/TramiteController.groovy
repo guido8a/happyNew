@@ -192,10 +192,18 @@ class TramiteController extends happy.seguridad.Shield {
                         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
                         tramite.fechaModificacion = new Date()
                         //log Jefe
-                        if (session.usuario.getPuedeJefe()) {
-                            tramite.fechaModificacion = new Date()
-                            tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '', ' ', '', '')
+                        if(session.usuario) {
+                            if (session.usuario.getPuedeJefe()) {
+                                tramite.fechaModificacion = new Date()
+                                tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '', ' ', '', '')
+                            }
+                        }  else {
+                            tramite.save(flush: true)
+                            println "guardar redaccion tramite: ${tramite.codigo}"
+                            redirect(controller: 'login', action: 'login')
+                            return
                         }
+
                         if (tramite.save(flush: true)) {
                             def para = tramite.para
                             enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());

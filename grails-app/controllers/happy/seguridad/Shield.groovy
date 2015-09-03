@@ -12,8 +12,8 @@ class Shield {
      * Verifica si el usuario actual tiene los permisos para ejecutar una acción
      */
     def auth() {
-        println "an " + actionName + " cn " + controllerName + "  "
-        println "shield sesión: " + session.usuario
+//        println "an " + actionName + " cn " + controllerName + "  "
+//        println "shield sesión: " + session.usuario
         session.an = actionName
         session.cn = controllerName
         session.pr = params
@@ -23,10 +23,11 @@ class Shield {
 
         /** **************************************************************************/
 
-//        if(session.an == 'saveTramite' && session.cn == 'tramite'){
+        if(session.an == 'saveTramite' && session.cn == 'tramite'){
 //            println("entro")
-//
-//        }else{
+            return true
+
+        }else{
             if (!session.usuario || !session.perfil) {
 //                            println "1"
 //
@@ -126,7 +127,7 @@ class Shield {
                 }
             }
             /*************************************************************************** */
-//        }
+        }
 
 
 
