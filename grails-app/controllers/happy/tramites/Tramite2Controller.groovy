@@ -243,7 +243,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         return [persona: persona, tramites: tramites.unique()]
     }
 
-    def desenviar_ajax_old() {
+    def desenviar_ajax_old88() {
         def tramite = Tramite.get(params.id)
         def porEnviar = EstadoTramite.findByCodigo("E001")
         def ids
@@ -591,7 +591,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     pdt.delete(flush: true)
                 }
 */
-                pdt.delete(flush: true)
+//                println "intenta borrar copia..."
+                try {
+                    pdt.delete(flush: true)
+                } catch (e) {
+                    //errores += "no se puede borrar trámite ${pdt.tramite.codigo}"
+                    println "No se pudo eliminar tramite al desenviar copia: ${pdt.tramite.codigo}: "  //+ e
+                }
 
                 return errores
             } //no es PARA
@@ -609,7 +615,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
      * @return
      */
     def desenviar_ajax() {
-//        println "desenviar"
+//        println "desenviar, trmt: ${params.id}"
         def tramite = Tramite.get(params.id)
         def codigoEnviado = "E003"
 
@@ -631,6 +637,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids = null
         }
 
+//        println "desenviar 1, trmt: ${params.id}"
         //1ro saco todos los receptores a ver si alguien ha contestado
         def para = tramite.para
         def copias = tramite.allCopias
@@ -643,6 +650,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
             listaDesenviar += para
         }
         listaDesenviar += copias
+
+//        println "desenviar 2, trmt: ${params.id}"
 
 //        ([para] + copias).each { pdt ->
         listaDesenviar.each { pdt ->
@@ -680,6 +689,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //                }
 //            }
         }
+//        println "desenviar 3, trmt: ${params.id}"
+
         if (contestaron != "") {
 //            println "No puede desenviar"
             render "NO_<h3>No puede quitar el enviado del trámite ${tramite.codigo}</h3>" +
@@ -699,8 +710,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
         } else {
             strEnvioPrevio = "Enviado anteriormente por " + quienEnvio.persona.login.join(', ')
         }
+
+//        println "desenviar 4, trmt: ${params.id}"
+
 //        println "lista ids pdt: " + ids
-        // la lista de ids de las pers doc tram a las que hay que desenviar
+//        la lista de ids de las pers doc tram a las que hay que desenviar
         (ids.split("_")).each { id ->
             def persDoc = PersonaDocumentoTramite.get(id.toLong())
             if (persDoc) {
@@ -731,9 +745,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
         }
+//        println "enviados: $enviados, recibidos: $recibidos"
         if (enviados == 0 && recibidos == 0) {
             tramite.estadoTramite = porEnviar
             tramite.fechaEnvio = null
+        } else {
+            println "error: no se pudo quitar fecah de envio ni estado de envio al trámite"
         }
         if (!tramite.save(flush: true)) {
             println "ERROR AL CAMBIAR ESTADO TRAMITE: " + tramite.errors

@@ -61,7 +61,7 @@ class Shield {
 //                return false
 //            }
                 def usu = Persona.get(session.usuario.id)
-                println("usuario ac " + usu.estaActivo)
+//                println("usuario activo: " + usu.estaActivo)
                 if (usu.estaActivo) {
 
 //                println "AQUI??????"
