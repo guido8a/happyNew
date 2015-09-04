@@ -226,9 +226,9 @@
                 var row3 = $("<div class='row botones'  style='text-align: right'>");
                 var row4 = $("<div class='row'>");
                 row1.append("<div class='col-md-1 etiqueta'>Descripción</div>");
-                row1.append("<div class='col-md-5'><textarea class='form-control " + next + "' required id='descripcion' name='descripcion' cols='5' rows='5'></textarea></div>");
+                row1.append("<div class='col-md-5'><textarea maxlength='254' style='resize: none' class='form-control " + next + "' required id='descripcion' name='descripcion' cols='5' rows='5'></textarea></div>");
                 row1.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
-                row1.append("<div class='col-md-5'><textarea class='form-control  " + next + "' required id='clave' name='clave' cols='5' rows='5'></textarea> </div>");
+                row1.append("<div class='col-md-5'><textarea maxlength='63' style='resize: none;' class='form-control  " + next + "' required id='clave' name='clave' cols='5' rows='5'></textarea> </div>");
 //                row2.append(" <div class='col-md-1 etiqueta'>Palabras clave</div>");
 //                row2.append(" <div class='col-md-11'><input type='text' class='form-control " + next + "' id='clave' name='clave'/></div>");
                 row3.append(" <a href='#' class='btn btn-azul subir' style='margin-right: 15px' clase='" + next + "'><i class='fa fa-upload'></i> Subir Archivo</a>");

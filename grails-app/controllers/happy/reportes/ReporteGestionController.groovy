@@ -18,8 +18,8 @@ class ReporteGestionController extends happy.seguridad.Shield {
     def reportesPdfService
     def diasLaborablesService
 
-    Font font = new Font(Font.TIMES_ROMAN, 9, Font.NORMAL);
-    Font fontBold = new Font(Font.TIMES_ROMAN, 9, Font.BOLD);
+    Font font = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL);
+    Font fontBold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD);
 
     def prmsTablaHoja = []
     def prmsTablaHojaCenter = [align: Element.ALIGN_CENTER]

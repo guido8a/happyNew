@@ -35,7 +35,7 @@ class DocumentoTramite {
         resumen(maxSize: 1024, blank: true, nullable: true, attributes: [title: 'resumen'])
         clave(maxSize: 63, blank: true, nullable: true, attributes: [title: 'clave'])
         path(maxSize: 1024, blank: true, nullable: true, attributes: [title: 'path'])
-        descripcion(maxSize: 63, blank: true, nullable: true, attributes: [title: 'descripcion'])
+        descripcion(maxSize: 255, blank: true, nullable: true, attributes: [title: 'descripcion'])
 //        fechaLectura(blank: true, nullable: true, attributes: [title: 'fechaLectura'])
     }
 
