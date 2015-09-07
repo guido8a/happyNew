@@ -291,7 +291,7 @@ class RetrasadosController extends Shield {
     }
 
     def reporteRetrasadosDetalle() {
-//        println("ss " + session.usuario.id)
+        println("ss " + session.usuario.id)
         def idUsario = session.usuario.id
         def baos = new ByteArrayOutputStream()
         def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([15, 5, 7, 5, 10, 10, 10, 15, 8]), 15, 0)
@@ -329,11 +329,9 @@ class RetrasadosController extends Shield {
                 def cn2 = dbConnectionService.getConnection()
                 def tipo
 
-
                 rowHeaderTramite(tablaTramite)
                 cn.eachRow(sqls.toString()){
 //                    println("results " + it)
-
                     if(it.trmtfcrc){
                         sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
                     }else{
@@ -351,29 +349,35 @@ class RetrasadosController extends Shield {
                     }
                 }
 
-
                 sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
                 def cn3 = dbConnectionService.getConnection()
                 def cn5 = dbConnectionService.getConnection()
+                def tramiteSalidaDep
+                def prtrSalidaDep
 
                 rowHeaderTramiteNoRecibidos(tablaTramiteNoRecibidos)
+
                 cn3.eachRow(sqlSalida.toString()){sal->
-                    if(!sal.trmtfcrc && (sal.edtrcdgo == 'E003' || sal.edtrcdgo == 'E004' )){
 
-                       sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-
-                        entreSalida = cn5.firstRow(sqlEntreSalida)
-
-                        llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                    if(sal.edtrcdgo == 'E004'){
+                        tramiteSalidaDep = Tramite.get(sal?.trmt__id)
+                        prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
+                        prtrSalidaDep.each {
+                            if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
+                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                                entreSalida = cn5.firstRow(sqlEntreSalida)
+                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                            }
+                        }
+                    }else{
+                        if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
+                            sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                            entreSalida = cn5.firstRow(sqlEntreSalida)
+                            llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                        }
                     }
                 }
-
-
-
-
             } else {
-
-
                 sqls = "select * from entrada_prsn(" + idUsario + ")"
                 def cn = dbConnectionService.getConnection()
                 def cn2 = dbConnectionService.getConnection()
@@ -413,26 +417,18 @@ class RetrasadosController extends Shield {
                         prtrSalida.each {
                         if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-
                                 entreSalida = cn6.firstRow(sqlEntreSalida)
-
                                 llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
                             }
                         }
-
                     }else{
                         if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
-
                             sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-
                             entreSalida = cn6.firstRow(sqlEntreSalida)
-
                             llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
                         }
                     }
                 }
-
-
             }
         }
 
@@ -491,9 +487,13 @@ class RetrasadosController extends Shield {
     def llenaTablaNoRecibidos (it, tablaTramite, entreSalida){
 
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.deprdscr, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.deprdpto, font), prmsTablaHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.paratitl, font), prmsTablaHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.deprdscr, font), prmsTablaHoja)
+        if(it?.prtrprsn){
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrprsn, font), prmsTablaHoja)
+        }else{
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrdpto, font), prmsTablaHoja)
+        }
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it?.trmtfcen?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
 //        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcrc ? it?.trmtfcrc?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(entreSalida, font), prmsTablaHoja)
