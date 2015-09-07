@@ -38,7 +38,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
         }
 
-        println("error " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
+//        println("a quien conteta id: " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
 
         if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
             def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
@@ -90,7 +90,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
                 if (paramsTramite.esRespuestaNueva == 'S') {
                     def respv = aQuienEstaContestando?.respuestasVivasEsrn
-                    println "RESPV " + respv
+//                    println "RESPV " + respv
                     if (respv.size() != 0) {
                         flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra3.<br/>" +
                                 g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {

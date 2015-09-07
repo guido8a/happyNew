@@ -27,8 +27,8 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def redactar() {
-        def usuario = session.usuario
-        def persona = Persona.get(usuario.id)
+        //def usuario = session.usuario
+        //def persona = Persona.get(usuario.id)
         def esEditor = session.usuario.puedeEditor
         def tramite = Tramite.get(params.id)
         if (tramite?.estadoTramite?.codigo == "E001") { //borrador, por enviar
@@ -467,34 +467,8 @@ class TramiteController extends happy.seguridad.Shield {
                 }
             }
 
-//            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
-//            def tramitesHijos = Tramite.countByPadre(padre)
-//            //            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
-//            def hijos = Tramite.findAllByPadre(padre)
-//
-//            def a = PersonaDocumentoTramite.findAllByTramiteInList(hijos)
-//            def cont = 0
-//            a.each {
-//                def respv = it.respuestasVivas
-////                println("respv " + respv)
-//                cont += respv.size()
-////                if(it.estado?.codigo != 'E006'){
-////                    cont ++
-////                }
-//            }
-//
-////            println(cont)
-//
-//
-//            if (cont != 0) {
-//                flash.message = "Ya ha realizado una respuesta a este trámite, no puede crear otra.<br/>" +
-//                        g.link(controller: 'tramite', action: 'bandejaEntrada', class: "btn btn-danger") {
-//                            "Volver a la bandeja de entrada"
-//                        }
-//                redirect(controller: 'tramite', action: "errores")
-//                return
-//            }
         }
+
 
         def usuario = session.usuario
         def persona = Persona.get(usuario.id)
@@ -524,6 +498,7 @@ class TramiteController extends happy.seguridad.Shield {
             redirect(action: "errores")
             return
         }
+
 
         def dias = DiaLaborable.countByAnio(anio.first())
         if (dias < 365) {
@@ -573,6 +548,8 @@ class TramiteController extends happy.seguridad.Shield {
                 }
             }
         }
+
+
         if (params.id) {
             tramite = Tramite.get(params.id)
             padre = tramite.padre
@@ -663,6 +640,8 @@ class TramiteController extends happy.seguridad.Shield {
 
         todos = disponibles + disp2
  */
+
+
         def sql = "SELECT id, dscr as label, externo FROM trmt_para($session.usuario.id)"
         def cn = dbConnectionService.getConnection()
         todos = cn.rows(sql.toString())
@@ -732,6 +711,8 @@ class TramiteController extends happy.seguridad.Shield {
             }
 
         }
+
+
         tramite.tramitePrincipal = 0
 //        if (params.buscar == '1') {
 //            def p = padre
