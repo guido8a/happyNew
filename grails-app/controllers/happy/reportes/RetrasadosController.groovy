@@ -305,7 +305,7 @@ class RetrasadosController extends Shield {
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
         def jefe = params.jefe == '1'
         def results = []
-        def fechaRececion = new Date().format("yyyy/MM/dd hh:mm")
+        def fechaRececion = new Date().format("yyyy/MM/dd HH:mm:ss")
         Document document = reportesPdfService.crearDocumento("svt", [top: 2, right: 2, bottom: 1.5, left: 2.5])
 
         def pdfw = PdfWriter.getInstance(document, baos);
@@ -359,6 +359,9 @@ class RetrasadosController extends Shield {
 
                 cn3.eachRow(sqlSalida.toString()){sal->
 
+//                    println("trmfcen" + sal?.trmtfcen)
+//                    println("fecha " + fechaRececion)
+
                     if(sal.edtrcdgo == 'E004'){
                         tramiteSalidaDep = Tramite.get(sal?.trmt__id)
                         prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
@@ -411,12 +414,17 @@ class RetrasadosController extends Shield {
                 rowHeaderTramiteNoRecibidos(tablaTramiteNoRecibidos)
                 cn4.eachRow(sqlSalida.toString()){sal->
 
+//                    println("trmfcen sal" + sal?.trmtfcen)
+//                    println("fecha sal" + fechaRececion)
+
+
                     if(sal.edtrcdgo == 'E004'){
                         tramiteSalida = Tramite.get(sal?.trmt__id)
                         prtrSalida = PersonaDocumentoTramite.findAllByTramite(tramiteSalida)
                         prtrSalida.each {
                         if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                            println("sqlE" + sqlEntreSalida)
                                 entreSalida = cn6.firstRow(sqlEntreSalida)
                                 llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
                             }

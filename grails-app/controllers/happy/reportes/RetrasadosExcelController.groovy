@@ -240,7 +240,7 @@ class RetrasadosExcelController extends Shield {
         def sqlEntreSalida
         def entre
         def entreSalida
-        def fechaRececion = new Date().format("yyyy/MM/dd hh:mm")
+        def fechaRececion = new Date().format("yyyy/MM/dd HH:mm:ss")
 
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
