@@ -56,8 +56,8 @@ class DocumentosGeneradosController extends Shield{
 
     def reporteGeneralPdf() {
 
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
-        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
         def title = "Documentos generados de "
@@ -279,8 +279,8 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteDetalladoPdf() {
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
-        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "detalle_documentos_generados_"
         def title = "Detalle de los documentos generados de "
@@ -459,8 +459,8 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteGeneralXlsx() {
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
-        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
         def title = ["Reporte de documentos generados"]
@@ -631,8 +631,8 @@ class DocumentosGeneradosController extends Shield{
 
     def reporteDetalladoXlsx() {
 
-        def desde = new Date().parse("dd-MM-yyyy hh:mm", params.desde + " 00:00")
-        def hasta = new Date().parse("dd-MM-yyyy hh:mm", params.hasta + " 23:59")
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
         def fileName = "detalle_documentos_generados_"
         def title = ["Reporte de documentos generados"]
         def title2 = ""
@@ -720,7 +720,7 @@ class DocumentosGeneradosController extends Shield{
         CreationHelper createHelper = wb.getCreationHelper();
 
         CellStyle styleDate = wb.createCellStyle();
-        styleDate.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy hh:mm"));
+        styleDate.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy HH:mm"));
 
         sheet.setAutobreaks(true);
 

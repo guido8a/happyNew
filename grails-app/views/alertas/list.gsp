@@ -64,7 +64,7 @@
             <td class="d${(((new Date()) - a.fechaCreacion)>2)?"mas":(new Date()) - a.fechaCreacion }"></td>
             <td>${a.mensaje}</td>
             <td>${a.tramite?.codigo}</td>
-            <td>${a.fechaCreacion?.format("dd-MM-yyyy hh:mm")}</td>
+            <td>${a.fechaCreacion?.format("dd-MM-yyyy HH:mm")}</td>
             <td style="text-align: center">
                 <g:if test="${a.controlador!='' && a.controlador.size()>1}">
                     <a href="#" link="${g.createLink(controller: a.controlador,action: a.accion)}/${a.datos}" class="btn btn-azul btn-small rev" iden="${a.id}" title="Revisar">

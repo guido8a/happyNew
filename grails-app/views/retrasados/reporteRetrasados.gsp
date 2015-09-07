@@ -23,8 +23,8 @@
         <td>${t.id}</td>
         <td>${t.codigo}</td>
         <td>${t.estadoTramite.descripcion}</td>
-        <td>${t.fechaEnvio.format("dd-MM.yyyy hh:mm")}</td>
-        <td>${t.fechaMaximoRespuesta?.format("dd-MM.yyyy hh:mm")}</td>
+        <td>${t.fechaEnvio.format("dd-MM.yyyy HH:mm")}</td>
+        <td>${t.fechaMaximoRespuesta?.format("dd-MM.yyyy HH:mm")}</td>
         <td>${t.estado}</td>
     </tr>
 </g:each>

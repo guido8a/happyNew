@@ -26,7 +26,7 @@ class ShieldController {
         def alerta = new Alerta()
         alerta.accion=session.an
         alerta.controlador=session.cn
-        alerta.mensaje="ALERTA: ingreso restringido. Usuario: ${session.usuario.login} Fecha: ${new Date().format('dd-MM-yyyy hh:mm')}"
+        alerta.mensaje="ALERTA: ingreso restringido. Usuario: ${session.usuario.login} Fecha: ${new Date().format('dd-MM-yyyy HH:mm')}"
         alerta.fechaCreacion=new Date()
         alerta.save(flush: true)
         def msn = "Forbidden"

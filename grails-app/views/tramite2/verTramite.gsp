@@ -55,7 +55,7 @@
         <div class="col-xs-12 negrilla">
             <input type="text" name="" style="width: 708px" class="form-control required label-shared" value="${""+tramite.de.departamento.codigo+": "+tramite.de}" title="Dirección: ${tramite.de.departamento}" disabled>
             el día
-            <input type="text" class="form-control required label-shared" maxlength="30" value="${tramite.fechaCreacion?.format('dd-MM-yyyy hh:mm')}" disabled style="width: 160px">
+            <input type="text" class="form-control required label-shared" maxlength="30" value="${tramite.fechaCreacion?.format('dd-MM-yyyy HH:mm')}" disabled style="width: 160px">
         </div>
     </div>
     <div class="row">
@@ -69,7 +69,7 @@
             Enviado:
         </div>
         <div class="col-xs-2 negrilla" style="padding: 0px">
-            <input type="text" class="form-control required "  value="${tramite.fechaEnvio?.format('dd-MM-yyyy hh:mm') }" disabled  style="width: 160px">
+            <input type="text" class="form-control required "  value="${tramite.fechaEnvio?.format('dd-MM-yyyy HH:mm') }" disabled  style="width: 160px">
         </div>
         <div class="col-xs-1 negrilla">
             Recibido:
