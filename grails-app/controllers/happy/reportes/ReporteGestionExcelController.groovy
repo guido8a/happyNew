@@ -53,6 +53,8 @@ class ReporteGestionExcelController extends Shield {
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue("Reporte generado el " + new Date().format("dd-MM-yyyy HH:mm"));
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("Nota: El tiempo en días corresponde a una jornada de trabajo diaria");
 
         def tramiteitor = reportesPdfService.reporteGestion(desde, hasta, departamento.id)
 

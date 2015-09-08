@@ -90,39 +90,39 @@ class RetrasadosExcelController extends Shield {
 
     private int creaHeaderTablaTramites(sheet, num) {
         def row = sheet.createRow((short) num);
-        row.createCell((int) 0).setCellValue("Trámite n°")
+        row.createCell((int) 0).setCellValue("Trámite No.")
         row.createCell((int) 1).setCellValue("De")
         row.createCell((int) 2).setCellValue("Creado Por")
         row.createCell((int) 3).setCellValue("Para")
-        row.createCell((int) 4).setCellValue("F. Envío")
-        row.createCell((int) 5).setCellValue("F. Recepción")
-        row.createCell((int) 6).setCellValue("F. Límite")
-        row.createCell((int) 7).setCellValue("T. Envio-Recepción")
+        row.createCell((int) 4).setCellValue("Fecha Envío")
+        row.createCell((int) 5).setCellValue("Fecha Recepción")
+        row.createCell((int) 6).setCellValue("Fecha Límite")
+        row.createCell((int) 7).setCellValue("Tiempo Envio - Recepción")
         row.createCell((int) 8).setCellValue("Tipo")
         return num + 1
     }
 
     def headerTablaRetrasados (sheet, num){
         def row = sheet.createRow((short) num);
-        row.createCell((int) 0).setCellValue("Trámite n°")
+        row.createCell((int) 0).setCellValue("Trámite No.")
         row.createCell((int) 1).setCellValue("De")
         row.createCell((int) 2).setCellValue("Creado Por")
         row.createCell((int) 3).setCellValue("Para")
-        row.createCell((int) 4).setCellValue("F. Envío")
-        row.createCell((int) 5).setCellValue("F. Recepción")
-        row.createCell((int) 6).setCellValue("F. Límite")
-        row.createCell((int) 7).setCellValue("T. Envio-Recepción")
+        row.createCell((int) 4).setCellValue("Fecha Envío")
+        row.createCell((int) 5).setCellValue("Fecha Recepción")
+        row.createCell((int) 6).setCellValue("Fecha Límite")
+        row.createCell((int) 7).setCellValue("Tiempo Envio - Recepción")
         row.createCell((int) 8).setCellValue("Tipo")
     }
 
     def headerTramiteNoRecibidos(sheet, num){
         def row = sheet.createRow((short) num);
-        row.createCell((int) 0).setCellValue("Trámite n°")
+        row.createCell((int) 0).setCellValue("Trámite No.")
         row.createCell((int) 1).setCellValue("De")
         row.createCell((int) 2).setCellValue("Creado Por")
         row.createCell((int) 3).setCellValue("Para")
-        row.createCell((int) 4).setCellValue("F. Envío")
-        row.createCell((int) 5).setCellValue("T. Envio-Recepción")
+        row.createCell((int) 4).setCellValue("Fecha Envío")
+        row.createCell((int) 5).setCellValue("Tiempo Envio - Recepción")
         row.createCell((int) 6).setCellValue("Tipo")
     }
 
@@ -274,6 +274,8 @@ class RetrasadosExcelController extends Shield {
         rowHead.createCell((int) 1).setCellValue(ttl)
         rowHead = sheet.createRow((short) 4);
         rowHead.createCell((int) 1).setCellValue("" + new Date().format('dd-MM-yyyy HH:mm'))
+        rowHead = sheet.createRow((short) 5);
+        rowHead.createCell((int) 0).setCellValue("Nota: El tiempo en días corresponde a una jornada de trabajo diaria")
         def num = 6
 
 
@@ -304,7 +306,10 @@ class RetrasadosExcelController extends Shield {
                         sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                     }
 
-                    entre = cn2.firstRow(sqlEntre)
+//                    entre = cn2.firstRow(sqlEntre)
+                    cn2.eachRow(sqlEntre){ d ->
+                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                    }
 
                     if(it?.trmtfclr < new Date()){
                         tipo = "Retrasado"
@@ -317,7 +322,7 @@ class RetrasadosExcelController extends Shield {
                         num++
                     }
                 }
-
+                cn.close()
                 num = num+1
 
                 sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
@@ -330,14 +335,16 @@ class RetrasadosExcelController extends Shield {
                 num++
 
                 cn3.eachRow(sqlSalida.toString()){sal->
-
                     if(sal.edtrcdgo == 'E004'){
                         tramiteSalidaDep = Tramite.get(sal?.trmt__id)
                         prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
                         prtrSalidaDep.each {
                             if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                                entreSalida = cn5.firstRow(sqlEntreSalida)
+//                                entreSalida = cn5.firstRow(sqlEntreSalida)
+                                cn2.eachRow(sqlEntreSalida){ d ->
+                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                                }
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                                 num++
                             }
@@ -345,12 +352,16 @@ class RetrasadosExcelController extends Shield {
                     }else{
                         if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
                             sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                            entreSalida = cn5.firstRow(sqlEntreSalida)
+//                            entreSalida = cn5.firstRow(sqlEntreSalida)
+                            cn2.eachRow(sqlEntreSalida){ d ->
+                                entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                            }
                             llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                             num++
                         }
                     }
                 }
+                cn3.close()
             } else {
 
                 sqls = "select * from entrada_prsn(" + idUsario + ")"
@@ -368,7 +379,10 @@ class RetrasadosExcelController extends Shield {
                         sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                     }
 
-                    entre = cn2.firstRow(sqlEntre)
+//                    entre = cn2.firstRow(sqlEntre)
+                    cn2.eachRow(sqlEntre){ d ->
+                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                    }
 
                     if(it?.trmtfclr < new Date()){
                         tipo = "Retrasado"
@@ -381,7 +395,7 @@ class RetrasadosExcelController extends Shield {
                         num++
                     }
                 }
-
+                cn.close()
                 num = num+1
 
                 sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
@@ -401,7 +415,10 @@ class RetrasadosExcelController extends Shield {
                         prtrSalida.each {
                             if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                                entreSalida = cn6.firstRow(sqlEntreSalida)
+//                                entreSalida = cn6.firstRow(sqlEntreSalida)
+                                cn2.eachRow(sqlEntreSalida){ d ->
+                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                                }
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                                 num++
                             }
@@ -409,14 +426,16 @@ class RetrasadosExcelController extends Shield {
                     }else{
                         if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
                             sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                            entreSalida = cn6.firstRow(sqlEntreSalida)
+//                            entreSalida = cn6.firstRow(sqlEntreSalida)
+                            cn2.eachRow(sqlEntreSalida){ d ->
+                                entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                            }
                             llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                             num++
                         }
                     }
                 }
-
-
+                cn4.close()
             }
         }
 
