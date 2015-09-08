@@ -28,6 +28,8 @@ class EnviarService {
      *  mensaje         : mandar message(code: 'pathImages').toString()
      */
     def crearPdf(Tramite tramite, Persona usuario, String enviar, String type, String realPath, String mensaje) {
+        println "crea pdf de ${tramite.codigo} caracteres: ${tramite.texto?.size()}"
+
 //        println "INTENTANDO CREAR PDF DEL TRAMITE " + tramite.id + "  " + tramite.codigo + "  creado por: " +
 //                tramite.de.login + " el " + tramite.fechaCreacion.format("dd-MM-yyyy HH:mm:ss") + "  con contenido: " + tramite.texto
 

@@ -540,9 +540,9 @@ class ElementosTagLib {
                 asunto = asunto.replaceAll("\\*gt\\*", "&gt;")
                 asunto = asunto.replaceAll("\\*amp\\*", "&amp;")
 
-                html += "<tr>"
+                html += "<tr style='vertical-align: top'>"
                 html += "<th>ASUNTO:</th>"
-                html += "<td>${asunto ?: ''}</td>"
+                html += "<td align='justify'>${asunto ?: ''}</td>"
                 html += "</tr>"
                 html += "</table>"
             } else {
