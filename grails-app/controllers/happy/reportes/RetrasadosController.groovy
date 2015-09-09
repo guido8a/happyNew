@@ -340,7 +340,7 @@ class RetrasadosController extends Shield {
                     }
 
                     //entre = cn2.firstRow(sqlEntre)
-                    cn2.eachRow(sqlEntre){ d ->
+                    cn2.eachRow(sqlEntre.toString()){ d ->
                         entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                     }
                     cn2.close()
@@ -374,7 +374,7 @@ class RetrasadosController extends Shield {
                             if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
 //                                entreSalida = cn5.firstRow(sqlEntreSalida)
-                                cn5.eachRow(sqlEntreSalida){ d ->
+                                cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 cn5.close()
@@ -385,7 +385,7 @@ class RetrasadosController extends Shield {
                         if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
                             sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
 //                            entreSalida = cn5.firstRow(sqlEntreSalida)
-                            cn5.eachRow(sqlEntreSalida){ d ->
+                            cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                 entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                             }
                             cn5.close()
@@ -410,7 +410,7 @@ class RetrasadosController extends Shield {
                     }
 
                     //entre = cn2.firstRow(sqlEntre)
-                    cn2.eachRow(sqlEntre){ d ->
+                    cn2.eachRow(sqlEntre.toString()){ d ->
                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                     }
                     cn2.close()
@@ -445,7 +445,7 @@ class RetrasadosController extends Shield {
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                                 println("sqlE" + sqlEntreSalida)
                                 //entreSalida = cn6.firstRow(sqlEntreSalida)
-                                cn6.eachRow(sqlEntreSalida){ d ->
+                                cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 cn6.close()
@@ -456,7 +456,7 @@ class RetrasadosController extends Shield {
                         if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
                             sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
 //                            entreSalida = cn6.firstRow(sqlEntreSalida)
-                            cn6.eachRow(sqlEntreSalida){ d ->
+                            cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                 entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                             }
                             cn6.close()

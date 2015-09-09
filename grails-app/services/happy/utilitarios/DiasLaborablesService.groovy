@@ -810,7 +810,7 @@ class DiasLaborablesService {
         def sql = "select * from tmpo_entre('" + fechaInicio + "', '" + fechaFin + "') "
         //println "sql " + sql
         def result
-        result = cn.firstRow(sql)
+        result = cn.firstRow(sql.toString())
         return result
     }
 

@@ -288,6 +288,7 @@
 
             function doSave(url) {
                 openLoader("Guardando");
+
                 $.ajax({
                     type     : "POST",
                     url      : '${createLink(controller:"tramite", action: "saveTramite")}',

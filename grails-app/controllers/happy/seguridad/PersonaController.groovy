@@ -680,7 +680,7 @@ class PersonaController extends happy.seguridad.Shield {
             def sesn = Sesn.findByUsuarioAndPerfil(usu, perf)
             try {
                 sesn.fechaFin = new Date()
-                sesn.fechaInicio = null
+//                sesn.fechaInicio = null
 //                sesn.delete(flush: true)
             } catch (e) {
                 errores += "<li>No se puedo remover el perfil ${perf.nombre}</li>"
@@ -696,13 +696,15 @@ class PersonaController extends happy.seguridad.Shield {
 
         if (errores == "") {
             def permisosDebeTener = []
-            /* actualiza PRUS */
-            Sesn.findAllByUsuario(usu).each {
+            /* *********** actualiza PRUS  ************ */
+            Sesn.findAllByUsuarioAndFechaFinIsNull(usu).each {
                 def prpf = Prpf.findAllByPerfil(it.perfil)
                 permisosDebeTener += prpf.permiso
             }
             permisosDebeTener = permisosDebeTener.unique()
-            def permisosTiene = PermisoUsuario.findAllByPersona(usu)
+            println "permisos que debe tener: $permisosDebeTener"
+
+            def permisosTiene = PermisoUsuario.findAllByPersonaAndFechaFinIsNull(usu)
             def permisosAgregar = permisosDebeTener.clone()
             def permisosTerminar = []
             permisosTiene.each { actual ->
@@ -714,7 +716,7 @@ class PersonaController extends happy.seguridad.Shield {
                     permisosAgregar.remove(actual.permisoTramite)
                 }
             }
-
+            println "permisos que debe terminar: $permisosTerminar"
             permisosTerminar.each {
                 it.fechaFin = new Date()
                 if (!it.save(flush: true)) {

@@ -874,13 +874,6 @@ class TramiteAdminController /*extends Shield*/ {
 
             if (trmt.save(flush: true)) {
                 println "tr.save ok, i: ${trmt.id}"
-                if (tramite.save(flush: true)) {
-                    println "tr.save ok"
-                    println(tramite.id)
-                } else {
-                    errores += renderErrors(bean: trmt)
-                    println "redireccionarTramite_ajax" + trmt.errors
-                }
                 if (!pr.persona && !pr.departamento) {
                     pr.persona = personaAntes
                     pr.departamento = dptoAntes
@@ -891,10 +884,10 @@ class TramiteAdminController /*extends Shield*/ {
                     texto = "Redirección no efectuada a causa de un error."
                     nuevaObservacion = ""
                     pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-                    observacionOriginal = tramite.observaciones
-                    tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                    observacionOriginal = trmt.observaciones
+                    trmt.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
 
-                    if (tramite.save(flush: true)) {
+                    if (trmt.save(flush: true)) {
                     }
                     errores += "<ul><li>Ha ocurrido un error al redireccionar.</li></ul>"
                 }
