@@ -272,8 +272,8 @@ class ReportesPdfService {
             tituloReporte = session.tituloReporte
         }
 
-//        File layoutFolder = ApplicationHolder.application.parentContext.getResource("images/logo_gadpp_reportes.png").file
-        File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp_reportes.png").file
+//        File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp_reportes.png").file
+        File layoutFolder = grailsApplication.parentContext.getResource("images/logo_gadpp.png").file
         def absolutePath = layoutFolder.absolutePath
 //        println "Absolute Path to Layout Folder: ${absolutePath}"
 
@@ -285,7 +285,7 @@ class ReportesPdfService {
         def x = -100
         def espacio = "            "
         if (rot == 90) {
-            x = -230
+            x = -230   //antes -230
             espacio += espacio + espacio + espacio + "    "
         }
 
@@ -304,11 +304,12 @@ class ReportesPdfService {
 
         Image logo = Image.getInstance(imagen);
         logo.setAlignment(Image.LEFT);
-//        logo.scaleAbsoluteHeight(20);
-//        logo.scaleAbsoluteWidth(20);
-//        logo.scalePercent(100);
-//        Chunk chunkLogo = new Chunk(logo, x, -20);
-        Chunk chunkLogo = new Chunk(logo, x, -10);
+//        logo.scaleAbsoluteHeight(40);
+//        logo.scaleAbsoluteWidth(40);
+        logo.scalePercent(15);
+
+        Chunk chunkLogo = new Chunk(logo, x, -40);
+//        Chunk chunkLogo = new Chunk(logo, x, -10);
 
         Phrase phraseHeader = new Phrase()
         phraseHeader.add(chunkLogo)

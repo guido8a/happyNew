@@ -60,7 +60,8 @@ class EnviarService {
         def pathImages = realPath + "images/"
         def path = pathImages + "redactar/" + usuario.id + "/"
 
-        def membrete = pathImages + "logo_gadpp_reportes.png"
+//        def membrete = pathImages + "logo_gadpp_reportes.png"
+        def membrete = pathImages + "logo_gadpp.png"
 
         new File(path).mkdirs()
 
@@ -207,7 +208,7 @@ class EnviarService {
             content += "<table border='0'>"
             content += "<tr>"
             content += "<td width='15%'>"
-            content += "<img alt='' src='${membrete}'/>"
+            content += "<img alt='' src='${membrete}' height='65' width='100'/>"
             content += "</td>"
             content += "<td width='85%' style='text-align:center'>"
             content += leyenda
