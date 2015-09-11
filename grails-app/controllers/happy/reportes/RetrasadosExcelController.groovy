@@ -241,6 +241,12 @@ class RetrasadosExcelController extends Shield {
         def entre
         def entreSalida
         def fechaRececion = new Date().format("yyyy/MM/dd HH:mm:ss")
+        def totalRetrasados = 0
+        def totalSin = 0
+        def totalRetrasadosPer = 0
+        def totalSinPer = 0
+        def totalNoRecibidosPer = 0
+        def totalNoRecibidos = 0
 
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
@@ -321,14 +327,19 @@ class RetrasadosExcelController extends Shield {
                     if(it?.trmtfclr < new Date()){
                         tipo = "Retrasado"
                         llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                        totalRetrasados += 1
                         num++
                     }
                     if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "No recibido"
+                        tipo = "Sin Recepción"
                         llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
+                        totalSin += 1
                         num++
                     }
                 }
+                rowHead = sheet.createRow((short) num);
+                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados + " ,Total trámites Sin Recepción: " + totalSin)
+                num++
                 cn.close()
                 num = num+1
 
@@ -384,6 +395,7 @@ class RetrasadosExcelController extends Shield {
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
+                                totalNoRecibidos += 1
                                 num++
                             }
                         }
@@ -393,6 +405,11 @@ class RetrasadosExcelController extends Shield {
 
 
                 }
+
+                rowHead = sheet.createRow((short) num);
+                rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidos)
+
+
                 cn3.close()
             } else {
 
@@ -419,14 +436,21 @@ class RetrasadosExcelController extends Shield {
                     if(it?.trmtfclr < new Date()){
                         tipo = "Retrasado"
                         llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                        totalRetrasadosPer += 1
                         num++
                     }
                     if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "No recibido"
+                        tipo = "Sin Recepción"
                         llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
+                        totalSinPer += 1
                         num++
                     }
                 }
+
+                rowHead = sheet.createRow((short) num);
+                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasadosPer + " ,Total trámites Sin Recepción: " + totalSinPer)
+                num++
+
                 cn.close()
                 num = num+1
 
@@ -482,6 +506,7 @@ class RetrasadosExcelController extends Shield {
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
+                                totalNoRecibidosPer +=1
                                 num++
                             }
                         }
@@ -491,6 +516,8 @@ class RetrasadosExcelController extends Shield {
 
                 }
                 cn4.close()
+                rowHead = sheet.createRow((short) num);
+                rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidosPer)
             }
         }
 

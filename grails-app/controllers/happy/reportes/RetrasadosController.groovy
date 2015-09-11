@@ -54,6 +54,7 @@ class RetrasadosController extends Shield {
     Font font = new Font(Font.TIMES_ROMAN, 9, Font.NORMAL);
     Font fontBold = new Font(Font.TIMES_ROMAN, 9, Font.BOLD);
     def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
+    def prmsHeaderHojaLeft = [align: Element.ALIGN_RIGHT]
     def prmsTablaHojaCenter = [align: Element.ALIGN_CENTER]
     def prmsTablaHoja = []
 
@@ -298,12 +299,20 @@ class RetrasadosController extends Shield {
         def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12, 6, 8, 6, 10, 10, 10, 15, 8]), 15, 0)
         def tablaTramiteNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 5, 20, 20, 10, 13]), 15, 0)
         def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
         def sqls
         def sqlEntre
         def sqlSalida
         def sqlEntreSalida
         def entre
         def entreSalida
+        def totalRetrasados = 0
+        def totalSin = 0
+        def totalRetrasadosPer = 0
+        def totalSinPer = 0
+        def totalNoRecibidosPer = 0
+        def totalNoRecibidos = 0
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_HHmm") + ".pdf";
         def jefe = params.jefe == '1'
         def results = []
@@ -349,13 +358,20 @@ class RetrasadosController extends Shield {
                     if(it?.trmtfclr < new Date()){
                        tipo = "Retrasado"
                         llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasados += 1
                     }
                     if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "No recibido"
+                        tipo = "Sin Recepción"
                         llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalSin += 1
                     }
                 }
                 cn.close()
+
+                reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites Retrasados: " + totalRetrasados + "  ,Total trámites Sin Recepción: " + totalSin, fontBold), prmsHeaderHojaLeft)
+
+                println("total re" + totalRetrasados)
+                println("total no" + totalNoRecibidos)
 
                 sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
                 def cn3 = dbConnectionService.getConnection()
@@ -405,6 +421,7 @@ class RetrasadosController extends Shield {
                                 }
                                 cn5.close()
                                 llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                                totalNoRecibidos += 1
                             }
                         }
 
@@ -413,6 +430,7 @@ class RetrasadosController extends Shield {
 
                 }
                 cn3.close()
+                reportesPdfService.addCellTabla(tablaTotalesNoRecibidos, new Paragraph("Total trámites No Recibidos : " + totalNoRecibidos, fontBold), prmsHeaderHojaLeft)
             } else {
                 sqls = "select * from entrada_prsn(" + idUsario + ")"
                 def cn = dbConnectionService.getConnection()
@@ -436,13 +454,16 @@ class RetrasadosController extends Shield {
                     if(it?.trmtfclr < new Date()){
                         tipo = "Retrasado"
                         llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasadosPer += 1
                     }
                     if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "No recibido"
+                        tipo = "Sin Recepción"
                         llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalSin += 1
                     }
                 }
 
+                reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites Retrasados: " + totalRetrasadosPer + "  ,Total trámites Sin Recepción: " + totalSinPer, fontBold), prmsHeaderHojaLeft)
 
                 sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
                 def cn4 = dbConnectionService.getConnection()
@@ -496,12 +517,14 @@ class RetrasadosController extends Shield {
                                 }
                                 cn6.close()
                                 llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                                totalNoRecibidosPer += 1
                             }
                         }
 
                     }
 
                 }
+                reportesPdfService.addCellTabla(tablaTotalesNoRecibidos, new Paragraph("Total trámites No Recibidos : " + totalNoRecibidosPer, fontBold), prmsHeaderHojaLeft)
             }
         }
 
@@ -509,8 +532,10 @@ class RetrasadosController extends Shield {
         document.open();
         reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
         document.add(tablaTramite);
+        document.add(tablaTotalesRetrasados);
         document.add(tablaCabecera);
         document.add(tablaTramiteNoRecibidos);
+        document.add(tablaTotalesNoRecibidos);
 
         document.close();
         pdfw.close()
