@@ -59,7 +59,7 @@ class ExternosController extends Shield {
     }
 
     def recibirTramiteExterno_funcion(Long id) {
-//        println "recibir tramite " + id
+        println "recibir tramite " + id
         def pdt = PersonaDocumentoTramite.get(id)
         if (pdt?.estado?.codigo == "E006") {
             return "<li>El trámite ${pdt.rolPersonaTramite.descripcion} ${pdt.departamento ? pdt.departamento.descripcion : pdt.persona?.login} ya ha sido anulado, no puede ser recibido.</li>"
@@ -87,8 +87,11 @@ class ExternosController extends Shield {
                 pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
                 pdtRecibe.departamentoNombre = persona.departamento.descripcion
                 pdtRecibe.departamentoSigla = persona.departamento.codigo
+                pdtRecibe.personaSigla = persona.login
 
                 pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+                pdtRecibe.departamentoPersona = persona.departamento
+
                 pdtRecibe.fechaRecepcion = new Date()
                 pdtRecibe.save(flush: true)
 //                return "<li>Trámite ${c.rolPersonaTramite.descripcion} ${c.departamento ? c.departamento.descripcion : c.persona?.login} recibido correctamente</li>"
@@ -100,7 +103,7 @@ class ExternosController extends Shield {
     }
 
     def recibirTramiteExterno() {
-        println "recibir tramite " + params
+        println "confirmar recibir tramite externo no se usa... " + params
 
         def tramitetr = Tramite.get(params.id)
         if (tramitetr) {
@@ -145,8 +148,11 @@ class ExternosController extends Shield {
                         pdtRecibe.personaNombre = persona.nombre + " " + persona.apellido
                         pdtRecibe.departamentoNombre = persona.departamento.descripcion
                         pdtRecibe.departamentoSigla = persona.departamento.codigo
+                        pdtRecibe.personaSigla = persona.login
 
                         pdtRecibe.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
+                        pdtRecibe.departamentoPersona = persona.departamento
+
                         pdtRecibe.fechaRecepcion = new Date()
                         pdtRecibe.save(flush: true)
                         render "OK_Trámite recibido correctamente"

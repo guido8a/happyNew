@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 class Tramite2Controller extends happy.seguridad.Shield {
+//class Tramite2Controller {
 
     def diasLaborablesService
     def enviarService

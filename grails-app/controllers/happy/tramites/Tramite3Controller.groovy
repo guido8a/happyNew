@@ -1059,7 +1059,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-//        println "recibir tramite " + params
+        println "recibir tramite " + params
         if (request.getMethod() == "POST") {
 
             def persona = session.usuario
@@ -1222,11 +1222,11 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     pdt.tramite = tramite
                     pdt.persona = persona
 
-                    pdt.personaSigla = pdt.persona.login
-                    pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
-                    pdt.departamentoNombre = pdt.persona.departamento.descripcion
-                    pdt.departamentoSigla = pdt.persona.departamento.codigo
-                    pdt.personaSigla = pdt.persona.login
+                    pdt.personaSigla = persona.login
+                    pdt.personaNombre = persona.nombre + " " + persona.apellido
+                    pdt.departamentoNombre = persona.departamento.descripcion
+                    pdt.departamentoSigla = persona.departamento.codigo
+                    pdt.personaSigla = persona.login
 
                     pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E003")
                     pdt.departamentoPersona = persona.departamento
