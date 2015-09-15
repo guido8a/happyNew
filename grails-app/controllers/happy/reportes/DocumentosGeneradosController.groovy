@@ -1,6 +1,7 @@
 package happy.reportes
 
 import happy.seguridad.Shield
+import happy.tramites.EstadoTramite
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator
 import org.jfree.chart.plot.PiePlot
 import org.jfree.data.general.DefaultPieDataset
@@ -47,6 +48,7 @@ import java.io.*;
 class DocumentosGeneradosController extends Shield{
 
     def reportesPdfService
+    def dbConnectionService
 
     Font font = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
     Font fontBold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
@@ -289,6 +291,8 @@ class DocumentosGeneradosController extends Shield{
 
         def tramites = [:], trams = []
 
+        println("params" + params)
+
         if (params.tipo == "prsn") {
             def persona = Persona.get(params.id.toLong())
             def dpto = Departamento.get(params.dpto)
@@ -299,70 +303,71 @@ class DocumentosGeneradosController extends Shield{
             title += "${persona.nombre} ${persona.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
             title2 += "el usuario ${persona.nombre} ${persona.apellido} (${persona.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
             title3 += "${persona.nombre} ${persona.apellido} en el departamento ${dpto.descripcion}"
-            trams = Tramite.withCriteria {
-                eq("de", persona)
-                eq("departamento", dpto)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("fechaCreacion", "asc")
-            }
+//            trams = Tramite.withCriteria {
+//                eq("de", persona)
+//                eq("departamento", dpto)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("fechaCreacion", "asc")
+//            }
 
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
             def hijosDep = reportesPdfService.todosDep(dep)
+            println("hd " + hijosDep)
             fileName += dep.codigo
             title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
             title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
             title3 += dep.descripcion
-            trams = Tramite.withCriteria {
-                inList("departamento", hijosDep)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("departamento", "asc")
-                order("fechaCreacion", "asc")
-            }
+//            trams = Tramite.withCriteria {
+//                inList("departamento", hijosDep)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("departamento", "asc")
+//                order("fechaCreacion", "asc")
+//            }
         }
 
-        trams.each { tr ->
-            def pers = tr.de
-            def dpto = tr.departamento
-            def deDpto = tr.deDepartamento
-
-            if (!tramites[dpto.id]) {
-                tramites[dpto.id] = [:]
-                tramites[dpto.id].departamento = dpto
-                tramites[dpto.id].personas = [:]
-            }
-            if (deDpto) {
-                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
-                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
-                    tramites[dpto.id].personas[pers.id + "_o"].tramites = []
-                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
-                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
-                }
-                tramites[dpto.id].personas[pers.id + "_o"].tramites += tr
-            } else {
-                if (!tramites[dpto.id].personas[pers.id]) {
-                    tramites[dpto.id].personas[pers.id] = [:]
-                    tramites[dpto.id].personas[pers.id].tramites = []
-                    tramites[dpto.id].personas[pers.id].persona = pers
-                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
-                }
-                tramites[dpto.id].personas[pers.id].tramites += tr
-            }
-        }
+//        trams.each { tr ->
+//            def pers = tr.de
+//            def dpto = tr.departamento
+//            def deDpto = tr.deDepartamento
+//
+//            if (!tramites[dpto.id]) {
+//                tramites[dpto.id] = [:]
+//                tramites[dpto.id].departamento = dpto
+//                tramites[dpto.id].personas = [:]
+//            }
+//            if (deDpto) {
+//                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
+//                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
+//                    tramites[dpto.id].personas[pers.id + "_o"].tramites = []
+//                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
+//                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
+//                }
+//                tramites[dpto.id].personas[pers.id + "_o"].tramites += tr
+//            } else {
+//                if (!tramites[dpto.id].personas[pers.id]) {
+//                    tramites[dpto.id].personas[pers.id] = [:]
+//                    tramites[dpto.id].personas[pers.id].tramites = []
+//                    tramites[dpto.id].personas[pers.id].persona = pers
+//                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
+//                }
+//                tramites[dpto.id].personas[pers.id].tramites += tr
+//            }
+//        }
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
-        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
+        Document document = reportesPdfService.crearDocumento("h", [top: 2.5, right: 2.5, bottom: 1.5, left: 2.5])
         def pdfw = PdfWriter.getInstance(document, baos);
 
         session.tituloReporte = title
@@ -372,6 +377,7 @@ class DocumentosGeneradosController extends Shield{
 
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, bg: Color.WHITE]
+        def paramsRight = [align: Element.ALIGN_RIGHT, valign: Element.ALIGN_RIGHT, bg: Color.WHITE]
 
         Paragraph paragraph = new Paragraph();
         paragraph.setAlignment(Element.ALIGN_LEFT);
@@ -384,71 +390,179 @@ class DocumentosGeneradosController extends Shield{
         def granTotal = 0
 
         def tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
+        def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaCabeceraGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTotalesGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
 
-        tramites.each { depId, depMap ->
-            def totalDep = 0
-            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
-            Paragraph paragraphDep = new Paragraph();
-            paragraphDep.setAlignment(Element.ALIGN_LEFT);
-            paragraphDep.add(new Phrase(header, fontBold));
-            paragraphDep.setSpacingBefore(15)
-            document.add(paragraphDep)
-            depMap.personas.each { persId, persMap ->
-                header = persMap.de + " (${depMap.departamento.codigo})" +
-                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'} generado${tramites == 1 ? '' : 's'} sin incluir copias"
-                Paragraph paragraphUsu = new Paragraph();
-                paragraphUsu.setAlignment(Element.ALIGN_LEFT);
-                paragraphUsu.add(new Phrase(header, fontBold));
-                document.add(paragraphUsu)
+//        tramites.each { depId, depMap ->
+//            def totalDep = 0
+//            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
+//            Paragraph paragraphDep = new Paragraph();
+//            paragraphDep.setAlignment(Element.ALIGN_LEFT);
+//            paragraphDep.add(new Phrase(header, fontBold));
+//            paragraphDep.setSpacingBefore(15)
+//            document.add(paragraphDep)
+//            depMap.personas.each { persId, persMap ->
+//                header = persMap.de + " (${depMap.departamento.codigo})" +
+//                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'} generado${tramites == 1 ? '' : 's'} sin incluir copias"
+//                Paragraph paragraphUsu = new Paragraph();
+//                paragraphUsu.setAlignment(Element.ALIGN_LEFT);
+//                paragraphUsu.add(new Phrase(header, fontBold));
+//                document.add(paragraphUsu)
+//
+//                totalDep += persMap.tramites.size()
+//
+//                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
+//                tabla.setHeaderRows(1)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
+//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+//
+//                persMap.tramites.eachWithIndex { tr, j ->
+//                    if (j % 2 == 0) {
+//                        paramsLeft.bg = Color.WHITE
+//                        paramsCenter.bg = Color.WHITE
+//                    } else {
+//                        paramsLeft.bg = Color.LIGHT_GRAY
+//                        paramsCenter.bg = Color.LIGHT_GRAY
+//                    }
+//                    def prtr = PersonaDocumentoTramite.withCriteria {
+//                        eq("tramite", tr)
+//                        inList("rolPersonaTramite", [rolPara, rolCopia])
+//                        order("fechaEnvio", "asc")
+//                        order("rolPersonaTramite", "asc")
+//                    }
+//                    prtr.each { persDoc ->
+//                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
+//                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
+//                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(cod, font), paramsLeft)
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(tr.fechaCreacion.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(paraOficina, font), paramsLeft)
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(para, font), paramsLeft)
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaEnvio ? persDoc.fechaEnvio.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
+//                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaRecepcion ? persDoc.fechaRecepcion.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
+//                    }
+//                }
+//                document.add(tabla)
+//            }
+//            if (params.tipo == "dpto") {
+//                document.add(new Paragraph("TOTAL ${depMap.departamento.descripcion} (${depMap.departamento.codigo}): ${totalDep} documento${totalDep == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontTotalDep))
+//            }
+//            granTotal += totalDep
+//        }
 
-                totalDep += persMap.tramites.size()
+//        document.add(new Paragraph("   ", fontGranTotal))
+//        document.add(new Paragraph("GRAN TOTAL ${title3}: ${granTotal} documento${granTotal == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontGranTotal))
 
-                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
-                tabla.setHeaderRows(1)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
-                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
-                persMap.tramites.eachWithIndex { tr, j ->
-                    if (j % 2 == 0) {
-                        paramsLeft.bg = Color.WHITE
-                        paramsCenter.bg = Color.WHITE
-                    } else {
-                        paramsLeft.bg = Color.LIGHT_GRAY
-                        paramsCenter.bg = Color.LIGHT_GRAY
-                    }
-                    def prtr = PersonaDocumentoTramite.withCriteria {
-                        eq("tramite", tr)
-                        inList("rolPersonaTramite", [rolPara, rolCopia])
-                        order("fechaEnvio", "asc")
-                        order("rolPersonaTramite", "asc")
-                    }
-                    prtr.each { persDoc ->
-                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
-                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
-                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(cod, font), paramsLeft)
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(tr.fechaCreacion.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(paraOficina, font), paramsLeft)
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(para, font), paramsLeft)
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaEnvio ? persDoc.fechaEnvio.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
-                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaRecepcion ? persDoc.fechaRecepcion.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
-                    }
-                }
-                document.add(tabla)
+        //nuevo
+
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def totalGenerado = 0
+        def totalRecibido = 0
+
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+
+        reportesPdfService.addCellTabla(tablaCabeceraGenerados, new Paragraph("Trámites Generados", fontBold), paramsCenter)
+        document.add(tablaCabeceraGenerados)
+
+        def sqlGen
+        def cn2 = dbConnectionService.getConnection()
+
+        def tablaGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("No.", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha creación", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("De", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Destinatario", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha envío", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+
+        if(usuario.esTriangulo()){
+            sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println("sql dpto gene " + sqlGen)
+            cn2.eachRow(sqlGen.toString()){
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmt__de, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtpara, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                totalGenerado += 1
             }
-            if (params.tipo == "dpto") {
-                document.add(new Paragraph("TOTAL ${depMap.departamento.descripcion} (${depMap.departamento.codigo}): ${totalDep} documento${totalDep == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontTotalDep))
+        }else{
+            sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println("sql prsn " + sqlGen)
+            cn2.eachRow(sqlGen.toString()){
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmt__de, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtpara, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                totalGenerado += 1
             }
-            granTotal += totalDep
         }
 
-        document.add(new Paragraph("   ", fontGranTotal))
-        document.add(new Paragraph("GRAN TOTAL ${title3}: ${granTotal} documento${granTotal == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontGranTotal))
+        reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites Generados: " + totalGenerado, fontBold), paramsRight)
 
+
+        document.add(tablaGenerados)
+        document.add(tablaTotalesGenerados)
+
+        reportesPdfService.addCellTabla(tablaCabecera, new Paragraph("Trámites Recibidos", fontBold), paramsCenter)
+        document.add(tablaCabecera)
+
+        def sql
+        def cn = dbConnectionService.getConnection()
+
+        def tablaRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("No.", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha creación", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("De", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Para", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha envío", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha recepción", fontTh), paramsCenter)
+
+
+        if(usuario.esTriangulo()){
+            sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println("sql dpto " + sql)
+            cn.eachRow(sql.toString()){
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtcdgo, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmt__de, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtpara, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                totalRecibido += 1
+            }
+            cn.close()
+        }else{
+            sql = "select * from trmt_recibidos("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println("sql prsn" + sql)
+            cn.eachRow(sql.toString()){
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtcdgo, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmt__de, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtpara, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
+                totalRecibido += 1
+            }
+            cn.close()
+        }
+
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total trámites Recibidos: " + totalRecibido, fontBold), paramsRight)
+
+        document.add(tablaRecibidos);
+        document.add(tablaTotalesRecibidos);
         document.close();
         pdfw.close()
         byte[] b = baos.toByteArray();
