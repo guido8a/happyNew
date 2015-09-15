@@ -523,7 +523,7 @@ class ElementosTagLib {
                 html += "<tr>"
                 html += "<th>FECHA:</th>"
                 html += "<td>"
-                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO")
+                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO").toUpperCase()
                 html += "</td>"
                 html += "</tr>"
                 //asunto
@@ -558,7 +558,7 @@ class ElementosTagLib {
                 html += "</tr>"
                 //no. documento
                 html += "<tr>"
-                html += "<td>Oficio N°: ${tramite.codigo}</td>"
+                html += "<td>Oficio N°: ${tramite.codigo[4..-1]}</td>"
                 html += "</tr>"
                 //espacios
                 html += "<tr><td></td></tr>"

@@ -1727,9 +1727,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 bloqueo: bloqueo, cc: cc, rolesNo: rolesNo, pxt: pdt, params: params]
     }
 
+
     def saveDep() {
 //        println("params saveDep" + params)
-        //** si va o viende de un departamento externo el trámite se marca como externo trmtextr = 1 **//
+        //** si va o viene de un departamento externo el trámite se marca como externo trmtextr = 1 **//
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
@@ -2225,35 +2226,35 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                 def pdt = new PersonaDocumentoTramite()
                 pdt.tramite = tramite
-                pdt.persona = session.usuario
-                pdt.departamento = session.departamento
+                pdt.persona = persona
+                pdt.departamento = persona.departamento
 
-                pdt.personaSigla = pdt.persona.login
-                pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
-                pdt.departamentoNombre = pdt.departamento.descripcion
-                pdt.departamentoSigla = pdt.departamento.codigo
-                pdt.personaSigla = pdt.persona.login
-                pdt.departamentoPersona = session.usuario.departamento
+                pdt.personaSigla = persona.login
+                pdt.personaNombre = persona.nombre + " " + persona.apellido
+                pdt.departamentoNombre = persona.departamento.descripcion
+                pdt.departamentoSigla = persona.departamento.codigo
+                pdt.personaSigla = persona.login
+                pdt.departamentoPersona = persona.departamento
 
                 pdt.fechaEnvio = ahora
                 pdt.rolPersonaTramite = rolEnvia
-//                println "registro de envio del trámite ${pdt.tramite.codigo}"
+//                println "registro de envio del trámite ${pdt.tramite.codigo} departamentoPersona: ${persona.departamento}"
                 if (!pdt.save(flush: true)) {
                     println "error al grabar prtr1" + pdt.errors
                 }
 
                 def pdt2 = new PersonaDocumentoTramite()
                 pdt2.tramite = tramite
-                pdt2.persona = session.usuario
-                pdt2.departamento = session.departamento
+                pdt2.persona = persona
+                pdt2.departamento = persona.departamento
 
-                pdt2.personaSigla = pdt2.persona.login
-                pdt2.personaNombre = pdt2.persona.nombre + " " + pdt2.persona.apellido
-                pdt2.departamentoNombre = pdt2.departamento.descripcion
-                pdt2.departamentoSigla = pdt2.departamento.codigo
-                pdt2.personaSigla = pdt2.persona.login
-                pdt.departamentoPersona = session.usuario.departamento
-//                println "registro de envio del trámite ${pdt.tramite.codigo}"
+                pdt2.personaSigla = persona.login
+                pdt2.personaNombre = persona.nombre + " " + persona.apellido
+                pdt2.departamentoNombre = persona.departamento.descripcion
+                pdt2.departamentoSigla = persona.departamento.codigo
+                pdt2.personaSigla = persona.login
+                pdt2.departamentoPersona = persona.departamento
+//                println "registro de recepcion del trámite ${pdt.tramite.codigo} departamentoPersona: ${persona.departamento}"
                 pdt2.fechaEnvio = ahora
                 pdt2.fechaRecepcion = ahora
                 pdt2.rolPersonaTramite = rolRecibe

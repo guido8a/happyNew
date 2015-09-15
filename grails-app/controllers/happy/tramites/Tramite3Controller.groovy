@@ -1059,7 +1059,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        println "recibir tramite " + params
+//        println "recibir tramite - tramite3 " + params
         if (request.getMethod() == "POST") {
 
             def persona = session.usuario
@@ -1266,12 +1266,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 render "NO_Ocurrió un error al recibir"
             }
 
-
         } else {
             response.sendError(403)
         }
-
-
     }
 
     def enviarTramiteJefe() {

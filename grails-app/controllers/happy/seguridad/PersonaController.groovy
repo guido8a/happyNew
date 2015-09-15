@@ -1277,6 +1277,7 @@ class PersonaController extends happy.seguridad.Shield {
                                     def sesn = new Sesn()
                                     sesn.perfil = Prfl.findByCodigo("USU")
                                     sesn.usuario = prsn
+                                    sesn.fechaInicio = new Date()
                                     sesn.save(flush: true)
                                     /* inserta permisos de usuario */
                                     def prpf = Prpf.findAllByPerfil(sesn.perfil)
@@ -1443,6 +1444,7 @@ class PersonaController extends happy.seguridad.Shield {
                             def sesn = new Sesn()
                             sesn.perfil = Prfl.findByCodigo("USU")
                             sesn.usuario = prsn
+                            sesn.fechaInicio = new Date()
                             sesn.save(flush: true)
                         }
                     } else {
