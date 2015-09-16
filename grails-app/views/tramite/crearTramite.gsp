@@ -969,6 +969,7 @@
                 $ul.find("li").addClass("selected");
                 moveSelected($ul, $("#ulDisponibles"), true, override);
             }
+
             function validarExterno(remove) {
 //                console.log("validarExterno(" + remove + ")");
                 if (remove) {
@@ -1154,6 +1155,7 @@
                     moveSelected($("#ulSeleccionados"), $("#ulDisponibles"), true, true);
                     return false;
                 });
+
                 $("#btnRemoveAll").click(function () {
 //                    var $ul = $("#ulSeleccionados");
 //                    $ul.find("li").addClass("selected");
@@ -1206,6 +1208,18 @@
                         }
                     }
                 });
+
+                $(document).ready(function() {
+                    var cc = [];
+                    var $ul = $("#ulSeleccionados");
+                    $("#ulSeleccionados li").each(function () {
+                        $(this).addClass("selected");
+                        moveSelected($ul, $("#ulDisponibles"), false, true);
+
+                    });
+                    console.log(cc)
+                });
+
             });
         </script>
 
