@@ -762,13 +762,13 @@ class DocumentosGeneradosController extends Shield{
             title += ["${pers.nombre} ${pers.apellido}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
             title2 += "${pers.nombre} ${pers.apellido} en ${dpto.descripcion}"
-            trams = Tramite.withCriteria {
-                eq("de", pers)
-                eq("departamento", dpto)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("fechaCreacion", "asc")
-            }
+//            trams = Tramite.withCriteria {
+//                eq("de", pers)
+//                eq("departamento", dpto)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("fechaCreacion", "asc")
+//            }
 
         } else if (params.tipo == "dpto") {
             def dep = Departamento.get(params.id.toLong())
@@ -777,51 +777,51 @@ class DocumentosGeneradosController extends Shield{
             title += ["${dep.descripcion}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
             title2 += dep.descripcion
-            trams = Tramite.withCriteria {
-                inList("departamento", hijosDep)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("departamento", "asc")
-                order("fechaCreacion", "asc")
-            }
+//            trams = Tramite.withCriteria {
+//                inList("departamento", hijosDep)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("departamento", "asc")
+//                order("fechaCreacion", "asc")
+//            }
         }
 
-        trams.each { tr ->
-            def pers = tr.de
-            def dpto = tr.departamento
-            def deDpto = tr.deDepartamento
-
-            if (!tramites[dpto.id]) {
-                tramites[dpto.id] = [:]
-                tramites[dpto.id].departamento = dpto
-                tramites[dpto.id].personas = [:]
-            }
-            if (deDpto) {
-                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
-                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
-                    tramites[dpto.id].personas[pers.id + "_o"].tramites = []
-                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
-                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
-                }
-                tramites[dpto.id].personas[pers.id + "_o"].tramites += tr
-            } else {
-                if (!tramites[dpto.id].personas[pers.id]) {
-                    tramites[dpto.id].personas[pers.id] = [:]
-                    tramites[dpto.id].personas[pers.id].tramites = []
-                    tramites[dpto.id].personas[pers.id].persona = pers
-                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
-                }
-                tramites[dpto.id].personas[pers.id].tramites += tr
-            }
-        }
+//        trams.each { tr ->
+//            def pers = tr.de
+//            def dpto = tr.departamento
+//            def deDpto = tr.deDepartamento
+//
+//            if (!tramites[dpto.id]) {
+//                tramites[dpto.id] = [:]
+//                tramites[dpto.id].departamento = dpto
+//                tramites[dpto.id].personas = [:]
+//            }
+//            if (deDpto) {
+//                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
+//                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
+//                    tramites[dpto.id].personas[pers.id + "_o"].tramites = []
+//                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
+//                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
+//                }
+//                tramites[dpto.id].personas[pers.id + "_o"].tramites += tr
+//            } else {
+//                if (!tramites[dpto.id].personas[pers.id]) {
+//                    tramites[dpto.id].personas[pers.id] = [:]
+//                    tramites[dpto.id].personas[pers.id].tramites = []
+//                    tramites[dpto.id].personas[pers.id].persona = pers
+//                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
+//                }
+//                tramites[dpto.id].personas[pers.id].tramites += tr
+//            }
+//        }
         def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
 
         def path = servletContext.getRealPath("/") + "xls/"
@@ -864,90 +864,243 @@ class DocumentosGeneradosController extends Shield{
         def granTotal = 0
         XSSFRow row
         Cell cell
-        def wFechas = 4000
+        def wFechas = 6000
         row = sheet.createRow((short) index);
+//        cell = row.createCell((int) 0)
+//        cell.setCellValue("Dep.")
+//        cell = row.createCell((int) 1)
+//        cell.setCellValue("Usuario")
         cell = row.createCell((int) 0)
-        cell.setCellValue("Dep.")
-        cell = row.createCell((int) 1)
-        cell.setCellValue("Usuario")
-        cell = row.createCell((int) 2)
         cell.setCellValue("No.")
-        sheet.setColumnWidth(2, 4000)
-        cell = row.createCell((int) 3)
+        sheet.setColumnWidth(2, 4500)
+        cell = row.createCell((int) 1)
         cell.setCellValue("Fecha creación")
         sheet.setColumnWidth(3, wFechas)
 
-        cell = row.createCell((int) 4)
-        cell.setCellValue("Para oficina")
+        cell = row.createCell((int) 2)
+        cell.setCellValue("De")
         sheet.setColumnWidth(4, 15000)
 
-        cell = row.createCell((int) 5)
+        cell = row.createCell((int) 3)
         cell.setCellValue("Destinatario")
-        sheet.setColumnWidth(5, 10000)
+        sheet.setColumnWidth(5, 15000)
 
-        cell = row.createCell((int) 6)
+        cell = row.createCell((int) 4)
         cell.setCellValue("Fecha envío")
         sheet.setColumnWidth(6, wFechas)
 
-        cell = row.createCell((int) 7)
+        cell = row.createCell((int) 5)
         cell.setCellValue("Fecha recepción")
         sheet.setColumnWidth(7, wFechas)
         index++
-        tramites.each { depId, depMap ->
-            def totalDep = 0
-            def dep = depMap.departamento.codigo
-            depMap.personas.each { persId, persMap ->
-                def usu = persMap.de
-                totalDep += persMap.tramites.size()
-                persMap.tramites.eachWithIndex { tr, j ->
-                    def prtr = PersonaDocumentoTramite.withCriteria {
-                        eq("tramite", tr)
-                        inList("rolPersonaTramite", [rolPara, rolCopia])
-                        order("fechaEnvio", "asc")
-                        order("rolPersonaTramite", "asc")
-                    }
-                    prtr.each { persDoc ->
-                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
-                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
-                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
-                        index++
-                        row = sheet.createRow((short) index);
-                        cell = row.createCell((int) 0)
-                        cell.setCellValue(dep)
-                        cell = row.createCell((int) 1)
-                        cell.setCellValue(usu)
-                        row.createCell((int) 2).setCellValue(cod)
 
-                        cell = row.createCell((int) 3)
-                        cell.setCellValue(tr.fechaCreacion)
-                        cell.setCellStyle(styleDate)
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def sqlGen
+        def totalGenerado = 0
+        def totalRecibido = 0
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+        def cn2 = dbConnectionService.getConnection()
 
-                        row.createCell((int) 4).setCellValue(paraOficina)
-                        row.createCell((int) 5).setCellValue(para)
+        if(usuario.esTriangulo()){
+            sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn2.eachRow(sqlGen.toString()){
+                row = sheet.createRow((short) index);
+                cell = row.createCell((int) 0)
+                cell.setCellValue(it?.trmtcdgo)
 
-                        cell = row.createCell((int) 6)
-                        cell.setCellValue(persDoc.fechaEnvio)
-                        cell.setCellStyle(styleDate)
+                cell = row.createCell((int) 1)
+                cell.setCellValue(it?.trmtfccr)
+                cell.setCellStyle(styleDate)
 
-                        cell = row.createCell((int) 7)
-                        cell.setCellValue(persDoc.fechaRecepcion)
-                        cell.setCellStyle(styleDate)
-                    }
-                }
-            }
-            if (params.tipo == "dpto") {
-                row = sheet.createRow((short) index)
-                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
-                row.createCell((int) 4).setCellValue("TOTAL")
-                row.createCell((int) 5).setCellValue(totalDep)
+                cell = row.createCell((int) 2)
+                cell.setCellValue(it?.trmt__de)
+
+                cell = row.createCell((int) 3)
+                cell.setCellValue(it?.trmtpara)
+
+                cell = row.createCell((int) 4)
+                cell.setCellValue(it?.trmtfcen)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 5)
+                cell.setCellValue(it?.trmtfcrc)
+                cell.setCellStyle(styleDate)
                 index++
+
+                totalGenerado += 1
             }
-            granTotal += totalDep
+
+
+        }else{
+            sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn2.eachRow(sqlGen.toString()){
+                row = sheet.createRow((short) index);
+                cell = row.createCell((int) 0)
+                cell.setCellValue(it?.trmtcdgo)
+
+                cell = row.createCell((int) 1)
+                cell.setCellValue(it?.trmtfccr)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 2)
+                cell.setCellValue(it?.trmt__de)
+
+                cell = row.createCell((int) 3)
+                cell.setCellValue(it?.trmtpara)
+
+                cell = row.createCell((int) 4)
+                cell.setCellValue(it?.trmtfcen)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 5)
+                cell.setCellValue(it?.trmtfcrc)
+                cell.setCellStyle(styleDate)
+
+                index++
+
+                totalGenerado += 1
+            }
         }
 
-        row = sheet.createRow((short) index + 1)
-        row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
-        row.createCell((int) 5).setCellValue(granTotal)
+        row = sheet.createRow((short) index);
+        cell = row.createCell((int) 0)
+        cell.setCellValue("Total trámites Generados: " + totalGenerado)
+        index++
+
+        row = sheet.createRow((short) index);
+        cell = row.createCell((int) 0)
+        cell.setCellValue("TRÁMITES RECIBIDOS")
+        index++
+
+
+        def sql
+        def cn = dbConnectionService.getConnection()
+
+        if(usuario.esTriangulo()){
+            sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn.eachRow(sql.toString()){
+                row = sheet.createRow((short) index);
+                cell = row.createCell((int) 0)
+                cell.setCellValue(it?.trmtcdgo)
+
+                cell = row.createCell((int) 1)
+                cell.setCellValue(it?.trmtfccr)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 2)
+                cell.setCellValue(it?.trmt__de)
+
+                cell = row.createCell((int) 3)
+                cell.setCellValue(it?.trmtpara)
+
+                cell = row.createCell((int) 4)
+                cell.setCellValue(it?.trmtfcen)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 5)
+                cell.setCellValue(it?.trmtfcrc)
+                cell.setCellStyle(styleDate)
+
+                index++
+
+                totalRecibido += 1
+            }
+        }else{
+
+            sql = "select * from trmt_recibidos("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn.eachRow(sql.toString()){
+                row = sheet.createRow((short) index);
+                cell = row.createCell((int) 0)
+                cell.setCellValue(it?.trmtcdgo)
+
+                cell = row.createCell((int) 1)
+                cell.setCellValue(it?.trmtfccr)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 2)
+                cell.setCellValue(it?.trmt__de)
+
+                cell = row.createCell((int) 3)
+                cell.setCellValue(it?.trmtpara)
+
+                cell = row.createCell((int) 4)
+                cell.setCellValue(it?.trmtfcen)
+                cell.setCellStyle(styleDate)
+
+                cell = row.createCell((int) 5)
+                cell.setCellValue(it?.trmtfcrc)
+                cell.setCellStyle(styleDate)
+
+                index++
+
+                totalRecibido += 1
+
+            }
+        }
+
+        row = sheet.createRow((short) index);
+        cell = row.createCell((int) 0)
+        cell.setCellValue("Total trámites Recibidos: " + totalRecibido)
+        index++
+
+
+//        tramites.each { depId, depMap ->
+//            def totalDep = 0
+//            def dep = depMap.departamento.codigo
+//            depMap.personas.each { persId, persMap ->
+//                def usu = persMap.de
+//                totalDep += persMap.tramites.size()
+//                persMap.tramites.eachWithIndex { tr, j ->
+//                    def prtr = PersonaDocumentoTramite.withCriteria {
+//                        eq("tramite", tr)
+//                        inList("rolPersonaTramite", [rolPara, rolCopia])
+//                        order("fechaEnvio", "asc")
+//                        order("rolPersonaTramite", "asc")
+//                    }
+//                    prtr.each { persDoc ->
+//                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
+//                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
+//                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
+//                        index++
+//                        row = sheet.createRow((short) index);
+//                        cell = row.createCell((int) 0)
+//                        cell.setCellValue(dep)
+//                        cell = row.createCell((int) 1)
+//                        cell.setCellValue(usu)
+//                        row.createCell((int) 2).setCellValue(cod)
+//
+//                        cell = row.createCell((int) 3)
+//                        cell.setCellValue(tr.fechaCreacion)
+//                        cell.setCellStyle(styleDate)
+//
+//                        row.createCell((int) 4).setCellValue(paraOficina)
+//                        row.createCell((int) 5).setCellValue(para)
+//
+//                        cell = row.createCell((int) 6)
+//                        cell.setCellValue(persDoc.fechaEnvio)
+//                        cell.setCellStyle(styleDate)
+//
+//                        cell = row.createCell((int) 7)
+//                        cell.setCellValue(persDoc.fechaRecepcion)
+//                        cell.setCellStyle(styleDate)
+//                    }
+//                }
+//            }
+//            if (params.tipo == "dpto") {
+//                row = sheet.createRow((short) index)
+//                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
+//                row.createCell((int) 4).setCellValue("TOTAL")
+//                row.createCell((int) 5).setCellValue(totalDep)
+//                index++
+//            }
+//            granTotal += totalDep
+//        }
+
+//        row = sheet.createRow((short) index + 1)
+//        row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
+//        row.createCell((int) 5).setCellValue(granTotal)
 
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);

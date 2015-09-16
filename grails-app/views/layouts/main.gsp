@@ -169,7 +169,7 @@
             <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-warning " style="width: 240px; height: 150px;" style="z-index: 200001; ">
                 <div class="titulo-bloqueo">
                     <i class="fa fa-exclamation-circle"></i>
-                    Aviso: Trámites No Recibidos1
+                    Aviso: Trámites No Recibidos
                     <a href="#" class="cerrar-bloqueo" style="float: right;text-align: right;color: black;width: 20px;height: 30px;line-height: 30px" title="cerrar">
                         <i class="fa fa-times"></i>
                     </a>

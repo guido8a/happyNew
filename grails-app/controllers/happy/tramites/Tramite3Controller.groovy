@@ -239,13 +239,27 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         tramite.textoPara = params?.textoPara
 
+//        println("texto " + tramite.texto)
+
         if (ccLista.size() > 0) {
-            tramite.texto = '<p></p>'
-            tramite.texto += '<p></p>'
-            tramite.texto += '<p></p>'
-            tramite.texto += '<p></p>'
-            tramite.texto += '<p></p>'
-            tramite.texto += "cc: "
+
+
+            tramite.texto = tramite.texto ?: ''
+
+            def parts = tramite.texto.split('\\[cc\\]')
+            if (parts.size() == 2) {
+                tramite.texto = parts[0]
+            } else {
+                tramite.texto = '<p></p>'
+                tramite.texto += '<p></p>'
+                tramite.texto += '<p></p>'
+                tramite.texto += '<p></p>'
+                tramite.texto += '<p></p>'
+            }
+
+
+
+            tramite.texto += "[cc]: "
 
             ccLista.each { n ->
                 tramite.texto += n

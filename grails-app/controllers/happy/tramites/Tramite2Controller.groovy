@@ -1945,7 +1945,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         tramite.textoPara = params?.textoPara
 
-//        println("tramite texto " + tramite)
+//        println("tramite texto " + tramite.texto)
 
         if (ccLista.size() > 0) {
             tramite.texto = tramite.texto ?: ''
