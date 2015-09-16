@@ -646,6 +646,22 @@ class TramiteController extends happy.seguridad.Shield {
         def cn = dbConnectionService.getConnection()
         todos = cn.rows(sql.toString())
 
+/*
+        println "todos:.... $todos"
+        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R002'))
+
+        copias.each { prtr ->
+
+            if(todos.find { it.id == prtr.persona.id}) {
+                todos -= todos.find { it.id == prtr.persona.id}
+            }
+            if(todos.find { it.id == -prtr.departamento.id}) {
+                todos -= todos.find { it.id == prtr.persona.id}
+            }
+        }
+
+        println "todos:.... $todos"
+*/
 
         def bloqueo = false
         if (session.usuario.estado == "B") {
