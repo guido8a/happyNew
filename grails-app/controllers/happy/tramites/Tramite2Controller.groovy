@@ -1722,8 +1722,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         /** Elimina de Disponiles las copias **/
         if(tramite.id) {
-//            println "si hay trámite"
-            // elimina de todos las copias existentes
             tramite.copias.each { prtr ->
 //                println "copias para prsn: ${prtr.persona}"
 //                println "copias para dpto: ${prtr.departamento}"
@@ -1738,7 +1736,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 }
             }
 //            println "todos:.... $todos"
-
         }
 
 
