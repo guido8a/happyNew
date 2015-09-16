@@ -1947,20 +1947,67 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 //        println("tramite texto " + tramite.texto)
 
-        if (ccLista.size() > 0) {
+//        if (ccLista.size() > 0) {
+//            tramite.texto = tramite.texto ?: ''
+//
+//            def parts = tramite.texto.split('\\[cc\\]')
+//            if (parts.size() == 2) {
+//                tramite.texto = parts[0]
+//            } else {
+//                tramite.texto += '<p></p>'
+//                tramite.texto += '<p></p>'
+//                tramite.texto += '<p></p>'
+//                tramite.texto += '<p></p>'
+//                tramite.texto += '<p></p>'
+//            }
+//
+//            tramite.texto += "[cc]: "
+//
+//            ccLista.each { n ->
+//                tramite.texto += n
+//
+//                if (n != ccLista.last()) {
+//                    tramite.texto += ' - '
+//                }
+//
+//            }
+//        }
+
+//        if (ccLista.size() > 0) {
+//            tramite.texto = tramite.texto ?: ''
+//
+//            def enters = '<p></p>'
+//            enters += '<p></p>'
+//            enters += '<p></p>'
+//            enters += '<p></p>'
+//            enters += '<p></p>'
+//            enters += "cc: "
+//
+//            def strcc = ''
+//            def conEnters = false
+//
+//            ccLista.each { n ->
+//                if(tramite?.texto?.contains(n)){
+//                    conEnters = true
+//                }else{
+//                   strcc += n
+//                    if (n != ccLista.last()) {
+//                        strcc += ' - '
+//                    }
+//                }
+//
+//            }
+//            if(conEnters){
+//                tramite.texto += ' - ' + strcc
+//            }else{
+//                tramite.texto = tramite.texto ?: ''
+//                tramite.texto += enters + strcc
+//            }
+//        }
+
+         if (ccLista.size() > 0) {
             tramite.texto = tramite.texto ?: ''
-
-            def parts = tramite.texto.split('\\[cc\\]')
-            if (parts.size() == 2) {
-                tramite.texto = parts[0]
-            } else {
-                tramite.texto += '<p></p>'
-                tramite.texto += '<p></p>'
-                tramite.texto += '<p></p>'
-                tramite.texto += '<p></p>'
-                tramite.texto += '<p></p>'
-            }
-
+            tramite.texto += '<p></p>'
             tramite.texto += "[cc]: "
 
             ccLista.each { n ->
@@ -1973,38 +2020,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-//        if (ccLista.size() > 0) {
-//            def enters = '<p></p>'
-//            enters += '<p></p>'
-//            enters += '<p></p>'
-//            enters += '<p></p>'
-//            enters += '<p></p>'
-//            enters += "cc: "
-//
-//            def strcc = ''
-//            def conEnters = false
-//
-//            ccLista.each { n ->
-//                if(tramite.texto.contains(n)){
-//                    conEnters = true
-//                }else{
-//                   strcc += n
-//
-//                    if (n != ccLista.last()) {
-//                        strcc += ' - '
-//                    }
-//                }
-//
-//            }
-//
-//            if(conEnters){
-//                tramite.texto += ' - ' + strcc
-//            }else{
-//                tramite.texto = tramite.texto ?: ''
-//                tramite.texto += enters + strcc
-//            }
-//
-//        }
+
+
 
 
         if (!tramite.save(flush: true)) {

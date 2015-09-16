@@ -645,23 +645,27 @@ class TramiteController extends happy.seguridad.Shield {
         def sql = "SELECT id, dscr as label, externo FROM trmt_para($session.usuario.id)"
         def cn = dbConnectionService.getConnection()
         todos = cn.rows(sql.toString())
+//
 
-/*
-        println "todos:.... $todos"
-        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R002'))
 
-        copias.each { prtr ->
 
-            if(todos.find { it.id == prtr.persona.id}) {
-                todos -= todos.find { it.id == prtr.persona.id}
-            }
-            if(todos.find { it.id == -prtr.departamento.id}) {
-                todos -= todos.find { it.id == prtr.persona.id}
-            }
-        }
+//         def copiasSeleccionanadas = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R002'))
 
-        println "todos:.... $todos"
-*/
+
+//        copias.each { prtr ->
+
+//            println("cc  " + prtr.id)
+
+//            if(todos.find { it.id == prtr.persona.id}) {
+//                todos -= todos.find { it.id == prtr.persona.id}
+//            }
+//            if(todos.find { it.id == -prtr.departamento.id}) {
+//                todos -= todos.find { it.id == prtr.persona.id}
+//            }
+//        }
+
+//        println "todos:.... $todos"
+
 
         def bloqueo = false
         if (session.usuario.estado == "B") {
