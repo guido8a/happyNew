@@ -1209,6 +1209,7 @@
                     }
                 });
 
+/*
                 $(document).ready(function() {
                     var cc = [];
                     var $ul = $("#ulSeleccionados");
@@ -1219,6 +1220,7 @@
                     });
                     console.log(cc)
                 });
+*/
 
             });
         </script>
