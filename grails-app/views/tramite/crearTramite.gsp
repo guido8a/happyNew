@@ -1209,19 +1209,6 @@
                     }
                 });
 
-/*
-                $(document).ready(function() {
-                    var cc = [];
-                    var $ul = $("#ulSeleccionados");
-                    $("#ulSeleccionados li").each(function () {
-                        $(this).addClass("selected");
-                        moveSelected($ul, $("#ulDisponibles"), false, true);
-
-                    });
-                    console.log(cc)
-                });
-*/
-
             });
         </script>
 

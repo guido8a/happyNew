@@ -649,24 +649,6 @@ class TramiteController extends happy.seguridad.Shield {
 
 
 
-//         def copiasSeleccionanadas = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo('R002'))
-
-
-//        copias.each { prtr ->
-
-//            println("cc  " + prtr.id)
-
-//            if(todos.find { it.id == prtr.persona.id}) {
-//                todos -= todos.find { it.id == prtr.persona.id}
-//            }
-//            if(todos.find { it.id == -prtr.departamento.id}) {
-//                todos -= todos.find { it.id == prtr.persona.id}
-//            }
-//        }
-
-//        println "todos:.... $todos"
-
-
         def bloqueo = false
         if (session.usuario.estado == "B") {
             bloqueo = true
@@ -746,6 +728,27 @@ class TramiteController extends happy.seguridad.Shield {
 
         if (tramite.id && tramite.esRespuestaNueva) {
             params.esRespuestaNueva = tramite.esRespuestaNueva
+        }
+
+        /** Elimina de Disponiles las copias **/
+        if(tramite.id) {
+//            println "si hay trámite"
+            // elimina de todos las copias existentes
+            tramite.copias.each { prtr ->
+//                println "copias para prsn: ${prtr.persona}"
+//                println "copias para dpto: ${prtr.departamento}"
+                if(prtr.persona) {
+                    if(todos.find { it.id == prtr.persona.id}) {
+                        todos -= todos.find { it.id == prtr.persona.id}
+                    }
+                } else {
+                    if(todos.find { it.id == -prtr.departamento.id}) {
+                        todos -= todos.find { it.id == -prtr.departamento.id}
+                    }
+                }
+            }
+//            println "todos:.... $todos"
+
         }
 
         return [de     : de, padre: padre, principal: principal, disponibles: todos, tramite: tramite,

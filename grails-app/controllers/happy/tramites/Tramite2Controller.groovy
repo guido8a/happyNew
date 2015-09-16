@@ -1720,6 +1720,28 @@ class Tramite2Controller extends happy.seguridad.Shield {
             params.esRespuestaNueva = tramite.esRespuestaNueva
         }
 
+        /** Elimina de Disponiles las copias **/
+        if(tramite.id) {
+//            println "si hay trámite"
+            // elimina de todos las copias existentes
+            tramite.copias.each { prtr ->
+//                println "copias para prsn: ${prtr.persona}"
+//                println "copias para dpto: ${prtr.departamento}"
+                if(prtr.persona) {
+                    if(todos.find { it.id == prtr.persona.id}) {
+                        todos -= todos.find { it.id == prtr.persona.id}
+                    }
+                } else {
+                    if(todos.find { it.id == -prtr.departamento.id}) {
+                        todos -= todos.find { it.id == -prtr.departamento.id}
+                    }
+                }
+            }
+//            println "todos:.... $todos"
+
+        }
+
+
 //        pruebasFin = new Date()
 //        println "tiempo ejecución crearTramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
