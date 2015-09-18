@@ -1592,6 +1592,7 @@ class TramiteController extends happy.seguridad.Shield {
 
         if (pdt?.estado?.codigo == 'E003' || pdt == null) {
             render 'no'
+//            println("errores" + errors)
             return
         }
 
@@ -1635,6 +1636,7 @@ class TramiteController extends happy.seguridad.Shield {
 
                 if (!pdt.save(flush: true)) {
                     render("no")
+//                    println("errores" + errors)
                     return
                 } else {
                     render("ok")
@@ -1643,7 +1645,7 @@ class TramiteController extends happy.seguridad.Shield {
             }
             render "ok"
         } else {
-//            println("entro false")
+//            println("errores" + errors)
             render("no")
         }
     }

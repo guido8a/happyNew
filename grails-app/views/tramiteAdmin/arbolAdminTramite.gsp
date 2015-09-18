@@ -909,6 +909,69 @@
                             }
                         };
                     }
+
+                    if(!tieneHijos && !estaArchivado && !estaAnulado && estaRecibido){
+                        items.archivar = {
+                            label: "Archivar",
+                            icon: "fa fa-folder",
+                            action: function () {
+                                bootbox.dialog({
+                                    id      : "dlgArchivar",
+                                    title   : '<span class="text-danger"><i class="fa fa-ban"></i> Archivar Trámite</span>',
+                                    message : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser archivado.</p>",
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        archivar : {
+                                            id        : 'btnArchivar',
+                                            label     : '<i class="fa fa-check"></i> Archivar',
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var $txt = $("#aut");
+//                                                if (validaAutorizacion($txt)) {
+                                                openLoader("Archivando");
+                                                $.ajax({
+                                                    type    : 'POST',
+                                                    url     : '${createLink(controller: 'tramite', action: 'archivar')}',
+                                                    data    : {
+                                                        texto : 'archivado por el administrador',
+                                                        id : nodeId
+                                                    },
+                                                    success : function (msg) {
+
+                                                        closeLoader();
+                                                        if (msg == 'ok') {
+                                                            log("Trámite archivado correctamente", 'success');
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
+                                                        } else if (msg == 'no') {
+                                                            log("Error al archivar el trámite", 'error');
+                                                            setTimeout(function () {
+                                                                location.reload(true);
+                                                            }, 500);
+                                                        }
+                                                    }
+                                                });
+//                                                } else {
+//                                                    return false;
+//                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+
+                            }
+
+
+                        }
+                    }
+
                 }
                 return items
             }
