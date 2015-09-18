@@ -306,7 +306,7 @@ class TramiteExportController extends Shield{
 
         PdfPTable tablaTramites = new PdfPTable(5);
         tablaTramites.setWidthPercentage(100);
-        tablaTramites.setWidths(arregloEnteros([20, 10, 25, 15, 15]))
+        tablaTramites.setWidths(arregloEnteros([28, 7, 25, 12, 12]))
 
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
@@ -338,10 +338,17 @@ class TramiteExportController extends Shield{
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaTramites, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
+        def tramite = ""
         pxt.each {
             if (it.rolPersonaTramite.codigo != 'E004') {
                 if (it.fechaEnvio) {
-                    addCellTabla(tablaTramites, new Paragraph(it.tramite.codigo, times10bold), prmsHeaderHoja)
+                    if(it.tramite.aQuienContesta) {
+                        tramite = "${it.tramite.codigo} contesta a: ${it.tramite.aQuienContesta?.tramite?.codigo}"
+                    } else {
+                        tramite = "${it.tramite.codigo}"
+                    }
+//                    addCellTabla(tablaTramites, new Paragraph(it.tramite.codigo, times10bold), prmsHeaderHoja)
+                    addCellTabla(tablaTramites, new Paragraph(tramite, times10bold), prmsHeaderHoja)
                     addCellTabla(tablaTramites, new Paragraph(it.rolPersonaTramite.descripcion, times10bold), prmsHeaderHoja)
                     if (it?.departamento) {
 
@@ -349,8 +356,8 @@ class TramiteExportController extends Shield{
                     } else {
                         addCellTabla(tablaTramites, new Paragraph((it?.persona?.nombre ?: '') + " " + (it?.persona?.apellido ?: ''), times8bold), prmsHeaderHoja)
                     }
-                    addCellTabla(tablaTramites, new Paragraph("___________________", times8bold), prmsHeaderHoja)
-                    addCellTabla(tablaTramites, new Paragraph("___________________", times8bold), prmsHeaderHoja)
+                    addCellTabla(tablaTramites, new Paragraph("_______________", times8bold), prmsHeaderHoja)
+                    addCellTabla(tablaTramites, new Paragraph("_______________", times8bold), prmsHeaderHoja)
                 }
             }
 

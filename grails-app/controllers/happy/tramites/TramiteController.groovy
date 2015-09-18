@@ -1602,7 +1602,7 @@ class TramiteController extends happy.seguridad.Shield {
             pdt.fechaArchivo = new Date();
             def observacionOriginal = pdt.observaciones
             def accion = "Archivado"
-            def solicitadoPor = ""
+            def solicitadoPor = params.aut
             def usuario = session.usuario.login
             def texto = ""
             def nuevaObservacion = params.texto

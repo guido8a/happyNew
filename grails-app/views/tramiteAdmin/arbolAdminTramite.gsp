@@ -912,64 +912,74 @@
 
                     if(!tieneHijos && !estaArchivado && !estaAnulado && estaRecibido){
                         items.archivar = {
-                            label: "Archivar",
-                            icon: "fa fa-folder",
-                            action: function () {
-                                bootbox.dialog({
-                                    id      : "dlgArchivar",
-                                    title   : '<span class="text-danger"><i class="fa fa-ban"></i> Archivar Trámite</span>',
-                                    message : "<p class='lead'>El trámite <strong>" + tramiteInfo + "</strong> está por ser archivado.</p>",
-                                    buttons : {
-                                        cancelar : {
-                                            label     : '<i class="fa fa-times"></i> Cancelar',
-                                            className : 'btn-danger',
-                                            callback  : function () {
-                                            }
-                                        },
-                                        archivar : {
-                                            id        : 'btnArchivar',
-                                            label     : '<i class="fa fa-check"></i> Archivar',
-                                            className : "btn-success",
-                                            callback  : function () {
-                                                var $txt = $("#aut");
-//                                                if (validaAutorizacion($txt)) {
-                                                openLoader("Archivando");
-                                                $.ajax({
-                                                    type    : 'POST',
-                                                    url     : '${createLink(controller: 'tramite', action: 'archivar')}',
-                                                    data    : {
-                                                        texto : 'archivado por el administrador',
-                                                        id : nodeId
-                                                    },
-                                                    success : function (msg) {
+                            separator_before : true,
+                            label            : "Archivar",
+                            icon             : "fa fa-folder",
+                            action           : function () {
+                                $.ajax({
+                                    type    : "POST",
+                                    %{--url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",--}%
+                                    url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
+                                    data    : {
+                                        id   : tramiteId,
+                                        msg  : "<p class='lead'>Está por archivar el trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",
+                                        icon : "fa-magic"
+                                    },
+                                    success : function (msg) {
+                                        bootbox.dialog({
+                                            id      : "dlgDesrecibir",
+                                            title   : '<i class="fa fa-magic"></i> Archivar Trámite',
+                                            message : msg,
+                                            buttons : {
+                                                cancelar   : {
+                                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                                    className : 'btn-danger',
+                                                    callback  : function () {
+                                                    }
+                                                },
+                                                desrecibir : {
+                                                    id        : 'btnDesrecibir',
+                                                    label     : '<i class="fa fa-check"></i> Archivar trámite',
+                                                    className : "btn-success",
+                                                    callback  : function () {
+                                                        var $txt = $("#aut");
+                                                        if (validaAutorizacion($txt)) {
+                                                            openLoader("Archivando");
+                                                            $.ajax({
+                                                                type    : 'POST',
+                                                                url     : '${createLink(controller: "tramite", action: "archivar")}',
+                                                                data    : {
+                                                                    id    : nodeId,
+                                                                    texto : $("#observacion").val(),
+                                                                    aut   : $txt.val()
+                                                                },
+                                                                success : function (msg) {
+                                                                    if (msg == 'ok') {
+                                                                        log("Archivado correctamente", 'success');
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
+                                                                    } else {
+                                                                        log("Error al archivar el trámite : " + parts[1], 'error');
+                                                                        closeLoader();
+                                                                        setTimeout(function () {
+                                                                            location.reload(true);
+                                                                        }, 500);
 
-                                                        closeLoader();
-                                                        if (msg == 'ok') {
-                                                            log("Trámite archivado correctamente", 'success');
-                                                            setTimeout(function () {
-                                                                location.reload(true);
-                                                            }, 500);
-                                                        } else if (msg == 'no') {
-                                                            log("Error al archivar el trámite", 'error');
-                                                            setTimeout(function () {
-                                                                location.reload(true);
-                                                            }, 500);
+                                                                    }
+                                                                }
+                                                            });
+                                                        } else {
+                                                            return false;
                                                         }
                                                     }
-                                                });
-//                                                } else {
-//                                                    return false;
-//                                                }
+                                                }
                                             }
-                                        }
+                                        });
                                     }
                                 });
-
-
                             }
-
-
-                        }
+                        };
                     }
 
                 }
