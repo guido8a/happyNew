@@ -107,22 +107,22 @@ class RetrasadosExcelController extends Shield {
         row.createCell((int) 0).setCellValue("Trámite No.")
         row.createCell((int) 1).setCellValue("De")
         row.createCell((int) 2).setCellValue("Creado Por")
-        row.createCell((int) 3).setCellValue("Para")
-        row.createCell((int) 4).setCellValue("Fecha Envío")
-        row.createCell((int) 5).setCellValue("Fecha Recepción")
-        row.createCell((int) 6).setCellValue("Fecha Límite")
-        row.createCell((int) 7).setCellValue("Tiempo Envio - Recepción")
-        row.createCell((int) 8).setCellValue("Tipo")
+//        row.createCell((int) 3).setCellValue("Para")
+        row.createCell((int) 3).setCellValue("Fecha Envío")
+        row.createCell((int) 4).setCellValue("Fecha Recepción")
+        row.createCell((int) 5).setCellValue("Fecha Límite")
+        row.createCell((int) 6).setCellValue("Tiempo Envio - Recepción")
+//        row.createCell((int) 8).setCellValue("Tipo")
     }
 
     def headerTramiteNoRecibidos(sheet, num){
         def row = sheet.createRow((short) num);
         row.createCell((int) 0).setCellValue("Trámite No.")
         row.createCell((int) 1).setCellValue("De")
-        row.createCell((int) 2).setCellValue("Creado Por")
-        row.createCell((int) 3).setCellValue("Para")
-        row.createCell((int) 4).setCellValue("Fecha Envío")
-        row.createCell((int) 5).setCellValue("Tiempo Envio - Recepción")
+//        row.createCell((int) 2).setCellValue("Creado Por")
+        row.createCell((int) 2).setCellValue("Para")
+        row.createCell((int) 3).setCellValue("Fecha Envío")
+        row.createCell((int) 4).setCellValue("Tiempo Envio - Recepción")
 //        row.createCell((int) 6).setCellValue("Tipo")
     }
 
@@ -173,12 +173,12 @@ class RetrasadosExcelController extends Shield {
         fila.createCell((int) 0).setCellValue(it?.trmtcdgo)
         fila.createCell((int) 1).setCellValue(it?.deprdpto)
         fila.createCell((int) 2).setCellValue(it?.deprlogn)
-        fila.createCell((int) 3).setCellValue(it?.prtrdpto)
-        fila.createCell((int) 4).setCellValue(it.trmtfcen?.format("dd-MM-yyyy HH:mm:ss"))
-        fila.createCell((int) 5).setCellValue(it.trmtfcrc?.format("dd-MM-yyyy HH:mm:ss"))
-        fila.createCell((int) 6).setCellValue(it.trmtfclr?.format("dd-MM-yyyy HH:mm:ss"))
-        fila.createCell((int) 7).setCellValue(entre)
-        fila.createCell((int) 8).setCellValue(tipo)
+//        fila.createCell((int) 3).setCellValue(it?.prtrdpto)
+        fila.createCell((int) 3).setCellValue(it.trmtfcen?.format("dd-MM-yyyy HH:mm:ss"))
+        fila.createCell((int) 4).setCellValue(it.trmtfcrc?.format("dd-MM-yyyy HH:mm:ss"))
+        fila.createCell((int) 5).setCellValue(it.trmtfclr?.format("dd-MM-yyyy HH:mm:ss"))
+        fila.createCell((int) 6).setCellValue(entre)
+//        fila.createCell((int) 8).setCellValue(tipo)
     }
 
 
@@ -186,14 +186,14 @@ class RetrasadosExcelController extends Shield {
         def fila = sheet.createRow((short) num);
         fila.createCell((int) 0).setCellValue(it?.trmtcdgo)
         fila.createCell((int) 1).setCellValue(it?.deprdpto)
-        fila.createCell((int) 2).setCellValue(it?.deprdscr)
+//        fila.createCell((int) 2).setCellValue(it?.deprdscr)
         if(it.prtrprsn){
-            fila.createCell((int) 3).setCellValue(it?.prtrprsn)
+            fila.createCell((int) 2).setCellValue(it?.prtrprsn)
         }else{
-            fila.createCell((int) 3).setCellValue(it?.prtrdpto)
+            fila.createCell((int) 2).setCellValue(it?.prtrdpto)
         }
-        fila.createCell((int) 4).setCellValue(it.trmtfcen.format("dd-MM-yyyy HH:mm:ss"))
-        fila.createCell((int) 5).setCellValue(entre)
+        fila.createCell((int) 3).setCellValue(it.trmtfcen.format("dd-MM-yyyy HH:mm:ss"))
+        fila.createCell((int) 4).setCellValue(entre)
 //        fila.createCell((int) 6).setCellValue("No recibido")
     }
 
@@ -275,7 +275,7 @@ class RetrasadosExcelController extends Shield {
         rowHead = sheet.createRow((short) 1);
         rowHead.createCell((int) 1).setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL")
         rowHead = sheet.createRow((short) 2);
-        rowHead.createCell((int) 1).setCellValue("Reporte detallado de Trámites Retrasados y sin recepción")
+        rowHead.createCell((int) 1).setCellValue("Reporte detallado de Trámites Retrasados y No recibidos")
         rowHead = sheet.createRow((short) 3);
         rowHead.createCell((int) 1).setCellValue(ttl)
         rowHead = sheet.createRow((short) 4);
@@ -324,21 +324,27 @@ class RetrasadosExcelController extends Shield {
                         entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                     }
 
-                    if(it?.trmtfclr < new Date()){
-                        tipo = "Retrasado"
-                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-                        totalRetrasados += 1
-                        num++
-                    }
-                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "Sin Recepción"
-                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
-                        totalSin += 1
-                        num++
-                    }
+//                    if(it?.trmtfclr < new Date()){
+//                        tipo = "Retrasado"
+//                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+//                        totalRetrasados += 1
+//                        num++
+//                    }
+//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+//                        tipo = "Sin Recepción"
+//                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
+//                        totalSin += 1
+//                        num++
+//                    }
+
+                    llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                    totalRetrasados += 1
+                    num++
+
                 }
                 rowHead = sheet.createRow((short) num);
-                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados + " ,Total trámites Sin Recepción: " + totalSin)
+//                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados + " ,Total trámites Sin Recepción: " + totalSin)
+                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados)
                 num++
                 cn.close()
                 num = num+1
@@ -389,7 +395,7 @@ class RetrasadosExcelController extends Shield {
                         tramiteSalidaDep = Tramite.get(sal?.trmt__id)
                         prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
                         prtrSalidaDep.each {
-                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
+//                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                                 cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
@@ -397,7 +403,7 @@ class RetrasadosExcelController extends Shield {
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                                 totalNoRecibidos += 1
                                 num++
-                            }
+//                            }
                         }
 
                     }
@@ -433,22 +439,27 @@ class RetrasadosExcelController extends Shield {
                         entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                     }
 
-                    if(it?.trmtfclr < new Date()){
-                        tipo = "Retrasado"
-                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-                        totalRetrasadosPer += 1
-                        num++
-                    }
-                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
-                        tipo = "Sin Recepción"
-                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
-                        totalSinPer += 1
-                        num++
-                    }
+//                    if(it?.trmtfclr < new Date()){
+//                        tipo = "Retrasado"
+//                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+//                        totalRetrasadosPer += 1
+//                        num++
+//                    }
+//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+//                        tipo = "Sin Recepción"
+//                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
+//                        totalSinPer += 1
+//                        num++
+//                    }
+
+                    llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                    totalRetrasadosPer += 1
+                    num++
+
                 }
 
                 rowHead = sheet.createRow((short) num);
-                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasadosPer + " ,Total trámites Sin Recepción: " + totalSinPer)
+                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasadosPer)
                 num++
 
                 cn.close()
@@ -500,7 +511,7 @@ class RetrasadosExcelController extends Shield {
                         tramiteSalida = Tramite.get(sal?.trmt__id)
                         prtrSalida = PersonaDocumentoTramite.findAllByTramite(tramiteSalida)
                         prtrSalida.each {
-                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
+//                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                                 cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
@@ -508,7 +519,7 @@ class RetrasadosExcelController extends Shield {
                                 llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
                                 totalNoRecibidosPer +=1
                                 num++
-                            }
+//                            }
                         }
 
                     }
