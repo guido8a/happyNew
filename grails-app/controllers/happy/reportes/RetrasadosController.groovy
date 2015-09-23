@@ -368,16 +368,17 @@ class RetrasadosController extends Shield {
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalRetrasados += 1
 //                    }
-//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalSin += 1
-//                    }
+                    }else{
+                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasados += 1
+                        band ++
+                    }
 
-                    llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 
-                    totalRetrasados += 1
-                    band ++
                 }
                 cn.close()
 
@@ -456,15 +457,17 @@ class RetrasadosController extends Shield {
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalRetrasadosPer += 1
 //                    }
-//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalSin += 1
-//                    }
+                    }else{
 
-                    llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
-                    totalRetrasadosPer += 1
-                    bandPer ++
+                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasadosPer += 1
+                        bandPer ++
+                    }
+
 
                 }
 

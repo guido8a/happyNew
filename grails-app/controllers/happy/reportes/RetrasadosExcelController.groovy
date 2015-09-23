@@ -330,16 +330,18 @@ class RetrasadosExcelController extends Shield {
 //                        totalRetrasados += 1
 //                        num++
 //                    }
-//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
 //                        totalSin += 1
 //                        num++
-//                    }
+                    }else{
+                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                        totalRetrasados += 1
+                        num++
+                    }
 
-                    llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-                    totalRetrasados += 1
-                    num++
+
 
                 }
                 rowHead = sheet.createRow((short) num);
@@ -445,16 +447,17 @@ class RetrasadosExcelController extends Shield {
 //                        totalRetrasadosPer += 1
 //                        num++
 //                    }
-//                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
 //                        totalSinPer += 1
 //                        num++
-//                    }
+                    }else{
+                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                        totalRetrasadosPer += 1
+                        num++
+                    }
 
-                    llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-                    totalRetrasadosPer += 1
-                    num++
 
                 }
 
