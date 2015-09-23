@@ -534,7 +534,7 @@ class RetrasadosController extends Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Envío", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Recepción", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Límite", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo Envio - Recepción", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo de Retraso", fontBold), prmsHeaderHoja)
 //        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tipo", fontBold), prmsHeaderHoja)
     }
 
@@ -545,7 +545,7 @@ class RetrasadosController extends Shield {
 //        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Creado Por", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Para", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Envío", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo Envio - Recepción", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo de Retraso", fontBold), prmsHeaderHoja)
     }
 
     def llenaTablaRetrasados (it, tablaTramite, entre, tipo){

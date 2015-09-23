@@ -111,7 +111,7 @@ class RetrasadosExcelController extends Shield {
         row.createCell((int) 3).setCellValue("Fecha Envío")
         row.createCell((int) 4).setCellValue("Fecha Recepción")
         row.createCell((int) 5).setCellValue("Fecha Límite")
-        row.createCell((int) 6).setCellValue("Tiempo Envio - Recepción")
+        row.createCell((int) 6).setCellValue("Tiempo de Retraso")
 //        row.createCell((int) 8).setCellValue("Tipo")
     }
 
@@ -122,7 +122,7 @@ class RetrasadosExcelController extends Shield {
 //        row.createCell((int) 2).setCellValue("Creado Por")
         row.createCell((int) 2).setCellValue("Para")
         row.createCell((int) 3).setCellValue("Fecha Envío")
-        row.createCell((int) 4).setCellValue("Tiempo Envio - Recepción")
+        row.createCell((int) 4).setCellValue("Tiempo de Retraso")
 //        row.createCell((int) 6).setCellValue("Tipo")
     }
 
