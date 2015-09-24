@@ -318,6 +318,7 @@ class RetrasadosController extends Shield {
         def jefe = params.jefe == '1'
         def results = []
         def fechaRececion = new Date().format("yyyy/MM/dd HH:mm:ss")
+        def ahora = new Date()
         Document document = reportesPdfService.crearDocumento("v", [top: 2, right: 2, bottom: 1.5, left: 2.5])
 
         def pdfw = PdfWriter.getInstance(document, baos);
@@ -352,16 +353,23 @@ class RetrasadosController extends Shield {
 //                    println("results " + it)
 //                    println("band " + band)
 
+/*
                     if(it.trmtfcrc){
                         sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
                     }else{
                         sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
                     }
-
-                    cn2.eachRow(sqlEntre.toString()){ d ->
-                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+*/
+                    if(it.trmtfclr < ahora) {
+                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        cn2.eachRow(sqlEntre.toString()){ d ->
+                            entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        }
+                        cn2.close()
+                    } else {
+                        entre = ""
                     }
-                    cn2.close()
+
 
 //                    if(it?.trmtfclr < new Date()){
 //                       tipo = "Retrasado"

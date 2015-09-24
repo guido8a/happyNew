@@ -544,6 +544,7 @@ class DocumentosGeneradosController extends Shield{
         def departamentoUsuario = usuario?.departamento?.id
         def totalGenerado = 0
         def totalRecibido = 0
+        def totalEnviados = 0
 
         desde = desde.format("yyyy/MM/dd")
         hasta = hasta.format("yyyy/MM/dd")
@@ -558,7 +559,7 @@ class DocumentosGeneradosController extends Shield{
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("No.", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha creación", fontTh), paramsCenter)
 //        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("De", fontTh), paramsCenter)
-        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Destinatario", fontTh), paramsCenter)
+        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Para", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha envío", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
@@ -573,6 +574,11 @@ class DocumentosGeneradosController extends Shield{
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalGenerado += 1
+//                println "fecha de envio: ${it.trmtfcen}"
+                if(it.trmtfcen){
+                    totalEnviados += 1
+//                    println "totalEnviadosOf: $totalEnviados"
+                }
             }
         }else{
             sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
@@ -585,10 +591,15 @@ class DocumentosGeneradosController extends Shield{
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalGenerado += 1
+                if(it.trmtfcen){
+                    totalEnviados += 1
+//                    println "totalEnviados: $totalEnviados"
+                }
             }
         }
 
-        reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites Generados: " + totalGenerado, fontBold), paramsRight)
+        reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites generados: " + totalGenerado, fontBold), paramsRight)
+        reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites generados y enviados: " + totalEnviados, fontBold), paramsRight)
 
 
         document.add(tablaGenerados)
