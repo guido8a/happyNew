@@ -72,7 +72,7 @@ class DocumentosGeneradosController extends Shield{
                 dpto = pers.departamento
             }
             fileName += pers.login + "_" + dpto.codigo
-            title += "${pers.nombre} ${pers.apellido} con perfil: ${session.perfil}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
+            title += "${pers.nombre} ${pers.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
             title2 += "el usuario ${pers.nombre} ${pers.apellido} (${pers.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
         } else {
             def dep = Departamento.get(params.id.toLong())
@@ -118,7 +118,7 @@ class DocumentosGeneradosController extends Shield{
             }
         }
 
-        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([60,20,20]),0,0)
+        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([50,20,15,15]),0,0)
 
         if(usuario.esTriangulo()){
             sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
@@ -135,12 +135,14 @@ class DocumentosGeneradosController extends Shield{
         }
 
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Generados", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Recibidos", fontBold), prmsHeaderHoja)
 
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(pers?.nombre + " " + pers?.apellido + "  (" + pers?.login + ")", fontBold), paramsLeft)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalResumenGenerado, fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(pers?.nombre + " " + pers?.apellido + "  (" + pers?.login + ")", font), paramsLeft)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + session?.perfil, font), paramsLeft)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalResumenGenerado, font), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, font), prmsHeaderHoja)
 
         document.add(tablaTotalesRecibidos)
 
@@ -376,7 +378,7 @@ class DocumentosGeneradosController extends Shield{
                 dpto = persona.departamento
             }
             fileName += persona.login
-            title += "${persona.nombre} ${persona.apellido} con perfil: ${session.perfil} \nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
+            title += "${persona.nombre} ${persona.apellido} \ncon perfil: ${session.perfil} \nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
             title2 += "el usuario ${persona.nombre} ${persona.apellido} (${persona.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
             title3 += "${persona.nombre} ${persona.apellido} en el departamento ${dpto.descripcion}"
 //            trams = Tramite.withCriteria {
@@ -719,7 +721,7 @@ class DocumentosGeneradosController extends Shield{
         cellTitle.setCellValue(title[0]);
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue( usuario?.nombre + usuario?.apellido + " con perfil: (" + session?.perfil + ")");
+        cellTitle.setCellValue( usuario?.nombre + usuario?.apellido );
         rowTitle = sheet.createRow((short) 4);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
@@ -730,15 +732,19 @@ class DocumentosGeneradosController extends Shield{
 
         Cell cell = rowHead.createCell((int) 0)
         cell.setCellValue("Usuario")
-        sheet.setColumnWidth(0, 15000)
+        sheet.setColumnWidth(0, 13000)
 
         cell = rowHead.createCell((int) 1)
-        cell.setCellValue("Generados")
+        cell.setCellValue("Perfil")
         sheet.setColumnWidth(1, 10000)
 
         cell = rowHead.createCell((int) 2)
-        cell.setCellValue("Recibidos")
+        cell.setCellValue("Generados")
         sheet.setColumnWidth(2, 3000)
+
+        cell = rowHead.createCell((int) 3)
+        cell.setCellValue("Recibidos")
+        sheet.setColumnWidth(3, 3000)
         index++
 
 
@@ -776,9 +782,10 @@ class DocumentosGeneradosController extends Shield{
         }
 
                XSSFRow row2 = sheet.createRow((short) index)
-                row2.createCell((int) 0).setCellValue("${usuario?.nombre} ${usuario?.apellido}")
-                row2.createCell((int) 1).setCellValue(" " + totalResumenGenerado)
-                row2.createCell((int) 2).setCellValue(" " + totalRecibido)
+                row2.createCell((int) 0).setCellValue("${usuario?.nombre} ${usuario?.apellido}" + " (" +   "${usuario?.login}" + ")")
+                row2.createCell((int) 1).setCellValue("${session?.perfil}")
+                row2.createCell((int) 2).setCellValue(" " + totalResumenGenerado)
+                row2.createCell((int) 3).setCellValue(" " + totalRecibido)
                 index++
 
 //        def dep = Departamento.get(params.id.toLong())
