@@ -93,7 +93,7 @@ class DocumentosGeneradosController extends Shield{
         reportesPdfService.propiedadesDocumento(document, "trámite")
         def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-        def prmsHeaderHojaLeft = [align: Element.ALIGN_RIGHT]
+        def prmsHeaderHojaRight = [align: Element.ALIGN_RIGHT]
         def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
         def totalResumenGenerado = 0
         def totalRecibido = 0
@@ -118,10 +118,7 @@ class DocumentosGeneradosController extends Shield{
             }
         }
 
-        def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
-        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
-
-        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites Generados: " + totalResumenGenerado, fontBold), prmsHeaderHoja)
+        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([60,20,20]),0,0)
 
         if(usuario.esTriangulo()){
             sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
@@ -137,9 +134,14 @@ class DocumentosGeneradosController extends Shield{
             cn.close()
         }
 
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total trámites Recibidos: " + totalRecibido, fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Generados", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Recibidos", fontBold), prmsHeaderHoja)
 
-        document.add(tablaTotalesRetrasados)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(pers?.nombre + " " + pers?.apellido + "  (" + pers?.login + ")", fontBold), paramsLeft)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalResumenGenerado, fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+
         document.add(tablaTotalesRecibidos)
 
 
@@ -656,38 +658,43 @@ class DocumentosGeneradosController extends Shield{
 
         def trams
 
-        if (params.tipo == "prsn") {
-            def pers = Persona.get(params.id.toLong())
-            def dpto = Departamento.get(params.dpto)
-            if (!dpto) {
-                dpto = pers.departamento
-            }
-            fileName += pers.login + "_" + dpto.codigo
-            title += ["${pers.nombre} ${pers.apellido}"]
-            title += ["entre el ${params.desde} y el ${params.hasta}"]
-            title2 += "${pers.nombre} ${pers.apellido} en ${dpto.descripcion}"
-            trams = Tramite.withCriteria {
-                eq("de", pers)
-                eq("departamento", dpto)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("fechaCreacion", "asc")
-            }
-        } else {
-            def dep = Departamento.get(params.id.toLong())
-            fileName += dep.codigo
-            def hijosDep = reportesPdfService.todosDep(dep)
-            title += ["${dep.descripcion}"]
-            title += ["entre el ${params.desde} y el ${params.hasta}"]
-            title2 += dep.descripcion
-            trams = Tramite.withCriteria {
-                inList("departamento", hijosDep)
-                ge("fechaCreacion", desde)
-                le("fechaCreacion", hasta)
-                order("departamento", "asc")
-                order("fechaCreacion", "asc")
-            }
-        }
+//        if (params.tipo == "prsn") {
+//            def pers = Persona.get(params.id.toLong())
+//            def dpto = Departamento.get(params.dpto)
+//            if (!dpto) {
+//                dpto = pers.departamento
+//            }
+//            fileName += pers.login + "_" + dpto.codigo
+//            title += ["${pers.nombre} ${pers.apellido}"]
+//            title += ["entre el ${params.desde} y el ${params.hasta}"]
+//            title2 += "${pers.nombre} ${pers.apellido} en ${dpto.descripcion}"
+//            trams = Tramite.withCriteria {
+//                eq("de", pers)
+//                eq("departamento", dpto)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("fechaCreacion", "asc")
+//            }
+//        } else {
+//            def dep = Departamento.get(params.id.toLong())
+//            fileName += dep.codigo
+//            def hijosDep = reportesPdfService.todosDep(dep)
+//            title += ["${dep.descripcion}"]
+//            title += ["entre el ${params.desde} y el ${params.hasta}"]
+//            title2 += dep.descripcion
+//            trams = Tramite.withCriteria {
+//                inList("departamento", hijosDep)
+//                ge("fechaCreacion", desde)
+//                le("fechaCreacion", hasta)
+//                order("departamento", "asc")
+//                order("fechaCreacion", "asc")
+//            }
+//        }
+
+        def totalResumenGenerado = 0
+        def totalRecibido = 0
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
 
         def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
 
@@ -712,93 +719,133 @@ class DocumentosGeneradosController extends Shield{
         cellTitle.setCellValue(title[0]);
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue(title[1]);
+        cellTitle.setCellValue( usuario?.nombre + usuario?.apellido + " con perfil: (" + session?.perfil + ")");
         rowTitle = sheet.createRow((short) 4);
         cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue(title[2]);
+        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
 
         def index = 6
         XSSFRow rowHead = sheet.createRow((short) index);
         rowHead.setHeightInPoints(14)
 
         Cell cell = rowHead.createCell((int) 0)
-        cell.setCellValue("Departamento")
+        cell.setCellValue("Usuario")
         sheet.setColumnWidth(0, 15000)
 
         cell = rowHead.createCell((int) 1)
-        cell.setCellValue("Usuario")
+        cell.setCellValue("Generados")
         sheet.setColumnWidth(1, 10000)
 
         cell = rowHead.createCell((int) 2)
-        cell.setCellValue("N. trámites")
+        cell.setCellValue("Recibidos")
         sheet.setColumnWidth(2, 3000)
         index++
 
-        def dep = Departamento.get(params.id.toLong())
-        def hijosDep = reportesPdfService.todosDep(dep)
-        def tramites = [:]
 
-        trams.each { tr ->
-            def pers = tr.de
-            def dpto = tr.departamento
-            def deDpto = tr.deDepartamento
+        def sqlGen
+        def sql
+        def cn2 = dbConnectionService.getConnection()
+        def cn = dbConnectionService.getConnection()
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
 
-            if (!tramites[dpto.id]) {
-                tramites[dpto.id] = [:]
-                tramites[dpto.id].departamento = dpto
-                tramites[dpto.id].personas = [:]
+        if(usuario.esTriangulo()){
+            sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn2.eachRow(sqlGen.toString()){
+                totalResumenGenerado += 1
             }
-            if (deDpto) {
-                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
-                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
-                    tramites[dpto.id].personas[pers.id + "_o"].tramites = 0
-                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
-                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
-                }
-                tramites[dpto.id].personas[pers.id + "_o"].tramites++
-            } else {
-                if (!tramites[dpto.id].personas[pers.id]) {
-                    tramites[dpto.id].personas[pers.id] = [:]
-                    tramites[dpto.id].personas[pers.id].tramites = 0
-                    tramites[dpto.id].personas[pers.id].persona = pers
-                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
-                    if (!pers.estaActivo) {
-                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
-                    }
-                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
-                }
-                tramites[dpto.id].personas[pers.id].tramites++
+        }else{
+            sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn2.eachRow(sqlGen.toString()){
+                totalResumenGenerado += 1
             }
         }
 
-        def granTotal = 0
-        tramites.each { depId, depMap ->
-            def depTotal = 0
-            depMap.personas = depMap.personas.sort { it.value.de }
-            depMap.personas.each { persId, persMap ->
-                XSSFRow row = sheet.createRow((short) index)
-                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
-                row.createCell((int) 1).setCellValue("${persMap.de}")
-                row.createCell((int) 2).setCellValue(persMap.tramites)
-                index++
-                depTotal += persMap.tramites
+        if(usuario.esTriangulo()){
+            sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn.eachRow(sql.toString()){
+                totalRecibido += 1
             }
-            if (params.tipo == "dpto") {
-                XSSFRow row = sheet.createRow((short) index)
-                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
-                row.createCell((int) 1).setCellValue("TOTAL")
-                row.createCell((int) 2).setCellValue(depTotal)
-                index++
+            cn.close()
+        }else{
+            sql = "select * from trmt_recibidos("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+            cn.eachRow(sql.toString()){
+                totalRecibido += 1
             }
-            granTotal += depTotal
+            cn.close()
         }
+
+               XSSFRow row2 = sheet.createRow((short) index)
+                row2.createCell((int) 0).setCellValue("${usuario?.nombre} ${usuario?.apellido}")
+                row2.createCell((int) 1).setCellValue(" " + totalResumenGenerado)
+                row2.createCell((int) 2).setCellValue(" " + totalRecibido)
+                index++
+
+//        def dep = Departamento.get(params.id.toLong())
+//        def hijosDep = reportesPdfService.todosDep(dep)
+//        def tramites = [:]
+
+//        trams.each { tr ->
+//            def pers = tr.de
+//            def dpto = tr.departamento
+//            def deDpto = tr.deDepartamento
+//
+//            if (!tramites[dpto.id]) {
+//                tramites[dpto.id] = [:]
+//                tramites[dpto.id].departamento = dpto
+//                tramites[dpto.id].personas = [:]
+//            }
+//            if (deDpto) {
+//                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
+//                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
+//                    tramites[dpto.id].personas[pers.id + "_o"].tramites = 0
+//                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
+//                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
+//                }
+//                tramites[dpto.id].personas[pers.id + "_o"].tramites++
+//            } else {
+//                if (!tramites[dpto.id].personas[pers.id]) {
+//                    tramites[dpto.id].personas[pers.id] = [:]
+//                    tramites[dpto.id].personas[pers.id].tramites = 0
+//                    tramites[dpto.id].personas[pers.id].persona = pers
+//                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
+//                    if (!pers.estaActivo) {
+//                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
+//                    }
+//                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
+//                }
+//                tramites[dpto.id].personas[pers.id].tramites++
+//            }
+//        }
+
+//        def granTotal = 0
+//        tramites.each { depId, depMap ->
+//            def depTotal = 0
+//            depMap.personas = depMap.personas.sort { it.value.de }
+//            depMap.personas.each { persId, persMap ->
+//                XSSFRow row = sheet.createRow((short) index)
+//                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
+//                row.createCell((int) 1).setCellValue("${persMap.de}")
+//                row.createCell((int) 2).setCellValue(persMap.tramites)
+//                index++
+//                depTotal += persMap.tramites
+//            }
+//            if (params.tipo == "dpto") {
+//                XSSFRow row = sheet.createRow((short) index)
+//                row.createCell((int) 0).setCellValue("${depMap.departamento.descripcion} (${depMap.departamento.codigo})")
+//                row.createCell((int) 1).setCellValue("TOTAL")
+//                row.createCell((int) 2).setCellValue(depTotal)
+//                index++
+//            }
+//            granTotal += depTotal
+//        }
         XSSFRow row = sheet.createRow((short) index + 2)
-        row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
-        row.createCell((int) 2).setCellValue(granTotal)
+//        row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
+//        row.createCell((int) 2).setCellValue(granTotal)
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();
