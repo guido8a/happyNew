@@ -828,9 +828,11 @@ class DocumentosGeneradosController extends Shield{
         new File(path).mkdirs()
         //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
         String filename = path + "text.xlsx";
-        String sheetName = "Resumen";
+        String sheetName = "Generados";
+        String sheetName2 = "Recibidos";
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
+        XSSFSheet sheet2 = wb.createSheet(sheetName2);
         CreationHelper createHelper = wb.getCreationHelper();
 
         CellStyle styleDate = wb.createCellStyle();
@@ -853,8 +855,9 @@ class DocumentosGeneradosController extends Shield{
         rowTitle = sheet.createRow((short) 4);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue(title[2]);
-
         def index = 6
+        def index2 = 2
+
         XSSFRow rowHead = sheet.createRow((short) index);
         rowHead.setHeightInPoints(14)
 
@@ -905,6 +908,7 @@ class DocumentosGeneradosController extends Shield{
 
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+
             cn2.eachRow(sqlGen.toString()){
                 row = sheet.createRow((short) index);
                 cell = row.createCell((int) 0)
@@ -935,6 +939,7 @@ class DocumentosGeneradosController extends Shield{
 
         }else{
             sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+
             cn2.eachRow(sqlGen.toString()){
                 row = sheet.createRow((short) index);
                 cell = row.createCell((int) 0)
@@ -969,10 +974,10 @@ class DocumentosGeneradosController extends Shield{
         cell.setCellValue("Total trámites Generados: " + totalGenerado)
         index++
 
-        row = sheet.createRow((short) index);
+        row = sheet2.createRow((short) index2);
         cell = row.createCell((int) 0)
         cell.setCellValue("TRÁMITES RECIBIDOS")
-        index++
+        index2++
 
 
         def sql
@@ -981,7 +986,7 @@ class DocumentosGeneradosController extends Shield{
         if(usuario.esTriangulo()){
             sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
             cn.eachRow(sql.toString()){
-                row = sheet.createRow((short) index);
+                row = sheet2.createRow((short) index2);
                 cell = row.createCell((int) 0)
                 cell.setCellValue(it?.trmtcdgo)
 
@@ -1003,7 +1008,7 @@ class DocumentosGeneradosController extends Shield{
                 cell.setCellValue(it?.trmtfcrc)
                 cell.setCellStyle(styleDate)
 
-                index++
+                index2++
 
                 totalRecibido += 1
             }
@@ -1011,7 +1016,7 @@ class DocumentosGeneradosController extends Shield{
 
             sql = "select * from trmt_recibidos("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
             cn.eachRow(sql.toString()){
-                row = sheet.createRow((short) index);
+                row = sheet2.createRow((short) index2);
                 cell = row.createCell((int) 0)
                 cell.setCellValue(it?.trmtcdgo)
 
@@ -1033,17 +1038,17 @@ class DocumentosGeneradosController extends Shield{
                 cell.setCellValue(it?.trmtfcrc)
                 cell.setCellStyle(styleDate)
 
-                index++
+                index2++
 
                 totalRecibido += 1
 
             }
         }
 
-        row = sheet.createRow((short) index);
+        row = sheet2.createRow((short) index2);
         cell = row.createCell((int) 0)
         cell.setCellValue("Total trámites Recibidos: " + totalRecibido)
-        index++
+        index2++
 
 
 //        tramites.each { depId, depMap ->

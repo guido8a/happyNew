@@ -253,9 +253,11 @@ class RetrasadosExcelController extends Shield {
         //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
         String filename = path + "text.xlsx";
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
-        String sheetName = "SAD-WEB Reporte";
+        String sheetName = "Retrasados";
+        String sheetName2 = "No Recibidos";
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
+        XSSFSheet sheet2 = wb.createSheet(sheetName2);
         CreationHelper createHelper = wb.getCreationHelper();
 
         sheet.setAutobreaks(true);
@@ -283,6 +285,7 @@ class RetrasadosExcelController extends Shield {
         rowHead = sheet.createRow((short) 5);
         rowHead.createCell((int) 0).setCellValue("Nota: El tiempo en días corresponde a una jornada de trabajo diaria")
         def num = 6
+        def numTab2 = 2
 
 
 
@@ -357,12 +360,12 @@ class RetrasadosExcelController extends Shield {
                 def tramiteSalidaDep
                 def prtrSalidaDep
 
-                rowHead = sheet.createRow((short) num);
-                rowHead.createCell((int) 0).setCellValue("Trámites No Recibidos")
-                num++
+                rowHead = sheet2.createRow((short) numTab2);
+                rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
+                numTab2++
 
-                headerTramiteNoRecibidos(sheet, num)
-                num++
+                headerTramiteNoRecibidos(sheet2, numTab2)
+                numTab2++
 
                 cn3.eachRow(sqlSalida.toString()){sal->
 
@@ -402,22 +405,17 @@ class RetrasadosExcelController extends Shield {
                                 cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
-                                llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
+                                llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
                                 totalNoRecibidos += 1
-                                num++
+                                 numTab2++
 //                            }
                         }
 
                     }
-
-
-
                 }
 
-                rowHead = sheet.createRow((short) num);
+                rowHead = sheet2.createRow((short) numTab2);
                 rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidos)
-
-
                 cn3.close()
             } else {
 
@@ -474,12 +472,12 @@ class RetrasadosExcelController extends Shield {
                 def tramiteSalida
                 def prtrSalida
 
-                rowHead = sheet.createRow((short) num);
-                rowHead.createCell((int) 0).setCellValue("Trámites No Recibidos")
-                num++
+                rowHead = sheet2.createRow((short) numTab2);
+                rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
+                numTab2++
 
-                headerTramiteNoRecibidos(sheet, num)
-                num++
+                headerTramiteNoRecibidos(sheet2, numTab2)
+                numTab2++
 
                 cn4.eachRow(sqlSalida.toString()){sal->
 
@@ -519,9 +517,9 @@ class RetrasadosExcelController extends Shield {
                                 cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
-                                llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
+                                llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
                                 totalNoRecibidosPer +=1
-                                num++
+                                numTab2++
 //                            }
                         }
 
@@ -530,16 +528,16 @@ class RetrasadosExcelController extends Shield {
 
                 }
                 cn4.close()
-                rowHead = sheet.createRow((short) num);
+                rowHead = sheet2.createRow((short) numTab2);
                 rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidosPer)
             }
         }
 
 
 
-        results.each { k, v ->
-            num = creaRegistros(sheet, k, v, num, jefe)
-        }
+//        results.each { k, v ->
+//            num = creaRegistros(sheet, k, v, num, jefe)
+//        }
 
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
