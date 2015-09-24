@@ -317,7 +317,7 @@ class RetrasadosController extends Shield {
         def name = "reporteTramitesRetrasados_" + new Date().format("ddMMyyyy_HHmm") + ".pdf";
         def jefe = params.jefe == '1'
         def results = []
-        def fechaRececion = new Date().format("yyyy/MM/dd HH:mm:ss")
+        def fechaRecepcion = new Date().format("yyyy/MM/dd HH:mm:ss")
         def ahora = new Date()
         Document document = reportesPdfService.crearDocumento("v", [top: 2, right: 2, bottom: 1.5, left: 2.5])
 
@@ -357,11 +357,11 @@ class RetrasadosController extends Shield {
                     if(it.trmtfcrc){
                         sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
                     }else{
-                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                     }
 */
                     if(it.trmtfclr < ahora) {
-                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                         cn2.eachRow(sqlEntre.toString()){ d ->
                             entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                         }
@@ -413,7 +413,7 @@ class RetrasadosController extends Shield {
                         prtrSalidaDep.each {
 
 //                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
-                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                                 cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
@@ -452,7 +452,7 @@ class RetrasadosController extends Shield {
                     if(it.trmtfcrc){
                       sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
                     }else{
-                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                     }
 
 //                    entre = cn2.firstRow(sqlEntre)
@@ -501,7 +501,7 @@ class RetrasadosController extends Shield {
 
                         prtrSalida.each {
 //                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
-                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                                 cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
