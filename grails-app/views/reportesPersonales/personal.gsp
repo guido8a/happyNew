@@ -46,6 +46,7 @@
 
                             <div class="btn-group">
                                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosConsolidado" params="[prsn: persona.id]">
+                                %{--<g:link class="btn btn-info" controller="retrasados" action="reporteResumenRetrasados" params="[prsn: persona.id]">--}%
                                     <i class="fa fa-file-pdf-o"></i> PDF resumen
                                 </g:link>
                                 <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="[prsn: persona.id, detalle: 1]">

@@ -599,243 +599,453 @@ class RetrasadosController extends Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(entreSalida, font), prmsTablaHojaCenter)
     }
 
-    def reporteRetrasadosConsolidado() {
-        def baos = new ByteArrayOutputStream()
-        def name = "reporteConsolidadoTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
-        def jefe = params.jefe == '1'
-        def results = [], resGraph = [], dep = null, per = null
-        Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
-        def pdfw = PdfWriter.getInstance(document, baos)
-        session.tituloReporte = "Reporte consolidado de Trámites Retrasados y sin recepción"
-        if (params.dpto) {
-            def dep1 = Departamento.get(params.dpto.toLong())
-            session.tituloReporte += "\ndel dpto. $dep1.descripcion ($dep1.codigo)"
-            def res = reportesTramitesRetrasadosService.datos(params.dpto)
-            results = res.res
-            resGraph = res.resGraph
-            dep = Departamento.get(params.dpto.toLong())
-        } else if (params.prsn) {
-            per = Persona.get(params.prsn)
-            session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
-            if (per.esTrianguloOff()) {
-                session.tituloReporte += "\n[Bandeja de entrada del departamento]"
-                def res = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
-                results = res.res
-                resGraph = res.resGraph
-            } else {
-                def res = reportesTramitesRetrasadosService.datosPersona(params.prsn)
-                results = res.res
-                resGraph = res.resGraph
-            }
-        }
-        reportesPdfService.membrete(document)
-        document.open()
-        reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
-
-        PdfPTable tablaTramites = reportesPdfService.crearTabla([18, 60, 10, 12] as int[], 10, 10)
-
-        creaCeldaBlanca(tablaTramites, "", fontHeaderTabla)
-        creaCeldaBlanca(tablaTramites, "", fontHeaderTabla)
-        creaCeldaBlanca(tablaTramites, "Retrasados", fontHeaderTabla)
-        creaCeldaBlanca(tablaTramites, "Sin recepción", fontHeaderTabla)
-
-        /* ************************************************* Graficos *************************** */
-        boolean conGraficos
-        try {
-            conGraficos = true
-            def width = 550
-            def height = 250
-            PdfContentByte contentByte = pdfw.getDirectContent();
-            PdfTemplate templateSinRecepcion = contentByte.createTemplate(width, height);
-            Graphics2D graphics2dSinRecepcion = templateSinRecepcion.createGraphics(width, height, new DefaultFontMapper());
-            PdfTemplate templateRetrasados = contentByte.createTemplate(width, height);
-            Graphics2D graphics2dRetrasados = templateRetrasados.createGraphics(width, height, new DefaultFontMapper());
-            Rectangle2D rectangle2dSinRecepcion = new Rectangle2D.Double(0, 0, width, height);
-            Rectangle2D rectangle2dRetrasados = new Rectangle2D.Double(0, 0, width, height);
-
-////        PARA GRAFICO PASTEL
-            DefaultPieDataset dataSetRet = new DefaultPieDataset();
-            DefaultPieDataset dataSetNoRec = new DefaultPieDataset();
-            def ttl = " por departamento"
-            def existeSinRecepcion = false
-            def existeRetrasados = false
-
-            def limiteCant = 15
-            def limitePorc = 5
-            def totalOtrosRet = 0
-            def totalOtrosNorec = 0
-            def conOtrosRet = false
-            def conOtrosNorec = false
-
-            def cantRet = resGraph.ret.size()
-            def cantNorec = resGraph.norec.size()
-
-            if (cantRet > limiteCant) {
-                conOtrosRet = true;
-            }
-            if (cantNorec > limiteCant) {
-                conOtrosNorec = true;
-            }
-
-            def totalRet = results["11"].totalRet
-            def totalNorec = results["11"].totalNoRec
-
-            resGraph.ret.each { k, v ->
-                def prct = (v.total * 100) / totalRet
-                if (cantRet > 1) {
-                    if (conOtrosRet && prct < limitePorc) {
-                        totalOtrosRet += v.total
-                    } else {
-                        dataSetRet.setValue(v.codigo, v.total)
-                    }
-                    existeRetrasados = true
-                } else {
-                    cantRet = v.det.size()
-                    totalOtrosRet = 0
-                    conOtrosRet = false
-                    if (cantRet > limiteCant) {
-                        conOtrosRet = true
-                    }
-                    v.det.each { k1, v1 ->
-                        prct = (v1.total * 100) / totalRet
-                        def n = v1.nombre
-                        if (n == "Oficina ") {
-                            n += v.codigo
-                        }
-                        if (conOtrosRet && prct < limitePorc) {
-                            totalOtrosRet += v1.total
-                        } else {
-                            dataSetRet.setValue(n, v1.total)
-                        }
-                        existeRetrasados = true
-                    }
-                }
-            }
-            resGraph.norec.each { k, v ->
-                def prct = (v.total * 100) / totalNorec
-                if (cantNorec > 1) {
-                    if (conOtrosNorec && prct < limitePorc) {
-                        totalOtrosNorec += v.total
-                    } else {
-                        dataSetNoRec.setValue(v.codigo, v.total)
-                    }
-                    existeSinRecepcion = true
-                } else {
-                    cantNorec = v.det.size()
-                    totalOtrosNorec = 0
-                    conOtrosNorec = false
-                    if (cantNorec > limiteCant) {
-                        conOtrosNorec = true
-                    }
-                    v.det.each { k1, v1 ->
-                        prct = (v1.total * 100) / totalNorec
-                        def n = v1.nombre
-                        if (n == "Oficina ") {
-                            n += v.codigo
-                        }
-                        if (conOtrosNorec && prct < limitePorc) {
-                            totalOtrosNorec += v1.total
-                        } else {
-                            dataSetNoRec.setValue(n, v1.total)
-                        }
-                        existeSinRecepcion = true
-                    }
-                }
-            }
-
-            if (conOtrosRet && totalOtrosRet > 0) {
-                dataSetRet.setValue("Otros (<$limitePorc%)", totalOtrosRet)
-            }
-            if (conOtrosNorec && totalOtrosNorec > 0) {
-                dataSetNoRec.setValue("Otros (<$limitePorc%)", totalOtrosNorec)
-            }
-
-//            results.each { k, v ->
-//                def tr = v.totalRet ?: 0
-//                def tn = v.totalNoRec ?: 0
-//                if (tr > 0) {
-//                    existeRetrasados = true
+//    def reporteRetrasadosConsolidado() {
+//        def baos = new ByteArrayOutputStream()
+//        def name = "reporteConsolidadoTramitesRetrasados_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+//        def jefe = params.jefe == '1'
+//        def results = [], resGraph = [], dep = null, per = null
+//        Document document = reportesPdfService.crearDocumento("vert", [top: 2.5, right: 2.5, bottom: 1.5, left: 3])
+//        def pdfw = PdfWriter.getInstance(document, baos)
+//        session.tituloReporte = "Reporte consolidado de Trámites Retrasados y No Recibidos"
+//        if (params.dpto) {
+//            def dep1 = Departamento.get(params.dpto.toLong())
+//            session.tituloReporte += "\ndel dpto. $dep1.descripcion ($dep1.codigo)"
+//            def res = reportesTramitesRetrasadosService.datos(params.dpto)
+//            results = res.res
+//            resGraph = res.resGraph
+//            dep = Departamento.get(params.dpto.toLong())
+//        } else if (params.prsn) {
+//            per = Persona.get(params.prsn)
+//            session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
+//            if (per.esTrianguloOff()) {
+//                session.tituloReporte += "\n[Bandeja de entrada del departamento]"
+//                def res = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn)
+//                results = res.res
+//                resGraph = res.resGraph
+//            } else {
+//                def res = reportesTramitesRetrasadosService.datosPersona(params.prsn)
+//                results = res.res
+//                resGraph = res.resGraph
+//            }
+//        }
+//        reportesPdfService.membrete(document)
+//        document.open()
+//        reportesPdfService.propiedadesDocumento(document, "reporteTramitesRetrasados")
+//
+//        PdfPTable tablaTramites = reportesPdfService.crearTabla([18, 60, 10, 12] as int[], 10, 10)
+//
+//        creaCeldaBlanca(tablaTramites, "", fontHeaderTabla)
+//        creaCeldaBlanca(tablaTramites, "", fontHeaderTabla)
+//        creaCeldaBlanca(tablaTramites, "Retrasados", fontHeaderTabla)
+//        creaCeldaBlanca(tablaTramites, "Sin recepción", fontHeaderTabla)
+//
+//
+//
+//
+//        //calculo totales retrasados y no recibidos----------------------------------------------
+//
+//
+//
+//        def idUsario = session.usuario.id
+//        def enviaRecibe = RolPersonaTramite.findAllByCodigoInList(['R001', 'R002'])
+//        def sqls
+//        def sqlSalida
+//        def totalRetrasados = 0
+//        def totalRetrasadosPer = 0
+//        def totalNoRecibidosPer = 0
+//        def totalNoRecibidos = 0
+//        def ahora = new Date()
+//        def esTriangulo =  Persona.get(session.usuario.id).esTrianguloOff()
+//
+//
+//        if (esTriangulo) {
+//
+//            sqls = "select * from entrada_dpto(" + idUsario + ")"
+//            def cn = dbConnectionService.getConnection()
+//
+//            cn.eachRow(sqls.toString()){
+//                if(it.trmtfclr < ahora) {
+//                    totalRetrasados += 1
 //                }
-//                if (tn > 0) {
-//                    existeSinRecepcion = true
-//                }
-//                if (v.deps.size() > 1) {
-//                    band = true
-//                    v.deps.each { dId, trams ->
-//                        def dep = Departamento.get(dId.toLong())
-//                        if (trams.totalRet && trams.totalRet > 0) {
-//                            dataSetRet.setValue(dep.codigo, trams.totalRet)
-//                        }
-//                        if (trams.totalNoRec && trams.totalNoRec > 0) {
-//                            dataSetNoRec.setValue(dep.codigo, trams.totalNoRec)
-//                        }
+//            }
+//            cn.close()
+//
+//            sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
+//            def cn3 = dbConnectionService.getConnection()
+//            def tramiteSalidaDep
+//            def prtrSalidaDep
+//
+//            cn3.eachRow(sqlSalida.toString()){sal->
+//                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){  //estados enviado:E003 y recibido: E004
+//                    tramiteSalidaDep = Tramite.get(sal?.trmt__id)
+//                    prtrSalidaDep = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalidaDep, enviaRecibe)
+//                    prtrSalidaDep.each {
+//                        totalNoRecibidos += 1
 //                    }
 //                }
 //            }
-//
-//            if (!band) {
-//                def resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, params.prsn)
+//            cn3.close()
+//        } else {
+//            sqls = "select * from entrada_prsn(" + idUsario + ")"
+//            def cn = dbConnectionService.getConnection()
+//            cn.eachRow(sqls.toString()){
+//                if(it.trmtfclr < ahora) {
+////                   totalRetrasadosPer += 1
+//                   totalRetrasados += 1
+//                }
 //            }
+//
+//            sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
+//            def cn4 = dbConnectionService.getConnection()
+//            def tramiteSalida
+//            def prtrSalida
+//
+//            cn4.eachRow(sqlSalida.toString()){sal->
+//
+//                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
+//
+//                    tramiteSalida = Tramite.get(sal?.trmt__id)
+//                    prtrSalida = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalida, enviaRecibe)
+//                    prtrSalida.each {
+////                        totalNoRecibidosPer += 1
+//                        totalNoRecibidos += 1
+//                    }
+//                }
+//            }
+//        }
+//
+//        println("Retrasados " + totalRetrasados)
+//        println("No recibidos " + totalNoRecibidos)
+//
+//
+//
+//        /* ************************************************* Graficos *************************** */
+//        boolean conGraficos
+//        try {
+//            conGraficos = true
+//            def width = 550
+//            def height = 250
+//            PdfContentByte contentByte = pdfw.getDirectContent();
+//            PdfTemplate templateSinRecepcion = contentByte.createTemplate(width, height);
+//            Graphics2D graphics2dSinRecepcion = templateSinRecepcion.createGraphics(width, height, new DefaultFontMapper());
+//            PdfTemplate templateRetrasados = contentByte.createTemplate(width, height);
+//            Graphics2D graphics2dRetrasados = templateRetrasados.createGraphics(width, height, new DefaultFontMapper());
+//            Rectangle2D rectangle2dSinRecepcion = new Rectangle2D.Double(0, 0, width, height);
+//            Rectangle2D rectangle2dRetrasados = new Rectangle2D.Double(0, 0, width, height);
+//
+//////        PARA GRAFICO PASTEL
+//            DefaultPieDataset dataSetRet = new DefaultPieDataset();
+//            DefaultPieDataset dataSetNoRec = new DefaultPieDataset();
+//            def ttl = " por departamento"
+//            def existeSinRecepcion = false
+//            def existeRetrasados = false
+//
+//            def limiteCant = 15
+//            def limitePorc = 5
+//            def totalOtrosRet = 0
+//            def totalOtrosNorec = 0
+//            def conOtrosRet = false
+//            def conOtrosNorec = false
+//
+//            def cantRet = resGraph.ret.size()
+//            def cantNorec = resGraph.norec.size()
+//
+//            if (cantRet > limiteCant) {
+//                conOtrosRet = true;
+//            }
+//            if (cantNorec > limiteCant) {
+//                conOtrosNorec = true;
+//            }
+//
+//            def totalRet = results["11"].totalRet
+//            def totalNorec = results["11"].totalNoRec
+//
+//
+//
+//
+//
+//            resGraph.ret.each { k, v ->
+//                def prct = (v.total * 100) / totalRet
+//                if (cantRet > 1) {
+//                    if (conOtrosRet && prct < limitePorc) {
+//                        totalOtrosRet += v.total
+//                    } else {
+//                        dataSetRet.setValue(v.codigo, v.total)
+//                    }
+//                    existeRetrasados = true
+//                } else {
+//                    cantRet = v.det.size()
+//                    totalOtrosRet = 0
+//                    conOtrosRet = false
+//                    if (cantRet > limiteCant) {
+//                        conOtrosRet = true
+//                    }
+//                    v.det.each { k1, v1 ->
+//                        prct = (v1.total * 100) / totalRet
+//                        def n = v1.nombre
+//                        if (n == "Oficina ") {
+//                            n += v.codigo
+//                        }
+//                        if (conOtrosRet && prct < limitePorc) {
+//                            totalOtrosRet += v1.total
+//                        } else {
+//                            dataSetRet.setValue(n, v1.total)
+//                        }
+//                        existeRetrasados = true
+//                    }
+//                }
+//            }
+////            resGraph.norec.each { k, v ->
+////                def prct = (v.total * 100) / totalNorec
+////                if (cantNorec > 1) {
+////                    if (conOtrosNorec && prct < limitePorc) {
+////                        totalOtrosNorec += v.total
+////                    } else {
+////                        dataSetNoRec.setValue(v.codigo, v.total)
+////                    }
+////                    existeSinRecepcion = true
+////                } else {
+////                    cantNorec = v.det.size()
+////                    totalOtrosNorec = 0
+////                    conOtrosNorec = false
+////                    if (cantNorec > limiteCant) {
+////                        conOtrosNorec = true
+////                    }
+////                    v.det.each { k1, v1 ->
+////                        prct = (v1.total * 100) / totalNorec
+////                        def n = v1.nombre
+////                        if (n == "Oficina ") {
+////                            n += v.codigo
+////                        }
+////                        if (conOtrosNorec && prct < limitePorc) {
+////                            totalOtrosNorec += v1.total
+////                        } else {
+////                            dataSetNoRec.setValue(n, v1.total)
+////                        }
+////                        existeSinRecepcion = true
+////                    }
+////                }
+////            }
+//
+//            if (conOtrosRet && totalOtrosRet > 0) {
+//                dataSetRet.setValue("Otros (<$limitePorc%)", totalOtrosRet)
+//            }
+//            if (conOtrosNorec && totalOtrosNorec > 0) {
+//                dataSetNoRec.setValue("Otros (<$limitePorc%)", totalOtrosNorec)
+//            }
+//
+////            results.each { k, v ->
+////                def tr = v.totalRet ?: 0
+////                def tn = v.totalNoRec ?: 0
+////                if (tr > 0) {
+////                    existeRetrasados = true
+////                }
+////                if (tn > 0) {
+////                    existeSinRecepcion = true
+////                }
+////                if (v.deps.size() > 1) {
+////                    band = true
+////                    v.deps.each { dId, trams ->
+////                        def dep = Departamento.get(dId.toLong())
+////                        if (trams.totalRet && trams.totalRet > 0) {
+////                            dataSetRet.setValue(dep.codigo, trams.totalRet)
+////                        }
+////                        if (trams.totalNoRec && trams.totalNoRec > 0) {
+////                            dataSetNoRec.setValue(dep.codigo, trams.totalNoRec)
+////                        }
+////                    }
+////                }
+////            }
+////
+////            if (!band) {
+////                def resGraph = reportesTramitesRetrasadosService.datosGraph(params.dpto, params.prsn)
+////            }
+//
+//
+//            dataSetRet.setValue("Retrasados", totalRetrasados)
+//
+//            JFreeChart chartSinRecepcion = ChartFactory.createPieChart("Documentos sin recepción" + ttl, dataSetNoRec, true, true, false);
+//            chartSinRecepcion.setTitle(
+//                    new org.jfree.chart.title.TextTitle("Documentos sin recepción" + ttl,
+//                            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
+//                    )
+//            );
+//            JFreeChart chartRetrasados = ChartFactory.createPieChart("Documentos retrasados", dataSetRet, true, true, false);
+//            chartRetrasados.setTitle(
+//                    new org.jfree.chart.title.TextTitle("Documentos retrasados" + ttl,
+//                            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
+//                    )
+//            );
+//
+//            /* getPlot method of JFreeChart class returns the PiePlot object back to us */
+//            PiePlot ColorConfigurator = (PiePlot) chartSinRecepcion.getPlot(); /* get PiePlot object for changing */
+//            PiePlot ColorConfigurator2 = (PiePlot) chartRetrasados.getPlot(); /* get PiePlot object for changing */
+//            /* A format mask specified to display labels. Here {0} is the section name, and {1} is the value.
+//            We can also use {2} which will display a percent value */
+//            ColorConfigurator.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
+//            ColorConfigurator2.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
+//            /* Set color of the label background on the pie chart */
+//            ColorConfigurator.setLabelBackgroundPaint(new Color(220, 220, 220));
+//            ColorConfigurator2.setLabelBackgroundPaint(new Color(220, 220, 220));
+//
+//            chartSinRecepcion.draw(graphics2dSinRecepcion, rectangle2dSinRecepcion);
+//            chartRetrasados.draw(graphics2dRetrasados, rectangle2dRetrasados);
+//
+//            graphics2dSinRecepcion.dispose();
+//            graphics2dRetrasados.dispose();
+//
+//            def posyGraf1 = 450
+//            def posyGraf2 = 180
+//            if (existeRetrasados) {
+//                contentByte.addTemplate(templateRetrasados, 30, posyGraf1);
+//                if (existeSinRecepcion) {
+//                    contentByte.addTemplate(templateSinRecepcion, 30, posyGraf2);
+//                }
+//            } else {
+//                if (existeSinRecepcion) {
+//                    contentByte.addTemplate(templateSinRecepcion, 30, posyGraf1);
+//                }
+//            }
+//
+//        } catch (e) {
+//            println "ERROR GRAFICOS::::::: "
+//            e.printStackTrace();
+//            conGraficos = false
+//        }
+//        if (conGraficos) {
+//            document.newPage()
+//        }
+//        /* ************************************************* FIN Graficos *********************** */
+//
+//        /* ************************************************* Arbol ****************************** */
+////        results.each() { k, v ->
+////            creaRegistrosConsolidado(tablaTramites, k, v, jefe)
+////        }
+////        document.add(tablaTramites)
+//        /* ************************************************* FIN Arbol *************************** */
+//
+//        document.close();
+//        pdfw.close()
+//        byte[] b = baos.toByteArray();
+//        response.setContentType("application/pdf")
+//        response.setHeader("Content-disposition", "attachment; filename=" + name)
+//        response.setContentLength(b.length)
+//        response.getOutputStream().write(b)
+//    }
 
-            JFreeChart chartSinRecepcion = ChartFactory.createPieChart("Documentos sin recepción" + ttl, dataSetNoRec, true, true, false);
-            chartSinRecepcion.setTitle(
-                    new org.jfree.chart.title.TextTitle("Documentos sin recepción" + ttl,
-                            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
-                    )
-            );
-            JFreeChart chartRetrasados = ChartFactory.createPieChart("Documentos retrasados" + ttl, dataSetRet, true, true, false);
-            chartRetrasados.setTitle(
-                    new org.jfree.chart.title.TextTitle("Documentos retrasados" + ttl,
-                            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15)
-                    )
-            );
+    def reporteRetrasadosConsolidado() {
 
-            /* getPlot method of JFreeChart class returns the PiePlot object back to us */
-            PiePlot ColorConfigurator = (PiePlot) chartSinRecepcion.getPlot(); /* get PiePlot object for changing */
-            PiePlot ColorConfigurator2 = (PiePlot) chartRetrasados.getPlot(); /* get PiePlot object for changing */
-            /* A format mask specified to display labels. Here {0} is the section name, and {1} is the value.
-            We can also use {2} which will display a percent value */
-            ColorConfigurator.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
-            ColorConfigurator2.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}:{1} docs. ({2})"));
-            /* Set color of the label background on the pie chart */
-            ColorConfigurator.setLabelBackgroundPaint(new Color(220, 220, 220));
-            ColorConfigurator2.setLabelBackgroundPaint(new Color(220, 220, 220));
 
-            chartSinRecepcion.draw(graphics2dSinRecepcion, rectangle2dSinRecepcion);
-            chartRetrasados.draw(graphics2dRetrasados, rectangle2dRetrasados);
+        def fileName = "documentos_retrasados_"
 
-            graphics2dSinRecepcion.dispose();
-            graphics2dRetrasados.dispose();
+        def title2 = "Documentos retrasados por "
+//        def pers = Persona.get(params.id.toLong())
+        def pers = Persona.get(session.usuario.id)
 
-            def posyGraf1 = 450
-            def posyGraf2 = 180
-            if (existeRetrasados) {
-                contentByte.addTemplate(templateRetrasados, 30, posyGraf1);
-                if (existeSinRecepcion) {
-                    contentByte.addTemplate(templateSinRecepcion, 30, posyGraf2);
+        def title = "Documentos de " + pers?.nombre + " " + pers?.apellido + " (" + pers?.login + ")"
+
+        def baos = new ByteArrayOutputStream()
+        def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
+        def pdfw = PdfWriter.getInstance(document, baos);
+
+        session.tituloReporte = title
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "trámite")
+        def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeaderHojaRight = [align: Element.ALIGN_RIGHT]
+        def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
+        def totalResumenGenerado = 0
+        def totalRecibido = 0
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def sqlGen
+        def sql
+        def cn2 = dbConnectionService.getConnection()
+
+        def idUsario = session.usuario.id
+        def enviaRecibe = RolPersonaTramite.findAllByCodigoInList(['R001', 'R002'])
+        def sqls
+        def sqlSalida
+        def totalRetrasados = 0
+        def totalRetrasadosPer = 0
+        def totalNoRecibidosPer = 0
+        def totalNoRecibidos = 0
+        def ahora = new Date()
+        def esTriangulo =  Persona.get(session.usuario.id).esTrianguloOff()
+
+
+        if (esTriangulo) {
+
+            sqls = "select * from entrada_dpto(" + idUsario + ")"
+            def cn = dbConnectionService.getConnection()
+
+            cn.eachRow(sqls.toString()){
+                if(it.trmtfclr < ahora) {
+                    totalRetrasados += 1
                 }
-            } else {
-                if (existeSinRecepcion) {
-                    contentByte.addTemplate(templateSinRecepcion, 30, posyGraf1);
+            }
+            cn.close()
+
+            sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
+            def cn3 = dbConnectionService.getConnection()
+            def tramiteSalidaDep
+            def prtrSalidaDep
+
+            cn3.eachRow(sqlSalida.toString()){sal->
+                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){  //estados enviado:E003 y recibido: E004
+                    tramiteSalidaDep = Tramite.get(sal?.trmt__id)
+                    prtrSalidaDep = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalidaDep, enviaRecibe)
+                    prtrSalidaDep.each {
+                        totalNoRecibidos += 1
+                    }
+                }
+            }
+            cn3.close()
+        } else {
+            sqls = "select * from entrada_prsn(" + idUsario + ")"
+            def cn = dbConnectionService.getConnection()
+            cn.eachRow(sqls.toString()){
+                if(it.trmtfclr < ahora) {
+                    totalRetrasados += 1
                 }
             }
 
-        } catch (e) {
-            println "ERROR GRAFICOS::::::: "
-            e.printStackTrace();
-            conGraficos = false
-        }
-        if (conGraficos) {
-            document.newPage()
-        }
-        /* ************************************************* FIN Graficos *********************** */
+            sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
+            def cn4 = dbConnectionService.getConnection()
+            def tramiteSalida
+            def prtrSalida
 
-        /* ************************************************* Arbol ****************************** */
-        results.each() { k, v ->
-            creaRegistrosConsolidado(tablaTramites, k, v, jefe)
+            cn4.eachRow(sqlSalida.toString()){sal->
+
+                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
+
+                    tramiteSalida = Tramite.get(sal?.trmt__id)
+                    prtrSalida = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalida, enviaRecibe)
+                    prtrSalida.each {
+                        totalNoRecibidos += 1
+                    }
+                }
+            }
         }
-        document.add(tablaTramites)
-        /* ************************************************* FIN Arbol *************************** */
+
+
+        def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([50,20,15,15]),0,0)
+
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph(pers?.nombre + " " + pers?.apellido + "  (" + pers?.login + ")", font), paramsLeft)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph(" " + session?.perfil, font), paramsLeft)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph(" " + totalRetrasados, font), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph(" " + totalNoRecibidos, font), prmsHeaderHoja)
+
+        document.add(tablaTotalesRetrasados)
 
         document.close();
         pdfw.close()
@@ -1832,4 +2042,165 @@ class RetrasadosController extends Shield {
 //            }
 //        }
 //    }
+
+
+    def reporteRetrasadosArbol() {
+
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
+
+        def fileName = "documentos_retrasados_"
+        def title = "Documentos retrasados de "
+        def title2 = "Documentos retrasados por "
+        def pers = Persona.get(params.id.toLong())
+        if (params.tipo == "prsn") {
+
+            def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
+            fileName += pers.login + "_" + dpto.codigo
+            title += "${pers.nombre} ${pers.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
+            title2 += "el usuario ${pers.nombre} ${pers.apellido} (${pers.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
+        } else {
+            def dep = Departamento.get(params.id.toLong())
+            fileName += dep.codigo
+            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
+            title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
+        }
+
+        def baos = new ByteArrayOutputStream()
+        def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
+        def pdfw = PdfWriter.getInstance(document, baos);
+
+        session.tituloReporte = title
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "trámite")
+        def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeaderHojaRight = [align: Element.ALIGN_RIGHT]
+        def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
+        def totalResumenGenerado = 0
+        def totalRecibido = 0
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def sqlGen
+        def sql
+        def cn2 = dbConnectionService.getConnection()
+        def cn = dbConnectionService.getConnection()
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
+
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+
+        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        cn2.eachRow(sqlGen.toString()){
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+
+            totalResumenGenerado += 1
+        }
+
+        document.add(tablaTotalesRecibidos)
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+    }
+
+
+    def reporteGeneradosArbol () {
+
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
+
+        def fileName = "documentos_generados_"
+        def title = "Documentos generados de "
+        def title2 = "Documentos generados por "
+        def pers = Persona.get(params.id.toLong())
+        if (params.tipo == "prsn") {
+
+            def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
+            fileName += pers.login + "_" + dpto.codigo
+            title += "${pers.nombre} ${pers.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
+            title2 += "el usuario ${pers.nombre} ${pers.apellido} (${pers.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
+        } else {
+            def dep = Departamento.get(params.id.toLong())
+            fileName += dep.codigo
+            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
+            title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
+        }
+
+        def baos = new ByteArrayOutputStream()
+        def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        Document document = reportesPdfService.crearDocumento([top: 2, right: 2, bottom: 1.5, left: 2.5])
+        def pdfw = PdfWriter.getInstance(document, baos);
+
+        session.tituloReporte = title
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "trámite")
+        def paramsCenter = [align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def paramsLeft = [align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeaderHojaRight = [align: Element.ALIGN_RIGHT]
+        def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
+        def totalResumenGenerado = 0
+        def totalRecibido = 0
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def sqlGen
+        def sql
+        def cn2 = dbConnectionService.getConnection()
+        def cn = dbConnectionService.getConnection()
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,11,11,11]),0,0)
+
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Generados", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Enviados", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Recibidos", fontBold), prmsHeaderHoja)
+
+        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        cn2.eachRow(sqlGen.toString()){
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.generados, font), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.enviados, font), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.recibidos, font), prmsHeaderHoja)
+
+            totalResumenGenerado += 1
+        }
+
+        document.add(tablaTotalesRecibidos)
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+    }
+
 }
