@@ -366,8 +366,8 @@ class RetrasadosController extends Shield {
                             entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                         }
                         cn2.close()
-                    } else {
-                        entre = ""
+                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasados += 1
                     }
 
 
@@ -381,8 +381,8 @@ class RetrasadosController extends Shield {
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalSin += 1
                     }else{
-                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
-                        totalRetrasados += 1
+//                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+//                        totalRetrasados += 1
                         band ++
                     }
 
@@ -449,6 +449,7 @@ class RetrasadosController extends Shield {
 
 //                    println("band per" + bandPer)
 
+/*
                     if(it.trmtfcrc){
                       sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
                     }else{
@@ -460,6 +461,20 @@ class RetrasadosController extends Shield {
                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                     }
                     cn2.close()
+*/
+
+
+                    if(it.trmtfclr < ahora) {
+                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
+                        cn2.eachRow(sqlEntre.toString()){ d ->
+                            entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        }
+                        cn2.close()
+                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                        totalRetrasadosPer += 1
+                    }
+
+
 //                    if(it?.trmtfclr < new Date()){
 //                        tipo = "Retrasado"
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
@@ -470,9 +485,8 @@ class RetrasadosController extends Shield {
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalSin += 1
                     }else{
-
-                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
-                        totalRetrasadosPer += 1
+//                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+//                        totalRetrasadosPer += 1
                         bandPer ++
                     }
 
