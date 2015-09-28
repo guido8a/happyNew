@@ -2100,7 +2100,7 @@ class RetrasadosController extends Shield {
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
 
-        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ") order by retrasados desc"
         cn2.eachRow(sqlGen.toString()){
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
@@ -2180,7 +2180,7 @@ class RetrasadosController extends Shield {
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Enviados", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Recibidos", fontBold), prmsHeaderHoja)
 
-        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ") order by generados desc"
         cn2.eachRow(sqlGen.toString()){
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
