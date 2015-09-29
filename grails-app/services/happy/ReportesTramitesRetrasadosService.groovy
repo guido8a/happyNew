@@ -49,7 +49,7 @@ class ReportesTramitesRetrasadosService {
             sqlNoRec = "SELECT * FROM trmt_no_recibidos() WHERE (dpto__de IN ($depStr) AND dptodedp IS NOT NULL) OR (prsndeid = $perId AND dptodedp IS NULL)"
         }
 
-        println("sql " + sqlRet)
+//        println("sql " + sqlRet)
 
         return [ret: sqlRet, norec: sqlNoRec]
     }
