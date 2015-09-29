@@ -359,89 +359,45 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteDetalladoPdf() {
+        println("generado " + params)
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "detalle_documentos_generados_"
         def title = "Detalle de los documentos generados de "
-        def title2 = "Detalle de los documentos generados por "
+        def title2 = ""
         def title3 = ""
+
+        def usuario = Persona.get(params.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def totalGenerado = 0
+        def totalRecibido = 0
+        def totalEnviados = 0
 
         def tramites = [:], trams = []
 
-        println("params" + params)
+////        if (params.tipo == "prsn") {
+//            def persona = Persona.get(params.id.toLong())
+//            def dpto = Departamento.get(params.dpto)
+//            if (!dpto) {
+//                dpto = persona.departamento
+//            }
+            fileName += usuario.login
+            title += "${usuario.nombre} ${usuario.apellido} \n con perfil: ${usuario.perfiles} \nentre el ${params.desde} y el ${params.hasta}"
 
-        if (params.tipo == "prsn") {
-            def persona = Persona.get(params.id.toLong())
-            def dpto = Departamento.get(params.dpto)
-            if (!dpto) {
-                dpto = persona.departamento
-            }
-            fileName += persona.login
-            title += "${persona.nombre} ${persona.apellido} \ncon perfil: ${session.perfil} \nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
-            title2 += "el usuario ${persona.nombre} ${persona.apellido} (${persona.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
-            title3 += "${persona.nombre} ${persona.apellido} en el departamento ${dpto.descripcion}"
-//            trams = Tramite.withCriteria {
-//                eq("de", persona)
-//                eq("departamento", dpto)
-//                ge("fechaCreacion", desde)
-//                le("fechaCreacion", hasta)
-//                order("fechaCreacion", "asc")
-//            }
+//            title2 += "el usuario ${persona.nombre} ${persona.apellido} (${persona.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
+//            title3 += "${persona.nombre} ${persona.apellido} en el departamento ${dpto.descripcion}"
 
-        } else if (params.tipo == "dpto") {
-            def dep = Departamento.get(params.id.toLong())
-            def hijosDep = reportesPdfService.todosDep(dep)
-            println("hd " + hijosDep)
-            fileName += dep.codigo
-            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
-            title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
-            title3 += dep.descripcion
-//            trams = Tramite.withCriteria {
-//                inList("departamento", hijosDep)
-//                ge("fechaCreacion", desde)
-//                le("fechaCreacion", hasta)
-//                order("departamento", "asc")
-//                order("fechaCreacion", "asc")
-//            }
-        }
-
-//        trams.each { tr ->
-//            def pers = tr.de
-//            def dpto = tr.departamento
-//            def deDpto = tr.deDepartamento
-//
-//            if (!tramites[dpto.id]) {
-//                tramites[dpto.id] = [:]
-//                tramites[dpto.id].departamento = dpto
-//                tramites[dpto.id].personas = [:]
-//            }
-//            if (deDpto) {
-//                if (!tramites[dpto.id].personas[pers.id + "_o"]) {
-//                    tramites[dpto.id].personas[pers.id + "_o"] = [:]
-//                    tramites[dpto.id].personas[pers.id + "_o"].tramites = []
-//                    tramites[dpto.id].personas[pers.id + "_o"].persona = pers
-//                    tramites[dpto.id].personas[pers.id + "_o"].de = "${pers.nombre} ${pers.apellido} (Oficina)"
-//                    if (!pers.estaActivo) {
-//                        tramites[dpto.id].personas[pers.id + "_o"].de += " <Inactivo>"
-//                    }
-//                    tramites[dpto.id].personas[pers.id + "_o"].deGraf = "${pers.login} (Oficina)"
-//                }
-//                tramites[dpto.id].personas[pers.id + "_o"].tramites += tr
-//            } else {
-//                if (!tramites[dpto.id].personas[pers.id]) {
-//                    tramites[dpto.id].personas[pers.id] = [:]
-//                    tramites[dpto.id].personas[pers.id].tramites = []
-//                    tramites[dpto.id].personas[pers.id].persona = pers
-//                    tramites[dpto.id].personas[pers.id].de = "${pers.nombre} ${pers.apellido} (${pers.login})"
-//                    if (!pers.estaActivo) {
-//                        tramites[dpto.id].personas[pers.id].de += " <Inactivo>"
-//                    }
-//                    tramites[dpto.id].personas[pers.id].deGraf = "${pers.login}"
-//                }
-//                tramites[dpto.id].personas[pers.id].tramites += tr
-//            }
+//        } else if (params.tipo == "dpto") {
+//            def dep = Departamento.get(params.id.toLong())
+//            def hijosDep = reportesPdfService.todosDep(dep)
+//            println("hd " + hijosDep)
+//            fileName += dep.codigo
+//            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
+//            title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
+//            title3 += dep.descripcion
 //        }
+
         def baos = new ByteArrayOutputStream()
         def name = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
 
@@ -473,79 +429,6 @@ class DocumentosGeneradosController extends Shield{
         def tablaTotalesGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
         def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
 
-//        tramites.each { depId, depMap ->
-//            def totalDep = 0
-//            def header = depMap.departamento.descripcion + " (${depMap.departamento.codigo})"
-//            Paragraph paragraphDep = new Paragraph();
-//            paragraphDep.setAlignment(Element.ALIGN_LEFT);
-//            paragraphDep.add(new Phrase(header, fontBold));
-//            paragraphDep.setSpacingBefore(15)
-//            document.add(paragraphDep)
-//            depMap.personas.each { persId, persMap ->
-//                header = persMap.de + " (${depMap.departamento.codigo})" +
-//                        ": ${persMap.tramites.size()} documento${persMap.tramites.size() == 1 ? '' : 's'} generado${tramites == 1 ? '' : 's'} sin incluir copias"
-//                Paragraph paragraphUsu = new Paragraph();
-//                paragraphUsu.setAlignment(Element.ALIGN_LEFT);
-//                paragraphUsu.add(new Phrase(header, fontBold));
-//                document.add(paragraphUsu)
-//
-//                totalDep += persMap.tramites.size()
-//
-//                tabla = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 25, 19, 13, 13]), 10, 5)
-//                tabla.setHeaderRows(1)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("No.", fontTh), paramsCenter)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha creación", fontTh), paramsCenter)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("Para oficina", fontTh), paramsCenter)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("Destinatario", fontTh), paramsCenter)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha envío", fontTh), paramsCenter)
-//                reportesPdfService.addCellTabla(tabla, new Paragraph("Fecha recepción", fontTh), paramsCenter)
-//
-//                persMap.tramites.eachWithIndex { tr, j ->
-//                    if (j % 2 == 0) {
-//                        paramsLeft.bg = Color.WHITE
-//                        paramsCenter.bg = Color.WHITE
-//                    } else {
-//                        paramsLeft.bg = Color.LIGHT_GRAY
-//                        paramsCenter.bg = Color.LIGHT_GRAY
-//                    }
-//                    def prtr = PersonaDocumentoTramite.withCriteria {
-//                        eq("tramite", tr)
-//                        inList("rolPersonaTramite", [rolPara, rolCopia])
-//                        order("fechaEnvio", "asc")
-//                        order("rolPersonaTramite", "asc")
-//                    }
-//                    prtr.each { persDoc ->
-//                        def paraOficina = persDoc.persona ? (persDoc.persona.departamento.descripcion + " (" + persDoc.persona.departamento.codigo + ")") : (persDoc.departamento.descripcion + " (" + persDoc.departamento.codigo + ")")
-//                        def para = persDoc.persona ? (persDoc.persona.nombre + " " + persDoc.persona.apellido + " (" + persDoc.persona.login + ")") : persDoc.departamento.codigo
-//                        def cod = tr.codigo + (persDoc.rolPersonaTramite.codigo == "R002" ? "  [CC]" : "")
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(cod, font), paramsLeft)
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(tr.fechaCreacion.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(paraOficina, font), paramsLeft)
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(para, font), paramsLeft)
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaEnvio ? persDoc.fechaEnvio.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
-//                        reportesPdfService.addCellTabla(tabla, new Paragraph(persDoc.fechaRecepcion ? persDoc.fechaRecepcion.format("dd-MM-yyyy HH:mm") : "", font), paramsCenter)
-//                    }
-//                }
-//                document.add(tabla)
-//            }
-//            if (params.tipo == "dpto") {
-//                document.add(new Paragraph("TOTAL ${depMap.departamento.descripcion} (${depMap.departamento.codigo}): ${totalDep} documento${totalDep == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontTotalDep))
-//            }
-//            granTotal += totalDep
-//        }
-
-//        document.add(new Paragraph("   ", fontGranTotal))
-//        document.add(new Paragraph("GRAN TOTAL ${title3}: ${granTotal} documento${granTotal == 1 ? '' : 's'} generado${granTotal == 1 ? '' : 's'}", fontGranTotal))
-
-
-        //nuevo
-
-        def usuario = Persona.get(session.usuario.id)
-        def departamentoUsuario = usuario?.departamento?.id
-        def totalGenerado = 0
-        def totalRecibido = 0
-        def totalEnviados = 0
-
         desde = desde.format("yyyy/MM/dd")
         hasta = hasta.format("yyyy/MM/dd")
 
@@ -558,49 +441,42 @@ class DocumentosGeneradosController extends Shield{
         def tablaGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([17, 13, 19, 13, 13]), 10, 5)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("No.", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha creación", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("De", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Para", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha envío", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaGenerados, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
+        /*GENERADOS DPTO PDF*/
+
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-//            println("sql dpto gene " + sqlGen)
             cn2.eachRow(sqlGen.toString()){
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
-//                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmt__de, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtpara, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalGenerado += 1
-//                println "fecha de envio: ${it.trmtfcen}"
                 if(it.trmtfcen){
                     totalEnviados += 1
-//                    println "totalEnviadosOf: $totalEnviados"
                 }
             }
         }else{
             sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-//            println("sql prsn " + sqlGen)
             cn2.eachRow(sqlGen.toString()){
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
-//                reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmt__de, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtpara, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalGenerado += 1
                 if(it.trmtfcen){
                     totalEnviados += 1
-//                    println "totalEnviados: $totalEnviados"
                 }
             }
         }
 
         reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites generados: " + totalGenerado, fontBold), paramsRight)
         reportesPdfService.addCellTabla(tablaTotalesGenerados, new Paragraph("Total trámites generados y enviados: " + totalEnviados, fontBold), paramsRight)
-
 
         document.add(tablaGenerados)
         document.add(tablaTotalesGenerados)
@@ -615,19 +491,17 @@ class DocumentosGeneradosController extends Shield{
         reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("No.", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha creación", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("De", fontTh), paramsCenter)
-//        reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Para", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha envío", fontTh), paramsCenter)
         reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph("Fecha recepción", fontTh), paramsCenter)
 
+        /*RECIBIDOS DPTO PDF*/
 
         if(usuario.esTriangulo()){
             sql = "select * from trmt_recibidos("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-//            println("sql dpto " + sql)
             cn.eachRow(sql.toString()){
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmt__de, font), paramsLeft)
-//                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtpara, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalRecibido += 1
@@ -635,12 +509,10 @@ class DocumentosGeneradosController extends Shield{
             cn.close()
         }else{
             sql = "select * from trmt_recibidos("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-//            println("sql prsn" + sql)
             cn.eachRow(sql.toString()){
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmt__de, font), paramsLeft)
-//                reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtpara, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcen?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 reportesPdfService.addCellTabla(tablaRecibidos, new Paragraph(it?.trmtfcrc?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)
                 totalRecibido += 1
@@ -884,6 +756,8 @@ class DocumentosGeneradosController extends Shield{
 
     def reporteDetalladoXlsx() {
 
+//        println("params detallado xls " + params)
+
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
         def fileName = "detalle_documentos_generados_"
@@ -891,16 +765,19 @@ class DocumentosGeneradosController extends Shield{
         def title2 = ""
         def tramites = [:], trams = []
 
-        if (params.tipo == "prsn") {
-            def pers = Persona.get(params.id.toLong())
-            def dpto = Departamento.get(params.dpto)
-            if (!dpto) {
-                dpto = pers.departamento
-            }
-            fileName += pers.login + "_" + dpto.codigo
-            title += ["${pers.nombre} ${pers.apellido}"]
+        def usuario = Persona.get(params.id)
+        def departamentoUsuario = usuario?.departamento?.id
+
+//        if (params.tipo == "prsn") {
+//            def pers = Persona.get(params.id.toLong())
+//            def dpto = Departamento.get(params.dpto)
+//            if (!dpto) {
+//                dpto = pers.departamento
+//            }
+            fileName += usuario.login
+            title += ["${usuario.nombre} ${usuario.apellido}"]
             title += ["entre el ${params.desde} y el ${params.hasta}"]
-            title2 += "${pers.nombre} ${pers.apellido} en ${dpto.descripcion}"
+//            title2 += "${pers.nombre} ${pers.apellido} en ${dpto.descripcion}"
 //            trams = Tramite.withCriteria {
 //                eq("de", pers)
 //                eq("departamento", dpto)
@@ -909,13 +786,13 @@ class DocumentosGeneradosController extends Shield{
 //                order("fechaCreacion", "asc")
 //            }
 
-        } else if (params.tipo == "dpto") {
-            def dep = Departamento.get(params.id.toLong())
-            def hijosDep = reportesPdfService.todosDep(dep)
-            fileName += dep.codigo
-            title += ["${dep.descripcion}"]
-            title += ["entre el ${params.desde} y el ${params.hasta}"]
-            title2 += dep.descripcion
+//        } else if (params.tipo == "dpto") {
+//            def dep = Departamento.get(params.id.toLong())
+//            def hijosDep = reportesPdfService.todosDep(dep)
+//            fileName += dep.codigo
+//            title += ["${dep.descripcion}"]
+//            title += ["entre el ${params.desde} y el ${params.hasta}"]
+//            title2 += dep.descripcion
 //            trams = Tramite.withCriteria {
 //                inList("departamento", hijosDep)
 //                ge("fechaCreacion", desde)
@@ -923,7 +800,7 @@ class DocumentosGeneradosController extends Shield{
 //                order("departamento", "asc")
 //                order("fechaCreacion", "asc")
 //            }
-        }
+//        }
 
 
         def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
@@ -955,7 +832,7 @@ class DocumentosGeneradosController extends Shield{
         cellTitle.setCellValue(title[0]);
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue(title[1] +  " - Perfil: " + session.perfil);
+        cellTitle.setCellValue(title[1] +  " - Perfil: " + usuario?.perfiles);
         rowTitle = sheet.createRow((short) 4);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue(title[2]);
@@ -974,20 +851,13 @@ class DocumentosGeneradosController extends Shield{
         Cell cell
         def wFechas = 4000
         row = sheet.createRow((short) index);
-//        cell = row.createCell((int) 0)
-//        cell.setCellValue("Dep.")
-//        cell = row.createCell((int) 1)
-//        cell.setCellValue("Usuario")
+
         cell = row.createCell((int) 0)
         cell.setCellValue("No.")
         sheet.setColumnWidth(0, 5500)
         cell = row.createCell((int) 1)
         cell.setCellValue("Fecha creación")
         sheet.setColumnWidth(1, wFechas)
-
-//        cell = row.createCell((int) 2)
-//        cell.setCellValue("De")
-//        sheet.setColumnWidth(4, 15000)
 
         cell = row.createCell((int) 2)
         cell.setCellValue("Destinatario")
@@ -1002,8 +872,7 @@ class DocumentosGeneradosController extends Shield{
         sheet.setColumnWidth(4, wFechas)
         index++
 
-        def usuario = Persona.get(session.usuario.id)
-        def departamentoUsuario = usuario?.departamento?.id
+
         def sqlGen
         def totalGenerado = 0
         def totalRecibido = 0
@@ -1045,7 +914,7 @@ class DocumentosGeneradosController extends Shield{
         }else{
             sqlGen = "select * from trmt_generados("+ params.id +","+ null +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
 
-            -
+
             cn2.eachRow(sqlGen.toString()){
                 row = sheet.createRow((short) index);
                 cell = row.createCell((int) 0)
@@ -1096,7 +965,7 @@ class DocumentosGeneradosController extends Shield{
         cellTitle2.setCellValue("Reporte de documentos recibidos");
         rowTitle2 = sheet2.createRow((short) 3);
         cellTitle2 = rowTitle2.createCell((short) 0);
-        cellTitle2.setCellValue(title[1] +  " - Perfil: " + session.perfil);
+        cellTitle2.setCellValue(title[1] +  " - Perfil: " + usuario?.perfiles);
         rowTitle2 = sheet2.createRow((short) 4);
         cellTitle2 = rowTitle2.createCell((short) 0);
         cellTitle2.setCellValue(title[2]);
@@ -1152,9 +1021,6 @@ class DocumentosGeneradosController extends Shield{
                 cell = row.createCell((int) 2)
                 cell.setCellValue(it?.trmt__de)
 
-//                cell = row.createCell((int) 3)
-//                cell.setCellValue(it?.trmtpara)
-
                 cell = row.createCell((int) 3)
                 cell.setCellValue(it?.trmtfcen)
                 cell.setCellStyle(styleDate)
@@ -1181,9 +1047,6 @@ class DocumentosGeneradosController extends Shield{
 
                 cell = row.createCell((int) 2)
                 cell.setCellValue(it?.trmt__de)
-
-//                cell = row.createCell((int) 3)
-//                cell.setCellValue(it?.trmtpara)
 
                 cell = row.createCell((int) 3)
                 cell.setCellValue(it?.trmtfcen)

@@ -230,10 +230,14 @@ class RetrasadosExcelController extends Shield {
     }
 
     def reporteRetrasadosDetalle() {
+
+//        println("params ret excel " + params)
         def jefe = params.jefe == '1'
         def ttl = ""
         def results = []
-        def idUsario = session.usuario.id
+        /*OJO---------------------------*/
+//        def idUsario = session.usuario.id
+        def idUsario = params.id
         def sqls
         def sqlEntre
         def sqlSalida
@@ -247,6 +251,9 @@ class RetrasadosExcelController extends Shield {
         def totalSinPer = 0
         def totalNoRecibidosPer = 0
         def totalNoRecibidos = 0
+        def ahora = new Date()
+        def enviaRecibe = RolPersonaTramite.findAllByCodigoInList(['R001', 'R002'])
+        def per = Persona.get(idUsario)
 
         def path = servletContext.getRealPath("/") + "xls/"
         new File(path).mkdirs()
@@ -258,15 +265,26 @@ class RetrasadosExcelController extends Shield {
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
         XSSFSheet sheet2 = wb.createSheet(sheetName2);
+        sheet2.setColumnWidth(0, 4000)
+        sheet2.setColumnWidth(1, 3000)
+        sheet2.setColumnWidth(2, 6000)
+        sheet2.setColumnWidth(3, 4000)
+        sheet2.setColumnWidth(4, 8000)
+        sheet2.setColumnWidth(5, 8000)
+        sheet2.setColumnWidth(6, 4000)
+        sheet2.setColumnWidth(7, 4000)
+        sheet2.setColumnWidth(8, 4000)
+        sheet2.setColumnWidth(9, 2500)
+
         CreationHelper createHelper = wb.getCreationHelper();
 
         sheet.setAutobreaks(true);
         XSSFRow rowHead = sheet.createRow((short) 0);
         rowHead.setHeightInPoints(14)
         sheet.setColumnWidth(0, 4000)
-        sheet.setColumnWidth(1, 4000)
+        sheet.setColumnWidth(1, 3000)
         sheet.setColumnWidth(2, 4000)
-        sheet.setColumnWidth(3, 2000)
+        sheet.setColumnWidth(3, 4000)
         sheet.setColumnWidth(4, 8000)
         sheet.setColumnWidth(5, 8000)
         sheet.setColumnWidth(6, 4000)
@@ -279,265 +297,179 @@ class RetrasadosExcelController extends Shield {
         rowHead = sheet.createRow((short) 2);
         rowHead.createCell((int) 1).setCellValue("Reporte detallado de Trámites Retrasados y No recibidos")
         rowHead = sheet.createRow((short) 3);
-        rowHead.createCell((int) 1).setCellValue(ttl)
+        rowHead.createCell((int) 1).setCellValue("del usuario $per.nombre $per.apellido ($per.login)")
         rowHead = sheet.createRow((short) 4);
         rowHead.createCell((int) 1).setCellValue("" + new Date().format('dd-MM-yyyy HH:mm'))
         rowHead = sheet.createRow((short) 5);
-        rowHead.createCell((int) 0).setCellValue("Nota: El tiempo en días corresponde a una jornada de trabajo diaria")
+        rowHead.createCell((int) 1).setCellValue("Nota: El tiempo en días corresponde a una jornada de trabajo diaria")
         def num = 6
         def numTab2 = 2
 
+//        if (params.dpto) {
+//            def dep = Departamento.get(params.dpto.toLong())
+//            ttl += "\ndel dpto. $dep.descripcion ($dep.codigo)"
+//            results = reportesTramitesRetrasadosService.datos(params.dpto).res
+//        } else if (params.prsn) {
+//            def per = Persona.get(params.prsn.toLong())
 
 
-        if (params.dpto) {
-            def dep = Departamento.get(params.dpto.toLong())
-            ttl += "\ndel dpto. $dep.descripcion ($dep.codigo)"
-            results = reportesTramitesRetrasadosService.datos(params.dpto).res
-        } else if (params.prsn) {
-            def per = Persona.get(params.prsn.toLong())
-            ttl += "\ndel usuario $per.nombre $per.apellido ($per.login)"
-            if (per.esTrianguloOff()) {
-//                ttl += "\n[Bandeja de entrada del departamento]"
-//                results = reportesTramitesRetrasadosService.datos(per.departamentoId, params.prsn).res
+        /*INCIO RETRASADOS DPTO EXCEL*/
+        if (per.esTrianguloOff()) {
+            sqls = "select * from entrada_dpto(" + idUsario + ")"
+            def cn = dbConnectionService.getConnection()
+            def cn2 = dbConnectionService.getConnection()
+            def tipo
 
-                sqls = "select * from entrada_dpto(" + idUsario + ")"
-                def cn = dbConnectionService.getConnection()
-                def cn2 = dbConnectionService.getConnection()
-                def tipo
+            headerTablaRetrasados(sheet, num)
+            num++
 
-                println("usu " + idUsario)
-
-
-
-                headerTablaRetrasados(sheet, num)
-                num++
-
-                cn.eachRow(sqls.toString()){
-
-
-
-                    if(it.trmtfcrc){
-                        sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
-                    }else{
-                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                    }
+            cn.eachRow(sqls.toString()){
+//                    if(it.trmtfcrc){
+//                        sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
+//                    }else{
+//                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+//                    }
 
 //                    entre = cn2.firstRow(sqlEntre)
-                    cn2.eachRow(sqlEntre){ d ->
-                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-                    }
 
-//                    if(it?.trmtfclr < new Date()){
-//                        tipo = "Retrasado"
-//                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-//                        totalRetrasados += 1
-//                        num++
-//                    }
-                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
 //                        totalSin += 1
 //                        num++
-                    }else{
-                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                }else {
+                    if(it.trmtfclr < ahora) {
+                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        cn2.eachRow(sqlEntre) { d ->
+                            entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        }
+                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
                         totalRetrasados += 1
                         num++
                     }
-
-
-
                 }
-                rowHead = sheet.createRow((short) num);
-//                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados + " ,Total trámites Sin Recepción: " + totalSin)
-                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados)
-                num++
-                cn.close()
-                num = num+1
+            }
+            rowHead = sheet.createRow((short) num);
+            rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasados)
+            num++
+            cn.close()
+            num = num+1
 
-                sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
-                def cn3 = dbConnectionService.getConnection()
-                def cn5 = dbConnectionService.getConnection()
-                def tramiteSalidaDep
-                def prtrSalidaDep
+    /*********************************************************/
+            /*INICIO NO RECIBIDOS DPTO EXCEL*/
+            sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
+            def cn3 = dbConnectionService.getConnection()
+            def cn5 = dbConnectionService.getConnection()
+            def tramiteSalidaDep
+            def prtrSalidaDep
 
-                rowHead = sheet2.createRow((short) numTab2);
-                rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
-                numTab2++
+            rowHead = sheet2.createRow((short) numTab2);
+            rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
+            numTab2++
 
-                headerTramiteNoRecibidos(sheet2, numTab2)
-                numTab2++
+            headerTramiteNoRecibidos(sheet2, numTab2)
+            numTab2++
 
-                cn3.eachRow(sqlSalida.toString()){sal->
+            cn3.eachRow(sqlSalida.toString()){sal->
 
- //                    if(sal.edtrcdgo == 'E004'){
-//                        tramiteSalidaDep = Tramite.get(sal?.trmt__id)
-//                        prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
-//                        prtrSalidaDep.each {
-//                            if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
-//                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-////                                entreSalida = cn5.firstRow(sqlEntreSalida)
-//                                cn2.eachRow(sqlEntreSalida){ d ->
-//                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-//                                }
-//                                llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
-//                                num++
-//                            }
-//                        }
-//                    }else{
-//                        if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
-//                            sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-////                            entreSalida = cn5.firstRow(sqlEntreSalida)
-//                            cn2.eachRow(sqlEntreSalida){ d ->
-//                                entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-//                            }
-//                            llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
-//                            num++
-//                        }
-//                    }
-
-
-                    if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
-                        tramiteSalidaDep = Tramite.get(sal?.trmt__id)
-                        prtrSalidaDep = PersonaDocumentoTramite.findAllByTramite(tramiteSalidaDep)
-                        prtrSalidaDep.each {
-//                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
-                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                                cn5.eachRow(sqlEntreSalida.toString()){ d ->
-                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-                                }
-                                llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
-                                totalNoRecibidos += 1
-                                 numTab2++
-//                            }
+                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
+                    tramiteSalidaDep = Tramite.get(sal?.trmt__id)
+                    prtrSalidaDep = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalidaDep, enviaRecibe)
+                    prtrSalidaDep.each {
+                        sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        cn5.eachRow(sqlEntreSalida.toString()){ d ->
+                            entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                         }
-
+                        llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
+                        totalNoRecibidos += 1
+                        numTab2++
                     }
+
                 }
+            }
 
-                rowHead = sheet2.createRow((short) numTab2);
-                rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidos)
-                cn3.close()
-            } else {
+            rowHead = sheet2.createRow((short) numTab2);
+            rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidos)
+            cn3.close()
+    /*************************************************************************/
+        } else {
 
-                sqls = "select * from entrada_prsn(" + idUsario + ")"
-                def cn = dbConnectionService.getConnection()
-                def cn2 = dbConnectionService.getConnection()
-                def tipo
+            /*INICIO RETRASADOS PRSN EXCEL*/
 
-                headerTablaRetrasados(sheet, num)
-                num++
+            sqls = "select * from entrada_prsn(" + idUsario + ")"
+            def cn = dbConnectionService.getConnection()
+            def cn2 = dbConnectionService.getConnection()
+            def tipo
 
-                cn.eachRow(sqls.toString()){
-                    if(it.trmtfcrc){
-                        sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
-                    }else{
-                        sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                    }
+            headerTablaRetrasados(sheet, num)
+            num++
 
-//                    entre = cn2.firstRow(sqlEntre)
-                    cn2.eachRow(sqlEntre){ d ->
-                        entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-                    }
+            cn.eachRow(sqls.toString()){
+//                if(it.trmtfcrc){
+//                    sqlEntre="select * from tmpo_entre(" + "'" + it?.trmtfcen + "'" + "," + "'" + it?.trmtfcrc + "'"+ ")"
+//                }else{
+//                    sqlEntre="select * from tmpo_entre('${it?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+//                }
 
-//                    if(it?.trmtfclr < new Date()){
-//                        tipo = "Retrasado"
-//                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
-//                        totalRetrasadosPer += 1
-//                        num++
-//                    }
-                    if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+                if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
 //                        tipo = "Sin Recepción"
 //                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
 //                        totalSinPer += 1
 //                        num++
-                    }else{
-                        llenaTablaRetrasados (sheet, num, it, entre.toString(), tipo)
+                }else {
+                    if (it.trmtfclr < ahora) {
+                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        cn2.eachRow(sqlEntre) { d ->
+                            entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        }
+                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
                         totalRetrasadosPer += 1
                         num++
                     }
-
-
                 }
-
-                rowHead = sheet.createRow((short) num);
-                rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasadosPer)
-                num++
-
-                cn.close()
-                num = num+1
-
-                sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
-                def cn4 = dbConnectionService.getConnection()
-                def cn6 = dbConnectionService.getConnection()
-                def tramiteSalida
-                def prtrSalida
-
-                rowHead = sheet2.createRow((short) numTab2);
-                rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
-                numTab2++
-
-                headerTramiteNoRecibidos(sheet2, numTab2)
-                numTab2++
-
-                cn4.eachRow(sqlSalida.toString()){sal->
-
-//                    if(sal.edtrcdgo == 'E004'){
-//                        tramiteSalida = Tramite.get(sal?.trmt__id)
-//                        prtrSalida = PersonaDocumentoTramite.findAllByTramite(tramiteSalida)
-//                        prtrSalida.each {
-//                            if(it.rolPersonaTramite.codigo == 'R002' && !it.fechaRespuesta){
-//                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-////                                entreSalida = cn6.firstRow(sqlEntreSalida)
-//                                cn2.eachRow(sqlEntreSalida){ d ->
-//                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-//                                }
-//                                llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
-//                                num++
-//                            }
-//                        }
-//                    }else{
-//                        if(!sal.trmtfcrc && sal.edtrcdgo == 'E003'){
-//                            sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-////                            entreSalida = cn6.firstRow(sqlEntreSalida)
-//                            cn2.eachRow(sqlEntreSalida){ d ->
-//                                entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-//                            }
-//                            llenaTablaNoRecibidos (sheet, num, sal, entreSalida.toString())
-//                            num++
-//                        }
-//                    }
-
-
-                    if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
-                        tramiteSalida = Tramite.get(sal?.trmt__id)
-                        prtrSalida = PersonaDocumentoTramite.findAllByTramite(tramiteSalida)
-                        prtrSalida.each {
-//                            if((it.rolPersonaTramite.codigo == 'R002' || it.rolPersonaTramite.codigo == 'R001') && !it.fechaRecepcion){
-                                sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                                cn6.eachRow(sqlEntreSalida.toString()){ d ->
-                                    entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
-                                }
-                                llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
-                                totalNoRecibidosPer +=1
-                                numTab2++
-//                            }
-                        }
-
-                    }
-
-
-                }
-                cn4.close()
-                rowHead = sheet2.createRow((short) numTab2);
-                rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidosPer)
             }
+
+            rowHead = sheet.createRow((short) num);
+            rowHead.createCell((int) 0).setCellValue("Total trámites Retrasados: " + totalRetrasadosPer)
+            num++
+
+            cn.close()
+            num = num+1
+    /************************************************************************/
+    /*INICIO NO RECIBIDOS PRSN EXCEL*/
+            sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
+            def cn4 = dbConnectionService.getConnection()
+            def cn6 = dbConnectionService.getConnection()
+            def tramiteSalida
+            def prtrSalida
+
+            rowHead = sheet2.createRow((short) numTab2);
+            rowHead.createCell((int) 0).setCellValue("Reporte de Trámites No Recibidos")
+            numTab2++
+
+            headerTramiteNoRecibidos(sheet2, numTab2)
+            numTab2++
+
+            cn4.eachRow(sqlSalida.toString()){sal->
+
+                if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
+                    tramiteSalida = Tramite.get(sal?.trmt__id)
+                    prtrSalida = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalida, enviaRecibe)
+                    prtrSalida.each {
+                        sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                        cn6.eachRow(sqlEntreSalida.toString()){ d ->
+                            entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        }
+                        llenaTablaNoRecibidos (sheet2, numTab2, sal, entreSalida.toString())
+                        totalNoRecibidosPer +=1
+                        numTab2++
+                    }
+                }
+            }
+            cn4.close()
+            rowHead = sheet2.createRow((short) numTab2);
+            rowHead.createCell((int) 0).setCellValue("Total trámites No Recibidos: " + totalNoRecibidosPer)
         }
-
-
-
-//        results.each { k, v ->
-//            num = creaRegistros(sheet, k, v, num, jefe)
-//        }
 
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
@@ -635,14 +567,8 @@ class RetrasadosExcelController extends Shield {
 
     def reporteRetrasadosConsolidado () {
 
-
         def fileName = "documentos_retrasados_"
         def title = ["Reporte de documentos retrasados y no recibidos"]
-        def title2 = ""
-
-        def trams
-
-
         def totalResumenGenerado = 0
         def totalRecibido = 0
         def usuario = Persona.get(session.usuario.id)
@@ -672,9 +598,6 @@ class RetrasadosExcelController extends Shield {
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue( usuario?.nombre + " " + usuario?.apellido );
-//        rowTitle = sheet.createRow((short) 4);
-//        cellTitle = rowTitle.createCell((short) 0);
-//        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
 
         def index = 6
         XSSFRow rowHead = sheet.createRow((short) index);
@@ -689,14 +612,13 @@ class RetrasadosExcelController extends Shield {
         sheet.setColumnWidth(1, 10000)
 
         cell = rowHead.createCell((int) 2)
-        cell.setCellValue("Generados")
+        cell.setCellValue("Retrasados")
         sheet.setColumnWidth(2, 3000)
 
         cell = rowHead.createCell((int) 3)
-        cell.setCellValue("Recibidos")
+        cell.setCellValue("No Recibidos")
         sheet.setColumnWidth(3, 3000)
         index++
-
 
         def sqlGen
         def sql
@@ -712,19 +634,23 @@ class RetrasadosExcelController extends Shield {
         def ahora = new Date()
         def esTriangulo =  Persona.get(session.usuario.id).esTrianguloOff()
 
-
+        /*INICIO RETRASADOS CONSOLIDADO DPTO EXCEL*/
         if (esTriangulo) {
-
             sqls = "select * from entrada_dpto(" + idUsario + ")"
             def cn = dbConnectionService.getConnection()
 
             cn.eachRow(sqls.toString()){
-                if(it.trmtfclr < ahora) {
-                    totalRetrasados += 1
+                if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+
+                }else{
+                    if(it.trmtfclr < ahora) {
+                        totalRetrasados += 1
+                    }
                 }
             }
             cn.close()
-
+        /***********************************************************/
+        /*INICIO NO RECIBIDOS CONSOLIDADO DPTO EXCEL*/
             sqlSalida = "select * from salida_dpto(" + idUsario+ ")"
             def cn3 = dbConnectionService.getConnection()
             def tramiteSalidaDep
@@ -740,24 +666,29 @@ class RetrasadosExcelController extends Shield {
                 }
             }
             cn3.close()
+
         } else {
+         /*INICIO RETRASADOS CONSOLIDADO PRSN EXCEL*/
             sqls = "select * from entrada_prsn(" + idUsario + ")"
             def cn = dbConnectionService.getConnection()
             cn.eachRow(sqls.toString()){
-                if(it.trmtfclr < ahora) {
-                    totalRetrasados += 1
+                if(it?.trmtfcbq < new Date() && it?.trmtfcrc == null){
+
+                }else{
+                    if(it.trmtfclr < ahora) {
+                        totalRetrasados += 1
+                    }
                 }
             }
-
+         /************************************************************/
+         /*INICIO NO RECIBIDOS CONSOLIDADO PRSN EXCEL*/
             sqlSalida = "select * from salida_prsn(" + idUsario+ ")"
             def cn4 = dbConnectionService.getConnection()
             def tramiteSalida
             def prtrSalida
 
             cn4.eachRow(sqlSalida.toString()){sal->
-
                 if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
-
                     tramiteSalida = Tramite.get(sal?.trmt__id)
                     prtrSalida = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalida, enviaRecibe)
                     prtrSalida.each {
@@ -767,15 +698,12 @@ class RetrasadosExcelController extends Shield {
             }
         }
 
-
-
         XSSFRow row2 = sheet.createRow((short) index)
         row2.createCell((int) 0).setCellValue("${usuario?.nombre}" + "  " + "${usuario?.apellido}" + " (" +   "${usuario?.login}" + ")")
         row2.createCell((int) 1).setCellValue("${session?.perfil}")
         row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
         row2.createCell((int) 3).setCellValue(" " + totalNoRecibidos)
         index++
-
 
         XSSFRow row = sheet.createRow((short) index + 2)
 
@@ -1408,8 +1336,8 @@ class RetrasadosExcelController extends Shield {
     def reporteRetrasadosArbolExcel () {
 
 
-        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
-        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
+//        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+//        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_retrasados_"
         def title = ["Reporte de documentos retrasados"]
@@ -1446,9 +1374,9 @@ class RetrasadosExcelController extends Shield {
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
         cellTitle.setCellValue( usuario?.nombre + usuario?.apellido );
-        rowTitle = sheet.createRow((short) 4);
-        cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
+//        rowTitle = sheet.createRow((short) 4);
+//        cellTitle = rowTitle.createCell((short) 0);
+//        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
 
         def index = 6
         XSSFRow rowHead = sheet.createRow((short) index);
@@ -1476,21 +1404,34 @@ class RetrasadosExcelController extends Shield {
         def sql
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+//        desde = desde.format("yyyy/MM/dd")
+//        hasta = hasta.format("yyyy/MM/dd")
+
+        def desdeNuevo = new Date().format("yyyy/MM/dd")
+        def hastaNuevo = new Date().format("yyyy/MM/dd")
+        def totalRetrasados = 0
+        def totalNoRecibidos = 0
 
 
-        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-            cn2.eachRow(sqlGen.toString()) {
-                XSSFRow row2 = sheet.createRow((short) index)
-                row2.createCell((int) 0).setCellValue("" + it?.usuario)
-                row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
-                row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
-                row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
-                index++
-            }
+        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
+        cn2.eachRow(sqlGen.toString()) {
+            XSSFRow row2 = sheet.createRow((short) index)
+            row2.createCell((int) 0).setCellValue("" + it?.usuario)
+            row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
+            row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
+            row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
 
+            totalRetrasados += it?.retrasados
+            totalNoRecibidos += it?.no_recibidos
 
+            index++
+        }
+
+        XSSFRow row2 = sheet.createRow((short) index)
+        row2.createCell((int) 0).setCellValue("")
+        row2.createCell((int) 1).setCellValue("Total")
+        row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
+        row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
 
 
         XSSFRow row = sheet.createRow((short) index + 2)

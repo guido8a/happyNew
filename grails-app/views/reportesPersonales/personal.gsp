@@ -49,7 +49,7 @@
                                 %{--<g:link class="btn btn-info" controller="retrasados" action="reporteResumenRetrasados" params="[prsn: persona.id]">--}%
                                     <i class="fa fa-file-pdf-o"></i> PDF resumen
                                 </g:link>
-                                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="[prsn: persona.id, detalle: 1]">
+                                <g:link class="btn btn-info" controller="retrasados" action="reporteRetrasadosDetalle" params="[id: persona.id, detalle: 1]">
                                     <i class="fa fa-file-pdf-o"></i> PDF detallado
                                 </g:link>
                             </div>
@@ -58,7 +58,7 @@
                                 <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosConsolidado" params="[prsn: persona.id]">
                                     <i class="fa fa-file-excel-o"></i> Excel resumen
                                 </g:link>
-                                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="[prsn: persona.id, detalle: 1]">
+                                <g:link class="btn btn-success" controller="retrasadosExcel" action="reporteRetrasadosDetalle" params="[id: persona.id, detalle: 1]">
                                     <i class="fa fa-file-excel-o"></i> Excel detallado
                                 </g:link>
                             </div>
