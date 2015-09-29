@@ -1173,6 +1173,7 @@
                         });
                         $("#hiddenCC").val(cc);
                         $(".frmTramite").submit();
+                        $(this).attr("disabled", true);
                     }
                     return false;
                 });

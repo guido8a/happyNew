@@ -1161,6 +1161,7 @@
                         $("#hiddenCC").val(cc);
 //                            console.log($(".frmTramite"), $(".frmTramite").serialize());
                         $(".frmTramite").submit();
+                        $(this).attr("disabled", true);
 //                        }
 
 //                        console.log("-->" + cc)

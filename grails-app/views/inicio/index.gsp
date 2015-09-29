@@ -110,17 +110,15 @@
     <div style="text-align: center; margin-top: 40px">
 
         <g:if test="${session.usuario.getPuedeDirector()}">
-        %{--<a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidadoDir',--}%
-        %{--params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1", dir: "1"])}" style="text-decoration: none">--}%
-            <g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidadoDir" class="openImagenDir" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1', dir: '1']">
+            %{--<g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidadoDir" class="openImagenDir" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1', dir: '1']">--}%
+            <g:link controller="departamento" action="arbolReportes" class="openImagenDir" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1', dir: '1']">
                 <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
             </g:link>
         </g:if>
 
         <g:if test="${session.usuario.getPuedeJefe()}">
-            %{--<a href= "${createLink(controller:'retrasadosWeb', action: 'reporteRetrasadosConsolidado',--}%
-                %{--params: [dpto: Persona.get(session.usuario.id).departamento.id, inicio: "1"])}" style="text-decoration: none">--}%
-            <g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidado" class="openImagen" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1']">
+            %{--<g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidado" class="openImagen" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1']">--}%
+            <g:link controller="departamento" action="arbolReportes" class="openImagen" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1']">
                 <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
             </g:link>
         </g:if>
