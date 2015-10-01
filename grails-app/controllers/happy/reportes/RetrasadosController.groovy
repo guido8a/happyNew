@@ -422,14 +422,16 @@ class RetrasadosController extends Shield {
 //                        llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
 //                        totalSin += 1
                     }else{
-                        if(it.trmtfclr < ahora) {
-                            sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
-                            cn2.eachRow(sqlEntre.toString()){ d ->
-                                entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                        if(it.trmtfclr){
+                            if(it.trmtfclr < ahora) {
+                                sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
+                                cn2.eachRow(sqlEntre.toString()){ d ->
+                                    entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                                }
+                                cn2.close()
+                                llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
+                                totalRetrasadosPer += 1
                             }
-                            cn2.close()
-                            llenaTablaRetrasados(it, tablaTramite, entre.toString(), tipo)
-                            totalRetrasadosPer += 1
                         }
                     }
                 }
