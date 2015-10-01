@@ -1377,31 +1377,14 @@ class RetrasadosExcelController extends Shield {
         cellTitle.setCellValue(title[0]);
         rowTitle = sheet.createRow((short) 3);
         cellTitle = rowTitle.createCell((short) 0);
-        cellTitle.setCellValue( usuario?.nombre + usuario?.apellido );
+        cellTitle.setCellValue( '');
 //        rowTitle = sheet.createRow((short) 4);
 //        cellTitle = rowTitle.createCell((short) 0);
 //        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
 
         def index = 6
-        XSSFRow rowHead = sheet.createRow((short) index);
-        rowHead.setHeightInPoints(14)
 
-        Cell cell = rowHead.createCell((int) 0)
-        cell.setCellValue("Usuario")
-        sheet.setColumnWidth(0, 13000)
 
-        cell = rowHead.createCell((int) 1)
-        cell.setCellValue("Perfil")
-        sheet.setColumnWidth(1, 10000)
-
-        cell = rowHead.createCell((int) 2)
-        cell.setCellValue("Retrasados")
-        sheet.setColumnWidth(2, 3000)
-
-        cell = rowHead.createCell((int) 3)
-        cell.setCellValue("No Recibidos")
-        sheet.setColumnWidth(3, 3000)
-        index++
 
 
         def sqlGen
@@ -1413,34 +1396,188 @@ class RetrasadosExcelController extends Shield {
 
         def desdeNuevo = new Date().format("yyyy/MM/dd")
         def hastaNuevo = new Date().format("yyyy/MM/dd")
+
+
+        def dptoPadre = Departamento.get(params.id)
+        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
+
         def totalRetrasados = 0
         def totalNoRecibidos = 0
 
 
-        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
-        cn2.eachRow(sqlGen.toString()) {
-            XSSFRow row2 = sheet.createRow((short) index)
-            row2.createCell((int) 0).setCellValue("" + it?.usuario)
-            row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
-            row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
-            row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
 
-            totalRetrasados += it?.retrasados
-            totalNoRecibidos += it?.no_recibidos
+        if(dptosHijos.size() > 0 && params.id != '11'){
+
+            XSSFRow rowHead4 = sheet.createRow((short) index);
+            rowHead4.setHeightInPoints(14)
+
+            Cell cell4 = rowHead4.createCell((int) 0)
+            cell4.setCellValue("" + Departamento.get(params.id).descripcion)
+            sheet.setColumnWidth(0, 13000)
 
             index++
-        }
 
-        XSSFRow row2 = sheet.createRow((short) index)
-        row2.createCell((int) 0).setCellValue("")
-        row2.createCell((int) 1).setCellValue("Total")
-        row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
-        row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+
+        XSSFRow rowHead2 = sheet.createRow((short) index);
+        rowHead2.setHeightInPoints(14)
+
+        Cell cell2 = rowHead2.createCell((int) 0)
+        cell2.setCellValue("Usuario")
+        sheet.setColumnWidth(0, 13000)
+
+        cell2 = rowHead2.createCell((int) 1)
+        cell2.setCellValue("Perfil")
+        sheet.setColumnWidth(1, 10000)
+
+        cell2 = rowHead2.createCell((int) 2)
+        cell2.setCellValue("Retrasados")
+        sheet.setColumnWidth(2, 3000)
+
+        cell2 = rowHead2.createCell((int) 3)
+        cell2.setCellValue("No Recibidos")
+        sheet.setColumnWidth(3, 3000)
+        index++
+
+            sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
+            cn2.eachRow(sqlGen.toString()) {
+                XSSFRow row3 = sheet.createRow((short) index)
+                row3.createCell((int) 0).setCellValue("" + it?.usuario)
+                row3.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
+                row3.createCell((int) 2).setCellValue(" " + it?.retrasados)
+                row3.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+
+                totalRetrasados += it?.retrasados
+                totalNoRecibidos += it?.no_recibidos
+
+                index++
+            }
+
+            XSSFRow row3 = sheet.createRow((short) index)
+            row3.createCell((int) 0).setCellValue("")
+            row3.createCell((int) 1).setCellValue("Total")
+            row3.createCell((int) 2).setCellValue(" " + totalRetrasados)
+            row3.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+
+            index++
+
+            dptosHijos.each{hij->
+
+
+                totalRetrasados = 0
+                totalNoRecibidos = 0
+
+
+
+                XSSFRow rowHead5 = sheet.createRow((short) index);
+                rowHead5.setHeightInPoints(14)
+
+                Cell cell5 = rowHead5.createCell((int) 0)
+                cell5.setCellValue("" + Departamento.get(hij).descripcion)
+                sheet.setColumnWidth(0, 13000)
+
+                index++
+
+
+                XSSFRow rowHead = sheet.createRow((short) index);
+                rowHead.setHeightInPoints(14)
+
+                Cell cell = rowHead.createCell((int) 0)
+                cell.setCellValue("Usuario")
+                sheet.setColumnWidth(0, 13000)
+
+                cell = rowHead.createCell((int) 1)
+                cell.setCellValue("Perfil")
+                sheet.setColumnWidth(1, 10000)
+
+                cell = rowHead.createCell((int) 2)
+                cell.setCellValue("Retrasados")
+                sheet.setColumnWidth(2, 3000)
+
+                cell = rowHead.createCell((int) 3)
+                cell.setCellValue("No Recibidos")
+                sheet.setColumnWidth(3, 3000)
+                index++
+
+
+                sqlGen = "select * from retrasados("+ hij +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
+                cn2.eachRow(sqlGen.toString()) {
+                    XSSFRow row2 = sheet.createRow((short) index)
+                    row2.createCell((int) 0).setCellValue("" + it?.usuario)
+                    row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
+                    row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
+                    row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+
+                    totalRetrasados += it?.retrasados
+                    totalNoRecibidos += it?.no_recibidos
+
+                    index++
+                }
+
+                XSSFRow row2 = sheet.createRow((short) index)
+                row2.createCell((int) 0).setCellValue("")
+                row2.createCell((int) 1).setCellValue("Total")
+                row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
+                row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+                index++
+            }
+        }else{
+
+            XSSFRow rowHead5 = sheet.createRow((short) index);
+            rowHead5.setHeightInPoints(14)
+
+            Cell cell5 = rowHead5.createCell((int) 0)
+            cell5.setCellValue("" + Departamento.get(params.id).descripcion)
+            sheet.setColumnWidth(0, 13000)
+
+            index++
+
+            XSSFRow rowHead3 = sheet.createRow((short) index);
+            rowHead3.setHeightInPoints(14)
+
+            Cell cell3 = rowHead3.createCell((int) 0)
+            cell3.setCellValue("Usuario")
+            sheet.setColumnWidth(0, 13000)
+
+            cell3 = rowHead3.createCell((int) 1)
+            cell3.setCellValue("Perfil")
+            sheet.setColumnWidth(1, 10000)
+
+            cell3 = rowHead3.createCell((int) 2)
+            cell3.setCellValue("Retrasados")
+            sheet.setColumnWidth(2, 3000)
+
+            cell3 = rowHead3.createCell((int) 3)
+            cell3.setCellValue("No Recibidos")
+            sheet.setColumnWidth(3, 3000)
+            index++
+
+
+            sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
+            cn2.eachRow(sqlGen.toString()) {
+                XSSFRow row2 = sheet.createRow((short) index)
+                row2.createCell((int) 0).setCellValue("" + it?.usuario)
+                row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
+                row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
+                row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+
+                totalRetrasados += it?.retrasados
+                totalNoRecibidos += it?.no_recibidos
+
+                index++
+            }
+
+            XSSFRow row2 = sheet.createRow((short) index)
+            row2.createCell((int) 0).setCellValue("")
+            row2.createCell((int) 1).setCellValue("Total")
+            row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
+            row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+            index++
+
+        }
 
 
         XSSFRow row = sheet.createRow((short) index + 2)
-//        row.createCell((int) 0).setCellValue("GRAN TOTAL ${title2}")
-//        row.createCell((int) 2).setCellValue(granTotal)
+
         FileOutputStream fileOut = new FileOutputStream(filename);
         wb.write(fileOut);
         fileOut.close();

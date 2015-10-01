@@ -154,6 +154,18 @@ class ReportesTramitesRetrasadosService {
 //        return resGraph
 //    }
 
+
+    def buscarHijos (padre) {
+
+
+        def dptoPadre = Departamento.get(padre)
+        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
+
+        return [hijos: dptosHijos]
+
+    }
+
+
     def datos(depId) {
         return datos(depId, null)
     }

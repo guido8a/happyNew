@@ -1997,21 +1997,19 @@ class RetrasadosController extends Shield {
         def fileName = "documentos_retrasados_"
         def title = "Documentos retrasados de "
         def title2 = "Documentos retrasados por "
+
         def pers = Persona.get(params.id.toLong())
         if (params.tipo == "prsn") {
-
             def dpto = Departamento.get(params.dpto)
             if (!dpto) {
                 dpto = pers.departamento
             }
             fileName += pers.login + "_" + dpto.codigo
             title += "${pers.nombre} ${pers.apellido}\nen el departamento ${dpto.descripcion}\nentre el ${params.desde} y el ${params.hasta}"
-            title2 += "el usuario ${pers.nombre} ${pers.apellido} (${pers.login}) en el departamento ${dpto.descripcion} entre el ${params.desde} y el ${params.hasta}"
         } else {
             def dep = Departamento.get(params.id.toLong())
             fileName += dep.codigo
-            title += "${dep.descripcion}\nde ${params.desde} a ${params.hasta}"
-            title2 += "los usuarios del departamento ${dep.descripcion} (${dep.codigo}) entre ${params.desde} y ${params.hasta}"
+            title += "${dep.descripcion}"
         }
 
         def baos = new ByteArrayOutputStream()
@@ -2040,33 +2038,122 @@ class RetrasadosController extends Shield {
 //        desde = desde.format("yyyy/MM/dd")
 //        hasta = hasta.format("yyyy/MM/dd")
 
-        def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
+        def dptoPadre = Departamento.get(params.id)
+        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
 
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+        def tablaTotalesRecibidos
+        def tablaTitulo
 
-        sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
-        cn2.eachRow(sqlGen.toString()){
+        tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
 
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
 
-            totalRecibido += it?.no_recibidos
-            totalRetrasado += it?.retrasados
+        if(dptosHijos.size() > 0 && params.id != '11'){
 
-            totalResumenGenerado += 1
+            //PADRE
+
+            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,10)
+            tablaTitulo = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+
+            reportesPdfService.addCellTabla(tablaTitulo, new Paragraph(Departamento.get(params.id).descripcion, fontBold), prmsHeaderHoja)
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+
+            sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
+            cn2.eachRow(sqlGen.toString()){
+
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+
+                totalRecibido += it?.no_recibidos
+                totalRetrasado += it?.retrasados
+
+                totalResumenGenerado += 1
+            }
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+
+            document.add(tablaTitulo)
+            document.add(tablaTotalesRecibidos)
+
+            //HIJOS
+            dptosHijos.each { hij->
+
+                totalResumenGenerado = 0
+                totalRecibido = 0
+                totalRetrasado = 0
+
+                tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,10)
+                tablaTitulo = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+
+                reportesPdfService.addCellTabla(tablaTitulo, new Paragraph(Departamento.get(hij).descripcion, fontBold), prmsHeaderHoja)
+
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+
+                sqlGen = "select * from retrasados("+ hij +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
+                cn2.eachRow(sqlGen.toString()){
+
+                    reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
+                    reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
+                    reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
+                    reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+
+                    totalRecibido += it?.no_recibidos
+                    totalRetrasado += it?.retrasados
+
+                    totalResumenGenerado += 1
+                }
+
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+
+                document.add(tablaTitulo)
+                document.add(tablaTotalesRecibidos)
+            }
+
+        }else{
+
+            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+
+            sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
+            cn2.eachRow(sqlGen.toString()){
+
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+
+                totalRecibido += it?.no_recibidos
+                totalRetrasado += it?.retrasados
+
+                totalResumenGenerado += 1
+            }
+
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+
+            document.add(tablaTotalesRecibidos)
+
         }
-
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
-
-        document.add(tablaTotalesRecibidos)
 
         document.close();
         pdfw.close()

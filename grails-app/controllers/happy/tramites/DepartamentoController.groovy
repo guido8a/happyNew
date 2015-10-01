@@ -1,5 +1,6 @@
 package happy.tramites
 
+import grails.converters.JSON
 import groovy.json.JsonBuilder
 import happy.seguridad.Persona
 import org.apache.commons.lang.WordUtils
@@ -788,5 +789,27 @@ class DepartamentoController extends happy.seguridad.Shield {
             return
         }
     }
+
+    def buscarHijos () {
+        println("params " + params)
+
+        def dptoPadre = Departamento.get(params.id)
+        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
+
+        println("hijos " + dptosHijos)
+
+//        if(dptosHijos.size() > 0){
+//            render "ok*" + dptosHijos
+//        }else{
+//            render "no"
+//        }
+
+        return dptosHijos
+
+//        return [hijos: dptosHijos]
+
+    }
+
+
 
 }
