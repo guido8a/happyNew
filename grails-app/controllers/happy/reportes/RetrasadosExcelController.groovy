@@ -338,14 +338,16 @@ class RetrasadosExcelController extends Shield {
 //                        totalSin += 1
 //                        num++
                 }else {
-                    if(it.trmtfclr < ahora) {
-                        sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
-                        cn2.eachRow(sqlEntre) { d ->
-                            entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                    if(it.trmtfclr){
+                        if(it.trmtfclr < ahora) {
+                            sqlEntre = "select * from tmpo_entre('${it?.trmtfclr}' , cast('${fechaRececion.toString()}' as timestamp without time zone))"
+                            cn2.eachRow(sqlEntre) { d ->
+                                entre = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
+                            }
+                            llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
+                            totalRetrasados += 1
+                            num++
                         }
-                        llenaTablaRetrasados(sheet, num, it, entre.toString(), tipo)
-                        totalRetrasados += 1
-                        num++
                     }
                 }
             }
