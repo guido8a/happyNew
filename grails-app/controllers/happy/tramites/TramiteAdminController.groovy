@@ -47,7 +47,8 @@ class TramiteAdminController /*extends Shield*/ {
             contador = 0
             data = [:]
             data.persona = pr
-            data.tieneTrmt = 'N'
+            data.tieneTrmt = 0
+            data.bandejaSalida = 0
 /*
             def tramites = PersonaDocumentoTramite.withCriteria {
                 eq("persona", pr)
@@ -69,11 +70,14 @@ class TramiteAdminController /*extends Shield*/ {
                 data.tieneTrmt = 'S'
             }
 */
-            def sql = "SELECT * FROM entrada_prsn($pr.id)"
+            def sql = "SELECT count(*) cuenta FROM entrada_prsn($pr.id)"
             def cn = dbConnectionService.getConnection()
-            if(cn.rows(sql.toString()).size() > 0) {
-                data.tieneTrmt = 'S'
-            }
+            data.tieneTrmt = cn.firstRow(sql.toString()).cuenta
+
+            sql = "select count(*) cuenta FROM (select * from salida_prsn($pr.id) except select * from salida_dpto($pr.id)) as salida"
+            data.bandejaSalida = cn.firstRow(sql.toString()).cuenta
+//            println "data: ${data.tieneTrmt} y ${data.bandejaSalida}"
+
             resultado.add(data)
         }
         return [personas: resultado]
@@ -636,14 +640,9 @@ class TramiteAdminController /*extends Shield*/ {
             }
         }
 
-        /** mostrar bandeja de salida **/
+        /** mostrar bandeja de salida personal **/
 //        println "... es triángulo: ${persona.esTriangulo()}, id: ${persona.id}"
-        def salida
-        if(persona.esTriangulo()) {
-            salida = cn.rows("select * from salida_dpto(${persona.id})".toString())
-        } else {
-            salida = cn.rows("select * from salida_prsn(${persona.id})".toString())
-        }
+        def salida = cn.rows("select * from salida_prsn(${persona.id}) except select * from salida_dpto(${persona.id})".toString())
 
         return [persona: persona, rows: rows, personas: personas, dep: dep, filtradas: filtradas, salida: salida]
     }

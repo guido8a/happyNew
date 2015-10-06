@@ -40,12 +40,8 @@
                     </g:if>
 --}%
                     %{--"${personas.tieneTrmt[0]}"--}%
-                    <g:if test="${per.tieneTrmt[0] == 'S'}">
-                        Si Tiene trámites
-                    </g:if>
-                    <g:else>
-                        No tiene trámites
-                    </g:else>
+                    Bandeja de entrada: ${per.tieneTrmt} trámites<br/>
+                    Bandeja de salida:  ${per.bandejaSalida} trámites<br/>
                 </td>
             </tr>
         </g:each>
