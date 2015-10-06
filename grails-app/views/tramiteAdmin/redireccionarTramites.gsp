@@ -152,6 +152,99 @@
             </tbody>
         </table>
 
+    <h3>Trámites en la bandeja de salida</h3>
+    <div id="" style=";height: 500px;overflow: auto;position: relative">
+
+        <div id="bandeja">
+
+            <table class="table table-bordered  table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th class="cabecera sortable ${params.sort == 'trmtcdgo' ? (params.order + ' sorted') : ''}" data-sort="trmtcdgo" data-order="${params.order}">Documento</th>
+                    <th>De</th>
+                    <th class="cabecera sortable ${params.sort == 'trmtfccr' ? (params.order + ' sorted') : ''}" data-sort="trmtfccr" data-order="${params.order}">Fec. Creación</th>
+                    <th class="cabecera sortable ${params.sort == 'prtrdpto' ? (params.order + ' sorted') : ''}" data-sort="prtrdpto" data-order="${params.order}">Para</th>
+                    <th>Destinatario</th>
+                    <th class="cabecera sortable ${params.sort == 'trmttppd' ? (params.order + ' sorted') : ''}" data-sort="trmttppd" data-order="${params.order}">Prioridad</th>
+                    <th class="cabecera sortable ${params.sort == 'trmtfcen' ? (params.order + ' sorted') : ''}" data-sort="trmtfcen" data-order="${params.order}">Fecha Envío</th>
+                    <th class="cabecera sortable ${params.sort == 'trmtfcbq' ? (params.order + ' sorted') : ''}" data-sort="trmtfcbq" data-order="${params.order}">F. Límite Recepción</th>
+                    <th class="cabecera sortable ${params.sort == 'edtrdscr' ? (params.order + ' sorted') : ''}" data-sort="edtrdscr" data-order="${params.order}">Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <g:each in="${salida}" var="slda">
+                        <tr>
+                            <td title="${slda.trmtasnt}" style="width: 145px;">
+                                <g:if test="${slda.tptrcdgo == 'C'}">
+                                    <i class="fa fa-eye-slash" style="margin-left: 10px"></i>
+                                </g:if>
+                                <g:if test="${slda.trmtdctr > 0}">
+                                    <i class="fa fa-paperclip"></i>
+                                </g:if>
+                                ${slda.trmtcdgo}
+                            </td>
+                            <td>
+                                ${slda.deprdscr} (${slda.deprdpto})
+                            </td>
+                            <td style="width: 115px;">
+                                ${slda.trmtfccr.format("dd-MM-yyyy HH:mm")}
+                            </td>
+                            <td>
+                                <g:if test="${slda.tpdccdgo == 'OFI'}">
+                                    EXT
+                                </g:if>
+                                <g:else>
+                                    ${slda.prtrdpto}
+                                </g:else>
+                            </td>
+                            <td class="titleEspecial"
+                                title="<div style='max-height:150px; overflow-y:auto;'>${slda.paratitl}</div>">%{--el title con los destinatarios y si recibieron o no--}%
+                                <span class="para">
+                                    <g:if test="${slda.prtrprsn}">%{--para persona (squi guarda la persona, interna o externa)--}%
+                                        ${slda.prtrprsn}
+                                    </g:if>
+                                    <g:else>
+                                        <g:set var="triangulos" value="${slda.paradpto.split(',')}"/>
+                                        <g:each in="${triangulos}" var="t" status="i">%{--para dpto--}%
+                                            <i class="fa fa-download"></i>
+                                            ${t}${i < triangulos.size() - 1 ? ', ' : ''}
+                                        </g:each>
+                                    </g:else>
+                                </span>
+                                <span class="copias">
+                                    ${slda.copidpto.replaceAll('cc: *', '[CC] ')}${slda.copidpto && slda.copidpto != "" && slda.copiprsn && slda.copiprsn != "" ? ', ' : ''}
+                                    ${slda.copiprsn.replaceAll('cc: *', '[CC] ')}
+                                </span>
+
+                                <g:if test="${!((slda.prtrprsn && slda.prtrprsn != '') ||
+                                        (slda.paradpto && slda.paradpto != '') ||
+                                        (slda.copidpto && slda.copidpto != '') ||
+                                        (slda.copiprsn && slda.copiprsn != ''))}">
+                                    <span class="label label-danger" style="margin-top: 3px;">
+                                        <i class="fa fa-warning"></i> Sin destinatario ni copias
+                                    </span>
+                                </g:if>
+                            </td>
+                            <td>
+                                ${slda.trmttppd}
+                            </td>
+                            <td style="width: 115px;">
+                                ${slda.trmtfcen?.format('dd-MM-yyyy HH:mm')}
+                            </td>
+                            <td style="width: 115px;">
+                                ${slda.trmtfcbq?.format('dd-MM-yyyy HH:mm')}
+                            </td>
+                            <td>
+                                ${slda.edtrdscr}
+                            </td>
+                        </tr>
+                    </g:each>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
         <script type="text/javascript">
             $(function () {
                 $(".btn-move").click(function () {

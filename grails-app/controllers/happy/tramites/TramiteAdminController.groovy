@@ -15,6 +15,7 @@ class TramiteAdminController /*extends Shield*/ {
     }
 
     def buscarPersonasRedireccionar() {
+//        println "buscarPersonasRedireccionar ... $params"
         def nombre = params.nombre.trim() != "" ? params.nombre.trim() : null
         def apellido = params.apellido.trim() != "" ? params.apellido.trim() : null
         def user = params.user.trim() != "" ? params.user.trim() : null
@@ -28,6 +29,7 @@ class TramiteAdminController /*extends Shield*/ {
         def data = [:]
         def personas
         def contador = 0
+//        println "inicia busqueda de personas..."
         personas = Persona.withCriteria {
             if (nombre) {
                 ilike("nombre", "%" + nombre + "%")
@@ -40,12 +42,13 @@ class TramiteAdminController /*extends Shield*/ {
             }
             maxResults(10)
         }
-
+//        println "fin busqueda de personas..."
         personas.each { pr ->
             contador = 0
             data = [:]
             data.persona = pr
             data.tieneTrmt = 'N'
+/*
             def tramites = PersonaDocumentoTramite.withCriteria {
                 eq("persona", pr)
                 inList("rolPersonaTramite", [rolPara, rolCopia])
@@ -53,6 +56,7 @@ class TramiteAdminController /*extends Shield*/ {
                 inList("estado", [enviado, recibido])
             }
 
+            println "procesa trámites.."
             tramites.each { tr ->
                 if (!(tr.tramite.tipoDocumento.codigo == "OFI")) {
                     band = tramitesService.verificaHijos(tr, anulado)
@@ -62,6 +66,12 @@ class TramiteAdminController /*extends Shield*/ {
                 }
             }
             if (contador) {
+                data.tieneTrmt = 'S'
+            }
+*/
+            def sql = "SELECT * FROM entrada_prsn($pr.id)"
+            def cn = dbConnectionService.getConnection()
+            if(cn.rows(sql.toString()).size() > 0) {
                 data.tieneTrmt = 'S'
             }
             resultado.add(data)
@@ -626,7 +636,16 @@ class TramiteAdminController /*extends Shield*/ {
             }
         }
 
-        return [persona: persona, rows: rows, personas: personas, dep: dep, filtradas: filtradas]
+        /** mostrar bandeja de salida **/
+//        println "... es triángulo: ${persona.esTriangulo()}, id: ${persona.id}"
+        def salida
+        if(persona.esTriangulo()) {
+            salida = cn.rows("select * from salida_dpto(${persona.id})".toString())
+        } else {
+            salida = cn.rows("select * from salida_prsn(${persona.id})".toString())
+        }
+
+        return [persona: persona, rows: rows, personas: personas, dep: dep, filtradas: filtradas, salida: salida]
     }
 
     def redireccionarTramites_old() {
