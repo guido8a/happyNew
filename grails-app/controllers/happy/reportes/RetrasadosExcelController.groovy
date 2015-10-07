@@ -1403,6 +1403,8 @@ class RetrasadosExcelController extends Shield {
 
         def totalRetrasados = 0
         def totalNoRecibidos = 0
+        def totalRetDpto = 0
+        def totalRecDpto = 0
 
 
 
@@ -1446,8 +1448,17 @@ class RetrasadosExcelController extends Shield {
                 row3.createCell((int) 2).setCellValue(" " + it?.retrasados)
                 row3.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
 
-                totalRetrasados += it?.retrasados
-                totalNoRecibidos += it?.no_recibidos
+//                totalRetrasados += it?.retrasados
+//                totalNoRecibidos += it?.no_recibidos
+
+                if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                    totalRetDpto = it?.retrasados
+                    totalRecDpto = it?.no_recibidos
+
+                }else{
+                    totalRetrasados += it?.retrasados
+                    totalNoRecibidos += it?.no_recibidos
+                }
 
                 index++
             }
@@ -1455,8 +1466,8 @@ class RetrasadosExcelController extends Shield {
             XSSFRow row3 = sheet.createRow((short) index)
             row3.createCell((int) 0).setCellValue("")
             row3.createCell((int) 1).setCellValue("Total")
-            row3.createCell((int) 2).setCellValue(" " + totalRetrasados)
-            row3.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+            row3.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
+            row3.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
 
             index++
 
@@ -1465,6 +1476,8 @@ class RetrasadosExcelController extends Shield {
 
                 totalRetrasados = 0
                 totalNoRecibidos = 0
+                totalRetDpto = 0
+                totalRecDpto = 0
 
 
 
@@ -1507,8 +1520,17 @@ class RetrasadosExcelController extends Shield {
                     row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
                     row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
 
-                    totalRetrasados += it?.retrasados
-                    totalNoRecibidos += it?.no_recibidos
+//                    totalRetrasados += it?.retrasados
+//                    totalNoRecibidos += it?.no_recibidos
+
+                    if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                        totalRetDpto = it?.retrasados
+                        totalRecDpto = it?.no_recibidos
+
+                    }else{
+                        totalRetrasados += it?.retrasados
+                        totalNoRecibidos += it?.no_recibidos
+                    }
 
                     index++
                 }
@@ -1516,8 +1538,8 @@ class RetrasadosExcelController extends Shield {
                 XSSFRow row2 = sheet.createRow((short) index)
                 row2.createCell((int) 0).setCellValue("")
                 row2.createCell((int) 1).setCellValue("Total")
-                row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
-                row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+                row2.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
+                row2.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
                 index++
             }
         }else{
@@ -1559,9 +1581,17 @@ class RetrasadosExcelController extends Shield {
                 row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
                 row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
                 row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+//
+//                totalRetrasados += it?.retrasados
+//                totalNoRecibidos += it?.no_recibidos
 
-                totalRetrasados += it?.retrasados
-                totalNoRecibidos += it?.no_recibidos
+                if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                    totalRetDpto = it?.retrasados
+                    totalRecDpto = it?.no_recibidos
+                }else{
+                    totalRetrasados += it?.retrasados
+                    totalNoRecibidos += it?.no_recibidos
+                }
 
                 index++
             }
@@ -1569,8 +1599,8 @@ class RetrasadosExcelController extends Shield {
             XSSFRow row2 = sheet.createRow((short) index)
             row2.createCell((int) 0).setCellValue("")
             row2.createCell((int) 1).setCellValue("Total")
-            row2.createCell((int) 2).setCellValue(" " + totalRetrasados)
-            row2.createCell((int) 3).setCellValue("" + totalNoRecibidos)
+            row2.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
+            row2.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
             index++
 
         }

@@ -2043,6 +2043,8 @@ class RetrasadosController extends Shield {
 
         def tablaTotalesRecibidos
         def tablaTitulo
+        def totalRetDpto = 0
+        def totalRecDpto = 0
 
         tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
 
@@ -2069,16 +2071,24 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
 
-                totalRecibido += it?.no_recibidos
-                totalRetrasado += it?.retrasados
+
+                if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                    totalRetDpto = it?.retrasados
+                    totalRecDpto = it?.no_recibidos
+                }else{
+                    totalRetrasado += it?.retrasados
+                    totalRecibido += it?.no_recibidos
+                }
+
+
 
                 totalResumenGenerado += 1
             }
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
 
             document.add(tablaTitulo)
             document.add(tablaTotalesRecibidos)
@@ -2089,6 +2099,8 @@ class RetrasadosController extends Shield {
                 totalResumenGenerado = 0
                 totalRecibido = 0
                 totalRetrasado = 0
+                totalRetDpto = 0
+                totalRecDpto = 0
 
                 tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,10)
                 tablaTitulo = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
@@ -2108,16 +2120,26 @@ class RetrasadosController extends Shield {
                     reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                     reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
 
-                    totalRecibido += it?.no_recibidos
-                    totalRetrasado += it?.retrasados
+//                    totalRecibido += it?.no_recibidos
+//                    totalRetrasado += it?.retrasados
+
+
+                    if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                        totalRetDpto = it?.retrasados
+                        totalRecDpto = it?.no_recibidos
+                    }else{
+                        totalRetrasado += it?.retrasados
+                        totalRecibido += it?.no_recibidos
+                    }
+
 
                     totalResumenGenerado += 1
                 }
 
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
-                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
-                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
 
                 document.add(tablaTitulo)
                 document.add(tablaTotalesRecibidos)
@@ -2139,17 +2161,26 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+//
+//                totalRecibido += it?.no_recibidos
+//                totalRetrasado += it?.retrasados
 
-                totalRecibido += it?.no_recibidos
-                totalRetrasado += it?.retrasados
+                if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
+                    totalRetDpto = it?.retrasados
+                    totalRecDpto = it?.no_recibidos
+                }else{
+                    totalRetrasado += it?.retrasados
+                    totalRecibido += it?.no_recibidos
+                }
+
 
                 totalResumenGenerado += 1
             }
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" ", font), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRetrasado, fontBold), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + totalRecibido, fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
 
             document.add(tablaTotalesRecibidos)
 
