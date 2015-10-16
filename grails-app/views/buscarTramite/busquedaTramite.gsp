@@ -589,9 +589,9 @@
                 %{--console.log(paras, ${session.usuario.departamentoId}, paraMiDep, respuestas, recibido, ${session.usuario.getPuedePlazo()});--}%
 
                 /* cambiado el 01-07-2015 de la version anterior ^ */
-                if (recibido && parseInt(respuestas) == 0 && ${session.usuario.puedePlazo} && paraMiDep) {
-                    items.plazo = ampliarPlazo;
-                }
+                %{--if (recibido && parseInt(respuestas) == 0 && ${session.usuario.puedePlazo} && paraMiDep) {--}%
+                    %{--items.plazo = ampliarPlazo;--}%
+                %{--}--}%
 
                 <g:if test="${session.usuario.getPuedeCopiar()}">
                 if (esMio) {

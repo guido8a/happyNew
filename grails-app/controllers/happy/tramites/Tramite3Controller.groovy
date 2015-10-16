@@ -1572,11 +1572,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (pdt.tramite.esRespuestaNueva == "N") {
                 if (rel == "para") {
                     data += ',"icon":"fa fa-file-o text-warning"'
+//                    data += ',"prtr":"' + pdt.id + '"'
                 } else if (rel == "copia") {
                     data += ',"icon":"fa fa-files-o text-warning"'
+//                    data += ',"prtr":"' + pdt.id + '"'
                 }
             }
-            html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' >"
+            html += "<li id='${pdt.id}' class='${clase}' data-jstree='{\"type\":\"${rel}\"${data}}' data-prtr='{\"prtrId\":\"${pdt.id}\"}' >"
             if (pdt.fechaAnulacion) {
                 html += "<span class='text-muted'>"
             }
@@ -1837,6 +1839,51 @@ class Tramite3Controller extends happy.seguridad.Shield {
         tramites = tramites?.reverse()
 
         return [persona: persona, tramites: tramites]
+    }
+
+
+    def comprobar () {
+
+        def prtr  = PersonaDocumentoTramite.get(params.id).getRespuestasVivasEsrn()
+         def r
+        if(prtr){
+            r = true
+        }else{
+            r = false
+        }
+
+        render r
+    }
+
+    def comprobarRecibido () {
+
+
+        def prtr = PersonaDocumentoTramite.get(params.id)
+        def rol = EstadoTramite.findByCodigo("E004")
+        def rec = PersonaDocumentoTramite.findByIdAndEstadoAndFechaRecepcionIsNotNull(params.id, rol)
+        def dep
+        def depUsuario = session.usuario.departamento.codigo
+        def miDep
+
+        if(prtr.persona){
+            dep = PersonaDocumentoTramite.get(params.id).persona.departamento.codigo
+        }else{
+            dep = PersonaDocumentoTramite.get(params.id).departamento.codigo
+        }
+
+
+//        println("dep usuario" + depUsuario)
+//        println("dep prtr" + dep)
+//        println("rec " + rec)
+
+        def r
+        if(rec && (depUsuario == dep)){
+            r = true
+        }else{
+            r = false
+        }
+
+        render r
     }
 
 }

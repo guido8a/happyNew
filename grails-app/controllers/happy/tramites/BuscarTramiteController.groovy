@@ -185,6 +185,23 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         return [tramite: tramite, jefe: jefe, personas: personas, dpto: dpto]
     }
 
+
+    def nuevoAmpliarPlazo_ajax() {
+
+        def jefe = Persona.get(session.usuario.id)
+        def dpto = jefe.departamento
+
+        def rolPara = RolPersonaTramite.findByCodigo("R001")
+        def rolCc = RolPersonaTramite.findByCodigo("R002")
+
+        def personas = PersonaDocumentoTramite.get(params.id)
+
+
+        return [jefe: jefe, pers: personas, dpto: dpto]
+
+    }
+
+
     def tablaBusquedaTramite() {
 //        def inicio = new Date()
         def persona = session.usuario.id
