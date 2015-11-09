@@ -106,8 +106,9 @@ table {
                     <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
                         <g:set var="externo" value="${externo} externoCC"/>
                     </g:if>
-
-                    <g:if test="${tramite.deId == session.usuario.id || tramite.deDepartamentoId == session.departamento.id}">
+                    %{--***"${tramite.deId}, SESS: ${session.usuario.id} deDpto: ${tramite.departamento.id} ss: ${session.departamento.id}, es tr: ${session.usuario.esTriangulo}"--}%
+                    %{---->${tramite.deId == session.usuario.id || (tramite.departamento.id == session.departamento.id && session.usuario.esTriangulo)}"--}%
+                    <g:if test="${tramite.deId == session.usuario.id || (tramite.departamento.id == session.departamento.id && session.usuario.esTriangulo)}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
