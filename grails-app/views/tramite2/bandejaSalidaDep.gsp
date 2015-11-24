@@ -9,7 +9,7 @@
 <%@ page import="happy.tramites.EstadoTramite; org.apache.commons.lang.WordUtils" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
-        <meta name="layout" content="main">
+        <meta name="layout" content="main2">
         <title>Bandeja de Salida Oficina</title>
 
         <style type="text/css">

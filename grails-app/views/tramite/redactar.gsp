@@ -57,7 +57,7 @@
 
         .nota .contenido {
             overflow   : auto;
-            max-height : 325px;
+            /*max-height : 325px;*/
         }
 
         .nota:after {
@@ -78,16 +78,17 @@
         }
 
         .nota.padre .contenido {
-            max-height : 285px;
+            /*height : 200px;*/
+            /*max-height : 285px;*/
         }
 
         .padre h4 {
-            font-size     : 16px;
+            font-size     : 15px;
             margin-top    : 0;
             margin-bottom : 5px;
             height        : 40px;
             overflow      : auto;
-            cursor        : move;
+            /*cursor        : move;*/
         }
 
         .btn-editar {
@@ -125,8 +126,8 @@
         </g:if>
         <g:if test="${tramite.padre}">
             <g:if test="${tramite.padre.personaPuedeLeer(session.usuario)}">
-                <div class="nota padre ui-corner-all" id="divInfo">
-                    <h4 style="height: 150px" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
+                <div class="nota padre ui-corner-all" id="divInfo" style="height: 200px;">
+                    <h4 style="height: 100%" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
 
                     <div class="contenido" id="divInfoContenido">
                         %{--<g:each in="${0..15}" var="i">--}%
@@ -356,8 +357,8 @@
 
                 $("#divInfo").resizable({
                     maxWidth  : 450,
-                    maxHeight : 560,
-                    minWidth  : 290,
+                    maxHeight : 500,
+                    minWidth  : 200,
                     minHeight : 100,
                     resize    : function (event, ui) {
                         var $div = ui.element;
@@ -392,9 +393,10 @@
 
                      console.log(masW + "+" + alsoW + "=" + newW, masH + "+" + alsoH + "=" + newH);
                      }*/
-                }).draggable({
-                    handle : ".text-info"
                 });
+                /*.draggable({
+                    handle : ".text-info"
+                });*/
 
                 $("#btnInfoPara").click(function () {
                     var para = $("#para").val();
