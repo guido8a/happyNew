@@ -3,9 +3,9 @@ package happy.utilitarios
 import groovy.time.TimeCategory
 
 
-
 class DiasLaborablesService {
     def dbConnectionService
+    static transactional = false
 
     def getParametros() {
         def parametros = Parametros.list()

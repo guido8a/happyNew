@@ -4,7 +4,7 @@ class BuscadorService {
 
     def dbConnectionService
 
-    boolean transactional = true
+    static transactional = false
     def numFilas
 
     HashMap toMap(dominio) {

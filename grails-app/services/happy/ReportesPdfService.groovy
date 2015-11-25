@@ -14,6 +14,8 @@ import org.springframework.web.context.request.RequestContextHolder
 
 class ReportesPdfService {
 
+    static transactional = false
+
     Font fontTituloGad = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
     Font fontSubtituloGad = new Font(Font.TIMES_ROMAN, 11, Font.BOLD)
     Font fontInfo = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)

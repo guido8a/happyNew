@@ -5,9 +5,10 @@ import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
 
-@Transactional
+//@Transactional
 class TramitesService {
 
+    static transactional = false
     /**
      <fecha> - <accion> - solicitado por técnico <solicitadoPor> <texto> observaciones: <observaciones> ||
      */

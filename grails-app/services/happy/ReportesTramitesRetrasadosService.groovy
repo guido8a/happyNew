@@ -8,6 +8,7 @@ import happy.tramites.Departamento
 class ReportesTramitesRetrasadosService {
 
     def dbConnectionService
+    static transactional = false
 
     def departamentosPuedeVer(depId) {
         def depStr = ""

@@ -6,7 +6,7 @@ class MigracionService {
 
     def dbConnectionService
     def grailsApplication
-
+    static transactional = false
 
     def arreglaDominios(dominio) {
         def dom = grailsApplication.getDomainClass(dominio)

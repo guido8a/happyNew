@@ -1748,22 +1748,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def saveDep() {
-//        println("params saveDep" + params)
-        //** si va o viene de un departamento externo el trámite se marca como externo trmtextr = 1 **//
-
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
-
-//        println("asunto " + params.tramite.asunto)
-
-//        def nombre = rubro.nombre.decodeHTML()
-//
-//        nombre = nombre.replaceAll(/</, /&lt;/)
-//        nombre = nombre.replaceAll(/>/, /&gt;/)
-//        def respv = aQuienEstaContestando.respuestasVivasEsrn
-
-        //CC en el texto
 
         def ccLista = []
         if (params.tramite.hiddenCC) {
@@ -1791,7 +1778,6 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
         def aqc
-        def paramsOrigen = params.remove("origen")
         def paramsTramite = params.remove("tramite")
 
         if (paramsTramite.aQuienContesta.id) {
@@ -1898,6 +1884,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
         if (paramsTramite.id) {
             paramsTramite.fechaModificacion = new Date()
         } else {
+//            println "-------- pone  numero al tramite"
+
+//            def pruebasInicio = new Date()
+//            def pruebasFin
+
+
             paramsTramite.fechaCreacion = new Date()
             paramsTramite.anio = Anio.findByNumero(paramsTramite.fechaCreacion.format("yyyy"))
             def num = 1
@@ -1922,6 +1914,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
             paramsTramite.numero = num
             paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
+
+//            pruebasFin = new Date()
+//            println "tiempo ejecución actualizar número tramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
+
         }
         def tramite
         def error = false

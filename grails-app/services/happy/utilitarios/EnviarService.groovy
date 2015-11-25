@@ -19,6 +19,7 @@ import happy.ElementosTagLib
 
 class EnviarService {
 
+    static transactional = false
     /**
      *  tramite         : el tramite del cual se va a crear el pdf
      *  usuario         : el session.usuario

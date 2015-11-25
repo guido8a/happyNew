@@ -12,19 +12,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def dbConnectionService
 
     def save() {
-//        println "save params tramite3: " + params
-        /*
-          tramite.asunto:sdfg sdfg sdf g,
-          tramite:[
-                    padre.id:535,
-                    padre:[id:535],
-                    id:536,
-                    hiddenCC:, aQuienContesta.id:, aQuienContesta:[id:], esRespuesta:0, tramitePrincipal:0, para:5517, prioridad.id:3, prioridad:[id:3], asunto:sdfg sdfg sdf g, numeroDocExterno:, telefono:, contacto:], tramite.id:536, tramite.padre.id:535, tramite.prioridad.id:3, tramite.telefono:, tramite.contacto:, tramite.aQuienContesta.id:, tramite.tramitePrincipal:0, tramite.numeroDocExterno:, tramite.hiddenCC:, tramite.esRespuesta:0, paraExt:, tramite.para:5517, action:save, format:null, controller:tramite3]
-         */
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
-
 
         def ccLista = []
         if (params.tramite.hiddenCC) {
@@ -38,42 +28,24 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
         }
 
-//        println("a quien conteta id: " + PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id))
-
         if (params.tramite.esRespuestaNueva == 'S' && params.tramite.aQuienContesta.id) {
             def aa = PersonaDocumentoTramite.get(params.tramite.aQuienContesta.id)
             if (aa?.estado?.codigo == 'E003' || aa?.estado?.codigo == 'E005' || aa?.estado?.codigo == 'E006') {
 //                println "AQUI: " + aa?.estado?.codigo + "  " + aa?.estado?.descripcion
                 flash.tipo = "error"
                 flash.message = "Ha ocurrido un error al grabar el tramite"
-                redirect(controller: 'tramite', action: "bandejaEntrada")
+                redirect(controller: 'tramite', action: "bandejaEntrada")    //si es personal se va a tramite3  bandejaEntradaDpto
                 return
             }
         }
 
         def persona = Persona.get(session.usuario.id)
         def estadoTramiteBorrador = EstadoTramite.findByCodigo("E001");
-
-        def paramsOrigen = params.remove("origen")
+        //falta def adqc
         def paramsTramite = params.remove("tramite")
-//        println "aaa " + paramsTramite.aQuienContesta.id
 
         if (paramsTramite.padre.id) {
             def padre = Tramite.get(paramsTramite.padre.id)
-
-            //Verifico que no tenga otras contestaciones: 1 sola respuesta por tramite (18/02/2015)
-            def tramitesHijos
-            if (paramsTramite.id) {
-                tramitesHijos = Tramite.countByPadreAndIdNotEqual(padre, paramsTramite.id.toLong())
-            } else {
-                tramitesHijos = Tramite.countByPadre(padre)
-            }
-//            println "TRAMITE PADRE TIENE ${tramitesHijos} RESPUESTAS!!!!"
-
-
-            def hijos = Tramite.findAllByPadre(padre)
-//            println paramsTramite
-//            println "hijos " + hijos
 
             if (paramsTramite.aQuienContesta.id) {
                 def aQuienEstaContestando = PersonaDocumentoTramite.get(paramsTramite.aQuienContesta.id)
@@ -173,11 +145,16 @@ class Tramite3Controller extends happy.seguridad.Shield {
             paramsTramite.fechaCreacion = new Date()
             paramsTramite.anio = Anio.findByNumero(paramsTramite.fechaCreacion.format("yyyy"))
             def num = 1
+
+            /*---------------------------------------*/
+//            def pruebasInicio = new Date()
+//            def pruebasFin
+
+
             Numero objNum
             def numero = Numero.withCriteria {
                 eq("departamento", persona.departamento)
                 eq("tipoDocumento", TipoDocumento.get(paramsTramite.tipoDocumento.id))
-                order("valor", "desc")
             }
             if (numero.size() == 0) {
                 objNum = new Numero([
@@ -189,21 +166,25 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 num = objNum.valor + 1
             }
             objNum.valor = num
+
             if (!objNum.save(flush: true)) {
                 println "Error al crear Numero: " + objNum.errors
             }
             paramsTramite.numero = num
             paramsTramite.codigo = TipoDocumento.get(paramsTramite.tipoDocumento.id).codigo + "-" + num + "-" + persona.departamento.codigo + "-" + paramsTramite.anio.numero[2..3]
+
+//            pruebasFin = new Date()
+//            println "tiempo ejecución actualizar número tramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
+
         }
+
+
         def tramite
         def error = false
         def aqc
         if (paramsTramite.id) {
             tramite = Tramite.get(paramsTramite.id)
             aqc = tramite.aQuienContesta
-//            if (tramite.padre && tramite.padre.tipoTramite.codigo == "C") {
-//                tramite.tipoTramite = TipoTramite.findByCodigo("C")
-//            }
         } else {
             tramite = new Tramite()
             /*aqui validaciones de numero de hijos*/
