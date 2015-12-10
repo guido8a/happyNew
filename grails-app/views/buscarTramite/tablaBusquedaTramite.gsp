@@ -120,6 +120,10 @@ table {
 
                     <g:set var="respuestas" value="${tramite.respuestas.size()}"/>
 
+                    <g:if test="${tramite.fechaEnvio}">
+                        <g:set var="clase" value="${clase + ' enviado'}"/>
+                    </g:if>
+
                     <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase} ${externo}" anulados="${receptoresAnulados.size()}"
                         dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :

@@ -449,6 +449,7 @@ class DocumentosGeneradosController extends Shield{
 
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println "reporteDetalladoPdf: $sqlGen"
             cn2.eachRow(sqlGen.toString()){
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)

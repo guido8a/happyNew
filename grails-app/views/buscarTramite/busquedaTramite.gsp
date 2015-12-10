@@ -24,7 +24,6 @@
 
             text-align : center !important;
         }
-
         </style>
 
     </head>
@@ -232,6 +231,7 @@
                 var conPadre = $tr.hasClass("padre");
                 var esPrincipal = $tr.hasClass("principal");
                 var anulado = $tr.hasClass("estado");
+                var enviado = $tr.hasClass("enviado"); //enviado
 
                 var esMio = $tr.hasClass("mio");
 
@@ -593,11 +593,22 @@
                     %{--items.plazo = ampliarPlazo;--}%
                 %{--}--}%
 
+                if (enviado || recibido) {
+                    <g:if test="${session.usuario.getPuedeCopiar()}">
+                    if (esMio) {
+                        items.copia = copia;
+                    }
+                    </g:if>
+                }
+
+
+/*
                 <g:if test="${session.usuario.getPuedeCopiar()}">
                 if (esMio) {
                     items.copia = copia;
                 }
                 </g:if>
+*/
 
                 return items
             }

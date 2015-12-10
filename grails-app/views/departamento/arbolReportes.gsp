@@ -236,9 +236,11 @@
                             $("#btnPrint").unbind("click").click(function () {
                                 if ($("#formFechas").valid()) {
                                     if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                        location.href = "${g.createLink(controller: 'retrasados',action: 'reporteGeneradosArbol')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
+                                        location.href = "${g.createLink(controller: 'retrasados',action: 'reporteGeneradosArbol')}/" +
+                                        nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=dpto";
                                     } else {
-                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
+                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoPdf')}/" +
+                                        nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
                                     }
                                     $('#modalFechas').modal('hide');
                                 }
