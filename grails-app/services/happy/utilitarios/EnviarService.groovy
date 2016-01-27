@@ -105,9 +105,10 @@ class EnviarService {
         text = text.replaceAll("\\*gt\\*", "&gt;")
         text = text.replaceAll("\\*amp\\*", "&amp;")
         text = text.replaceAll("\\*nbsp\\*", " ")
+        text = text.replaceAll(/<tr>\s*<\/tr>/, / /)    //2 <tr> seguidos <tr>espacios</tr>
 
 //        println "\nTEXTO DESPUES AGAIN"
-//        println text
+//        println "text en enviarService: $text"
 
 //        println "html:" + tramite.texto.decodeHTML()
 //        println "\n\n" + text
@@ -254,9 +255,13 @@ class EnviarService {
 //        Document doc = builder.parse(file);
         ITextRenderer renderer = new ITextRenderer();
 //        renderer.setDocument(doc, null);
+//        println "------------ pasa renderer"
         renderer.setDocumentFromString(content);
+//        println "-----setDoc..."
         renderer.layout();
+//        println "crea layout pdf"
         renderer.createPDF(baos);
+//        println "creado pdf"
         byte[] b = baos.toByteArray();
 
 //        file.delete()

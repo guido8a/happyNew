@@ -1090,26 +1090,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def anulado = EstadoTramite.findByCodigo("E006")
             def noRecibe = [archivado, anulado]
 
-//            def persDocTrams = PersonaDocumentoTramite.withCriteria {
-//                eq("tramite", tramite)
-//                if (paraDpto) {
-//                    eq("departamento", paraDpto)
-//                } else if (paraPrsn) {
-//                    eq("persona", paraPrsn)
-//                }
-//            }
-//            def recibe = true
-//            persDocTrams.each { pdt ->
-//                if (noRecibe.contains(pdt.estado.codigo)) {
-//                    recibe = false
-//                }
-//            }
-//            if (!recibe) {
-//                render "ERROR_El trámite se encuentra anulado o archivado y no puede ser gestionado."
-//                return
-//            }
-
-            //ya no se usa
+            //ya no se usa    ** No debería haber ningún trámite con valores nulos apraPrsn y paraDpto a la vez
             def esCircular = false
             if (!paraPrsn && !paraDpto) {
                 esCircular = true
@@ -1159,16 +1140,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 render "ERROR_Este trámite no puede ser gestionado. Por favor actualice su bandeja"
                 return
             }
-//            println "prtr a recibir: ${pxt.size()}, $pxt"
-
-//        println "tramite: " + tramite
-//        println "paraDpto: " + paraDpto
-//        println "paraPrsn: " + paraPrsn
-//        println "rolPara: " + rolPara
-//        println "rolCC: " + rolCC
-//        println "rolImprimir: " + rolImprimir
-//            println "pxt 1 "+pxt.estado.codigo
-
 
             if (pxt.size() > 1) {
                 pxt.each {

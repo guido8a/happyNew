@@ -976,7 +976,9 @@ class PersonaController extends happy.seguridad.Shield {
                 def rolCopia = RolPersonaTramite.findByCodigo('R002');
                 def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites " +
+                        "where p.persona = ${params.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and " +
+                        "p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
                 def cantTramites = tramites.size()
                 println "cambioDpto_ajax: $tramites"
 
@@ -1043,8 +1045,15 @@ class PersonaController extends happy.seguridad.Shield {
             def rolCopia = RolPersonaTramite.findByCodigo('R002');
             def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-            def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p  inner join fetch p.tramite as tramites where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+            def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites " +
+                    "where p.persona=${params.id} and  p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and " +
+                    "p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
             def errores = "", ok = 0
+            /**
+             * a cada trámite si el usuario cambia de departamento se cambia PRTR eliminando la persona destinaria
+             * y haciendo que aparezca su dpto como destinatario
+             * todo: revisar para que el trámite quede tal cual y no cambie el destinatario.. ver si se afecta el arbol
+             */
             tramites.each { pr ->
                 if (pr.rolPersonaTramite.codigo == "I005") {
                     pr.delete(flush: true)

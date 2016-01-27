@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: luz
-  Date: 2/4/14
-  Time: 2:57 PM
---%>
-
-%{--<%@ page contentType="text/html;charset=UTF-8" %>--}%
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -15,6 +7,7 @@
         <script src="${resource(dir: 'js/plugins/ckeditor', file: 'ckeditor.js')}"></script>
         <script src="${resource(dir: 'js/plugins/ckeditor/adapters', file: 'jquery.js')}"></script>
         <style type="text/css">
+/*
         .row {
             margin-top : 2px;
         }
@@ -31,6 +24,7 @@
             line-height : 25px;
         }
 
+*/
         .hoja {
             /*background: #abcdef;*/
             margin : auto;
@@ -574,7 +568,9 @@
                         %{--}*/--}%
                         %{--},--}%
                         toolbar                 : [
-//                            [ /*'Source',*//*'ServerSave', *//*'NewPage', *//*'CreatePdf',*/ /*'-',*/ /*'Scayt'*/],
+//                            [ 'Source', 'ServerSave', *//*'NewPage', *//*'CreatePdf',*/ /*'-',*/ /*'Scayt'*/],
+//                            [ 'Source'],
+
                             ['Scayt', '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
                             ['Find', 'Replace', '-', 'SelectAll'],
                             ['Table', 'HorizontalRule', 'PageBreak'],

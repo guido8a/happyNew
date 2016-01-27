@@ -364,6 +364,7 @@ class ElementosTagLib {
                         strPara = tramite.paraExterno
                     }
                 }
+
                 if (tramite?.textoPara) {
                     html += (strPara + " - " + tramite?.textoPara)
                 } else {
@@ -396,7 +397,6 @@ class ElementosTagLib {
             } else {
                 if (tramite?.tipoDocumento?.codigo == 'OFI') {
                     html += "                    ${tramite.de.departamento.descripcion}"
-
                 } else {
                     //cambiado el 21-07-2015
 //                    html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
@@ -411,6 +411,15 @@ class ElementosTagLib {
             html += "                <div class=\"col-xs-1  negrilla negrilla-puntos\">"
             html += "                    Fecha:"
             html += "                </div>"
+
+            /** todo: posible edición del para -- nuevo campo en trmt y manejo de la "ciudad y fecha" */
+/*
+            def paraYFecha = util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
+            html += "<input type='text' name='nuevoPara' class='form-control' id='nuevoPara' maxlength='63'\n" +
+                    "style='width: 350px;display: inline' value='${paraYFecha}'/>"
+*/
+
+
             html += "                <div class=\"col-xs-10  col-buen-height\">"
             html += util.fechaConFormato(fecha: tramite.fechaCreacion, ciudad: "Quito")
             html += "                </div>"
