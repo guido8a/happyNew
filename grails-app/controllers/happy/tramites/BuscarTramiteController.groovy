@@ -244,10 +244,21 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                     gt('fechaCreacion', params.fechaIniR)
                     lt('fechaCreacion', params.fechaFinR)
                 }
+                if(params.doc){
+                    ilike('numeroDocExterno', '%' + params.doc + '%')
+                }
+                if(params.institucion){
+                    ilike('paraExterno', '%' + params.institucion + '%')
+                }
+                if(params.contacto){
+                    ilike('contacto', '%' + params.contacto + '%')
+                }
                 order('codigo')
             }
             maxResults(200)
         }
+
+
 //        println "registros....: ${res.size()}"
         def tramitesFiltrados = res.tramite.unique()
 //        println "registros.... filtrados: ${tramitesFiltrados.size()}"

@@ -24,13 +24,22 @@
 
             text-align : center !important;
         }
+
+        .esconder {
+            visibility: hidden;
+        }
+
+        .largo {
+            min-height: 160px !important;
+        }
+
         </style>
 
     </head>
 
     <body>
         %{--<h3>Búsqueda de Trámites</h3>--}%
-        <div style="margin-top: 0px;" class="vertical-container">
+        <div style="margin-top: 0px; min-height: 80px" class="vertical-container contenedor">
             <p class="css-vertical-text" style="margin-top: -10px;">Buscar</p>
 
             <div class="linea"></div>
@@ -38,36 +47,58 @@
             <div style="margin-bottom: 20px">
                 <div class="col-md-2">
                     <label>Documento</label>
-                    <g:textField name="memorando" value="" maxlength="20" class="form-control allCaps" style="width: 180px;margin-left: -20px"/>
+                    <g:textField name="memorando" value="" maxlength="20" class="form-control allCaps" style="width: 180px"/>
                 </div>
 
                 <div class="col-md-2">
                     <label>Asunto</label>
-                    <g:textField name="asunto" value="" style="width: 300px" maxlength="30" class="form-control"/>
+                    <g:textField name="asunto" value="" style="width: 280px" maxlength="30" class="form-control"/>
                 </div>
 
-                <div class="col-md-2" style="margin-left: 150px">
+                <div class="col-md-2" style="margin-left: 110px">
                     <label>Fecha Creación</label>
                     <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
                 </div>
 
-
-                <div class="col-md-2" style="margin-left: 15px">
+                <div class="col-md-2" style="margin-left: -25px">
                     <label>Fecha Envio</label>
                     <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
                 </div>
 
+                <div class="col-md-1">
+                    <label>Externo</label>
+                    <g:checkBox name="externo" class="combo" />
+                </div>
 
                 <div style="padding-top: 25px">
                     <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax"><i
                             class="fa fa-check-square-o"></i> Buscar</a>
-
                     <a href="#" name="borrar" class="btn btn-primary btnBorrar"><i
-                            class="fa fa-eraser"></i> Limpiar</a>
-
+                           class="fa fa-eraser"></i> Limpiar</a>
                 </div>
 
             </div>
+
+        <div class="divExternos esconder" >
+            <div class="col-md-1">
+                <label>Institución</label>
+            </div>
+            <div class="col-md-2">
+                <g:textField name="institucion" value="" style="width: 180px;" maxlength="30" class="form-control allCaps"/>
+            </div>
+            <div class="col-md-1">
+                <label>Documento Externo</label>
+            </div>
+            <div class="col-md-2">
+                <g:textField name="docExterno" value="" style="width: 180px" maxlength="30" class="form-control allCaps"/>
+            </div>
+            <div class="col-md-1">
+                <label>Contacto</label>
+            </div>
+            <div class="col-md-2">
+                <g:textField name="contacto" value="" style="width: 180px" maxlength="30" class="form-control allCaps"/>
+            </div>
+        </div>
 
         </div>
 
@@ -131,6 +162,17 @@
 
         <script type="text/javascript">
 
+            $(".combo").click(function () {
+                if($(this).prop('checked') ==  true){
+                    $(".contenedor").addClass('largo');
+                    $(".divExternos").removeClass('esconder')
+
+                }else{
+                    $(".contenedor").removeClass('largo');
+                    $(".divExternos").addClass('esconder')
+                }
+
+            });
 
             function loading(div) {
                 y = 0;
@@ -152,8 +194,21 @@
                 var asunto = $("#asunto").val();
                 var fecha = $("#fechaBusqueda_input").val();
                 var fechaRecepcion = $("#fechaRecepcion_input").val();
+                var institucion;
+                var doc;
+                var contacto;
+                var datos;
 
-                var datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion;
+                if($(".combo").prop('checked') ==  true){
+                    institucion = $("#institucion").val();
+                    doc = $("#docExterno").val();
+                    contacto = $("#contacto").val();
+
+                    datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion
+                    + "&institucion=" + institucion + "&doc=" + doc + "&contacto=" + contacto;
+                }else{
+                    datos = "memorando=" + memorando + "&asunto=" + asunto + "&fecha=" + fecha + "&fechaRecepcion=" + fechaRecepcion;
+                }
 
                 $.ajax({
                     type    : "POST",
@@ -618,7 +673,10 @@
                 $("#memorando").val("");
                 $("#asunto").val("");
                 $("#fechaRecepcion_input").val('');
-                $("#fechaBusqueda_input").val('')
+                $("#fechaBusqueda_input").val('');
+                $("#contacto").val('');
+                $("#docExterno").val('');
+                $("#institucion").val('');
 
             });
 
