@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modal-ingreso" tabindex="-1" role="dialog" aria-labelledby=""
+    <div class="modal fade" id="modal-ingreso" tabindex="-1" role="dialog" aria-labelledby=""
              aria-hidden="true">
             <div class="modal-dialog" id="modalBody" style="width: 380px;">
                 <div class="modal-content">

@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 14/03/14
-  Time: 11:18 AM
---%>
-
 <%@ page import="happy.seguridad.Persona; happy.tramites.Tramite" contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
@@ -30,7 +23,7 @@
         }
 
         .largo {
-            min-height: 160px !important;
+            min-height: 130px !important;
         }
 
         </style>
@@ -66,8 +59,8 @@
                 </div>
 
                 <div class="col-md-1">
-                    <label>Externo</label>
                     <g:checkBox name="externo" class="combo" />
+                    <label class="text-info">Buscar externos</label>
                 </div>
 
                 <div style="padding-top: 25px">
@@ -79,24 +72,24 @@
 
             </div>
 
-        <div class="divExternos esconder" >
+        <div class="divExternos esconder text-info" style="width: 96%" >
             <div class="col-md-1">
-                <label>Institución</label>
+                <label>Institución:</label>
             </div>
-            <div class="col-md-2">
-                <g:textField name="institucion" value="" style="width: 180px;" maxlength="30" class="form-control allCaps"/>
-            </div>
-            <div class="col-md-1">
-                <label>Documento Externo</label>
-            </div>
-            <div class="col-md-2">
-                <g:textField name="docExterno" value="" style="width: 180px" maxlength="30" class="form-control allCaps"/>
+            <div class="col-md-3" style="margin-left:-10Px">
+                <g:textField name="institucion" value="" maxlength="30" class="form-control allCaps"/>
             </div>
             <div class="col-md-1">
-                <label>Contacto</label>
+                <label>Documento Número:</label>
             </div>
-            <div class="col-md-2">
-                <g:textField name="contacto" value="" style="width: 180px" maxlength="30" class="form-control allCaps"/>
+            <div class="col-md-3" style="margin-left:-10Px">
+                <g:textField name="docExterno" value=""  maxlength="30" class="form-control allCaps"/>
+            </div>
+            <div class="col-md-1">
+                <label>Contacto:</label>
+            </div>
+            <div class="col-md-3" style="margin-left:-10Px">
+                <g:textField name="contacto" value="" maxlength="30" class="form-control allCaps"/>
             </div>
         </div>
 
@@ -140,6 +133,7 @@
 
 
         <script>
+/*
             $(function () {
                 var cellWidth = 150;
                 var celHegth = 25;
@@ -158,15 +152,16 @@
                 });
 
             });
+*/
         </script>
 
         <script type="text/javascript">
 
             $(".combo").click(function () {
+                $('.btnBorrar').click();
                 if($(this).prop('checked') ==  true){
                     $(".contenedor").addClass('largo');
                     $(".divExternos").removeClass('esconder')
-
                 }else{
                     $(".contenedor").removeClass('largo');
                     $(".divExternos").addClass('esconder')
@@ -669,7 +664,6 @@
             }
 
             $(".btnBorrar").click(function () {
-
                 $("#memorando").val("");
                 $("#asunto").val("");
                 $("#fechaRecepcion_input").val('');
@@ -680,6 +674,10 @@
 
             });
 
+            $( document ).ready(function() {
+                $('.btnBorrar').click();
+                $('#externo').attr('checked', false);
+            });
 
         </script>
 
