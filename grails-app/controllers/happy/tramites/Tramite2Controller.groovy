@@ -1623,7 +1623,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        pruebasFin = new Date()
 //        println "tiempo 2 ejecución crearTramite: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
-        def sql = "SELECT id, dscr as label, externo FROM trmt_para($session.usuario.id)"
+        def sql = "SELECT id, dscr as label, externo FROM trmt_para(${session.usuario.id}, ${session.perfil.id})"
         def cn = dbConnectionService.getConnection()
         todos = cn.rows(sql.toString())
 
