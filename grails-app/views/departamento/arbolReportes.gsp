@@ -191,13 +191,13 @@
                 %{--}--}%
                 %{--}--}%
 
-                label   : "Documentos retrasados",
-                icon    : "fa fa-globe",
-                submenu : {
-                    pdf : {
-                        label   : "PDF",
-                        icon    : "fa fa-file-pdf-o",
-                        action : function () {
+                label: "Documentos retrasados",
+                icon: "fa fa-globe",
+                submenu: {
+                    pdf: {
+                        label: "PDF",
+                        icon: "fa fa-file-pdf-o",
+                        action: function () {
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
                                 location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosArbol')}/" + nodeId + "?tipo=dpto";
                             }
@@ -206,11 +206,10 @@
                             }
                         }
                     },
-                    xls : {
-                        label   : "EXCEL",
-                        icon   : "fa fa-file-excel-o",
-                        action : function () {
-
+                    xls: {
+                        label: "EXCEL",
+                        icon: "fa fa-file-excel-o",
+                        action: function () {
 
 
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
@@ -225,13 +224,13 @@
             };
 
             items.documentos = {
-                label   : "Documentos generados",
-                icon    : "fa fa-file-pdf-o",
-                submenu : {
-                    pdf : {
-                        label   : "PDF",
-                        icon    : "fa fa-file-pdf-o",
-                        action : function () {
+                label: "Documentos generados",
+                icon: "fa fa-file-pdf-o",
+                submenu: {
+                    pdf: {
+                        label: "PDF",
+                        icon: "fa fa-file-pdf-o",
+                        action: function () {
                             $('#modalFechas').modal('show');
                             $("#btnPrint").unbind("click").click(function () {
                                 if ($("#formFechas").valid()) {
@@ -287,23 +286,23 @@
                         %{--}--}%
                         %{--}--}%
                     },
-                    xls : {
-                        label   : "EXCEL",
-                        icon   : "fa fa-file-excel-o",
-                        action : function () {
-                                    $('#modalFechas').modal('show');
-                                    $("#btnPrint").unbind("click").click(function () {
-                                        if ($("#formFechas").valid()) {
+                    xls: {
+                        label: "EXCEL",
+                        icon: "fa fa-file-excel-o",
+                        action: function () {
+                            $('#modalFechas').modal('show');
+                            $("#btnPrint").unbind("click").click(function () {
+                                if ($("#formFechas").valid()) {
 //
-                            if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteGeneradosArbolExcel')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
-                            } else {
-                                location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
-                            }
+                                    if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                        location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteGeneradosArbolExcel')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                    } else {
+                                        location.href = "${g.createLink(controller: 'documentosGenerados',action: 'reporteDetalladoXlsx')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val() + "&tipo=prsn&dpto=" + parentId;
+                                    }
 
-                                          $('#modalFechas').modal('hide');
-                                        }
-                                    });
+                                    $('#modalFechas').modal('hide');
+                                }
+                            });
                         }
                         %{--submenu : {--}%
                         %{--detallado   : {--}%
@@ -348,13 +347,13 @@
 
             if (!nodeType.match("usuario") && !nodeType.match("jefe")) {
                 items.gestion = {
-                    label   : "Gestión de trámites",
-                    icon    : "fa fa-file-text",
-                    submenu : {
-                        pdf : {
-                            label  : "PDF",
-                            icon   : "fa fa-file-pdf-o",
-                            action : function () {
+                    label: "Gestión de trámites",
+                    icon: "fa fa-file-text",
+                    submenu: {
+                        pdf: {
+                            label: "PDF",
+                            icon: "fa fa-file-pdf-o",
+                            action: function () {
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -364,10 +363,10 @@
                                 });
                             }
                         },
-                        xls : {
-                            label  : "Excel",
-                            icon   : "fa fa-file-excel-o",
-                            action : function () {
+                        xls: {
+                            label: "Excel",
+                            icon: "fa fa-file-excel-o",
+                            action: function () {
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -380,6 +379,27 @@
                     }
                 };
             }
+
+            if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
+            items.salida = {
+                label: "Retrasados B. Salida",
+                icon: "fa fa-file-text",
+                submenu: {
+                    pdf: {
+                        label: "PDF",
+                        icon: "fa fa-file-pdf-o",
+                        action: function () {
+                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalida')}/" + nodeId + "?tipo=dpto";
+                            }
+                            else {
+                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalidaUsuario')}/" + nodeId + "?tipo=prsn&dpto=" + parentId;
+                            }
+                        }
+                    }
+                }
+            };
+        }
         }
 
         return items;

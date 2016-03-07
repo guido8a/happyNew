@@ -123,10 +123,8 @@
                 <div class="nota padre ui-corner-all" id="divInfo" style="height: 200px;">
                     <h4 style="height: 100%" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
 
-                    <div class="contenido" id="divInfoContenido">
-                        %{--<g:each in="${0..15}" var="i">--}%
+                    <div class="contenido" id="divInfoContenido" style="margin-top: -130px">
                         <util:renderHTML html="${tramite.padre.texto}"/>
-                        %{--</g:each>--}%
                     </div>
                 </div>
             </g:if>
@@ -361,12 +359,13 @@
                         var divW = ui.size.width;
 
                         var nw = divW - 20;
-                        var nh = divH - 60;
+                        var nh = divH - 10;
 
                         $also.css({
                             width     : nw,
-                            height    : nh,
+                            height    : nh-110,
                             maxHeight : nh
+
                         });
                     }/*,
                      stop    : function (event, ui) {
