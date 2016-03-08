@@ -382,7 +382,7 @@
 
             if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
             items.salida = {
-                label: "Retrasados B. Salida",
+                label: "Trámites B. de Salida",
                 icon: "fa fa-file-text",
                 submenu: {
                     pdf: {
@@ -390,7 +390,7 @@
                         icon: "fa fa-file-pdf-o",
                         action: function () {
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalida')}/" + nodeId + "?tipo=dpto";
+
                             }
                             else {
                                 location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalidaUsuario')}/" + nodeId + "?tipo=prsn&dpto=" + parentId;
