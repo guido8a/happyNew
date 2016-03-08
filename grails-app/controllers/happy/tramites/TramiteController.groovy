@@ -249,7 +249,7 @@ class TramiteController extends happy.seguridad.Shield {
     }
 
     def getParaNuevo_ajax() {
-        println "getParaNuevo_ajax $params, perfil${session.perfil.id}"
+//        println "getParaNuevo_ajax $params, perfil${session.perfil.id}"
         def sql = "SELECT * FROM trmt_para(${session.usuario.id}, ${session.perfil.id})"
 //        def sql = "SELECT * FROM trmt_para(${session.usuario.id})"
         def cn = dbConnectionService.getConnection()
