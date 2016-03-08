@@ -382,7 +382,7 @@
 
             if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
             items.salida = {
-                label: "Trámites B. de Salida",
+                label: "T. contestados y no env.",
                 icon: "fa fa-file-text",
                 submenu: {
                     pdf: {

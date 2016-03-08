@@ -500,10 +500,13 @@ class RetrasadosController extends Shield {
         def enviaRecibe = RolPersonaTramite.findAllByCodigoInList(['R001', 'R002'])
         def baos = new ByteArrayOutputStream()
         def tablaCabeceraRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaCabeceraRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
         def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
+        def tablaTramiteUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
         def tablaTramiteNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 5, 20, 10, 13]), 15, 0)
         def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
         def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
         def tablaTotalesNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
         def sqls
         def totalRetrasados = 0
@@ -517,51 +520,103 @@ class RetrasadosController extends Shield {
         def results = []
         def fechaRecepcion = new Date().format("yyyy/MM/dd HH:mm:ss")
         def ahora = new Date()
+        def sqlSalida
+
+
         Document document = reportesPdfService.crearDocumento("v", [top: 2, right: 2, bottom: 1.5, left: 2.5])
 
         def pdfw = PdfWriter.getInstance(document, baos);
-        session.tituloReporte = "Reporte detallado de Trámites en la Bandeja de Salida"
+        session.tituloReporte = "Reporte detallado de trámites contestados y no enviados"
 
         def esTriangulo = per.esTrianguloOff()
         session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
         def tipo
         def persona = Persona.get(idUsario)
 
-        def pxtTodos = PersonaDocumentoTramite.withCriteria {
+//        def pxtTodos = PersonaDocumentoTramite.withCriteria {
+//
+//                isNull("estado")
+//
+//                tramite {
+//                    eq("de", persona)
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E001")) // por enviar
+//                    isNotNull("padre")
+//
+//                }
+//            }
 
-                isNull("estado")
 
-                tramite {
-
-                    eq("de", persona)
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E001")) // por enviar
-                    isNotNull("padre")
-
-                }
-            }
+        if(esTriangulo){
 
 
-//            println("todos" + pxtTodos)
+            reportesPdfService.addCellTabla(tablaCabeceraRetrasados, new Paragraph("Perfil: Recepción de Oficina", fontBold), prmsHeaderHoja)
 
-//            reportesPdfService.addCellTabla(tablaCabeceraRetrasados, new Paragraph("Trámites Retrasados: Respondidos y no enviados", fontBold), prmsHeaderHoja)
 
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite No.", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Para", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Creación", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo", fontBold), prmsHeaderHoja)
 
-
-            pxtTodos.each {
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.tramite?.codigo, font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.personaNombre ? it?.personaNombre : it?.departamento?.descripcion, font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.tramite?.fechaCreacion ? it?.tramite?.fechaCreacion?.format("dd-MM-yyyy HH:mm") : " ", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph((ahora -  it?.tramite?.fechaCreacion) + " dias", font), prmsTablaHoja)
+            sqlSalida = "select * from salida_dpto(" + idUsario+ ") where edtrcdgo='E001' and trmtpdre is not null"
+            def cn3 = dbConnectionService.getConnection()
+            cn3.eachRow(sqlSalida.toString()){
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrprsn ? it.prtrprsn : it.prtrdpto, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtfccr.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph((ahora -  it.trmtfccr) + " dias", font), prmsTablaHoja)
                 totalRetrasadosPer += 1
 
             }
 
-            reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites en la bandeja de salida : " + totalRetrasadosPer, fontBold), prmsHeaderHojaLeft)
-            /********************************************************************************/
+            reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites contestados y no enviados: " + totalRetrasadosPer, fontBold), prmsHeaderHojaLeft)
+
+
+            reportesPdfService.addCellTabla(tablaCabeceraRetrasadosUs, new Paragraph("Perfil: Usuario", fontBold), prmsHeaderHoja)
+
+            reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph("Trámite No.", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph("Para", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph("Fecha Creación", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph("Tiempo", fontBold), prmsHeaderHoja)
+
+            sqlSalida = "select * from salida_prsn(" + idUsario+ ") where edtrcdgo='E001' and trmtpdre is not null"
+            def cn4 = dbConnectionService.getConnection()
+            cn4.eachRow(sqlSalida.toString()){
+                reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph(it?.prtrprsn ? it.prtrprsn : it.prtrdpto, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph(it.trmtfccr.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramiteUs, new Paragraph((ahora -  it.trmtfccr) + " dias", font), prmsTablaHoja)
+                totalRetrasados += 1
+
+            }
+
+            reportesPdfService.addCellTabla(tablaTotalesRetrasadosUs, new Paragraph("Total trámites contestados y no enviados: " + totalRetrasados, fontBold), prmsHeaderHojaLeft)
+
+
+        } else{
+
+            reportesPdfService.addCellTabla(tablaCabeceraRetrasados, new Paragraph("Perfil: Usuario", fontBold), prmsHeaderHoja)
+
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Trámite No.", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Para", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Fecha Creación", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo", fontBold), prmsHeaderHoja)
+
+            sqlSalida = "select * from salida_prsn(" + idUsario+ ") where edtrcdgo='E001' and trmtpdre is not null"
+            def cn5 = dbConnectionService.getConnection()
+            cn5.eachRow(sqlSalida.toString()){
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrprsn ? it.prtrprsn : it.prtrdpto, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtfccr.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph((ahora -  it.trmtfccr) + " dias", font), prmsTablaHoja)
+                totalRetrasadosPer += 1
+
+            }
+
+            reportesPdfService.addCellTabla(tablaTotalesRetrasados, new Paragraph("Total trámites contestados y no enviados: " + totalRetrasadosPer, fontBold), prmsHeaderHojaLeft)
+
+        }
+
+        /********************************************************************************/
 
 
         reportesPdfService.membrete(document)
@@ -571,6 +626,9 @@ class RetrasadosController extends Shield {
         document.add(tablaTramite);
         document.add(tablaTotalesRetrasados);
         document.add(tablaCabecera);
+        document.add(tablaCabeceraRetrasadosUs);
+        document.add(tablaTramiteUs);
+        document.add(tablaTotalesRetrasadosUs);
 
         document.close();
         pdfw.close()
