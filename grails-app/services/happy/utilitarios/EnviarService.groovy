@@ -271,8 +271,12 @@ class EnviarService {
         if (enviar == "1") {
 //            println("entro enviar")
             def pathPdf = realPath + "tramites/"
-            if (tramite.de.departamento && tramite.de.departamento.codigo && tramite.de.departamento.codigo != "") {
-                dpto = tramite.de.departamento.codigo
+            if (tramite?.de?.departamento?.codigo || tramite?.deDepartamento?.codigo) {
+                if(tramite.de) {
+                    dpto = tramite.de.departamento.codigo
+                } else {
+                    dpto = tramite.deDepartamento.codigo
+                }
                 pathPdf += dpto + "/"
                 pathPdf += anio + "/"
             }

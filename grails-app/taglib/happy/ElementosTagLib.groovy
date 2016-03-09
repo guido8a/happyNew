@@ -396,11 +396,19 @@ class ElementosTagLib {
                 html += "                    ${tramite.paraExterno} (ext.)"
             } else {
                 if (tramite?.tipoDocumento?.codigo == 'OFI') {
-                    html += "                    ${tramite.de.departamento.descripcion}"
+                    if(tramite.de){
+                        html += "                    ${tramite.de.departamento.descripcion}"
+                    } else {
+                        html += "                    ${tramite.deDepartamento.descripcion}"
+                    }
                 } else {
                     //cambiado el 21-07-2015
 //                    html += "                    ${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})"
-                    html += "                    ${tramite.de.departamento.descripcion}"
+                    if(tramite.de) {
+                        html += "                    ${tramite.de.departamento.descripcion}"
+                    } else {
+                        html += "                    ${tramite.deDepartamento.descripcion}"
+                    }
                 }
 
             }
@@ -474,7 +482,11 @@ class ElementosTagLib {
                 } else {
                     //cambiado el 21-07-2015
 //                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
-                    html += "<td>${tramite.de.departamento.descripcion.toUpperCase()}</td>"
+                    if(tramite.de) {
+                        html += "<td>${tramite.de.departamento.descripcion.toUpperCase()}</td>"
+                    } else {
+                        html += "<td>${tramite.deDepartamento.descripcion.toUpperCase()}</td>"
+                    }
                 }
                 html += "</tr>"
                 //para

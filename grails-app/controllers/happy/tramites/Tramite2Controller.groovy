@@ -1877,7 +1877,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             paramsTramite.paraExterno = params.paraExt3
         }
 
-        paramsTramite.de = persona
+//        paramsTramite.de = persona
         paramsTramite.deDepartamento = persona.departamento
         paramsTramite.deDepartamento.id = persona.departamento.id
         paramsTramite.estadoTramite = estadoTramiteBorrador
@@ -1952,11 +1952,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
         }
 
-        tramite.departamento = tramite.de.departamento
+//        tramite.departamento = tramite.de.departamento
+        tramite.departamento = persona.departamento
 
         tramite.persona = persona.nombre + " " + persona.apellido
-        tramite.departamentoNombre = tramite.de.departamento.descripcion
-        tramite.departamentoSigla = tramite.de.departamento.codigo
+        tramite.departamentoNombre = persona.departamento.descripcion
+        tramite.departamentoSigla = persona.departamento.codigo
 
 
         tramite.textoPara = params?.textoPara
