@@ -1026,7 +1026,13 @@ class TramiteAdminController /*extends Shield*/ {
         def icon = params.icon
         def msg = params.msg
         def personas = []
-        Persona.findAllByDepartamento(tramite.de?.departamento).each { p ->
+        def dep
+        if(tramite?.de?.departamento){
+            dep = tramite?.de?.departamento
+        }else{
+            dep = tramite.departamento
+        }
+        Persona.findAllByDepartamento(dep).each { p ->
             if (p.estaActivo) {
                 def m = [:]
                 m.key = p.nombre + " " + p.apellido + " (funcionario de ${p.departamento.codigo})"
@@ -1152,7 +1158,7 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
         def rol = pdt.rolPersonaTramite
-        def duenioPrsn = pdt.tramite.de.id
+        def duenioPrsn = pdt?.tramite?.de?.id
         def duenioDpto = pdt.tramite.deDepartamento?.id
         def paraStr = "Para: "
         if (rol.codigo == "R002") {
@@ -1164,7 +1170,7 @@ class TramiteAdminController /*extends Shield*/ {
             paraStr += pdt.persona.departamento.codigo + ":" + pdt.persona.login
         }
 
-        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite.de.departamento.codigo + ":" + pdt.tramite.de.login)
+        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite?.de?.departamento?.codigo + ":" + pdt.tramite.de.login)
 
         data += ',"tramite":"' + pdt.tramiteId + '"'
         data += ',"codigo":"' + pdt.tramite.codigo + '"'

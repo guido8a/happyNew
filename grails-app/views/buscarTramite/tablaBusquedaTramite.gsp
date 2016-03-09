@@ -77,7 +77,7 @@ table {
 
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
-                    <g:set var="de" value="${tramite.deDepartamentoId ?: tramite.de.departamentoId}"/>
+                    <g:set var="de" value="${tramite?.deDepartamentoId ?: tramite?.de?.departamentoId}"/>
 
                     <g:if test="${tramite.de?.id == session.usuario.id ||
                             tramite.deDepartamento?.id == session.usuario.departamentoId ||
@@ -106,16 +106,15 @@ table {
                     <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
                         <g:set var="externo" value="${externo} externoCC"/>
                     </g:if>
-                    %{--***"${tramite.deId}, SESS: ${session.usuario.id} deDpto: ${tramite.departamento.id} ss: ${session.departamento.id}, es tr: ${session.usuario.esTriangulo}"--}%
-                    %{---->${tramite.deId == session.usuario.id || (tramite.departamento.id == session.departamento.id && session.usuario.esTriangulo)}"--}%
-                    <g:if test="${tramite.deId == session.usuario.id || (tramite.departamento.id == session.departamento.id && session.usuario.esTriangulo)}">
+
+                    <g:if test="${tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
 
-                    <g:set var="para" value="${tramite.para.persona ? tramite.para.persona.departamentoId : tramite.para.departamentoId}"/>
+                    <g:set var="para" value="${tramite.para.persona ? tramite.para.persona?.departamentoId : tramite.para?.departamentoId}"/>
                     <g:each in="${tramite.copias}" var="copia">
-                        <g:set var="para" value="${para + ',' + (copia.persona ? copia.persona?.departamentoId : copia.departamentoId)}"/>
+                        <g:set var="para" value="${para + ',' + (copia.persona ? copia.persona?.departamentoId : copia?.departamentoId)}"/>
                     </g:each>
 
                     <g:set var="respuestas" value="${tramite.respuestas.size()}"/>
@@ -125,7 +124,7 @@ table {
                     </g:if>
 
                     <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase} ${externo}" anulados="${receptoresAnulados.size()}"
-                        dep="${tramite.de.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
+                        dep="${tramite?.de?.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
                         %{--<td style="width: 110px">--}%
