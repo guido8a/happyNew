@@ -61,6 +61,8 @@ class Tramite {
     String persona
     String departamentoNombre
     String departamentoSigla
+    Persona creador
+    String login
 
 
     def diasLaborablesService
@@ -124,6 +126,8 @@ class Tramite {
             departamentoNombre column: 'trmtdpto'
             departamentoSigla  column: 'trmtdpsg'
 
+            creador column: 'prsn__id'
+            login column: 'trmtprlg'
         }
     }
     static constraints = {
@@ -177,6 +181,8 @@ class Tramite {
         persona(blank: true, nullable: true)
         departamentoNombre(blank: true, nullable: true)
         departamentoSigla(blank: true, nullable: true)
+        creador(blank: true, nullable: true)
+        login(blank: true, nullable: true)
     }
 
     def beforeValidate(List propertiesBeingValidated) {

@@ -275,6 +275,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
         tramite.departamento = tramite.de.departamento
 
+        //log persona creador
+        tramite.creador = persona
+        tramite.login = persona.login
+
         tramite.persona = persona.nombre + " " + persona.apellido
         tramite.departamentoNombre = tramite.de.departamento.descripcion
         tramite.departamentoSigla = tramite.de.departamento.codigo
