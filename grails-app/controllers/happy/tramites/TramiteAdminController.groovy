@@ -1047,7 +1047,7 @@ class TramiteAdminController /*extends Shield*/ {
 
         def personasRec = []
 
-        if (tramite?.de?.departamento != tramite?.para?.departamento) {
+        if (tramite?.departamento != tramite?.para?.departamento) {
             Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
                 if (r.estaActivo) {
                     def n = [:]
