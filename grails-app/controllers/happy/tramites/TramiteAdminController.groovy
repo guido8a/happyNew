@@ -524,7 +524,7 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
         def sql = "SELECT * FROM entrada_prsn($persona.id) ORDER BY ${params.sort} ${params.order}"
-        println "redireccionar tram: $sql"
+//        println "redireccionar tram: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 
@@ -532,6 +532,11 @@ class TramiteAdminController /*extends Shield*/ {
         def dep = persona.departamento
         def filtradas = []
         def sesion
+
+        def fecha = new Date() - 10
+        def fcha = fecha.format('yyyy-MM-dd')
+        def deps
+
 
 //        println "actual:  ${persona?.departamento?.id} antes: ${persona?.departamentoDesdeId}"
         if (persona?.departamento?.id == persona?.departamentoDesdeId) {
@@ -544,7 +549,7 @@ class TramiteAdminController /*extends Shield*/ {
                     it.estaActivo
                 }
             } else {
-                def deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} order by id desc")
+                deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} order by id desc")
                 if (deps.size() > 0) {
                     dep = deps.departamento.first()
                 }
@@ -569,10 +574,16 @@ class TramiteAdminController /*extends Shield*/ {
 //            println ".....1"
             def depaDesde
 
-            if (persona?.departamentoDesde) {
-                depaDesde = persona.departamentoDesde
+            deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} and fechaCreacion > '${fcha} 00:00' order by id desc")
+//            println "deps: ${deps.id}"
+            if (deps.size() > 0) {
+                if (persona?.departamentoDesde) {
+                    depaDesde = persona.departamentoDesde
+                } else {
+                    depaDesde = persona.departamento
+                }
             } else {
-                depaDesde = persona.departamento
+                depaDesde = dep
             }
 
             if (persona.estaActivo) {
@@ -588,11 +599,8 @@ class TramiteAdminController /*extends Shield*/ {
                  * direccionaría al personal del departamento de hace 10 días y no al inmediato anterior
                  */
 //                println ".. no activo"
-                def fecha = new Date() - 10
-                def fcha = fecha.format('yyyy-MM-dd')
-//                println "fecha $fcha"
-                def deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} and fechaCreacion > '${fcha} 00:00' order by id desc")
-                println "deps: ${deps.id}"
+                deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} and fechaCreacion > '${fcha} 00:00' order by id desc")
+//                println "deps: ${deps.id}"
                 if (deps.size() > 0) {
                     dep = deps.departamento.first()
                 } else {
