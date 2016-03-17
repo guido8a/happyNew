@@ -379,51 +379,16 @@ class TramiteAdminController /*extends Shield*/ {
 
             def disp, disponibles = [], users = [], disp2 = [], todos = []
 
-            if (session.usuario.puedeTramitar) {
-                disp = Departamento.list([sort: 'descripcion'])
-            } else {
-                disp = [persona.departamento]
-            }
-            disp.each { dep ->
-                if (dep.id == persona.departamento.id) {
-                    def usuarios = Persona.findAllByDepartamento(dep)
-                    usuarios.each {
-                        if (it.id != de.id) {
-                            if (!para?.persona || (para?.persona && para?.personaId != it.id)) {
-                                users += it
-                            }
-                        }
-                    }
-                    for (int i = users.size() - 1; i > -1; i--) {
-                        if (!(users[i].estaActivo && users[i].puedeRecibir)) {
-                            users.remove(i)
-                        } else {
-                            if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                                disponibles.add([id: users[i].id, label: users[i].toString(), obj: users[i]])
-                            }
-                        }
-                    }
-                }
-            }
-
-            disp.each { dep ->
-                if (!deDep || (deDep && deDep.id != dep.id)) {
-                    if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
-                        if (dep.triangulos.size() > 0) {
-                            if (!para || !para.departamento || (para.departamento && para.departamentoId != dep.id)) {
-                                disp2.add([id: dep.id * -1, label: dep.descripcion, obj: dep])
-                            }
-                        }
-                    }
-                }
-            }
-            todos = disponibles + disp2
+            def sql = "SELECT id, dscr as label, externo FROM trmt_para(${session.usuario.id}, ${session.perfil.id})"
+            def cn = dbConnectionService.getConnection()
+            todos = cn.rows(sql.toString())
+            println "crear copia... ok"
             return [tramite: tramite, disponibles: todos]
         }
     }
 
     def enviarCopias_ajax() {
-//        println("params " + params)
+//        println "enviarCopias_ajax params $params"
         def tramite
         if (params.id) {
             def persDocTram = PersonaDocumentoTramite.get(params.id)
@@ -559,7 +524,7 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
         def sql = "SELECT * FROM entrada_prsn($persona.id) ORDER BY ${params.sort} ${params.order}"
-//        println "redireccionar tram: $sql"
+        println "redireccionar tram: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 
@@ -568,6 +533,7 @@ class TramiteAdminController /*extends Shield*/ {
         def filtradas = []
         def sesion
 
+//        println "actual:  ${persona?.departamento?.id} antes: ${persona?.departamentoDesdeId}"
         if (persona?.departamento?.id == persona?.departamentoDesdeId) {
             if (persona.estaActivo) {
                 personas = Persona.withCriteria {
@@ -578,7 +544,7 @@ class TramiteAdminController /*extends Shield*/ {
                     it.estaActivo
                 }
             } else {
-                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                def deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} order by id desc")
                 if (deps.size() > 0) {
                     dep = deps.departamento.first()
                 }
@@ -600,6 +566,7 @@ class TramiteAdminController /*extends Shield*/ {
                 }
             }
         } else {
+//            println ".....1"
             def depaDesde
 
             if (persona?.departamentoDesde) {
@@ -617,10 +584,22 @@ class TramiteAdminController /*extends Shield*/ {
                     it.estaActivo
                 }
             } else {
-                def deps = Tramite.findAll("from Tramite where de=${persona.id} and departamento != ${dep.id} order by id desc")
+                /** si la persona cambia de departamento dos veces dentro de 10 días se produce error por que se
+                 * direccionaría al personal del departamento de hace 10 días y no al inmediato anterior
+                 */
+//                println ".. no activo"
+                def fecha = new Date() - 10
+                def fcha = fecha.format('yyyy-MM-dd')
+//                println "fecha $fcha"
+                def deps = Tramite.findAll("from Tramite where creador=${persona.id} and departamento != ${dep.id} and fechaCreacion > '${fcha} 00:00' order by id desc")
+                println "deps: ${deps.id}"
                 if (deps.size() > 0) {
                     dep = deps.departamento.first()
+                } else {
+                    depaDesde = dep
                 }
+//                println "dpto: ${depaDesde.id}, dep: ${dep.id}"
+
                 personas = Persona.withCriteria {
                     eq("departamento", depaDesde)
                     ne("id", persona.id)
@@ -629,6 +608,7 @@ class TramiteAdminController /*extends Shield*/ {
                     it.estaActivo
                 }
             }
+//            println "personas: ${personas.id}"
             personas.each {
                 sesion = Sesn.findAllByUsuario(it)
                 if (it.esTriangulo() && sesion.size() == 1) {

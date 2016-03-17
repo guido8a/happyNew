@@ -1,10 +1,5 @@
 <%@ page import="happy.tramites.DocumentoTramite; happy.tramites.RolPersonaTramite; happy.tramites.EstadoTramite; happy.tramites.PersonaDocumentoTramite; happy.seguridad.Persona; happy.tramites.Tramite" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 14/03/14
-  Time: 11:20 AM
---%>
+
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">

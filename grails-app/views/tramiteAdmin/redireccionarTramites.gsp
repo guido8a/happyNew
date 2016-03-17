@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>Redireccionar trámites de la bandeja de entrada personal de ${persona.login}</title>
+        <title>Redireccionar trámites</title>
         <style type="text/css">
         td {
             vertical-align : middle !important;
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <h3>Redireccionar trámites de la bandeja de entrada personal de ${persona.login}</h3>
+        <h4>Redireccionar trámites de la bandeja de entrada personal de ${persona.nombre} ${persona.apellido}</h4>
 
         <div class="alert alert-info">
             <p>

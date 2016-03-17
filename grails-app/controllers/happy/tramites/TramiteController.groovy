@@ -582,73 +582,9 @@ class TramiteController extends happy.seguridad.Shield {
         def de = session.usuario
         def todos = []
 
-/*        def disp, disponibles = []
-        def disp2 = []
-
-        if (session.usuario.puedeTramitar) {
-            disp = Departamento.list([sort: 'descripcion'])
-        } else {
-            disp = [persona.departamento]
-        }
-        disp.each { dep ->
-            if (dep.id == persona.departamento.id) {
-                def usuarios = Persona.findAllByDepartamento(dep)
-                usuarios.each {
-                    if (it.id != de.id) {
-                        users += it
-                    }
-                }
-                for (int i = users.size() - 1; i > -1; i--) {
-                    if (!(users[i].estaActivo && users[i].puedeRecibir)) {
-                        users.remove(i)
-                    } else {
-                        if (params.id) {
-                            if (!(tramite.copias.persona.id*.toLong()).contains(users[i].id.toLong())) {
-                                disponibles.add([id     : users[i].id,
-                                                 label  : users[i].toString(),
-                                                 obj    : users[i],
-                                                 externo: false])
-                            }
-                        } else {
-                            disponibles.add([id     : users[i].id,
-                                             label  : users[i].toString(),
-                                             obj    : users[i],
-                                             externo: false])
-                        }
-                    }
-                }
-            }
-        }
-
-        disp.each { dep ->
-            if (params.id) {
-                if (!(tramite.copias.departamento.id*.toLong()).contains(dep.id.toLong())) {
-                    if (dep.triangulos.size() > 0) {
-                        disp2.add([id     : dep.id * -1,
-                                   label  : dep.descripcion,
-                                   obj    : dep,
-                                   externo: dep.externo == 1])
-                    }
-                }
-            } else {
-                if (dep.triangulos.size() > 0) {
-                    disp2.add([id     : dep.id * -1,
-                               label  : dep.descripcion,
-                               obj    : dep,
-                               externo: dep.externo == 1])
-                }
-            }
-        }
-
-        todos = disponibles + disp2
- */
-
-
         def sql = "SELECT id, dscr as label, externo FROM trmt_para(${session.usuario.id}, ${session.perfil.id})"
         def cn = dbConnectionService.getConnection()
         todos = cn.rows(sql.toString())
-//
-
 
 
         def bloqueo = false
