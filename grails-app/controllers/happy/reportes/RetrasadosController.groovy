@@ -2204,8 +2204,10 @@ class RetrasadosController extends Shield {
         def departamentoUsuario = usuario?.departamento?.id
         def sqlGen
         def sql
+        def sqlNo
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
+        def cn3 = dbConnectionService.getConnection()
 //        desde = desde.format("yyyy/MM/dd")
 //        hasta = hasta.format("yyyy/MM/dd")
 
@@ -2216,15 +2218,17 @@ class RetrasadosController extends Shield {
         def tablaTitulo
         def totalRetDpto = 0
         def totalRecDpto = 0
+        def totalNoEnviados = 0
+        def totalNoEnviadosDpto = 0
 
-        tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
+        tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([35,25,14,14,12]),0,0)
 
 
         if(dptosHijos.size() > 0 && params.id != '11'){
 
             //PADRE
 
-            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,10)
+            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([35,25,14,14,12]),0,10)
             tablaTitulo = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
 
             reportesPdfService.addCellTabla(tablaTitulo, new Paragraph(Departamento.get(params.id).descripcion, fontBold), prmsHeaderHoja)
@@ -2233,6 +2237,7 @@ class RetrasadosController extends Shield {
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Enviados", fontBold), prmsHeaderHoja)
 
             sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
             cn2.eachRow(sqlGen.toString()){
@@ -2241,17 +2246,20 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_enviados, font), prmsHeaderHoja)
 
+
+                totalNoEnviados += it?.no_enviados
 
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
+                    totalNoEnviadosDpto = it?.no_enviados
                 }else{
                     totalRetrasado += it?.retrasados
                     totalRecibido += it?.no_recibidos
+//                    totalNoEnviados += it?.no_enviados
                 }
-
-
 
                 totalResumenGenerado += 1
             }
@@ -2260,6 +2268,7 @@ class RetrasadosController extends Shield {
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalNoEnviados), fontBold), prmsHeaderHoja)
 
             document.add(tablaTitulo)
             document.add(tablaTotalesRecibidos)
@@ -2272,8 +2281,10 @@ class RetrasadosController extends Shield {
                 totalRetrasado = 0
                 totalRetDpto = 0
                 totalRecDpto = 0
+                totalNoEnviadosDpto = 0
+                totalNoEnviados = 0
 
-                tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,10)
+                tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([35,25,14,14,12]),0,10)
                 tablaTitulo = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
 
                 reportesPdfService.addCellTabla(tablaTitulo, new Paragraph(Departamento.get(hij).descripcion, fontBold), prmsHeaderHoja)
@@ -2282,6 +2293,7 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Enviados", fontBold), prmsHeaderHoja)
 
                 sqlGen = "select * from retrasados("+ hij +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
                 cn2.eachRow(sqlGen.toString()){
@@ -2290,6 +2302,7 @@ class RetrasadosController extends Shield {
                     reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
                     reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                     reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
+                    reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_enviados, font), prmsHeaderHoja)
 
 //                    totalRecibido += it?.no_recibidos
 //                    totalRetrasado += it?.retrasados
@@ -2298,9 +2311,11 @@ class RetrasadosController extends Shield {
                     if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                         totalRetDpto = it?.retrasados
                         totalRecDpto = it?.no_recibidos
+                        totalNoEnviadosDpto = it?.no_enviados
                     }else{
                         totalRetrasado += it?.retrasados
                         totalRecibido += it?.no_recibidos
+                        totalNoEnviados += it?.no_enviados
                     }
 
 
@@ -2311,6 +2326,7 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalNoEnviadosDpto +  totalNoEnviados ), fontBold), prmsHeaderHoja)
 
                 document.add(tablaTitulo)
                 document.add(tablaTotalesRecibidos)
@@ -2318,12 +2334,16 @@ class RetrasadosController extends Shield {
 
         }else{
 
-            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,15,15]),0,0)
+            tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([35,25,14,14,12]),0,0)
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Perfil", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Retrasados", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Recibidos", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("No Enviados", fontBold), prmsHeaderHoja)
+
+
+//            println("--->" + params.id)
 
             sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ") order by retrasados desc"
             cn2.eachRow(sqlGen.toString()){
@@ -2332,16 +2352,16 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.perfil, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.retrasados, font), prmsHeaderHoja)
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_recibidos, font), prmsHeaderHoja)
-//
-//                totalRecibido += it?.no_recibidos
-//                totalRetrasado += it?.retrasados
+                reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_enviados,font), prmsHeaderHoja)
 
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
+                    totalNoEnviadosDpto = it?.no_enviados
                 }else{
                     totalRetrasado += it?.retrasados
                     totalRecibido += it?.no_recibidos
+                    totalNoEnviados += it?.no_enviados
                 }
 
 
@@ -2352,6 +2372,7 @@ class RetrasadosController extends Shield {
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalNoEnviados), fontBold), prmsHeaderHoja)
 
             document.add(tablaTotalesRecibidos)
 
