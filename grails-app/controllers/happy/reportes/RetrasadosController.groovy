@@ -2364,7 +2364,6 @@ class RetrasadosController extends Shield {
                     totalNoEnviados += it?.no_enviados
                 }
 
-
                 totalResumenGenerado += 1
             }
 
