@@ -61,6 +61,8 @@ class DocumentosGeneradosController extends Shield{
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
+//        println "desde: $desde, hasta: $hasta"
+
         def fileName = "documentos_generados_"
         def title = "Documentos generados de "
         def title2 = "Documentos generados por "
@@ -103,11 +105,12 @@ class DocumentosGeneradosController extends Shield{
         def sql
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
 
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+//            println "sql: $sqlGen"
             cn2.eachRow(sqlGen.toString()){
                 totalResumenGenerado += 1
             }
@@ -359,7 +362,7 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteDetalladoPdf() {
-        println("generado " + params)
+//        println("generado " + params)
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
@@ -429,8 +432,8 @@ class DocumentosGeneradosController extends Shield{
         def tablaTotalesGenerados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
         def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
 
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
 
         reportesPdfService.addCellTabla(tablaCabeceraGenerados, new Paragraph("Trámites Generados", fontBold), paramsCenter)
         document.add(tablaCabeceraGenerados)
@@ -636,8 +639,8 @@ class DocumentosGeneradosController extends Shield{
         def sql
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
 
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
@@ -877,8 +880,8 @@ class DocumentosGeneradosController extends Shield{
         def sqlGen
         def totalGenerado = 0
         def totalRecibido = 0
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
         def cn2 = dbConnectionService.getConnection()
 
         if(usuario.esTriangulo()){
