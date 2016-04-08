@@ -1403,8 +1403,10 @@ class RetrasadosExcelController extends Shield {
 
         def totalRetrasados = 0
         def totalNoRecibidos = 0
+        def totalNoEnviados = 0
         def totalRetDpto = 0
         def totalRecDpto = 0
+        def totalNoEnviadosDpto = 0
 
 
 
@@ -1438,6 +1440,10 @@ class RetrasadosExcelController extends Shield {
         cell2 = rowHead2.createCell((int) 3)
         cell2.setCellValue("No Recibidos")
         sheet.setColumnWidth(3, 3000)
+
+        cell2 = rowHead2.createCell((int) 4)
+        cell2.setCellValue("No Enviados")
+        sheet.setColumnWidth(4, 3000)
         index++
 
             sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
@@ -1445,8 +1451,9 @@ class RetrasadosExcelController extends Shield {
                 XSSFRow row3 = sheet.createRow((short) index)
                 row3.createCell((int) 0).setCellValue("" + it?.usuario)
                 row3.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
-                row3.createCell((int) 2).setCellValue(" " + it?.retrasados)
-                row3.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+                row3.createCell((int) 2).setCellValue(it?.retrasados)
+                row3.createCell((int) 3).setCellValue(it?.no_recibidos)
+                row3.createCell((int) 4).setCellValue(it?.no_enviados)
 
 //                totalRetrasados += it?.retrasados
 //                totalNoRecibidos += it?.no_recibidos
@@ -1454,20 +1461,21 @@ class RetrasadosExcelController extends Shield {
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
-
-                }else{
+                    totalNoEnviadosDpto += it?.no_enviados
+                } else {
                     totalRetrasados += it?.retrasados
                     totalNoRecibidos += it?.no_recibidos
+                    totalNoEnviados += it?.no_enviados
                 }
-
                 index++
             }
 
             XSSFRow row3 = sheet.createRow((short) index)
             row3.createCell((int) 0).setCellValue("")
             row3.createCell((int) 1).setCellValue("Total")
-            row3.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
-            row3.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
+            row3.createCell((int) 2).setCellValue(totalRetrasados + totalRetDpto)
+            row3.createCell((int) 3).setCellValue(totalNoRecibidos + totalRecDpto)
+            row3.createCell((int) 4).setCellValue(totalNoEnviadosDpto + totalNoEnviados)
 
             index++
 
@@ -1509,6 +1517,10 @@ class RetrasadosExcelController extends Shield {
                 cell = rowHead.createCell((int) 3)
                 cell.setCellValue("No Recibidos")
                 sheet.setColumnWidth(3, 3000)
+
+                cell = rowHead.createCell((int) 4)
+                cell.setCellValue("No Enviados")
+                sheet.setColumnWidth(4, 3000)
                 index++
 
 
@@ -1517,8 +1529,9 @@ class RetrasadosExcelController extends Shield {
                     XSSFRow row2 = sheet.createRow((short) index)
                     row2.createCell((int) 0).setCellValue("" + it?.usuario)
                     row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
-                    row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
-                    row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+                    row2.createCell((int) 2).setCellValue(it?.retrasados)
+                    row2.createCell((int) 3).setCellValue(it?.no_recibidos)
+                    row2.createCell((int) 4).setCellValue(it?.no_enviados)
 
 //                    totalRetrasados += it?.retrasados
 //                    totalNoRecibidos += it?.no_recibidos
@@ -1526,10 +1539,11 @@ class RetrasadosExcelController extends Shield {
                     if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                         totalRetDpto = it?.retrasados
                         totalRecDpto = it?.no_recibidos
-
-                    }else{
+                        totalNoEnviadosDpto += it?.no_enviados
+                    } else {
                         totalRetrasados += it?.retrasados
                         totalNoRecibidos += it?.no_recibidos
+                        totalNoEnviados += it?.no_enviados
                     }
 
                     index++
@@ -1538,11 +1552,12 @@ class RetrasadosExcelController extends Shield {
                 XSSFRow row2 = sheet.createRow((short) index)
                 row2.createCell((int) 0).setCellValue("")
                 row2.createCell((int) 1).setCellValue("Total")
-                row2.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
-                row2.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
+                row2.createCell((int) 2).setCellValue(totalRetrasados + totalRetDpto)
+                row2.createCell((int) 3).setCellValue(totalNoRecibidos + totalRecDpto)
+                row2.createCell((int) 4).setCellValue(totalNoEnviados + totalNoEnviadosDpto)
                 index++
             }
-        }else{
+        } else {
 
             XSSFRow rowHead5 = sheet.createRow((short) index);
             rowHead5.setHeightInPoints(14)
@@ -1571,16 +1586,23 @@ class RetrasadosExcelController extends Shield {
             cell3 = rowHead3.createCell((int) 3)
             cell3.setCellValue("No Recibidos")
             sheet.setColumnWidth(3, 3000)
+
+            cell3 = rowHead3.createCell((int) 4)
+            cell3.setCellValue("No Enviados")
+            sheet.setColumnWidth(4, 3000)
             index++
 
 
             sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
+//            println "reporteRetrasadosArbolExcel: $sqlGen"
+
             cn2.eachRow(sqlGen.toString()) {
                 XSSFRow row2 = sheet.createRow((short) index)
                 row2.createCell((int) 0).setCellValue("" + it?.usuario)
                 row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
-                row2.createCell((int) 2).setCellValue(" " + it?.retrasados)
-                row2.createCell((int) 3).setCellValue(" " + it?.no_recibidos)
+                row2.createCell((int) 2).setCellValue(it?.retrasados)
+                row2.createCell((int) 3).setCellValue(it?.no_recibidos)
+                row2.createCell((int) 4).setCellValue(it?.no_enviados)
 //
 //                totalRetrasados += it?.retrasados
 //                totalNoRecibidos += it?.no_recibidos
@@ -1588,19 +1610,21 @@ class RetrasadosExcelController extends Shield {
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
-                }else{
+                    totalNoEnviadosDpto += it?.no_enviados
+                } else {
                     totalRetrasados += it?.retrasados
                     totalNoRecibidos += it?.no_recibidos
+                    totalNoEnviados += it?.no_enviados
                 }
-
                 index++
             }
 
             XSSFRow row2 = sheet.createRow((short) index)
             row2.createCell((int) 0).setCellValue("")
             row2.createCell((int) 1).setCellValue("Total")
-            row2.createCell((int) 2).setCellValue(" " + (totalRetrasados + totalRetDpto))
-            row2.createCell((int) 3).setCellValue("" + (totalNoRecibidos + totalRecDpto))
+            row2.createCell((int) 2).setCellValue(totalRetrasados + totalRetDpto)
+            row2.createCell((int) 3).setCellValue(totalNoRecibidos + totalRecDpto)
+            row2.createCell((int) 4).setCellValue(totalNoEnviadosDpto + totalNoEnviados)
             index++
 
         }
