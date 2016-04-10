@@ -2251,8 +2251,6 @@ class RetrasadosController extends Shield {
                 reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + it?.no_enviados, font), prmsHeaderHoja)
 
 
-                totalNoEnviados += it?.no_enviados
-
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
@@ -2260,7 +2258,7 @@ class RetrasadosController extends Shield {
                 }else{
                     totalRetrasado += it?.retrasados
                     totalRecibido += it?.no_recibidos
-//                    totalNoEnviados += it?.no_enviados
+                    totalNoEnviados += it?.no_enviados
                 }
 
                 totalResumenGenerado += 1
@@ -2270,7 +2268,7 @@ class RetrasadosController extends Shield {
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Total", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRetrasado + totalRetDpto), fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalRecibido + totalRecDpto), fontBold), prmsHeaderHoja)
-            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalNoEnviados), fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(" " + (totalNoEnviados + totalNoEnviadosDpto), fontBold), prmsHeaderHoja)
 
             document.add(tablaTitulo)
             document.add(tablaTotalesRecibidos)

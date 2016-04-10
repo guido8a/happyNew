@@ -1339,7 +1339,7 @@ class RetrasadosExcelController extends Shield {
 
     def reporteRetrasadosArbolExcel () {
 
-
+//        println "reporteRetrasadosArbolExcel params: $params"
 //        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
 //        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
@@ -1461,7 +1461,7 @@ class RetrasadosExcelController extends Shield {
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
-                    totalNoEnviadosDpto += it?.no_enviados
+                    totalNoEnviadosDpto = it?.no_enviados
                 } else {
                     totalRetrasados += it?.retrasados
                     totalNoRecibidos += it?.no_recibidos
@@ -1486,6 +1486,8 @@ class RetrasadosExcelController extends Shield {
                 totalNoRecibidos = 0
                 totalRetDpto = 0
                 totalRecDpto = 0
+                totalNoEnviados = 0
+                totalNoEnviadosDpto = 0
 
 
 
@@ -1539,7 +1541,7 @@ class RetrasadosExcelController extends Shield {
                     if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                         totalRetDpto = it?.retrasados
                         totalRecDpto = it?.no_recibidos
-                        totalNoEnviadosDpto += it?.no_enviados
+                        totalNoEnviadosDpto = it?.no_enviados
                     } else {
                         totalRetrasados += it?.retrasados
                         totalNoRecibidos += it?.no_recibidos
@@ -1610,7 +1612,7 @@ class RetrasadosExcelController extends Shield {
                 if(it?.perfil == 'RECEPCIÓN DE OFICINA'){
                     totalRetDpto = it?.retrasados
                     totalRecDpto = it?.no_recibidos
-                    totalNoEnviadosDpto += it?.no_enviados
+                    totalNoEnviadosDpto = it?.no_enviados
                 } else {
                     totalRetrasados += it?.retrasados
                     totalNoRecibidos += it?.no_recibidos
