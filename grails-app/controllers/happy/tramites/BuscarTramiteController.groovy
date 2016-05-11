@@ -16,6 +16,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def esDepartamento = persona.esTriangulo
 
+//        println("tramite " + tramite)
+
+
         if(persona.puedeAgregarDocumento){
             //ok
             render "OK"

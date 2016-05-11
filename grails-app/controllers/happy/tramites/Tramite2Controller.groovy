@@ -1639,6 +1639,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def pdt = null
         if (params.pdt) {
+
             pdt = params.pdt
             def pdto = PersonaDocumentoTramite.get(pdt)
             if (pdto.estado?.codigo != "E004") {
@@ -1646,6 +1647,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 response.sendError(403)
             }
         } else if (params.hermano) {
+
+            println("entro hermano")
+
+
             def herm = Tramite.get(params.hermano)
             def p = herm
 //            while (p.padre) {
@@ -1669,6 +1674,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 if (quienRecibePadre.size() == 1) {
                     pdt = quienRecibePadre.first()
                     println "PDT 1: " + pdt
+
+                    if(pdt.estado == EstadoTramite.findByCodigo("E005")){
+                        flash.message = "No puede agregar un documento a este tramite."
+                        response.sendError(403)
+                        return
+                    }
+
                 } else {
                     flash.message = "No puede agregar un documento a este tramite."
                     response.sendError(403)
