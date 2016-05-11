@@ -16,6 +16,12 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def esDepartamento = persona.esTriangulo
 
+        if(persona.puedeAgregarDocumento){
+            //ok
+            render "OK"
+            return
+        }
+
         if (!esDepartamento && persona == tramite.de) {
 //            println "1.1: " + persona
             render "OK"
@@ -27,12 +33,15 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             return
         }
         def principal = tramite
+        def contador = 0
         while (principal.padre) {
+            contador++
             principal = principal.padre
             if (!esDepartamento && persona == principal.de) {
 //                println "2.1: " + persona
                 render "OK"
                 return
+
             }
             if (esDepartamento && principal.deDepartamento == persona.departamento) {
 //                println "2.2: " + persona.departamento
@@ -40,6 +49,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 return
             }
         }
+        println "contador: $contador"
+
         def tramitePrincipal = principal.tramitePrincipal
         def tramites
         if (tramitePrincipal > 0) {
@@ -271,6 +282,10 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 //        def fin = new Date()
 //        println "${TimeCategory.minus(fin, inicio)}"
+
+        params.dgsg = Persona.get(session.usuario.id).puedeAgregarDocumento? "DGSG" : ""
+
+//        println "puede dgsg: ${params.dgsg}"
 
         return [tramites: tramitesFiltrados, persona: persona, msg: msg]
     }

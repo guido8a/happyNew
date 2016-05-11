@@ -6,18 +6,6 @@
 
         <style type="text/css">
 
-        .container-celdas {
-            width    : 1070px;
-            height   : 310px;
-            float    : left;
-            overflow : auto;
-        }
-
-        .alinear {
-
-            text-align : center !important;
-        }
-
         .esconder {
             visibility: hidden;
         }
@@ -49,6 +37,7 @@
                 </div>
 
                 <div class="col-md-2" style="margin-left: 110px">
+                %{--<div class="col-md-2">--}%
                     <label>Fecha Creación</label>
                     <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
                 </div>
@@ -64,9 +53,9 @@
                 </div>
 
                 <div style="padding-top: 25px">
-                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax"><i
+                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax col-md-1"><i
                             class="fa fa-check-square-o"></i> Buscar</a>
-                    <a href="#" name="borrar" class="btn btn-primary btnBorrar"><i
+                    <a href="#" name="borrar" class="btn btn-primary btnBorrar  col-md-1"><i
                            class="fa fa-eraser"></i> Limpiar</a>
                 </div>
 
@@ -392,7 +381,7 @@
                                     location.href = '${createLink(controller: "tramite", action: "crearTramite")}?padre=' + padre + "&hermano=" + id + "&buscar=1&esRespuestaNueva=N";
                                     </g:else>
                                 } else {
-                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                    bootbox.alert("No puede agregar documentos a este trámite (hr)");
                                 }
                             }
                         });
@@ -418,7 +407,7 @@
                                     location.href = '${createLink(controller: "tramite", action: "crearTramite")}?hermano=' + id + "&buscar=1&esRespuestaNueva=N";
                                     </g:else>
                                 } else {
-                                    bootbox.alert("No puede agregar documentos a este trámite");
+                                    bootbox.alert("No puede agregar documentos a este trámite (hi)");
                                 }
                             }
                         });

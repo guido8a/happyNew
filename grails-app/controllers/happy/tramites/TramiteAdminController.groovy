@@ -382,7 +382,7 @@ class TramiteAdminController /*extends Shield*/ {
             def sql = "SELECT id, dscr as label, externo FROM trmt_para(${session.usuario.id}, ${session.perfil.id})"
             def cn = dbConnectionService.getConnection()
             todos = cn.rows(sql.toString())
-            println "crear copia... ok"
+            println "crear copia... ok\n${todos}"
             return [tramite: tramite, disponibles: todos]
         }
     }

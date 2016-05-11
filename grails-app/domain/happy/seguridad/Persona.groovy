@@ -262,6 +262,10 @@ class Persona {
         return this.puedePermiso("P014")
     }
 
+    def getPuedeAgregarDocumento() {
+        return this.puedePermiso("P017")
+    }
+
 //    def getJefePersona(){
 //        def jefe = []
 //        Persona.findAllByDepartamento(this.departamento).each {p->

@@ -102,7 +102,8 @@ table {
                         <g:set var="externo" value="${externo} externoCC"/>
                     </g:if>
 
-                    <g:if test="${tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">
+                    %{--<g:if test="${tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">--}%
+                    <g:if test="${(params.dgsg == 'DGSG') || tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
