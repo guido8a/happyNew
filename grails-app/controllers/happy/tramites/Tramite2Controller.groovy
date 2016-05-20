@@ -1648,7 +1648,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         } else if (params.hermano) {
 
-            println("entro hermano")
+           // println("entro hermano")
 
 
             def herm = Tramite.get(params.hermano)
@@ -1675,11 +1675,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     pdt = quienRecibePadre.first()
                     println "PDT 1: " + pdt
 
-                    if(pdt.estado == EstadoTramite.findByCodigo("E005")){
-                        flash.message = "No puede agregar un documento a este tramite."
-                        response.sendError(403)
-                        return
-                    }
+//                    if(pdt.estado == EstadoTramite.findByCodigo("E005")){
+//                        flash.message = "No puede agregar un documento a este tramite."
+//                        response.sendError(403)
+//                        return
+//                    }
 
                 } else {
                     flash.message = "No puede agregar un documento a este tramite."

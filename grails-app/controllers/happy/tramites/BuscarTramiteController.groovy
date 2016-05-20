@@ -16,8 +16,13 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def esDepartamento = persona.esTriangulo
 
-//        println("tramite " + tramite)
+        println("tramite " + tramite)
 
+//        if(pdt.estado == EstadoTramite.findByCodigo("E005")){
+//                        flash.message = "No puede agregar un documento a este tramite."
+//                        response.sendError(403)
+//                        return
+//                    }
 
         if(persona.puedeAgregarDocumento){
             //ok
