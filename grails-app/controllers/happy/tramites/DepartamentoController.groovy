@@ -791,25 +791,106 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def buscarHijos () {
-        println("params " + params)
-
+//        println("params " + params)
         def dptoPadre = Departamento.get(params.id)
         def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
-
-        println("hijos " + dptosHijos)
-
-//        if(dptosHijos.size() > 0){
-//            render "ok*" + dptosHijos
-//        }else{
-//            render "no"
-//        }
-
+//        println("hijos " + dptosHijos)
         return dptosHijos
+    }
 
-//        return [hijos: dptosHijos]
+
+    def departamentoPara () {
+        println("params departamento Para " + params)
+
+        def departamento = Departamento.get(params.id)
+        return [departamento: departamento]
+    }
+
+    def departamentos_ajax () {
+        def listaDepartamentosSin = Departamento.list([sort: 'descripcion', order: "asc"]).id
+        def departamento = Departamento.get(params.id)
+        def prefectura = Departamento.get(11)
+        listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
+
+        def listaDepartamentos = Departamento.findAllByIdInList(listaDepartamentosSin, [sort: 'descripcion', order: "asc"])
+
+        def paras = DepartamentoPara.findAllByDeparatamento(departamento).deparatamentoPara
+        def comunes = listaDepartamentos.intersect(paras)
+        def diferentes = listaDepartamentos.plus(paras)
+        diferentes.removeAll(comunes)
+
+        return [diferentes: diferentes]
 
     }
 
+    def tablaDepartamentos_ajax () {
+        def departamento = Departamento.get(params.id)
+        def paras = DepartamentoPara.findAllByDeparatamento(departamento)
+        [paras: paras]
+    }
+
+    def grabarDepartamento_ajax (){
+
+//        println("params agregar departamento" + params)
+
+        def departamento = Departamento.get(params.id)
+        def porAgregar = Departamento.get(params.dpto)
+
+        def para = new DepartamentoPara()
+        para.deparatamento = departamento
+        para.deparatamentoPara = porAgregar
+        para.fechaDesde = new Date()
+
+        try{
+            para.save(flush: true)
+            render "ok"
+        }catch (e){
+            render "no"
+            println("error al grabar el departamento " + para.errors)
+        }
+    }
+
+    def borrarDepartamento_ajax () {
+
+        def departamento = DepartamentoPara.get(params.id)
+
+        try{
+            departamento.delete(flush: true)
+            render "ok"
+        }catch (e){
+            render "no"
+        }
+    }
+
+    def agregarTodos_ajax () {
+        def departamento = Departamento.get(params.id)
+        def paras = DepartamentoPara.findAllByDeparatamento(departamento)
+        def listaDepartamentosSin = Departamento.list([sort: 'descripcion', order: "asc"]).id
+        def prefectura = Departamento.get(11)
+        listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
+        def para
+        def listaDepartamentos = Departamento.findAllByIdInList(listaDepartamentosSin, [sort: 'descripcion', order: "asc"])
+
+        paras.each {p->
+            p.delete(flush: true)
+        }
+
+        listaDepartamentos.each {l->
+
+            para = new DepartamentoPara()
+            para.deparatamento = departamento
+            para.deparatamentoPara = l
+            para.fechaDesde = new Date()
+            try{
+                para.save(flush: true)
+            }catch (e){
+                println("error al grabar todos los departamentos " + para.errors)
+            }
+        }
+
+        render "ok"
+
+    }
 
 
 }

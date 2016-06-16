@@ -851,6 +851,22 @@
                                 }
                             }
                         };
+
+
+                        if(nodeId != 11){
+                            items.departamentoPara= {
+                                label   : "Departamento Para",
+                                icon    : "fa fa-tasks",
+                                action  : function (obj) {
+                                    location.href = "${createLink(controller: 'departamento', action: 'departamentoPara')}/" + nodeId
+                                }
+                            };
+
+                        }
+
+
+
+
                         if (nodeType.contains('hijo')) {
                             delete items.imprimir.submenu.no
                         }
