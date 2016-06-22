@@ -1,5 +1,10 @@
 package happy.reportes
 
+import com.lowagie.text.Document
+import com.lowagie.text.Element
+import com.lowagie.text.Font
+import com.lowagie.text.Paragraph
+import com.lowagie.text.pdf.PdfWriter
 import groovy.time.TimeCategory
 import happy.seguridad.Persona
 import happy.seguridad.Shield
@@ -18,6 +23,25 @@ class ReporteGestionExcelController extends Shield {
     def diasLaborablesService
     def reportesPdfService
     def dbConnectionService
+
+    Font font = new Font(Font.TIMES_ROMAN, 9, Font.NORMAL);
+    Font fontBold = new Font(Font.TIMES_ROMAN, 9, Font.BOLD);
+    def prmsHeaderHoja = [align: Element.ALIGN_CENTER]
+    def prmsHeaderHojaLeft = [align: Element.ALIGN_RIGHT]
+    def prmsTablaHojaCenter = [align: Element.ALIGN_CENTER]
+    def prmsTablaHoja = []
+
+    def fontNombreDep = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
+    def fontTotalesDep = new Font(Font.TIMES_ROMAN, 10, Font.BOLDITALIC)
+    def fontNombrePers = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+    def fontTotalesPers = new Font(Font.TIMES_ROMAN, 8, Font.BOLDITALIC)
+    def fontHeaderTabla = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+    def fontTabla = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+
+    def fontPrefectura = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+    def fontDireccion = new Font(Font.TIMES_ROMAN, 9, Font.BOLD);
+    def fontDepartamento = new Font(Font.TIMES_ROMAN, 8, Font.BOLD);
+    def fontPersona = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL);
 
     def reporteGestion() {
         def desde = new Date().parse("dd-MM-yyyy", params.desde)
@@ -686,7 +710,165 @@ class ReporteGestionExcelController extends Shield {
         pw.flush();
         pw.close();
 
+   }
 
+    def reporteTiempoRespuestaUsuarioPdf () {
+
+
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+
+        def usuario = Persona.get(params.id)
+
+
+        def sql
+        def cn = dbConnectionService.getConnection()
+        sql = "select * from rp_tiempos ("+ "'" + desde + "'" + "," +  "'" + hasta + "'" + "," + null + "," + params.id +")"
+
+
+        def idUsario = params.id
+        def per = Persona.get(params.id)
+
+        def baos = new ByteArrayOutputStream()
+        def tablaCabeceraRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaCabeceraRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15]), 15, 0)
+        def tablaTramiteUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
+        def tablaTramiteNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 5, 20, 10, 13]), 15, 0)
+        def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def name = "reporteTiemposRespuesta_" + new Date().format("ddMMyyyy_HHmm") + ".pdf";
+        def results = []
+        def fechaRecepcion = new Date().format("yyyy/MM/dd HH:mm:ss")
+        def ahora = new Date()
+
+
+        Document document = reportesPdfService.crearDocumento("v", [top: 2, right: 2, bottom: 1.5, left: 2.5])
+
+        def pdfw = PdfWriter.getInstance(document, baos);
+        session.tituloReporte = "Reporte de tiempos de respuesta"
+
+        def esTriangulo = per.esTrianguloOff()
+        session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
+        def tipo
+        def persona = Persona.get(idUsario)
+
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo de respuesta", fontBold), prmsHeaderHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Total de contestados", fontBold), prmsHeaderHoja)
+
+
+            cn.eachRow(sql.toString()){
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0005 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+            }
+
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "reporteTiemposdeRespuesta")
+        document.add(tablaCabeceraRetrasados);
+        document.add(tablaTramite);
+        document.add(tablaTotalesRetrasados);
+        document.add(tablaCabecera);
+        document.add(tablaCabeceraRetrasadosUs);
+        document.add(tablaTramiteUs);
+        document.add(tablaTotalesRetrasadosUs);
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+    }
+
+    def reporteTiempoRespuestaDepPdf () {
+
+
+        def desde = new Date().parse("dd-MM-yyyy", params.desde)
+        def hasta = new Date().parse("dd-MM-yyyy", params.hasta)
+
+        desde = desde.format("yyyy/MM/dd")
+        hasta = hasta.format("yyyy/MM/dd")
+
+        def desdeF = new Date().parse("dd-MM-yyyy", params.desde)
+        def hastaF = new Date().parse("dd-MM-yyyy", params.hasta)
+        desdeF = desdeF.format("dd-MM-yyyy")
+        hastaF = hastaF.format("dd-MM-yyyy")
+
+
+        def departamento = Departamento.get(params.id)
+
+        def sql
+        def cn = dbConnectionService.getConnection()
+        sql = "select * from rp_tiempos ("+ "'" + desde + "'" + "," +  "'" + hasta + "'" + "," + params.id + "," + null +")"
+
+        def baos = new ByteArrayOutputStream()
+        def tablaCabeceraRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaCabeceraRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([20, 10, 10, 10, 10, 10]), 15, 0)
+        def tablaTramiteUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
+        def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
+        def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def tablaTotalesRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
+        def name = "reporteTiemposRespuesta_" + new Date().format("ddMMyyyy_HHmm") + ".pdf";
+        def results = []
+
+        Document document = reportesPdfService.crearDocumento("v", [top: 2, right: 2, bottom: 1.5, left: 2.5])
+
+        def pdfw = PdfWriter.getInstance(document, baos);
+        session.tituloReporte = "Reporte de tiempos de respuesta"
+        session.tituloReporte += "\ndel departamento $departamento.descripcion"
+        session.tituloReporte += "\nDESDE $desdeF HASTA $hastaF"
+
+
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", fontBold), prmsHeaderHoja)
+
+        cn.eachRow(sql.toString()){
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prsn, fontBold), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0005 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+        }
+
+        reportesPdfService.membrete(document)
+        document.open();
+        reportesPdfService.propiedadesDocumento(document, "reporteTiemposdeRespuesta")
+        document.add(tablaCabeceraRetrasados);
+        document.add(tablaTramite);
+        document.add(tablaTotalesRetrasados);
+        document.add(tablaCabecera);
+        document.add(tablaCabeceraRetrasadosUs);
+        document.add(tablaTramiteUs);
+        document.add(tablaTotalesRetrasadosUs);
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
     }
 
 

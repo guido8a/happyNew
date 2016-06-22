@@ -381,25 +381,25 @@
             }
 
             if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
-            items.salida = {
-                label: "T. contestados y no env.",
-                icon: "fa fa-file-text",
-                submenu: {
-                    pdf: {
-                        label: "PDF",
-                        icon: "fa fa-file-pdf-o",
-                        action: function () {
-                            if (nodeType.match("padre") || nodeType.match("hijo")) {
+                items.salida = {
+                    label: "T. contestados y no env.",
+                    icon: "fa fa-file-text",
+                    submenu: {
+                        pdf: {
+                            label: "PDF",
+                            icon: "fa fa-file-pdf-o",
+                            action: function () {
+                                if (nodeType.match("padre") || nodeType.match("hijo")) {
 
-                            }
-                            else {
-                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalidaUsuario')}/" + nodeId + "?tipo=prsn&dpto=" + parentId;
+                                }
+                                else {
+                                    location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosSalidaUsuario')}/" + nodeId + "?tipo=prsn&dpto=" + parentId;
+                                }
                             }
                         }
                     }
-                }
-            };
-        }
+                };
+            }
 
 
             if (!nodeType.match("usuario") && !nodeType.match("jefe") && !nodeType.match("director")) {
@@ -407,19 +407,19 @@
                     label: "Tiempos de respuesta",
                     icon: "fa fa-file-text",
                     submenu: {
-                        %{--pdf: {--}%
-                            %{--label: "PDF",--}%
-                            %{--icon: "fa fa-file-pdf-o",--}%
-                            %{--action: function () {--}%
-                                %{--$('#modalFechas').modal('show');--}%
-                                %{--$("#btnPrint").unbind("click").click(function () {--}%
-                                    %{--if ($("#formFechas").valid()) {--}%
-                                        %{--location.href = "${g.createLink(controller: 'reporteGestion',action: 'reporteGestion5')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();--}%
-                                        %{--$('#modalFechas').modal('hide');--}%
-                                    %{--}--}%
-                                %{--});--}%
-                            %{--}--}%
-                        %{--},--}%
+                        pdf: {
+                            label: "PDF",
+                            icon: "fa fa-file-pdf-o",
+                            action: function () {
+                                $('#modalFechas').modal('show');
+                                $("#btnPrint").unbind("click").click(function () {
+                                    if ($("#formFechas").valid()) {
+                                        location.href = "${g.createLink(controller: 'reporteGestionExcel',action: 'reporteTiempoRespuestaDepPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                        $('#modalFechas').modal('hide');
+                                    }
+                                });
+                            }
+                        },
                         xls: {
                             label: "Excel",
                             icon: "fa fa-file-excel-o",
@@ -440,22 +440,22 @@
 
             if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
                 items.gestion = {
-                    label: "Tiempos de respuesta - Us",
+                    label: "Tiempos de respuesta",
                     icon: "fa fa-file-text",
                     submenu: {
-                        %{--pdf: {--}%
-                        %{--label: "PDF",--}%
-                        %{--icon: "fa fa-file-pdf-o",--}%
-                        %{--action: function () {--}%
-                        %{--$('#modalFechas').modal('show');--}%
-                        %{--$("#btnPrint").unbind("click").click(function () {--}%
-                        %{--if ($("#formFechas").valid()) {--}%
-                        %{--location.href = "${g.createLink(controller: 'reporteGestion',action: 'reporteGestion5')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();--}%
-                        %{--$('#modalFechas').modal('hide');--}%
-                        %{--}--}%
-                        %{--});--}%
-                        %{--}--}%
-                        %{--},--}%
+                        pdf: {
+                            label: "PDF",
+                            icon: "fa fa-file-pdf-o",
+                            action: function () {
+                                $('#modalFechas').modal('show');
+                                $("#btnPrint").unbind("click").click(function () {
+                                    if ($("#formFechas").valid()) {
+                                        location.href = "${g.createLink(controller: 'reporteGestionExcel',action: 'reporteTiempoRespuestaUsuarioPdf')}/" + nodeId + "?desde=" + $("#desde_input").val() + "&hasta=" + $("#hasta_input").val();
+                                        $('#modalFechas').modal('hide');
+                                    }
+                                });
+                            }
+                        },
                         xls: {
                             label: "Excel",
                             icon: "fa fa-file-excel-o",
