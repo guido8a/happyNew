@@ -602,7 +602,7 @@ class ReporteGestionExcelController extends Shield {
 
 
         sheet.setColumnWidth(0, 8000)
-        sheet.setColumnWidth(1, 8000)
+        sheet.setColumnWidth(1, 4000)
         sheet.setColumnWidth(2, 5000)
         sheet.setColumnWidth(3, 5000)
         sheet.setColumnWidth(4, 5000)
@@ -721,6 +721,11 @@ class ReporteGestionExcelController extends Shield {
         desde = desde.format("yyyy/MM/dd")
         hasta = hasta.format("yyyy/MM/dd")
 
+        def desdeF = new Date().parse("dd-MM-yyyy", params.desde)
+        def hastaF = new Date().parse("dd-MM-yyyy", params.hasta)
+        desdeF = desdeF.format("dd-MM-yyyy")
+        hastaF = hastaF.format("dd-MM-yyyy")
+
         def usuario = Persona.get(params.id)
 
 
@@ -752,11 +757,8 @@ class ReporteGestionExcelController extends Shield {
 
         def pdfw = PdfWriter.getInstance(document, baos);
         session.tituloReporte = "Reporte de tiempos de respuesta"
-
-        def esTriangulo = per.esTrianguloOff()
         session.tituloReporte += "\ndel usuario $per.nombre $per.apellido ($per.login)"
-        def tipo
-        def persona = Persona.get(idUsario)
+        session.tituloReporte += "\nDESDE $desdeF HASTA $hastaF"
 
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Tiempo de respuesta", fontBold), prmsHeaderHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Total de contestados", fontBold), prmsHeaderHoja)
@@ -843,7 +845,7 @@ class ReporteGestionExcelController extends Shield {
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", fontBold), prmsHeaderHoja)
 
         cn.eachRow(sql.toString()){
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prsn, fontBold), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prsn, fontBold), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
