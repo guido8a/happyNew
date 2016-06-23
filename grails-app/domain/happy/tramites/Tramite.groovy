@@ -64,6 +64,7 @@ class Tramite {
     Persona creador
     String login
 
+    String aip           //S: si es de acceso a la información pública, N: normal
 
     def diasLaborablesService
 
@@ -128,6 +129,8 @@ class Tramite {
 
             creador column: 'prsn__id'
             login column: 'trmtprlg'
+
+            aip column: 'trmt_aip'
         }
     }
     static constraints = {
@@ -183,6 +186,7 @@ class Tramite {
         departamentoSigla(blank: true, nullable: true)
         creador(blank: true, nullable: true)
         login(blank: true, nullable: true)
+        aip(blank: true, nullable: true, maxSize: 1)
     }
 
     def beforeValidate(List propertiesBeingValidated) {
