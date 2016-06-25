@@ -403,7 +403,7 @@
 
 
             if (!nodeType.match("usuario") && !nodeType.match("jefe") && !nodeType.match("director")) {
-                items.gestion = {
+                items.tiempos = {
                     label: "Tiempos de respuesta",
                     icon: "fa fa-file-text",
                     submenu: {
@@ -439,7 +439,7 @@
 
 
             if (nodeType.match("usuario") || nodeType.match("jefe") || nodeType.match("director")) {
-                items.gestion = {
+                items.tiempos = {
                     label: "Tiempos de respuesta",
                     icon: "fa fa-file-text",
                     submenu: {
