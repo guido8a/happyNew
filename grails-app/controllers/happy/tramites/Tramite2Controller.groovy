@@ -1762,6 +1762,10 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 
     def saveDep() {
+
+//        println("params save dep " + params)
+
+
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
@@ -1963,7 +1967,14 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         tramite.properties = paramsTramite
         if (tramite.tipoDocumento.codigo == "DEX") {
+
             tramite.estadoTramiteExterno = EstadoTramiteExterno.findByCodigo("E001")
+            if(params.aip == 'on'){
+//                println("entro dex")
+                tramite.aip = 'S'
+            }else{
+                tramite.aip = 'N'
+            }
         }
 
 //        tramite.departamento = tramite.de.departamento

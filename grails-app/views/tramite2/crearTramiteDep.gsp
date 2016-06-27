@@ -404,6 +404,12 @@
                         </label>
                     </div>
 
+                    <div class="col-xs-2 negrilla hide" id="divAIP" style="margin-top: 20px; width: 120px;">
+                        <label for="aip"><input type="checkbox" name="aip" id="aip" ${tramite.aip == 'S' ? 'checked' : ''}/>
+                            Trámite AIP
+                        </label>
+                    </div>
+
                     %{--<div class="col-xs-2 negrilla" id="divExterno" style="margin-top: 20px; width: 110px;">--}%
                     %{--<label for="externo"><input type="checkbox" name="externo" id="externo">--}%
                     %{--Externo--}%
@@ -627,6 +633,7 @@
                 var $tituloCopia = $("#tituloCopia");
                 var $divConfidencial = $("#divConfidencial");
                 var $divAnexos = $("#divAnexos");
+                var $divAIP = $("#divAIP");
                 var $divBotonInfo = $("#divBotonInfo");
                 var $chkAnexos = $("#anexo");
                 var $chkExterno = $("#externo");
@@ -719,7 +726,7 @@
 //                        var $ul = $("#ulDisponibles");
 //                        $ul.find("li").addClass("selected");
 //                        moveSelected($ul, $("#ulSeleccionados"), false);
-
+                        $divAIP.addClass("hide");
                         $tituloCopia.text("Circular");
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
@@ -749,6 +756,7 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
+                        $divAIP.addClass("hide");
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
                         break;
@@ -762,6 +770,7 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
+                        $divAIP.removeClass("hide");
 //                        $chkAnexos.prop("checked", true);
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);
@@ -775,6 +784,7 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.addClass("hide");
+                        $divAIP.addClass("hide");
 //                        $divExterno.addClass("hide");
 //                        $chkExterno.prop("checked", false);
                         $divExterno.removeClass("hide");
@@ -790,6 +800,7 @@
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
                         $divExterno.removeClass("hide");
+                        $divAIP.addClass("hide");
                         $chkExterno.prop("checked", false);
                 }
                 if (!cod) {
