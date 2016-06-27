@@ -231,6 +231,7 @@
                         label: "PDF",
                         icon: "fa fa-file-pdf-o",
                         action: function () {
+                            $("#modalFecha_title").html("Periodo:");
                             $('#modalFechas').modal('show');
                             $("#btnPrint").unbind("click").click(function () {
                                 if ($("#formFechas").valid()) {
@@ -290,6 +291,7 @@
                         label: "EXCEL",
                         icon: "fa fa-file-excel-o",
                         action: function () {
+                            $("#modalFecha_title").html("Periodo:");
                             $('#modalFechas').modal('show');
                             $("#btnPrint").unbind("click").click(function () {
                                 if ($("#formFechas").valid()) {
@@ -354,6 +356,7 @@
                             label: "PDF",
                             icon: "fa fa-file-pdf-o",
                             action: function () {
+                                $("#modalFecha_title").html("Periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -367,6 +370,7 @@
                             label: "Excel",
                             icon: "fa fa-file-excel-o",
                             action: function () {
+                                $("#modalFecha_title").html("Periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -411,6 +415,7 @@
                             label: "PDF",
                             icon: "fa fa-file-pdf-o",
                             action: function () {
+                                $("#modalFecha_title").html("Trámites enviados en el periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -424,6 +429,7 @@
                             label: "Excel",
                             icon: "fa fa-file-excel-o",
                             action: function () {
+                                $("#modalFecha_title").html("Trámites enviados en el periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -447,6 +453,7 @@
                             label: "PDF",
                             icon: "fa fa-file-pdf-o",
                             action: function () {
+                                $("#modalFecha_title").html("Trámites enviados en el periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
@@ -460,6 +467,7 @@
                             label: "Excel",
                             icon: "fa fa-file-excel-o",
                             action: function () {
+                                $("#modalFecha_title").html("Trámites enviados en el periodo:");
                                 $('#modalFechas').modal('show');
                                 $("#btnPrint").unbind("click").click(function () {
                                     if ($("#formFechas").valid()) {
