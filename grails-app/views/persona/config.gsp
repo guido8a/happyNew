@@ -388,7 +388,9 @@
                         }
                     });
                     if (!band) {
-                        bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i><p>No ha seleccionado ningún perfil. El usuario no podrá ingresar al sistema. ¿Desea continuar?.</p>", function (result) {
+                        bootbox.confirm("<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
+                                "<p>No ha seleccionado ningún perfil. El usuario no podrá ingresar al sistema. ¿Desea continuar?.</p>",
+                                function (result) {
                             if (result) {
                                 doSave(url, data);
                             }

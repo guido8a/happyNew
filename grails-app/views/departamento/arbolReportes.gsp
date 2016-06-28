@@ -405,7 +405,7 @@
                 };
             }
 
-
+            console.log('tipo de nodo:', nodeType)
             if (!nodeType.match("usuario") && !nodeType.match("jefe") && !nodeType.match("director")) {
                 items.tiempos = {
                     label: "Tiempos de respuesta",
