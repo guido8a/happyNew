@@ -48,7 +48,7 @@ class ReportesPersonalesController extends Shield {
         def baos = new ByteArrayOutputStream()
         def tablaCabeceraRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
         def tablaCabeceraRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
-        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12,15,12,26,12,14,19,10]), 15, 0)
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([12,15,12,32,12,14,10,10]), 15, 0)
         def tablaTramiteUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
         def tablaTramiteNoRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([10, 5, 20, 10, 13]), 15, 0)
         def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
@@ -93,9 +93,9 @@ class ReportesPersonalesController extends Shield {
             prtr = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(it,rol)
             hasta ="select * from tmpo_hasta('${prtr.fechaRecepcion}', 10)"
             println "hasta: $hasta"
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(prtr?.fechaRecepcion?.format("dd-MM-yyyy"), font), prmsTablaHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(prtr?.fechaRecepcion?.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + cn2.firstRow(hasta.toString()).tmpo_hasta.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.departamento?.descripcion, font), prmsTablaHoja)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.departamento?.codigo, font), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.estadoTramiteExterno?.descripcion, font), prmsTablaHoja)
         }
 
