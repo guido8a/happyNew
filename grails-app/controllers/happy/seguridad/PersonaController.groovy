@@ -677,7 +677,7 @@ class PersonaController extends happy.seguridad.Shield {
 
         arrRemove.each { pid ->
             def perf = Prfl.get(pid)
-            def sesn = Sesn.findAllByUsuarioAndPerfil(usu, perf)  // puede tener varios perfiles repetidos
+            def sesn = Sesn.findAllByUsuarioAndPerfilAndFechaFinIsNull(usu, perf)  // puede tener varios perfiles repetidos
             try {
 //                sesn.fechaFin = new Date()
                 sesn.each { sn ->
