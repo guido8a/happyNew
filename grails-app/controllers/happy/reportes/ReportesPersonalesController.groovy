@@ -91,9 +91,8 @@ class ReportesPersonalesController extends Shield {
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.numeroDocExterno, font), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.asunto, font), prmsTablaHoja)
             prtr = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(it,rol)
-            entre ="select * from tmpo_entre('${prtr?.fechaRecepcion}' , cast('${new Date().toString()}' as timestamp without time zone))"
-            dias = cn.firstRow(entre.toString())
-            hasta ="select * from tmpo_hasta(cast('${new Date().toString()}' as timestamp without time zone), ${dias.dias.toInteger()})"
+            hasta ="select * from tmpo_hasta('${prtr.fechaRecepcion}', 10)"
+            println "hasta: $hasta"
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(prtr?.fechaRecepcion?.format("dd-MM-yyyy"), font), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + cn2.firstRow(hasta.toString()).tmpo_hasta.format("dd-MM-yyyy HH:mm"), font), prmsTablaHoja)
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.departamento?.descripcion, font), prmsTablaHoja)
