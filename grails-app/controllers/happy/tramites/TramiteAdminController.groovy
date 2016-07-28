@@ -1670,16 +1670,21 @@ class TramiteAdminController /*extends Shield*/ {
                     }
                 }
             }
-            if (pdt.tramite.aQuienContesta) {
+//            if (pdt.tramite.aQuienContesta) {
+//            println "tramite prtr: ${pdt.tramite.aQuienContesta.id}, padre: ${pdt.tramite.aQuienContesta.tramite.codigo} con: " +
+//                    "archivo: ${pdt.tramite.aQuienContesta.fechaArchivo} y anulación: ${pdt.tramite.aQuienContesta.fechaAnulacion} "
+            /*** reactiva trámite si no está archivado ni anulado ***/
+            if (pdt.tramite.aQuienContesta && (!pdt.tramite.aQuienContesta.fechaArchivo) && !pdt.tramite.aQuienContesta.fechaAnulacion) {
+
                 if (pdt.tramite.aQuienContesta.fechaRecepcion) {
-                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
                 } else if (pdt.tramite.aQuienContesta.fechaEnvio) {
-                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")   // enviado
                 } else {
-                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E001")
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E001")   // por enviar
                 }
-                pdt.tramite.aQuienContesta.fechaAnulacion = null
-                pdt.tramite.aQuienContesta.fechaArchivo = null
+//                pdt.tramite.aQuienContesta.fechaAnulacion = null
+//                pdt.tramite.aQuienContesta.fechaArchivo = null
                 def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
                 def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
                 def accion = "Reactivado por anulación de trámite derivado"
