@@ -819,7 +819,7 @@ class DepartamentoController extends happy.seguridad.Shield {
         def diferentes = listaDepartamentos.plus(paras)
         diferentes.removeAll(comunes)
 
-        return [diferentes: diferentes]
+        return [diferentes: diferentes, departamento: departamento]
 
     }
 

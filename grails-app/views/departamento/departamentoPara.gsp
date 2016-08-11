@@ -19,6 +19,12 @@
 
 <div class="row">
     <div class="col-md-12">
+
+        <div class="alert alert-success col-md-11" role="alert">
+            <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
+            Departamentos a los cuales <strong>${departamento?.descripcion}</strong> puede enviar trámites.
+        </div>
+
         <label class="col-md-2">
             <h4>Departamentos</h4>
         </label>

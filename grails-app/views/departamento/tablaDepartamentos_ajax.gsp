@@ -31,7 +31,7 @@
                         </tr>
                     </g:each>
                     </tbody>
-                </table>
+                </table>star
             </div>
         </div>
     </div>
