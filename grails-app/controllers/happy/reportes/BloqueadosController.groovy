@@ -169,11 +169,7 @@ class BloqueadosController extends Shield {
                         }
                         ind++
                     }
-                }else{
-
                 }
-
-
 
                         par = new Paragraph(cadenaTramites, times8normal)
                         cell = new PdfPCell(par);
