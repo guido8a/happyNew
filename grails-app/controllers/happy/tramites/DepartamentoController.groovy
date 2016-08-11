@@ -800,7 +800,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 
 
     def departamentoPara () {
-        println("params departamento Para " + params)
+//        println("params departamento Para " + params)
 
         def departamento = Departamento.get(params.id)
         return [departamento: departamento]

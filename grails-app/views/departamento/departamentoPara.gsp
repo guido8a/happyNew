@@ -20,9 +20,10 @@
 <div class="row">
     <div class="col-md-12">
 
-        <div class="alert alert-success col-md-11" role="alert">
+        <div class="alert alert-success col-md-11" role="alert" style="height: 45px">
             <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
-            Departamentos a los cuales <strong>${departamento?.descripcion}</strong> puede enviar trámites.
+            <span style="font-size: large">Departamentos a los cuales <strong>${departamento?.descripcion}</strong>
+                puede enviar trámites.</span>
         </div>
 
         <label class="col-md-2">
@@ -44,7 +45,7 @@
 
 
 <div style="margin-top: 30px; min-height: 400px;font-size: 11px" class="vertical-container">
-    <p class="css-vertical-text" style="bottom: -10px">Asignados</p>
+    <p class="css-vertical-text" style="bottom: -10px">Puede enviar trámites para</p>
 
     <div class="linea"></div>
 

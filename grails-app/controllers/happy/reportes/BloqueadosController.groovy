@@ -248,6 +248,7 @@ class BloqueadosController extends Shield {
         cell = new PdfPCell(par);
         cell.setBorderColor(Color.WHITE)
         tablaTramites.addCell(cell);
+
 //        par = new Paragraph("" + total, times8bold)
 //        cell = new PdfPCell(par);
 //        cell.setBorderColor(Color.WHITE)
