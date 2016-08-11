@@ -139,48 +139,41 @@ class BloqueadosController extends Shield {
                 tablaTramites.addCell(cell);
 
                 def triangulos = []
+
+//                println("de " + d.id)
+
                 Persona.findAllByDepartamento(d).each {
+
                     if (it?.esTriangulo() && it.activo == 1) {
                         triangulos += it.id
                     }
                 }
+
+//                println("triangulos " + triangulos)
+
+
                 def cnDpto = dbConnectionService.getConnection();
                 def sqlDpto = ""
                 def resultDpto = []
                 def cadenaTramites = ''
-                sqlDpto = "select * from  entrada_dpto(" + triangulos.first() + ") where trmtfcbq < now() and trmtfcrc is NULL"
-                def ind = 0
-                cnDpto.eachRow(sqlDpto) { row ->
 
-                    if(ind == 0){
-                        cadenaTramites += (row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
-                    }else{
-                        cadenaTramites += (' - ' +row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+                if(triangulos){
+                    sqlDpto = "select * from  entrada_dpto(" + triangulos.first() + ") where trmtfcbq < now() and trmtfcrc is NULL"
+                    def ind = 0
+                    cnDpto.eachRow(sqlDpto) { row ->
+
+                        if(ind == 0){
+                            cadenaTramites += (row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+                        }else{
+                            cadenaTramites += (' - ' +row?.trmtcdgo + " (" + row?.trmtfcen?.format("dd-MM-yyyy HH:mm") + ")")
+                        }
+                        ind++
                     }
+                }else{
 
-
-//                           resultDpto.add(dp.toRowResult())
-//                    if (ind == 0) {
-//                        par = new Paragraph(row?.trmtcdgo, times8normal)
-//                        cell = new PdfPCell(par);
-//                        cell.setBorderColor(Color.WHITE)
-//                        tablaTramites.addCell(cell);
-//                    } else {
-//                        par = new Paragraph('', times8normal)
-//                        cell = new PdfPCell(par);
-//                        cell.setBorderColor(Color.WHITE)
-//                        tablaTramites.addCell(cell);
-//                        par = new Paragraph('', times8normal)
-//                        cell = new PdfPCell(par);
-//                        cell.setBorderColor(Color.WHITE)
-//                        tablaTramites.addCell(cell);
-//                        par = new Paragraph(row?.trmtcdgo, times8normal)
-//                        cell = new PdfPCell(par);
-//                        cell.setBorderColor(Color.WHITE)
-//                        tablaTramites.addCell(cell);
-//                    }
-                    ind++
                 }
+
+
 
                         par = new Paragraph(cadenaTramites, times8normal)
                         cell = new PdfPCell(par);
