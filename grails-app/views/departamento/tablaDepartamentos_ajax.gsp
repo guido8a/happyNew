@@ -52,7 +52,7 @@
         var id = $(this).data('id');
         bootbox.confirm(titulo, function (result) {
             if (result) {
-                console.log("a borrar: ", id);
+//                console.log("a borrar: ", id);
                 $.ajax({
                     type: 'POST',
                     url: "${createLink(controller: 'departamento', action: 'borrarDepartamento_ajax')}",
