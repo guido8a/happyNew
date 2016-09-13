@@ -851,7 +851,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def borrarDepartamento_ajax () {
-
+//        println "borrarDepartamento_ajax $params"
         def departamento = DepartamentoPara.get(params.id)
 
         try{
@@ -870,6 +870,8 @@ class DepartamentoController extends happy.seguridad.Shield {
         listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
         def para
         def listaDepartamentos = Departamento.findAllByIdInList(listaDepartamentosSin, [sort: 'descripcion', order: "asc"])
+
+//        println "a agregar: ${listaDepartamentos.size()}, y sin: ${listaDepartamentosSin.size()}"
 
         paras.each {p->
             p.delete(flush: true)
@@ -892,5 +894,20 @@ class DepartamentoController extends happy.seguridad.Shield {
 
     }
 
+
+    def eliminarTodos_ajax () {
+        def departamento = Departamento.get(params.id)
+        def paras = DepartamentoPara.findAllByDeparatamento(departamento)
+
+        paras.each {p ->
+            try{
+                p.delete(flush: true)
+            }catch (e){
+                println("error al eliminar los departamentos " + p.errors)
+            }
+        }
+
+        render "ok"
+    }
 
 }

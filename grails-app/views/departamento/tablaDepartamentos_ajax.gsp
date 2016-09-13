@@ -31,7 +31,7 @@
                         </tr>
                     </g:each>
                     </tbody>
-                </table>star
+                </table>
             </div>
         </div>
     </div>
@@ -48,21 +48,27 @@
 
 <script>
     $(".btnBorrar").click(function () {
+        var titulo = "Borrar departamento"
         var id = $(this).data('id');
-        $.ajax({
-            type:'POST',
-            url:"${createLink(controller: 'departamento', action: 'borrarDepartamento_ajax')}",
-            data:{
-                id: id
-            },
-            success:function (msg){
-                if(msg == 'ok'){
-                    log("Departamento borrado correctamente","success")
-                    cargarDepartamentos();
-                    cargarTablaDepartamentos();
-                }else{
-                    log("Error al borrar el departamento","success")
-                }
+        bootbox.confirm(titulo, function (result) {
+            if (result) {
+                console.log("a borrar: ", id);
+                $.ajax({
+                    type: 'POST',
+                    url: "${createLink(controller: 'departamento', action: 'borrarDepartamento_ajax')}",
+                    data: {
+                        id: id
+                    },
+                    success: function (msg) {
+                        if (msg == 'ok') {
+                            log("Departamento borrado correctamente", "success")
+                            cargarDepartamentos();
+                            cargarTablaDepartamentos();
+                        } else {
+                            log("Error al borrar el departamento", "success")
+                        }
+                    }
+                });
             }
         });
     });

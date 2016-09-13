@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 20/05/16
-  Time: 01:09 PM
---%>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -38,6 +31,9 @@
             </a>
             <a href="#" class="btn btn-primary" id="btnAgregarTodos" title="Agregar todos los departamentos">
                 <i class="fa fa-plus"></i> Agregar todos
+            </a>
+            <a href="#" class="btn btn-danger" id="btnEliminarTodos" title="Agregar todos los departamentos">
+                <i class="fa fa-plus"></i> Eliminar todos
             </a>
         </div>
     </div>
@@ -117,22 +113,56 @@
     });
 
     $("#btnAgregarTodos").click(function () {
-        openLoader()
-        $.ajax({
-            type:'POST',
-            url:"${createLink(controller: 'departamento', action: 'agregarTodos_ajax')}",
-            data:{
-                id: ${departamento?.id}
-            },
-            success:function (msg){
-                if(msg =='ok'){
-                    log("Departamentos agregados correctamente","success")
-                    cargarTablaDepartamentos();
-                    cargarDepartamentos();
-                    closeLoader()
-                }else{
-                    log("Error al agregar los departamentos","error")
-                }
+        var titulo = "Agregar todos los departamentos como destinatarios de<br>" + "${departamento?.descripcion}"
+        bootbox.confirm(titulo, function (result) {
+            if (result) {
+                openLoader();
+                openLoader()
+                $.ajax({
+                    type:'POST',
+                    url:"${createLink(controller: 'departamento', action: 'agregarTodos_ajax')}",
+                    data:{
+                        id: ${departamento?.id}
+                    },
+                    success:function (msg){
+                        if(msg =='ok'){
+                            log("Departamentos agregados correctamente","success")
+                            cargarTablaDepartamentos();
+                            cargarDepartamentos();
+                            closeLoader()
+                        }else{
+                            log("Error al agregar los departamentos","error")
+                        }
+                    }
+                });
+
+            }
+        });
+    });
+
+    $("#btnEliminarTodos").click(function () {
+        var titulo = "Eliminar  todos los departamentos ingresados para <br>" + "${departamento?.descripcion}"
+        bootbox.confirm(titulo, function (result) {
+            if (result) {
+                openLoader()
+                $.ajax({
+                    type:'POST',
+                    url:"${createLink(controller: 'departamento', action: 'eliminarTodos_ajax')}",
+                    data:{
+                        id: ${departamento?.id}
+                    },
+                    success:function (msg){
+                        if(msg =='ok'){
+                            log("Departamentos eliminados correctamente","success")
+                            cargarTablaDepartamentos();
+                            cargarDepartamentos();
+                            closeLoader()
+                        }else{
+                            log("Error al eliminar los departamentos","error")
+                        }
+                    }
+                });
+
             }
         });
     });
