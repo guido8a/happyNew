@@ -29,6 +29,7 @@ class TramiteController extends happy.seguridad.Shield {
     def redactar() {
         //def usuario = session.usuario
         //def persona = Persona.get(usuario.id)
+        println "->redactar ${session.usuario.login} ${new Date().format('dd HH:mm')}"
         def esEditor = session.usuario.puedeEditor
         def tramite = Tramite.get(params.id)
         if (tramite?.estadoTramite?.codigo == "E001") { //borrador, por enviar

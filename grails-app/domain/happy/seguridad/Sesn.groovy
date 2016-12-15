@@ -35,7 +35,7 @@ class Sesn {
             return false
         else
         if (fechaInicio <= now && fechaFin == null) {
-            println "activo ..."
+//            println "activo ..."
             return true
         }
         else {

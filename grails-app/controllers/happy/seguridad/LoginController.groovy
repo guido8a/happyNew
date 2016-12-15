@@ -79,7 +79,7 @@ class LoginController {
 
             /*valida usuario en el LDAP */
             ldap.exists("${prmt.textoCn}")
-            println "ingresa..${user.login}"
+            println "ingresa..${user.login} ${new Date().format('dd HH:mm')}"
 
 //            assert ! ldap.exists("${prmt.textoCn}")
 //            def results = ldap.search('(objectClass=*)', 'dc=pichincha,dc=local', SearchScope.ONE)
@@ -255,6 +255,7 @@ class LoginController {
                             redirect(controller: 'login', action: "login")
                             return
                         }
+                        println "ingresa..${user.login} ${new Date().format('dd HH:mm')}"
                     }
                     if (perfiles.size() == 1) {
                         session.usuario.vaciarPermisos()
