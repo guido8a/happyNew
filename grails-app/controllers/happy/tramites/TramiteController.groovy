@@ -200,7 +200,7 @@ class TramiteController extends happy.seguridad.Shield {
                             }
                         }  else {
                             tramite.save(flush: true)
-                            println "guardar redaccion tramite, sesion perdida: ${tramite.codigo}"
+                            println "Guarda redartar, sin sesion: ${tramite.creador.login} ${tramite.codigo} -> ${new Date().format('dd HH:mm')}"
                             redirect(controller: 'login', action: 'login')
                             return
                         }
