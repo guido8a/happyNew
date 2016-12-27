@@ -11,6 +11,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def diasLaborablesService
+    def dbConnectionService
 
     def pruebas() {
 
@@ -345,6 +346,13 @@ class DiaLaborableController extends happy.seguridad.Shield {
             eq("anio", anio)
             order("fecha", "asc")
         }
+
+        /** -------- borra dias iniciales aumentados apra recibir trámites **/
+        def cn = dbConnectionService.getConnection()
+        def fchaEnero = enero01.format("yyyy-MM-dd")
+        cn.execute("delete from ddlb where ddlbfcha >= '${fchaEnero}'".toString())
+        /** --- fin ---borra dias iniciales aumentados apra recibir trámites **/
+
         if (dias.size() < 365) {
             println "No hay todos los dias para ${params.anio}: hay " + dias.size()
 
