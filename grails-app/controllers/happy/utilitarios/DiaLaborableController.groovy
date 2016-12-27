@@ -354,7 +354,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
         /** --- fin ---borra dias iniciales aumentados apra recibir trámites **/
 
         if (dias.size() < 365) {
-            println "No hay todos los dias para ${params.anio}: hay " + dias.size()
+            println "No hay todos los dias para ${params.anio}: hay " + dias.size() + " crea hasta $diciembre31"
 
             def fecha = enero01
             def cont = 1
@@ -382,6 +382,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
                     eq("fecha", fecha)
                 }
                 if (!diaExiste) {
+
                     def diaLaborable = new DiaLaborable([
                             fecha       : fecha,
                             dia         : diasSem[dia],
@@ -396,7 +397,10 @@ class DiaLaborableController extends happy.seguridad.Shield {
                         println "error al guardar el dia laborable ${fecha.format('dd-MM-yyyy')}: " + diaLaborable.errors
                     } else {
                         guardados++
-//                    println "guardado: " + fecha.format("dd-MM-yyyy") + "   " + dia + " ordinal:" + ordinal
+
+                        if(fecha >= (diciembre31 - 10)) {
+                            println "guardando: " + fecha.format("dd-MM-yyyy") + "   " + dia + " ordinal:" + ordinal
+                        }
                     }
                 }
                 fecha++
