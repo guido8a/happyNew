@@ -770,7 +770,7 @@
 //                        $divConfidencial.addClass("hide");
                         $divConfidencial.removeClass("hide");
                         $divAnexos.removeClass("hide");
-//                        $divAIP.removeClass("hide");  //quitar comentario para aparezca AIF
+                        $divAIP.removeClass("hide");  //quitar comentario para aparezca AIF
 //                        $chkAnexos.prop("checked", true);
                         $divExterno.removeClass("hide");
                         $chkExterno.prop("checked", true);

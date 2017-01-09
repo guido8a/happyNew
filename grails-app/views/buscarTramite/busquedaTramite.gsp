@@ -641,13 +641,13 @@
                 }
 
 
-/*
-                <g:if test="${session.usuario.getPuedeCopiar()}">
-                if (esMio) {
-                    items.copia = copia;
-                }
-                </g:if>
-*/
+%{--/*--}%
+                %{--<g:if test="${session.usuario.getPuedeCopiar()}">--}%
+                %{--if (esMio) {--}%
+                    %{--items.copia = copia;--}%
+                %{--}--}%
+                %{--</g:if>--}%
+%{--*/--}%
 
                 return items
             }
