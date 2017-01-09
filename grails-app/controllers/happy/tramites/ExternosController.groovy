@@ -59,7 +59,7 @@ class ExternosController extends Shield {
     }
 
     def recibirTramiteExterno_funcion(Long id) {
-        println "recibir tramite " + id
+//        println "recibir tramite " + id
         def pdt = PersonaDocumentoTramite.get(id)
         if (pdt?.estado?.codigo == "E006") {
             return "<li>El trámite ${pdt.rolPersonaTramite.descripcion} ${pdt.departamento ? pdt.departamento.descripcion : pdt.persona?.login} ya ha sido anulado, no puede ser recibido.</li>"

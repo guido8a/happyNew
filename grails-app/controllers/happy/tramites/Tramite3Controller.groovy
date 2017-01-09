@@ -1072,7 +1072,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        println "recibir tramite - tramite3 " + params
+//        println "recibir tramite - tramite3 " + params
         if (request.getMethod() == "POST") {
 
             def persona = session.usuario
@@ -1169,7 +1169,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             }
 
 //            println("pxt 2"  + pxt )
-            println "Estado del pdt " + pxt.estado.codigo
+//            println "Estado del pdt " + pxt.estado.codigo
             if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {
@@ -1185,9 +1185,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        use(TimeCategory) {
 //            limite = limite + tramite.prioridad.tiempo.hours
 //        }
-                println "invoca a limite.. +3 días"
+//                println "invoca a limite.. +3 días"
                 limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-                println "retorna limite: $limite"
+//                println "retorna limite: $limite"
                 if (limite[0]) {
                     limite = limite[1]
                 } else {
