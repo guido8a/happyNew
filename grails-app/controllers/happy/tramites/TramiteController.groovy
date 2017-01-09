@@ -168,12 +168,14 @@ class TramiteController extends happy.seguridad.Shield {
         def paratr = tramite.para
         def copiastr = tramite.copias
         def enviado = false
+        def usuario = session?.usuario
         (copiastr + paratr).each { c ->
             if (c?.estado?.codigo == "E003") {
                 enviado = true
             }
         }
 
+        print "sesion: ${usuario}:${tramite.creador.login}"
 
         def tramitetr = Tramite.get(params.id)
         if (tramitetr) {
@@ -193,10 +195,13 @@ class TramiteController extends happy.seguridad.Shield {
                         tramite.texto = (params.editorTramite).replaceAll("\\n", "")
                         tramite.fechaModificacion = new Date()
                         //log Jefe
-                        if(session.usuario) {
-                            if (session.usuario.getPuedeJefe()) {
+//                        if(session.usuario) {
+                        if(usuario) {
+//                            if (session.usuario.getPuedeJefe()) {
+                            if (usuario.getPuedeJefe()) {
                                 tramite.fechaModificacion = new Date()
-                                tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '', ' ', '', '')
+//                                tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + session.usuario.login, '', ' ', '', '')
+                                tramite.observaciones = tramitesService.observaciones(tramite.observaciones, 'Editado por: ' + usuario.login, '', ' ', '', '')
                             }
                         }  else {
                             tramite.save(flush: true)
@@ -207,7 +212,8 @@ class TramiteController extends happy.seguridad.Shield {
 
                         if (tramite.save(flush: true)) {
                             def para = tramite.para
-                            enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+//                            enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+                            enviarService.crearPdf(tramite, usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
                             if (params.para) {
                                 if (params.para.toLong() > 0) {
                                     para.persona = Persona.get(params.para.toLong())
