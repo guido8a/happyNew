@@ -29,6 +29,8 @@ CKEDITOR.editorConfig = function (config) {
 
     config.contentsCss= "p { text-align: justify; margin-bottom: 0; }";
 
+
+
     /*
      // Toolbar configuration generated automatically by the editor based on config.toolbarGroups.
      config.toolbar = [

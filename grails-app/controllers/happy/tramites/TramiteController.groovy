@@ -168,14 +168,14 @@ class TramiteController extends happy.seguridad.Shield {
         def paratr = tramite.para
         def copiastr = tramite.copias
         def enviado = false
-        def usuario = session?.usuario
+        def usuario = Persona.get(session?.usuario.id)
         (copiastr + paratr).each { c ->
             if (c?.estado?.codigo == "E003") {
                 enviado = true
             }
         }
 
-        print "sesion: ${usuario}:${tramite.creador.login}"
+//        print "sesion: ${usuario?.login}:${tramite.creador.login}"
 
         def tramitetr = Tramite.get(params.id)
         if (tramitetr) {
@@ -205,7 +205,7 @@ class TramiteController extends happy.seguridad.Shield {
                             }
                         }  else {
                             tramite.save(flush: true)
-                            println "Guarda redartar, sin sesion: ${tramite.creador.login} ${tramite.codigo} -> ${new Date().format('dd HH:mm')}"
+                            println "Guarda sin sesion: ${tramite.creador.login} ${tramite.codigo} -> ${new Date().format('dd HH:mm')}"
                             redirect(controller: 'login', action: 'login')
                             return
                         }
