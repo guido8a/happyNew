@@ -16,7 +16,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def persona = Persona.get(session.usuario.id)
         def esDepartamento = persona.esTriangulo
 
-        println("tramite " + tramite)
+//        println("tramite " + tramite)
 
 //        if(pdt.estado == EstadoTramite.findByCodigo("E005")){
 //                        flash.message = "No puede agregar un documento a este tramite."
@@ -24,8 +24,11 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //                        return
 //                    }
 
+        println "puede: ${persona.puedeAgregarDocumento}, esDpto: ${esDepartamento} de: ${persona} = ${tramite.de}, " +
+                "deDpto: ${esDepartamento} : ${tramite.deDepartamento} = ${persona.departamento}"
+
         if(persona.puedeAgregarDocumento){
-            //ok
+//            println "puedeAgregarDocumento: ok"
             render "OK"
             return
         }
@@ -35,7 +38,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             render "OK"
             return
         }
-        if (esDepartamento && tramite.deDepartamento == persona.departamento) {
+//        if (esDepartamento && tramite.deDepartamento == persona.departamento) {
+        if (esDepartamento && tramite.departamento == persona.departamento) {  //el triángulo puede agregar trámite de cualquiera de su oficina (2017)
 //            println "1.2: " + persona.departamento
             render "OK"
             return
