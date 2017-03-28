@@ -343,6 +343,7 @@
                     }
                 };
 
+/*
                 var todoDetalle = {
                     label  : 'Detalle toda la cadena del trámite',
                     icon   : "fa fa-sitemap",
@@ -350,11 +351,12 @@
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqt"
                     }
                 };
+*/
 
 
                 var parcialDetalle = {
-                    label  : 'Detalle a partir del trámite',
-                    icon   : "fa fa-sitemap",
+                    label  : 'Cadena a partir del trámite',
+                    icon   : "fa fa-puzzle-piece",
                     action : function (e) {
                         location.href = '${createLink(controller: 'tramite3', action: 'arbolTramiteParcial')}/' + id + "?b=bqt"
                     }
@@ -461,13 +463,14 @@
                 %{--};--}%
 
                 var administrar = {
-                    label  : "Administrar trámite",
+                    label  : "Administrar toda la cadena del trámite",
                     icon   : "fa fa-cogs",
                     action : function () {
                         location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
                     }
                 };
 
+/*
                 var todoAdmin = {
                     label  : 'Administrar toda la cadena del trámite',
                     icon   : "fa fa-cogs",
@@ -475,10 +478,11 @@
                         location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
                     }
                 };
+*/
 
                 var parcialAdmin = {
                     label  : 'Administrar a partir del trámite',
-                    icon   : "fa fa-cogs",
+                    icon   : "fa fa-cog",
                     action : function () {
                         location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramiteParcial")}?id=' + id;
                     }
@@ -628,13 +632,13 @@
                 items.header.label = "Acciones";
                 <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
-                items.todoDetalle = todoDetalle;
+                items.arbol = arbol;
+//                items.todoDetalle = todoDetalle;
                 items.parcialDetalle = parcialDetalle;
-//                items.arbol = arbol;
                 </g:if>
                 <g:if test="${session.usuario.getPuedeAdmin()}">
-//                items.administrar = administrar;
-                items.todoAdmin = todoAdmin;
+                items.administrar = administrar;
+//                items.todoAdmin = todoAdmin;
                 items.parcialAdmin = parcialAdmin;
                 </g:if>
 //                if (conPadre || tienePrincipal || esPrincipal) {
