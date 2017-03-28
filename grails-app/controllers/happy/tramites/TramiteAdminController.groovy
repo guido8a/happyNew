@@ -960,6 +960,36 @@ class TramiteAdminController /*extends Shield*/ {
         return [html2: html, url: url, tramite: tramite]
     }
 
+
+
+    def arbolAdminTramiteParcial() {
+        def html = "", url = "", tramite = null
+
+        if (params.id) {
+            def usu = Persona.get(session.usuario.id)
+            def puedeAdministrar = session.usuario.puedeAdmin
+            tramite = Tramite.get(params.id.toLong())
+            if (tramite) {
+                def principal = tramite
+//                if (tramite.padre) {
+//                    principal = tramite.padre
+//                    while (true) {
+//                        if (!principal.padre) {
+//                            break
+//                        } else {
+//                            principal = principal.padre
+//                        }
+//                    }
+//                }
+                html = "<ul>" + "\n"
+                html += makeTreeExtended(principal)
+                html += "</ul>" + "\n"
+            }
+            url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+        }
+        return [html2: html, url: url, tramite: tramite]
+    }
+
     def dialogAdmin() {
 //        println("params quitar" + params)
 

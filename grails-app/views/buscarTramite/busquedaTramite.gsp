@@ -343,6 +343,26 @@
                     }
                 };
 
+                var todoDetalle = {
+                    label  : 'Detalle toda la cadena del trámite',
+                    icon   : "fa fa-sitemap",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramite')}/' + id + "?b=bqt"
+                    }
+                };
+
+
+                var parcialDetalle = {
+                    label  : 'Detalle a partir del trámite',
+                    icon   : "fa fa-sitemap",
+                    action : function (e) {
+                        location.href = '${createLink(controller: 'tramite3', action: 'arbolTramiteParcial')}/' + id + "?b=bqt"
+                    }
+                };
+
+
+
+
                 var detalles = {
                     label  : 'Detalles',
                     icon   : "fa fa-search",
@@ -447,6 +467,23 @@
                         location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
                     }
                 };
+
+                var todoAdmin = {
+                    label  : 'Administrar toda la cadena del trámite',
+                    icon   : "fa fa-cogs",
+                    action : function () {
+                        location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramite")}?id=' + id;
+                    }
+                };
+
+                var parcialAdmin = {
+                    label  : 'Administrar a partir del trámite',
+                    icon   : "fa fa-cogs",
+                    action : function () {
+                        location.href = '${createLink(controller: "tramiteAdmin", action: "arbolAdminTramiteParcial")}?id=' + id;
+                    }
+                };
+
 
                 var anexos = {
                     label  : 'Anexos',
@@ -591,10 +628,14 @@
                 items.header.label = "Acciones";
                 <g:if test="${session.usuario.getPuedeVer()}">
                 items.detalles = detalles;
-                items.arbol = arbol;
+                items.todoDetalle = todoDetalle;
+                items.parcialDetalle = parcialDetalle;
+//                items.arbol = arbol;
                 </g:if>
                 <g:if test="${session.usuario.getPuedeAdmin()}">
-                items.administrar = administrar;
+//                items.administrar = administrar;
+                items.todoAdmin = todoAdmin;
+                items.parcialAdmin = parcialAdmin;
                 </g:if>
 //                if (conPadre || tienePrincipal || esPrincipal) {
                 if (esMio) {

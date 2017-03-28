@@ -1453,6 +1453,40 @@ class Tramite3Controller extends happy.seguridad.Shield {
         return [html2: html2, url: url]
     }
 
+    def arbolTramiteParcial() {
+        def tramite = Tramite.get(params.id.toLong())
+        def principal = tramite
+
+        def html2 = "<ul>" + "\n"
+        html2 += makeTreeExtended(principal)
+        html2 += "</ul>" + "\n"
+
+        def url = ""
+        switch (params.b) {
+            case "bep":
+                url = createLink(controller: "tramite", action: "bandejaEntrada")
+                break;
+            case "bed":
+                url = createLink(controller: "tramite3", action: "bandejaEntradaDpto")
+                break;
+            case "bsp":
+                url = createLink(controller: "tramite2", action: "bandejaSalida")
+                break;
+            case "bsd":
+                url = createLink(controller: "tramite2", action: "bandejaSalidaDep")
+                break;
+            case "bqt":
+                url = createLink(controller: "buscarTramite", action: "busquedaTramite")
+                break;
+            case "bqe":
+                url = createLink(controller: "buscarTramite", action: "busquedaEnviados")
+                break;
+
+        }
+
+        return [html2: html2, url: url]
+    }
+
     private static String tramiteInfo(PersonaDocumentoTramite tramiteParaInfo) {
         def strInfo = ""
 //        println "*****" + tramiteParaInfo
