@@ -977,6 +977,13 @@ class PersonaController extends happy.seguridad.Shield {
                 def rolCopia = RolPersonaTramite.findByCodigo('R002');
                 def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
+
+                println("params " + params.id)
+                println("params " + rolPara.id)
+                println("params " + rolCopia.id)
+                println("params " + rolImprimir.id)
+
+
                 def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites " +
                         "where p.persona = ${params.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and " +
                         "p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
