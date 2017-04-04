@@ -20,6 +20,7 @@ import org.apache.directory.groovyldap.SearchScope
 class PersonaController extends happy.seguridad.Shield {
 
     def tramitesService
+    def dbConnectionService
 
     static allowedMethods = [save: "POST", delete: "POST", save_ajax: "POST", delete_ajax: "POST"]
 
@@ -978,18 +979,24 @@ class PersonaController extends happy.seguridad.Shield {
                 def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
 
-                println("params " + params.id)
-                println("params " + rolPara.id)
-                println("params " + rolCopia.id)
-                println("params " + rolImprimir.id)
+//                println("prsn id " + params.id)
 
+//
+//                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites " +
+//                        "where p.persona = ${params.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and " +
+//                        "p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
 
-                def tramites = PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite as p inner join fetch p.tramite as tramites " +
-                        "where p.persona = ${params.id} and p.rolPersonaTramite in (${rolPara.id + "," + rolCopia.id + "," + rolImprimir.id}) and " +
-                        "p.fechaEnvio is not null and tramites.estadoTramite in (3,4) order by p.fechaEnvio desc ")
+                def sql = "SELECT * FROM entrada_prsn(${params.id})"
+//                println("sql " + sql)
+                def cn = dbConnectionService.getConnection()
+                def tramitesQ = cn.rows(sql?.toString())
+                def tramites =  tramitesQ?.prtr__id
+
                 def cantTramites = tramites.size()
-                println "cambioDpto_ajax: $tramites"
 
+                println "cambioDpto_ajax:" + tramites
+//                println "size: " + cantTramites
+//
                 if (params.departamento.id != personaInstance.departamentoId) {
                     msgDpto = "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i>" +
                             "<h4 class='text-warning text-shadow'>Está cambiando a ${personaInstance.toString()} de departamento," +
