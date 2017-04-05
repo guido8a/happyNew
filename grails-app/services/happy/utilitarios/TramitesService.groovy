@@ -4,6 +4,8 @@ import grails.transaction.Transactional
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
 import happy.tramites.Tramite
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsHttpSession
+import org.codehaus.groovy.grails.web.util.WebUtils
 
 //@Transactional
 class TramitesService {

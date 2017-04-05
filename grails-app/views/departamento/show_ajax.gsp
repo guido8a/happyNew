@@ -11,9 +11,9 @@
             <g:if test="${params.tramite}">
                 <g:set var="envia" value="${Tramite.get(params.tramite).de}"/>
             </g:if>
-            <g:if test="${envia.foto}">
+            <g:if test="${envia?.foto}">
                 <a class="pull-left" href="#">
-                    <img class="media-object thumbnail" id="foto" src="${resource(dir: 'images/perfiles/', file: envia.foto)}"/>
+                    <img class="media-object thumbnail" id="foto" src="${resource(dir: 'images/perfiles/', file: envia?.foto)}"/>
                 </a>
                 <g:set var="width" value="3"/>
             </g:if>
