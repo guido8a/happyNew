@@ -168,7 +168,9 @@ class TramiteController extends happy.seguridad.Shield {
         def paratr = tramite.para
         def copiastr = tramite.copias
         def enviado = false
-        def usuario = Persona.get(session?.usuario?.id)
+//        def usuario = Persona.get(session?.usuario?.id)
+        def usuario = tramite.creador
+        println "usuario: ${usuario.login}"
         (copiastr + paratr).each { c ->
             if (c?.estado?.codigo == "E003") {
                 enviado = true
