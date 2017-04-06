@@ -399,7 +399,7 @@ class TramiteAdminController /*extends Shield*/ {
                 }
             }
 
-            println "existen: $existen: ${borrar.label}"
+//            println "existen: $existen: ${borrar.label}"
 //            println "todos: ${todos[1..10]}"
             todos = todos - borrar
 
