@@ -12,9 +12,12 @@ CKEDITOR.editorConfig = function (config) {
 
     // Define changes to default configuration here. For example:
     // config.language = 'fr';
-    config.skin = 'moonocolor';
+    // config.skin = 'moonocolor';
+    config.skin = 'office2013';
     config.language = "es";
-    config.uiColor = '#4D76A3';
+    // config.uiColor = '#4D76A3';
+    // config.uiColor = '#66AB16';
+    // config.backgroundColor = '#66AB16';
 //    config.enterMode = CKEDITOR.ENTER_BR;
     config.shiftEnterMode = CKEDITOR.ENTER_DIV;
 
