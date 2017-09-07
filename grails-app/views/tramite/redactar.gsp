@@ -7,26 +7,8 @@
         <script src="${resource(dir: 'js/plugins/ckeditor', file: 'ckeditor.js')}"></script>
         <script src="${resource(dir: 'js/plugins/ckeditor/adapters', file: 'jquery.js')}"></script>
         <style type="text/css">
-/*
-        .row {
-            margin-top : 2px;
-        }
 
-        .negrilla {
-            padding-left : 0px;
-        }
-
-        .col-xs-1 {
-            line-height : 25px;
-        }
-
-        .col-buen-height {
-            line-height : 25px;
-        }
-
-*/
         .hoja {
-            /*background: #abcdef;*/
             margin : auto;
             float  : right;
             width  : 19cm;
@@ -40,8 +22,6 @@
             background         : #EFEFD1;
             border             : solid 1px #867722;
             width              : 235px;
-            /*max-height : 345px;*/
-            /*overflow   : auto;*/
             z-index            : 1;
 
             -webkit-box-shadow : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
@@ -51,7 +31,6 @@
 
         .nota .contenido {
             overflow   : auto;
-            /*max-height : 325px;*/
         }
 
         .nota:after {
@@ -72,8 +51,6 @@
         }
 
         .nota.padre .contenido {
-            /*height : 200px;*/
-            /*max-height : 285px;*/
         }
 
         .padre h4 {
@@ -82,7 +59,6 @@
             margin-bottom : 5px;
             height        : 40px;
             overflow      : auto;
-            /*cursor        : move;*/
         }
 
         .btn-editar {
@@ -142,29 +118,16 @@
                     <a href="#" class="btn btn-sm btn-primary btnPrint">
                         <i class="fa fa-file"></i> ver PDF
                     </a>
-                    %{--<g:if test="${tramite.tipoDocumento.codigo == 'DEX'}">--}%
-                    %{--<g:link action="saveDEX" class="btn btn-sm btn-info btnTerminar" title="Guardar, enviar y recibir">--}%
-                    %{--<i class="fa fa-check"></i> Guardar y Terminar--}%
-                    %{--</g:link>--}%
-                    %{--</g:if>--}%
                 </div>
 
                 <div class="btn-group">
                     <g:if test="${tramite.deDepartamento && !esEditor}">
-                    %{--<g:link controller="tramite3" action="bandejaEntradaDpto" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
-                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-                    %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalidaDep" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                        %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
                             <i class="fa fa-list-ul"></i> Guardar texto y Salir
                         </g:link>
                     </g:if>
                     <g:else>
-                    %{--<g:link action="bandejaEntrada" class="leave btn btn-sm btn-azul btnRegresar" style="margin-left: 20px;">--}%
-                    %{--<i class="fa fa-list-ul"></i> Bandeja de Entrada--}%
-                    %{--</g:link>--}%
                         <g:link controller="tramite2" action="bandejaSalida" class="btnBandeja leave btn btn-sm btn-azul btnRegresar">
-                        %{--<i class="fa fa-list-ul"></i> Bandeja de Salida--}%
                             <i class="fa fa-list-ul"></i> Guardar texto y Salir
                         </g:link>
                     </g:else>
@@ -472,33 +435,40 @@
                 });
 
                 function imprimir() {
-                    openLoader("Generando PDF");
-                    var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
-                    var data = {
-                        id            : "${tramite.id}",
-                        editorTramite : $("#editorTramite").val(),
-                        para          : $("#para").val(),
-                        asunto        : $("#asunto").val(),
-                        type          : "download",
-                        enviar        : 1,
-                        timestamp     : new Date().getTime()
-                    };
-                    $.ajax({
-                        type     : "POST",
-                        url      : url,
-                        data     : data,
-                        success  : function (msg) {
-                            var parts = msg.split("*");
-                            if (parts[0] == "OK") {
-                                textoInicial = arreglarTexto($("#editorTramite").val());
-                                closeLoader();
-                                window.open("${resource(dir:'tramites')}/" + parts[1]);
-                            }
-                        },
-                        complete : function () {
-                            resetTimer();
-                        }
-                    });
+                    %{--openLoader("Generando PDF");--}%
+                    %{--var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';--}%
+                    %{--var data = {--}%
+                        %{--id            : "${tramite.id}",--}%
+                        %{--editorTramite : $("#editorTramite").val(),--}%
+                        %{--para          : $("#para").val(),--}%
+                        %{--asunto        : $("#asunto").val(),--}%
+                        %{--type          : "download",--}%
+                        %{--enviar        : 1,--}%
+                        %{--timestamp     : new Date().getTime()--}%
+                    %{--};--}%
+                    %{--$.ajax({--}%
+                        %{--type     : "POST",--}%
+                        %{--url      : url,--}%
+                        %{--data     : data,--}%
+                        %{--success  : function (msg) {--}%
+                            %{--var parts = msg.split("*");--}%
+                            %{--if (parts[0] == "OK") {--}%
+                                %{--textoInicial = arreglarTexto($("#editorTramite").val());--}%
+                                %{--closeLoader();--}%
+                                %{--window.open("${resource(dir:'tramites')}/" + parts[1]);--}%
+                            %{--}--}%
+                        %{--},--}%
+                        %{--complete : function () {--}%
+                            %{--resetTimer();--}%
+                        %{--}--}%
+                    %{--});--}%
+
+
+                    var id  = "${tramite.id}";
+                    var timestamp = new Date().getTime();
+
+                    location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp
+
                 }
 
                 $(".btnPrint").click(function () {

@@ -266,40 +266,43 @@ class EnviarService {
 
 //        file.delete()
 
-        def dpto = ""
-        def anio = tramite.fechaCreacion.format("yyyy")
-        if (enviar == "1") {
-//            println("entro enviar")
-            def pathPdf = realPath + "tramites/"
-            if (tramite?.de?.departamento?.codigo || tramite?.deDepartamento?.codigo) {
-                if(tramite.de) {
-                    dpto = tramite.de.departamento.codigo
-                } else {
-                    dpto = tramite.deDepartamento.codigo
-                }
-                pathPdf += dpto + "/"
-                pathPdf += anio + "/"
-            }
-            new File(pathPdf).mkdirs()
-            def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
-//            println("filesave" + fileSave)
-            OutputStream os = new FileOutputStream(fileSave);
-            renderer.layout();
-            renderer.createPDF(os);
-            os.close();
-        }
+//        def dpto = ""
+//        def anio = tramite.fechaCreacion.format("yyyy")
+//        if (enviar == "1") {
+////            println("entro enviar")
+//            def pathPdf = realPath + "tramites/"
+//            if (tramite?.de?.departamento?.codigo || tramite?.deDepartamento?.codigo) {
+//                if(tramite.de) {
+//                    dpto = tramite.de.departamento.codigo
+//                } else {
+//                    dpto = tramite.deDepartamento.codigo
+//                }
+//                pathPdf += dpto + "/"
+//                pathPdf += anio + "/"
+//            }
+//            new File(pathPdf).mkdirs()
+//            def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
+////            println("filesave" + fileSave)
+//            OutputStream os = new FileOutputStream(fileSave);
+//            renderer.layout();
+//            renderer.createPDF(os);
+//            os.close();
+//        }
+//
+//        if (type == "download") {
+////            println("entro!!!!!")
+////            render "OK*" + tramite.codigo + ".pdf"
+//            return "OK*" + dpto + "/" + anio + "/" + tramite.codigo + ".pdf"
+//        } else {
+////            response.setContentType("application/pdf")
+////            response.setHeader("Content-disposition", "attachment; filename=" + (tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
+////            response.setContentLength(b.length)
+////            response.getOutputStream().write(b)
+//            return "NO"
+//        }
 
-        if (type == "download") {
-//            println("entro!!!!!")
-//            render "OK*" + tramite.codigo + ".pdf"
-            return "OK*" + dpto + "/" + anio + "/" + tramite.codigo + ".pdf"
-        } else {
-//            response.setContentType("application/pdf")
-//            response.setHeader("Content-disposition", "attachment; filename=" + (tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
-//            response.setContentLength(b.length)
-//            response.getOutputStream().write(b)
-            return "NO"
-        }
+
+        return baos
     }
 
 

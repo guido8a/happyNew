@@ -102,9 +102,8 @@
 
             <div class="linea"></div>
 
-            <div id="bandeja">
-
-            </div>
+        <div id="bandeja">
+        </div>
 
         </div>
 
@@ -637,6 +636,30 @@
                     }
                 };
 
+
+                var imprimir = {
+                    label  : "Ver - Imprimir",
+                    icon   : "fa fa-search",
+                    action : function () {
+                        $.ajax({
+                            type    : 'POST',
+                            url     : '${createLink(controller: 'tramite3', action: 'verificarEstado')}',
+                            data    : {
+                                id : id
+                            },
+                            success : function (msg) {
+                                if (msg == "ok"){
+                                    %{--window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");--}%
+                                    var timestamp = new Date().getTime();
+                                    location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp;
+                                }
+                                else{
+                                    bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")}
+                            }
+                        });
+                    }
+                }; //ver
+
                 items.infoRemitente = infoRemitente;
 
                 items.header.label = "Acciones";
@@ -645,6 +668,7 @@
                 items.arbol = arbol;
 //                items.todoDetalle = todoDetalle;
                 items.parcialDetalle = parcialDetalle;
+
                 </g:if>
                 <g:if test="${session.usuario.getPuedeAdmin()}">
                 items.administrar = administrar;
@@ -653,6 +677,7 @@
                 </g:if>
 //                if (conPadre || tienePrincipal || esPrincipal) {
                 if (esMio) {
+                    items.imprimir = imprimir
                     if (conPadre) {
                         items.crearHermano = crearHermano;
                     } else {

@@ -232,7 +232,17 @@ class TramiteExportController extends Shield{
                 }
             }
         }
-        render enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), realPath.toString(), mensaje)
+//        render enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), realPath.toString(), mensaje)
+
+        def baos = enviarService.crearPdf(tramite, usuario, params.enviar.toString(), params.type.toString(), realPath.toString(), mensaje)
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=tramite")
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+        return
+
     }
 
     def verPdf() {
