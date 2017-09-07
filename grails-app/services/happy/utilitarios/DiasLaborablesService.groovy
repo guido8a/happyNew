@@ -822,7 +822,7 @@ class DiasLaborablesService {
         if(fcfn) {
             def strFecha = fcfn.format("dd-MM-yyyy") + " " + fecha.format("HH:mm")
             def fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
-            println "llega: $fecha, anio: $anio, dia: $dia, fin: $fcfn, retorna $fechaFin"
+//            println "llega: $fecha, anio: $anio, dia: $dia, fin: $fcfn, retorna $fechaFin"
             return [true, fechaFin]
         } else {
             return null
