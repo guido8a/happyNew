@@ -65,6 +65,11 @@ class BloqueosJob {
                     }
 //                    println "---------------------"
                 }
+            }  else {
+                /** bloque oficinas remotas luego de n días */
+                print "invoca a remoto"
+                def fcRemoto = pdt.fechaBloqueo
+                println "remoto: $fcRemoto"
             }
         }
 

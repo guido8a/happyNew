@@ -226,7 +226,9 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 
     def tablaBusquedaTramite() {
-//        def inicio = new Date()
+        println "tablaBusquedaTramite: $params"
+        /** todo: Hacer con SQL **/
+
         def persona = session.usuario.id
 
         if (params.fecha) {
@@ -278,18 +280,18 @@ class BuscarTramiteController extends happy.seguridad.Shield {
                 }
                 order('codigo')
             }
-            maxResults(200)
+            maxResults(1200)
         }
 
 
-//        println "registros....: ${res.size()}"
+        println "registros....: ${res.size()}"
         def tramitesFiltrados = res.tramite.unique()
-//        println "registros.... filtrados: ${tramitesFiltrados.size()}"
+        println "registros.... filtrados: ${tramitesFiltrados.size()}"
         tramitesFiltrados.sort { it.codigo }
         def msg = ""
-        if (tramitesFiltrados.size() > 20) {
-            tramitesFiltrados = tramitesFiltrados[0..19]
-            msg = "<div class='alert alert-danger'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 20 resultados. Por favor utilice los filtros.</div>"
+        if (tramitesFiltrados.size() > 200) {
+//            tramitesFiltrados = tramitesFiltrados[0..19]
+            msg = "<div class='alert alert-danger'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 200 resultados. Por favor utilice los filtros.</div>"
         }
 
 //        def fin = new Date()

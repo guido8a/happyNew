@@ -199,10 +199,12 @@
                         icon: "fa fa-file-pdf-o",
                         action: function () {
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
-                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosArbol')}/" + nodeId + "?tipo=dpto";
+                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosArbol')}/" +
+                                        nodeId + "?tipo=dpto";
                             }
                             else {
-                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}/" + nodeId + "?tipo=prsn&dpto=" + parentId;
+                                location.href = "${g.createLink(controller: 'retrasados',action: 'reporteRetrasadosDetalle')}/" +
+                                        nodeId + "?tipo=prsn&dpto=" + parentId;
                             }
                         }
                     },

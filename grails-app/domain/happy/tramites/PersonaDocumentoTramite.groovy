@@ -145,22 +145,35 @@ class PersonaDocumentoTramite {
         if (this.fechaRecepcion)
             return null
         else {
-            if (this.tramite.externo == "1")
-                return null
-//            println("fecha " + this.fechaEnvio)
             def limite = this.fechaEnvio
             def par = Parametros.list([sort: "id", order: "desc"])
             def tiempoBloqueo = 1
-            if (par.size() > 0) {
-                par = par.pop()
-                tiempoBloqueo = par.bloqueo  // valor de horas antes del bloqueo
-            }
-//            println "tiempo Bloqueo " + tiempoBloqueo
+            def tiempoRemoto = 1
             def fechaLimite = []
-//            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
+
+            if (par.size() > 0) {
+                par = par[0]
+                tiempoBloqueo = par.bloqueo  // valor de horas antes del bloqueo
+                tiempoRemoto  = par.remoto   // valor de dias
+            }
+
+            if (this.tramite.externo == "1") {
+                if (limite) {
+                    fechaLimite = diasLaborablesService?.fechaRemoto(limite, tiempoRemoto)
+                } else {
+                    fechaLimite[0] = false
+                }
+                if(fechaLimite[0]) {
+                    return fechaLimite[1]
+                } else {
+                    return null
+                }
+            }
+//            println("fecha " + this.fechaEnvio)
+
+            /*** bloqueo local **/
             if (limite) {
                 fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
-//                println("limite "+ fechaLimite)
             } else {
                 fechaLimite[0] = false
             }

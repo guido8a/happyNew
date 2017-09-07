@@ -208,9 +208,8 @@
                 });
 
                 $("#perfil").change(function () {
-                            $("#check0").click();
-                        }
-                )
+                    $("#check0").click();
+                });
 
                 $(".btnCrear").click(function () {
                     createEditRow(null, "perfil");

@@ -38,7 +38,7 @@ table {
 %{--</span>--}%
 %{--</div>--}%
 
-<div style="height: ${msg == '' ? 350 : 300}px" class="container-celdas">
+<div style="height: ${msg == '' ? 550 : 500}px" class="container-celdas">
     <span class="grupo">
         <table class="table table-bordered table-condensed table-hover">
             <thead>
@@ -246,7 +246,7 @@ table {
         });
 
         $('.table').fixedHeaderTable({
-            height : ${msg == '' ? 350 : 300}
+            height : ${msg == '' ? 550 : 500}
         });
     });
 </script>

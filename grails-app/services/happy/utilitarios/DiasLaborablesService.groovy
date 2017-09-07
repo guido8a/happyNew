@@ -1,6 +1,7 @@
 package happy.utilitarios
 
 import groovy.time.TimeCategory
+import happy.tramites.Anio
 
 
 class DiasLaborablesService {
@@ -814,6 +815,18 @@ class DiasLaborablesService {
         return result
     }
 
-
+    def fechaRemoto(Date fecha, int dias) {
+        def dia = DiaLaborable.findByFecha(fecha.clone().clearTime()).ordinal + 10
+        def anio = Anio.findByNumero(fecha.format("yyyy"))
+        def fcfn = DiaLaborable.findByOrdinalAndAnio(dia, anio)?.fecha
+        if(fcfn) {
+            def strFecha = fcfn.format("dd-MM-yyyy") + " " + fecha.format("HH:mm")
+            def fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
+            println "llega: $fecha, anio: $anio, dia: $dia, fin: $fcfn, retorna $fechaFin"
+            return [true, fechaFin]
+        } else {
+            return null
+        }
+    }
 
 }

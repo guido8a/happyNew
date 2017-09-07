@@ -20,7 +20,7 @@
 
     <body>
         %{--<h3>Búsqueda de Trámites</h3>--}%
-        <div style="margin-top: 0px; min-height: 80px" class="vertical-container contenedor">
+        <div style="margin-top: 0px; min-height: 80px; margin-top: -15px" class="vertical-container contenedor">
             <p class="css-vertical-text" style="margin-top: -10px;">Buscar</p>
 
             <div class="linea"></div>
@@ -28,7 +28,8 @@
             <div style="margin-bottom: 20px">
                 <div class="col-md-2">
                     <label>Documento</label>
-                    <g:textField name="memorando" value="" maxlength="20" class="form-control allCaps" style="width: 180px"/>
+                    <g:textField name="memorando" value="" maxlength="20" class="form-control allCaps"
+                                 style="width: 170px"/>
                 </div>
 
                 <div class="col-md-2">
@@ -38,13 +39,15 @@
 
                 <div class="col-md-2" style="margin-left: 110px">
                 %{--<div class="col-md-2">--}%
-                    <label>Fecha Creación</label>
-                    <elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>
+                    <label>Fecha Desde</label>
+                    %{--<elm:datepicker name="fechaRecepcion" class="datepicker form-control" value=""/>--}%
+                    <elm:datepicker name="fechaDsde" class="datepicker form-control" value=""/>
                 </div>
 
                 <div class="col-md-2" style="margin-left: -25px">
-                    <label>Fecha Envio</label>
-                    <elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>
+                    <label>Fecha Hasta</label>
+                    %{--<elm:datepicker name="fechaBusqueda" class="datepicker form-control" value=""/>--}%
+                    <elm:datepicker name="fechaHsta" class="datepicker form-control" value=""/>
                 </div>
 
                 <div class="col-md-1">
@@ -53,13 +56,20 @@
                 </div>
 
                 <div style="padding-top: 25px">
-                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax col-md-1"><i
+                    <a href="#" name="busqueda" class="btn btn-success btnBusqueda btn-ajax"><i
                             class="fa fa-check-square-o"></i> Buscar</a>
-                    <a href="#" name="borrar" class="btn btn-primary btnBorrar  col-md-1"><i
-                           class="fa fa-eraser"></i> Limpiar</a>
+                    <a href="#" name="borrar" class="btn btn-primary btnBorrar" title="Borrar criterios">
+                        <i class="fa fa-eraser"></i></a>
+                    <a href="#" name="borrar" class="btn btn-primary btnBorrar" title="Exportar resultado a excel"><i
+                           class="fa fa-table"></i></a>
                 </div>
 
             </div>
+        <div style="margin-left: 510px; display: inline-block; vertical-align: top; margin-top: -15px">
+            <g:radioGroup name="myGroup" labels="['Fecha de creación', 'Fecha de envío']" values="['fccr', 'fcen']" value="fccr">
+                <g:message code="${it.label}"/>: ${it.radio} <span style="margin-left: 20px"></span>
+            </g:radioGroup>
+        </div>
 
         <div class="divExternos esconder text-info" style="width: 96%" >
             <div class="col-md-1">
@@ -86,7 +96,7 @@
 
         %{--//bandeja--}%
 
-        <div style="margin-top: 30px; min-height: 460px" class="vertical-container" id="divBandeja">
+        <div style="margin-top: 30px; min-height: 560px" class="vertical-container" id="divBandeja">
 
             <p class="css-vertical-text">Resultado - Buscar trámites</p>
 
@@ -98,7 +108,7 @@
 
         </div>
 
-        <div><strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna como máximo 20 <span class="text-info" style="margin-left: 40px">Se ordena por tipo de documento y fecha</span>
+        <div><strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna como máximo 200 <span class="text-info" style="margin-left: 40px">Se ordena por tipo de documento y fecha</span>
         </div>
 
         <div class="modal fade " id="dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -176,8 +186,8 @@
                 $("#bandeja").html("").append($("<div style='width:100%; text-align: center;'/>").append(spinnerSquare64));
                 var memorando = $("#memorando").val();
                 var asunto = $("#asunto").val();
-                var fecha = $("#fechaBusqueda_input").val();
-                var fechaRecepcion = $("#fechaRecepcion_input").val();
+                var fecha = $("#fechaDsde_input").val();
+                var fechaRecepcion = $("#fechaHsta_input").val();
                 var institucion;
                 var doc;
                 var contacto;
