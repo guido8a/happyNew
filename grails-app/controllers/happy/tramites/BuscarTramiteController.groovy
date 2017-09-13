@@ -1,6 +1,7 @@
 package happy.tramites
 
 import groovy.time.TimeCategory
+import happy.DbConnectionService
 import happy.seguridad.Persona
 import happy.utilitarios.Parametros
 
@@ -227,81 +228,122 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
     def tablaBusquedaTramite() {
         println "tablaBusquedaTramite: $params"
+        def cn = dbConnectionService.getConnection()
         /** todo: Hacer con SQL **/
 
         def persona = session.usuario.id
 
-        if (params.fecha) {
-            params.fechaIni = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 00:00:00")
-            params.fechaFin = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fecha + " 23:59:59")
+        def fechaDesde = ""
+        if (params.fcds) {
+            fechaDesde = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fcds + " 00:00:00")
         }
 
-        if (params.fechaRecepcion) {
-            params.fechaIniR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 00:00:00")
-            params.fechaFinR = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fechaRecepcion + " 23:59:59")
+        def fechaHasta = ""
+        if (params.fchs) {
+            fechaHasta = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fchs + " 00:00:00")
         }
+
+        def maximo = (params.registros?.toInteger())?: 20
+
+
+/*
+        def sql = "select trmt.trmt__id from trmt where trmtcdgo is not null "
+        def w_fcds = params.fcds ? " and trmtfccr >= '${params.fcds}'" : ""
+        def w_fchs = params.fchs ? " and trmtfccr <= '${params.fchs}'" : ""
+        def w_asnt = params.asunto ? " and trmtasnt ilike '%${params.asunto.toLowerCase()}%'" : ""
+        def w_cdgo = params.codigo ? " and trmtcdgo like '%${params.codigo.toUpperCase()}%'" : ""
+        def w_inst = params.institucion ? " and trmtprex ilike '%${params.institucion.toLowerCase()}%'" : ""
+        def w_cntc = params.contacto ? " and trmtcntc ilike '%${params.contacto.toLowerCase()}%'" : ""
+
+        sql += w_fcds + w_fchs + w_asnt + w_cdgo + w_inst + w_cntc + " order by trmtcdgo limit 101"
+        println "sql: ${sql}"
+
+        def res = []
+        cn.eachRow(sql.toString()) {d ->
+            res.add(Tramite.get(d.trmt__id))
+        }
+
+        println "---> ${res[0].id}"
+*/
 
         def res
-
-        def estadoArchivado = EstadoTramite.findByCodigo('E005')
-        def estadoAnulado = EstadoTramite.findByCodigo('E006')
-
+/*
         res = PersonaDocumentoTramite.withCriteria {
-            if (!session.usuario.puedeAdmin) {
-//                isNotNull("fechaEnvio")
-//                and {
-//                    ne('estado', estadoArchivado)
-//                    ne('estado', estadoAnulado)
-//                }
-            }
             if (params.fecha) {
                 gt('fechaEnvio', params.fechaIni)
                 lt('fechaEnvio', params.fechaFin)
             }
-            tramite {
+*/
+         res = Tramite.withCriteria {
+                if (params.fecha) {
+                    gt('fechaEnvio', params.fechaIni)
+                    lt('fechaEnvio', params.fechaFin)
+                }
                 if (params.asunto) {
-                    ilike('asunto', '%' + params.asunto + '%')
+                    ilike('asunto', '%' + params.asunto.trim() + '%')
                 }
-                if (params.memorando) {
-                    ilike('codigo', '%' + params.memorando + '%')
+                if (params.codigo) {
+                    ilike('codigo', '%' + params.codigo.trim() + '%')
                 }
-                if (params.fechaRecepcion) {
-                    gt('fechaCreacion', params.fechaIniR)
-                    lt('fechaCreacion', params.fechaFinR)
+
+                if (params.fcds) {
+                    if(params.fechas == 'fccr') {
+                        gt('fechaCreacion', fechaDesde)
+                    } else {
+                        gt('fechaEnvio', fechaDesde)
+                    }
+                }
+                if (params.fchs) {
+                    if(params.fechas == 'fccr') {
+                        lt('fechaCreacion', fechaHasta)
+                    } else {
+                        lt('fechaEnvio', fechaHasta)
+                    }
                 }
                 if(params.doc){
-                    ilike('numeroDocExterno', '%' + params.doc + '%')
+                    ilike('numeroDocExterno', '%' + params.doc.trim() + '%')
                 }
                 if(params.institucion){
-                    ilike('paraExterno', '%' + params.institucion + '%')
+                    ilike('paraExterno', '%' + params.institucion.trim() + '%')
                 }
                 if(params.contacto){
-                    ilike('contacto', '%' + params.contacto + '%')
+                    ilike('contacto', '%' + params.contacto.trim() + '%')
                 }
-                order('codigo')
-            }
-            maxResults(1200)
-        }
+                order('tipoDocumento')
+                order('fechaCreacion', 'desc')
+             maxResults(maximo + 1)
+         }
+
 
 
         println "registros....: ${res.size()}"
-        def tramitesFiltrados = res.tramite.unique()
-        println "registros.... filtrados: ${tramitesFiltrados.size()}"
-        tramitesFiltrados.sort { it.codigo }
-        def msg = ""
-        if (tramitesFiltrados.size() > 200) {
-//            tramitesFiltrados = tramitesFiltrados[0..19]
-            msg = "<div class='alert alert-danger'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 200 resultados. Por favor utilice los filtros.</div>"
-        }
+//        def tramitesFiltrados = res.tramite.unique()
+//        println "registros.... filtrados: ${tramitesFiltrados.size()}"
+//        tramitesFiltrados.sort { it.codigo }
+//        def msg = ""
+//        if (tramitesFiltrados.size() > 200) {
+//            msg = "<div class='alert alert-danger' style='margin-left:0px'> <i class='fa fa-warning fa-2x pull-left'></i> Su búsqueda ha generado más de 200 resultados. Por favor utilice los filtros.</div>"
+//        }
 
 //        def fin = new Date()
 //        println "${TimeCategory.minus(fin, inicio)}"
+
+        def msg = ""
+        if (res.size() > maximo) {
+            res.pop()
+            msg = "<div class='alert alert-danger' style='margin-left:0px; display: inline-block; margin-top:-35px; height: 45px'> " +
+                    "<i class='fa fa-warning fa-2x pull-left'></i> " +
+                    "Su búsqueda ha generado más de ${maximo} resultados. Por favor utilice más criterios de búsqueda como por " +
+                    "ejemplo un rango de fechas de creación de los trámites.</div>"
+        }
+
 
         params.dgsg = Persona.get(session.usuario.id).puedeAgregarDocumento? "DGSG" : ""
 
 //        println "puede dgsg: ${params.dgsg}"
 
-        return [tramites: tramitesFiltrados, persona: persona, msg: msg]
+//        return [tramites: tramitesFiltrados, persona: persona, msje: msg]
+        return [tramites: res, persona: persona, msje: msg, maximo: maximo]
     }
 
     def resTramites(Tramite tramite) {
@@ -379,9 +421,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             }
             maxResults(20)
         }
-
         return [tramites: res.unique()]
-
     }
 
     def busquedaArchivados() {
@@ -566,7 +606,6 @@ class BuscarTramiteController extends happy.seguridad.Shield {
             maxResults(20)
         }
 
-
         def tramitesFiltrados = res.unique()
         tramitesFiltrados.tramite.sort { it.codigo }
         def msg = ""
@@ -577,9 +616,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 //        return [tramites: res.unique(), pxtTramites: pxtPara]
         return [tramites: tramitesFiltrados]
-
-
-    }
+   }
 
     def busquedaAnulados() {
 

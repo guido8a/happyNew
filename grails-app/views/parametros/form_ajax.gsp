@@ -103,7 +103,7 @@
                     <div class="col-md-7">
                         <g:textArea name="textoCn" required="" class="form-control required"
                                     value="${parametrosInstance?.textoCn}"
-                                    style="resize:none; width: 440px; height: 100px; font-family: 'Courier New', Courier, monospace; font-size: 12px;
+                                    style="resize:none; width: 445px; height: 85px; font-family: 'Courier New', Courier, monospace; font-size: 12px;
                                 font-weight: bold; " maxlength="511"/>
                     </div>
                     *
@@ -168,6 +168,23 @@
                 </div>
             </span>
         </div>
+        <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'remoto', 'error')} ">
+            <span class="grupo">
+                <label for="telefono" class="col-md-8 control-label text-info">
+                    Bloqueo en días para Departamentos u Oficinas Remotas
+                </label>
+                <div class="col-md-4">
+%{--
+                    <g:textField name="remoto" class="form-control allCaps" value="${parametrosInstance?.remoto}"
+                                 maxlength="20" style="width: 70px"/>
+--}%
+                    <g:select name="remoto" from="${8..12}" value="${parametrosInstance?.remoto ?: 1}"
+                              optionValue="${{ it.toString().padLeft(2, '0') }}"/>
+
+                </div>
+            </span>
+        </div>
+%{--
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'departamentos', 'error')} ">
             <span class="grupo">
                 <label for="telefono" class="col-md-2 control-label text-info">
@@ -180,8 +197,9 @@
             </span>
             <label class="col-md-12 text-danger" style="margin-left: 90px">
             * Importante: Coloque las siglas de los departamentos separadas por comas.
-        </label>
+            </label>
         </div>
+--}%
 
     </g:form>
 

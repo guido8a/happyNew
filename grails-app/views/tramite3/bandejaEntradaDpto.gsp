@@ -19,23 +19,14 @@
 
         .etiqueta {
             float       : left;
-            /*width: 100px;*/
             margin-left : 5px;
-            /*margin-top: 5px;*/
         }
-
-        /*.alert {*/
-        /*padding : 0 !important;*/
-        /*}*/
 
         .alertas {
             float       : left;
-            /*width       : 100px;*/
-            /*height      : 40px;*/
             margin-left : 20px;
             padding     : 10px;
             cursor      : pointer;
-            /*margin-top: -5px;*/
         }
 
         .cabecera {
@@ -81,23 +72,16 @@
         }
 
         tr.sinRecepcion {
-            /*background-color: #FFFFCC! important;*/
             background-color : #FC2C04 ! important;
             color            : #ffffff
         }
 
         tr.retrasado {
-            /*background-color: #fc2c04! important;*/
             background-color : #F2DEDE ! important;
-            /*color: #ffffff;*/
         }
 
         .letra {
-
-            /*font-family: "Arial Black", arial-black;*/
-            /*background-color: #7eb75e;*/
             background-color : #8fe6c3;
-
         }
         </style>
     </head>
@@ -135,39 +119,26 @@
             </div>
 
             <div style="float: right">
-                %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-blanco alertas" clase="porRecibir">
                     (<span id="numEnv"></span>)
                 Por recibir
                 </div>
-                %{--</div>--}%
 
-
-                %{--<div>--}%
                 <div data-type="pendiente" class="alert alert-otroRojo alertas" clase="sinRecepcion">
                     (<span id="numPen"></span>)
                 Sin Recepción
                 </div>
-                %{--</div>--}%
 
-                %{--<div>--}%
                 <div data-type="recibido" class="alert alert-info alertas" clase="recibido">
                     (<span id="numRec"></span>)
                 Recibidos
                 </div>
-                %{--</div>--}%
 
-                %{--<div>--}%
                 <div data-type="retrasado" class="alert alert-danger alertas" clase="retrasado">
                     (<span id="numRet"></span>)
                 Retrasados
                 </div>
-                %{--</div>--}%
             </div>
-
-            %{--<div data-type="jefe" class="alert alert-azul alertas">--}%
-            %{--<span id="spanJefe" class="counter" data-class="jefe">(0)</span> Doc. env. jefe--}%
-            %{--</div>--}%
         </div>
 
         <div class="buscar" hidden="hidden" style="margin-bottom: 20px;">
@@ -248,19 +219,6 @@
 
         <script type="text/javascript">
 
-            //            function buscar() {
-            //                var memorando = $("#memorando").val();
-            //                var asunto = $("#asunto").val();
-            //                var fecha = $("#fechaBusqueda_input").val();
-            //
-            //                var datos = {
-            //                    memorando : memorando,
-            //                    asunto    : asunto,
-            //                    fecha     : fecha
-            //                };
-            //                cargarBandeja(false, datos);
-            //            }
-
             function cargarAlertas() {
                 $("#numPen").html($(".sinRecepcion").size()); //sinRecepcion
                 $("#numRet").html($(".retrasado").size()); //retrasado
@@ -289,17 +247,11 @@
 
                 $.ajax({
                     type    : "POST",
-                    url     : "${g.createLink(controller: 'tramite3',action:'tablaBandejaEntradaDpto')}",
+                    url     : "${g.createLink(controller: 'tramite3', action:'tablaBandejaEntradaDpto')}",
                     data    : datos,
-//                    async   : false,
                     success : function (msg) {
-//                        $("#bandeja").html(msg);
                         $("#tabla_bandeja").html(msg);
                         cargarAlertas();
-//                        if (band) {
-//                            closeLoader();
-//                            log("Datos actualizados", "success");
-//                        }
                     }
                 });
             }
@@ -426,7 +378,7 @@
                         $.ajax({
                             type    : 'POST',
                             %{--url     : '${createLink(action: 'guardarRecibir')}/' + id,--}%
-                            url     : '${createLink(action: 'recibirTramite',controller: 'tramite3')}/' + id + "?source=bed",
+                            url     : '${createLink(action: 'recibirTramite', controller: 'tramite3')}/' + id + "?source=bed",
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();

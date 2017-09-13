@@ -142,7 +142,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
         }
 
         def sql = "SELECT * FROM salida_dpto($persona.id) ${where} ORDER BY ${params.sort} ${params.order}"
-//        println "bandeja de salida: $sql"
+        println "bandeja de salida: $sql"
 
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())

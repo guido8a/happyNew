@@ -101,9 +101,11 @@ class DiasLaborablesService {
             if (dia.size() == 1) {
                 dia = dia.first()
             } else if (dia.size() == 0) {
-                return [false, "No se encontró el registro de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+//                return [false, "No se encontró el registro de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+                return null
             } else {
-                return [false, "Se encontraron varios registros de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+//                return [false, "Se encontraron varios registros de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+                return null
             }
 
 //            println "**************************************"
@@ -118,9 +120,11 @@ class DiasLaborablesService {
                         if (dia.size() == 1) {
                             dia = dia.first()
                         } else if (dia.size() == 0) {
-                            return [false, "No se encontró el registro de días laborables para la fecha " + nuevaFecha.format("dd-MM-yyyy"), nuevaFecha.format("yyyy")]
+//                            return [false, "No se encontró el registro de días laborables para la fecha " + nuevaFecha.format("dd-MM-yyyy"), nuevaFecha.format("yyyy")]
+                            return null
                         } else {
-                            return [false, "Se encontraron varios registros de días laborables para la fecha " + nuevaFecha.format("dd-MM-yyyy"), nuevaFecha.format("yyyy")]
+//                            return [false, "Se encontraron varios registros de días laborables para la fecha " + nuevaFecha.format("dd-MM-yyyy"), nuevaFecha.format("yyyy")]
+                            return null
                         }
                         ord = dia.ordinal
                     }
@@ -128,8 +132,8 @@ class DiasLaborablesService {
 //                    println mensaje
                     fecha = nuevaFecha
                 } else {
-                    return [false, "La fecha " + fecha.format("dd-MM-yyyy") + " no es un día laborable. Para calcular con el siguiente dia laborable pasar true como 3r parametro"]
-//                    return false
+//                    return [false, "La fecha " + fecha.format("dd-MM-yyyy") + " no es un día laborable. Para calcular con el siguiente dia laborable pasar true como 3r parametro"]
+                    return null
                 }
             }
 
@@ -169,15 +173,18 @@ class DiasLaborablesService {
                 if (nuevoDiaLaborable.size() == 1) {
                     nuevoDiaLaborable = nuevoDiaLaborable.first()
                 } else if (nuevoDiaLaborable.size() == 0) {
-                    return [false, "No se encontró el registro de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}.", anio]
+//                    return [false, "No se encontró el registro de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}.", anio]
+                    return null
                 } else {
-                    return [false, "Se encontraron varios registros de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}", anio]
+//                    return [false, "Se encontraron varios registros de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}", anio]
+                    return null
                 }
 
                 def strFecha = nuevoDiaLaborable.fecha.format("dd-MM-yyyy") + " " + fecha.format("HH:mm")
                 fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
 
-                return [true, fechaFin, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+//                return [true, fechaFin, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+                return fechaFin
             } else {
                 use(TimeCategory) {
                     fechaFin = fechaFin + horas.hours + minutos.minutes
@@ -190,7 +197,8 @@ class DiasLaborablesService {
 //                println "difference: days: ${difference.days}, Hours: ${difference.hours}, Minutes: ${difference.minutes}"
 
                 if (difference.hours <= 0 && difference.minutes <= 0) {
-                    return [true, fechaFin, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+//                    return [true, fechaFin, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+                    return fechaFin
                 } else {
                     //el siguiente dia laborable:
                     def anio = dia.anio
@@ -204,9 +212,11 @@ class DiasLaborablesService {
                     if (siguiente.size() == 1) {
                         siguiente = siguiente.first()
                     } else if (siguiente.size() == 0) {
-                        return [false, "No se encontró el registro de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}.", anio]
+//                        return [false, "No se encontró el registro de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}.", anio]
+                        return null
                     } else {
-                        return [false, "Se encontraron varios registros de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}", anio]
+//                        return [false, "Se encontraron varios registros de días laborables para el ordinal ${nuevoOrdinal} del año ${anio}", anio]
+                        return null
                     }
                     def strSiguiente = siguiente.fecha.format("dd-MM-yyyy") + " "
                     strSiguiente += (siguiente.horaInicio > -1 ? siguiente.horaInicio : parametros.horaInicio) + ":"
@@ -217,36 +227,20 @@ class DiasLaborablesService {
                         fechaSiguiente = fechaSiguiente + (difference.hours).hours + (difference.minutes).minutes
                     }
 //                    println "fecha siguiente con hora " + fechaSiguiente
-                    return [true, fechaSiguiente, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+//                    return [true, fechaSiguiente, mensaje != "" ? "<ul>" + mensaje + "</ul>" : ""]
+                    return fechaSiguiente
                 }
             }
         } else if (dia.size() == 0) {
-            return [false, "No se encontró el registro de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
-//            return false
+//            return [false, "No se encontró el registro de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+            return null
         } else {
-            return [false, "Se encontraron varios registros de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
-//            return false
+//            return [false, "Se encontraron varios registros de días laborables para la fecha " + fecha.format("dd-MM-yyyy"), fecha.format("yyyy")]
+            return null
         }
 //        println "**************************************"
     }
 
-    /**
-     * fechaMasTiempo
-     *      retorna una fecha con horas de la fecha enviada mas el tiempo enviado.
-     *      Pasa por default 0 minutos y true (para que si la fecha enviada no es laborable use la siguiente
-     *          fecha laborable)
-     * @param fecha la fecha inicial
-     * @param horas las horas a sumar
-     * @return array        en posicion 0: boolean true:  hizo el calculo correctamente
-     *                                             false: hubo un error
-     *                                  1: la fecha cuando el calculo fue correcto
-     *                                     el error si hubo error
-     *                                  2: si hubo algun mensaje aunque haya hecho el calculo
-     *                                     si hubo error (no hay los dias laborables), el año para configurar los días laborables
-     */
-    def fechaMasTiempo(Date fecha, int horas) {
-        return fechaMasTiempo(fecha, horas, 0, true)
-    }
 
     /**
      * fechaMasDias
@@ -815,18 +809,44 @@ class DiasLaborablesService {
         return result
     }
 
+    /**
+     * fechaMasTiempo
+     *      retorna una fecha con horas de la fecha enviada mas el tiempo enviado.
+     * @param fecha la fecha inicial
+     * @param horas las horas a sumar
+     */
+    def fechaMasTiempo(Date fecha, int horas) {
+//        println "fechaMasTiempo fecha: $fecha, horas: $horas"
+//        return fechaMasTiempo(fecha, horas, 0, true)
+        def cn = dbConnectionService.getConnection()
+        def sql = "select fcha from trmt_bloqueo(cast('${fecha.format('yyyy-MM-dd HH:mm')}' as timestamp), $horas)"
+//        println "sql " + sql
+        return cn.rows(sql.toString())[0]?.fcha
+    }
+
+
+
     def fechaRemoto(Date fecha, int dias) {
-        def dia = DiaLaborable.findByFecha(fecha.clone().clearTime()).ordinal + 10
+        def dia = DiaLaborable.findByFecha(fecha.clone().clearTime()).ordinal + dias
         def anio = Anio.findByNumero(fecha.format("yyyy"))
         def fcfn = DiaLaborable.findByOrdinalAndAnio(dia, anio)?.fecha
+        print "fechaRemoto: $fcfn"
         if(fcfn) {
             def strFecha = fcfn.format("dd-MM-yyyy") + " " + fecha.format("HH:mm")
             def fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
-//            println "llega: $fecha, anio: $anio, dia: $dia, fin: $fcfn, retorna $fechaFin"
-            return [true, fechaFin]
+            println "llega: $fecha, anio: $anio, dia: $dia, fin: $fcfn, retorna $fechaFin"
+            return fechaFin
         } else {
             return null
         }
     }
+
+    def fechaBloqueo(Date fecha) {
+        def cn = dbConnectionService.getConnection()
+        def sql = "select blqo from trmt_bloqueo('" + fecha + "', null) "
+//        println "sql " + sql
+        return cn.rows(sql.toString())[0]?.blqo == 'S'
+    }
+
 
 }

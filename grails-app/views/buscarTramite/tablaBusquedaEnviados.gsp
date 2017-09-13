@@ -1,10 +1,5 @@
 <%@ page import="happy.tramites.DocumentoTramite" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: gato
-  Date: 14/04/14
-  Time: 03:41 PM
---%>
+
 <script type="text/javascript" src="${resource(dir: 'js', file: 'ui.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js/plugins/lzm.context/js', file: 'lzm.context-0.5.js')}"></script>
 <link href="${resource(dir: 'js/plugins/lzm.context/css', file: 'lzm.context-0.5.css')}" rel="stylesheet">
@@ -17,28 +12,6 @@ table {
     font-size : 9pt;
 }
 </style>
-
-%{--<div style="height: 30px; overflow: hidden;" class="container-celdas">--}%
-%{--<span class="grupo">--}%
-%{--<table class="table table-bordered table-condensed table-hover">--}%
-%{--<thead>--}%
-%{--<tr>--}%
-%{--<th class="alinear" style="width: 145px">Documento</th>--}%
-%{--<th class="alinear" style="width: 180px">De</th>--}%
-%{--<th class="alinear" style="width: 180px">Para</th>--}%
-%{--<th class="alinear" style="width: 70px">Rol</th>--}%
-%{--<th class="alinear" style="width: 190px">Asunto</th>--}%
-%{--<th class="alinear" style="width: 67px">Prioridad</th>--}%
-%{--<th class="alinear" style="width: 110px">Fecha Creación</th>--}%
-%{--<th class="alinear" style="width: 110px">Fecha Envio</th>--}%
-%{--<th class="alinear" style="width: 67px">Estado</th>--}%
-%{--</tr>--}%
-%{--</thead>--}%
-%{--<tbody>--}%
-%{--</tbody>--}%
-%{--</table>--}%
-%{--</span>--}%
-%{--</div>--}%
 
 <div style="height: 450px" class="container-celdas">
     <span class="grupo">
@@ -61,7 +34,6 @@ table {
 
                     <g:set var="padre" value=""/>
                     <g:set var="clase" value="${'nada'}"/>
-                    <g:set var="limite" value="${tramite?.tramite?.getFechaLimite()}"/>
 
                     <g:if test="${tramite?.tramite?.de?.id == session.usuario.id}">
                         <g:if test="${tramite?.tramite?.padre}">
@@ -74,8 +46,10 @@ table {
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
 
-                    <tr id="${tramite?.tramite?.id}" data-id="${tramite?.tramite?.id}" padre="${padre}" principal="${tramite?.tramite?.tramitePrincipal}"
-                        class="${(limite) ? ((limite < new Date()) ? 'alerta' + ' ' + clase : tramite?.tramite?.estadoTramite?.codigo) : tramite?.tramite?.estadoTramite?.codigo + " " + clase}" estado="${tramite?.tramite?.estadoTramite?.codigo}">
+                    <tr id="${tramite?.tramite?.id}" data-id="${tramite?.tramite?.id}" padre="${padre}"
+                        principal="${tramite?.tramite?.tramitePrincipal}"
+                        class="${clase}"
+                        estado="${tramite?.tramite?.estadoTramite?.codigo}">
                         %{--<td style="width: 110px">${tramite?.tramite?.codigo}</td>--}%
                         <td style="width: 145px">
                             <g:if test="${tramite?.tramite?.tipoTramite?.codigo == 'C'}">

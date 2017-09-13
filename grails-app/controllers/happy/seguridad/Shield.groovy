@@ -29,18 +29,12 @@ class Shield {
 
         }else{
             if (!session.usuario || !session.perfil) {
-//                            println "1"
-//
-//                if(session.an == 'saveTramite' && session.cn == 'tramite'){
-//                    println("entro")
-//                    return true
-//                }else{
-                    redirect(controller: 'login', action: 'login')
-                    session.finalize()
-                    return false
-//                }
-
-//            return true
+                if(controllerName != "inicio" && actionName != "index") {
+                    flash.message = "Usted ha superado el tiempo de inactividad máximo de la sesión"
+                }
+                render "<script type='text/javascript'> window.location.href = '${createLink(controller:'login', action:'login')}'; </script>"
+                session.finalize()
+                return false
             } else {
                 def now = new Date()
                 def band = true

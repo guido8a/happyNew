@@ -7,8 +7,6 @@
 <script type="text/javascript" src="${resource(dir: 'js/plugins/fixed-header-table-1.3', file: 'jquery.fixedheadertable.min.js')}"></script>
 <link href="${resource(dir: 'js/plugins/fixed-header-table-1.3/css', file: 'defaultTheme.css')}" rel="stylesheet">
 
-<util:renderHTML html="${msg}"/>
-
 <style type="text/css">
 table {
     font-size : 9pt;
@@ -37,21 +35,24 @@ table {
 %{--</table>--}%
 %{--</span>--}%
 %{--</div>--}%
+%{--${msje}--}%
 
-<div style="height: ${msg == '' ? 550 : 500}px" class="container-celdas">
+
+<div style="height: ${msje == '' ? 560 : 520}px" class="container-celdas">
+    <div style="width: 100%"><util:renderHTML html="${msje}"/></div>
     <span class="grupo">
-        <table class="table table-bordered table-condensed table-hover">
+        <table class="table table-bordered table-condensed table-hover" width="1140px">
             <thead>
                 <tr>
-                    <th class="alinear" style="width: 165px">Documento</th>
-                    <th class="alinear" style="width: 100px">Fecha Creación</th>
+                    <th class="alinear" style="width: 110px">Documento</th>
+                    <th class="alinear" style="width: 75px">Creación</th>
                     <th class="alinear" style="width: 150px">De</th>
                     <th class="alinear" style="width: 150px">Para</th>
-                    <th class="alinear" style="width: 100px">Asunto</th>
+                    <th class="alinear" style="width: 295px">Asunto</th>
                     <th class="alinear" style="width: 60px">Prioridad</th>
-                    <th class="alinear" style="width: 90px">Envia</th>
-                    <th class="alinear" style="width: 110px">Fecha Envio</th>
-                    <th class="alinear" style="width: 110px">Fecha Recepción</th>
+                    <th class="alinear" style="width: 150px">Envia</th>
+                    <th class="alinear" style="width: 75px">Envio</th>
+                    <th class="alinear" style="width: 75px">Recepción</th>
                 </tr>
             </thead>
             <tbody>
@@ -135,7 +136,7 @@ table {
                         %{--(ext)--}%
                         %{--</g:if>--}%
                         %{--</td>--}%
-                        <td class="codigo" style="width: 165px">
+                        <td class="codigo">
                         %{--${tramite.deId} ${session.usuario.id} ${tramite.deId == session.usuario.id}<br/>--}%
                             <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
                                 <i class="fa fa-eye-slash"></i>
@@ -149,7 +150,7 @@ table {
                             </g:if>
                         </td>
 
-                        <td class="creacion" style="width: 100px">
+                        <td class="creacion">
                             ${tramite.fechaCreacion.format('dd-MM-yyyy HH:mm')}
                         </td>
 
@@ -168,7 +169,7 @@ table {
                             </g:else>
                         </td>
 
-                        <td class="para" style="width: 150px">
+                        <td class="para">
                             <g:if test="${tramite.tipoDocumento.codigo == 'OFI'}">
                                 ${tramite.paraExterno} (ext)
                             </g:if>
@@ -198,26 +199,26 @@ table {
                         </td>
 
 
-                        <td class="asunto" style="width: 100px">
+                        <td class="asunto">
                             ${tramite.asunto}
                         </td>
 
-                        <td class="prioridad" style="width: 60px">
+                        <td class="prioridad">
                             ${tramite.prioridad.descripcion}
                         </td>
 
-                        <td class="envia" style="width: 90px">
+                        <td class="envia">
                             <g:if test="${envia}">
                                 ${envia.persona.nombre} ${envia.persona.apellido}
                             </g:if>
                         </td>
-                        <td class="envio" style="width: 110px">
+                        <td class="envio">
                             <g:if test="${tramite.fechaEnvio}">
                                 ${tramite.fechaEnvio.format('dd-MM-yyyy HH:mm')}
                             </g:if>
                         </td>
 
-                        <td class="recepcion" style="width: 110px">
+                        <td class="recepcion">
                             <g:if test="${recibe && recibe.fechaRecepcion && tramite.estadoTramite == estadoRecibido}">
                                 ${recibe.fechaRecepcion.format('dd-MM-yyyy HH:mm')}
                             </g:if>

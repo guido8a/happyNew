@@ -1,5 +1,6 @@
 package happy.tramites
 
+import happy.DbConnectionService
 import happy.seguridad.Persona
 import happy.utilitarios.Parametros
 
@@ -33,6 +34,7 @@ class PersonaDocumentoTramite {
 
     EstadoTramite estado
     def diasLaborablesService
+    def DbConnectionService
 
     String personaNombre
 //    String departamentoPersonaNombre
@@ -141,51 +143,61 @@ class PersonaDocumentoTramite {
 
     /** retorna la fecha a la que se debe blkoquear la bandeja **/
     def getFechaBloqueo() {
-
         if (this.fechaRecepcion)
             return null
         else {
-            def limite = this.fechaEnvio
-            def par = Parametros.list([sort: "id", order: "desc"])
-            def tiempoBloqueo = 1
-            def tiempoRemoto = 1
-            def fechaLimite = []
-
-            if (par.size() > 0) {
-                par = par[0]
-                tiempoBloqueo = par.bloqueo  // valor de horas antes del bloqueo
-                tiempoRemoto  = par.remoto   // valor de dias
-            }
-
-            if (this.tramite.externo == "1") {
-                if (limite) {
-                    fechaLimite = diasLaborablesService?.fechaRemoto(limite, tiempoRemoto)
-                } else {
-                    fechaLimite[0] = false
-                }
-                if(fechaLimite[0]) {
-                    return fechaLimite[1]
-                } else {
-                    return null
-                }
-            }
-//            println("fecha " + this.fechaEnvio)
-
-            /*** bloqueo local **/
-            if (limite) {
-                fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
-            } else {
-                fechaLimite[0] = false
-            }
-
-//            println fechaLimite
-            if (fechaLimite[0]) {
-                return fechaLimite[1]
-            } else {
+/*
+            if (this.tramite.externo == "1")
                 return null
+
+//            println("fecha " + this.fechaEnvio)
+            if (this.fechaEnvio) {
+                def par = Parametros.get(1)
+                def tiempoBloqueo = par.bloqueo  // valor de horas antes del bloqueo
+                def fechaLimite = diasLaborablesService?.fechaMasTiempo(this.fechaEnvio, tiempoBloqueo)
+                return fechaLimite
+//                println("limite "+ fechaLimite)
+            } else {
+                return false
             }
+*/
+            def cn = DbConnectionService.getConnection()
+            def sql = "select count(*) cnta from prtr, rltr, dpto " +
+                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
+                      "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
+//            println "... $sql"
+            def rmto = cn.rows(sql.toString())[0].cnta
+            if(rmto > 0) {
+                sql = "select ddlbordn, anio__id from ddlb where ddlbfcha = '${this.fechaEnvio.clearTime()}'"
+                def ordn
+                def anio
+                def blqo = Parametros.get(1).remoto
+//                println "2... $sql"
+                cn.eachRow(sql.toString()){d ->
+                    ordn = d.ddlbordn + blqo
+                    anio = d.anio__id
+                }
+                sql = "select max(ddlbordn) mxmo from ddlb where anio__id = ${anio}"
+                def maximo = cn.rows(sql.toString())[0].mxmo
+
+                if(ordn + blqo > maximo){
+                    def an = Anio.findByNumero(Anio.get(anio).numero.toInteger() + 1)
+                    ordn = blqo - (maximo - ordn)
+                }
+
+                sql = "select ddlbfcha from ddlb where ddlbordn = ${ordn} and anio__id = ${anio}"
+//                println "3... $sql"
+                def fcha = cn.rows(sql.toString())[0].ddlbfcha
+                def strFecha = fcha.format("dd-MM-yyyy") + " " + this.fechaEnvio.format("HH:mm")
+                def fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
+                return (fechaFin < new Date())
+            } else {
+                return diasLaborablesService.fechaBloqueo(this.fechaEnvio)
+            }
+
         }
     }
+
 
     def getFechaCreacion() {
         return this.tramite.fechaCreacion

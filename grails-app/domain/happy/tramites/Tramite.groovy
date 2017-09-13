@@ -309,26 +309,9 @@ class Tramite {
 
 
     def getFechaLimite() {
-//        println("-->" + this.id)
         def limite = this.fechaEnvio
         if (limite) {
-//            def diaLaborableService
-//            def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, 2)
-//
-//            if (fechaLimite[0]) {
-//                return fechaLimite[1]
-//            } else {
-////                println fechaLimite[1]
-//                return null
-//            }
             return this.fechaEnvio
-//            use(TimeCategory) {
-//                if (limite.hours > 14 || (limite.hours >= 14 && limite.minutes > 30))
-//                    limite = limite + 2.hours + 15.hours + 30.minutes
-//                else
-//                    limite = limite + 2.hours
-//            }
-//            return limite
         }
         return null
     }
@@ -336,6 +319,7 @@ class Tramite {
     def getFechaMaximoRespuesta() {
         def fechaRecepcion = this.para?.fechaRecepcion
         if (fechaRecepcion) {
+/*
             def limite = fechaRecepcion
             def fechaLimite = diasLaborablesService.fechaMasTiempo(limite, this.prioridad.tiempo)
             if (fechaLimite[0]) {
@@ -344,13 +328,9 @@ class Tramite {
                 println fechaLimite[1]
                 return null
             }
-//            use(TimeCategory) {
-//                if (limite.hours > 12 || (limite.hours >= 12 && limite.minutes > 30))
-//                    limite = limite + this.prioridad.tiempo.hours + 15.hours + 30.minutes
-//                else
-//                    limite = limite + this.prioridad.tiempo.hours
-//            }
-//            return limite
+*/
+            def fechaLimite = diasLaborablesService.fechaMasTiempo(fechaRecepcion, this.prioridad.tiempo)
+            return fechaLimite
         }
         return null
     }
@@ -401,12 +381,6 @@ class Tramite {
         } else {
             return null
         }
-
-//            use(TimeCategory) {
-//                limite = limite + 48.hours
-//            }
-//            return limite
-
     }
 
     def getDeTexto() {

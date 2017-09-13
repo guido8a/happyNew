@@ -17,16 +17,22 @@
         .nota {
             position           : absolute;
             left               : 15px;
-            top                : 240px;
+            top                : 150px;
             padding            : 10px;
-            background         : #EFEFD1;
+            background         : #BCCCDC;
             border             : solid 1px #867722;
-            width              : 235px;
+            width              : 400px;
             z-index            : 1;
 
             -webkit-box-shadow : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
             -moz-box-shadow    : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
             box-shadow         : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+        }
+
+        .card {
+            width: 100%;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            /*text-align: center;*/
         }
 
         .nota .contenido {
@@ -96,10 +102,14 @@
         </g:if>
         <g:if test="${tramite.padre}">
             <g:if test="${tramite.padre.personaPuedeLeer(session.usuario)}">
-                <div class="nota padre ui-corner-all" id="divInfo" style="height: 200px;">
-                    <h4 style="height: 100%" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>
+                <div class="nota ui-corner-all" id="divInfo" style="height: 450px; height: 600px; overflow: auto">
+                    <div style="font-weight: bold">
+                        <div>Documento:<span style="margin-left: 50px">${tramite.padre.codigo}</span></div>
+                        <div>ASUNTO:<span style="margin-left: 65px">${tramite.padre.asunto}</span></div>
+                    </div>
+                    %{--<h4 style="height: 100%" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>--}%
 
-                    <div class="contenido" id="divInfoContenido" style="margin-top: -130px">
+                    <div id="divInfoContenido" style="margin-top: 20px; width: 95%">
                         <util:renderHTML html="${tramite.padre.texto}"/>
                     </div>
                 </div>
@@ -159,7 +169,10 @@
             </div>
             <elm:headerTramite tramite="${tramite}"/>
 
+            <div class="card">
             <textarea id="editorTramite" class="editor" rows="100" cols="80">${tramite.texto}</textarea>
+            </div>
+
         </div>
 
 
@@ -311,10 +324,8 @@
                 $(".header-tramite").append($(".btn-editar"));
 
                 $("#divInfo").resizable({
-                    maxWidth  : 450,
-                    maxHeight : 500,
-                    minWidth  : 200,
-                    minHeight : 100,
+                    maxWidth  : 650,
+                    maxHeight : 800,
                     resize    : function (event, ui) {
                         var $div = ui.element;
                         var $also = ui.element.find("#divInfoContenido");
@@ -326,7 +337,7 @@
 
                         $also.css({
                             width     : nw,
-                            height    : nh-110,
+                            height    : nh-10,
                             maxHeight : nh
 
                         });
@@ -540,15 +551,13 @@
 //                            [ 'Source', 'ServerSave', *//*'NewPage', *//*'CreatePdf',*/ /*'-',*/ /*'Scayt'*/],
 //                            [ 'Source'],
 
-                            ['Scayt', '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+                            ['Font', 'FontSize', 'Scayt', '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
                             ['Find', 'Replace', '-', 'SelectAll'],
                             ['Table', 'HorizontalRule', 'PageBreak'],
                             ['Image'/*, 'Timestamp'*/, '-', 'TextColor', 'BGColor', '-', 'About'],
                             '/',
                             ['Bold', 'Italic', 'Underline', /*'Strike', */'Subscript', 'Superscript'/*, '-', 'RemoveFormat'*/],
-                            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'FontSize']
-//                            [/* 'Font', 'FontSize'*/ /*, '-', 'TextColor', 'BGColor'*/]
-//                            ['About' ]
+                            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-']
                         ]
                     });
                 }

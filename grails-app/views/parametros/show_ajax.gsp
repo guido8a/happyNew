@@ -146,6 +146,18 @@
                 <g:fieldValue bean="${parametrosInstance}" field="telefono"/>
             </div>
         </g:if>
+
+        <g:if test="${parametrosInstance?.bloqueo}">
+
+            <div class="col-md-3 text-info">
+                Bloqueo en días para oficinas remotas
+            </div>
+
+            <div class="col-md-3">
+                <g:fieldValue bean="${parametrosInstance}" field="remoto"/>
+            </div>
+
+        </g:if>
     </div>
 
 

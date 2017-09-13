@@ -223,7 +223,6 @@
                 var conAnexo = $tr.hasClass("conAnexo");
                 var conPadre = $tr.hasClass("padre");
 
-                var tieneAlerta = $tr.hasClass("alerta");
                 var enviado = $tr.hasClass("estado");
 
                 var esMio = $tr.hasClass("mio");
@@ -412,7 +411,6 @@
                     }
                 }
 
-//        if((enviado == 'E003') || tieneAlerta){
                 <g:if test="${session.usuario.getPuedeCopiar()}">
                 items.copia = copia;
                 </g:if>
