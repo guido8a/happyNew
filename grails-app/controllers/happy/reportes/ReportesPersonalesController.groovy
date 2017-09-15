@@ -7,9 +7,15 @@ import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
 import happy.seguridad.Persona;
 import happy.seguridad.Shield
+import happy.tramites.EstadoTramite
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
-import happy.tramites.Tramite;
+import happy.tramites.Tramite
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CreationHelper
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 class ReportesPersonalesController extends Shield {
 
@@ -117,6 +123,239 @@ class ReportesPersonalesController extends Shield {
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
+
+    }
+
+    def reporteExcelBusqueda () {
+
+//        println("params ex " + params)
+
+        def fileName = "documentos_busqueda_"
+        def title = ["Reporte de documentos buscados"]
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+        def envia
+        def recibe
+        def rolEnvia = RolPersonaTramite.findByCodigo('E004')
+        def rolRecibe = RolPersonaTramite.findByCodigo('E003')
+        def estadoRecibido = EstadoTramite.findByCodigo('E004')
+
+        def fechaDesde = ""
+        if (params.fcds) {
+            fechaDesde = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fcds + " 00:00:00")
+        }
+
+        def fechaHasta = ""
+        if (params.fchs) {
+            fechaHasta = new Date().parse("dd-MM-yyyy HH:mm:ss", params.fchs + " 00:00:00")
+        }
+
+        def maximo = (params.registros?.toInteger())?: 20
+
+        def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
+
+        def path = servletContext.getRealPath("/") + "xls/"
+        new File(path).mkdirs()
+        //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
+        String filename = path + "text.xlsx";
+        String sheetName = "Resumen";
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet(sheetName);
+        CreationHelper createHelper = wb.getCreationHelper();
+        sheet.setAutobreaks(true);
+
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("GAD DE LA PROVINCIA DE PICHINCHA");
+        rowTitle = sheet.createRow((short) 1);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL");
+        rowTitle = sheet.createRow((short) 2);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[0]);
+        rowTitle = sheet.createRow((short) 3);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue( usuario?.nombre + " " + usuario?.apellido );
+        rowTitle = sheet.createRow((short) 4);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue( "Fecha de Impresión: " + new Date().format("dd-MM-yyyy") );
+
+        def index = 6
+        XSSFRow rowHead = sheet.createRow((short) index);
+        rowHead.setHeightInPoints(14)
+
+        Cell cell = rowHead.createCell((int) 0)
+        cell.setCellValue("Documento")
+        sheet.setColumnWidth(0, 5000)
+
+        cell = rowHead.createCell((int) 1)
+        cell.setCellValue("Creación")
+        sheet.setColumnWidth(1, 2000)
+
+        cell = rowHead.createCell((int) 2)
+        cell.setCellValue("De")
+        sheet.setColumnWidth(2, 10000)
+
+        cell = rowHead.createCell((int) 3)
+        cell.setCellValue("Para")
+        sheet.setColumnWidth(3, 15000)
+
+        cell = rowHead.createCell((int) 4)
+        cell.setCellValue("CC")
+        sheet.setColumnWidth(3, 3000)
+
+        cell = rowHead.createCell((int) 5)
+        cell.setCellValue("Asunto")
+        sheet.setColumnWidth(5, 13000)
+
+        cell = rowHead.createCell((int) 6)
+        cell.setCellValue("Prioridad")
+        sheet.setColumnWidth(6, 2000)
+
+        cell = rowHead.createCell((int) 7)
+        cell.setCellValue("Envia")
+        sheet.setColumnWidth(7, 8000)
+
+        cell = rowHead.createCell((int) 8)
+        cell.setCellValue("Envió")
+        sheet.setColumnWidth(8, 3000)
+
+        cell = rowHead.createCell((int) 9)
+        cell.setCellValue("Recepción")
+        sheet.setColumnWidth(9, 3000)
+
+       index++
+
+        def res
+
+
+        res = Tramite.withCriteria {
+            if (params.fecha) {
+                gt('fechaEnvio', params.fechaIni)
+                lt('fechaEnvio', params.fechaFin)
+            }
+            if (params.asunto) {
+                ilike('asunto', '%' + params.asunto.trim() + '%')
+            }
+            if (params.memo) {
+                ilike('codigo', '%' + params.memo.trim() + '%')
+            }
+
+            if (params.fcds) {
+                if(params.fechas == 'fccr') {
+                    gt('fechaCreacion', fechaDesde)
+                } else {
+                    gt('fechaEnvio', fechaDesde)
+                }
+            }
+            if (params.fchs) {
+                if(params.fechas == 'fccr') {
+                    lt('fechaCreacion', fechaHasta)
+                } else {
+                    lt('fechaEnvio', fechaHasta)
+                }
+            }
+            if(params.doc){
+                ilike('numeroDocExterno', '%' + params.doc.trim() + '%')
+            }
+            if(params.institucion){
+                ilike('paraExterno', '%' + params.institucion.trim() + '%')
+            }
+            if(params.contacto){
+                ilike('contacto', '%' + params.contacto.trim() + '%')
+            }
+            order('tipoDocumento')
+            order('fechaCreacion', 'desc')
+            maxResults(maximo + 1)
+        }
+
+//        println("res " + res)
+
+        res.each { tramite->
+
+            envia = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolEnvia)
+            recibe = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, rolRecibe)
+
+            XSSFRow row2 = sheet.createRow((short) index)
+
+            if(tramite?.externo == '1' || tramite?.tipoDocumento?.codigo == 'DEX'){
+                row2.createCell((int) 0).setCellValue(tramite?.codigo + " (ext)")
+            }else{
+                row2.createCell((int) 0).setCellValue(tramite?.codigo)
+            }
+
+            row2.createCell((int) 1).setCellValue(tramite?.fechaCreacion?.format("dd-MM-yyyy"))
+
+            if(tramite?.tipoDocumento?.codigo == 'DEX'){
+                     row2.createCell((int) 2).setCellValue(tramite.paraExterno + ' (ext)')
+            }else{
+                if(tramite?.deDepartamento){
+                     row2.createCell((int) 2).setCellValue(tramite?.deDepartamento?.descripcion)
+                }else{
+                    if(tramite?.de){
+                      row2.createCell((int) 2).setCellValue(tramite?.de?.nombre + " " + tramite?.de?.apellido + " " + ' (' + tramite?.departamentoSigla + ')')
+                    }
+                }
+            }
+
+            if(tramite?.tipoDocumento?.codigo == 'OFI'){
+                row2.createCell((int) 3).setCellValue(tramite?.paraExterno + " (ext)")
+            }else{
+                if(tramite?.para){
+                    if(tramite?.para?.persona){
+                        row2.createCell((int) 3).setCellValue(tramite?.para?.persona?.nombre + " " + tramite?.para?.persona?.apellido + " (" + tramite?.para?.persona?.departamento + ")")
+                    }else{
+                        row2.createCell((int) 3).setCellValue(tramite?.para?.departamento?.descripcion)
+                    }
+                }
+            }
+
+            if(tramite?.copias && tramite?.copias?.size() > 0){
+                tramite?.copias?.each {
+                    if(it?.persona){
+                     row2.createCell((int) 4).setCellValue(it?.persona?.nombre + " " + it?.persona?.apellido + " (" + it?.persona?.departamento?.codigo + ")")
+                    }else{
+                        if(it?.departamento){
+                            row2.createCell((int) 4).setCellValue(it?.departamento?.codigo)
+                        }
+                    }
+                }
+            }else{
+                row2.createCell((int) 4).setCellValue('')
+            }
+
+            row2.createCell((int) 5).setCellValue(tramite?.asunto)
+            row2.createCell((int) 6).setCellValue(tramite?.prioridad?.descripcion)
+            row2.createCell((int) 7).setCellValue(envia ? (envia?.persona?.nombre + " " + envia?.persona?.apellido) : '')
+            row2.createCell((int) 8).setCellValue(tramite?.fechaEnvio?.format('dd-MM-yyyy HH:mm') ?: '')
+            if(recibe && recibe?.fechaRecepcion && tramite.estadoTramite == estadoRecibido){
+                row2.createCell((int) 9).setCellValue(recibe?.fechaRecepcion?.format("dd-MM-yyyy"))
+            }else{
+                row2.createCell((int) 9).setCellValue(" " )
+            }
+
+            index++
+        }
+
+
+        XSSFRow row = sheet.createRow((short) index + 2)
+
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        wb.write(fileOut);
+        fileOut.close();
+        String disHeader = "Attachment;Filename=\"${downloadName}\"";
+        response.setHeader("Content-Disposition", disHeader);
+        File desktopFile = new File(filename);
+        PrintWriter pw = response.getWriter();
+        FileInputStream fileInputStream = new FileInputStream(desktopFile);
+        int j;
+        while ((j = fileInputStream.read()) != -1) {
+            pw.write(j);
+        }
+        fileInputStream.close();
+        response.flushBuffer();
+        pw.flush();
+        pw.close();
 
     }
 }

@@ -61,8 +61,14 @@
                             class="fa fa-check-square-o"></i> Buscar</a>
                     <a href="#" name="borrar" class="btn btn-primary btnBorrar btn-sm" title="Borrar criterios">
                         <i class="fa fa-eraser"></i></a>
-                    <a href="#" name="borrar" class="btn btn-primary btnBorrar btn-sm" title="Exportar resultado a excel"><i
-                           class="fa fa-table"></i></a>
+                    <a href="#" name="excel_name" class="btn btn-primary btnExcel btn-sm" title="Exportar resultado a excel"><i
+                           class="fa fa-file-excel-o"></i></a>
+
+                    %{--<g:link class="btn btn-primary btn-sm" controller="reportesPersonales" action="reporteExcelBusqueda" title="Exportar resultado a excel">--}%
+                        %{--<i class="fa fa-file-excel-o"></i>--}%
+                    %{--</g:link>--}%
+
+
                 </div>
             </div>
             </div>
@@ -159,6 +165,38 @@
         </script>
 
         <script type="text/javascript">
+
+            $(".btnExcel").click(function () {
+
+                var memorando = $("#memorando").val();
+                var asunto = $("#asunto").val();
+                var fecha = $("#fechaDsde_input").val();
+                var fechaHs = $("#fechaHsta_input").val();
+                var institucion;
+                var doc;
+                var contacto;
+                var radio = $("[name='fechas']:checked").val()
+                var rgst = $("[name='registros']:checked").val()
+                var datos;
+
+                if($(".combo").prop('checked') ==  true){
+                    institucion = $("#institucion").val();
+                    doc = $("#docExterno").val();
+                    contacto = $("#contacto").val();
+
+                    datos = "codigo=" + memorando + "&asunto=" + asunto + "&fcds=" + fecha + "&fchs=" + fechaHs +
+                        "&fechas=" + radio + "&institucion=" + institucion + "&doc=" + doc +
+                        "&registros=" + rgst + "&contacto=" + contacto + "&memo=" + memorando;
+                }else{
+                    datos = "codigo=" + memorando + "&asunto=" + asunto + "&fcds=" + fecha + "&fchs=" + fechaHs +
+                        "&registros=" + rgst + "&fechas=" + radio + "&memo=" + memorando;
+                }
+
+
+                location.href='${createLink(controller: 'reportesPersonales', action: 'reporteExcelBusqueda')}?datos=' + datos
+
+
+            });
 
             $(".combo").click(function () {
                 $('.btnBorrar').click();

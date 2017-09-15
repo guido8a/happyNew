@@ -13,31 +13,6 @@ table {
 }
 </style>
 
-%{--<div style="height: 30px; overflow: hidden;" class="container-celdas">--}%
-%{--<span class="grupo">--}%
-%{--<table class="table table-bordered table-condensed table-hover">--}%
-%{--<thead>--}%
-%{--<tr>--}%
-%{--<th class="alinear" style="width: 165px">Documento</th>--}%
-%{--<th class="alinear" style="width: 100px">Fecha Creación</th>--}%
-%{--<th class="alinear" style="width: 150px">De</th>--}%
-%{--<th class="alinear" style="width: 150px">Para</th>--}%
-%{--<th class="alinear" style="width: 100px">Asunto</th>--}%
-%{--<th class="alinear" style="width: 60px">Prioridad</th>--}%
-%{--<th class="alinear" style="width: 90px">Envia</th>--}%
-%{--<th class="alinear" style="width: 110px">Fecha Envio</th>--}%
-%{--<th class="alinear" style="width: 110px">Fecha Recepción</th>--}%
-%{--</tr>--}%
-%{--</thead>--}%
-%{--<tbody>--}%
-
-%{--</tbody>--}%
-%{--</table>--}%
-%{--</span>--}%
-%{--</div>--}%
-%{--${msje}--}%
-
-
 <div style="height: ${msje == '' ? 560 : 520}px" class="container-celdas">
     <div style="width: 100%"><util:renderHTML html="${msje}"/></div>
     <span class="grupo">
@@ -102,8 +77,6 @@ table {
                     <g:if test="${copiasExternas.estado.codigo.contains('E003')}">
                         <g:set var="externo" value="${externo} externoCC"/>
                     </g:if>
-
-                    %{--<g:if test="${tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">--}%
                     <g:if test="${(params.dgsg == 'DGSG') || tramite?.deId == session.usuario.id || (tramite?.departamento?.id == session.departamento.id && session.usuario.esTriangulo)}">
                         <g:set var="clase" value="${clase + ' mio'}"/>
                     </g:if>
@@ -124,20 +97,7 @@ table {
                         dep="${tramite?.de?.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                         de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
                                 (tramite.deDepartamento ? 'D_' + tramite.deDepartamento?.id : 'P_' + tramite.de?.id)}">
-                        %{--<td style="width: 110px">--}%
-                        %{--<g:if test="${tramite.tipoTramite.codigo == 'C'}">--}%
-                        %{--<i class="fa fa-eye-slash" style="margin-left: 10px"></i>--}%
-                        %{--</g:if>--}%
-                        %{--${tramite.codigo}--}%
-                        %{--<g:if test="${tramite.anexo == 1 && DocumentoTramite.countByTramite(tramite) > 0}">--}%
-                        %{--<i class="fa fa-paperclip fa-fw" style="margin-left: 10px"></i>--}%
-                        %{--</g:if>--}%
-                        %{--<g:if test="${tramite.externo == '1' || tramite.tipoDocumento.codigo == 'DEX'}">--}%
-                        %{--(ext)--}%
-                        %{--</g:if>--}%
-                        %{--</td>--}%
                         <td class="codigo">
-                        %{--${tramite.deId} ${session.usuario.id} ${tramite.deId == session.usuario.id}<br/>--}%
                             <g:if test="${tramite?.tipoTramite?.codigo == 'C'}">
                                 <i class="fa fa-eye-slash"></i>
                             </g:if>
@@ -163,7 +123,6 @@ table {
                                     ${tramite.deDepartamento.descripcion}
                                 </g:if>
                                 <g:elseif test="${tramite.de}">
-                                    %{--${tramite.de.nombre} ${tramite.de.apellido} (${tramite.de.departamento.codigo})--}%
                                     ${tramite.de.nombre} ${tramite.de.apellido} (${tramite.departamentoSigla})
                                 </g:elseif>
                             </g:else>
