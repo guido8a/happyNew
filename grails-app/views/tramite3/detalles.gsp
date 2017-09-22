@@ -17,11 +17,11 @@
             <div class="row">
                 <div class="col-xs-1 negrilla">No:</div>
 
-                <div class="col-xs-3">${tp.codigo}</div>
+                <div class="col-xs-5">${tp.codigo}</div>
 
                 <div class="col-xs-1 negrilla">Fecha:</div>
 
-                <div class="col-xs-3">${tp.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
+                <div class="col-xs-5">${tp.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
             </div>
             <g:if test="${tp.tipoTramite.codigo == 'C'}">
                 <div class="row">
@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-xs-1 negrilla">De:</div>
 
-                <div class="col-xs-3">
+                <div class="col-xs-5">
                     <g:if test="${tp.tipoDocumento.codigo == 'DEX'}">
                         ${tp.paraExterno} (EXT)
                     </g:if>
@@ -93,9 +93,9 @@
 
 
             <div class="row">
-                <div class="col-xs-1 negrilla">Asunto:</div>
+                <div class="col-xs-1 negrilla text-info">Asunto:</div>
 
-                <div class="col-xs-8">${tp.asunto.decodeHTML()}</div>
+                <div class="col-xs-11 text-info">${tp.asunto.decodeHTML()}</div>
             </div>
 
             <g:if test="${tp.personaPuedeLeer(session.usuario) && tp.texto?.size() > 2}">
@@ -149,11 +149,11 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">No:</div>
 
-                    <div class="col-xs-3">${t.codigo}</div>
+                    <div class="col-xs-5">${t.codigo}</div>
 
                     <div class="col-xs-1 negrilla">Fecha:</div>
 
-                    <div class="col-xs-3">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
+                    <div class="col-xs-5">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
                 </div>
                 <g:if test="${t.tipoTramite.codigo == 'C'}">
                     <div class="row">
@@ -163,7 +163,7 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-5">
                         <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
                             ${t.paraExterno} (EXT)
                         </g:if>
@@ -229,7 +229,7 @@
 
                             <g:if test="${pdt?.personaNombre}">
                                 <div class="row">
-                                    <div class="col-xs-2 negrilla">RECIBIÓ: </div>
+                                    <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
                                     <div class="col-xs-8">${pdt?.personaNombre}</div>
                                 </div>
                             </g:if>
@@ -286,9 +286,9 @@
                 </g:if>
 
                 <div class="row">
-                    <div class="col-xs-1 negrilla">Asunto:</div>
+                    <div class="col-xs-1 negrilla text-info">Asunto:</div>
 
-                    <div class="col-xs-8">${t.asunto.decodeHTML()}</div>
+                    <div class="col-xs-8 text-info">${t.asunto.decodeHTML()}</div>
                 </div>
 
                 <g:if test="${t.personaPuedeLeer(session.usuario) && t.texto?.size() > 2}">
@@ -339,11 +339,11 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">No:</div>
 
-                    <div class="col-xs-3">${t.codigo}</div>
+                    <div class="col-xs-5">${t.codigo}</div>
 
                     <div class="col-xs-1 negrilla">Fecha:</div>
 
-                    <div class="col-xs-3">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
+                    <div class="col-xs-5">${t.fechaCreacion.format("dd-MM-yyyy HH:mm")}</div>
                 </div>
                 <g:if test="${t.tipoTramite.codigo == 'C'}">
                     <div class="row">
@@ -353,7 +353,7 @@
                 <div class="row">
                     <div class="col-xs-1 negrilla">De:</div>
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-5">
                         <g:if test="${t.tipoDocumento.codigo == 'DEX'}">
                             ${t.paraExterno} (EXT)
                         </g:if>
@@ -416,7 +416,7 @@
 
                             <g:if test="${pdt?.personaNombre}">
                                 <div class="row">
-                                    <div class="col-xs-2 negrilla">RECIBIÓ: </div>
+                                    <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
                                     <div class="col-xs-8">${pdt?.personaNombre}</div>
                                 </div>
                             </g:if>
@@ -472,9 +472,9 @@
 
 
                 <div class="row">
-                    <div class="col-xs-1 negrilla">Asunto:</div>
+                    <div class="col-xs-1 negrilla text-info">Asunto:</div>
 
-                    <div class="col-xs-8">${t.asunto}</div>
+                    <div class="col-xs-11 text-info">${t.asunto}</div>
                 </div>
 
                 <g:if test="${t.personaPuedeLeer(session.usuario) && t.texto?.size() > 2}">
