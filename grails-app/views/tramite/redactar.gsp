@@ -11,7 +11,8 @@
         .hoja {
             margin : auto;
             float  : right;
-            width  : 19cm;
+            /*width  : 19cm;*/
+            width  : 70%;
         }
 
         .nota {
@@ -21,7 +22,8 @@
             padding            : 10px;
             background         : #BCCCDC;
             border             : solid 1px #867722;
-            width              : 400px;
+            /*width              : 400px;*/
+            width              : 28%;
             z-index            : 1;
 
             -webkit-box-shadow : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
@@ -31,8 +33,11 @@
 
         .card {
             width: 100%;
-            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            /*box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
             /*text-align: center;*/
+            -webkit-box-shadow : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+            -moz-box-shadow    : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+            box-shadow         : 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
         }
 
         .nota .contenido {
@@ -43,7 +48,7 @@
             position : absolute;
             top      : -10px;
             left     : 40%;
-            content  : url("${resource(dir:'images',file:'pin.png')}");
+            %{--content  : url("${resource(dir:'images',file:'pin.png')}");--}%
             z-index  : 2;
             display  : block;
             width    : 16px;
@@ -102,10 +107,16 @@
         </g:if>
         <g:if test="${tramite.padre}">
             <g:if test="${tramite.padre.personaPuedeLeer(session.usuario)}">
-                <div class="nota ui-corner-all" id="divInfo" style="height: 450px; height: 600px; overflow: auto">
-                    <div style="font-weight: bold">
-                        <div>Documento:<span style="margin-left: 50px">${tramite.padre.codigo}</span></div>
-                        <div>ASUNTO:<span style="margin-left: 65px">${tramite.padre.asunto}</span></div>
+                <div class="nota ui-corner-all" id="divInfo" style="height: 600px; overflow: auto">
+                    <div class="text-info">
+                        %{--<div>Documento:<span style="margin-left: 50px">${tramite.padre.codigo}</span></div>--}%
+                        <div><div style="width: 30%; float: left">Documento:</div>
+                            <div style="float: left; width: 65%; display: inline">${tramite.padre.codigo}</div>
+                        </div>
+                        <div><div style="width: 30%; float: left">ASUNTO:</div>
+                            <div style="float: left; width: 65%; display: inline">${tramite.padre.asunto}</div>
+                        </div>
+                        %{--<div>ASUNTO:<span style="margin-left: 65px">${tramite.padre.asunto}</span></div>--}%
                     </div>
                     %{--<h4 style="height: 100%" class="text-info">${tramite.padre.codigo} - ${tramite.padre.asunto}</h4>--}%
 
