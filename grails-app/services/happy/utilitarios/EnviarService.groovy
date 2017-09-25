@@ -44,8 +44,10 @@ class EnviarService {
         } else if (parametros.size() > 1) {
             println "HAY ${parametros.size()} REGISTROS DE PARAMETROS!!!!"
             mensaje = parametros.first().imagenes
+//            mensaje = "/happy/images/"
         } else {
             mensaje = parametros.first().imagenes
+//            mensaje = "/happy/images/"
         }
         def leyenda = "GAD de la provincia de Pichincha"
         def aux = Parametros.list([sort: "id", order: "asc"])
@@ -59,8 +61,8 @@ class EnviarService {
         tramite.refresh()
 
         def pathImages = realPath + "images/"
-        def path = pathImages + "redactar/" + usuario.id + "/"
-
+//        def path = pathImages + "redactar/" + usuario.id + "/"
+        def path = pathImages
 //        def membrete = pathImages + "logo_gadpp_reportes.png"
         def membrete = pathImages + "logo_gadpp.png"
 

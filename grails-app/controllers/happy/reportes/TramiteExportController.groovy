@@ -195,12 +195,18 @@ class TramiteExportController extends Shield{
         return phraseInfo
     }
 
+
+
+
     def crearPdf() {
 
+//        println("params editor " + params)
         def tramite = Tramite.get(params.id.toLong())
         def usuario = Persona.get(session.usuario.id)
         def realPath = servletContext.getRealPath("/")
         def mensaje = message(code: 'pathImages').toString()
+
+
 
         if (params.editorTramite) {
             def paratr = tramite.para

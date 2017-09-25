@@ -457,41 +457,47 @@
                 });
 
                 function imprimir() {
-                    %{--openLoader("Generando PDF");--}%
-                    %{--var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';--}%
-                    %{--var data = {--}%
-                        %{--id            : "${tramite.id}",--}%
-                        %{--editorTramite : $("#editorTramite").val(),--}%
-                        %{--para          : $("#para").val(),--}%
-                        %{--asunto        : $("#asunto").val(),--}%
-                        %{--type          : "download",--}%
-                        %{--enviar        : 1,--}%
-                        %{--timestamp     : new Date().getTime()--}%
-                    %{--};--}%
-                    %{--$.ajax({--}%
-                        %{--type     : "POST",--}%
-                        %{--url      : url,--}%
-                        %{--data     : data,--}%
-                        %{--success  : function (msg) {--}%
-                            %{--var parts = msg.split("*");--}%
-                            %{--if (parts[0] == "OK") {--}%
-                                %{--textoInicial = arreglarTexto($("#editorTramite").val());--}%
+                    openLoader("Generando PDF");
+                    var url = '${createLink(controller:"tramiteExport", action: "crearPdf")}';
+                    var data = {
+                        id            : "${tramite.id}",
+                        editorTramite : $("#editorTramite").val(),
+                        para          : $("#para").val(),
+                        asunto        : $("#asunto").val(),
+                        type          : "download",
+                        enviar        : 1,
+                        timestamp     : new Date().getTime()
+                    };
+                    $.ajax({
+                        type     : "POST",
+                        url      : url,
+                        data     : data,
+                        success  : function (msg) {
+                            closeLoader();
+                            console.log(msg)
+//                            var parts = msg.split("*");
+//                            if (parts[0] == "OK") {
+                                textoInicial = arreglarTexto($("#editorTramite").val());
                                 %{--closeLoader();--}%
                                 %{--window.open("${resource(dir:'tramites')}/" + parts[1]);--}%
-                            %{--}--}%
-                        %{--},--}%
-                        %{--complete : function () {--}%
-                            %{--resetTimer();--}%
-                        %{--}--}%
-                    %{--});--}%
+                                location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp + "&editorTramite=" + textoInicial + "&asunto=" + asunto + "&para=" + para
+
+//                            }
+                        },
+                        complete : function () {
+                            resetTimer();
+                        }
+                    });
 
 
                     var id  = "${tramite.id}";
                     var timestamp = new Date().getTime();
+                    var para = $("#para").val()
+                    var asunto = $("#asunto").val()
 
-                    location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp
+                    %{--location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp + "&editorTramite=" + editor + "&asunto=" + asunto + "&para=" + para--}%
 
-                }
+               }
 
                 $(".btnPrint").click(function () {
                     imprimir();
@@ -531,6 +537,7 @@
                         height                  : 600,
 //                        filebrowserUploadUrl : '/notes/add/ajax/upload-inline-image/index.cfm',
 //                        filebrowserBrowseUrl : '/browser/browse.php',
+                        %{--filebrowserBrowseUrl    : '${createLink(controller: "tramiteImagenes", action: "browser")}',--}%
                         filebrowserBrowseUrl    : '${createLink(controller: "tramiteImagenes", action: "browser")}',
                         filebrowserUploadUrl    : '${createLink(controller: "tramiteImagenes", action: "uploader")}',
                         %{--imageBrowser_listUrl    : '${createLink(controller: "tramiteImagenes", action: "list")}',--}%

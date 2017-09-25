@@ -17,7 +17,8 @@ class TramiteImagenesController extends happy.seguridad.Shield {
     def uploader() {
 //        println params
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
+//        def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
+        def path = servletContext.getRealPath("/") + "images/"
         new File(path).mkdirs()
 
         def f = request.getFile('upload')
@@ -99,7 +100,8 @@ class TramiteImagenesController extends happy.seguridad.Shield {
                 }
 
                 /* fin resize */
-                def pathReturn = resource(dir: "images/redactar/" + usuario.id, file: nombre)
+//                def pathReturn = resource(dir: "images/redactar/" + usuario.id, file: nombre)
+                def pathReturn = resource(dir: "images/", file: nombre)
                 def output = '<html>' +
                         '<body>' +
                         '<script type="text/javascript">' +
@@ -141,9 +143,10 @@ class TramiteImagenesController extends happy.seguridad.Shield {
 
     def browser() {
         def usuario = Persona.get(session.usuario.id)
-        def folderUsuario = "images/redactar/" + usuario.id
-        def path = servletContext.getRealPath("/") + folderUsuario + "/"
-
+//        def folderUsuario = "images/redactar/" + usuario.id
+        def folderUsuario = "images/"
+//        def path = servletContext.getRealPath("/") + folderUsuario + "/"
+        def path = servletContext.getRealPath("/")
         new File(path).mkdirs()
 
         def files = []
@@ -165,7 +168,8 @@ class TramiteImagenesController extends happy.seguridad.Shield {
 
     def delete_ajax() {
         def usuario = Persona.get(session.usuario.id)
-        def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
+//        def path = servletContext.getRealPath("/") + "images/redactar/" + usuario.id + "/"
+        def path = servletContext.getRealPath("/") + "images/"
         def file = params.file
         def fileDel = new File(path + file)
         fileDel.delete()
