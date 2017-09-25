@@ -250,10 +250,15 @@ class TramiteController extends happy.seguridad.Shield {
         def horas = prioridad.tiempo
 
         def fechaEsperada = diasLaborablesService.fechaMasTiempo(fecha, horas)
+/*
         if (fechaEsperada[0]) {
             render "OK_" + fechaEsperada[1].format("dd-MM-yyyy HH:mm")
         } else {
             render "NO_" + fechaEsperada[1]
+        }
+*/
+        if (fechaEsperada) {
+            render "OK_" + fechaEsperada.format("dd-MM-yyyy HH:mm")
         }
     }
 
