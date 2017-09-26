@@ -227,14 +227,15 @@
                             <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
+
+                            <g:set var="recibidoVar2" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3))?.personaNombre}"/>
+
+                            <g:if test="${recibidoVar2 && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    %{--<div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>--}%
-                                    <div class="col-xs-8">${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3)).personaNombre}</div>
+                                    <div class="col-xs-8">${recibidoVar2}</div>
                                 </div>
                             </g:if>
-
 
                         %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
                         </g:each>
@@ -415,12 +416,12 @@
                                 <span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
+                            <g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3))?.personaNombre}"/>
+
+                            <g:if test="${recibidoVar && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    %{--<div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>--}%
-                                    <div class="col-xs-8">${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3)).personaNombre}</div>
-
+                                    <div class="col-xs-8">${recibidoVar}</div>
                                 </div>
                             </g:if>
 
