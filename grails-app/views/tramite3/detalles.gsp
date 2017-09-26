@@ -227,10 +227,10 @@
                             <b><span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:if test="${pdt?.personaNombre}">
+                            <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    <div class="col-xs-8">${pdt?.personaNombre}</div>
+                                    <div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>
                                 </div>
                             </g:if>
 
@@ -414,10 +414,10 @@
                                 <span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:if test="${pdt?.personaNombre}">
+                            <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    <div class="col-xs-8">${pdt?.personaNombre}</div>
+                                    <div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>
                                 </div>
                             </g:if>
 
