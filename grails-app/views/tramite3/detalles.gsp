@@ -7,6 +7,8 @@
     }
 </style>
 
+<g:set var="recibe" value="${happy.tramites.RolPersonaTramite.get(3)}"/>
+
 <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;font-size: 11px">
     <g:if test="${tp}">
         <div style="margin-bottom: 20px;min-height: 140px" class="vertical-container">
@@ -228,7 +230,7 @@
                             </b> el ${fecha} <br>
 
 
-                            <g:set var="recibidoVar2" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3))?.personaNombre}"/>
+                            <g:set var="recibidoVar2" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, recibe)?.personaNombre}"/>
 
                             <g:if test="${recibidoVar2 && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
@@ -416,7 +418,8 @@
                                 <span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3))?.personaNombre}"/>
+                            <g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite,
+                                    recibe)?.personaNombre}"/>
 
                             <g:if test="${recibidoVar && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
