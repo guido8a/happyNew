@@ -1,4 +1,4 @@
-<%@ page import="happy.tramites.DocumentoTramite; happy.seguridad.Persona" %>
+<%@ page import="happy.tramites.PersonaDocumentoTramite; happy.tramites.DocumentoTramite; happy.seguridad.Persona" %>
 
 <style type="text/css">
     .claseMin {
@@ -230,7 +230,8 @@
                             <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    <div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>
+                                    %{--<div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>--}%
+                                    <div class="col-xs-8">${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3)).personaNombre}</div>
                                 </div>
                             </g:if>
 
@@ -417,7 +418,9 @@
                             <g:if test="${(pdt?.personaNombre || pdt?.departamentoNombre) && tramite.estadoTramite.codigo == 'E004'}">
                                 <div class="row">
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
-                                    <div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>
+                                    %{--<div class="col-xs-8">${pdt?.personaNombre  ? pdt?.personaNombre : pdt?.departamentoNombre}</div>--}%
+                                    <div class="col-xs-8">${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, happy.tramites.RolPersonaTramite.get(3)).personaNombre}</div>
+
                                 </div>
                             </g:if>
 
