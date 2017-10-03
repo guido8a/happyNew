@@ -59,7 +59,7 @@
             <g:set var="iconActivar" value="fa-hdd-o"/>
             <g:set var="iconDesactivar" value="fa-power-off"/>
 
-            <div id="list-cuenta">
+            <div id="list-cuenta" style="width: 900px; display: inline">
 
                 <!-- botones -->
                 <div class="btn-toolbar toolbar">
@@ -80,18 +80,12 @@
 
                     <g:if test="${happy.utilitarios.Parametros.get(1).validaLDAP == 1}">
                         <div class="btn-group" style="margin-top: 4px;">
-                            %{--
-                                                <g:link controller="persona" action="cargarUsuariosLdap" class="btn btn-sm btn-primary" id="cargaPrsn">
-                                                    <i class="fa fa-users"></i> Usuarios LDAP
-                                                </g:link>
-                            --}%
-                            <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar/Actualizar LDAP
+                            <a href="#" id="cargaPrsn" class="btn btn-primary btn-sm"><i class="fa fa-users"></i> Cargar / Actualizar LDAP
                             </a>
-
                         </div>
                     </g:if>
 
-                    <div class="btn-group col-md-3" style="margin-top: 4px;">
+                    <div class="btn-group col-md-2" style="margin-top: 4px;">
                         <div class="input-group">
                             <g:textField name="search" class="form-control input-sm"/>
                             <span class="input-group-btn">
@@ -99,6 +93,11 @@
                                     <i class="fa fa-search"></i>&nbsp;
                                 </a>
                             </span>
+                        </div>
+                    </div><!-- /input-group -->
+                    <div class="btn-group col-md-1" style="margin-top: 4px; width: 100px">
+                        <div class="input-group">
+                            Inactivos: <g:checkBox name="activos" value="${false}" />
                         </div><!-- /input-group -->
                     </div>
 
@@ -1025,7 +1024,8 @@
                                     return {
                                         id    : node.id,
                                         sort  : "${params.sort?:'apellido'}",
-                                        order : "${params.order?:'asc'}"
+                                        order : "${params.order?:'asc'}",
+                                        actv  : $("#activos").is(':checked')
                                     };
                                 }
                             }
@@ -1148,6 +1148,11 @@
                             }
                         });
                     });
+
+                    $('#activos').change(function () {
+                        location.reload()
+                    });
+
                 });
             </script>
         </g:if>

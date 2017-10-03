@@ -276,6 +276,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def arbol() {
+//        println "params: $params"
         return [params: params]
     }
 
@@ -284,6 +285,8 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def makeTreeNode(params) {
+        def actv = params.actv == 'false'
+//        println "mkTree: $params, activos: $actv"
         def id = params.id
         if (!params.sort) {
             params.sort = "apellido"
@@ -316,7 +319,11 @@ class DepartamentoController extends happy.seguridad.Shield {
         } else if (id == "root") {
 
             if (session.usuario.puedeDirector || session.usuario.puedeAdmin) {
-                hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+                if(actv) {
+                    hijos = Departamento.findAllByPadreIsNullAndActivo(1,[sort: "descripcion"])
+                } else {
+                    hijos = Departamento.findAllByPadreIsNull([sort: "descripcion"])
+                }
             } else if (session.usuario.puedeJefe) {
                 hijos = [session.usuario.departamento]
             } else {
@@ -328,8 +335,13 @@ class DepartamentoController extends happy.seguridad.Shield {
             padre = Departamento.get(node_id)
             if (padre) {
                 hijos = []
-                hijos += Persona.findAllByDepartamento(padre, [sort: params.sort, order: params.order])
-                hijos += Departamento.findAllByPadre(padre, [sort: "descripcion"])
+                if(actv) {
+                    hijos += Persona.findAllByDepartamentoAndActivo(padre, 1, [sort: params.sort, order: params.order])
+                    hijos += Departamento.findAllByPadreAndActivo(padre, 1, [sort: "descripcion"])
+                } else {
+                    hijos += Persona.findAllByDepartamento(padre, [sort: params.sort, order: params.order])
+                    hijos += Departamento.findAllByPadre(padre, [sort: "descripcion"])
+                }
             }
         }
 
@@ -354,52 +366,6 @@ class DepartamentoController extends happy.seguridad.Shield {
                         clase += " ocupado "
                     }
 
-//                    //cuenta los tramites de la bandeja de entrada de la oficina
-//                    def rolPara = RolPersonaTramite.findByCodigo('R001');
-//                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//                    def rolImprimir = RolPersonaTramite.findByCodigo('I005');
-//
-//                    def pxtPara = PersonaDocumentoTramite.withCriteria {
-//                        eq("departamento", hijo)
-//                        eq("rolPersonaTramite", rolPara)
-//                        isNotNull("fechaEnvio")
-//                        tramite {
-//                            or {
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-//                            }
-//                        }
-//                    }
-//                    def pxtCopia = PersonaDocumentoTramite.withCriteria {
-//                        eq("departamento", hijo)
-//                        eq("rolPersonaTramite", rolCopia)
-//                        isNotNull("fechaEnvio")
-//                        tramite {
-//                            or {
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-//                            }
-//                        }
-//                    }
-//                    def pxtImprimir = PersonaDocumentoTramite.withCriteria {
-//                        eq("departamento", hijo)
-//                        eq("rolPersonaTramite", rolImprimir)
-//                        isNotNull("fechaEnvio")
-//                        tramite {
-//                            or {
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-//                                eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-//                            }
-//                        }
-//                    }
-//
-//                    def pxtTodos = pxtPara
-//                    pxtTodos += pxtCopia
-//                    pxtTodos += pxtImprimir
-//                    data = "data-tramites='${pxtTodos.size()}'"
                     data = "data-tramites='-1'"
                     if (hijo.externo == 1) {
                         rel += "Externo"
@@ -431,53 +397,6 @@ class DepartamentoController extends happy.seguridad.Shield {
                         tp = rel = clase = "director"
                     }
 
-//                    def rolPara = RolPersonaTramite.findByCodigo('R001');
-//                    def rolCopia = RolPersonaTramite.findByCodigo('R002');
-//                    def rolImprimir = RolPersonaTramite.findByCodigo('I005')
-//                    def estadoEnviado = EstadoTramite.findByCodigo("E003")
-//                    def estadoRecibido = EstadoTramite.findByCodigo("E004")
-//                    def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
-//                    def estadoRevisado = EstadoTramite.findByCodigo("E002")
-//                    def tramitesEntrada = PersonaDocumentoTramite.withCriteria {
-//                        eq("persona", hijo)
-//                        or {
-//                            eq("rolPersonaTramite", rolPara)
-//                            eq("rolPersonaTramite", rolCopia)
-//                        }
-//                        or {
-//                            eq("estado", estadoEnviado)
-//                            eq("estado", estadoRecibido)
-//                        }
-//                    }
-//                    def cantTramEntrada = 0, cantTramSalida = 0
-//                    tramitesEntrada.each { tr ->
-//                        if (Tramite.countByAQuienContesta(tr) == 0) {
-//                            cantTramEntrada++
-//                        }
-//                    }
-//
-//                    def tramitesSalida = Tramite.withCriteria {
-//                        eq("de", hijo)
-//                        isNull("deDepartamento")
-//                        inList("estadoTramite", [estadoPorEnviar, estadoRevisado, estadoEnviado, estadoRecibido])
-//                        order("fechaCreacion", "desc")
-//                    }
-//                    def t = PersonaDocumentoTramite.findAllByPersonaAndRolPersonaTramite(hijo, rolImprimir).tramite
-//                    if (t.size() > 0) {
-//                        tramitesSalida += t
-//                    }
-//                    def tramsSalida = []
-//                    tramitesSalida.each { tr ->
-//                        def pdt = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInList(tr, [rolPara, rolCopia])
-//                        pdt.each { pd ->
-//                            if (!pd.fechaRecepcion && pd.estado?.codigo != "E006" && pd.estado?.codigo != "E005") {
-//                                if (!tramsSalida.contains(tr)) {
-//                                    tramsSalida += tr
-//                                }
-//                            }
-//                        }
-//                    }
-//                    cantTramSalida = tramsSalida.size()
                     def cantTramSalida = -1, cantTramEntrada = -1
                     if (hijo.activo == 1 && !hijo.estaActivo) {
                         clase += " ausente"

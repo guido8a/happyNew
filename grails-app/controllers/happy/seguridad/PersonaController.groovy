@@ -1367,7 +1367,8 @@ class PersonaController extends happy.seguridad.Shield {
                             users.add(prsn)
                             cont++
                         }
-                        if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
+//                        if (ou2 && ou2 != "Equipo" && ou2 != "EQUIPOS" && ou2 != "Equipos" && ou2 != "EQUIPO") {
+                        if (ou2 && (ou2.toString().toLowerCase().indexOf('equipo') == -1)) {
                             dep = Departamento.findByDescripcion(ou2)
                             if (!dep) {
 

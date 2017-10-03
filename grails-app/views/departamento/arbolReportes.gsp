@@ -55,8 +55,8 @@
                             </g:link>
                         </div>
         --}%
-        <div class="btn-group" style="margin-top: 4px;">
-            <p style="font-size: 18px; font-weight: bold; margin-right: 40px;">Reportes del Sistema</p>
+        <div class="btn-group col-md-2" style="margin-top: 4px;">
+            <p style="font-size: 18px; font-weight: bold; margin-right: 40px;">Reportes</p>
         </div>
 
         <div class="btn-group" style="margin-top: 4px;">
@@ -68,7 +68,7 @@
             </g:link>
         </div>
 
-        <div class="btn-group col-md-3" style="margin-top: 4px;">
+        <div class="btn-group col-md-3" style="margin-top: 4px; width: 200px">
             <div class="input-group">
                 <g:textField name="search" class="form-control input-sm"/>
                 <span class="input-group-btn">
@@ -79,7 +79,7 @@
             </div><!-- /input-group -->
         </div>
 
-        <div class="btn-group pull-right ui-corner-all leyenda">
+        <div class="btn-group pull-right ui-corner-all leyenda col-md-3">
             <i class="fa fa-user text-info"></i> Usuario activo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <i class="fa fa-user text-warning"></i> Jefe<br/>
             <i class="fa fa-user text-muted"></i> Usuario inactivo&nbsp;&nbsp;&nbsp;
@@ -533,7 +533,8 @@
                         return {
                             id    : node.id,
                             sort  : "${params.sort?:'apellido'}",
-                            order : "${params.order?:'asc'}"
+                            order : "${params.order?:'asc'}",
+                            actv: "false"
                         };
                     }
                 }
