@@ -44,26 +44,47 @@ class PruebasController {
                             t.estado = EstadoTramite.findByCodigo("E003")
                             if (t.save(flush: true)) {
                                 if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
-                                    def alerta = new Alerta()
-                                    if (t.tramite.tipoDocumento.codigo == "OFI") {
-                                        alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
-                                    } else {
+//                                    def alerta = new Alerta()
+//                                    if (t.tramite.tipoDocumento.codigo == "OFI") {
+//                                        alerta.mensaje = "${t.tramite.paraExterno} te ha enviado un trámite."
+//                                    } else {
+//                                        alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+//                                    }
+//                                    if (t.persona) {
+//                                        alerta.controlador = "tramite"
+//                                        alerta.accion = "bandejaEntrada"
+//                                        alerta.persona = t.persona
+//                                    } else {
+//                                        alerta.departamento = t.departamento
+//                                        alerta.accion = "bandejaEntradaDpto"
+//                                        alerta.controlador = "tramite3"
+//                                    }
+//                                    alerta.datos = t.id
+//                                    alerta.tramite = t.tramite
+//                                    if (!alerta.save(flush: true)) {
+//                                        println "error save alerta " + alerta.errors
+//                                    }
+
+
+                                    if (t.tramite.tipoDocumento.codigo != "OFI") {
+                                        def alerta = new Alerta()
                                         alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
+                                        if (t.persona) {
+                                            alerta.controlador = "tramite"
+                                            alerta.accion = "bandejaEntrada"
+                                            alerta.persona = t.persona
+                                        } else {
+                                            alerta.departamento = t.departamento
+                                            alerta.accion = "bandejaEntradaDpto"
+                                            alerta.controlador = "tramite3"
+                                        }
+                                        alerta.datos = t.id
+                                        alerta.tramite = t.tramite
+                                        if (!alerta.save(flush: true)) {
+                                            println "error save alerta " + alerta.errors
+                                        }
                                     }
-                                    if (t.persona) {
-                                        alerta.controlador = "tramite"
-                                        alerta.accion = "bandejaEntrada"
-                                        alerta.persona = t.persona
-                                    } else {
-                                        alerta.departamento = t.departamento
-                                        alerta.accion = "bandejaEntradaDpto"
-                                        alerta.controlador = "tramite3"
-                                    }
-                                    alerta.datos = t.id
-                                    alerta.tramite = t.tramite
-                                    if (!alerta.save(flush: true)) {
-                                        println "error save alerta " + alerta.errors
-                                    }
+
                                 }
                             }
                         } else {
