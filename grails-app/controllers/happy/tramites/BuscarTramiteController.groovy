@@ -227,7 +227,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 
 
     def tablaBusquedaTramite() {
-        println "tablaBusquedaTramite: $params"
+//        println "tablaBusquedaTramite: $params"
         def cn = dbConnectionService.getConnection()
         /** todo: Hacer con SQL **/
 
@@ -314,9 +314,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
              maxResults(maximo + 1)
          }
 
+//        println "registros....: ${res.size()}"
 
-
-        println "registros....: ${res.size()}"
 //        def tramitesFiltrados = res.tramite.unique()
 //        println "registros.... filtrados: ${tramitesFiltrados.size()}"
 //        tramitesFiltrados.sort { it.codigo }

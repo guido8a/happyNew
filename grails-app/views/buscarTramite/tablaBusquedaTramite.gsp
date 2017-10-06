@@ -82,9 +82,9 @@ table {
                     </g:if>
 
 
-                    <g:set var="para" value="${tramite.para.persona ? tramite.para.persona?.departamentoId : tramite.para?.departamentoId}"/>
+                    <g:set var="para" value="${tramite.para?.persona ? tramite.para?.persona?.departamentoId : tramite.para?.departamentoId}"/>
                     <g:each in="${tramite.copias}" var="copia">
-                        <g:set var="para" value="${para + ',' + (copia.persona ? copia.persona?.departamentoId : copia?.departamentoId)}"/>
+                        <g:set var="para" value="${para + ',' + (copia?.persona ? copia?.persona?.departamentoId : copia?.departamentoId)}"/>
                     </g:each>
 
                     <g:set var="respuestas" value="${tramite.respuestas.size()}"/>
@@ -140,6 +140,11 @@ table {
                                     <g:elseif test="${tramite.para.departamento}">
                                         ${tramite.para.departamento.descripcion}
                                     </g:elseif>
+                                </g:if>
+                                <g:if test="${!tramite?.para && !tramite?.para?.departamento}">
+                                    <i class="fa fa-user-times text-warning"> Sin Destinatario:</i>
+                                     <span style="color: #800">
+                                         No visible en la cadena.<br/> Consulte al Administra- dor del Sistema</span>
                                 </g:if>
                                 <g:if test="${tramite.copias && tramite.copias.size() > 0}">
                                     <span class="small">

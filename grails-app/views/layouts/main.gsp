@@ -16,7 +16,7 @@
         <elm:bootstrapCss/>
 
         <!-- FontAwsome, mFizz y octicons: las fuentes con dibujitos para los iconos -->
-        <link href="${resource(dir: 'font-awesome-4.2.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">
+        <link href="${resource(dir: 'font-awesome-4.7.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">
         <link href="${resource(dir: 'font-mfizz-1.2', file: 'font-mfizz.css')}" rel="stylesheet">
         <link href="${resource(dir: 'octicons', file: 'octicons.css')}" rel="stylesheet">
 
