@@ -362,7 +362,7 @@ class DocumentosGeneradosController extends Shield{
     }
 
     def reporteDetalladoPdf() {
-//        println("generado " + params)
+        println "generados reporteDetalladoPdf $params"
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
@@ -450,9 +450,10 @@ class DocumentosGeneradosController extends Shield{
 
         /*GENERADOS DPTO PDF*/
 
+        println "es triangulo: ${usuario.esTriangulo()}"
         if(usuario.esTriangulo()){
             sqlGen = "select * from trmt_generados("+ params.id +","+ departamentoUsuario +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
-//            println "reporteDetalladoPdf: $sqlGen"
+            println "reporteDetalladoPdf: $sqlGen"
             cn2.eachRow(sqlGen.toString()){
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtcdgo, font), paramsLeft)
                 reportesPdfService.addCellTabla(tablaGenerados, new Paragraph(it?.trmtfccr?.format("dd-MM-yyyy HH:mm"), font), paramsCenter)

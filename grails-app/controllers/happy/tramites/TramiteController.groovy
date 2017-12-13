@@ -122,10 +122,8 @@ class TramiteController extends happy.seguridad.Shield {
             if (pdtPara.size() > 0) {
                 def limite = ahora
                 limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-                if (limite[0]) {
-                    limite = limite[1]
-                } else {
-                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+                if (!limite) {
+                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite
                     redirect(controller: 'tramite', action: 'errores')
                     return
                 }
@@ -853,11 +851,9 @@ class TramiteController extends happy.seguridad.Shield {
                 fechaEnvio = it.fechaEnvio
                 fecha = fechaEnvio.getTime()
                 fechaRoja = diasLaborablesService.fechaMasTiempo(fecha, 2)
-                if (fechaRoja[0]) {
-                    fechaRoja = fechaRoja[1]
-                } else {
-                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + fechaRoja[1]
-                    redirect(action: 'errores')
+                if (!fechaRoja) {
+                    flash.message = "Ha ocurrido un error al calcular la fecha límite: " + fechaRoja
+                    redirect(controller: 'tramite', action: 'errores')
                     return
                 }
                 if (fechaRoja.before(new Date())) {
@@ -976,11 +972,9 @@ class TramiteController extends happy.seguridad.Shield {
             totalPrioridad = hora * prioridad
             fecha = fechaEnvio.getTime()
             nuevaFecha = diasLaborablesService.fechaMasTiempo(fecha, 2)
-            if (nuevaFecha[0]) {
-                nuevaFecha = nuevaFecha[1]
-            } else {
-                flash.message = "Ha ocurrido un error al calcular la fecha límite: " + nuevaFecha[1]
-                redirect(action: 'errores')
+            if (!nuevaFecha) {
+                flash.message = "Ha ocurrido un error al calcular la fecha límite: " + nuevaFecha
+                redirect(controller: 'tramite', action: 'errores')
                 return
             }
 
@@ -1232,13 +1226,12 @@ class TramiteController extends happy.seguridad.Shield {
         def limite = hoy
 
         limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-        if (limite[0]) {
-            limite = limite[1]
-        } else {
-            flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite[1]
+        if (!limite) {
+            flash.message = "Ha ocurrido un error al calcular la fecha límite: " + limite
             redirect(controller: 'tramite', action: 'errores')
             return
         }
+
 
         pxt.fechaRecepcion = hoy
         pxt.fechaLimiteRespuesta = limite

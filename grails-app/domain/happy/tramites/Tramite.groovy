@@ -372,8 +372,9 @@ class Tramite {
 //            println "tiempo Bloqueo " + tiempoBloqueo
             def fechaLimite = diasLaborablesService?.fechaMasTiempo(limite, tiempoBloqueo)
 //            println "fecha limite "+fechaLimite
-            if (fechaLimite[0]) {
-                return fechaLimite[1]
+
+            if (fechaLimite) {
+                return fechaLimite
             } else {
 //                println fechaLimite[1]
                 return null

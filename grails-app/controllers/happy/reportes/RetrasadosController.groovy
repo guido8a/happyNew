@@ -2437,8 +2437,8 @@ class RetrasadosController extends Shield {
         def sql
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
         def tablaTotalesRecibidos = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([40,30,11,11,11]),0,0)
 
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
@@ -2448,7 +2448,7 @@ class RetrasadosController extends Shield {
         reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph("Recibidos", fontBold), prmsHeaderHoja)
 
         sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ") order by generados desc"
-//        println "reporteGeneradosArbol: $sqlGen"
+        println "reporteGeneradosArbol: $sqlGen"
         cn2.eachRow(sqlGen.toString()){
 
             reportesPdfService.addCellTabla(tablaTotalesRecibidos, new Paragraph(it?.usuario, font), paramsLeft)

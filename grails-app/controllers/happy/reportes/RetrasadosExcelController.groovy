@@ -1657,8 +1657,6 @@ class RetrasadosExcelController extends Shield {
 
     def reporteGeneradosArbolExcel () {
 
-
-
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
@@ -1731,8 +1729,8 @@ class RetrasadosExcelController extends Shield {
         def sql
         def cn2 = dbConnectionService.getConnection()
         def cn = dbConnectionService.getConnection()
-        desde = desde.format("yyyy/MM/dd")
-        hasta = hasta.format("yyyy/MM/dd")
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
 
 
         sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
