@@ -12,6 +12,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
     def dbConnectionService
 
     def save() {
+
+//        println("entro 3")
+
+
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
         params.tramite.asunto = params.tramite.asunto.replaceAll(/</, /&lt;/)
         params.tramite.asunto = params.tramite.asunto.replaceAll(/>/, /&gt;/)
@@ -612,6 +616,19 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //                    msg += "<li>" + renderErrors(bean: tramite) + "<li>"
                 }
 
+                if (paramsTramite.esRespuestaNueva == "N") {
+//                    println ">> 3 Aqui pongo el log si es agregar doc al tram " + paramsTramite
+
+                    def observacionOriginalObs = tramite.observaciones
+                    def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
+                    def solicitadoPorObs = ""
+                    def usuarioObs = "por " + session.usuario.login
+                    def textoObs = ""
+                    def nuevaObservacionObs = ""
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginalObs, accionObs, solicitadoPorObs, usuarioObs, textoObs, nuevaObservacionObs)
+                    tramite.save(flush: true)
+                }
+
                 if (params.anexo == "on") {
                     redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
                     return
@@ -656,9 +673,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "DESPUES u: " + tramite.aQuienContesta
 //        println "DESPUES u: " + tramite.aQuienContesta.id
 
-//        println "**" + paramsTramite
+        println "** 3" + paramsTramite
         if (paramsTramite.esRespuestaNueva == "N") {
-//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
+            println ">> 3 Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
             def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo

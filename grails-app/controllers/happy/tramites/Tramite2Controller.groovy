@@ -1750,6 +1750,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "params: " + params
 
         if (tramite.id && tramite.esRespuestaNueva) {
+            println("tramite " + tramite.esRespuestaNueva)
             params.esRespuestaNueva = tramite.esRespuestaNueva
         }
 
@@ -2380,6 +2381,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     println "error al grabar trámite:" + tramite.errors
                 }
 
+
+                if (paramsTramite.esRespuestaNueva == "N") {
+//                    println ">> 2 Aqui pongo el log si es agregar doc al tram " + paramsTramite
+
+                    def observacionOriginalObs = tramite.observaciones
+                    def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
+                    def solicitadoPorObs = ""
+                    def usuarioObs = "por " + session.usuario.login
+                    def textoObs = ""
+                    def nuevaObservacionObs = ""
+                    tramite.observaciones = tramitesService.observaciones(observacionOriginalObs, accionObs, solicitadoPorObs, usuarioObs, textoObs, nuevaObservacionObs)
+                    tramite.save(flush: true)
+                }
+
+
+
                 if (params.anexo == "on") {
                     redirect(controller: "documentoTramite", action: "anexo", id: tramite.id)
                     return
@@ -2393,9 +2410,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-//        println "**" + paramsTramite
+        println "**2" + paramsTramite
         if (paramsTramite.esRespuestaNueva == "N") {
-//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
+            println ">> 2 Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
             def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
