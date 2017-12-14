@@ -673,9 +673,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "DESPUES u: " + tramite.aQuienContesta
 //        println "DESPUES u: " + tramite.aQuienContesta.id
 
-        println "** 3" + paramsTramite
+//        println "**" + paramsTramite
         if (paramsTramite.esRespuestaNueva == "N") {
-            println ">> 3 Aqui pongo el log si es agregar doc al tram " + paramsTramite
+//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
             def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo

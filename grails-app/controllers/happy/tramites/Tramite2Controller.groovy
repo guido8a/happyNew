@@ -1750,7 +1750,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "params: " + params
 
         if (tramite.id && tramite.esRespuestaNueva) {
-            println("tramite " + tramite.esRespuestaNueva)
+            //println("tramite " + tramite.esRespuestaNueva)
             params.esRespuestaNueva = tramite.esRespuestaNueva
         }
 
@@ -2410,9 +2410,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         }
 
-        println "**2" + paramsTramite
+//        println "**" + paramsTramite
         if (paramsTramite.esRespuestaNueva == "N") {
-            println ">> 2 Aqui pongo el log si es agregar doc al tram " + paramsTramite
+//            println ">>Aqui pongo el log si es agregar doc al tram " + paramsTramite
 
             def observacionOriginalObs = tramite.observaciones
             def accionObs = "Documento agregado al trámite " + tramite.agregadoA.codigo
