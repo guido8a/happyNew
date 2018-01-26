@@ -10,7 +10,7 @@ class BloqueosJob {
     def diasLaborablesService
 
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 10
     }
 
     def execute() {
