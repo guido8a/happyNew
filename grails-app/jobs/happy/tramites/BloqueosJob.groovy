@@ -202,7 +202,7 @@ class BloqueosJob {
 
         def deps = [depar]
 
-        println "procesa bandeja de entrada de $depar, persona: $persona"
+//        println "procesa bandeja de entrada de $depar, persona: $persona"
 
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and " +
                 "fechaRecepcion is null and (departamento = ${depar.id} or persona = ${persona.id}) and " +
@@ -214,10 +214,10 @@ class BloqueosJob {
 //                def fechaBloqueo = pdt.fechaBloqueo
 
 //                if (fechaBloqueo && (fechaBloqueo < ahora)) {
-                println "prtr: ${pdt.id} ${pdt.departamento} ${pdt.tramite.codigo} --> ${pdt.fechaBloqueo}"
+//                println "prtr: ${pdt.id} ${pdt.departamento} ${pdt.tramite.codigo} --> ${pdt.fechaBloqueo}"
                 if (pdt.fechaBloqueo) {
                     if (pdt.rolPersonaTramite.codigo != "E004" && pdt.rolPersonaTramite.codigo != "I005") {
-                        println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
+//                        println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                         if (pdt.tramite.deDepartamento) {
                             if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
                                 warning.add(pdt.tramite.deDepartamento)
@@ -289,7 +289,7 @@ class BloqueosJob {
         }
         deps.each { dep ->
             dep.estado = ""
-            println "Dep. a bloquear: $bloquear"
+//            println "Dep. a bloquear: $bloquear"
             if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
                 dep.estado = "B"
