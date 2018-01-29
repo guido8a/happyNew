@@ -1087,7 +1087,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
 
 
     def recibirTramite() {
-        println "recibir tramite - tramite3 " + params
+//        println "recibir tramite - tramite3 " + params
         if (request.getMethod() == "POST") {
 
             def persona = session.usuario
@@ -1096,7 +1096,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def recibido = EstadoTramite.findByCodigo("E004")
 
             //tambien puede recibir si ya esta en estado recibido (se pone en recibido cuando recibe el PARA)
-            println "estado....: ${tramite.estadoTramite.descripcion}"
+//            println "estado....: ${tramite.estadoTramite.descripcion}"
             if (tramite.estadoTramite != enviado && tramite.estadoTramite != recibido) {
                 render "ERROR_*El trámite aparece como no enviado.<br/>Este trámite no puede ser recibido."
                 return
@@ -1124,7 +1124,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             def estadoAnulado = EstadoTramite.findByCodigo('E006') //recibido
             def estadoArchivado = EstadoTramite.findByCodigo('E005') //recibido
 
-            println "es circu "+esCircular+" depto "+triangulo
+//            println "es circu "+esCircular+" depto "+triangulo
             def pxt = PersonaDocumentoTramite.withCriteria {
                 eq("tramite", tramite)
                 if (!esCircular) {
@@ -1184,8 +1184,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
             }
 
-            println("pxt 2"  + pxt )
-            println "Estado del pdt " + pxt.estado.codigo
+//            println("pxt 2"  + pxt )
+//            println "Estado del pdt " + pxt.estado.codigo
             if (pxt.estado.codigo != "E004") {
 
                 if (paraDpto && persona.departamentoId == paraDpto.id) {
@@ -1201,9 +1201,9 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        use(TimeCategory) {
 //            limite = limite + tramite.prioridad.tiempo.hours
 //        }
-                println "invoca a limite.. +3 días"
+//                println "invoca a limite.. +3 días"
                 limite = diasLaborablesService.fechaMasTiempo(limite, tramite.prioridad.tiempo)
-                println "retorna limite: $limite"
+//                println "retorna limite: $limite"
                 if (!limite) {
                     flash.message = "Ha ocurrido un error al calcular la fecha límite: "
                     redirect(controller: 'tramite', action: 'errores')
@@ -1211,7 +1211,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                 }
 //            println "aaa1"
 //            println "hoy "+hoy
-            println "------pxt "+pxt
+//            println "------pxt "+pxt
                 pxt.fechaRecepcion = hoy
 //            println "aaa2"
                 pxt.fechaLimiteRespuesta = limite
