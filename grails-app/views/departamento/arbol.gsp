@@ -97,7 +97,7 @@
                     </div><!-- /input-group -->
                     <div class="btn-group col-md-1" style="margin-top: 4px; width: 100px">
                         <div class="input-group">
-                            Inactivos: <g:checkBox name="activos" value="${false}" />
+                            Ocultar Inactivos: <g:checkBox name="activos" value="${false}" />
                         </div><!-- /input-group -->
                     </div>
 

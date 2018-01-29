@@ -285,7 +285,8 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def makeTreeNode(params) {
-        def actv = params.actv == 'false'
+//        def actv = params.actv == 'false'
+        def actv = params.actv == 'true'
 //        println "mkTree: $params, activos: $actv"
         def id = params.id
         if (!params.sort) {
