@@ -13,21 +13,32 @@ table {
 }
 </style>
 
-<div style="height: ${msje == '' ? 560 : 520}px" class="container-celdas">
+%{--<div style="height: ${msje == '' ? 560 : 520}px" class="container-celdas">--}%
+<div style="height: 520px">
     <div style="width: 100%"><util:renderHTML html="${msje}"/></div>
     <span class="grupo">
-        <table class="table table-bordered table-condensed table-hover" width="1140px">
+        %{--<table class="table table-bordered table-condensed table-hover" width="1140px">--}%
+        <table class="table table-bordered table-condensed table-hover" style="width: 100%">
             <thead>
                 <tr>
-                    <th class="alinear" style="width: 110px">Documento</th>
-                    <th class="alinear" style="width: 75px">Creación</th>
-                    <th class="alinear" style="width: 150px">De</th>
-                    <th class="alinear" style="width: 150px">Para</th>
-                    <th class="alinear" style="width: 295px">Asunto</th>
-                    <th class="alinear" style="width: 60px">Prioridad</th>
-                    <th class="alinear" style="width: 150px">Envia</th>
-                    <th class="alinear" style="width: 75px">Envio</th>
-                    <th class="alinear" style="width: 75px">Recepción</th>
+                    %{--<th class="alinear" style="width: 110px">Documento</th>--}%
+                    <th class="alinear" style="width: 10%">Documento</th>
+                    %{--<th class="alinear" style="width: 75px">Creación</th>--}%
+                    <th class="alinear" style="width: 10%">Creación</th>
+                    %{--<th class="alinear" style="width: 150px">De</th>--}%
+                    <th class="alinear" style="width: 10%">De</th>
+                    %{--<th class="alinear" style="width: 150px">Para</th>--}%
+                    <th class="alinear" style="width: 10%">Para</th>
+                    %{--<th class="alinear" style="width: 295px">Asunto</th>--}%
+                    <th class="alinear" style="width: 24%">Asunto</th>
+                    %{--<th class="alinear" style="width: 60px">Prioridad</th>--}%
+                    <th class="alinear" style="width: 6%">Prioridad</th>
+                    %{--<th class="alinear" style="width: 150px">Envia</th>--}%
+                    <th class="alinear" style="width: 10%">Envia</th>
+                    %{--<th class="alinear" style="width: 75px">Envio</th>--}%
+                    <th class="alinear" style="width: 10%">Envio</th>
+                    %{--<th class="alinear" style="width: 75px">Recepción</th>--}%
+                    <th class="alinear" style="width: 10%">Recepción</th>
                 </tr>
             </thead>
             <tbody>
