@@ -114,9 +114,27 @@
 
             <div class="linea"></div>
 
+
+        %{--<table class="table table-bordered table-condensed table-hover" style="width: 100%">--}%
+            %{--<thead>--}%
+            %{--<tr>--}%
+                %{--<th class="alinear" style="width: 10%">Documento</th>--}%
+                %{--<th class="alinear" style="width: 10%">Creación</th>--}%
+                %{--<th class="alinear" style="width: 10%">De</th>--}%
+                %{--<th class="alinear" style="width: 10%">Para</th>--}%
+                %{--<th class="alinear" style="width: 24%">Asunto</th>--}%
+                %{--<th class="alinear" style="width: 6%">Prioridad</th>--}%
+                %{--<th class="alinear" style="width: 10%">Envia</th>--}%
+                %{--<th class="alinear" style="width: 10%">Envio</th>--}%
+                %{--<th class="alinear" style="width: 10%">Recepción</th>--}%
+            %{--</tr>--}%
+            %{--</thead>--}%
+        %{--</table>--}%
+
             <div id="bandeja">
             </div>
-        </div>
+
+    </div>
 
         <div><span class="text-info">Se ordena por tipo de documento y fecha</span>
         </div>
