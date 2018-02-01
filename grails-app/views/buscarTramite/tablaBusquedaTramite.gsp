@@ -11,10 +11,46 @@
 table {
     font-size : 9pt;
 }
+
+
+
+
+.clearfix:after {
+
+    content: ".";
+
+    display: block;
+
+    clear: both;
+
+    visibility: hidden;
+
+    line-height: 0;
+
+    height: 0;
+}
+
+
+.clearfix {
+
+    display: inline-block;
+}
+
+
+html[xmlns] .clearfix {
+
+    display: block;
+}
+
+
+* html .clearfix {
+
+    height: 1%;
+}
 </style>
 
 
-<div style="width: 100%; margin-bottom: 37px !important;"><util:renderHTML html="${msje}"/></div>
+<div class="clearfix" style="width: 100%;"><util:renderHTML html="${msje}"/></div>
 
 %{--<div style="height: ${msje == '' ? 560 : 520}px" class="container-celdas">--}%
 <div style="height: 520px;">

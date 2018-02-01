@@ -330,7 +330,7 @@ class BuscarTramiteController extends happy.seguridad.Shield {
         def msg = ""
         if (res.size() > maximo) {
             res.pop()
-            msg = "<div class='alert alert-danger' style='margin-left:0px; display: inline-block; margin-top:-32px; height: 45px'> " +
+            msg = "<div class='alert alert-danger clearfix' style='margin-left:0px; margin-top:-32px; height: 45px'> " +
                     "<i class='fa fa-warning fa-2x pull-left'></i> " +
                     "Su búsqueda ha generado más de ${maximo} resultados. Por favor utilice más criterios de búsqueda como por " +
                     "ejemplo un rango de fechas de creación de los trámites.</div>"
