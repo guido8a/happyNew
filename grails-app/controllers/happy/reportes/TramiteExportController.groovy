@@ -196,8 +196,6 @@ class TramiteExportController extends Shield{
     }
 
 
-
-
     def crearPdf() {
 
 //        println("params editor " + params)

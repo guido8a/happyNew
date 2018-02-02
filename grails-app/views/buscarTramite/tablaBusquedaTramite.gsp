@@ -13,8 +13,6 @@ table {
 }
 
 
-
-
 .clearfix:after {
 
     content: ".";

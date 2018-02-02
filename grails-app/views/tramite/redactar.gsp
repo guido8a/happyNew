@@ -480,7 +480,8 @@
                                 textoInicial = arreglarTexto($("#editorTramite").val());
                                 %{--closeLoader();--}%
                                 %{--window.open("${resource(dir:'tramites')}/" + parts[1]);--}%
-                                location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp + "&editorTramite=" + textoInicial + "&asunto=" + asunto + "&para=" + para
+                                %{--location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp + "&editorTramite=" + textoInicial + "&asunto=" + asunto + "&para=" + para--}%
+                            location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp
 
 //                            }
                         },
@@ -494,6 +495,7 @@
                     var timestamp = new Date().getTime();
                     var para = $("#para").val()
                     var asunto = $("#asunto").val()
+                    var e = $("#editorTramite").val()
 
                     %{--location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp + "&editorTramite=" + editor + "&asunto=" + asunto + "&para=" + para--}%
 
