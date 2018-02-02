@@ -150,7 +150,7 @@
         </div>
         <mn:menu title="${g.layoutTitle(default: 'Happy')}"/>
         <g:if test="${session.departamento.estado == 'B' && session.usuario.esTriangulo()}">
-            <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 190px;">
+            <div id="bloqueo-warning" class="bloqueo ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 210px;">
                 <div class="titulo-bloqueo">
                     <i class="fa fa-exclamation-circle"></i>
                     Alerta de bloqueo
@@ -183,7 +183,7 @@
         </g:if>
         <g:if test="${!session.usuario.esTriangulo()}">
             <g:if test="${session.usuario.estado == 'B'}">
-                <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 190px;">
+                <div id="bloqueo-warning" class="bloqueoUsu ui-corner-all alert alert-danger " style="z-index: 200001; width: 240px; height: 210px;">
                     <div class="titulo-bloqueo">
                         <i class="fa fa-exclamation-circle"></i>
                         Alerta de bloqueo
