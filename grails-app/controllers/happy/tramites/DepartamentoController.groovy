@@ -24,120 +24,111 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def desactivar_ajax() {
-        def dpto = Departamento.get(params.id)
-        def dptoNuevo = Departamento.get(params.nuevo)
-
-//        def cantErrores = 0
-
-//        dpto.activo = 0
-
-//        if (dpto.save(flush: true)) {
-        def rolPara = RolPersonaTramite.findByCodigo('R001');
-        def rolCopia = RolPersonaTramite.findByCodigo('R002');
-        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
-
-        def pxtPara = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", dpto)
-            eq("rolPersonaTramite", rolPara)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                }
-            }
-        }
-        def pxtCopia = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", dpto)
-            eq("rolPersonaTramite", rolCopia)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                }
-            }
-        }
-        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
-            eq("departamento", dpto)
-            eq("rolPersonaTramite", rolImprimir)
-            isNotNull("fechaEnvio")
-            tramite {
-                or {
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
-                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
-                }
-            }
-        }
-        def pxtTodos = pxtPara
-        pxtTodos += pxtCopia
-        pxtTodos += pxtImprimir
-
-        def errores = "", ok = 0
-        pxtTodos.each { pr ->
-            if (pr.rolPersonaTramite.codigo == "I005") {
-                pr.delete(flush: true)
-            } else {
-                pr.departamento = dptoNuevo
-                def tramite = pr.tramite
-                def observacionOriginal = pr.observaciones
-                def accion = "Desactivación de departamento"
-                def solicitadoPor = ""
-                def usuario = session.usuario.login
-                def texto = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
-                def nuevaObservacion = ""
-                pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-                observacionOriginal = tramite.observaciones
-                tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-
-                if (tramite.save(flush: true)) {
-                } else {
-                    errores += renderErrors(bean: tramite)
-                    println "desactivar_ajax:" + tramite.errors
-                }
-                if (pr.save(flush: true)) {
-                    ok++
-                } else {
-                    println pr.errors
-                    errores += renderErrors(bean: pr)
-                }
-            }
-        }
-        def trmts = Tramite.findAllByDeDepartamento(dpto)
-        trmts.each { dp ->
-//                println "cambiado de de "+dp.codigo
-            dp.deDepartamento = dptoNuevo
-            def observacionOriginal = dp.observaciones
-            def accion = "Desactivación de departamento"
-            def solicitadoPor = ""
-            def usuario = session.usuario.login
-            def texto = "Trámite antes enviado por " + dpto.codigo + " " + dpto.descripcion
-            def nuevaObservacion = ""
-            observacionOriginal = dp.observaciones
-            dp.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
-            if (!dp.save(flush: true)) {
-                errores += renderErrors(bean: dp)
-                println dp.errors
-            }
-        }
-        if (errores != "") {
-            println "NOPE: " + errores
-            render "NO_Han ocurrido los siguientes errores por lo que no se pudo desactivar el departamento. Por favor intente nuwevamente o contáctese con un administrador. " + errores
-        } else {
-            dpto.activo = 0
-            if (dpto.save(flush: true)) {
-                render "OK_Cambio realizado exitosamente"
-            } else {
-                render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
-            }
-        }
-//        } else {
-//            render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+//        def dpto = Departamento.get(params.id)
+//        def dptoNuevo = Departamento.get(params.nuevo)
+//
+//
+//        def rolPara = RolPersonaTramite.findByCodigo('R001');
+//        def rolCopia = RolPersonaTramite.findByCodigo('R002');
+//        def rolImprimir = RolPersonaTramite.findByCodigo('I005');
+//
+//        def pxtPara = PersonaDocumentoTramite.withCriteria {
+//            eq("departamento", dpto)
+//            eq("rolPersonaTramite", rolPara)
+//            isNotNull("fechaEnvio")
+//            tramite {
+//                or {
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                }
+//            }
 //        }
-
+//        def pxtCopia = PersonaDocumentoTramite.withCriteria {
+//            eq("departamento", dpto)
+//            eq("rolPersonaTramite", rolCopia)
+//            isNotNull("fechaEnvio")
+//            tramite {
+//                or {
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                }
+//            }
+//        }
+//        def pxtImprimir = PersonaDocumentoTramite.withCriteria {
+//            eq("departamento", dpto)
+//            eq("rolPersonaTramite", rolImprimir)
+//            isNotNull("fechaEnvio")
+//            tramite {
+//                or {
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E003")) //enviado
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E007")) //enviado al jefe
+//                    eq("estadoTramite", EstadoTramite.findByCodigo("E004")) //recibido
+//                }
+//            }
+//        }
+//        def pxtTodos = pxtPara
+//        pxtTodos += pxtCopia
+//        pxtTodos += pxtImprimir
+//
+//        def errores = "", ok = 0
+//        pxtTodos.each { pr ->
+//            if (pr.rolPersonaTramite.codigo == "I005") {
+//                pr.delete(flush: true)
+//            } else {
+//                pr.departamento = dptoNuevo
+//                def tramite = pr.tramite
+//                def observacionOriginal = pr.observaciones
+//                def accion = "Desactivación de departamento"
+//                def solicitadoPor = ""
+//                def usuario = session.usuario.login
+//                def texto = "Trámite antes dirigido a " + dpto.codigo + " " + dpto.descripcion
+//                def nuevaObservacion = ""
+//                pr.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//                observacionOriginal = tramite.observaciones
+//                tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//
+//                if (tramite.save(flush: true)) {
+//                } else {
+//                    errores += renderErrors(bean: tramite)
+//                    println "desactivar_ajax:" + tramite.errors
+//                }
+//                if (pr.save(flush: true)) {
+//                    ok++
+//                } else {
+//                    println pr.errors
+//                    errores += renderErrors(bean: pr)
+//                }
+//            }
+//        }
+//        def trmts = Tramite.findAllByDeDepartamento(dpto)
+//        trmts.each { dp ->
+//            dp.deDepartamento = dptoNuevo
+//            def observacionOriginal = dp.observaciones
+//            def accion = "Desactivación de departamento"
+//            def solicitadoPor = ""
+//            def usuario = session.usuario.login
+//            def texto = "Trámite antes enviado por " + dpto.codigo + " " + dpto.descripcion
+//            def nuevaObservacion = ""
+//            observacionOriginal = dp.observaciones
+//            dp.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+//            if (!dp.save(flush: true)) {
+//                errores += renderErrors(bean: dp)
+//                println dp.errors
+//            }
+//        }
+//        if (errores != "") {
+//            println "NOPE: " + errores
+//            render "NO_Han ocurrido los siguientes errores por lo que no se pudo desactivar el departamento. Por favor intente nuwevamente o contáctese con un administrador. " + errores
+//        } else {
+//            dpto.activo = 0
+//            if (dpto.save(flush: true)) {
+//                render "OK_Cambio realizado exitosamente"
+//            } else {
+//                render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+//            }
+//        }
     }
 
     def arbolSearch_ajax() {
