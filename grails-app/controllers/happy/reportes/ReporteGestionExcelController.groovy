@@ -480,7 +480,7 @@ class ReporteGestionExcelController extends Shield {
         sheet.setColumnWidth(2, 5000)
         sheet.setColumnWidth(3, 5000)
         sheet.setColumnWidth(4, 5000)
-        sheet.setColumnWidth(5, 5000)
+//        sheet.setColumnWidth(5, 5000)
 
 
         def i = 6
@@ -495,17 +495,20 @@ class ReporteGestionExcelController extends Shield {
         cell.setCellValue("Usuario");
         j++
         cell = row.createCell((short) j);
-        cell.setCellValue("De 0 a 5 días");
+//        cell.setCellValue("De 0 a 5 días");
+        cell.setCellValue("De 0 a 2 días");
         j++
         cell = row.createCell((short) j);
-        cell.setCellValue("De 6 a 15 días");
+//        cell.setCellValue("De 6 a 15 días");
+        cell.setCellValue("De 3 a 10 días");
         j++
         cell = row.createCell((short) j);
-        cell.setCellValue("De 16 a 50 días");
+//        cell.setCellValue("De 16 a 50 días");
+        cell.setCellValue("De 11 o más días");
         j++
-        cell = row.createCell((short) j);
-        cell.setCellValue("Más de 50 días");
-        j++
+//        cell = row.createCell((short) j);
+//        cell.setCellValue("Más de 50 días");
+//        j++
         cell = row.createCell((short) j);
         cell.setCellValue("Total");
         j++
@@ -515,12 +518,17 @@ class ReporteGestionExcelController extends Shield {
             totales = 0
             XSSFRow row2 = sheet.createRow((short) i)
             row2.createCell((int) 0).setCellValue(it?.prsn)
-            row2.createCell((int) 1).setCellValue(it?.tmpo0005)
-            row2.createCell((int) 2).setCellValue(it?.tmpo0615)
-            row2.createCell((int) 3).setCellValue(it?.tmpo1650)
-            row2.createCell((int) 4).setCellValue(it?.tmpo50dd)
-            totales = it?.tmpo0005 + it?.tmpo0615 + it?.tmpo1650 + it?.tmpo50dd
-            row2.createCell((int) 5).setCellValue(totales)
+//            row2.createCell((int) 1).setCellValue(it?.tmpo0005)
+            row2.createCell((int) 1).setCellValue(it?.tmpo0003)
+//            row2.createCell((int) 2).setCellValue(it?.tmpo0615)
+            row2.createCell((int) 2).setCellValue(it?.tmpo0410)
+//            row2.createCell((int) 3).setCellValue(it?.tmpo1650)
+            row2.createCell((int) 3).setCellValue(it?.tmpo11dd)
+//            row2.createCell((int) 4).setCellValue(it?.tmpo50dd)
+//            totales = it?.tmpo0005 + it?.tmpo0615 + it?.tmpo1650 + it?.tmpo50dd
+            totales = it?.tmpo0003 + it?.tmpo0410 + it?.tmpo11dd
+//            row2.createCell((int) 5).setCellValue(totales)
+            row2.createCell((int) 4).setCellValue(totales)
 
             i++
         }
@@ -817,11 +825,13 @@ class ReporteGestionExcelController extends Shield {
         def sql
         def cn = dbConnectionService.getConnection()
         sql = "select * from rp_tiempos ("+ "'" + desde + "'" + "," +  "'" + hasta + "'" + "," + params.id + "," + null +")"
+//        sql = "select * from rp_tiempos('12-oct-2017', '31-dec-2017', 742, null)";
 
         def baos = new ByteArrayOutputStream()
         def tablaCabeceraRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
         def tablaCabeceraRetrasadosUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
-        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([20, 10, 10, 10, 10, 10]), 15, 0)
+//        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([20, 10, 10, 10, 10, 10]), 15, 0)
+        def tablaTramite = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([20, 10, 10, 10, 10]), 15, 0)
         def tablaTramiteUs = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([6, 15, 6, 4]), 15, 0)
         def tablaCabecera = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]), 10,0)
         def tablaTotalesRetrasados = reportesPdfService.crearTabla(reportesPdfService.arregloEnteros([100]),0,0)
@@ -838,19 +848,26 @@ class ReporteGestionExcelController extends Shield {
 
 
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("Usuario", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", fontBold), prmsHeaderHoja)
-        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", fontBold), prmsHeaderHoja)
+//        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 2 DÍAS", fontBold), prmsHeaderHoja)
+//        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 3 A 10 DIAS", fontBold), prmsHeaderHoja)
+//        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", fontBold), prmsHeaderHoja)
+        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 11 O MÁS DÍAS", fontBold), prmsHeaderHoja)
+//        reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", fontBold), prmsHeaderHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", fontBold), prmsHeaderHoja)
 
         cn.eachRow(sql.toString()){
             reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prsn, fontBold), prmsTablaHoja)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0005 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+//            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
+//            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
+//            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
+//            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0003, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0410, font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo11dd, font), prmsTablaHojaCenter)
+//            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0005 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+            reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo0003 + it?.tmpo0410 + it?.tmpo11dd), font), prmsTablaHojaCenter)
         }
 
         reportesPdfService.membrete(document)
