@@ -1097,12 +1097,13 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
 
-
-        def admin = Persona.get(session.usuario.id)
-        def s = [:]
-        s.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
-        s.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
-        personas.add(s)
+        if(session.usuario.puedeAdmin){
+            def admin = Persona.get(session.usuario.id)
+            def s = [:]
+            s.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
+            s.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
+            personas.add(s)
+        }
 
 
         def todas = personas + personasRec
