@@ -1097,19 +1097,27 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
 
+
+        def admin = Persona.get(session.usuario.id)
+        def s = [:]
+        s.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
+        s.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
+        personas.add(s)
+
+
         def todas = personas + personasRec
         todas = todas.sort { it.value }
 
 
-        if(todas == [] && session.usuario.puedeAdmin){
-            def admin = Persona.get(session.usuario.id)
-            def m = [:]
-            m.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
-            m.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
-            personas.add(m)
-            todas = personas
-
-        }
+//        if(todas == [] && session.usuario.puedeAdmin){
+//            def admin = Persona.get(session.usuario.id)
+//            def m = [:]
+//            m.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
+//            m.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
+//            personas.add(m)
+//            todas = personas
+//
+//        }
 
 //        println("--> " + todas)
 
