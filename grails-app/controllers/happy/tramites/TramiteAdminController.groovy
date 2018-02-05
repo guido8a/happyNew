@@ -1100,6 +1100,19 @@ class TramiteAdminController /*extends Shield*/ {
         def todas = personas + personasRec
         todas = todas.sort { it.value }
 
+
+        if(todas == [] && session.usuario.puedeAdmin){
+            def admin = Persona.get(session.usuario.id)
+            def m = [:]
+            m.key = admin.nombre + " " + admin.apellido + " (funcionario de ${admin.departamento.codigo})"
+            m.value = admin.nombre + " " + admin.apellido + " (" + admin.login + ")"
+            personas.add(m)
+            todas = personas
+
+        }
+
+//        println("--> " + todas)
+
 //        println("personas Reciben " + personasRec)
 
         return [tramite: tramite, icon: icon, msg: msg, personas: todas]
