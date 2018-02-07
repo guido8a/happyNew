@@ -600,32 +600,31 @@
                                 className : "btn-primary",
                                 callback  : function () {
                                 }
+                            },
+                            eliminar : {
+                                label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                                className : "btn-" + clase,
+                                callback  : function () {
+                                    var $txt = $("#aut");
+                                    openLoader(textLoader);
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : url,
+                                        data    : {
+                                            id    : itemId,
+                                            nuevo : $sel.val()
+                                        },
+                                        success : function (msg) {
+                                            var parts = msg.split("_");
+                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                            if (parts[0] == "OK") {
+                                                location.reload(true);
+                                            }
+                                           closeLoader();
+                                        }
+                                    });
+                                }
                             }
-//                            ,
-//                            eliminar : {
-//                                label     : "<i class='fa " + icon + "'></i> " + textBtn,
-//                                className : "btn-" + clase,
-//                                callback  : function () {
-//                                    var $txt = $("#aut");
-//                                    openLoader(textLoader);
-//                                    $.ajax({
-//                                        type    : "POST",
-//                                        url     : url,
-//                                        data    : {
-//                                            id    : itemId,
-//                                            nuevo : $sel.val()
-//                                        },
-//                                        success : function (msg) {
-//                                            var parts = msg.split("_");
-//                                            log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-//                                            if (parts[0] == "OK") {
-//                                                location.reload(true);
-//                                            }
-//                                            closeLoader();
-//                                        }
-//                                    });
-//                                }
-//                            }
                         }
                     });
                     if ($sel) {
