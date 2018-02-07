@@ -351,19 +351,31 @@ class DepartamentoController extends happy.seguridad.Shield {
                     }
                     tp = "dep"
                     def hijosH = Departamento.findAllByPadre(hijo, [sort: "descripcion"])
+                    def triangulos = hijo.getTriangulos()
+                    data = "data-tramites='-1'"
+
+
                     rel = (hijosH.size() > 0) ? "padre" : "hijo"
                     hijosH += Persona.findAllByDepartamento(hijo, [sort: "apellido"])
                     clase = (hijosH.size() > 0) ? "jstree-closed hasChildren" : ""
                     if (hijosH.size() > 0) {
                         clase += " ocupado "
+                        data += "data-tienehij='${hijosH.size()}'"
                     }
 
-                    data = "data-tramites='-1'"
+
                     if (hijo.externo == 1) {
                         rel += "Externo"
                     }
                     if (hijo.remoto == 1) {
                         rel += "Remoto"
+                    }
+
+//                    data += "data-tieneTriangulos='0'"
+                    if(triangulos.size() >= 1){
+//                        println("triang " + triangulos)
+//                        clase += " tieneTriangulos"
+                        data += "data-tienetri='${triangulos.size()}'"
                     }
 
                 } else if (hijo instanceof Persona) {
