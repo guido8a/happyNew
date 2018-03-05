@@ -819,9 +819,9 @@ class DiasLaborablesService {
 //        println "fechaMasTiempo fecha: $fecha, horas: $horas"
 //        return fechaMasTiempo(fecha, horas, 0, true)
         def cn = dbConnectionService.getConnection()
-        def sql = "select fcha from trmt_bloqueo(cast('${fecha.format('yyyy-MM-dd HH:mm')}' as timestamp), $horas)"
+        def sql = "select tmpo_mas from tmpo_mas(cast('${fecha.format('yyyy-MM-dd HH:mm')}' as timestamp), $horas)"
 //        println "sql " + sql
-        return cn.rows(sql.toString())[0]?.fcha
+        return cn.rows(sql.toString())[0]?.tmpo_mas
     }
 
 

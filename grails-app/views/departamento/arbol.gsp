@@ -129,7 +129,7 @@
     </div>
 
     <elm:select name="selDptoOrig" from="${Departamento.findAllByActivo(1, [sort: 'descripcion'])}"
-                optionKey="id" optionValue="descripcion" optionClass="id" class="form-control hide"/>
+                optionKey="id" optionValue="descripcion" optionClass="id" class="form-control hide" style="margin-top: 30px;"/>
 
     <script type="text/javascript">
 
@@ -570,7 +570,9 @@
                 icon = "${iconDesactivar}";
                 textMsg = "<p>¿Está seguro que desea desactivar el departamento seleccionado?</p>";
 //                        if (tramites > 0) {
-                textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados al departamento seleccionado</p>";
+//                textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados " +
+//                        "al nuevo departamento seleccionado</p>";
+
 //                            textMsg += "<p id='pWarning'>" + tramites + " trámite" + (tramites == 1 ? '' : 's') + " será" + (tramites == 1 ? '' : 'n') + " " +
 //                                       "redireccionados de su bandeja a la bandeja de entrada de la oficina del departamento que seleccione a continuación.</p>";
 //                        textMsg += "<div class='row'>";
@@ -582,13 +584,81 @@
 //                        } else {
 //                            textMsg += "<p>No tiene trámites en su bandeja de entrada.</p>"
 //                        }
-                var $sel = $("#selDptoOrig").clone();
+
+//                var $sel = $("#selDptoOrig").clone();
 
                 %{--textMsg += "${g.select(name:'selDpto', from:Departamento.list([sort:'descripcion']), class: 'form-control')}";--}%
 
                 textBtn = "Desactivar";
                 textLoader = "Desactivando";
                 url = "${createLink(action:'desactivar_ajax')}";
+            }
+            bootbox.dialog({
+                id      : "dlgWarning",
+                title   : "Alerta",
+                message : "<i class='fa " + icon + " fa-3x pull-left text-" + clase + " text-shadow'></i>" + textMsg,
+                buttons : {
+                    cancelar : {
+                        label     : "Cancelar",
+                        className : "btn-primary",
+                        callback  : function () {
+                        }
+                    },
+                    eliminar : {
+                        label     : "<i class='fa " + icon + "'></i> " + textBtn,
+                        className : "btn-" + clase,
+                        callback  : function () {
+                            var $txt = $("#aut");
+                            openLoader(textLoader);
+                            $.ajax({
+                                type    : "POST",
+                                url     : url,
+                                data    : {
+                                    id    : itemId
+//                                    nuevo : $sel.val()
+                                },
+                                success : function (msg) {
+                                    var parts = msg.split("_");
+                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                    if (parts[0] == "OK") {
+                                        location.reload(true);
+                                    }
+                                    closeLoader();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            if ($sel) {
+                $sel.removeClass("hide");
+                $sel.attr("name", "selDpto");
+                $sel.attr("id", "selDpto");
+                $sel.find("option." + itemId).remove();
+                $("#pWarning").append($sel);
+            }
+        } //cambiar estado row
+
+        function cambiarEstadoDpto(itemId, strId, activar, tramites) {
+            var icon, textMsg, textBtn, textLoader, url, clase;
+            if (activar) {
+                clase = "success";
+                icon = "${iconActivar}";
+                textMsg = "<p>¿Está seguro que desea activar el departamento seleccionado?</p>";
+                textBtn = "Activar";
+                textLoader = "Activando";
+                url = "${createLink(action:'activar_ajax')}";
+            } else {
+                clase = "danger";
+                icon = "${iconDesactivar}";
+                textMsg = "<p>¿Está seguro que desea desactivar el departamento seleccionado?</p>";
+                textMsg += "<p id='pWarning'>Los trámites de las bandejas de entrada y de salida serán redireccionados " +
+                        "al nuevo departamento seleccionado</p>";
+
+                var $sel = $("#selDptoOrig").clone();
+                textBtn = "Desactivar";
+                textLoader = "Desactivando";
+                url = "${createLink(action:'desactivar_dpto_ajax')}";
             }
             bootbox.dialog({
                 id      : "dlgWarning",
@@ -634,7 +704,7 @@
                 $sel.find("option." + itemId).remove();
                 $("#pWarning").append($sel);
             }
-        } //cambiar estado row
+        } //cambiar estado dpto
 
         function createContextMenu(node) {
             var nodeStrId = node.id;
@@ -776,10 +846,10 @@
                         if(hijitos == '1' && triangulos == '1'){
                             items.desactivar = {
                                 separator_before : true,
-                                label            : "Desactivar",
+                                label            : "Pasar B. de entrada y Desactivar",
                                 icon             : "fa ${iconDesactivar}",
                                 action           : function (obj) {
-                                    cambiarEstadoRow(nodeId, nodeStrId, false, nodeTramites);
+                                    cambiarEstadoDpto(nodeId, nodeStrId, false, nodeTramites);
                                 }
                             };
                         }
@@ -789,16 +859,17 @@
 
 
                 if (!nodeHasChildren && !nodeOcupado) {
-                    %{--if (!nodeType.contains('Inactivo')) {--}%
-                    %{--items.desactivar = {--}%
-                    %{--separator_before : true,--}%
-                    %{--label            : "Desactivar",--}%
-                    %{--icon             : "fa ${iconDesactivar}",--}%
-                    %{--action           : function (obj) {--}%
-                    %{--cambiarEstadoRow(nodeId, nodeStrId, false, nodeTramites);--}%
-                    %{--}--}%
-                    %{--};--}%
-                    %{--}--}%
+                    if (!nodeType.contains('Inactivo')) {
+                        items.desactivar = {
+                            separator_before: true,
+                            label: "Desactivar",
+                            icon: "fa ${iconDesactivar}",
+                            action: function (obj) {
+                                cambiarEstadoRow(nodeId, nodeStrId, false, nodeTramites);
+                            }
+                        };
+                    }
+
                     items.eliminar = {
                         label  : "Eliminar departamento",
                         icon   : "fa fa-trash-o text-danger",
@@ -873,7 +944,7 @@
                 };
 
 
-                if(nodeId != 11){
+//                if(nodeId != 11){
                     items.departamentoPara= {
                         label   : "Departamento Para",
                         icon    : "fa fa-tasks",
@@ -882,7 +953,7 @@
                         }
                     };
 
-                }
+//                }
 
 
 
@@ -996,8 +1067,8 @@
                         };
                     }
                 } else {
-//                            if (!node.data.triangulos || node.data.triangulos > 1) {
-                    if (nodeHasChildren && node.data.triangulos == 1) {
+                    if (!node.data.triangulos || node.data.triangulos > 1) {
+//                    if (nodeHasChildren && node.data.triangulos == 1) {
                         items.desactivar = {
                             separator_before : true,
                             label            : "Desactivar",

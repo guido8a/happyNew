@@ -1050,7 +1050,9 @@ class PersonaController extends happy.seguridad.Shield {
         }
     } //save para grabar desde ajax
 
-    def cambioDpto_ajax() {
+    /* todo: se debe implementar algo que cambie el usuario de departamento y se lleve sus bandejas actuales pero no
+    * los trámites anteriores */
+    def cambioDpto_ajax_no() {
         def persona = Persona.get(params.id)
         def dpto = Departamento.get(params.dpto)
         def dptoOld = persona.departamento

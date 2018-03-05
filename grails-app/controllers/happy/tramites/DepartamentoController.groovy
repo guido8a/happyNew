@@ -23,7 +23,8 @@ class DepartamentoController extends happy.seguridad.Shield {
         }
     }
 
-    def desactivar_ajax() {
+    /* cambia todos los trámites el departamento actual por el nuevo NO DEBE USARSE */
+    def desactivar_ajaxNo() {
         def dpto = Departamento.get(params.id)
         def dptoNuevo = Departamento.get(params.nuevo)
 
@@ -128,6 +129,44 @@ class DepartamentoController extends happy.seguridad.Shield {
             } else {
                 render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
             }
+        }
+    }
+
+    def desactivar_ajax() {
+        println "desactivar_ajax... $params"
+        def dpto = Departamento.get(params.id)
+            dpto.activo = 0
+            if (dpto.save(flush: true)) {
+                render "OK_Cambio realizado exitosamente"
+            } else {
+                render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+            }
+    }
+
+    /* pasa bandejas y desactiva triangulo:
+     * 1. Halla triángulo y procede, si no muestra error: "no hay triánguilo" */
+    def desactivar_dpto_ajax() {
+        println "desactivar_dpto_ajax... $params"
+        def dpto = Departamento.get(params.id)
+        def nuevo = Departamento.get(params.nuevo)
+        def triangulo = dpto.triangulos
+        def cn = dbConnectionService.getConnection()
+        println "se pasa a: ${nuevo.codigo}: ${nuevo.descripcion}"
+        if(triangulo.size() == 1) {
+            def prsn = Persona.get(triangulo[0].id)
+            def sql = "update prtr set dpto__id = ${nuevo.id} where prtr__id in (select prtr__id " +
+                    "from entrada_dpto(${prsn.id}));"
+            println "sql: $sql"
+            cn.execute(sql.toString())
+            sql = "update trmt set dpto__de = ${nuevo.id} where trmt__id in (select trmt__id " +
+                    "from  salida_dpto(${prsn.id}))"
+            println "sql: $sql"
+            cn.execute(sql.toString())
+            prsn.activo = 0
+            prsn.save(flush: true)
+            render "OK_Trámites enviados a ${nuevo.codigo}: ${nuevo.descripcion}} exitosamente"
+        } else {
+            render "NO_No se ha encontrado un triángulo único en este departamento"
         }
     }
 
