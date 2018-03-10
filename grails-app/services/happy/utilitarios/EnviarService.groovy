@@ -70,20 +70,6 @@ class EnviarService {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-//        FontResolver resolver = renderer.getFontResolver();
-//
-//        renderer.getFontResolver().addFont(realPath + "fontsPdf/comic.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-Bold.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-BoldItalic.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBold.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-ExtraBoldItalic.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-Italic.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-Light.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-LightItalic.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-Regular.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-Semibold.ttf", true);
-//        resolver.addFont(realPath + "fontsPdf/OpenSans-SemiboldItalic.ttf", true);
-
         def text = (tramite?.texto ?: '')
 //        println "--------------------------------------------------------------"
 //        println "texto del tramite: $text"
@@ -94,7 +80,6 @@ class EnviarService {
         text = text.replaceAll("&nbsp;", " ")
 //        println "--------------------------------------------------------------"
 //        text = util.clean(str: text)
-//
 //        println "\nTEXTO ANTES"
 //        println text
 
@@ -111,7 +96,6 @@ class EnviarService {
 
 //        println "\nTEXTO DESPUES AGAIN"
 //        println "text en enviarService: $text"
-
 //        println "html:" + tramite.texto.decodeHTML()
 //        println "\n\n" + text
 
@@ -266,42 +250,6 @@ class EnviarService {
 //        println "creado pdf"
         byte[] b = baos.toByteArray();
 
-//        file.delete()
-
-//        def dpto = ""
-//        def anio = tramite.fechaCreacion.format("yyyy")
-//        if (enviar == "1") {
-////            println("entro enviar")
-//            def pathPdf = realPath + "tramites/"
-//            if (tramite?.de?.departamento?.codigo || tramite?.deDepartamento?.codigo) {
-//                if(tramite.de) {
-//                    dpto = tramite.de.departamento.codigo
-//                } else {
-//                    dpto = tramite.deDepartamento.codigo
-//                }
-//                pathPdf += dpto + "/"
-//                pathPdf += anio + "/"
-//            }
-//            new File(pathPdf).mkdirs()
-//            def fileSave = new File(pathPdf + tramite.codigo + ".pdf")
-////            println("filesave" + fileSave)
-//            OutputStream os = new FileOutputStream(fileSave);
-//            renderer.layout();
-//            renderer.createPDF(os);
-//            os.close();
-//        }
-//
-//        if (type == "download") {
-////            println("entro!!!!!")
-////            render "OK*" + tramite.codigo + ".pdf"
-//            return "OK*" + dpto + "/" + anio + "/" + tramite.codigo + ".pdf"
-//        } else {
-////            response.setContentType("application/pdf")
-////            response.setHeader("Content-disposition", "attachment; filename=" + (tramite.tipoDocumento.descripcion + "_" + tramite.codigo + ".pdf"))
-////            response.setContentLength(b.length)
-////            response.getOutputStream().write(b)
-//            return "NO"
-//        }
 
 
         return baos

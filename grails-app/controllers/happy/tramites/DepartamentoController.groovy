@@ -412,7 +412,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 
 //                    data += "data-tieneTriangulos='0'"
                     if(triangulos.size() >= 1){
-//                        println("triang " + triangulos)
+//                        println "dep: ${hijo.descripcion} triangulaos ${triangulos}"
 //                        clase += " tieneTriangulos"
                         data += "data-tienetri='${triangulos.size()}'"
                     }

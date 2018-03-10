@@ -843,10 +843,11 @@
                 if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo') ||nodeType.contains('padreRemotoActivo') ){
                     if (!nodeType.contains('Inactivo')) {
                         console.log(node.data.triangulos)
-                        if(hijitos == '1' && triangulos == '1'){
+//                        if(hijitos == '1' && triangulos == '1'){
+                        if(triangulos == '1'){
                             items.desactivar = {
                                 separator_before : true,
-                                label            : "Pasar B. de entrada y Desactivar",
+                                label            : "Pasar Bandejas E/S y Desactivar Δ",
                                 icon             : "fa ${iconDesactivar}",
                                 action           : function (obj) {
                                     cambiarEstadoDpto(nodeId, nodeStrId, false, nodeTramites);
