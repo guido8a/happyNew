@@ -1114,11 +1114,13 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println("params enviar varios " + params + "  " + request.getMethod())
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
+        def cn = dbConnectionService.getConnection()
+        def sql = ""
         if (request.getMethod() == "POST") {
             def msg = ""
             def error = ""
             def tramite
-            def tramites = []
+//            def tramites = []
             def ids = params.ids
             ids = ids.split(',')
             def band = true
@@ -1126,16 +1128,25 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids.each { d ->
                 def envio = new Date();
                 tramite = Tramite.get(d)
+                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
                 if (tramite.fechaEnvio) {
                     msg += "<br/>El trámite " + tramite.codigo + " ya fue enviado por " +
                             PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("E004")).persona.login.join(", ")
                 } else {
                     def pdtEliminar = []
+
+                    /* pone en prtr: prtrfcen = envio y edtr__id = 3 */
+                    sql = "update prtr set prtrfcen = '${envio.format('yyyy-MM-dd HH:mm:ss')}', edtr__id = 3 " +
+                            "where trmt__id = ${tramite.id} and edtr__id not in (select prtr__id from prtr " +
+                            "where trmt__id = ${tramite.id} and edtr__id in (5, 9))"
+                    println "sql: $sql"
+                    cn.execute(sql.toString())
+
                     PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
                         if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") { //anulado y archivado
-                            t.fechaEnvio = envio
-                            t.estado = EstadoTramite.findByCodigo("E003") //enviado
-                            if (t.save(flush: true)) {
+//                            t.fechaEnvio = envio
+//                            t.estado = EstadoTramite.findByCodigo("E003") //enviado
+//                            if (t.save(flush: true)) {
                                 cantEnviados++
                                 if (t.rolPersonaTramite?.codigo == "R001" || t.rolPersonaTramite?.codigo == "R002") {
                                     //para o copia
@@ -1159,7 +1170,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                         }
                                     }
                                 }
-                            }
+//                            }
                         } else {
                             println("tramite anulado o archivado ${t.tramite.codigo}")
                             band = false

@@ -466,29 +466,23 @@ class ElementosTagLib {
 //                println("cadena " + nuevaCadena + " " + tramite.codigo)
 
                 html = "<div class=\"titulo-azul titulo-horizontal\">"
-                html += tramite.tipoDocumento?.descripcion + "-" + nuevaCadena
+//                html += tramite.tipoDocumento?.descripcion + "-" + nuevaCadena
+                html += tramite.tipoDocumento?.descripcion
                 html += "</div>"
-                html += "<table class='tramiteHeader'>"
+                html += "<table class='tramiteHeader' width='100%'>"
                 //no. documento
 //                html += "<tr>"
 //                html += "<th>No.</th>"
 //                html += "<td>${tramite.codigo}</td>"
 //                html += "</tr>"
+
                 //de
                 html += "<tr>"
-                html += "<th>DE:</th>"
-                if (tramite.tipoDocumento.codigo == "DEX") {
-                    html += "<td>${tramite.paraExterno.toUpperCase()} (ext.)</td>"
-                } else {
-                    //cambiado el 21-07-2015
-//                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
-                    if(tramite.de) {
-                        html += "<td>${tramite.de.departamento.descripcion.toUpperCase()}</td>"
-                    } else {
-                        html += "<td>${tramite.deDepartamento.descripcion.toUpperCase()}</td>"
-                    }
-                }
+                html += "<th>N°:</th>"
+                html += "<td><strong>${tramite.codigo}</strong></td>"
                 html += "</tr>"
+
+
                 //para
                 if (para || tramite.paraExterno) {
                     html += "<tr style='vertical-align: top'>"
@@ -518,6 +512,23 @@ class ElementosTagLib {
                     html += "</td>"
                     html += "</tr>"
                 }
+
+                //de
+                html += "<tr>"
+                html += "<th>DE:</th>"
+                if (tramite.tipoDocumento.codigo == "DEX") {
+                    html += "<td>${tramite.paraExterno.toUpperCase()} (ext.)</td>"
+                } else {
+                    //cambiado el 21-07-2015
+//                    html += "<td>${tramite.de.departamento.descripcion} - (${tramite.de.nombre} ${tramite.de.apellido})</td>"
+                    if(tramite.de) {
+                        html += "<td>${tramite.de.departamento.descripcion.toUpperCase()}</td>"
+                    } else {
+                        html += "<td>${tramite.deDepartamento.descripcion.toUpperCase()}</td>"
+                    }
+                }
+                html += "</tr>"
+
                 //copias
 //                if(cc){
 //                    html += "<tr style=\"vertical-align: top\">"

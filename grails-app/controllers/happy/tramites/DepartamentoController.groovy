@@ -412,7 +412,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 
 //                    data += "data-tieneTriangulos='0'"
                     if(triangulos.size() >= 1){
-//                        println("triang " + triangulos)
+//                        println "dep: ${hijo.descripcion} triangulaos ${triangulos}"
 //                        clase += " tieneTriangulos"
                         data += "data-tienetri='${triangulos.size()}'"
                     }
@@ -769,17 +769,16 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def departamentos_ajax () {
-        def listaDepartamentosSin = Departamento.list([sort: 'descripcion', order: "asc"]).id
+        def cn = dbConnectionService.getConnection()
         def departamento = Departamento.get(params.id)
-        def prefectura = Departamento.get(11)
-        listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
-
-        def listaDepartamentos = Departamento.findAllByIdInList(listaDepartamentosSin, [sort: 'descripcion', order: "asc"])
-
-        def paras = DepartamentoPara.findAllByDeparatamento(departamento).deparatamentoPara
-        def comunes = listaDepartamentos.intersect(paras)
-        def diferentes = listaDepartamentos.plus(paras)
-        diferentes.removeAll(comunes)
+        def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dptopara from dpdp " +
+                "where dpto__id = ${departamento.id})"
+//        println "sql: $sql"
+        def ids = cn.rows(sql.toString()).dpto__id
+//        println "ids: $ids"
+        def listaDepartamentos = Departamento.findAllByIdInList(ids)
+//        println "dptos: ${listaDepartamentos.id.sort()}"
+        def diferentes = listaDepartamentos - [departamento]
 
         return [diferentes: diferentes, departamento: departamento]
 
@@ -788,6 +787,7 @@ class DepartamentoController extends happy.seguridad.Shield {
     def tablaDepartamentos_ajax () {
         def departamento = Departamento.get(params.id)
         def paras = DepartamentoPara.findAllByDeparatamento(departamento)
+        paras.sort{it.deparatamentoPara.descripcion}
         [paras: paras]
     }
 

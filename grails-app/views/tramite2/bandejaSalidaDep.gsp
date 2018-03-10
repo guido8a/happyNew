@@ -579,7 +579,7 @@
                         if (msg == "ok"){
                             %{--window.open("${resource(dir:'tramites')}/" + archivo + ".pdf");--}%
                             var timestamp = new Date().getTime();
-                            location.href = "${createLink(controller:'tramiteExport',action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp;
+                            location.href = "${createLink(controller:'tramiteExport', action:'crearPdf')}?id=" + id + "&type=download" + "&enviar=1" + "&timestamp=" + timestamp;
                         }
                         else{
                             bootbox.alert("El documento esta anulado, por favor refresque su bandeja de salida.")}

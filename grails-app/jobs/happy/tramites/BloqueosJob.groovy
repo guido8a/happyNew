@@ -57,50 +57,9 @@ class BloqueosJob {
                             bloquear.add(pdt.departamento)
                         }
                     }
-
-/*
-                    else if (!esRemoto(pdt)) { // no se bloquea de y para remotos
-
-                        if (!bloquear?.id?.contains(pdt.departamento?.id)) {
-                            bloquear.add(pdt.departamento)
-                        }
-                    } else { */
-/*** bloqueo a departamentos remotos ***//*
-
-                        def fcen = pdt.fechaEnvio
-                        def fcRemoto = diasLaborablesService.fechaRemoto(fcen, prmt.remoto)
-                        if (fcRemoto && (fcRemoto < ahora)) {
-//                            println "remoto: ${pdt.id} ${pdt.departamento} ${pdt.persona} trmt: ${pdt.tramite.codigo} fcen: ${pdt.fechaEnvio}"
-                            if (pdt.tramite.deDepartamento) {
-                                if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
-                                    warning.add(pdt.tramite.deDepartamento)
-                                }
-                            } else {
-                                if (!warningUsu?.id?.contains(pdt.tramite.de.id)) {
-                                    warningUsu.add(pdt.tramite.de)
-                                }
-                            }
-
-                            if (pdt.persona) {
-                                println "add bloquear remoto ${pdt.persona} ${pdt.persona.login}"
-                                if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
-                                    bloquearUsu.add(pdt.persona)
-                                }
-                            } else {
-                                println "add bloquear dep remoto ${pdt.departamento} ${pdt.departamento.id}"
-                                if (!bloquear?.id?.contains(pdt.departamento?.id)) {
-                                    bloquear.add(pdt.departamento)
-                                }
-                            }
-                        }
-                    }
-*/
-//                    println "---------------------"
                 }
             }
         }
-
-//        println "departamentos a bloquear: $bloquear"
 
 
         Departamento.list().each { dep ->
@@ -156,12 +115,9 @@ class BloqueosJob {
     }
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
+/*
     def esRemoto(pdt) {
-//        println "..es remoto: $pdt.id, departamento $pdt.id => ${pdt.departamento}, remoto: ${pdt.departamento?.remoto}, " +
-//                "tramite: ${pdt.tramite.codigo} rol: ${pdt.rolPersonaTramite.codigo}"
         def remoto = false
-//            println "++departamento $pdt.id => ${pdt.departamento}, remoto: ${pdt.departamento?.remoto}, " +
-//                    "tramite: ${pdt.tramite.codigo} rol: ${pdt.rolPersonaTramite.codigo}"
 
         if (pdt.rolPersonaTramite.codigo == 'E004') {  // envía
             if (pdt.persona?.esTriangulo) {
@@ -178,18 +134,19 @@ class BloqueosJob {
         }
         return remoto
     }
+*/
 
 
+/*
     def enviaRemoto(trmt) {
         def envia = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trmt, RolPersonaTramite.findByCodigo("E004"))
-//        println "enviaRemoto... envia: $envia"
         if (envia) {
             return envia.departamento?.remoto == 1
         } else {
             return false
         }
     }
-
+*/
 
     def executeRecibir(depar, persona) {
         def bloquear = []
@@ -240,50 +197,7 @@ class BloqueosJob {
                                 bloquear.add(pdt.departamento)
                             }
                         }
-
-
-/*
-                        else if (!esRemoto(pdt)) { // no se bloquea de y para remotos
-                            println "add bloquear dep no remoto: "+pdt.departamento+" "+pdt.id
-//                            println "bloquear ??? $bloquear ${bloquear?.id} ++ ${pdt.departamento}, esremoto: ${esRemoto(pdt)}, trmite: ${pdt.tramite.id}"
-                            if (!bloquear?.id?.contains(pdt.departamento?.id)) {
-                                bloquear.add(pdt.departamento)
-                            }
-                        } else { */
-/*** bloqueo a departamentos remotos ***//*
-
-                            def fcen = pdt.fechaEnvio
-                            println "es remoto ...${pdt.tramite.codigo} envio: $fcen, prmt: ${prmt.remoto}"
-                            def fcRemoto = diasLaborablesService?.fechaRemoto(fcen, prmt.remoto)
-                            print "--> fcRemopto: $fcRemoto"
-                            if (fcRemoto && (fcRemoto < ahora)) {
-                                println "remoto-recibir: ${pdt.id} ${pdt.departamento} ${pdt.persona} trmt: ${pdt.tramite.codigo} fcen: ${pdt.fechaEnvio}"
-                                if (pdt.tramite.deDepartamento) {
-                                    if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
-                                        warning.add(pdt.tramite.deDepartamento)
-                                    }
-                                } else {
-                                    if (!warningUsu?.id?.contains(pdt.tramite.de.id)) {
-                                        warningUsu.add(pdt.tramite.de)
-                                    }
-                                }
-
-                                if (pdt.persona) {
-                                    println "add bloquear remoto ${pdt.persona} ${pdt.persona.login}"
-                                    if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
-                                        bloquearUsu.add(pdt.persona)
-                                    }
-                                } else {
-                                    println "add bloquear dep remoto ${pdt.departamento} ${pdt.departamento.id}"
-                                    if (!bloquear?.id?.contains(pdt.departamento?.id)) {
-                                        bloquear.add(pdt.departamento)
-                                    }
-                                }
-                            }
-                        }
-*/
                     }
-
                 }
             }
         }

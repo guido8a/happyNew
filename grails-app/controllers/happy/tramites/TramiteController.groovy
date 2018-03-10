@@ -212,8 +212,7 @@ class TramiteController extends happy.seguridad.Shield {
 
                         if (tramite.save(flush: true)) {
                             def para = tramite.para
-//                            enviarService.crearPdf(tramite, session.usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
-                            enviarService.crearPdf(tramite, usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
+//                            enviarService.crearPdf(tramite, usuario, "1", 'download', servletContext.getRealPath("/"), message(code: 'pathImages').toString());
                             if (params.para) {
                                 if (params.para.toLong() > 0) {
                                     para.persona = Persona.get(params.para.toLong())

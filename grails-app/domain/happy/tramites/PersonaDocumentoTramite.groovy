@@ -167,8 +167,9 @@ class PersonaDocumentoTramite {
                       "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
 //            println "... $sql"
             def rmto = cn.rows(sql.toString())[0].cnta
+            def fchaenvio = this.fechaEnvio.format('yyyy-MM-dd')
             if(rmto > 0) {
-                sql = "select ddlbordn, anio__id from ddlb where ddlbfcha = '${this.fechaEnvio.clearTime()}'"
+                sql = "select ddlbordn, anio__id from ddlb where ddlbfcha = '${fchaenvio}'"
                 def ordn
                 def anio
                 def blqo = Parametros.get(1).remoto
