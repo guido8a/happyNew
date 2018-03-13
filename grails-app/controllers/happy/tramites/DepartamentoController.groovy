@@ -778,9 +778,8 @@ class DepartamentoController extends happy.seguridad.Shield {
 //        println "ids: $ids"
         def listaDepartamentos = Departamento.findAllByIdInList(ids)
 //        println "dptos: ${listaDepartamentos.id.sort()}"
-        def diferentes = listaDepartamentos - [departamento]
 
-        return [diferentes: diferentes, departamento: departamento]
+        return [diferentes: listaDepartamentos - [departamento], departamento: departamento]
 
     }
 
