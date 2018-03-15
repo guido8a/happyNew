@@ -555,7 +555,8 @@ class ElementosTagLib {
                 html += "<tr>"
                 html += "<th>FECHA:</th>"
                 html += "<td>"
-                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO").toUpperCase()
+//                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion, ciudad: "QUITO").toUpperCase()
+                html += util.fechaConFormatoMayusculas(fecha: tramite.fechaCreacion).toUpperCase()
                 html += "</td>"
                 html += "</tr>"
                 //asunto

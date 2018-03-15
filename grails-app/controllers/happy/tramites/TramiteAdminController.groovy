@@ -409,7 +409,7 @@ class TramiteAdminController /*extends Shield*/ {
 
     def enviarCopias_ajax() {
         def tramite
-        println "enviarCopias_ajax params $params -- trmt: ${tramite.id}"
+//        println "enviarCopias_ajax params $params -- trmt: ${tramite.id}"
         if (params.id) {
             def persDocTram = PersonaDocumentoTramite.get(params.id)
             tramite = persDocTram.tramite

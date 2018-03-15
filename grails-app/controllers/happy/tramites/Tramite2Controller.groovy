@@ -1128,7 +1128,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids.each { d ->
                 def envio = new Date();
                 tramite = Tramite.get(d)
-                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
+//                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
                 if (tramite.fechaEnvio) {
                     msg += "<br/>El trámite " + tramite.codigo + " ya fue enviado por " +
                             PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("E004")).persona.login.join(", ")
@@ -1139,7 +1139,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     sql = "update prtr set prtrfcen = '${envio.format('yyyy-MM-dd HH:mm:ss')}', edtr__id = 3 " +
                             "where trmt__id = ${tramite.id} and edtr__id not in (select prtr__id from prtr " +
                             "where trmt__id = ${tramite.id} and edtr__id in (5, 9))"
-                    println "sql: $sql"
+//                    println "sql: $sql"
                     cn.execute(sql.toString())
 
                     PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
