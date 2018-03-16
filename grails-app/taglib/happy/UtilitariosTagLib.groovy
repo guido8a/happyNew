@@ -182,8 +182,7 @@ class UtilitariosTagLib {
         def strFecha = ""
         if (attrs.ciudad) {
             formato = "CCC, dd MMMM yyyy"
-        }
-        if (attrs.noCiudad) {
+        } else {
             formato = "dd MMMM yyyy"
         }
 
