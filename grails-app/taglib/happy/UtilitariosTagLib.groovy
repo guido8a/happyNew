@@ -183,6 +183,11 @@ class UtilitariosTagLib {
         if (attrs.ciudad) {
             formato = "CCC, dd MMMM yyyy"
         }
+        if (attrs.noCiudad) {
+            formato = "dd MMMM yyyy"
+        }
+
+
 //        println ">>" + fecha + "    " + formato
         if (fecha) {
             switch (formato) {
