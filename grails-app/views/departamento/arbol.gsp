@@ -838,11 +838,10 @@
 
 
 
-
-//                        if(nodeHasChildren && node.data.triangulos == 1){
-                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo') ||nodeType.contains('padreRemotoActivo') ){
-                    if (!nodeType.contains('Inactivo')) {
-                        console.log(node.data.triangulos)
+//                console.log('--->', nodeType, 'triangulos', triangulos)
+                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo')|| nodeType.contains('hijoRemotoActivo')){
+//                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo') ||nodeType.contains('padreRemotoActivo') ){
+//                    if (!nodeType.contains('Inactivo')) {
 //                        if(hijitos == '1' && triangulos == '1'){
                         if(triangulos == '1'){
                             items.desactivar = {
@@ -854,7 +853,7 @@
                                 }
                             };
                         }
-                    }
+//                    }
                 }
 
 
