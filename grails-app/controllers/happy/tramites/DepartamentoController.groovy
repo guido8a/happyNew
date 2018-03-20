@@ -776,7 +776,7 @@ class DepartamentoController extends happy.seguridad.Shield {
 //        println "sql: $sql"
         def ids = cn.rows(sql.toString()).dpto__id
 //        println "ids: $ids"
-        def listaDepartamentos = Departamento.findAllByIdInList(ids)
+        def listaDepartamentos = Departamento.findAllByIdInList(ids, [sort: 'descripcion'])
 //        println "dptos: ${listaDepartamentos.id.sort()}"
 
         return [diferentes: listaDepartamentos - [departamento], departamento: departamento]
