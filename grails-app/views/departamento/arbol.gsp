@@ -838,8 +838,9 @@
 
 
 
-//                console.log('--->', nodeType, 'triangulos', triangulos)
-                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo')|| nodeType.contains('hijoRemotoActivo')){
+                console.log('--->', nodeType, 'triangulos', triangulos)
+                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo')|| nodeType.contains('hijoRemotoActivo') ||
+                    nodeType.contains('padreRemotoActivo')) {
 //                if(nodeType.contains('padreActivo') || nodeType.contains('hijoActivo') ||nodeType.contains('padreRemotoActivo') ){
 //                    if (!nodeType.contains('Inactivo')) {
 //                        if(hijitos == '1' && triangulos == '1'){
