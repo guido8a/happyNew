@@ -765,7 +765,17 @@ class DepartamentoController extends happy.seguridad.Shield {
 //        println("params departamento Para " + params)
 
         def departamento = Departamento.get(params.id)
-        return [departamento: departamento]
+
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dptopara from dpdp " +
+                "where dpto__id = ${departamento.id})"
+        def ids = cn.rows(sql.toString()).dpto__id
+        def listaDepartamentos = Departamento.findAllByIdInList(ids, [sort: 'descripcion'])
+
+        def paras = DepartamentoPara.findAllByDeparatamento(departamento).sort{it.deparatamentoPara.descripcion}
+
+        return [departamento: departamento, disponibles: listaDepartamentos, paras: paras]
     }
 
     def departamentos_ajax () {
@@ -778,6 +788,8 @@ class DepartamentoController extends happy.seguridad.Shield {
 //        println "ids: $ids"
         def listaDepartamentos = Departamento.findAllByIdInList(ids, [sort: 'descripcion'])
 //        println "dptos: ${listaDepartamentos.id.sort()}"
+
+
 
         return [diferentes: listaDepartamentos - [departamento], departamento: departamento]
 
@@ -822,6 +834,9 @@ class DepartamentoController extends happy.seguridad.Shield {
             render "no"
         }
     }
+
+
+
 
     def agregarTodos_ajax () {
         def departamento = Departamento.get(params.id)
@@ -869,6 +884,62 @@ class DepartamentoController extends happy.seguridad.Shield {
         }
 
         render "ok"
+    }
+
+    def agregarDepartamentos_ajax () {
+
+        def ids = params.sele.split(",")
+        def para
+        def departamento = Departamento.get(params.id)
+        def dpto
+        def errores = ''
+        ids.each { id->
+            if(id != ''){
+                dpto = Departamento.get(id)
+                para = new DepartamentoPara()
+                para.deparatamento = departamento
+                para.deparatamentoPara = dpto
+                para.fechaDesde = new Date()
+                try{
+                    para.save(flush: true)
+                }catch (e){
+                    println("error al grabar los departamentos " + para.errors)
+                    errores += e
+                }
+            }
+        }
+
+        if(errores == ''){
+            render "ok"
+        }else{
+            render "no"
+        }
+    }
+
+    def quitarDepartamentos_ajax () {
+//        println("params " + params)
+        def ids = params.sele.split(",")
+        def para
+        def dpto
+        def errores = ''
+        ids.each { id->
+            if(id != ''){
+                dpto = DepartamentoPara.get(id)
+
+                try{
+                    dpto.delete(flush: true)
+                }catch (e){
+                    println("error al borrar los departamentos " + dpto.errors)
+                    errores += e
+                }
+            }
+        }
+
+        if(errores == ''){
+            render "ok"
+        }else{
+            render "no"
+        }
     }
 
 }

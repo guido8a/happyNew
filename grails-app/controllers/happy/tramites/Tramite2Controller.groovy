@@ -1127,6 +1127,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def cantEnviados = 0
             ids.each { d ->
                 def envio = new Date();
+                println("envio " + envio)
                 tramite = Tramite.get(d)
 //                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
                 if (tramite.fechaEnvio) {
@@ -1189,6 +1190,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
 //                    if (band) {
                     if (cantEnviados > 0) {
+                        println("entro " + envio)
                         def pdt = new PersonaDocumentoTramite()
                         pdt.tramite = tramite
                         pdt.persona = session.usuario
