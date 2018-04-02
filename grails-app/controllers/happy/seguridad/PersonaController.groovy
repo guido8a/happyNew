@@ -978,7 +978,6 @@ class PersonaController extends happy.seguridad.Shield {
                 def rolCopia = RolPersonaTramite.findByCodigo('R002');
                 def rolImprimir = RolPersonaTramite.findByCodigo('I005')
 
-
 //                println("prsn id " + params.id)
 
 //
@@ -990,7 +989,7 @@ class PersonaController extends happy.seguridad.Shield {
 //                println("sql " + sql)
                 def cn = dbConnectionService.getConnection()
                 def tramitesQ = cn.rows(sql?.toString())
-                def tramites =  tramitesQ?.prtr__id
+                def tramites = tramitesQ?.prtr__id
 
                 def cantTramites = tramites.size()
 
@@ -1052,6 +1051,7 @@ class PersonaController extends happy.seguridad.Shield {
 
     /* todo: se debe implementar algo que cambie el usuario de departamento y se lleve sus bandejas actuales pero no
     * los trámites anteriores */
+
     def cambioDpto_ajax_no() {
         def persona = Persona.get(params.id)
         def dpto = Departamento.get(params.dpto)
@@ -1217,6 +1217,7 @@ class PersonaController extends happy.seguridad.Shield {
                     //     println "encode hex "+entry["objectguid"]?.encodeAsHex()
 //                    println "bytes "+entry["objectguid"].encodeAsMD5Bytes()
 //                    println "decode hex "+entry["objectguid"]?.decodeHex()
+
                     def dep = Departamento.findByDescripcion(ou)
                     if (!dep) {
                         println "no encontro " + ou
@@ -1225,17 +1226,19 @@ class PersonaController extends happy.seguridad.Shield {
                         dep = Departamento.findByObjectguid(entry["objectguid"]?.encodeAsHex())
                         println "result " + dep
                         if (!dep) {
-                            def sec = new Date().format("ss")
-                            dep = new Departamento()
-                            dep.descripcion = ou
-                            dep.codigo = "NUEVO-" + sec + secuencia++
-                            dep.activo = 1
-                            dep.padre = n1
+                            if (ou && (ou.toString().toLowerCase().indexOf('equipo') == -1)) {
+                                def sec = new Date().format("ss")
+                                dep = new Departamento()
+                                dep.descripcion = ou
+                                dep.codigo = "NUEVO-" + sec + secuencia++
+                                dep.activo = 1
+                                dep.padre = n1
 
 
-                            dep.objectguid = entry["objectguid"]?.encodeAsHex()
-                            if (!dep.save(flush: true)) {
-                                println "errores dep " + dep.errors
+                                dep.objectguid = entry["objectguid"]?.encodeAsHex()
+                                if (!dep.save(flush: true)) {
+                                    println "errores dep " + dep.errors
+                                }
                             }
                         } else {
                             println "update del nombre"
