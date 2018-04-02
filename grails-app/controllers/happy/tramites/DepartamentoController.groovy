@@ -771,7 +771,10 @@ class DepartamentoController extends happy.seguridad.Shield {
         def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dptopara from dpdp " +
                 "where dpto__id = ${departamento.id})"
         def ids = cn.rows(sql.toString()).dpto__id
-        def listaDepartamentos = Departamento.findAllByIdInList(ids, [sort: 'descripcion'])
+
+        def filtrado = ids - departamento.id
+
+        def listaDepartamentos = Departamento.findAllByIdInList(filtrado, [sort: 'descripcion'])
 
         def paras = DepartamentoPara.findAllByDeparatamento(departamento).sort{it.deparatamentoPara.descripcion}
 
@@ -843,7 +846,8 @@ class DepartamentoController extends happy.seguridad.Shield {
         def paras = DepartamentoPara.findAllByDeparatamento(departamento)
         def listaDepartamentosSin = Departamento.list([sort: 'descripcion', order: "asc"]).id
         def prefectura = Departamento.get(11)
-        listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
+//        listaDepartamentosSin.removeAll([departamento.id, prefectura.id])
+        listaDepartamentosSin.removeAll([departamento.id])
         def para
         def listaDepartamentos = Departamento.findAllByIdInList(listaDepartamentosSin, [sort: 'descripcion', order: "asc"])
 
