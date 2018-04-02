@@ -30,14 +30,14 @@
     }
 
     .divFieldsListas {
-        height     : 280px;
+        height     : 685px;
         width      : 970px;
         overflow-x : auto;
     }
 
     .fieldLista {
         width   : 450px;
-        height  : 250px;
+        height  : 650px;
         border  : 1px solid #0088CC;
         margin  : 10px 10px 20px 10px;
         padding : 15px;
@@ -120,7 +120,7 @@
                         Disponibles
                     </legend>
 
-                    <ul id="ulDisponibles" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
+                    <ul id="ulDisponibles" style="margin-left:0;max-height: 575px; overflow: auto;" class="fa-ul selectable">
                         <g:each in="${disponibles}" var="disp">
                                 <li data-id="${disp.id}" class="clickable interno">
                                     <i class="fa fa-li fa-building"></i> ${disp.descripcion}
@@ -151,7 +151,7 @@
                         Seleccionados
                     </legend>
 
-                    <ul id="ulSeleccionados" style="margin-left:0;max-height: 195px; overflow: auto;" class="fa-ul selectable">
+                    <ul id="ulSeleccionados" style="margin-left:0;max-height: 600px; overflow: auto;" class="fa-ul selectable">
                             <g:each in="${paras}" var="para">
                                     <li data-id="${para.id}" class="clickable">
                                         <i class="fa fa-li fa-building-o"></i> ${para.deparatamentoPara.descripcion}

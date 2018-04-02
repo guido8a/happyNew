@@ -10,7 +10,8 @@ class BloqueosJob {
     def diasLaborablesService
 
     static triggers = {
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 10
+//        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 10
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 3
     }
 
     def execute() {
@@ -31,10 +32,8 @@ class BloqueosJob {
                 "rolPersonaTramite not in (${rolEnvia.id}, ${rolRecibe.id})").each { pdt ->
 
             if ((pdt.tramite.externo.toString() != "1")) {  // no se bloquea trámites externos ni remotos
-
 //                def fechaBloqueo = pdt.fechaBloqueo
-
-//                if (fechaBloqueo && (fechaBloqueo < ahora)) {
+//                println "id: ${pdt.id} Bloqueo: ${pdt.fechaBloqueo}"
                 if (pdt.fechaBloqueo) {
 //                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                     if (pdt.tramite.deDepartamento) {
