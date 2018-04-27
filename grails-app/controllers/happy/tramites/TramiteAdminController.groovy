@@ -1155,6 +1155,7 @@ class TramiteAdminController /*extends Shield*/ {
     }
 
     private String makeTreeExtended(Tramite principal) {
+//        println "makeTreeExtended"
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
@@ -1227,12 +1228,17 @@ class TramiteAdminController /*extends Shield*/ {
             paraStr = "CC: "
         }
         if (pdt.departamento) {
-            paraStr += pdt.departamento.descripcion
+//            paraStr += pdt.departamento.descripcion
+            paraStr += pdt.departamentoNombre
         } else if (pdt.persona) {
-            paraStr += pdt.persona.departamento.codigo + ":" + pdt.persona.login
+//            paraStr += pdt.persona.departamento.codigo + ":" + pdt.persona.login
+            paraStr += pdt.departamentoSigla + ":" + pdt.personaSigla
         }
 
-        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite?.de?.departamento?.codigo + ":" + pdt.tramite.de.login)
+//        println "paraStr: $paraStr"
+
+//        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.deDepartamento.codigo : pdt.tramite?.de?.departamento?.codigo + ":" + pdt.tramite.de.login)
+        def deStr = "De: " + (pdt.tramite.deDepartamento ? pdt.tramite.departamentoSigla : pdt.tramite?.departamentoSigla + ":" + pdt.tramite.login)
 
         data += ',"tramite":"' + pdt.tramiteId + '"'
         data += ',"codigo":"' + pdt.tramite.codigo + '"'
@@ -1296,9 +1302,11 @@ class TramiteAdminController /*extends Shield*/ {
             paraStr = tramiteParaInfo.tramite.paraExterno + " (EXT)"
         } else {
             if (tramiteParaInfo.departamento) {
-                paraStr = tramiteParaInfo.departamento.descripcion
+//                paraStr = tramiteParaInfo.departamento.descripcion
+                paraStr = tramiteParaInfo.departamentoNombre
             } else if (tramiteParaInfo.persona) {
-                paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+//                paraStr = tramiteParaInfo.persona.departamento.codigo + ":" + tramiteParaInfo.persona.login
+                paraStr = tramiteParaInfo.departamentoSigla + ":" + tramiteParaInfo.personaSigla
             } else {
                 paraStr = ""
             }

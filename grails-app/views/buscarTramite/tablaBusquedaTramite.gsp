@@ -167,10 +167,12 @@ html[xmlns] .clearfix {
                         </g:if>
                         <g:else>
                             <g:if test="${tramite.deDepartamento}">
-                                ${tramite.deDepartamento.descripcion}
+                                %{--${tramite.deDepartamento.descripcion}--}%
+                                ${tramite.departamentoNombre}
                             </g:if>
                             <g:elseif test="${tramite.de}">
-                                ${tramite.de.nombre} ${tramite.de.apellido} (${tramite.departamentoSigla})
+                                %{--${tramite.de.nombre} ${tramite.de.apellido} (${tramite.departamentoSigla})--}%
+                                ${tramite.persona} (${tramite.departamentoSigla})
                             </g:elseif>
                         </g:else>
                     </td>
@@ -182,10 +184,10 @@ html[xmlns] .clearfix {
                         <g:else>
                             <g:if test="${tramite.para}">
                                 <g:if test="${tramite.para.persona}">
-                                    ${tramite.para.persona.nombre} ${tramite.para.persona.apellido} (${tramite.para.persona.departamento?.codigo})
+                                    ${tramite.para.personaNombre} (${tramite.para.departamentoSigla})
                                 </g:if>
                                 <g:elseif test="${tramite.para.departamento}">
-                                    ${tramite.para.departamento.descripcion}
+                                    ${tramite.para.departamentoNombre}
                                 </g:elseif>
                             </g:if>
                             <g:if test="${!tramite?.para && !tramite?.para?.departamento}">
