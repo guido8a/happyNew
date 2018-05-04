@@ -2,7 +2,7 @@
     border-color : #555 !important;
 }
 
-.table thead, .table thead tr, .table thead th, {
+.table thead, .table thead tr, .table thead th{
     border-color : whitesmoke !important;
 }
 

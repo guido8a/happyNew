@@ -886,13 +886,13 @@
                                                                         log("Quitado el recibido del trámite correctamente", 'success');
                                                                         setTimeout(function () {
                                                                             location.reload(true);
-                                                                        }, 500);
+                                                                        }, 1000);
                                                                     } else if (parts[0] == 'NO') {
                                                                         log("Error al quitar el recibido del trámite : " + parts[1], 'error');
                                                                         closeLoader();
                                                                         setTimeout(function () {
                                                                             location.reload(true);
-                                                                        }, 500);
+                                                                        }, 1000);
 
                                                                     }
                                                                 }

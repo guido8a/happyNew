@@ -1414,6 +1414,7 @@ class TramiteAdminController /*extends Shield*/ {
                 ne("estado", estadoAnulado)
                 inList("rolPersonaTramite", [rolPara, rolCopia])
             }
+
 //            prtr.each {hj->
 //                println " "+hj.rolPersonaTramite.descripcion+"  "+hj.estado.descripcion
 //            }
@@ -1424,7 +1425,7 @@ class TramiteAdminController /*extends Shield*/ {
 
 
         if (hijosVivos > 0) {
-            render "NO*"
+            render "NO*Este trámite ya tiene respuesta en una de sus copias."
             return
         }
 
