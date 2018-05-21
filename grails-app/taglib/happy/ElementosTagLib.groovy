@@ -486,7 +486,7 @@ class ElementosTagLib {
                 //para
                 if (para || tramite.paraExterno) {
                     html += "<tr style='vertical-align: top'>"
-                    html += "<th>PARA999:</th>"
+                    html += "<th>PARA:</th>"
                     html += "<td>"
                     if (tramite.tipoDocumento.codigo != "DEX") {
                         if (tramite.paraExterno) {
