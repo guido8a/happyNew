@@ -107,19 +107,19 @@
 
     </g:if>
 
-    <div style="text-align: center; margin-top: 40px">
+    <div style="text-align: center; margin-top: 70px">
 
         <g:if test="${session.usuario.getPuedeDirector()}">
             %{--<g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidadoDir" class="openImagenDir" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1', dir: '1']">--}%
             <g:link controller="departamento" action="arbolReportes" class="openImagenDir" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1', dir: '1']">
-                <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
+                <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="360px" height="360px"/>
             </g:link>
         </g:if>
 
         <g:if test="${session.usuario.getPuedeJefe()}">
             %{--<g:link controller="retrasadosWeb" action="reporteRetrasadosConsolidado" class="openImagen" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1']">--}%
             <g:link controller="departamento" action="arbolReportes" class="openImagen" params="[dpto: Persona.get(session.usuario.id).departamento.id, inicio: '1']">
-                <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="640px" height="330px"/>
+                <img src="${resource(dir: 'images', file: 'ingreso_adm1.jpeg')}" width="369px" height="360px"/>
             </g:link>
         </g:if>
 
