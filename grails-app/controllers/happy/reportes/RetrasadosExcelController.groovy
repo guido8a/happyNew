@@ -1347,6 +1347,22 @@ class RetrasadosExcelController extends Shield {
         def title = ["Reporte de documentos retrasados"]
         def title2 = ""
 
+
+
+        def pers = Persona.get(params.id.toLong())
+        if (params.tipo == "prsn") {
+            def dpto = Departamento.get(params.dpto)
+            if (!dpto) {
+                dpto = pers.departamento
+            }
+            fileName += pers.login + "_" + dpto.codigo
+        } else {
+            def dep = Departamento.get(params.id.toLong())
+            fileName += dep.codigo
+        }
+
+
+
         def trams
 
         def totalResumenGenerado = 0

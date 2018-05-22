@@ -212,8 +212,6 @@
                         label: "EXCEL",
                         icon: "fa fa-file-excel-o",
                         action: function () {
-
-
                             if (nodeType.match("padre") || nodeType.match("hijo")) {
                                 location.href = "${g.createLink(controller: 'retrasadosExcel',action: 'reporteRetrasadosArbolExcel')}/" + nodeId
                             } else {
