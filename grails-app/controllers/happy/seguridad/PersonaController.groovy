@@ -1112,6 +1112,22 @@ class PersonaController extends happy.seguridad.Shield {
         }
     } //cambio dpto
 
+
+
+  /* todo: se debe implementar algo que cambie el usuario de departamento y se lleve sus bandejas actuales pero no
+    * los trámites anteriores */
+
+    def cambioDpto_ajax() {
+        def persona = Persona.get(params.id)
+        def dpto = Departamento.get(params.dpto)
+        persona.departamento = dpto
+        if (persona.save(flush: true)) {
+                render "OK_Cambio realizado exitosamente"
+        } else {
+            render "NO_Ha ocurrido un error al cambiar el departamento de la persona.<br/>" + renderErrors(bean: persona)
+        }
+    } //cambio dpto
+
     /*** se puede boirrar el usaurio siempre y cuando no haya registros en:
      *   trmt.prsn__de: Persona.de
      *   prtr.prsn__id: Persona.persona

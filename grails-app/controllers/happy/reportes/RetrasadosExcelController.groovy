@@ -1414,8 +1414,22 @@ class RetrasadosExcelController extends Shield {
         def hastaNuevo = new Date().format("yyyy/MM/dd")
 
 
-        def dptoPadre = Departamento.get(params.id)
-        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
+//        def dptoPadre = Departamento.get(params.id)
+//        def dptosHijos = Departamento.findAllByPadreAndActivo(dptoPadre, 1).id
+        /**
+         * se obtienen lo sdpto hijos recursivamente
+         */
+        sql = "with RECURSIVE nodos(dpto__id, nivel) AS (select d.dpto__id, 1 from dpto d " +
+                "where d.dpto__id = ${params.id} " +
+                "UNION ALL " +
+                "select d.dpto__id, nd.nivel + 1 from dpto d, nodos nd where d.dptopdre = nd.dpto__id) " +
+                "select dpto__id from nodos where nivel >= 2 order by nivel, dpto__id"
+        def dptosHijos = []
+        cn.eachRow(sql.toString()) {d ->
+            dptosHijos.add(d.dpto__id)
+        }
+//        println "dptoHijos: $dptosHijos"
+
 
         def totalRetrasados = 0
         def totalNoRecibidos = 0
@@ -1495,7 +1509,7 @@ class RetrasadosExcelController extends Shield {
 
             index++
 
-            dptosHijos.each{hij->
+            dptosHijos.each{hij ->
 
 
                 totalRetrasados = 0
@@ -1612,7 +1626,7 @@ class RetrasadosExcelController extends Shield {
 
 
             sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desdeNuevo + "'" + "," +  "'" + hastaNuevo + "'" + ")"
-//            println "reporteRetrasadosArbolExcel: $sqlGen"
+            println "reporteRetrasadosArbolExcel: $sqlGen"
 
             cn2.eachRow(sqlGen.toString()) {
                 XSSFRow row2 = sheet.createRow((short) index)
