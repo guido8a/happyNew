@@ -1136,15 +1136,40 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 } else {
                     def pdtEliminar = []
 
-                    /* pone en prtr: prtrfcen = envio y edtr__id = 3 */
-                    sql = "update prtr set prtrfcen = '${envio.format('yyyy-MM-dd HH:mm:ss')}', edtr__id = 3 " +
-                            "where trmt__id = ${tramite.id} and edtr__id not in (select prtr__id from prtr " +
-                            "where trmt__id = ${tramite.id} and edtr__id in (5, 9))"
-//                    println "sql: $sql"
-                    cn.execute(sql.toString())
+                    def cambiadosDepartamento = 0
 
-                    PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
-                        if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") { //anulado y archivado
+
+                    /*Verifica q la persona o personas a quienes se dirigen los trámites se encuentren en el mismo departamento de cuando se creo el trámite*/
+                    PersonaDocumentoTramite.findAllByTramite(tramite).each { pr ->
+
+                        def personaActual
+
+                        if(!pr.departamento && pr.persona){
+                            personaActual = Persona.get(pr.persona.id)
+
+                            if(personaActual.departamento.id != pr.departamentoPersona){
+                                cambiadosDepartamento ++
+                            }
+                        }
+
+                    }
+
+
+//                    println("num " + cambiadosDepartamento)
+
+
+                    if(cambiadosDepartamento == 0){
+
+                        /* pone en prtr: prtrfcen = envio y edtr__id = 3 */
+                        sql = "update prtr set prtrfcen = '${envio.format('yyyy-MM-dd HH:mm:ss')}', edtr__id = 3 " +
+                                "where trmt__id = ${tramite.id} and edtr__id not in (select prtr__id from prtr " +
+                                "where trmt__id = ${tramite.id} and edtr__id in (5, 9))"
+//                    println "sql: $sql"
+                        cn.execute(sql.toString())
+
+                        PersonaDocumentoTramite.findAllByTramite(tramite).each { t ->
+
+                            if (t.estado?.codigo != "E006" && t.estado?.codigo != "E005") { //anulado y archivado
 //                            t.fechaEnvio = envio
 //                            t.estado = EstadoTramite.findByCodigo("E003") //enviado
 //                            if (t.save(flush: true)) {
@@ -1153,7 +1178,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                     //para o copia
 
                                     if (t.tramite.tipoDocumento.codigo != "OFI") {
-                                       def alerta = new Alerta()
+                                        def alerta = new Alerta()
                                         alerta.mensaje = "${session.departamento.codigo}:${session.usuario} te ha enviado un trámite."
                                         if (t.persona) {
                                             alerta.controlador = "tramite"
@@ -1172,58 +1197,66 @@ class Tramite2Controller extends happy.seguridad.Shield {
                                     }
                                 }
 //                            }
-                        } else {
-                            println("tramite anulado o archivado ${t.tramite.codigo}")
-                            band = false
+                            } else {
+                                println("tramite anulado o archivado ${t.tramite.codigo}")
+                                band = false
+                            }
+
+                            if (t.rolPersonaTramite.codigo == 'I005') {
+                                //si tenia permiso imprimir se elimina
+                                pdtEliminar += t.id
+                            }
                         }
 
-                        if (t.rolPersonaTramite.codigo == 'I005') {
-                            //si tenia permiso imprimir se elimina
-                            pdtEliminar += t.id
+
+                        pdtEliminar.each { pdtId ->
+                            def pdt = PersonaDocumentoTramite.get(pdtId)
+                            pdt.delete(flush: true)
                         }
-                    }
 
-                    pdtEliminar.each { pdtId ->
-                        def pdt = PersonaDocumentoTramite.get(pdtId)
-                        pdt.delete(flush: true)
-                    }
 
-//                    if (band) {
-                    if (cantEnviados > 0) {
-                        println("entro " + envio)
-                        def pdt = new PersonaDocumentoTramite()
-                        pdt.tramite = tramite
-                        pdt.persona = session.usuario
-                        pdt.departamento = session.departamento
-                        pdt.fechaEnvio = envio
-                        pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004") //envia
-                        pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
+                        //                    if (band) {
+                        if (cantEnviados > 0) {
+                            println("entro " + envio)
+                            def pdt = new PersonaDocumentoTramite()
+                            pdt.tramite = tramite
+                            pdt.persona = session.usuario
+                            pdt.departamento = session.departamento
+                            pdt.fechaEnvio = envio
+                            pdt.rolPersonaTramite = RolPersonaTramite.findByCodigo("E004") //envia
+                            pdt.departamentoPersona = Persona.get(session.usuario.id).departamento
 
-                        pdt.personaSigla = pdt.persona.login
-                        pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
-                        pdt.departamentoNombre = pdt.departamento.descripcion
-                        pdt.departamentoSigla = pdt.departamento.codigo
-                        pdt.personaSigla = pdt.persona.login
+                            pdt.personaSigla = pdt.persona.login
+                            pdt.personaNombre = pdt.persona.nombre + " " + pdt.persona.apellido
+                            pdt.departamentoNombre = pdt.departamento.descripcion
+                            pdt.departamentoSigla = pdt.departamento.codigo
+                            pdt.personaSigla = pdt.persona.login
 
-                        pdt.save(flush: true)
-                        tramite.fechaEnvio = envio
-                        tramite.estadoTramite = EstadoTramite.findByCodigo('E003') //enviado
-                        if (tramite.save(flush: true)) {
-                            def realPath = servletContext.getRealPath("/")
-                            def mensaje = message(code: 'pathImages').toString();
-                            if (!noPDF.contains(tramite.tipoDocumento.codigo)) {
-                                enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
+                            pdt.save(flush: true)
+                            tramite.fechaEnvio = envio
+                            tramite.estadoTramite = EstadoTramite.findByCodigo('E003') //enviado
+                            if (tramite.save(flush: true)) {
+                                def realPath = servletContext.getRealPath("/")
+                                def mensaje = message(code: 'pathImages').toString();
+                                if (!noPDF.contains(tramite.tipoDocumento.codigo)) {
+                                    enviarService.crearPdf(tramite, usuario, "1", 'download', realPath, mensaje);
+                                }
+                            } else {
+                                println tramite.errors
+                                error += renderErrors(bean: tramite)
                             }
                         } else {
-                            println tramite.errors
-                            error += renderErrors(bean: tramite)
+                            band = true
+                            error += 'No se pudo enviar!'
                         }
-                    } else {
-                        band = true
-                        error += 'No se pudo enviar!'
+
+
+                    }else{
+                        error = 'Persona cambiada de departamento'
                     }
                 }
             }
+
             if (error == "") {
                 render "ok_" + msg
             } else {
@@ -1660,7 +1693,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
             }
         } else if (params.hermano) {
 
-           // println("entro hermano")
+            // println("entro hermano")
 
 
             def herm = Tramite.get(params.hermano)
@@ -2064,7 +2097,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //            }
 //        }
 
-         if (ccLista.size() > 0) {
+        if (ccLista.size() > 0) {
             tramite.texto = tramite.texto ?: ''
             tramite.texto += '<p></p>'
             tramite.texto += "[cc]: "

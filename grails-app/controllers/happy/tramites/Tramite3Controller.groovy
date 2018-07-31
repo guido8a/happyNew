@@ -951,7 +951,6 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println "bandeja de entrada: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
-//        println rows
         return [rows: rows, busca: busca]
     }
 
