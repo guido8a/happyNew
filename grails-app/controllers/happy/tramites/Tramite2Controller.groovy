@@ -1154,9 +1154,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                     }
 
-
 //                    println("num " + cambiadosDepartamento)
-
 
                     if(cambiadosDepartamento == 0){
 

@@ -193,10 +193,11 @@
 
         <script type="text/javascript">
             var tramites = 0;
-            function submitForm() {
+            function submitForm(id) {
                 var $form = $("#frmPersona");
                 var $btn = $("#dlgCreateEdit").find("#btnSave");
-                var idPersona = $("#trPersona").data("id");
+//                var idPersona = $("#trPersona").data("id");
+                var idPersona = id
                 if ($form.valid()) {
                     $btn.replaceWith(spinner);
                     openLoader("Grabando");
@@ -480,7 +481,7 @@
                                     label     : "<i class='fa fa-save'></i> Guardar",
                                     className : "btn-success",
                                     callback  : function () {
-                                        return submitForm();
+                                        return submitForm(id);
                                     } //callback
                                 } //guardar
                             } //buttons
