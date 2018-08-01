@@ -1147,7 +1147,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         if(!pr.departamento && pr.persona){
                             personaActual = Persona.get(pr.persona.id)
 
-                            if(personaActual.departamento.id != pr.departamentoPersona){
+                            if(personaActual.departamento.id != pr.departamentoPersona.id){
                                 cambiadosDepartamento ++
                             }
                         }
