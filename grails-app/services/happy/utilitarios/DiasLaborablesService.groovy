@@ -821,7 +821,9 @@ class DiasLaborablesService {
         def cn = dbConnectionService.getConnection()
         def sql = "select tmpo_mas from tmpo_mas(cast('${fecha.format('yyyy-MM-dd HH:mm')}' as timestamp), $horas)"
 //        println "sql " + sql
-        return cn.rows(sql.toString())[0]?.tmpo_mas
+        def tiempo = cn.rows(sql.toString())[0]?.tmpo_mas
+//        return cn.rows(sql.toString())[0]?.tmpo_mas
+        return tiempo
     }
 
 
