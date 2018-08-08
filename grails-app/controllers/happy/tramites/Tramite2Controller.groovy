@@ -1143,15 +1143,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
                      * mismo departamento de cuando se creo el trámite*/
                     PersonaDocumentoTramite.findAllByTramite(tramite).each { pr ->
 
-                        println "trmt: ${pr.tramite.id}, id: ${pr.departamentoPersona?.id}"
+//                        println "trmt: ${pr.tramite.id}, id: ${pr.departamentoPersona?.id}"
 
                         def personaActual
 
-                        if(!pr.departamento && pr.persona){
-                            personaActual = Persona.get(pr.persona.id)
+                        if(pr.rolPersonaTramite.codigo != 'I005'){
+                            if(!pr.departamento && pr.persona){
+                                personaActual = Persona.get(pr.persona.id)
 
-                            if(personaActual.departamento.id != pr.departamentoPersona?.id){
-                                cambiadosDepartamento ++
+                                if(personaActual.departamento.id != pr.departamentoPersona?.id){
+                                    cambiadosDepartamento ++
+                                }
                             }
                         }
 
