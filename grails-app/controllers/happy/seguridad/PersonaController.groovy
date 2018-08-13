@@ -772,7 +772,12 @@ class PersonaController extends happy.seguridad.Shield {
                 params.offset = params.offset - params.max
                 personaInstanceList = getLista(params, false)
             }
-            return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params]
+
+
+            def parametros = Parametros.findAll()
+
+
+            return [personaInstanceList: personaInstanceList, personaInstanceCount: personaInstanceCount, params: params, parametros: parametros]
         } else {
             flash.message = "Está tratando de ingresar a un pantalla restringida para su perfil. Está acción será registrada."
             response.sendError(403)

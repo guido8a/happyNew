@@ -25,11 +25,14 @@
 
         <!-- botones -->
         <div class="btn-toolbar toolbar">
+
+        <g:if test="${parametros[0]?.validaLDAP == 0}">
             <div class="btn-group">
                 <g:link action="form" class="btn btn-default btnCrear">
                     <i class="fa fa-file-o"></i> Crear
                 </g:link>
             </div>
+        </g:if>
 
             <div class="btn-group pull-right col-md-3">
                 <div class="input-group">
