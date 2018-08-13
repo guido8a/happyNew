@@ -72,8 +72,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse_${reporte}">
-                            Documentos generados
-                            %{--<small>afsdfa</small>--}%
+                            Documentos generados y recibidos
                         </a>
                     </h4>
                 </div>
@@ -83,7 +82,7 @@
                         <form class="form-horizontal">
                             <div class="alert alert-info">
                                 Se generará un reporte
-                                de sus <span class="info">documentos generados</span>
+                                de sus <span class="info">documentos generados y recibidos</span>
                                 desde <span class="info" id="${reporte}_desde"></span> hasta  <span class="info" id="${reporte}_hasta"></span>.
                             </div>
 

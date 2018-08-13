@@ -64,8 +64,8 @@ class DocumentosGeneradosController extends Shield{
 //        println "desde: $desde, hasta: $hasta"
 
         def fileName = "documentos_generados_"
-        def title = "Documentos generados de "
-        def title2 = "Documentos generados por "
+        def title = "Documentos generados y recibidos de "
+        def title2 = "Documentos generados y recibidos por "
         def pers = Persona.get(params.id.toLong())
         if (params.tipo == "prsn") {
 
@@ -367,7 +367,7 @@ class DocumentosGeneradosController extends Shield{
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "detalle_documentos_generados_"
-        def title = "Detalle de los documentos generados de "
+        def title = "Detalle de los documentos generados y recibidos de "
         def title2 = ""
         def title3 = ""
 
@@ -543,7 +543,7 @@ class DocumentosGeneradosController extends Shield{
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
 
         def fileName = "documentos_generados_"
-        def title = ["Reporte de documentos generados"]
+        def title = ["Reporte de documentos generados y recibidos"]
         def title2 = ""
 
         def trams
@@ -766,7 +766,7 @@ class DocumentosGeneradosController extends Shield{
         def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
         def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
         def fileName = "detalle_documentos_generados_"
-        def title = ["Reporte de documentos generados"]
+        def title = ["Reporte de documentos generados y recibidos"]
         def title2 = ""
         def tramites = [:], trams = []
 
