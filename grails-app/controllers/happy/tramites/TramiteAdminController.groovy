@@ -1838,30 +1838,44 @@ class TramiteAdminController /*extends Shield*/ {
     }
 
     def desanular() {
+
+//        println("params " + params)
+
         def pdt = PersonaDocumentoTramite.get(params.id)
-//        if (pdt.rolPersonaTramite.codigo == "R001") { //es PARA
         def tramite = pdt.tramite
         def copias = tramite.allCopias
         def ok = true
 
+        def tramitePadre = Tramite.get(tramite.id).padre
+        def rol = RolPersonaTramite.findByCodigo("R001")
+        def prtrPadre = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramitePadre, rol)
+        def fechaRecibidoPadre = prtrPadre.fechaRecepcion
+
+
+        def fechaEnvioOriginal = tramite.fechaEnvio
+
+//        println("recibido " + fechaRecibidoPadre.format("dd-MM-yyyy HH:mm"))
+//        println("fecha envio " + fechaEnvioOriginal.format("dd-MM-yyyy HH:mm"))
+
+
         def listaDesanular = [pdt]
 
-        // 06-04-2015: ya no quieren que desanular PARA desanule COPIAS
-//        if (pdt.rolPersonaTramite.codigo == "R001") {// es PARA
-//            listaDesanular = (copias + pdt)
-//        }
-//        (copias + pdt).each { p ->
-        listaDesanular.each { p ->
-            println "desanular: " + p.rolPersonaTramite.descripcion
-            if (!desanularPdt(p)) {
-                ok = false
+        if(fechaRecibidoPadre.getTime()  <= fechaEnvioOriginal.getTime()){
+            listaDesanular.each { p ->
+                println "desanular: " + p.rolPersonaTramite.descripcion
+                if (!desanularPdt(p)) {
+                    ok = false
+                }
             }
+        }else{
+            ok = false
         }
+
         render ok ? "OK" : "NO"
-//        } else {
-//            render "NO"
-//        }
+
     }
+
+
 
     def getCadenaDown(pdt, funcion) {
         def res = []
