@@ -14,8 +14,8 @@ class Departamento {
 
     Integer externo = 0 //1->externo, 0->interno
 
-    Integer activo //1-> activo 0-> inactivo
-    Integer remoto //1-> remoto 0-> no
+    Integer activo = 1 //1-> activo 0-> inactivo
+    Integer remoto = 0 //1-> remoto 0-> no
 
     String objectguid = ""
 

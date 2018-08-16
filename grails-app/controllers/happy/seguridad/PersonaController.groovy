@@ -1255,7 +1255,6 @@ class PersonaController extends happy.seguridad.Shield {
                                 dep.activo = 1
                                 dep.padre = n1
 
-
                                 dep.objectguid = entry["objectguid"]?.encodeAsHex()
                                 if (!dep.save(flush: true)) {
                                     println "errores dep " + dep.errors
