@@ -133,20 +133,46 @@ class DepartamentoController extends happy.seguridad.Shield {
     }
 
     def desactivar_ajax() {
-        println "desactivar_ajax... $params"
+
+//        println "desactivar_ajax... $params"
+
         def dpto = Departamento.get(params.id)
-            dpto.activo = 0
-            if (dpto.save(flush: true)) {
-                render "OK_Cambio realizado exitosamente"
-            } else {
-                render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+
+        //verificar
+
+        def cn = dbConnectionService.getConnection()
+
+
+        def sqlPersona = "select count(*) from prsn where dpto__id = ${dpto?.id} and prsnactv = 1;"
+
+        def sqlDepart = "select count(*) from dpto where dpto__id in (select dpto__id from dpto \n" +
+                        "  where dptopdre = ${dpto?.id} and dptoactv = 1); "
+
+        def res = cn.rows(sqlPersona.toString())
+        def res2 = cn.rows(sqlDepart.toString())
+
+        if(res == 0){
+            if(res2 == 0){
+                dpto.activo = 0
+                if (dpto.save(flush: true)) {
+                    render "OK_Cambio realizado exitosamente"
+                } else {
+                    render "NO_Ha ocurrido un error al desactivar el departamento.<br/>" + renderErrors(bean: dpto)
+                }
+            }else{
+                render "NO_No se puede desactivar el departamento.<br/> contiene departamentos activos"
             }
+        }else{
+            render "NO_No se puede desactivar el departamento.<br/> contiene usuarios activos"
+        }
+
+
     }
 
     /* pasa bandejas y desactiva triangulo:
      * 1. Halla triángulo y procede, si no muestra error: "no hay triánguilo" */
     def desactivar_dpto_ajax() {
-        println "desactivar_dpto_ajax... $params"
+//        println "desactivar_dpto_ajax... $params"
         def dpto = Departamento.get(params.id)
         def nuevo = Departamento.get(params.nuevo)
         def triangulo = dpto.triangulos
@@ -380,6 +406,8 @@ class DepartamentoController extends happy.seguridad.Shield {
             tree += "<ul>"
             def lbl = ""
 
+
+
             hijos.each { hijo ->
                 def tp = ""
                 def data = ""
@@ -396,12 +424,12 @@ class DepartamentoController extends happy.seguridad.Shield {
 
                     rel = (hijosH.size() > 0) ? "padre" : "hijo"
                     hijosH += Persona.findAllByDepartamento(hijo, [sort: "apellido"])
+
                     clase = (hijosH.size() > 0) ? "jstree-closed hasChildren" : ""
                     if (hijosH.size() > 0) {
                         clase += " ocupado "
                         data += "data-tienehij='${hijosH.size()}'"
                     }
-
 
                     if (hijo.externo == 1) {
                         rel += "Externo"
@@ -771,9 +799,7 @@ class DepartamentoController extends happy.seguridad.Shield {
         def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dptopara from dpdp " +
                 "where dpto__id = ${departamento.id})"
         def ids = cn.rows(sql.toString()).dpto__id
-
         def filtrado = ids - departamento.id
-
         def listaDepartamentos = Departamento.findAllByIdInList(filtrado, [sort: 'descripcion'])
 
         def paras = DepartamentoPara.findAllByDeparatamento(departamento).sort{it.deparatamentoPara.descripcion}
@@ -944,6 +970,110 @@ class DepartamentoController extends happy.seguridad.Shield {
         }else{
             render "no"
         }
+    }
+
+    def departamentoDesde () {
+
+        def departamento = Departamento.get(params.id)
+        def departamentosDesde = DepartamentoPara.findAllByDeparatamentoPara(departamento).sort{it.deparatamento.descripcion}
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dpto__id from dpdp " +
+                "where dptopara = ${departamento.id})"
+        def ids = cn.rows(sql.toString()).dpto__id
+        def filtrado = ids - departamento.id
+        def listaDepartamentos = Departamento.findAllByIdInList(filtrado, [sort: 'descripcion'])
+
+        return[departamento: departamento, desde: departamentosDesde, disponibles: listaDepartamentos]
+    }
+
+    def agregarDepartamentosDesde_ajax () {
+
+        def ids = params.sele.split(",")
+        def para
+        def departamento = Departamento.get(params.id)
+        def dpto
+        def errores = ''
+        ids.each { id->
+            if(id != ''){
+                dpto = Departamento.get(id)
+                para = new DepartamentoPara()
+                para.deparatamento = dpto
+                para.deparatamentoPara = departamento
+                para.fechaDesde = new Date()
+                try{
+                    para.save(flush: true)
+                }catch (e){
+                    println("error al grabar los departamentos " + para.errors)
+                    errores += e
+                }
+            }
+        }
+
+        if(errores == ''){
+            render "ok"
+        }else{
+            render "no"
+        }
+    }
+
+    def agregarTodosDesde_ajax () {
+
+        def departamento = Departamento.get(params.id)
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select dpto__id from dpto where dptoactv = 1 and dpto__id not in (select dpto__id from dpdp " +
+                "where dptopara = ${departamento.id})"
+        def ids = cn.rows(sql.toString()).dpto__id
+        def filtrado = ids - departamento.id
+
+        def listaDepartamentos = Departamento.findAllByIdInList(filtrado, [sort: 'descripcion'])
+
+        def desde
+        def errores = ''
+
+        listaDepartamentos.each {l->
+
+            desde = new DepartamentoPara()
+            desde.deparatamento = l
+            desde.deparatamentoPara = departamento
+            desde.fechaDesde = new Date()
+            try{
+                desde.save(flush: true)
+            }catch (e){
+                println("error al grabar todos los departamentos " + desde.errors)
+                errores += e
+            }
+        }
+
+        if(errores == ''){
+            render "ok"
+        }else{
+            render "no"
+        }
+    }
+
+    def eliminarTodosDesde_ajax () {
+        def departamento = Departamento.get(params.id)
+        def paras = DepartamentoPara.findAllByDeparatamentoPara(departamento)
+
+        def errores = ''
+
+        paras.each {p ->
+            try{
+                p.delete(flush: true)
+            }catch (e){
+                println("error al eliminar los departamentos " + p.errors)
+                errores += e
+            }
+        }
+
+        if(errores == ''){
+            render "ok"
+        }else{
+            render "no"
+        }
+
     }
 
 }

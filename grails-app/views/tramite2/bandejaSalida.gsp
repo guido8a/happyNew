@@ -164,7 +164,7 @@
                 %{--</div>--}%
 
                 %{--<div id="alertaNoRecibidos">--}%
-                <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta">
+                <div data-type="noRecibido" class="alert alert-danger alertas" clase="alerta" title="No incluye copias">
                     (<span id="numNoRec"></span>)
                 Sin Recepción
                 </div>

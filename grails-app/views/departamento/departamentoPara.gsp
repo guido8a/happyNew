@@ -117,7 +117,7 @@
             <div class="divFieldsListas">
                 <fieldset class="ui-corner-all fieldLista">
                     <legend style="margin-bottom: 1px">
-                        Disponibles
+                        Departamentos Disponibles
                     </legend>
 
                     <ul id="ulDisponibles" style="margin-left:0;max-height: 575px; overflow: auto;" class="fa-ul selectable">
@@ -148,7 +148,7 @@
 
                 <fieldset class="ui-corner-all fieldLista">
                     <legend style="margin-bottom: 1px">
-                        Seleccionados
+                        Departamentos que pueden recibir trámites
                     </legend>
 
                     <ul id="ulSeleccionados" style="margin-left:0;max-height: 600px; overflow: auto;" class="fa-ul selectable">

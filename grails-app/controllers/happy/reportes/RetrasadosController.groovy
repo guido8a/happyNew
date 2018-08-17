@@ -391,13 +391,14 @@ class RetrasadosController extends Shield {
                     if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){  //estados enviado:E003 y recibido: E004
                         tramiteSalidaDep = Tramite.get(sal?.trmt__id)
                         prtrSalidaDep = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalidaDep, enviaRecibe)
-                        prtrSalidaDep.each {
+//                        prtrSalidaDep.each {
+                        prtrSalidaDep.eachWithIndex { j, k->
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                                 cn5.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 cn5.close()
-                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString(),k,j)
                                 totalNoRecibidos += 1
                         }
                     }
@@ -453,13 +454,15 @@ class RetrasadosController extends Shield {
                     if(sal.edtrcdgo == 'E004' || sal.edtrcdgo == 'E003'){
                         tramiteSalida = Tramite.get(sal?.trmt__id)
                         prtrSalida = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteInListAndFechaRecepcionIsNull(tramiteSalida, enviaRecibe)
-                        prtrSalida.each {
+//                        prtrSalida.each {
+                        prtrSalida.eachWithIndex { j, k->
                                 sqlEntreSalida="select * from tmpo_entre('${sal?.trmtfcen}' , cast('${fechaRecepcion.toString()}' as timestamp without time zone))"
                                 cn6.eachRow(sqlEntreSalida.toString()){ d ->
                                     entreSalida = "${d.dias} días ${d.hora} horas ${d.minu} minutos"
                                 }
                                 cn6.close()
-                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+//                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString())
+                                llenaTablaNoRecibidos(sal, tablaTramiteNoRecibidos,entreSalida.toString(),k,j)
                                 totalNoRecibidosPer += 1
                         }
                     }
@@ -692,15 +695,27 @@ class RetrasadosController extends Shield {
 
 
 
-    def llenaTablaNoRecibidos (it, tablaTramite, entreSalida){
+    def llenaTablaNoRecibidos (it, tablaTramite, entreSalida, num,j){
+
+        def prtr = PersonaDocumentoTramite.get(j.id)
+
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it.trmtcdgo, font), prmsTablaHoja)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.deprdpto, font), prmsTablaHoja)
-//        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.deprdscr, font), prmsTablaHoja)
-        if(it?.prtrprsn){
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrprsn, font), prmsTablaHoja)
-        } else {
-            reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrdpto, font), prmsTablaHoja)
-        }
+
+//            if(it?.prtrprsn){
+            if(prtr?.persona){
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrprsn, font), prmsTablaHoja)
+                if(num == 0){
+                    reportesPdfService.addCellTabla(tablaTramite, new Paragraph(Persona.get(prtr?.persona?.id).nombre + " " + Persona.get(prtr?.persona?.id).apellido, font), prmsTablaHoja)
+                }else{
+                    reportesPdfService.addCellTabla(tablaTramite, new Paragraph("CC: " + Persona.get(prtr?.persona?.id).nombre + " " + Persona.get(prtr?.persona?.id).apellido, font), prmsTablaHoja)
+                }
+
+            } else {
+//                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.prtrdpto, font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph(Departamento.get(prtr?.departamento?.id).codigo, font), prmsTablaHoja)
+            }
+
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcen ? it?.trmtfcen?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
 //        reportesPdfService.addCellTabla(tablaTramite, new Paragraph(it?.trmtfcrc ? it?.trmtfcrc?.format("dd-MM-yyyy HH:mm") : "", font), prmsTablaHojaCenter)
         reportesPdfService.addCellTabla(tablaTramite, new Paragraph(entreSalida, font), prmsTablaHojaCenter)

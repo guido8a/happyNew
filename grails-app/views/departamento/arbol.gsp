@@ -859,6 +859,20 @@
 
 
 
+                if(nodeType.contains('padreActivo')){
+                        items.desactivar = {
+                            separator_before : true,
+                            label            : "Desactivar Departamento",
+                            icon             : "fa ${iconDesactivar}",
+                            action           : function (obj) {
+                                cambiarEstadoRow(nodeId, nodeStrId, false, nodeTramites);
+                            }
+                        };
+                }
+
+
+
+
                 if (!nodeHasChildren && !nodeOcupado) {
                     if (!nodeType.contains('Inactivo')) {
                         items.desactivar = {
@@ -945,7 +959,6 @@
                 };
 
 
-//                if(nodeId != 11){
                     items.departamentoPara= {
                         label   : "Departamento Para",
                         icon    : "fa fa-tasks",
@@ -954,8 +967,14 @@
                         }
                     };
 
-//                }
 
+                items.departamentoDesde= {
+                    label   : "Departamento Desde",
+                    icon    : "fa fa-tasks",
+                    action  : function (obj) {
+                        location.href = "${createLink(controller: 'departamento', action: 'departamentoDesde')}/" + nodeId
+                    }
+                };
 
 
 
@@ -1068,8 +1087,8 @@
                         };
                     }
                 } else {
-                    if (!node.data.triangulos || node.data.triangulos > 1) {
-//                    if (nodeHasChildren && node.data.triangulos == 1) {
+//                    if (!node.data.triangulos || node.data.triangulos > 1) {
+                    if (nodeHasChildren && node.data.triangulos == 1) {
                         items.desactivar = {
                             separator_before : true,
                             label            : "Desactivar",

@@ -1851,8 +1851,7 @@ class TramiteAdminController /*extends Shield*/ {
         def prtrPadre = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramitePadre, rol)
         def fechaRecibidoPadre = prtrPadre.fechaRecepcion
 
-
-        def fechaEnvioOriginal = tramite.fechaEnvio
+        def fechaEnvioOriginal = tramite.fechaCreacion
 
 //        println("recibido " + fechaRecibidoPadre.format("dd-MM-yyyy HH:mm"))
 //        println("fecha envio " + fechaEnvioOriginal.format("dd-MM-yyyy HH:mm"))

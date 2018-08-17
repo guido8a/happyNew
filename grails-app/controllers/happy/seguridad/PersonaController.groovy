@@ -822,14 +822,21 @@ class PersonaController extends happy.seguridad.Shield {
 
     def activar_ajax() {
         def persona = Persona.get(params.id)
-        persona.activo = 1
-        persona.fechaInicio = new Date()
-        persona.fechaFin = null
-        if (persona.save(flush: true)) {
-            render "OK_Persona activada exitosamente"
-        } else {
-            render "NO_Ha ocurrido un error: " + renderErrors(bean: persona)
+        def departamento = persona.departamento
+
+        if(persona.departamento.activo == 1){
+            persona.activo = 1
+            persona.fechaInicio = new Date()
+            persona.fechaFin = null
+            if (persona.save(flush: true)) {
+                render "OK_Persona activada exitosamente"
+            } else {
+                render "NO_Ha ocurrido un error: " + renderErrors(bean: persona)
+            }
+        }else{
+            render "NO_No se puede activar la persona </br> El departamento al que pertenece esta INACTIVO"
         }
+
     }
 
     def redireccionarTramites(params) {
