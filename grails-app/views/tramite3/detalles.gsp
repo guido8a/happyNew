@@ -8,6 +8,7 @@
 </style>
 
 <g:set var="recibe" value="${happy.tramites.RolPersonaTramite.get(3)}"/>
+<g:set var="trmtpara" value="${happy.tramites.RolPersonaTramite.get(1)}"/>
 
 <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;font-size: 11px">
     <g:if test="${tp}">
@@ -418,14 +419,15 @@
                                 <span style="${pdt?.estado?.codigo == 'E006' || pdt?.estado?.codigo == 'E005' ? 'color:red' : ''}">${estado}</span>
                             </b> el ${fecha} <br>
 
-                            <g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite,
-                                    recibe)?.personaNombre}"/>
+                            %{--<g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByAllTramiteAndRolPersonaTramite(pdt?.tramite, recibe)?.personaNombre}"/>--}%
+                            <g:set var="recibidoVar" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramiteAndDepartamentoPersona(pdt?.tramite,
+                                    recibe, pdt?.departamento)?.personaNombre}"/>
 
                             <g:if test="${recibidoVar && tramite.estadoTramite.codigo == 'E004'}">
-                                <div class="row">
+                                %{--<div class="row">--}%
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
                                     <div class="col-xs-8">${recibidoVar}</div>
-                                </div>
+                                %{--</div>--}%
                             </g:if>
 
                         %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
