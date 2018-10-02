@@ -7,6 +7,7 @@ import happy.seguridad.Persona
 import happy.seguridad.Prfl
 import happy.seguridad.Sesn
 import happy.utilitarios.DiaLaborable
+import happy.utilitarios.Parametros
 import org.w3c.dom.Document
 import org.xhtmlrenderer.extend.FontResolver
 import org.xhtmlrenderer.pdf.ITextRenderer
@@ -1111,7 +1112,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
     //enviar varios
 
     def enviarVarios() {
-//        println("params enviar varios " + params + "  " + request.getMethod())
+//        println "params enviar varios " + params + "  " + request.getMethod()
+        def prmt = Parametros.get(1)
         def noPDF = ["DEX", "SUM"]
         def usuario = Persona.get(session.usuario.id)
         def cn = dbConnectionService.getConnection()
@@ -1120,24 +1122,21 @@ class Tramite2Controller extends happy.seguridad.Shield {
             def msg = ""
             def error = ""
             def tramite
-//            def tramites = []
             def ids = params.ids
             ids = ids.split(',')
             def band = true
             def cantEnviados = 0
             ids.each { d ->
                 def envio = new Date();
-                println("envio " + envio)
+//                println("envio " + envio)
                 tramite = Tramite.get(d)
-//                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
+                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
                 if (tramite.fechaEnvio) {
                     msg += "<br/>El trámite " + tramite.codigo + " ya fue enviado por " +
                             PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("E004")).persona.login.join(", ")
                 } else {
                     def pdtEliminar = []
-
                     def cambiadosDepartamento = 0
-
 
                     /*Verifica q la persona o personas a quienes se dirigen los trámites se encuentren en el
                      * mismo departamento de cuando se creo el trámite*/
@@ -1160,6 +1159,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     }
 
 //                    println("num " + cambiadosDepartamento)
+
+                    cambiadosDepartamento *= prmt.cambioDpto
 
                     if(cambiadosDepartamento == 0){
 

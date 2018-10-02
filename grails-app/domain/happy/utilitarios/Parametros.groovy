@@ -20,7 +20,8 @@ class Parametros {
     Integer validaLDAP
     String telefono
     String departamentos
-    int remoto
+    Integer remoto
+    Integer cambioDpto = 1   /* si usuario se cambio de dpto no puede enviar trmt, 0 no si puede */
 
     static mapping = {
         table 'prmt'
@@ -44,6 +45,7 @@ class Parametros {
             telefono column: 'prmttelf'
             departamentos column: 'prmtdpto'
             remoto column: 'prmtrmto'
+            cambioDpto column: 'prmtcbdp'
         }
     }
     static constraints = {
@@ -64,6 +66,7 @@ class Parametros {
         telefono(blank: false, nullable: false, size:7..15, attributes: [title: 'Teléfono para consulta de trámites externos'])
         departamentos(blank: true, nullable: true, size: 1..127,attributes: [title: 'Siglas de departamentos para asociar trámites'] )
         remoto(blank: false, nullable: false)
+        cambioDpto(blank: false, nullable: false)
     }
 
     def getInicioJornada() {

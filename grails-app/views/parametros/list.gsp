@@ -131,7 +131,7 @@
                     success : function (msg) {
                         var b = bootbox.dialog({
                             id      : "dlgCreateEdit",
-                            title   : title + " Parametros",
+                            title   : title + " Parámetros",
                             message : msg,
                             buttons : {
                                 cancelar : {

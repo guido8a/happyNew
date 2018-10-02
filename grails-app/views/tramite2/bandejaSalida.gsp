@@ -321,7 +321,7 @@
                             }
                         } else {
 //                        cargarBandeja(true);
-                            log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                            log('Ocurrió un error al enviar los trámites seleccionados!<br>' + parts[1], 'error');
                             %{--location.href = "${g.createLink(action: 'errores1')}";--}%
 
 //                                closeLoader();

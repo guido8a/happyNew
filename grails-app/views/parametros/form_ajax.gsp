@@ -170,21 +170,34 @@
         </div>
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'remoto', 'error')} ">
             <span class="grupo">
-                <label for="telefono" class="col-md-8 control-label text-info">
-                    Bloqueo en días para Departamentos u Oficinas Remotas
+                <label for="telefono" class="col-md-9 control-label text-info">
+                    Bloqueo en días para Departamentos u Oficinas Remotas (dias)
                 </label>
-                <div class="col-md-4">
-%{--
-                    <g:textField name="remoto" class="form-control allCaps" value="${parametrosInstance?.remoto}"
-                                 maxlength="20" style="width: 70px"/>
---}%
+                <div class="col-md-2">
                     <g:select name="remoto" from="${8..12}" value="${parametrosInstance?.remoto ?: 1}"
                               optionValue="${{ it.toString().padLeft(2, '0') }}"/>
 
                 </div>
             </span>
         </div>
-%{--
+
+        <span class="grupo">
+            <label for="validaLDAP" class="col-md-9 control-label text-info">
+                Validar cambio de departamento de usuarios al enviar el trámite
+            </label>
+
+            <div class="col-md-2">
+                <g:select name="cambioDpto" from="[0: 'NO', 1: 'SI']" value="${parametrosInstance.cambioDpto}"
+                          class="form-control required" required="" optionKey="key" optionValue="value"/>
+                %{--
+                                    <g:textField name="validaLDAP" required="" class="form-control required"
+                                                 value="${parametrosInstance?.validaLDAP}" style="width:100px;" maxlength="1"/>
+                --}%
+            </div>
+        </span>
+
+
+    %{--
         <div class="form-group ${hasErrors(bean: parametrosInstance, field: 'departamentos', 'error')} ">
             <span class="grupo">
                 <label for="telefono" class="col-md-2 control-label text-info">
