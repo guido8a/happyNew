@@ -1130,7 +1130,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
                 def envio = new Date();
 //                println("envio " + envio)
                 tramite = Tramite.get(d)
-                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
+//                println "enviando tramite: ${tramite.id} eviado: ${envio.format('yy-MM-dd hh:mm:ss')}"
                 if (tramite.fechaEnvio) {
                     msg += "<br/>El trámite " + tramite.codigo + " ya fue enviado por " +
                             PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("E004")).persona.login.join(", ")
