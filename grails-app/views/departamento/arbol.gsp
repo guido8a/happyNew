@@ -1087,8 +1087,8 @@
                         };
                     }
                 } else {
-//                    if (!node.data.triangulos || node.data.triangulos > 1) {
-                    if (nodeHasChildren && node.data.triangulos == 1) {
+                    if (!node.data.triangulos || node.data.triangulos > 1) {
+//                    if (nodeHasChildren && node.data.triangulos == 1) {
                         items.desactivar = {
                             separator_before : true,
                             label            : "Desactivar",

@@ -31,12 +31,12 @@
 
     .divFieldsListas {
         height     : 685px;
-        width      : 970px;
+        width      : 1060px;
         overflow-x : auto;
     }
 
     .fieldLista {
-        width   : 450px;
+        width   : 480px;
         height  : 650px;
         border  : 1px solid #0088CC;
         margin  : 10px 10px 20px 10px;
