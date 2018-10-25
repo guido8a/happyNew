@@ -1158,7 +1158,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                     }
 
-//                    println("num " + cambiadosDepartamento)
+//                    println "num ${cambiadosDepartamento} prmt: ${prmt.cambioDpto}"
 
                     cambiadosDepartamento *= prmt.cambioDpto
 
@@ -1255,7 +1255,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
                         }
 
 
-                    }else{
+                    } else {
+                        println "enviar error: la persona ${session.usuario.login} ha cambiado de dpto --> prmtcbdp"
                         error = 'Persona cambiada de departamento'
                     }
                 }

@@ -303,7 +303,7 @@
 //                                    console.log("llego")
                     }
                 } else {
-                    log('Ocurrió un error al enviar los trámites seleccionados!', 'error');
+                    log('No es posible enviar el trámite!<br><strong>' +  parts[1] + '</strong>', 'error');
 //                        cargarBandeja(true);
                     %{--location.href = "${g.createLink(action: 'errores1')}";--}%
                 }
