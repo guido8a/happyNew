@@ -336,6 +336,8 @@
                 var conAnexo = $tr.hasClass("conAnexo");
 //                console.log("por porRecibir",porRecibir)
 
+                var tienehijos = $tr.hasClass("tieneHijos");
+
                 var infoRemitente = {
                     label           : 'Información remitente',
                     icon            : "fa fa-search",
@@ -746,7 +748,9 @@
                     </g:if>
                     items.contestar = contestar;
                     <g:if test="${session.usuario.getPuedeArchivar()}">
-                    items.archivar = archivar;
+                    if(!tienehijos){
+                        items.archivar = archivar;
+                    }
                     </g:if>
                     <g:else>
                     if (esCopia) {

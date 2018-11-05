@@ -116,9 +116,9 @@ class TramitesService {
 //        def hijos2 = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pdt, "N")
 //        hijos = hijos + hijos2
         def res = false
-        println "-------------------!!---------------------------"
-        println "tramite ver hijos "+pdt.id+"   "+pdt.persona+"   "+pdt.departamento+"  "+pdt.tramite.codigo+"   "+estado.descripcion+"   "+estado.codigo
-        println "hijos "+hijos
+//        println "-------------------!!---------------------------"
+//        println "tramite ver hijos "+pdt.id+"   "+pdt.persona+"   "+pdt.departamento+"  "+pdt.tramite.codigo+"   "+estado.descripcion+"   "+estado.codigo
+//        println "hijos "+hijos
         def roles = [RolPersonaTramite.findByCodigo("R001"), RolPersonaTramite.findByCodigo("R002")]
         hijos.each { t ->
             if (!res) {
@@ -143,8 +143,8 @@ class TramitesService {
                 }
             }
         }
-        println "return !!!! "+res
-        println "----------------------------------------------"
+//        println "return !!!! "+res
+//        println "----------------------------------------------"
         return res
     }
 }

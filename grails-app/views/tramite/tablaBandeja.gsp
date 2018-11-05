@@ -101,6 +101,10 @@
             </g:else>
         </g:else>
 
+        <g:if test="${row.trmthijo == 1}">
+            <g:set var="clase" value="${clase + ' tieneHijos'}"/>
+        </g:if>
+
         <g:set var="paraLbl"/>
         <g:set var="paraTitle"/>
         %{--<g:if test="${row.tpdccdgo == 'OFI'}">--}%%{--tipo doc cdgo--}%

@@ -289,6 +289,8 @@
 
                 var esDex = $tr.hasClass("dex");
 
+                var tienehijos = $tr.hasClass("tieneHijos");
+
                 var infoRemitente = {
                     label           : 'Información remitente',
                     icon            : "fa fa-search",
@@ -748,7 +750,9 @@
                     </g:if>
                     items.contestar = contestar;
                     <g:if test="${session.usuario.puedeArchivar}">
-                    items.archivar = archivar;
+                    if(!tienehijos){
+                        items.archivar = archivar;
+                    }
                     </g:if>
                     <g:else>
                     if (esCopia) {
