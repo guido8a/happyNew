@@ -1309,6 +1309,7 @@ class PersonaController extends happy.seguridad.Shield {
                                 prsn.apellido = apellido
                                 prsn.mail = mail
                                 prsn.login = logn
+                                prsn.activo = 0
                                 prsn.password = "123".encodeAsMD5()
                                 prsn.connect = e2["dn"]
                                 def datos = e2["dn"].split(",")
