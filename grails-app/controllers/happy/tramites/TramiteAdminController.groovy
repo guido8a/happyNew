@@ -1845,35 +1845,41 @@ class TramiteAdminController /*extends Shield*/ {
         def tramite = pdt.tramite
         def copias = tramite.allCopias
         def ok = true
+        def listaDesanular = [pdt]
 
-        def tramitePadre = Tramite.get(tramite.id).padre
-        def rol = RolPersonaTramite.findByCodigo("R001")
-        def prtrPadre = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramitePadre, rol)
-        def fechaRecibidoPadre = prtrPadre.fechaRecepcion
+        if(Tramite.get(tramite.id)?.padre){
+            def tramitePadre = Tramite.get(tramite.id).padre
+            def rol = RolPersonaTramite.findByCodigo("R001")
+            def prtrPadre = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramitePadre, rol)
+            def fechaRecibidoPadre = prtrPadre.fechaRecepcion
 
-        def fechaEnvioOriginal = tramite.fechaCreacion
+            def fechaEnvioOriginal = tramite.fechaCreacion
 
 //        println("recibido " + fechaRecibidoPadre.format("dd-MM-yyyy HH:mm"))
 //        println("fecha envio " + fechaEnvioOriginal.format("dd-MM-yyyy HH:mm"))
 
+            if(fechaRecibidoPadre.getTime()  <= fechaEnvioOriginal.getTime()){
+                listaDesanular.each { p ->
+                    println "desanular: " + p.rolPersonaTramite.descripcion
+                    if (!desanularPdt(p)) {
+                        ok = false
+                    }
+                }
+            }else{
+                ok = false
+            }
 
-        def listaDesanular = [pdt]
-
-        if(fechaRecibidoPadre.getTime()  <= fechaEnvioOriginal.getTime()){
+        }else{
             listaDesanular.each { p ->
                 println "desanular: " + p.rolPersonaTramite.descripcion
                 if (!desanularPdt(p)) {
                     ok = false
                 }
             }
-        }else{
-            ok = false
         }
 
         render ok ? "OK" : "NO"
-
     }
-
 
 
     def getCadenaDown(pdt, funcion) {
