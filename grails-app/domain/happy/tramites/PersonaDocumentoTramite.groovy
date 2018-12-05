@@ -147,17 +147,40 @@ class PersonaDocumentoTramite {
             return null
         else {
             def cn = DbConnectionService.getConnection()
+//            def sql = "select count(*) cnta from prtr, rltr, dpto " +
+//                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
+//                      "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
             def sql = "select count(*) cnta from prtr, rltr, dpto " +
-                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
+                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('E004') and " +
                       "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
+/*
+            def sql
+            if(this.departamento) {
+                sql = "select count(*) cnta from prtr, rltr, dpto " +
+                        "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
+                        "prtr__id = " + this.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
+
+            } else {
+                sql = "select count(*) cnta from prtr, rltr, dpto, prsn " +
+                        "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
+                        "prtr__id = " + this.id + " and prsn.prsn__id = prtr.prsn__id and dpto.dpto__id = prsn.dpto__id and dptormto = 1"
+            }
+*/
             def rmto = cn.rows(sql.toString())[0].cnta
 
+/*
             if(this.tramite?.departamento?.remoto == 1) {
                 rmto++
             }
+*/
+//            if (this.tramite.id.toInteger() in [1293633, 1293333]) {
+//                println "prtr__id: ${this.id}"
+//                println "sql... $sql"
+//            }
 
             def fchaenvio = this.fechaEnvio.format('yyyy-MM-dd')
             if(rmto > 0) {
+
 //                sql = "select max(ddlbordn), anio__id from ddlb where ddlbfcha = '${fchaenvio}'"
 
                 sql = "select max(ddlbordn) ddlbordn, anio__id from ddlb where ddlbfcha <= '${fchaenvio}' and " +
@@ -180,12 +203,19 @@ class PersonaDocumentoTramite {
                 sql = "select max(ddlbordn) mxmo from ddlb where anio__id = ${anio}"
                 def maximo = cn.rows(sql.toString())[0].mxmo
 
-                if(ordn + blqo > maximo){
+                if(ordn > maximo){
+                    println "..... cambia año, $anio, busca ${Anio.get(anio).numero.toInteger() + 1}"
+                    println "odrn: $ordn, blqo: $blqo, maximo: $maximo"
                     def an = Anio.findByNumero(Anio.get(anio).numero.toInteger() + 1)
-                    ordn = blqo - (maximo - ordn)
+                    ordn = (maximo - ordn)
+                    anio = an.id
                 }
 
                 sql = "select ddlbfcha from ddlb where ddlbordn = ${ordn} and anio__id = ${anio}"
+//                if(this.tramite.id.toInteger() in [1293633, 1293333]) {
+//                    println "sal anio:  $sql"
+//                }
+
 /*
                 if((this.departamento?.id == 1002)) {
                     println "3... $sql maximo: $maximo, ordn: $ordn"
@@ -199,8 +229,14 @@ class PersonaDocumentoTramite {
                     println "sql: $sql, id: ${this.id}, trmt: ${this.tramite.codigo} env: ${this.fechaEnvio} fechaFin: ${fechaFin}"
                 }
 */
+//                if(this.tramite.id.toInteger() in [1293633, 1293333]) {
+//                    println "---> $fechaFin, ${fechaFin < new Date()}"
+//                }
                 return (fechaFin < new Date())
             } else {
+//                if(this.tramite.id.toInteger() in [1293633, 1293333]) {
+//                    println "else ---> $fechaFin, ${fechaFin < new Date()}"
+//                }
                 return diasLaborablesService.fechaBloqueo(this.fechaEnvio)
             }
         }
