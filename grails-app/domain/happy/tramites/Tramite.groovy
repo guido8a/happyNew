@@ -65,6 +65,7 @@ class Tramite {
     String login
 
     String aip           //S: si es de acceso a la información pública, N: normal
+    String vivo = '1'         //0: ya procesado 1: en bandeja de entrada si se reactiva debe volver a 1
 
     def diasLaborablesService
 
@@ -131,6 +132,7 @@ class Tramite {
             login column: 'trmtprlg'
 
             aip column: 'trmt_aip'
+            vivo column: 'trmtvivo'
         }
     }
     static constraints = {
@@ -187,6 +189,7 @@ class Tramite {
         creador(blank: true, nullable: true)
         login(blank: true, nullable: true)
         aip(blank: true, nullable: true, maxSize: 1)
+        vivo(blank: true, nullable: true, maxSize: 1)
     }
 
     def beforeValidate(List propertiesBeingValidated) {
