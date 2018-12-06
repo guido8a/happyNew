@@ -16,6 +16,8 @@ class BloqueosJob {
 //        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
     }
 
+    /**** cambiar C por B ****/
+
     def execute() {
         // execute job
 
@@ -79,7 +81,7 @@ class BloqueosJob {
 //            println "iter dep "+dep.codigo+"  "+dep.estado
             if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
-                dep.estado = "B"
+                dep.estado = "C"
             } else {
                 if (warning.id.contains(dep.id)) {
                     if (dep.estado != "B") {
@@ -109,7 +111,7 @@ class BloqueosJob {
 //            println "bloqueando usu "+it+"   puede admin "+it.puedeAdmin
             if (!(it.puedeAdmin)) {
 //                println "entro"
-                it.estado = "B"
+                it.estado = "C"
                 if (!it.save(flush: true)) {
                     println "error bloq usu"
                 }
@@ -118,7 +120,7 @@ class BloqueosJob {
 
         warningUsu.each {
 //            println("----->>>>>>" + it?.estado)
-            if (it.estado != "B") {
+            if (it.estado != "C") {
                 it.estado = "W"
                 it.save(flush: true)
             }
