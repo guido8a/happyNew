@@ -13,7 +13,7 @@ class BloqueosJob {
     static triggers = {
         null    // no ejecuta los bloqueos
 //        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
-//        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
     }
 
     /**** cambiar C por B ****/
@@ -29,7 +29,7 @@ class BloqueosJob {
         def rolRecibe = RolPersonaTramite.findByCodigo("I005") //imprime id:5
         def anulado = EstadoTramite.findByCodigo("E006")
 
-        println "procesa bloqueos ${new Date()}"
+        println "bloqueos C ${new Date()}"
 
         borraBloqueos()
 
@@ -84,7 +84,7 @@ class BloqueosJob {
                 dep.estado = "C"
             } else {
                 if (warning.id.contains(dep.id)) {
-                    if (dep.estado != "B") {
+                    if (dep.estado != "C") {
 //                        println "warning dep "+dep
                         dep.estado = "W"
 
@@ -98,7 +98,7 @@ class BloqueosJob {
 
 //        println "personas a bloquear: $bloquearUsu"
 
-        Persona.findAllByEstadoInList(["B", "W"]).each {
+        Persona.findAllByEstadoInList(["C", "W"]).each {
             // println "desbloq "+it.login
             it.estado = ""
             if (!it.save(flush: true)) {
