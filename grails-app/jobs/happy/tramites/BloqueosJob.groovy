@@ -171,6 +171,9 @@ class BloqueosJob {
 
         def deps = [depar]
 
+        null
+
+/* *****
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
 
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and " +
@@ -251,6 +254,7 @@ class BloqueosJob {
             }
         }
 
+****** */
 //        pruebasFin = new Date()
 //        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
