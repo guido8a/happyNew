@@ -12,8 +12,8 @@ class BloqueosJob {
 
     static triggers = {
         null    // no ejecuta los bloqueos
-//        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
+//        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
     }
 
     /**** cambiar C por B ****/
@@ -125,7 +125,9 @@ class BloqueosJob {
                 it.save(flush: true)
             }
         }
-        println "fin bloqueo bandeja salida "+new Date().format("dd-MM-yyyy hh:mm:ss")
+        println "Fin bloqueo C "+new Date().format("dd-MM-yyyy hh:mm:ss")
+
+        componeEstado()
     }
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
@@ -173,7 +175,7 @@ class BloqueosJob {
 
         def deps = [depar]
 
-        null
+        componeEstado()
 
 /* *****
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
@@ -281,6 +283,18 @@ class BloqueosJob {
 //        println "ingresado trámite bloqueo"
     }
 
+
+    def componeEstado() {
+        def cnta = 0
+        Departamento.findAllByEstado("B").each { dep ->
+            dep.estado = "C"
+            cnta++
+            if (!dep.save(flush: true)) {
+                println "error estado a C " + dep.errors
+            }
+        }
+        println "compuesto $cnta"
+    }
 
 
 
