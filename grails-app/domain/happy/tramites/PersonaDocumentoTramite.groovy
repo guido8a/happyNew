@@ -147,12 +147,12 @@ class PersonaDocumentoTramite {
             return null
         else {
             def cn = DbConnectionService.getConnection()
-//            def sql = "select count(*) cnta from prtr, rltr, dpto " +
-//                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
-//                      "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
             def sql = "select count(*) cnta from prtr, rltr, dpto " +
-                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('E004') and " +
+                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('R001', 'R002', 'E004') and " +
                       "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
+//            def sql = "select count(*) cnta from prtr, rltr, dpto " +
+//                      "where rltr.rltr__id = prtr.rltr__id and rltrcdgo in ('E004') and " +
+//                      "trmt__id = " + this.tramite.id + " and dpto.dpto__id = prtr.dpto__id and dptormto = 1"
 /*
             def sql
             if(this.departamento) {

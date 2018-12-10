@@ -9,6 +9,7 @@ class BloqueosJob {
 
     def diasLaborablesService
     def dbConnectionService
+    def bloqueado = "B"
 
     static triggers = {
         null    // no ejecuta los bloqueos
@@ -81,10 +82,10 @@ class BloqueosJob {
 //            println "iter dep "+dep.codigo+"  "+dep.estado
             if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
-                dep.estado = "C"
+                dep.estado = bloqueado
             } else {
                 if (warning.id.contains(dep.id)) {
-                    if (dep.estado != "C") {
+                    if (dep.estado != bloqueado) {
 //                        println "warning dep "+dep
                         dep.estado = "W"
 
@@ -98,7 +99,7 @@ class BloqueosJob {
 
 //        println "personas a bloquear: $bloquearUsu"
 
-        Persona.findAllByEstadoInList(["C", "W"]).each {
+        Persona.findAllByEstadoInList([bloqueado, "W"]).each {
             // println "desbloq "+it.login
             it.estado = ""
             if (!it.save(flush: true)) {
@@ -111,7 +112,7 @@ class BloqueosJob {
 //            println "bloqueando usu "+it+"   puede admin "+it.puedeAdmin
             if (!(it.puedeAdmin)) {
 //                println "entro"
-                it.estado = "C"
+                it.estado = bloqueado
                 if (!it.save(flush: true)) {
                     println "error bloq usu"
                 }
@@ -120,14 +121,14 @@ class BloqueosJob {
 
         warningUsu.each {
 //            println("----->>>>>>" + it?.estado)
-            if (it.estado != "C") {
+            if (it.estado != bloqueado) {
                 it.estado = "W"
                 it.save(flush: true)
             }
         }
         println "Fin bloqueo C "+new Date().format("dd-MM-yyyy hh:mm:ss")
 
-        componeEstado()
+//        componeEstado()
     }
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
@@ -175,7 +176,7 @@ class BloqueosJob {
 
         def deps = [depar]
 
-        componeEstado()
+//        componeEstado()
 
 /* *****
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
@@ -287,7 +288,7 @@ class BloqueosJob {
     def componeEstado() {
         def cnta = 0
         Departamento.findAllByEstado("B").each { dep ->
-            dep.estado = "C"
+            dep.estado = bloqueado
             cnta++
             if (!dep.save(flush: true)) {
                 println "error estado a C " + dep.errors
