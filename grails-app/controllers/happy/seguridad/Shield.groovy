@@ -93,7 +93,7 @@ class Shield {
 
 
                 def usu = Persona.get(session.usuario.id)
-//                println("usuario activo: " + usu.estaActivo)
+//                println "usuario activo: ${usu.estaActivo}, --> ${session.departamento.estado}, ${session.departamento.id}"
                 if (usu.estaActivo) {
                     session.departamento = Departamento.get(session.departamento.id).refresh()
                     def perms = session.usuario.permisos

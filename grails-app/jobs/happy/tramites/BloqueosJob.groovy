@@ -9,7 +9,7 @@ class BloqueosJob {
 
     def diasLaborablesService
     def dbConnectionService
-    def bloqueado = "B"
+    def bloqueado = "C"     /***** poner "B" para habilitar bloqueos ****/
 
     static triggers = {
         null    // no ejecuta los bloqueos
@@ -65,6 +65,8 @@ class BloqueosJob {
                         if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
                             bloquearUsu.add(pdt.persona)
                         }
+                        registraBloqueo(pdt.tramite.id, pdt.departamento?.id, pdt.persona?.id, pdt.fechaEnvio,
+                                pdt.rolPersonaTramite?.id, pdt.tramite.codigo)
                     } else {
                         registraBloqueo(pdt.tramite.id, pdt.departamento?.id, pdt.persona?.id, pdt.fechaEnvio,
                                 pdt.rolPersonaTramite?.id, pdt.tramite.codigo)
@@ -128,7 +130,7 @@ class BloqueosJob {
         }
         println "Fin bloqueo C "+new Date().format("dd-MM-yyyy hh:mm:ss")
 
-//        componeEstado()
+        componeEstado()
     }
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
@@ -176,7 +178,7 @@ class BloqueosJob {
 
         def deps = [depar]
 
-//        componeEstado()
+        componeEstado()
 
 
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
@@ -294,7 +296,16 @@ class BloqueosJob {
                 println "error estado a C " + dep.errors
             }
         }
-        println "compuesto $cnta"
+        println "compuesto dpto $cnta"
+        cnta = 0
+        Persona.findAllByEstado("B").each { pr ->
+            pr.estado = bloqueado
+            cnta++
+            if (!pr.save(flush: true)) {
+                println "error prsn estado a C " + pr.errors
+            }
+        }
+        println "compuesto prsn $cnta"
     }
 
 

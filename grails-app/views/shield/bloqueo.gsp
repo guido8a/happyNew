@@ -18,7 +18,7 @@
     <i class="fa fa-ban fa-4x pull-left"></i>
 
     <g:if test="${dep}">
-        <h1 class="text-warning tituloError">El departamento ${dep} esta bloqueado.</h1>
+        <h1 class="text-warning tituloError">El departamento ${dep} está bloqueado.</h1>
         <p style="font-size: 16px; margin-top: 25px;text-shadow: none">Durante el bloqueo solo puede ingresar a su <a href="${g.createLink(controller: 'tramite3',action: 'bandejaEntradaDpto')}"> bandeja de entrada</a>. Para terminar el bloqueo del sistema el usuario deberá recibir todos los tramites atrasados.</p>
     </g:if>
     <g:else>
