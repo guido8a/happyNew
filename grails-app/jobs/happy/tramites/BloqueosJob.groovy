@@ -178,7 +178,7 @@ class BloqueosJob {
 
 //        componeEstado()
 
-/* *****
+
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
 
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and " +
@@ -226,10 +226,10 @@ class BloqueosJob {
 //            println "Dep. a bloquear: $bloquear"
             if (bloquear.id.contains(dep.id)) {
 //                println "bloqueando dep "+dep
-                dep.estado = "B"
+                dep.estado = bloqueado
             } else {
                 if (warning.id.contains(dep.id)) {
-                    if (dep.estado != "B") {
+                    if (dep.estado != bloqueado) {
 //                        println "warning dep "+dep
                         dep.estado = "W"
                     }
@@ -239,7 +239,7 @@ class BloqueosJob {
                 println "errores save dep " + dep.errors
             }
         }
-        Persona.findAllByEstadoInListAndDepartamento(["B", "W"], depar).each {
+        Persona.findAllByEstadoInListAndDepartamento([bloqueado, "W"], depar).each {
             it.estado = ""
             it.save(flush: true)
         }
@@ -247,19 +247,19 @@ class BloqueosJob {
 //            println "bloqueando usu recibir "+it
             if (!(it.getPuedeAdminOff())) {
 //                println "entro"
-                it.estado = "B"
+                it.estado = bloqueado
                 it.save(flush: true)
             }
         }
         warningUsu.each {
 //            println "warning usu "+it
-            if (it.estado != "B") {
+            if (it.estado != bloqueado) {
                 it.estado = "W"
                 it.save(flush: true)
             }
         }
 
-****** */
+
 //        pruebasFin = new Date()
 //        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
 
