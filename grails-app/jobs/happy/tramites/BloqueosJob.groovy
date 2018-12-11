@@ -9,7 +9,7 @@ class BloqueosJob {
 
     def diasLaborablesService
     def dbConnectionService
-    def bloqueado = "C"     /***** poner "B" para habilitar bloqueos ****/
+    def bloqueado = "B"     /***** poner "B" para habilitar bloqueos  descomentar componeEstado()****/
 
     static triggers = {
         null    // no ejecuta los bloqueos
@@ -130,7 +130,7 @@ class BloqueosJob {
         }
         println "Fin bloqueo C "+new Date().format("dd-MM-yyyy hh:mm:ss")
 
-        componeEstado()
+//        componeEstado()
     }
 
     /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
@@ -178,7 +178,7 @@ class BloqueosJob {
 
         def deps = [depar]
 
-        componeEstado()
+//        componeEstado()
 
 
 //        println "procesa bandeja de entrada de $depar, persona: $persona"
