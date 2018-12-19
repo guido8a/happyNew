@@ -340,7 +340,7 @@ class DiaLaborableController extends happy.seguridad.Shield {
         }
         def meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         def enero01 = new Date().parse("dd-MM-yyyy", "01-01-" + params.anio)
-        def diciembre31 = new Date().parse("dd-MM-yyyy", "31-12-" + params.anio) + 17   /** incluye bloqueo remoto +10 **/
+        def diciembre31 = new Date().parse("dd-MM-yyyy", "31-12-" + params.anio) + 22   /** incluye bloqueo remoto +10 **/
 
         def dias = DiaLaborable.withCriteria {
             eq("anio", anio)

@@ -221,7 +221,9 @@ class PersonaDocumentoTramite {
                     println "3... $sql maximo: $maximo, ordn: $ordn"
                 }
 */
-                def fcha = cn.rows(sql.toString())[0].ddlbfcha
+//                println "sql... $sql"
+                def fcha = cn.rows(sql.toString())[0]?.ddlbfcha
+                if(!fcha) println "************** error en día laborable ordinal: $ordn"
                 def strFecha = fcha.format("dd-MM-yyyy") + " " + this.fechaEnvio.format("HH:mm")
                 def fechaFin = new Date().parse("dd-MM-yyyy HH:mm", strFecha)
 /*
