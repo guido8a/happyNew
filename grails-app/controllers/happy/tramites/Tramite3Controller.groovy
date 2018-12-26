@@ -904,9 +904,13 @@ class Tramite3Controller extends happy.seguridad.Shield {
 //        println params
 
         //** forzar actualización de bloqueos al Actualizar
+/*
         def job = new BloqueosJob()
         job.executeRecibir(session.usuario.departamento, session.usuario)
         job = null
+*/
+        tramitesService.ejecutaRecibir(session.usuario.departamento, session.usuario)
+
         //** fin forzar actualización de bloqueos al Actualizar
 
 
@@ -975,9 +979,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
         def departamento = persona?.departamento
 
         //** forzar actualización de bloqueos al Actualizar
+/*
         def job = new BloqueosJob()
         job.executeRecibir(persona.departamento, session.usuario)
         job = null
+*/
+        tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
         //** fin forzar actualización de bloqueos al Actualizar
 
         def rolPara = RolPersonaTramite.findByCodigo('R001');
@@ -1252,9 +1259,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
                         println "error pdt recibir " + pdt.errors
                         render "NO_Ocurrió un error al recibir"
                     }
+/*
                     def job = new BloqueosJob()
                     job.executeRecibir(persona.departamento, session.usuario)
                     job = null
+*/
+                    tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
                 } else {
                     println "pxt error " + pxt.errors
                     println "error tramite recibir " + tramite.errors

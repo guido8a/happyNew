@@ -11,6 +11,7 @@ import org.codehaus.groovy.grails.web.util.WebUtils
 class TramitesService {
 
     static transactional = false
+    def dbConnectionService
     /**
      <fecha> - <accion> - solicitado por técnico <solicitadoPor> <texto> observaciones: <observaciones> ||
      */
@@ -146,5 +147,14 @@ class TramitesService {
 //        println "return !!!! "+res
 //        println "----------------------------------------------"
         return res
+    }
+
+    def ejecutaRecibir(depar, persona) {
+        /*** *** nuevo *** ***/
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from bloqueo(${depar.id}, ${persona.id})"
+        println "ejecuta recibir"
+        cn.execute(sql.toString())
+        /*** fin nuevo ***/
     }
 }

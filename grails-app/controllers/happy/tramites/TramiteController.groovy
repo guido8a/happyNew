@@ -1018,9 +1018,12 @@ class TramiteController extends happy.seguridad.Shield {
 //        println params
 
         //** forzar actualización de bloqueos al Actualizar
+/*
         def job = new BloqueosJob()
         job.executeRecibir(session.usuario.departamento, session.usuario)
         job = null
+*/
+        tramitesService.ejecutaRecibir(session.usuario.departamento, session.usuario)
         //** fin forzar actualización de bloqueos al Actualizar
 
         def busca = false
@@ -1111,9 +1114,12 @@ class TramiteController extends happy.seguridad.Shield {
 
         //** forzar actualización de bloqueos al Actualizar
 //        println "tablaBandeja... persona: $persona, dpto: ${persona.departamento}"
+/*
         def job = new BloqueosJob()
         job.executeRecibir(persona.departamento, session.usuario)
         job = null
+*/
+        tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
         //** fin forzar actualización de bloqueos al Actualizar
 
 

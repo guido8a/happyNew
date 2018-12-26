@@ -9,19 +9,26 @@ class BloqueosJob {
 
     def diasLaborablesService
     def dbConnectionService
-    def bloqueado = "C"     /***** poner "B" para habilitar bloqueos  descomentar componeEstado()****/
+    def bloqueado = "B"     /*** poner "B" para habilitar bloqueos y comentar componeEstado() ***/
 
     static triggers = {
         null    // no ejecuta los bloqueos
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60, repeatInterval: 1000 * 60 * 5
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60 * 1, repeatInterval: 1000 * 60 * 5
 //        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
     }
 
-    /**** cambiar C por B ****/
+    def execute() {   /*********** execute job ************/
 
-    def execute() {
-        // execute job
+        /*** *** nuevo *** ***/
+        println "inicia bloqueo nuevo: ${new Date()}"
+        def cn = dbConnectionService.getConnection()
+        def sql = 'select * from bloqueo(null, null)'
+        cn.execute(sql.toString())
+        println "fin bloqueo nuevo: ${new Date()}"
+        /*** fin nuevo ***/
 
+
+/*
         def bloquear = []
         def bloquearUsu = []
         def warning = []
@@ -38,18 +45,8 @@ class BloqueosJob {
                 "fechaRecepcion is null and (estado is null or estado != ${anulado.id}) and " +
                 "rolPersonaTramite not in (${rolEnvia.id}, ${rolRecibe.id})").each { pdt ->
 
-/*
-        def dpto = Departamento.get(1022)
-        PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and " +
-                "fechaRecepcion is null and (estado is null or estado != ${anulado.id}) and departamento.id = 1022 and " +
-                " rolPersonaTramite not in (${rolEnvia.id}, ${rolRecibe.id}) ").each { pdt ->
-*/
-
             if ((pdt.tramite.externo.toString() != "1")) {  // no se bloquea trámites externos ni remotos
-//                def fechaBloqueo = pdt.fechaBloqueo
-//                println "id: ${pdt.id} Bloqueo: ${pdt.fechaBloqueo}"
                 if (pdt.fechaBloqueo) {
-//                    println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                     if (pdt.tramite.deDepartamento) {
                         if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
                             warning.add(pdt.tramite.deDepartamento)
@@ -61,7 +58,6 @@ class BloqueosJob {
                     }
 
                     if (pdt.persona) {
-//                        println "add bloquear " + pdt.persona + "  " + pdt.persona.login
                         if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
                             bloquearUsu.add(pdt.persona)
                         }
@@ -78,19 +74,14 @@ class BloqueosJob {
             }
         }
 
-
         Departamento.list().each { dep ->
             dep.estado = ""
-//            println "iter dep "+dep.codigo+"  "+dep.estado
             if (bloquear.id.contains(dep.id)) {
-//                println "bloqueando dep "+dep
                 dep.estado = bloqueado
             } else {
                 if (warning.id.contains(dep.id)) {
                     if (dep.estado != bloqueado) {
-//                        println "warning dep "+dep
                         dep.estado = "W"
-
                     }
                 }
             }
@@ -99,21 +90,15 @@ class BloqueosJob {
             }
         }
 
-//        println "personas a bloquear: $bloquearUsu"
-
         Persona.findAllByEstadoInList([bloqueado, "W"]).each {
-            // println "desbloq "+it.login
             it.estado = ""
             if (!it.save(flush: true)) {
                 println "error desbloq prsn " + it.errors
             }
-//            else println "si desbloq !!! "+it.estado+"  "+it.id+"   "+it.errors
         }
 
         bloquearUsu.each {
-//            println "bloqueando usu "+it+"   puede admin "+it.puedeAdmin
             if (!(it.puedeAdmin)) {
-//                println "entro"
                 it.estado = bloqueado
                 if (!it.save(flush: true)) {
                     println "error bloq usu"
@@ -122,52 +107,24 @@ class BloqueosJob {
         }
 
         warningUsu.each {
-//            println("----->>>>>>" + it?.estado)
             if (it.estado != bloqueado) {
                 it.estado = "W"
                 it.save(flush: true)
             }
         }
         println "Fin bloqueo C "+new Date().format("dd-MM-yyyy hh:mm:ss")
-
-        componeEstado()
-    }
-
-    /**  retorna true si se trata de un trámite enviado para o desde un departamento remoto **/
-/*
-    def esRemoto(pdt) {
-        def remoto = false
-
-        if (pdt.rolPersonaTramite.codigo == 'E004') {  // envía
-            if (pdt.persona?.esTriangulo) {
-                remoto = (pdt.departamento?.remoto == 1)
-            }
-        }
-
-        if (pdt.rolPersonaTramite.codigo == 'R001') {  // para recibe
-            remoto = (pdt.departamento?.remoto == 1) || enviaRemoto(pdt.tramite)
-        }
-
-        if (pdt.rolPersonaTramite.codigo == 'R002') {  // con copia
-            remoto = (pdt.departamento?.remoto == 1) || enviaRemoto(pdt.tramite)
-        }
-        return remoto
-    }
+//        componeEstado()
 */
 
-
-/*
-    def enviaRemoto(trmt) {
-        def envia = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trmt, RolPersonaTramite.findByCodigo("E004"))
-        if (envia) {
-            return envia.departamento?.remoto == 1
-        } else {
-            return false
-        }
     }
-*/
 
     def executeRecibir(depar, persona) {
+
+        /*** *** nuevo ***
+         * se impementó en TramitesService.ejecutaRecibir
+         * fin nuevo ***/
+
+/*
         def bloquear = []
         def bloquearUsu = []
         def warning = []
@@ -178,11 +135,6 @@ class BloqueosJob {
 
         def deps = [depar]
 
-        componeEstado()
-
-
-//        println "procesa bandeja de entrada de $depar, persona: $persona"
-
         PersonaDocumentoTramite.findAll("from PersonaDocumentoTramite where fechaEnvio is not null and " +
                 "fechaRecepcion is null and (departamento = ${depar.id} or persona = ${persona.id}) and " +
                 "(estado is null or estado != ${anulado.id}) and " +
@@ -190,13 +142,8 @@ class BloqueosJob {
 
             if (pdt.tramite.externo != "1") {
 
-//                def fechaBloqueo = pdt.fechaBloqueo
-
-//                if (fechaBloqueo && (fechaBloqueo < ahora)) {
-//                println "prtr: ${pdt.id} ${pdt.departamento} ${pdt.tramite.codigo} --> ${pdt.fechaBloqueo}"
                 if (pdt.fechaBloqueo) {
                     if (pdt.rolPersonaTramite.codigo != "E004" && pdt.rolPersonaTramite.codigo != "I005") {
-//                        println "pdt "+pdt.id+" "+pdt.departamento+" "+pdt.persona+"  "+pdt.tramite.codigo+"  "+pdt.tramite.de+" "+pdt.rolPersonaTramite.descripcion
                         if (pdt.tramite.deDepartamento) {
                             if (!warning?.id?.contains(pdt.tramite.deDepartamento.id)) {
                                 warning.add(pdt.tramite.deDepartamento)
@@ -207,10 +154,7 @@ class BloqueosJob {
                             }
                         }
 
-//                        println "es remoto??? ${esRemoto(pdt)}"
-
                         if (pdt.persona) {
-//                        println "add bloquear "+pdt.persona
                             if (!bloquearUsu?.id?.contains(pdt.persona.id)) {
                                 bloquearUsu.add(pdt.persona)
                             }
@@ -225,14 +169,11 @@ class BloqueosJob {
         }
         deps.each { dep ->
             dep.estado = ""
-//            println "Dep. a bloquear: $bloquear"
             if (bloquear.id.contains(dep.id)) {
-//                println "bloqueando dep "+dep
                 dep.estado = bloqueado
             } else {
                 if (warning.id.contains(dep.id)) {
                     if (dep.estado != bloqueado) {
-//                        println "warning dep "+dep
                         dep.estado = "W"
                     }
                 }
@@ -246,44 +187,34 @@ class BloqueosJob {
             it.save(flush: true)
         }
         bloquearUsu.each {
-//            println "bloqueando usu recibir "+it
             if (!(it.getPuedeAdminOff())) {
-//                println "entro"
                 it.estado = bloqueado
                 it.save(flush: true)
             }
         }
         warningUsu.each {
-//            println "warning usu "+it
             if (it.estado != bloqueado) {
                 it.estado = "W"
                 it.save(flush: true)
             }
         }
-
-
-//        pruebasFin = new Date()
-//        println "tiempo ejecución executeRecibir: ${TimeCategory.minus(pruebasFin, pruebasInicio)}"
-
-//        println "fin bloqueo bandeja salida recibir "+new Date()
+//        componeEstado()
+*/
     }
 
     def borraBloqueos() {
         def cn = dbConnectionService.getConnection()
         def sql = "delete from blqo"
         cn.execute(sql.toString())
-//        println "borrado bloqueos"
     }
 
     def registraBloqueo(trmt, dpto, prsn, fcha, rltr, cdgo) {
-//        println "llega: $trmt, $dpto, $prsn"
         def fecha
         if(fcha) fecha = fcha.format('yyyy-MM-dd hh:mm:ss')
         def cn = dbConnectionService.getConnection()
         def sql = "insert into blqo(dpto__id, prsn__id, trmt__id, trmtfcen, rltr__id, trmtcdgo) " +
                 "values(${dpto}, $prsn, $trmt, '$fecha', $rltr, '${cdgo}')"
         cn.execute(sql.toString())
-//        println "ingresado trámite bloqueo"
     }
 
 

@@ -761,9 +761,12 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         if (errores == "") {
             def persona = Persona.get(session.usuario.id)
+/*
             def job = new BloqueosJob()
             job.executeRecibir(persona.departamento, session.usuario)
             job = null
+*/
+            tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
             render "OK_Envío del trámite cancelado correctamente"
         } else {
             render "NO_Ha ocurrido un error al cancelar el envío del trámite: " + errores
