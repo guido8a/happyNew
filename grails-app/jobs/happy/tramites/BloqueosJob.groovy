@@ -22,7 +22,7 @@ class BloqueosJob {
         /*** *** nuevo *** ***/
         println "inicia bloqueo nuevo: ${new Date()}"
         def cn = dbConnectionService.getConnection()
-        def sql = 'select * from bloqueo(null, null)'
+        def sql = 'select * from bloqueos()'
         cn.execute(sql.toString())
         println "fin bloqueo nuevo: ${new Date()}"
         /*** fin nuevo ***/

@@ -7,10 +7,10 @@ import happy.seguridad.Persona
  */
 class MailJob {
     static triggers = {
-        simple name: 'mail', startDelay: 1000*60, repeatInterval: 1000*60*10000
+        simple name: 'mail', startDelay: 1000*60, repeatInterval: 1000*60*1
     }
 
-    def mailService
+//    def mailService
 
     def execute() {
 //        println "mandar mail"

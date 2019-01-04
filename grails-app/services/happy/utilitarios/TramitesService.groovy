@@ -152,7 +152,7 @@ class TramitesService {
     def ejecutaRecibir(depar, persona) {
         /*** *** nuevo *** ***/
         def cn = dbConnectionService.getConnection()
-        def sql = "select * from bloqueo(${depar.id}, ${persona.id})"
+        def sql = "select * from bloqueo_recibe(${depar.id}, ${persona.id})"
         println "ejecuta recibir"
         cn.execute(sql.toString())
         /*** fin nuevo ***/
