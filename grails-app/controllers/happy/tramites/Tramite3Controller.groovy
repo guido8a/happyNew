@@ -1264,7 +1264,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
                     job.executeRecibir(persona.departamento, session.usuario)
                     job = null
 */
-                    tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
+//                    tramitesService.ejecutaRecibir(persona.departamento, session.usuario)
                 } else {
                     println "pxt error " + pxt.errors
                     println "error tramite recibir " + tramite.errors

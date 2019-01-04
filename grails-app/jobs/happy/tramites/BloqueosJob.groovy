@@ -20,11 +20,11 @@ class BloqueosJob {
     def execute() {   /*********** execute job ************/
 
         /*** *** nuevo *** ***/
-        println "inicia bloqueo nuevo: ${new Date()}"
+        println "inicia bloqueo nuevo: ${new Date().format('dd mm:ss')}"
         def cn = dbConnectionService.getConnection()
         def sql = 'select * from bloqueos()'
         cn.execute(sql.toString())
-        println "fin bloqueo nuevo: ${new Date()}"
+        println "fin bloqueo nuevo: ${new Date().format('dd mm:ss')}"
         /*** fin nuevo ***/
 
 
@@ -118,7 +118,7 @@ class BloqueosJob {
 
     }
 
-    def executeRecibir(depar, persona) {
+    //def executeRecibir(depar, persona) {
 
         /*** *** nuevo ***
          * se impementó en TramitesService.ejecutaRecibir
@@ -200,7 +200,7 @@ class BloqueosJob {
         }
 //        componeEstado()
 */
-    }
+    //}
 
     def borraBloqueos() {
         def cn = dbConnectionService.getConnection()
