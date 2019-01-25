@@ -789,6 +789,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
     }
 
     def desenviarLista_ajax() {
+
+        println("------------" + params)
+
         def tramite = Tramite.get(params.id)
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoArchivado = EstadoTramite.findByCodigo("E005")

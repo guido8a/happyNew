@@ -989,6 +989,94 @@
                 };
             }
 
+            if(estaEnviado && !estaRecibido){
+                items.desenviar = {
+                    label  : "Quitar el enviado",
+                    icon   : "fa fa-magic text-danger",
+                    action : function () {
+                        $.ajax({
+                            type    : "POST",
+                            url     : '${createLink(controller: 'tramite2', action:'desenviarLista_ajax')}',
+                            data    : {
+                                id : tramiteId
+                            },
+                            success : function (msg) {
+                                //s.indexOf("oo") > -1
+                                var buttons = {};
+                                if (msg.indexOf("No puede quitar el enviado") > -1) {
+                                    buttons.aceptar = {
+                                        label     : "Aceptar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                            openLoader();
+                                            location.reload(true);
+                                        }
+                                    }
+                                } else {
+                                    buttons.cancelar = {
+                                        label     : "Cancelar",
+                                        className : "btn-primary",
+                                        callback  : function () {
+                                        }
+                                    };
+                                    buttons.desenviar = {
+                                        label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                        className : "btn-danger",
+                                        callback  : function () {
+                                            var ids = "";
+                                            $(".chkOne").each(function () {
+                                                if ($(this).hasClass("fa-check-square")) {
+                                                    if (ids != "") {
+                                                        ids += "_"
+                                                    }
+                                                    ids += $(this).attr("id");
+                                                }
+                                            });
+                                            if (ids) {
+                                                openLoader("Quitando enviado");
+                                                $.ajax({
+                                                    type    : "POST",
+                                                    url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
+                                                    data    : {
+                                                        id  : tramiteId,
+                                                        ids : ids
+                                                    },
+                                                    success : function (msg) {
+                                                        var parts = msg.split("_");
+                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                        if (parts[0] == "OK") {
+                                                            setTimeout(function () {
+//                                                                location.reload(true);
+                                                                $("#bloqueo-warning").hide();
+                                                                %{--location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";--}%
+                                                                location.reload(true)
+                                                            }, 1000);
+                                                        } else {
+//                                                        cargarBandeja(true)
+                                                            log("Envío del trámite cancelado", 'error');
+                                                            closeLoader();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                log('No seleccionó ninguna persona', 'error');
+//
+                                            }
+                                        }
+                                    };
+                                }
+
+                                bootbox.dialog({
+                                    title   : "Alerta",
+                                    message : msg,
+                                    buttons : buttons
+                                });
+                            }
+                        });
+                    }
+                };
+            }
+
         }
         return items
     }
