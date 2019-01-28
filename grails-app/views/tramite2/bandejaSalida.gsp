@@ -723,6 +723,76 @@
                     url   : '${createLink(controller: 'documentoTramite', action: 'verAnexos')}/' + id
                 }; //anexos
 
+                var anular = {
+                    label  : 'Anular trámite',
+                    icon   : "fa fa-close",
+                    action: function () {
+
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
+                            data    : {
+                                id   : id,
+                                msg  : "<p class='lead'>El trámite está por ser anulado. Está seguro?</p>",
+                                icon : "fa-ban"
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    id      : "dlgAnular",
+                                    title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : '<i class="fa fa-times"></i> Cancelar',
+                                            className : 'btn-danger',
+                                            callback  : function () {
+                                            }
+                                        },
+                                        anular   : {
+                                            id        : 'btnArchivar',
+                                            label     : '<i class="fa fa-check"></i> Anular',
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var $txt = $("#aut");
+                                                if (validaAutorizacion($txt)) {
+                                                    openLoader("Anulando");
+                                                    $.ajax({
+                                                        type    : 'POST',
+                                                        url     : '${createLink(controller: "tramiteAdmin", action: "anular")}',
+                                                        data    : {
+                                                            id    : id,
+                                                            tipo : 1,
+                                                            texto : $("#observacion").val(),
+                                                            aut   : $txt.val()
+                                                        },
+                                                        success : function (msg) {
+                                                            var parts = msg.split("*");
+                                                            if (parts[0] == 'OK') {
+                                                                log("Trámite anulado correctamente", 'success');
+                                                                setTimeout(function () {
+                                                                    location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";
+                                                                }, 500);
+                                                            } else if (parts[0] == 'NO') {
+                                                                closeLoader();
+                                                                log("Error al anular el trámite!", 'error');
+                                                                setTimeout(function () {
+                                                                    location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";
+                                                                }, 600);
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                };//anular
+
                 var desenviar = {
                     label  : "Quitar el enviado",
                     icon   : "fa fa-magic text-danger",
@@ -982,6 +1052,10 @@
                     <g:if test="${session.usuario.getPuedeCopiar()}">
                     items.copia = copia;
                     </g:if>
+                }
+
+                if(!enviado){
+                    items.anular = anular
                 }
 
                 if (esOficio) {

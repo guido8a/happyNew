@@ -1611,16 +1611,24 @@ class TramiteAdminController /*extends Shield*/ {
 
     def anular() {
 
-        def persDocTram = PersonaDocumentoTramite.get(params.id)
+//        println("params " + params)
+
+        def persDocTram
+
+        if(params.tipo == '1'){
+            def trm = Tramite.get(params.id)
+            persDocTram = PersonaDocumentoTramite.findByTramite(trm)
+        }else{
+            persDocTram = PersonaDocumentoTramite.get(params.id)
+        }
+
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estados = [estadoArchivado]
-
 
         if (persDocTram == null) {
             render "NO*el trámite no se puede anular"
             return
         }
-
 
         if (estados.contains(persDocTram?.estado)) {
             render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede anular el trámite archivado"
@@ -1703,7 +1711,15 @@ class TramiteAdminController /*extends Shield*/ {
             }
 
             def rolCopia = RolPersonaTramite.findByCodigo("R002")
-            def pdt = PersonaDocumentoTramite.get(params.id)
+            def pdt
+
+            if(params.tipo == '1'){
+                def tm = Tramite.get(params.id)
+                pdt = PersonaDocumentoTramite.findByTramite(tm)
+            }else{
+                pdt = PersonaDocumentoTramite.get(params.id)
+            }
+
             def esPara = pdt.rolPersonaTramite.codigo == "R001"
             def esPrincipal = pdt.tramite.tramitePrincipal > 0 && pdt.tramite.tramitePrincipal.toLong() == pdt.tramite.tramitePrincipal
 
