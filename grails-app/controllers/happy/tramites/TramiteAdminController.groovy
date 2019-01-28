@@ -1124,6 +1124,17 @@ class TramiteAdminController /*extends Shield*/ {
 
 //        println("personas Reciben " + personasRec)
 
+        if(params.tipo == '1'){
+            def soloUsuario = Persona.get(session.usuario.id)
+            def n = [:]
+            def filtrados = []
+            n.key = soloUsuario.nombre + " " + soloUsuario.apellido + " (funcionario de ${soloUsuario.departamento.codigo})"
+            n.value = soloUsuario.nombre + " " + soloUsuario.apellido + " (" + soloUsuario.login + ")"
+            filtrados.add(n)
+            todas = filtrados
+        }
+
+
         return [tramite: tramite, icon: icon, msg: msg, personas: todas]
 
     }

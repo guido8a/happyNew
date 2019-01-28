@@ -733,6 +733,7 @@
                             url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
                             data    : {
                                 id   : id,
+                                tipo: 1,
                                 msg  : "<p class='lead'>El trámite está por ser anulado. Está seguro?</p>",
                                 icon : "fa-ban"
                             },
