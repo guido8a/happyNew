@@ -648,7 +648,7 @@ class ReporteGestionExcelController extends Shield {
             cell2.setCellValue("DE 0 A 5 DÍAS");
             j++
             cell2 = row2.createCell((short) j);
-            cell2.setCellValue(it?.tmpo0005);
+            cell2.setCellValue(it?.tmpo0003);
             i++
 
             XSSFRow row3 = sheet.createRow((short) i);
@@ -685,7 +685,7 @@ class ReporteGestionExcelController extends Shield {
             i++
 
 
-            totales = it?.tmpo0005 + it?.tmpo0615 + it?.tmpo1650 + it?.tmpo50dd
+            totales = it?.tmpo0003 + it?.tmpo0615 + it?.tmpo1650 + it?.tmpo50dd
 
             XSSFRow row6 = sheet.createRow((short) i);
             Cell cell6 = row6.createCell((short) j);
@@ -774,7 +774,7 @@ class ReporteGestionExcelController extends Shield {
 
             cn.eachRow(sql.toString()){
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0005, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0003, font), prmsTablaHojaCenter)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", font), prmsTablaHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", font), prmsTablaHoja)
@@ -782,7 +782,7 @@ class ReporteGestionExcelController extends Shield {
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", font), prmsTablaHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0005 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0003 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
             }
 
         reportesPdfService.membrete(document)
