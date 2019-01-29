@@ -613,7 +613,7 @@ class ReporteGestionExcelController extends Shield {
         sheet.setColumnWidth(1, 4000)
         sheet.setColumnWidth(2, 5000)
         sheet.setColumnWidth(3, 5000)
-        sheet.setColumnWidth(4, 5000)
+//        sheet.setColumnWidth(4, 5000)
         sheet.setColumnWidth(5, 5000)
 
 
@@ -645,7 +645,7 @@ class ReporteGestionExcelController extends Shield {
             j = 0
             row2 = sheet.createRow((short) i);
             cell2 = row2.createCell((short) j);
-            cell2.setCellValue("DE 0 A 5 DÍAS");
+            cell2.setCellValue("DE 0 A 3 DÍAS");
             j++
             cell2 = row2.createCell((short) j);
             cell2.setCellValue(it?.tmpo0003);
@@ -656,12 +656,13 @@ class ReporteGestionExcelController extends Shield {
             j = 0
             row3 = sheet.createRow((short) i);
             cell3 = row3.createCell((short) j);
-            cell3.setCellValue("DE 6 A 15 DIAS");
+            cell3.setCellValue("DE 4 A 10 DIAS");
             j++
             cell3 = row3.createCell((short) j);
-            cell3.setCellValue(it?.tmpo0615);
+            cell3.setCellValue(it?.tmpo0410);
             i++
 
+/*
             XSSFRow row4 = sheet.createRow((short) i);
             Cell cell4 = row4.createCell((short) j);
             j = 0
@@ -670,22 +671,23 @@ class ReporteGestionExcelController extends Shield {
             cell4.setCellValue("DE 16 A 50 DÍAS");
             j++
             cell4 = row4.createCell((short) j);
-            cell4.setCellValue(it?.tmpo1650);
+            cell4.setCellValue(it?.tmpo11dd);
             i++
+*/
 
             XSSFRow row5 = sheet.createRow((short) i);
             Cell cell5 = row5.createCell((short) j);
             j = 0
             row5 = sheet.createRow((short) i);
             cell5 = row5.createCell((short) j);
-            cell5.setCellValue("MAS DE 50 DÍAS");
+            cell5.setCellValue("MAS DE 10 DÍAS");
             j++
             cell5 = row5.createCell((short) j);
-            cell5.setCellValue(it?.tmpo50dd);
+            cell5.setCellValue(it?.tmpo11dd);
             i++
 
 
-            totales = it?.tmpo0003 + it?.tmpo0615 + it?.tmpo1650 + it?.tmpo50dd
+            totales = it?.tmpo0003 + it?.tmpo0410 + it?.tmpo11dd
 
             XSSFRow row6 = sheet.createRow((short) i);
             Cell cell6 = row6.createCell((short) j);
@@ -775,14 +777,16 @@ class ReporteGestionExcelController extends Shield {
             cn.eachRow(sql.toString()){
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 0 A 5 DÍAS", font), prmsTablaHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0003, font), prmsTablaHojaCenter)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 6 A 15 DIAS", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0615, font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 4 A 10 DIAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo0410, font), prmsTablaHojaCenter)
+/*
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("DE 16 A 50 DÍAS", font), prmsTablaHoja)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo1650, font), prmsTablaHojaCenter)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 50 DÍAS", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo50dd, font), prmsTablaHojaCenter)
+*/
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("MAS DE 10 DÍAS", font), prmsTablaHoja)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + it?.tmpo11dd, font), prmsTablaHojaCenter)
                 reportesPdfService.addCellTabla(tablaTramite, new Paragraph("TOTAL", font), prmsTablaHoja)
-                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo50dd + it?.tmpo0003 + it?.tmpo1650 + it?.tmpo0615), font), prmsTablaHojaCenter)
+                reportesPdfService.addCellTabla(tablaTramite, new Paragraph("" + (it?.tmpo11dd + it?.tmpo0003 + it?.tmpo0410), font), prmsTablaHojaCenter)
             }
 
         reportesPdfService.membrete(document)
