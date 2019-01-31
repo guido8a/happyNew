@@ -1166,14 +1166,45 @@
                 <g:if test="${!bloqueo}">
                 $(".btnSave").click(function () {
 //                    console.log($(".frmTramite").valid())
+
                     if ($(".frmTramite").valid()) {
-                        var cc = "";
-                        $("#ulSeleccionados li").each(function () {
-                            cc += $(this).data("id") + "_";
+                        $.ajax({
+                            type    : "POST",
+                            url     : "${createLink(controller: 'tramite2', action: 'confirmacion_ajax')}",
+                            data    : {
+                                tipo: $("#tipoDocumento").val(),
+                                para: $("#para").val(),
+                                asunto: $("#asunto").val(),
+                                ext: $("#paraExt").val()
+                            },
+                            success : function (msg) {
+                                bootbox.dialog({
+                                    title   : "Confirmación de creación de Trámite",
+                                    message : msg,
+                                    buttons : {
+                                        cancelar : {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        },
+                                        aceptar : {
+                                            label     : "Aceptar",
+                                            className : "btn-success",
+                                            callback  : function () {
+                                                var cc = "";
+                                                $("#ulSeleccionados li").each(function () {
+                                                    cc += $(this).data("id") + "_";
+                                                });
+                                                $("#hiddenCC").val(cc);
+                                                $(".frmTramite").submit();
+                                                $(this).attr("disabled", true);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                         });
-                        $("#hiddenCC").val(cc);
-                        $(".frmTramite").submit();
-                        $(this).attr("disabled", true);
                     }
                     return false;
                 });

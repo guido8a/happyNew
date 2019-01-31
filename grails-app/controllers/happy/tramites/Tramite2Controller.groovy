@@ -1821,7 +1821,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def saveDep() {
 
-//        println("params save dep " + params)
+        println("params save dep " + params)
 
 
         params.tramite.asunto = params.tramite.asunto.decodeHTML()
@@ -2650,5 +2650,63 @@ class Tramite2Controller extends happy.seguridad.Shield {
 //        println "salio " + new Date().format("hh:mm:ss ")
 
         return [tramites: tramites.unique()]
+    }
+
+    def confirmacion_ajax () {
+//        println("params " + params)
+
+        def destinatario
+        def color = "#bf2523"
+
+        def documento = TipoDocumento.get(params.tipo)
+
+        if(params.ext){
+            color = "#FFAC7C"
+            destinatario = params.ext
+        }else{
+
+
+            switch(documento.descripcion){
+                case 'ACTA':
+                    color = "#76aed1"
+                    break;
+                case "CIRCULAR":
+                    color = "#53cf6d"
+                    break;
+                case "FORMULARIO HORAS EXTRAS":
+                    color = "#ffbe4b"
+                    break;
+                case "INFORME":
+                    color = "#2a2ed1"
+                    break;
+                case "INFORME HORAS EXTRAS":
+                    color = "#5854EE"
+                    break;
+                case "INGRESAR DOC. EXTERNO":
+                    color = "#BF2523"
+                    break;
+                case "MEMORANDO":
+                    color = "#701b19"
+                    break;
+                case "SOLICITUD DE MATERIALES":
+                    color = "#57FFF2"
+                    break;
+                case "SUMILLA":
+                    color = "#FF8925"
+                    break;
+
+            }
+
+
+            if(params.para.contains("-")){
+                def d = params.para.split("-")
+                destinatario = Departamento.get(d[1])?.descripcion
+
+            }else{
+                destinatario = Persona.get(params.para).nombre + " " + Persona.get(params.para).apellido
+            }
+        }
+
+        return[documento: documento, para: destinatario, asunto: params.asunto, color: color]
     }
 }
