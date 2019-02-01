@@ -2661,17 +2661,15 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def documento = TipoDocumento.get(params.tipo)
 
         if(params.ext){
-            color = "#FFAC7C"
+            color = "#dF8C6C"
             destinatario = params.ext
         }else{
-
-
             switch(documento.descripcion){
                 case 'ACTA':
                     color = "#76aed1"
                     break;
                 case "CIRCULAR":
-                    color = "#53cf6d"
+                    color = "#802020"
                     break;
                 case "FORMULARIO HORAS EXTRAS":
                     color = "#ffbe4b"
@@ -2680,21 +2678,20 @@ class Tramite2Controller extends happy.seguridad.Shield {
                     color = "#2a2ed1"
                     break;
                 case "INFORME HORAS EXTRAS":
-                    color = "#5854EE"
+                    color = "#88449e"
                     break;
                 case "INGRESAR DOC. EXTERNO":
                     color = "#BF2523"
                     break;
                 case "MEMORANDO":
-                    color = "#701b19"
+                    color = "#407b89"
                     break;
                 case "SOLICITUD DE MATERIALES":
-                    color = "#57FFF2"
+                    color = "#47bFc2"
                     break;
                 case "SUMILLA":
-                    color = "#FF8925"
+                    color = "#eF7055"
                     break;
-
             }
 
 
