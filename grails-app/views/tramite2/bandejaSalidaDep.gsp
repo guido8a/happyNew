@@ -725,7 +725,7 @@
                                             openLoader("Anulando");
                                             $.ajax({
                                                 type    : 'POST',
-                                                url     : '${createLink(controller: "tramiteAdmin", action: "anular")}',
+                                                url     : '${createLink(controller: "tramiteAdmin", action: "anularSalida")}',
                                                 data    : {
                                                     id    : id,
                                                     tipo : 1,
@@ -935,7 +935,7 @@
             </g:if>
         }
 
-        if(!enviado){
+        if(porEnviar){
             items.anular = anular
         }
 

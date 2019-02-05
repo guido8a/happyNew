@@ -1799,6 +1799,188 @@ class TramiteAdminController /*extends Shield*/ {
         }
     }
 
+
+    def anularSalida() {
+
+//        println("params " + params)
+
+        def persDocTram
+
+        if(params.tipo == '1'){
+            def trm = Tramite.get(params.id)
+            persDocTram = PersonaDocumentoTramite.findByTramite(trm)
+        }else{
+            persDocTram = PersonaDocumentoTramite.get(params.id)
+        }
+
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estados = [estadoArchivado]
+
+        if (persDocTram == null) {
+            render "NO*el trámite no se puede anular"
+            return
+        }
+
+        if (estados.contains(persDocTram?.estado)) {
+            render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede anular el trámite archivado"
+
+        } else {
+            def funcion = { objeto ->
+//                println "anulando " + objeto.id + " " + objeto.rolPersonaTramite.descripcion + "  " + objeto.tramite
+                def anulado = EstadoTramite.findByCodigo("E006")
+                objeto.estado = anulado
+                objeto.fechaAnulacion = new Date()
+                def nuevaObs = "Anulado"
+                if (params.texto.trim() != "") {
+                    nuevaObs += ": " + "" + params.texto
+                }
+                def observacionOriginal = objeto.observaciones
+                def accion = "Anulado"
+                def solicitadoPor = " el dueño del tramite " + params.aut + " desde bandeja de salida"
+                def usuario = session.usuario.login
+                def texto = ""
+                def nuevaObservacion = params.texto
+                objeto.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+                if (objeto.rolPersonaTramite.codigo == "R002") {
+                    nuevaObs = "COPIA para "
+                    if (objeto.departamento) {
+                        nuevaObs += "el dpto. ${objeto.departamento.codigo}"
+                    } else if (objeto.persona) {
+                        nuevaObs += "el usuario ${objeto.persona.login}"
+                    }
+                    observacionOriginal = objeto.tramite.observaciones
+                    texto = nuevaObs
+                    objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+                }
+                if (objeto.rolPersonaTramite.codigo == "R001") {
+                    nuevaObs = "PARA "
+                    if (objeto.departamento) {
+                        nuevaObs += "el dpto. ${objeto.departamento.codigo}"
+                    } else if (objeto.persona) {
+                        nuevaObs += "el usuario ${objeto.persona.login}"
+                    }
+                    observacionOriginal = objeto.tramite.observaciones
+                    texto = nuevaObs
+                    objeto.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+                }
+                objeto.tramite.save(flush: true)
+                if (!objeto.save(flush: true)) {
+                    println "error en el save anular " + objeto.errors
+                } else {
+                    /*alertas*/
+                    def alerta
+                    if (objeto.departamento) {
+                        alerta = Alerta.findAllByTramiteAndDepartamento(objeto.tramite, objeto.departamento)
+                        alerta.each { a ->
+                            if (a.fechaRecibido == null) {
+                                a.fechaRecibido = new Date();
+                                a.save(flush: true)
+                            }
+                        }
+                    }
+                    if (objeto.persona) {
+                        alerta = Alerta.findAllByTramiteAndPersona(objeto.tramite, objeto.persona)
+                        alerta.each { a ->
+                            if (a.fechaRecibido == null) {
+                                a.fechaRecibido = new Date();
+                                a.save(flush: true)
+                            }
+                        }
+                    }
+                }
+
+//                if (objeto.rolPersonaTramite.codigo == "R002") {
+//                    if(objeto.delete(flush: true)){
+//                        println("anulado y borrado")
+//                    }else{
+//                        println("error anulado-borrado " + objeto.errors)
+//                    }
+//                }
+
+            }
+
+            def rolCopia = RolPersonaTramite.findByCodigo("R002")
+            def pdt
+
+            if(params.tipo == '1'){
+                def tm = Tramite.get(params.id)
+                pdt = PersonaDocumentoTramite.findByTramite(tm)
+            }else{
+                pdt = PersonaDocumentoTramite.get(params.id)
+            }
+
+            def esPara = pdt.rolPersonaTramite.codigo == "R001"
+            def esPrincipal = pdt.tramite.tramitePrincipal > 0 && pdt.tramite.tramitePrincipal.toLong() == pdt.tramite.tramitePrincipal
+
+            def listaAnular = [pdt.tramite]
+            if (esPara && esPrincipal) {
+                listaAnular = Tramite.findAllByTramitePrincipal(pdt.tramite.tramitePrincipal)
+            }
+
+            listaAnular.each { tramite ->
+                def pxt
+                if (tramite.id == pdt.tramiteId) {
+                    pxt = pdt
+                } else {
+                    pxt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("R001"))
+                }
+                if (pxt) {
+                    getCadenaDown(pxt, funcion)
+                    if (esPara) {
+                        def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pxt.tramite, rolCopia)
+                        if (copias.size() > 0) {
+                            copias.each { cp ->
+                                getCadenaDown(cp, funcion)
+                            }
+                        }
+                    }
+                }
+            }
+//            if (pdt.tramite.aQuienContesta) {
+//            println "tramite prtr: ${pdt.tramite.aQuienContesta.id}, padre: ${pdt.tramite.aQuienContesta.tramite.codigo} con: " +
+//                    "archivo: ${pdt.tramite.aQuienContesta.fechaArchivo} y anulación: ${pdt.tramite.aQuienContesta.fechaAnulacion} "
+            /*** reactiva trámite si no está archivado ni anulado ***/
+            if (pdt.tramite.aQuienContesta && (!pdt.tramite.aQuienContesta.fechaArchivo) && !pdt.tramite.aQuienContesta.fechaAnulacion) {
+
+                if (pdt.tramite.aQuienContesta.fechaRecepcion) {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
+                } else if (pdt.tramite.aQuienContesta.fechaEnvio) {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E003")   // enviado
+                } else {
+                    pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E001")   // por enviar
+                }
+//                pdt.tramite.aQuienContesta.fechaAnulacion = null
+//                pdt.tramite.aQuienContesta.fechaArchivo = null
+                def nuevaObs = "Reactivado por anulación de: ${persDocTram.tramite.codigo}"
+                def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
+                def accion = "Reactivado por anulación de trámite derivado"
+                def solicitadoPor = params.aut
+                def usuario = session.usuario.login
+                def texto = nuevaObs
+                def nuevaObservacion = params.texto
+                pdt.tramite.aQuienContesta.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+                pdt.tramite.aQuienContesta.save(flush: true)
+                nuevaObs = "Trámite ${pdt.tramite.aQuienContesta.rolPersonaTramite.descripcion}"
+                if (pdt.tramite.aQuienContesta.departamento) {
+                    nuevaObs += " el dpto. ${pdt.tramite.aQuienContesta.departamento.codigo}"
+                } else if (pdt.tramite.aQuienContesta.persona) {
+                    nuevaObs += " el usuario ${pdt.tramite.aQuienContesta.persona.login}"
+                }
+                nuevaObs += " reactivado al anularse ${persDocTram.tramite.codigo}"
+                observacionOriginal = pdt.tramite.aQuienContesta.tramite.observaciones
+                texto = nuevaObs
+                nuevaObservacion = params.texto
+                pdt.tramite.aQuienContesta.tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+            }
+            render "OK"
+        }
+    }
+
+
+
     def desanularPdt(PersonaDocumentoTramite pdt) {
         def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
         def estadoEnviado = EstadoTramite.findByCodigo("E003")
