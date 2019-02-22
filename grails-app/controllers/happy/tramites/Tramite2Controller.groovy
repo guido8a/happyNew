@@ -639,6 +639,17 @@ class Tramite2Controller extends happy.seguridad.Shield {
             ids = null
         }
 
+        //observaciones
+
+//        def observacionOriginal = tramite.observaciones
+//        def accion = "Quitado el enviado "
+//        def solicitadoPor = session.usuario.login
+//        def usuario = session.usuario.login
+//        def texto = ""
+//        def nuevaObservacion = params.obs
+//        tramite.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, texto, nuevaObservacion)
+
+
 //        println "desenviar 1, trmt: ${params.id}"
         //1ro saco todos los receptores a ver si alguien ha contestado
         def para = tramite.para
@@ -708,9 +719,9 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def strEnvioPrevio = ""
         def quienEnvio = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(tramite, rolEnvia)
         if (quienEnvio.size() == 0) {
-            strEnvioPrevio = "- Sin registro de la persona que envió anteriormente -"
+            strEnvioPrevio = "Observaciones: " + (params.obs ?: '') + " - Sin registro de la persona que envió anteriormente - "
         } else {
-            strEnvioPrevio = "Enviado anteriormente por " + quienEnvio.persona.login.join(', ')
+            strEnvioPrevio = "Observaciones: " + (params.obs ?: '') + " - Enviado anteriormente por " + quienEnvio.persona.login.join(', ')
         }
 
 //        println "desenviar 4, trmt: ${params.id}"

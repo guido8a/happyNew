@@ -1033,34 +1033,77 @@
                                                 }
                                             });
                                             if (ids) {
-                                                openLoader("Quitando enviado");
                                                 $.ajax({
-                                                    type    : "POST",
-                                                    url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
-                                                    data    : {
-                                                        id  : tramiteId,
-                                                        ids : ids
+                                                    type: 'POST',
+                                                    url:'${createLink(controller: 'tramiteAdmin', action: 'observaciones_ajax')}',
+                                                    data:{
+
                                                     },
-                                                    success : function (msg) {
-                                                        var parts = msg.split("_");
-                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                        if (parts[0] == "OK") {
-                                                            setTimeout(function () {
+                                                    success: function (msg1){
+                                                        bootbox.dialog({
+                                                            id      : "dlgQE",
+                                                            title   : '<span class="text-danger"><i class="fa fa-ban"></i> Observaciones del tramite - Quitar el Enviado</span>',
+                                                            message : msg1,
+                                                            buttons : {
+                                                                cancelar : {
+                                                                    label     : '<i class="fa fa-times"></i> Cancelar',
+                                                                    className : 'btn-primary',
+                                                                    callback  : function () {
+                                                                    }
+                                                                },
+                                                                quitar   : {
+                                                                    id        : 'btnQE',
+                                                                    label     : '<i class="fa fa-check"></i> Quitar Enviado',
+                                                                    className : "btn-success",
+                                                                    callback  : function () {
+                                                                        var textoQuitarParcial = $("#quitar").val();
+                                                                        if(textoQuitarParcial){
+                                                                            openLoader("Quitando enviado");
+                                                                            $.ajax({
+                                                                                type    : "POST",
+                                                                                url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
+                                                                                data    : {
+                                                                                    id  : tramiteId,
+                                                                                    ids : ids,
+                                                                                    obs: textoQuitarParcial
+                                                                                },
+                                                                                success : function (msg) {
+                                                                                    var parts = msg.split("_");
+                                                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                                                    if (parts[0] == "OK") {
+                                                                                        setTimeout(function () {
 //                                                                location.reload(true);
-                                                                $("#bloqueo-warning").hide();
-                                                                %{--location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";--}%
-                                                                location.reload(true)
-                                                            }, 1000);
-                                                        } else {
+                                                                                            $("#bloqueo-warning").hide();
+                                                                                            %{--location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";--}%
+                                                                                            location.reload(true)
+                                                                                        }, 1000);
+                                                                                    } else {
 //                                                        cargarBandeja(true)
-                                                            log("Envío del trámite cancelado", 'error');
-                                                            closeLoader();
-                                                        }
+                                                                                        log("Envío del trámite cancelado", 'error');
+                                                                                        closeLoader();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }else{
+                                                                            bootbox.alert({
+                                                                                message: "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i> Ingrese una observación!",
+                                                                                size: 'small'
+                                                                            });
+                                                                            return false;
+                                                                        }
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             } else {
-                                                log('No seleccionó ninguna persona', 'error');
-//
+                                                bootbox.alert({
+                                                    message: "<i class='fa fa-warning fa-3x pull-left text-danger text-shadow'></i> No seleccionó ninguna persona!",
+                                                    size: 'small'
+                                                });
+                                                return false;
                                             }
                                         }
                                     };

@@ -2161,5 +2161,10 @@ class TramiteAdminController /*extends Shield*/ {
         return res
     }
 
+    def observaciones_ajax () {
+
+    }
+
+
 
 }
