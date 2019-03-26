@@ -1906,7 +1906,8 @@ class TramiteAdminController /*extends Shield*/ {
 
             if(params.tipo == '1'){
                 def tm = Tramite.get(params.id)
-                pdt = PersonaDocumentoTramite.findByTramite(tm)
+//                pdt = PersonaDocumentoTramite.findByTramite(tm)
+                pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tm, RolPersonaTramite.findByCodigo('R001'))
             }else{
                 pdt = PersonaDocumentoTramite.get(params.id)
             }
@@ -1926,6 +1927,7 @@ class TramiteAdminController /*extends Shield*/ {
                 } else {
                     pxt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramite, RolPersonaTramite.findByCodigo("R001"))
                 }
+
                 if (pxt) {
                     getCadenaDown(pxt, funcion)
                     if (esPara) {
