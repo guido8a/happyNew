@@ -302,6 +302,7 @@ class LoginController {
                         }
 //                    redirect(controller: cn, action: an)
 
+                        /*
                         // registra sesion
                         //                println  "sesion ingreso: $session.id  desde ip: ${request.getRemoteAddr()}"  //activo
                         def activo = new SesionActiva()
@@ -322,7 +323,7 @@ class LoginController {
                             }
                         }
                         // -------------------
-
+                        */
 
                         return
                     } else {
@@ -421,12 +422,14 @@ class LoginController {
 
     def logout() {
 //        println "sesion out: $session.id"  //activo
+        /*
         def activo = SesionActiva.findByIdSesion(session.id)
         if (activo) {
             activo.fechaFin = new Date()
             activo.activo = 'N'
             activo.save()
         }
+        */
 
         session.usuario = null
         session.perfil = null
