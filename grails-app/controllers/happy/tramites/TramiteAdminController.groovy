@@ -1628,13 +1628,16 @@ class TramiteAdminController /*extends Shield*/ {
 
         if(params.tipo == '1'){
             def trm = Tramite.get(params.id)
-            persDocTram = PersonaDocumentoTramite.findByTramite(trm)
+            def rol = RolPersonaTramite.findByCodigo('R001')
+//            persDocTram = PersonaDocumentoTramite.findByTramite(trm)
+            persDocTram = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trm, rol)
         }else{
             persDocTram = PersonaDocumentoTramite.get(params.id)
         }
 
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
-        def estados = [estadoArchivado]
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estados = [estadoArchivado, estadoAnulado]
 
         if (persDocTram == null) {
             render "NO*el trámite no se puede anular"
@@ -1642,7 +1645,7 @@ class TramiteAdminController /*extends Shield*/ {
         }
 
         if (estados.contains(persDocTram?.estado)) {
-            render "NO*el trámite está ${persDocTram.estado.descripcion}, no puede anular el trámite archivado"
+            render "NO*No puede anular el trámite, se encuentra en estado ${persDocTram.estado.descripcion} "
 
         } else {
             def funcion = { objeto ->
@@ -1726,13 +1729,16 @@ class TramiteAdminController /*extends Shield*/ {
 
             if(params.tipo == '1'){
                 def tm = Tramite.get(params.id)
-                pdt = PersonaDocumentoTramite.findByTramite(tm)
+                def rolP = RolPersonaTramite.findByCodigo('R001')
+                pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tm, rolP)
+//                pdt = PersonaDocumentoTramite.findByTramite(tm)
             }else{
                 pdt = PersonaDocumentoTramite.get(params.id)
             }
 
             def esPara = pdt.rolPersonaTramite.codigo == "R001"
-            def esPrincipal = pdt.tramite.tramitePrincipal > 0 && pdt.tramite.tramitePrincipal.toLong() == pdt.tramite.tramitePrincipal
+//            def esPrincipal = pdt.tramite.tramitePrincipal > 0 && pdt.tramite.tramitePrincipal == pdt.tramite.tramitePrincipal
+            def esPrincipal = pdt.tramite.tramitePrincipal > 0
 
             def listaAnular = [pdt.tramite]
             if (esPara && esPrincipal) {
@@ -2066,10 +2072,10 @@ class TramiteAdminController /*extends Shield*/ {
 
             def fechaEnvioOriginal = tramite.fechaCreacion
 
-//        println("recibido " + fechaRecibidoPadre.format("dd-MM-yyyy HH:mm"))
-//        println("fecha envio " + fechaEnvioOriginal.format("dd-MM-yyyy HH:mm"))
+//            println("recibido " + fechaRecibidoPadre?.format("dd-MM-yyyy HH:mm"))
+//            println("fecha envio " + fechaEnvioOriginal?.format("dd-MM-yyyy HH:mm"))
 
-            if(fechaRecibidoPadre.getTime()  <= fechaEnvioOriginal.getTime()){
+            if(fechaRecibidoPadre?.getTime()  <= fechaEnvioOriginal?.getTime()){
                 listaDesanular.each { p ->
                     println "desanular: " + p.rolPersonaTramite.descripcion
                     if (!desanularPdt(p)) {

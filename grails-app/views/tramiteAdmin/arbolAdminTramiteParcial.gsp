@@ -545,10 +545,10 @@
                                                                 }, 500);
                                                             } else if (parts[0] == 'NO') {
                                                                 closeLoader();
-                                                                log("Error al anular el trámite!", 'error');
+                                                                log(parts[1], 'error');
                                                                 setTimeout(function () {
                                                                     location.reload(true);
-                                                                }, 600);
+                                                                }, 1500);
                                                             }
                                                         }
                                                     });

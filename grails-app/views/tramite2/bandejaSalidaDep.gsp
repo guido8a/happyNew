@@ -914,7 +914,9 @@
         if (tienePadre) {
             items.hermano = crearHermano;
         } else {
-            items.hijo = crearHijo;
+            if(!porEnviar){
+                items.hijo = crearHijo;
+            }
         }
         if (tieneAnexo) {
             items.anexos = anexos;
