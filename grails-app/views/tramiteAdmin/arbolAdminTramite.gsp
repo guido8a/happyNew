@@ -1144,13 +1144,14 @@
                     icon : "fa fa-file text-info"
                 },
                 para             : {
-                    icon : "fa fa-file-o"
+                    icon : "fa fa-file-o text-info"
                 },
                 paraEnviado      : {
                     icon : "fa fa-file-o text-info"
                 },
                 paraArchivado    : {
-                    icon : "fa fa-file-o text-warning"
+//                    icon : "fa fa-file-o text-warning"
+                    icon : "fa fa-archive text-warning"
                 },
                 paraAnulado      : {
                     icon : "fa fa-ban text-muted"

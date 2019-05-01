@@ -1585,10 +1585,12 @@ class Tramite3Controller extends happy.seguridad.Shield {
             data += ',"tramite":"' + pdt.tramiteId + '"'
             if (pdt.tramite.esRespuestaNueva == "N") {
                 if (rel == "para") {
-                    data += ',"icon":"fa fa-file-o text-warning"'
+//                    data += ',"icon":"fa fa-file-o text-warning"'
+                    data += ',"icon":"fa fa-clipboard text-success"'
 //                    data += ',"prtr":"' + pdt.id + '"'
                 } else if (rel == "copia") {
-                    data += ',"icon":"fa fa-files-o text-warning"'
+//                    data += ',"icon":"fa fa-files-o text-warning"'
+                    data += ',"icon":"fa fa-clipboard text-success"'
 //                    data += ',"prtr":"' + pdt.id + '"'
                 }
             }

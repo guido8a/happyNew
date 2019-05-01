@@ -262,6 +262,9 @@
                 },
                 anulado          : {
                     icon : "fa fa-ban text-muted"
+                },
+                paraArchivado    : {
+                    icon : "fa fa-archive text-warning"
                 }
             }
         });

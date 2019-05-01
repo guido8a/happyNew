@@ -1198,6 +1198,15 @@ class TramiteAdminController /*extends Shield*/ {
         if (hijos.size() > 0) {
             clase += " jstree-open"
         }
+
+        if (pdt.tramite.esRespuestaNueva == "N") {
+            if (rel == "para") {
+                data += ',"icon":"fa fa-clipboard text-success"'
+            } else if (rel == "copia") {
+                data += ',"icon":"fa fa-clipboard text-success"'
+            }
+        }
+
         def estado = ""
         if (pdt.fechaEnvio) {
             clase += " enviado"
