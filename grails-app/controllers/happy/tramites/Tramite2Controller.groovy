@@ -801,7 +801,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
     def desenviarLista_ajax() {
 
-        println("------------" + params)
+//        println("------------" + params)
 
         def tramite = Tramite.get(params.id)
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
@@ -811,13 +811,11 @@ class Tramite2Controller extends happy.seguridad.Shield {
         def rolPara = RolPersonaTramite.findByCodigo("R001")
         def rolCc = RolPersonaTramite.findByCodigo("R002")
 
-//        def tramites = ([tramite.para] + tramite.allCopias)
         def tramites = []
         if (tramite.para) {
             tramites += tramite.para
         }
         tramites += tramite.allCopias
-
 
         def contestados = ""
 
@@ -825,43 +823,49 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def cont = 0
 
-        tramites.each { PersonaDocumentoTramite pr ->
 
-            def respv = pr.respuestasVivas
-            cont += respv.size()
+        def tramitesHijos = Tramite.findAllByPadre(tramite)
 
-            if (pr.rolPersonaTramite.codigo == "R001") {
-                if (pr.estado.codigo != "E003") {
-                    paraRecibio = "El documento está en estado ${pr.estado.descripcion} por lo que no puede ser tramitado."
-                }
-            }
+        if(tramitesHijos){
+
+            render "error"
+
+        }else{
+            tramites.each { PersonaDocumentoTramite pr ->
+
+                def respv = pr.respuestasVivas
+                cont += respv.size()
 
 
-            def trams = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pr, "S")
-            def respuestas = PersonaDocumentoTramite.findAllByRolPersonaTramiteInListAndTramiteInList([rolPara, rolCc], trams)
-            respuestas.each { rs ->
-//                println "" + rs.id + "   " + rs.tramite.codigo + "  " + rs.estado.codigo + "  " + rs.estado.descripcion + "  " + rs.rolPersonaTramite.descripcion + "  " + (rs.persona ?: rs.departamento)
-                if (rs.estado.codigo != "E006") { //anulado
-                    if (rs.persona) {
-                        println "contestado persona: $rs.estado $rs.tramite.codigo $rs.persona"
-                        contestados += "<li>El usuario ${rs.persona.nombre} ${rs.persona.apellido} (${rs.persona.login}) ya contestó el documento"
-                    } else {
-                        println "contestado dpto: $rs.estado $rs.tramite.codigo $rs.departamento"
-                        contestados += "<li>El departamento ${rs.departamento.descripcion} (${rs.departamento.codigo}) ya contestó el documento</li>"
+                if (pr.rolPersonaTramite.codigo == "R001") {
+                    if (pr.estado.codigo != "E003") {
+                        paraRecibio = "El documento está en estado ${pr.estado.descripcion} por lo que no puede ser tramitado."
                     }
                 }
-//                if (rs.deDepartamento) {
-//                    contestados += "<li>El departamento ${rs.deDepartamento.descripcion} (${rs.deDepartamento.codigo}) ya contestó el documento</li>"
-//                } else if (rs.de) {
-//                    println "contestado: $rs.estadoTramite"
-//                    contestados += "<li>El usuario ${rs.de.nombre} ${rs.de.apellido} (${rs.de.login}) ya contestó el documento"
-//                }
+
+
+                def trams = Tramite.findAllByAQuienContestaAndEsRespuestaNueva(pr, "S")
+                def respuestas = PersonaDocumentoTramite.findAllByRolPersonaTramiteInListAndTramiteInList([rolPara, rolCc], trams)
+                respuestas.each { rs ->
+//                println "" + rs.id + "   " + rs.tramite.codigo + "  " + rs.estado.codigo + "  " + rs.estado.descripcion + "  " + rs.rolPersonaTramite.descripcion + "  " + (rs.persona ?: rs.departamento)
+                    if (rs.estado.codigo != "E006") { //anulado
+                        if (rs.persona) {
+                            println "contestado persona: $rs.estado $rs.tramite.codigo $rs.persona"
+                            contestados += "<li>El usuario ${rs.persona.nombre} ${rs.persona.apellido} (${rs.persona.login}) ya contestó el documento"
+                        } else {
+                            println "contestado dpto: $rs.estado $rs.tramite.codigo $rs.departamento"
+                            contestados += "<li>El departamento ${rs.departamento.descripcion} (${rs.departamento.codigo}) ya contestó el documento</li>"
+                        }
+                    }
+                }
+
             }
 
-//            }
+            return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio, cont: cont]
         }
 
-        return [tramite: tramite, tramites: tramites, estadosNo: estadosNo, contestados: contestados, paraRecibio: paraRecibio, cont: cont]
+
+
     }
 
     def permisoImprimir_ajax() {

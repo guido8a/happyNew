@@ -63,19 +63,19 @@
         var respuesta = true;
 
         $.ajax({
-        type    : 'POST',
-        async: false,
-        url     : '${createLink(controller: 'tramite3', action: 'comprobar')}',
-        data    : {
-        id : node
-        },
-        success : function (msg) {
-            if(msg == 'true'){
-                respuesta = true
-            }else{
-                respuesta = false
+            type    : 'POST',
+            async: false,
+            url     : '${createLink(controller: 'tramite3', action: 'comprobar')}',
+            data    : {
+                id : node
+            },
+            success : function (msg) {
+                if(msg == 'true'){
+                    respuesta = true
+                }else{
+                    respuesta = false
+                }
             }
-        }
         });
 
         return respuesta
@@ -114,7 +114,7 @@
         var nodeType = $node.data("jstree").type;
         var tramiteId = $node.data("jstree").tramite;
         var prtrId =  $node.data("prtr").prtrId;
-
+        var estaArchivado = $node.hasClass("archivado");
 
 //        console.log("data " + $node.data("prtr").prtrId);
 
@@ -142,14 +142,6 @@
                     $("#dialog").modal("show")
                 }
             };
-//            var plazo = {
-//                label  : 'Ampliar Plazo',
-//                icon   : "fa fa-check",
-//                action : function (e) {
-//
-//                  }
-//            };
-
 
 
             var plazo = {
@@ -210,11 +202,11 @@
 
 
             <g:if test="${session.usuario.puedePlazo}">
-                    if(!comprobar(nodeId)){
-                        if(comprobarRecibido(nodeId)){
-                            items.plazo = plazo;
-                        }
-                    }
+            if(!comprobar(nodeId)){
+                if(comprobarRecibido(nodeId)){
+                    items.plazo = plazo;
+                }
+            }
             </g:if>
             </g:if>
         }
@@ -255,7 +247,7 @@
                     icon : "fa fa-edit text-info"
                 },
                 para             : {
-                    icon : "fa fa-file-o text-info"
+                    icon : "fa fa-file-o text-success"
                 },
                 copia            : {
                     icon : "fa fa-files-o text-info"
@@ -263,7 +255,7 @@
                 anulado          : {
                     icon : "fa fa-ban text-muted"
                 },
-                paraArchivado    : {
+                archivado    : {
                     icon : "fa fa-archive text-warning"
                 }
             }

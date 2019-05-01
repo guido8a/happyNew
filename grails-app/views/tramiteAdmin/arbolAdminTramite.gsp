@@ -981,11 +981,12 @@
                 };
             }
 
-            if(estaEnviado && !estaRecibido){
+            if(estaEnviado && !estaRecibido && !tieneHijos && !estaArchivado && !estaAnulado){
                 items.desenviar = {
                     label  : "Quitar el enviado",
                     icon   : "fa fa-magic text-danger",
                     action : function () {
+
                         $.ajax({
                             type    : "POST",
                             url     : '${createLink(controller: 'tramite2', action:'desenviarLista_ajax')}',
@@ -993,117 +994,121 @@
                                 id : tramiteId
                             },
                             success : function (msg) {
-                                //s.indexOf("oo") > -1
-                                var buttons = {};
-                                if (msg.indexOf("No puede quitar el enviado") > -1) {
-                                    buttons.aceptar = {
-                                        label     : "Aceptar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                            openLoader();
-                                            location.reload(true);
-                                        }
-                                    }
-                                } else {
-                                    buttons.cancelar = {
-                                        label     : "Cancelar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                        }
-                                    };
-                                    buttons.desenviar = {
-                                        label     : "<i class='fa fa-magic'></i> Quitar enviado",
-                                        className : "btn-danger",
-                                        callback  : function () {
-                                            var ids = "";
-                                            $(".chkOne").each(function () {
-                                                if ($(this).hasClass("fa-check-square")) {
-                                                    if (ids != "") {
-                                                        ids += "_"
-                                                    }
-                                                    ids += $(this).attr("id");
-                                                }
-                                            });
-                                            if(ids){
-                                                $.ajax({
-                                                    type: 'POST',
-                                                    url:'${createLink(controller: 'tramiteAdmin', action: 'observaciones_ajax')}',
-                                                    data:{
-
-                                                    },
-                                                    success: function (msg1){
-                                                        bootbox.dialog({
-                                                            id      : "dlgQE",
-                                                            title   : '<span class="text-danger"><i class="fa fa-ban"></i> Observaciones del tramite - Quitar el Enviado</span>',
-                                                            message : msg1,
-                                                            buttons : {
-                                                                cancelar : {
-                                                                    label     : '<i class="fa fa-times"></i> Cancelar',
-                                                                    className : 'btn-primary',
-                                                                    callback  : function () {
-                                                                    }
-                                                                },
-                                                                quitar   : {
-                                                                    id        : 'btnQE',
-                                                                    label     : '<i class="fa fa-check"></i> Quitar Enviado',
-                                                                    className : "btn-success",
-                                                                    callback  : function () {
-
-                                                                        var textoQuitar = $("#quitar").val();
-                                                                        if(textoQuitar){
-                                                                            openLoader("Quitando enviado");
-                                                                            $.ajax({
-                                                                                type    : "POST",
-                                                                                url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
-                                                                                data    : {
-                                                                                    id  : tramiteId,
-                                                                                    ids : ids,
-                                                                                    obs : textoQuitar
-                                                                                },
-                                                                                success : function (msg) {
-                                                                                    var parts = msg.split("_");
-                                                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                                                    if (parts[0] == "OK") {
-                                                                                        setTimeout(function () {
-                                                                                            $("#bloqueo-warning").hide();
-                                                                                            location.reload(true)
-                                                                                        }, 1000);
-                                                                                    } else {
-                                                                                        log("Envío del trámite cancelado", 'error');
-                                                                                        closeLoader();
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                        }else{
-                                                                            bootbox.alert({
-                                                                                message: "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i> Ingrese una observación!",
-                                                                                size: 'small'
-                                                                            });
-                                                                            return false;
-                                                                        }
-
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }else{
-                                                bootbox.alert({
-                                                    message: "<i class='fa fa-warning fa-3x pull-left text-danger text-shadow'></i> No seleccionó ninguna persona!",
-                                                    size: 'small'
-                                                });
-                                                return false;
+                                if(msg == 'error'){
+                                    bootbox.alert('<strong>' + "No se puede quitar el enviado del trámite, debido a que posee trámites derivados." + '</strong>')
+                                }else{
+                                    var buttons = {};
+                                    if (msg.indexOf("No puede quitar el enviado") > -1) {
+                                        buttons.aceptar = {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                                openLoader();
+                                                location.reload(true);
                                             }
                                         }
-                                    };
+                                    } else {
+                                        buttons.cancelar = {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        };
+                                        buttons.desenviar = {
+                                            label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                            className : "btn-danger",
+                                            callback  : function () {
+                                                var ids = "";
+                                                $(".chkOne").each(function () {
+                                                    if ($(this).hasClass("fa-check-square")) {
+                                                        if (ids != "") {
+                                                            ids += "_"
+                                                        }
+                                                        ids += $(this).attr("id");
+                                                    }
+                                                });
+                                                if(ids){
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url:'${createLink(controller: 'tramiteAdmin', action: 'observaciones_ajax')}',
+                                                        data:{
+
+                                                        },
+                                                        success: function (msg1){
+                                                            bootbox.dialog({
+                                                                id      : "dlgQE",
+                                                                title   : '<span class="text-danger"><i class="fa fa-ban"></i> Observaciones del tramite - Quitar el Enviado</span>',
+                                                                message : msg1,
+                                                                buttons : {
+                                                                    cancelar : {
+                                                                        label     : '<i class="fa fa-times"></i> Cancelar',
+                                                                        className : 'btn-primary',
+                                                                        callback  : function () {
+                                                                        }
+                                                                    },
+                                                                    quitar   : {
+                                                                        id        : 'btnQE',
+                                                                        label     : '<i class="fa fa-check"></i> Quitar Enviado',
+                                                                        className : "btn-success",
+                                                                        callback  : function () {
+
+                                                                            var textoQuitar = $("#quitar").val();
+                                                                            if(textoQuitar){
+                                                                                openLoader("Quitando enviado");
+                                                                                $.ajax({
+                                                                                    type    : "POST",
+                                                                                    url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
+                                                                                    data    : {
+                                                                                        id  : tramiteId,
+                                                                                        ids : ids,
+                                                                                        obs : textoQuitar
+                                                                                    },
+                                                                                    success : function (msg) {
+                                                                                        var parts = msg.split("_");
+                                                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                                                        if (parts[0] == "OK") {
+                                                                                            setTimeout(function () {
+                                                                                                $("#bloqueo-warning").hide();
+                                                                                                location.reload(true)
+                                                                                            }, 1000);
+                                                                                        } else {
+                                                                                            log("Envío del trámite cancelado", 'error');
+                                                                                            closeLoader();
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                            }else{
+                                                                                bootbox.alert({
+                                                                                    message: "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i> Ingrese una observación!",
+                                                                                    size: 'small'
+                                                                                });
+                                                                                return false;
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }else{
+                                                    bootbox.alert({
+                                                        message: "<i class='fa fa-warning fa-3x pull-left text-danger text-shadow'></i> No seleccionó ninguna persona!",
+                                                        size: 'small'
+                                                    });
+                                                    return false;
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    bootbox.dialog({
+                                        title   : "Alerta",
+                                        message : msg,
+                                        buttons : buttons
+                                    });
                                 }
 
-                                bootbox.dialog({
-                                    title   : "Alerta",
-                                    message : msg,
-                                    buttons : buttons
-                                });
                             }
                         });
                     }

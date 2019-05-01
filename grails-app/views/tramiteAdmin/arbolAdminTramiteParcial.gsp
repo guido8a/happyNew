@@ -248,96 +248,96 @@
                 if (!tienePadre && ${session.usuario.getPuedeAsociar()}) {
 
                     %{--items.agregarPadre = {--}%
-                        %{--label  : "Asociar trámite",--}%
-                        %{--icon   : "fa fa-gift",--}%
-                        %{--action : function () {--}%
-                            %{--var $container = $("<div>");--}%
-                            %{--$container.append("<i class='fa fa-gift fa-3x pull-left text-shadow'></i>");--}%
-                            %{--var $p = $("<p class='lead'>");--}%
-                            %{--$p.html("Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>");--}%
-                            %{--$container.append($p);--}%
+                    %{--label  : "Asociar trámite",--}%
+                    %{--icon   : "fa fa-gift",--}%
+                    %{--action : function () {--}%
+                    %{--var $container = $("<div>");--}%
+                    %{--$container.append("<i class='fa fa-gift fa-3x pull-left text-shadow'></i>");--}%
+                    %{--var $p = $("<p class='lead'>");--}%
+                    %{--$p.html("Está por asociar un trámite al trámite <br/><strong>" + tramiteInfo + "</strong>");--}%
+                    %{--$container.append($p);--}%
 
-                            %{--var $alert = $("<div class='alert alert-info'>");--}%
-                            %{--$alert.html("Para poder asociar un trámite a otro se deben cumplir las siguientes condiciones:");--}%
-                            %{--var $ul = $("<ul>");--}%
-                            %{--$ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +--}%
-                                %{--"a la fecha de envío del trámite al que se lo quiere asociar.</li>"));--}%
-                            %{--$ul.append($("<li>El creador del trámite " + tramiteCodigo + " debe ser el destinatario del " +--}%
-                                %{--"trámite al que se lo quiere asociar.</li>"));--}%
-                            %{--$ul.append($("<li>El trámite " + tramiteCodigo + " debe estar recibido. </li>"));--}%
-                            %{--$ul.append($("<li>El trámite al que se quiere asociar el " + tramiteCodigo + " NO debe tener hijos. </li>"));--}%
-                            %{--$alert.append($ul);--}%
-                            %{--$container.append($alert);--}%
+                    %{--var $alert = $("<div class='alert alert-info'>");--}%
+                    %{--$alert.html("Para poder asociar un trámite a otro se deben cumplir las siguientes condiciones:");--}%
+                    %{--var $ul = $("<ul>");--}%
+                    %{--$ul.append($("<li>La fecha de creación del trámite " + tramiteCodigo + " debe ser posterior " +--}%
+                    %{--"a la fecha de envío del trámite al que se lo quiere asociar.</li>"));--}%
+                    %{--$ul.append($("<li>El creador del trámite " + tramiteCodigo + " debe ser el destinatario del " +--}%
+                    %{--"trámite al que se lo quiere asociar.</li>"));--}%
+                    %{--$ul.append($("<li>El trámite " + tramiteCodigo + " debe estar recibido. </li>"));--}%
+                    %{--$ul.append($("<li>El trámite al que se quiere asociar el " + tramiteCodigo + " NO debe tener hijos. </li>"));--}%
+                    %{--$alert.append($ul);--}%
+                    %{--$container.append($alert);--}%
 
-                            %{--var $row = $("<div class='row'>");--}%
-                            %{--var $col = $("<div class='col-md-6'>");--}%
-                            %{--$col.append("<label for='nuevoPadre'>Código trámite padre:</label>");--}%
-                            %{--var $inputGroup = $("<div class='input-group'>");--}%
-                            %{--var $input = $("<input type='text' name='nuevoPadre' id='nuevoPadre' class='form-control allCaps'/>");--}%
-                            %{--$inputGroup.append($input);--}%
-                            %{--var $span = $("<span class='input-group-btn'>");--}%
-                            %{--var $btn = $("<a href='#' class='btn btn-azul' id='btnBuscar'><i class='fa fa-search'></i>&nbsp;</a>");--}%
-                            %{--$span.append($btn);--}%
-                            %{--$inputGroup.append($span);--}%
-                            %{--$col.append($inputGroup);--}%
-                            %{--$row.append($col);--}%
-                            %{--$container.append($row);--}%
-                            %{--var $res = $("<div>").css({--}%
-                                %{--marginTop : 5,--}%
-                                %{--maxHeight : 200,--}%
-                                %{--overflow  : "auto"--}%
-                            %{--});--}%
-                            %{--$container.append($res);--}%
+                    %{--var $row = $("<div class='row'>");--}%
+                    %{--var $col = $("<div class='col-md-6'>");--}%
+                    %{--$col.append("<label for='nuevoPadre'>Código trámite padre:</label>");--}%
+                    %{--var $inputGroup = $("<div class='input-group'>");--}%
+                    %{--var $input = $("<input type='text' name='nuevoPadre' id='nuevoPadre' class='form-control allCaps'/>");--}%
+                    %{--$inputGroup.append($input);--}%
+                    %{--var $span = $("<span class='input-group-btn'>");--}%
+                    %{--var $btn = $("<a href='#' class='btn btn-azul' id='btnBuscar'><i class='fa fa-search'></i>&nbsp;</a>");--}%
+                    %{--$span.append($btn);--}%
+                    %{--$inputGroup.append($span);--}%
+                    %{--$col.append($inputGroup);--}%
+                    %{--$row.append($col);--}%
+                    %{--$container.append($row);--}%
+                    %{--var $res = $("<div>").css({--}%
+                    %{--marginTop : 5,--}%
+                    %{--maxHeight : 200,--}%
+                    %{--overflow  : "auto"--}%
+                    %{--});--}%
+                    %{--$container.append($res);--}%
 
-                            %{--function buscarAsociar() {--}%
-                                %{--$res.html(spinner);--}%
-                                %{--var np = $.trim($input.val());--}%
-                                %{--$.ajax({--}%
-                                    %{--type    : "POST",--}%
-                                    %{--url     : "${createLink(action:'asociarTramite_ajax')}",--}%
-                                    %{--data    : {--}%
-                                        %{--codigo   : np,--}%
-                                        %{--original : nodeId--}%
-                                    %{--},--}%
-                                    %{--success : function (msg) {--}%
-                                        %{--$res.html(msg);--}%
-                                    %{--}--}%
-                                %{--});--}%
-                            %{--}--}%
+                    %{--function buscarAsociar() {--}%
+                    %{--$res.html(spinner);--}%
+                    %{--var np = $.trim($input.val());--}%
+                    %{--$.ajax({--}%
+                    %{--type    : "POST",--}%
+                    %{--url     : "${createLink(action:'asociarTramite_ajax')}",--}%
+                    %{--data    : {--}%
+                    %{--codigo   : np,--}%
+                    %{--original : nodeId--}%
+                    %{--},--}%
+                    %{--success : function (msg) {--}%
+                    %{--$res.html(msg);--}%
+                    %{--}--}%
+                    %{--});--}%
+                    %{--}--}%
 
-                            %{--$input.keyup(function (e) {--}%
-                                %{--if (e.keyCode == 13) {--}%
-                                    %{--buscarAsociar();--}%
-                                %{--}--}%
-                            %{--});--}%
+                    %{--$input.keyup(function (e) {--}%
+                    %{--if (e.keyCode == 13) {--}%
+                    %{--buscarAsociar();--}%
+                    %{--}--}%
+                    %{--});--}%
 
-                            %{--$btn.click(function () {--}%
-                                %{--buscarAsociar();--}%
-                                %{--return false;--}%
-                            %{--});--}%
+                    %{--$btn.click(function () {--}%
+                    %{--buscarAsociar();--}%
+                    %{--return false;--}%
+                    %{--});--}%
 
-                            %{--bootbox.dialog({--}%
-                                %{--id      : "dlgAsociar",--}%
-                                %{--title   : '<i class="fa fa-gift"></i> Asociar Trámite',--}%
-                                %{--message : $container,--}%
-                                %{--buttons : {--}%
-                                    %{--cancelar : {--}%
-                                        %{--label     : '<i class="fa fa-times"></i> Aceptar',--}%
-                                        %{--className : 'btn-default',--}%
-                                        %{--callback  : function () {--}%
-                                        %{--}--}%
-                                    %{--}--}%
-%{--//                                        asociar  : {--}%
-%{--//                                            id        : 'btnAsociar',--}%
-%{--//                                            label     : '<i class="fa fa-check"></i> Asociar',--}%
-%{--//                                            className : "btn-success",--}%
-%{--//                                            callback  : function () {--}%
-%{--//--}%
-%{--//                                            }--}%
-%{--//                                        }--}%
-                                %{--}--}%
-                            %{--});--}%
-                        %{--}--}%
+                    %{--bootbox.dialog({--}%
+                    %{--id      : "dlgAsociar",--}%
+                    %{--title   : '<i class="fa fa-gift"></i> Asociar Trámite',--}%
+                    %{--message : $container,--}%
+                    %{--buttons : {--}%
+                    %{--cancelar : {--}%
+                    %{--label     : '<i class="fa fa-times"></i> Aceptar',--}%
+                    %{--className : 'btn-default',--}%
+                    %{--callback  : function () {--}%
+                    %{--}--}%
+                    %{--}--}%
+                    %{--//                                        asociar  : {--}%
+                    %{--//                                            id        : 'btnAsociar',--}%
+                    %{--//                                            label     : '<i class="fa fa-check"></i> Asociar',--}%
+                    %{--//                                            className : "btn-success",--}%
+                    %{--//                                            callback  : function () {--}%
+                    %{--//--}%
+                    %{--//                                            }--}%
+                    %{--//                                        }--}%
+                    %{--}--}%
+                    %{--});--}%
+                    %{--}--}%
                     %{--};--}%
                 }
 
@@ -989,7 +989,7 @@
                 };
             }
 
-            if(estaEnviado && !estaRecibido){
+            if(estaEnviado && !estaRecibido && !tieneHijos && !estaArchivado && !estaAnulado){
                 items.desenviar = {
                     label  : "Quitar el enviado",
                     icon   : "fa fa-magic text-danger",
@@ -1001,114 +1001,114 @@
                                 id : tramiteId
                             },
                             success : function (msg) {
-                                //s.indexOf("oo") > -1
-                                var buttons = {};
-                                if (msg.indexOf("No puede quitar el enviado") > -1) {
-                                    buttons.aceptar = {
-                                        label     : "Aceptar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                            openLoader();
-                                            location.reload(true);
+                                if(msg == 'error'){
+                                    bootbox.alert('<strong>' + "No se puede quitar el enviado del trámite, debido a que posee trámites derivados." + '</strong>')
+                                }else{
+                                    var buttons = {};
+                                    if (msg.indexOf("No puede quitar el enviado") > -1) {
+                                        buttons.aceptar = {
+                                            label     : "Aceptar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                                openLoader();
+                                                location.reload(true);
+                                            }
                                         }
-                                    }
-                                } else {
-                                    buttons.cancelar = {
-                                        label     : "Cancelar",
-                                        className : "btn-primary",
-                                        callback  : function () {
-                                        }
-                                    };
-                                    buttons.desenviar = {
-                                        label     : "<i class='fa fa-magic'></i> Quitar enviado",
-                                        className : "btn-danger",
-                                        callback  : function () {
-                                            var ids = "";
-                                            $(".chkOne").each(function () {
-                                                if ($(this).hasClass("fa-check-square")) {
-                                                    if (ids != "") {
-                                                        ids += "_"
+                                    } else {
+                                        buttons.cancelar = {
+                                            label     : "Cancelar",
+                                            className : "btn-primary",
+                                            callback  : function () {
+                                            }
+                                        };
+                                        buttons.desenviar = {
+                                            label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                            className : "btn-danger",
+                                            callback  : function () {
+                                                var ids = "";
+                                                $(".chkOne").each(function () {
+                                                    if ($(this).hasClass("fa-check-square")) {
+                                                        if (ids != "") {
+                                                            ids += "_"
+                                                        }
+                                                        ids += $(this).attr("id");
                                                     }
-                                                    ids += $(this).attr("id");
-                                                }
-                                            });
-                                            if (ids) {
-                                                $.ajax({
-                                                    type: 'POST',
-                                                    url:'${createLink(controller: 'tramiteAdmin', action: 'observaciones_ajax')}',
-                                                    data:{
+                                                });
+                                                if (ids) {
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url:'${createLink(controller: 'tramiteAdmin', action: 'observaciones_ajax')}',
+                                                        data:{
 
-                                                    },
-                                                    success: function (msg1){
-                                                        bootbox.dialog({
-                                                            id      : "dlgQE",
-                                                            title   : '<span class="text-danger"><i class="fa fa-ban"></i> Observaciones del tramite - Quitar el Enviado</span>',
-                                                            message : msg1,
-                                                            buttons : {
-                                                                cancelar : {
-                                                                    label     : '<i class="fa fa-times"></i> Cancelar',
-                                                                    className : 'btn-primary',
-                                                                    callback  : function () {
-                                                                    }
-                                                                },
-                                                                quitar   : {
-                                                                    id        : 'btnQE',
-                                                                    label     : '<i class="fa fa-check"></i> Quitar Enviado',
-                                                                    className : "btn-success",
-                                                                    callback  : function () {
-                                                                        var textoQuitarParcial = $("#quitar").val();
-                                                                        if(textoQuitarParcial){
-                                                                            openLoader("Quitando enviado");
-                                                                            $.ajax({
-                                                                                type    : "POST",
-                                                                                url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
-                                                                                data    : {
-                                                                                    id  : tramiteId,
-                                                                                    ids : ids,
-                                                                                    obs: textoQuitarParcial
-                                                                                },
-                                                                                success : function (msg) {
-                                                                                    var parts = msg.split("_");
-                                                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                                                    if (parts[0] == "OK") {
-                                                                                        setTimeout(function () {
-//                                                                location.reload(true);
-                                                                                            $("#bloqueo-warning").hide();
-                                                                                            %{--location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";--}%
-                                                                                            location.reload(true)
-                                                                                        }, 1000);
-                                                                                    } else {
-//                                                        cargarBandeja(true)
-                                                                                        log("Envío del trámite cancelado", 'error');
-                                                                                        closeLoader();
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                        }else{
-                                                                            bootbox.alert({
-                                                                                message: "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i> Ingrese una observación!",
-                                                                                size: 'small'
-                                                                            });
-                                                                            return false;
+                                                        },
+                                                        success: function (msg1){
+                                                            bootbox.dialog({
+                                                                id      : "dlgQE",
+                                                                title   : '<span class="text-danger"><i class="fa fa-ban"></i> Observaciones del tramite - Quitar el Enviado</span>',
+                                                                message : msg1,
+                                                                buttons : {
+                                                                    cancelar : {
+                                                                        label     : '<i class="fa fa-times"></i> Cancelar',
+                                                                        className : 'btn-primary',
+                                                                        callback  : function () {
                                                                         }
+                                                                    },
+                                                                    quitar   : {
+                                                                        id        : 'btnQE',
+                                                                        label     : '<i class="fa fa-check"></i> Quitar Enviado',
+                                                                        className : "btn-success",
+                                                                        callback  : function () {
+                                                                            var textoQuitarParcial = $("#quitar").val();
+                                                                            if(textoQuitarParcial){
+                                                                                openLoader("Quitando enviado");
+                                                                                $.ajax({
+                                                                                    type    : "POST",
+                                                                                    url     : '${createLink(controller: 'tramite2', action:'desenviar_ajax')}',
+                                                                                    data    : {
+                                                                                        id  : tramiteId,
+                                                                                        ids : ids,
+                                                                                        obs: textoQuitarParcial
+                                                                                    },
+                                                                                    success : function (msg) {
+                                                                                        var parts = msg.split("_");
+                                                                                        log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                                                        if (parts[0] == "OK") {
+                                                                                            setTimeout(function () {
+                                                                                                $("#bloqueo-warning").hide();
+                                                                                                %{--location.href = "${createLink(controller: "tramite2", action: "bandejaSalida")}";--}%
+                                                                                                location.reload(true)
+                                                                                            }, 1000);
+                                                                                        } else {
+                                                                                            log("Envío del trámite cancelado", 'error');
+                                                                                            closeLoader();
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                            }else{
+                                                                                bootbox.alert({
+                                                                                    message: "<i class='fa fa-warning fa-3x pull-left text-warning text-shadow'></i> Ingrese una observación!",
+                                                                                    size: 'small'
+                                                                                });
+                                                                                return false;
+                                                                            }
 
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            } else {
-                                                bootbox.alert({
-                                                    message: "<i class='fa fa-warning fa-3x pull-left text-danger text-shadow'></i> No seleccionó ninguna persona!",
-                                                    size: 'small'
-                                                });
-                                                return false;
+                                                            });
+                                                        }
+                                                    });
+                                                } else {
+                                                    bootbox.alert({
+                                                        message: "<i class='fa fa-warning fa-3x pull-left text-danger text-shadow'></i> No seleccionó ninguna persona!",
+                                                        size: 'small'
+                                                    });
+                                                    return false;
+                                                }
                                             }
                                         }
                                     };
                                 }
-
                                 bootbox.dialog({
                                     title   : "Alerta",
                                     message : msg,
@@ -1161,7 +1161,7 @@
                     icon : "fa fa-file-o text-info"
                 },
                 paraArchivado    : {
-                    icon : "fa fa-file-o text-warning"
+                    icon : "fa fa-archive text-warning"
                 },
                 paraAnulado      : {
                     icon : "fa fa-ban text-muted"

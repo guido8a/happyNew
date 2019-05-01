@@ -1567,6 +1567,10 @@ class Tramite3Controller extends happy.seguridad.Shield {
             if (pdt.fechaAnulacion) {
                 rel = "anulado"
             }
+            if (pdt.fechaArchivo) {
+                rel = "archivado"
+            }
+
             def strInfo = tramiteInfo(pdt)
             def hijos = Tramite.findAllByAQuienContesta(pdt, [sort: "fechaCreacion", order: "asc"])
 //        def hijos

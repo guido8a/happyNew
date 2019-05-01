@@ -761,7 +761,6 @@
         };//anular
 
 
-
         var desenviar = {
             label  : "Quitar el enviado",
             icon   : "fa fa-magic text-danger",
@@ -773,77 +772,80 @@
                         id : id
                     },
                     success : function (msg) {
-                        //s.indexOf("oo") > -1
-                        var buttons = {};
-                        if (msg.indexOf("No puede quitar el enviado") > -1) {
-                            buttons.aceptar = {
-                                label     : "Aceptar",
-                                className : "btn-primary",
-                                callback  : function () {
-                                    openLoader();
-                                    location.reload(true);
-                                }
-                            }
-                        } else {
-                            buttons.cancelar = {
-                                label     : "Cancelar",
-                                className : "btn-primary",
-                                callback  : function () {
-                                }
-                            };
-                            buttons.desenviar = {
-                                label     : "<i class='fa fa-magic'></i> Quitar enviado",
-                                className : "btn-danger",
-                                callback  : function () {
-                                    var ids = "";
-                                    $(".chkOne").each(function () {
-                                        if ($(this).hasClass("fa-check-square")) {
-                                            if (ids != "") {
-                                                ids += "_"
-                                            }
-                                            ids += $(this).attr("id");
-                                        }
-                                    });
-                                    if (ids) {
-                                        openLoader("Quitando enviado");
-                                        $.ajax({
-                                            type    : "POST",
-                                            url     : '${createLink(action:'desenviar_ajax')}',
-                                            data    : {
-                                                id  : id,
-                                                ids : ids
-                                            },
-                                            success : function (msg) {
-                                                var parts = msg.split("_");
-                                                log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
-                                                if (parts[0] == "OK") {
-                                                    setTimeout(function () {
-//                                                                location.reload(true);
-                                                        $("#bloqueo-warning").hide();
-                                                        location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
-                                                    }, 1000);
-                                                    cargarBandeja();
-                                                } else {
-                                                    resetValues()
-//                                                        cargarBandeja(true)
-                                                    log("Envío del trámite cancelado", 'error')
-                                                    closeLoader();
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        log('No seleccionó ninguna persona', 'error')
-//
+                        if(msg == 'error'){
+                            bootbox.alert('<strong>' + "No se puede quitar el enviado del trámite, debido a que posee trámites derivados." + '</strong>')
+                        }else{
+                            var buttons = {};
+                            if (msg.indexOf("No puede quitar el enviado") > -1) {
+                                buttons.aceptar = {
+                                    label     : "Aceptar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                        openLoader();
+                                        location.reload(true);
                                     }
                                 }
-                            };
-                        }
+                            } else {
+                                buttons.cancelar = {
+                                    label     : "Cancelar",
+                                    className : "btn-primary",
+                                    callback  : function () {
+                                    }
+                                };
+                                buttons.desenviar = {
+                                    label     : "<i class='fa fa-magic'></i> Quitar enviado",
+                                    className : "btn-danger",
+                                    callback  : function () {
+                                        var ids = "";
+                                        $(".chkOne").each(function () {
+                                            if ($(this).hasClass("fa-check-square")) {
+                                                if (ids != "") {
+                                                    ids += "_"
+                                                }
+                                                ids += $(this).attr("id");
+                                            }
+                                        });
+                                        if (ids) {
+                                            openLoader("Quitando enviado");
+                                            $.ajax({
+                                                type    : "POST",
+                                                url     : '${createLink(action:'desenviar_ajax')}',
+                                                data    : {
+                                                    id  : id,
+                                                    ids : ids
+                                                },
+                                                success : function (msg) {
+                                                    var parts = msg.split("_");
+                                                    log(parts[1], parts[0] == "OK" ? "success" : "error"); // log(msg, type, title, hide)
+                                                    if (parts[0] == "OK") {
+                                                        setTimeout(function () {
+//                                                                location.reload(true);
+                                                            $("#bloqueo-warning").hide();
+                                                            location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                        }, 1000);
+                                                        cargarBandeja();
+                                                    } else {
+                                                        resetValues()
+//                                                        cargarBandeja(true)
+                                                        log("Envío del trámite cancelado", 'error')
+                                                        closeLoader();
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            log('No seleccionó ninguna persona', 'error')
+//
+                                        }
+                                    }
+                                };
+                            }
 
-                        bootbox.dialog({
-                            title   : "Alerta",
-                            message : msg,
-                            buttons : buttons
-                        });
+                            bootbox.dialog({
+                                title   : "Alerta",
+                                message : msg,
+                                buttons : buttons
+                            });
+                        }
                     }
                 });
             }

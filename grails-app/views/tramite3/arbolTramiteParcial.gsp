@@ -261,13 +261,16 @@
                     icon : "fa fa-edit text-info"
                 },
                 para             : {
-                    icon : "fa fa-file-o text-info"
+                    icon : "fa fa-file-o text-success"
                 },
                 copia            : {
                     icon : "fa fa-files-o text-info"
                 },
                 anulado          : {
                     icon : "fa fa-ban text-muted"
+                },
+                archivado    : {
+                    icon : "fa fa-archive text-warning"
                 }
             }
         });
