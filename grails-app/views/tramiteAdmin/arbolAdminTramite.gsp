@@ -518,7 +518,8 @@
                                                         openLoader("Anulando");
                                                         $.ajax({
                                                             type    : 'POST',
-                                                            url     : '${createLink(controller: "tramiteAdmin", action: "anular")}',
+                                                            %{--url     : '${createLink(controller: "tramiteAdmin", action: "anular")}',--}%
+                                                            url     : '${createLink(controller: "tramiteAdmin", action: "anularNuevo")}',
                                                             data    : {
                                                                 id    : nodeId,
                                                                 texto : $("#observacion").val(),

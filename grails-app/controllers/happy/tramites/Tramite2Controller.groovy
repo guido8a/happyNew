@@ -1243,7 +1243,7 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
                         //                    if (band) {
                         if (cantEnviados > 0) {
-                            println("entro " + envio)
+//                            println("enviar varios " + envio)
                             def pdt = new PersonaDocumentoTramite()
                             pdt.tramite = tramite
                             pdt.persona = session.usuario

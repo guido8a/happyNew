@@ -1635,6 +1635,7 @@ class TramiteAdminController /*extends Shield*/ {
 
         def persDocTram
 
+        /* se obtiene la PersonaDocumentoTramite a anularse */
         if(params.tipo == '1'){
             def trm = Tramite.get(params.id)
             def rol = RolPersonaTramite.findByCodigo('R001')
@@ -1996,6 +1997,92 @@ class TramiteAdminController /*extends Shield*/ {
         }
     }
 
+    def anularNuevo() {
+        println "anularNuevo $params"
+        def cn = dbConnectionService.getConnection()
+
+        def pdt
+        /* se obtiene la PersonaDocumentoTramite a anularse */
+        if(params.tipo == '1'){
+            def trm = Tramite.get(params.id)
+            def rol = RolPersonaTramite.findByCodigo('R001')
+//            persDocTram = PersonaDocumentoTramite.findByTramite(trm)
+            pdt = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(trm, rol)
+        }else{
+            pdt = PersonaDocumentoTramite.get(params.id)
+        }
+
+        def estadoArchivado = EstadoTramite.findByCodigo("E005")
+        def estadoAnulado = EstadoTramite.findByCodigo("E006")
+        def estados = [estadoArchivado, estadoAnulado]
+        def copia = RolPersonaTramite.findByCodigo("R002")
+
+        if (pdt == null) {
+            render "NO*el trámite no se puede anular"
+            return
+        }
+
+        if (estados.contains(pdt?.estado)) {
+            render "NO*No puede anular el trámite, se encuentra en estado ${persDocTram.estado.descripcion} "
+
+        } else {
+            def accion = "Anulado"
+            def solicitadoPor = params.aut
+            def usuario = session.usuario.login
+            def nuevaObservacion = params.texto
+
+            def obsr = tramitesService.observaciones("anterior", accion, solicitadoPor, usuario, "", nuevaObservacion)
+            println "---> $obsr"
+
+            cn.eachRow("select prtr__id, trmt__id, trmtcdgo from prtr_cadena(${pdt.id.toInteger()})") { d ->
+                println "Anula: ${d.trmtcdgo}"
+            }
+
+            /* si el trámite a anularse tiene contestación nueva viva no es necesario reactivar */
+
+            if (pdt.tramite.aQuienContesta && (!pdt.tramite.aQuienContesta.fechaArchivo) && !pdt.tramite.aQuienContesta.fechaAnulacion) {
+                def nuevaObs = "Reactivado por anulación de: ${pdt.tramite.codigo}"
+                def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
+                accion = "Reactivado por anulación de trámite derivado"
+                solicitadoPor = params.aut
+                usuario = session.usuario.login
+//                def texto = nuevaObs
+                nuevaObservacion = params.texto
+                println "se reactiva: ${pdt.tramite.aQuienContesta.tramite.codigo}"
+//                pdt.tramite.aQuienContesta.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, nuevaObs, nuevaObservacion)
+//                pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
+//                pdt.tramite.aQuienContesta.save(flush: true)
+            }
+
+            /* si el trámite a anularse es un "para", sus copias se anulan incluyendo cadena */
+            println "evalua: ${pdt.rolPersonaTramite?.id == 1}"
+            if (pdt.rolPersonaTramite.id == 1) {
+                accion = "Anulado"
+                solicitadoPor = params.aut
+                usuario = session.usuario.login
+                nuevaObservacion = params.texto
+
+                obsr = tramitesService.observaciones("anterior", accion, solicitadoPor, usuario, "", nuevaObservacion)
+                println "Anular copias ---> $obsr"
+
+                def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, copia)
+                println "hay copias: ${copias?.size()}"
+                copias.each { pr ->
+                    cn.eachRow("select prtr__id, trmt__id, trmtcdgo from prtr_cadena(${pr.id.toInteger()})") { d ->
+                        println "Anula copia: ${d.trmtcdgo}"
+                    }
+                }
+
+                /* each copias .. anular si no están anuladas */
+
+
+            }
+
+
+
+            render "OK"
+        }
+    }
 
 
     def desanularPdt(PersonaDocumentoTramite pdt) {
