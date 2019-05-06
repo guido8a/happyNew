@@ -2033,18 +2033,19 @@ class TramiteAdminController /*extends Shield*/ {
             def usuario = session.usuario.login
             def nuevaObservacion = params.texto
 
-            def obsr = tramitesService.observaciones("anterior", accion, solicitadoPor, usuario, "", nuevaObservacion)
+            println "---> prtr: ${pdt.id} anterior: ${pdt.observaciones}"
+            def obsr = tramitesService.observaciones(pdt.observaciones, accion, solicitadoPor, usuario, "", nuevaObservacion)
             println "---> $obsr \n prtr__id: ${pdt.id}"
 
             sql = "update prtr set edtr__id = 9, prtrobsr = '${obsr}', prtrfcan = '${fcha}' " +
                     "where prtr__id in (select prtr__id from prtr_cadena(${pdt.id.toInteger()})) and " +
                     "edtr__id != 9"
             println "sql1: $sql"
-//            cn.execute(sql.toString())
-            sql = "update trmt set edtr__id = 9, trmtobsr = '${obsr}' " +
+            cn.execute(sql.toString())
+            sql = "update trmt set trmtobsr = '${obsr}' " +
                     "where trmt__id in (select distinct trmt__id from prtr_cadena(${pdt.id.toInteger()}))"
             println "sql2: $sql"
-//            cn.execute(sql.toString())
+            cn.execute(sql.toString())
 
             cn.eachRow("select prtr__id, trmt__id, trmtcdgo from prtr_cadena(${pdt.id.toInteger()})") { d ->
                 println "Anulado: ${d.trmtcdgo}"
@@ -2066,19 +2067,22 @@ class TramiteAdminController /*extends Shield*/ {
             println "contestación viva: ${vivos}"
 
             /* solo que este como trámite vivo del padre 0> reactivar padre */
-            if (vivos < 1) {
+            if (vivos < 1 && (pdt.rolPersonaTramite.id != 2)) {
                 def nuevaObs = "Reactivado por anulación de: ${pdt.tramite.codigo}"
-                def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
+                def observacionOriginal = pdt.tramite.aQuienContesta?.observaciones
                 accion = "Reactivado por anulación de trámite derivado"
                 solicitadoPor = params.aut
                 usuario = session.usuario.login
 //                def texto = nuevaObs
                 nuevaObservacion = params.texto
-                println "se reactiva: ${pdt.tramite.aQuienContesta.tramite.codigo} prtr: ${pdt.tramite.aQuienContesta.id}"
-                if(pdt.tramite.aQuienContesta.fechaRecepcion) {  // se reactiva si tiene fecha de recepción
-//                pdt.tramite.aQuienContesta.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, nuevaObs, nuevaObservacion)
-//                pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
-//                pdt.tramite.aQuienContesta.save(flush: true)
+
+                if(pdt.tramite.aQuienContesta) {
+                    println "se reactiva: ${pdt.tramite.aQuienContesta?.tramite?.codigo} prtr: ${pdt.tramite.aQuienContesta.id}"
+                    if(pdt.tramite.aQuienContesta.fechaRecepcion) {  // se reactiva si tiene fecha de recepción
+                        pdt.tramite.aQuienContesta.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, nuevaObs, nuevaObservacion)
+                        pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
+                        pdt.tramite.aQuienContesta.save(flush: true)
+                    }
                 }
             }
 
@@ -2090,13 +2094,25 @@ class TramiteAdminController /*extends Shield*/ {
                 usuario = session.usuario.login
                 nuevaObservacion = params.texto
 
-                obsr = tramitesService.observaciones("anterior", accion, solicitadoPor, usuario, "", nuevaObservacion)
-                println "Anular copias ---> $obsr"
 
                 def copias = PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramite(pdt.tramite, copia)
                 println "hay copias: ${copias?.size()}"
                 copias.each { pr ->
                     cn.eachRow("select prtr__id, trmt__id, trmtcdgo from prtr_cadena(${pr.id.toInteger()})") { d ->
+
+                        obsr = tramitesService.observaciones(pr.observaciones, accion, solicitadoPor, usuario, "", nuevaObservacion)
+                        println "Anular copias ---> $obsr"
+
+
+                        sql = "update prtr set edtr__id = 9, prtrobsr = '${obsr}', prtrfcan = '${fcha}' " +
+                                "where prtr__id in (select prtr__id from prtr_cadena(${pr.id.toInteger()})) and " +
+                                "edtr__id != 9"
+                        println "sql1: $sql"
+                        cn.execute(sql.toString())
+                        sql = "update trmt set trmtobsr = '${obsr}' " +
+                                "where trmt__id in (select distinct trmt__id from prtr_cadena(${pr.id.toInteger()}))"
+                        println "sql2: $sql"
+                        cn.execute(sql.toString())
                         println "Anula copia: ${d.trmtcdgo}"
                     }
                 }
