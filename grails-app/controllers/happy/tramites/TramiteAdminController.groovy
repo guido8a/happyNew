@@ -2000,6 +2000,8 @@ class TramiteAdminController /*extends Shield*/ {
     def anularNuevo() {
         println "anularNuevo $params"
         def cn = dbConnectionService.getConnection()
+        def sql = ""
+        def fcha = new Date().format('yyyy-MM-dd HH:mm:ss.SSS')
 
         def pdt
         /* se obtiene la PersonaDocumentoTramite a anularse */
@@ -2032,15 +2034,34 @@ class TramiteAdminController /*extends Shield*/ {
             def nuevaObservacion = params.texto
 
             def obsr = tramitesService.observaciones("anterior", accion, solicitadoPor, usuario, "", nuevaObservacion)
-            println "---> $obsr"
+            println "---> $obsr \n prtr__id: ${pdt.id}"
+
+            sql = "update prtr set edtr__id = 9, prtrobsr = '${obsr}', prtrfcan = '${fcha}' " +
+                    "where prtr__id in (select prtr__id from prtr_cadena(${pdt.id.toInteger()})) and " +
+                    "edtr__id != 9"
+            println "sql1: $sql"
+//            cn.execute(sql.toString())
+            sql = "update trmt set edtr__id = 9, trmtobsr = '${obsr}' " +
+                    "where trmt__id in (select distinct trmt__id from prtr_cadena(${pdt.id.toInteger()}))"
+            println "sql2: $sql"
+//            cn.execute(sql.toString())
 
             cn.eachRow("select prtr__id, trmt__id, trmtcdgo from prtr_cadena(${pdt.id.toInteger()})") { d ->
-                println "Anula: ${d.trmtcdgo}"
+                println "Anulado: ${d.trmtcdgo}"
             }
 
             /* si el trámite a anularse tiene contestación nueva viva no es necesario reactivar */
 
-            if (pdt.tramite.aQuienContesta && (!pdt.tramite.aQuienContesta.fechaArchivo) && !pdt.tramite.aQuienContesta.fechaAnulacion) {
+            sql = "select count(*) cnta from trmt, prtr " +
+                "where prtrcnts = ${pdt.tramite.aQuienContesta.id} and trmtpdre = ${pdt.tramite.padre.id} and " +
+                "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+            def vivos = cn.rows(sql.toString())[0].cnta
+
+            println "sql: $sql"
+            println "contestación viva: ${vivos}"
+
+            /* solo que este como trámite vivo del padre 0> reactivar padre */
+            if (vivos < 1) {
                 def nuevaObs = "Reactivado por anulación de: ${pdt.tramite.codigo}"
                 def observacionOriginal = pdt.tramite.aQuienContesta.observaciones
                 accion = "Reactivado por anulación de trámite derivado"
@@ -2048,10 +2069,12 @@ class TramiteAdminController /*extends Shield*/ {
                 usuario = session.usuario.login
 //                def texto = nuevaObs
                 nuevaObservacion = params.texto
-                println "se reactiva: ${pdt.tramite.aQuienContesta.tramite.codigo}"
+                println "se reactiva: ${pdt.tramite.aQuienContesta.tramite.codigo} prtr: ${pdt.tramite.aQuienContesta.id}"
+                if(pdt.tramite.aQuienContesta.fechaRecepcion) {  // se reactiva si tiene fecha de recepción
 //                pdt.tramite.aQuienContesta.observaciones = tramitesService.observaciones(observacionOriginal, accion, solicitadoPor, usuario, nuevaObs, nuevaObservacion)
 //                pdt.tramite.aQuienContesta.estado = EstadoTramite.findByCodigo("E004")   // recibido
 //                pdt.tramite.aQuienContesta.save(flush: true)
+                }
             }
 
             /* si el trámite a anularse es un "para", sus copias se anulan incluyendo cadena */
