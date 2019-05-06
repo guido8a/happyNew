@@ -2721,4 +2721,22 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         return[documento: documento, para: destinatario, asunto: params.asunto, color: color]
     }
+
+
+    def revisarHijos () {
+
+//        println("params " + params)
+
+        def tramite = Tramite.get(params.id)
+
+        def sql = "select * from trmt_cadena('${tramite?.id}') where edtr__id not in (9,5);"
+        def cn = dbConnectionService.getConnection()
+        def rows = cn.rows(sql.toString())
+
+        if(rows.size() == 1){
+            render "no"
+        }else{
+            render "ok"
+        }
+    }
 }

@@ -693,70 +693,85 @@
             label  : 'Anular trámite',
             icon   : "fa fa-close",
             action: function () {
-
                 $.ajax({
-                    type    : "POST",
-                    url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
-                    data    : {
-                        id   : id,
-                        tipo : 1,
-                        msg  : "<p class='lead'>El trámite está por ser anulado. Está seguro?</p>",
-                        icon : "fa-ban"
+                   type: 'POST',
+                    url: "${createLink(controller: 'tramite2', action: 'revisarHijos')}",
+                    data:{
+                        id: id
                     },
-                    success : function (msg) {
-                        bootbox.dialog({
-                            id      : "dlgAnular",
-                            title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',
-                            message : msg,
-                            buttons : {
-                                cancelar : {
-                                    label     : '<i class="fa fa-times"></i> Cancelar',
-                                    className : 'btn-danger',
-                                    callback  : function () {
-                                    }
+                    success: function (msg){
+                        if(msg == 'ok'){
+                            bootbox.alert("No se puedee anular el trámite, ya que posee trámites derivados");
+                        }else{
+                            $.ajax({
+                                type    : "POST",
+                                url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
+                                data    : {
+                                    id   : id,
+                                    tipo : 1,
+                                    msg  : "<p class='lead'>El trámite está por ser anulado. Está seguro?</p>",
+                                    icon : "fa-ban"
                                 },
-                                anular   : {
-                                    id        : 'btnArchivar',
-                                    label     : '<i class="fa fa-check"></i> Anular',
-                                    className : "btn-success",
-                                    callback  : function () {
-                                        var $txt = $("#aut");
-                                        if (validaAutorizacion($txt)) {
-                                            openLoader("Anulando");
-                                            $.ajax({
-                                                type    : 'POST',
-                                                url     : '${createLink(controller: "tramiteAdmin", action: "anularSalida")}',
-                                                data    : {
-                                                    id    : id,
-                                                    tipo : 1,
-                                                    texto : $("#observacion").val(),
-                                                    aut   : $txt.val()
-                                                },
-                                                success : function (msg) {
-                                                    var parts = msg.split("*");
-                                                    if (parts[0] == 'OK') {
-                                                        log("Trámite anulado correctamente", 'success');
-                                                        setTimeout(function () {
-                                                            location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
-                                                        }, 500);
-                                                    } else if (parts[0] == 'NO') {
-                                                        closeLoader();
-                                                        log("Error al anular el trámite!", 'error');
-                                                        setTimeout(function () {
-                                                            location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
-                                                        }, 600);
+                                success : function (msg) {
+                                    bootbox.dialog({
+                                        id      : "dlgAnular",
+                                        title   : '<span class="text-danger"><i class="fa fa-ban"></i> Anular Tramite</span>',
+                                        message : msg,
+                                        buttons : {
+                                            cancelar : {
+                                                label     : '<i class="fa fa-times"></i> Cancelar',
+                                                className : 'btn-danger',
+                                                callback  : function () {
+                                                }
+                                            },
+                                            anular   : {
+                                                id        : 'btnArchivar',
+                                                label     : '<i class="fa fa-check"></i> Anular',
+                                                className : "btn-success",
+                                                callback  : function () {
+                                                    var $txt = $("#aut");
+                                                    if (validaAutorizacion($txt)) {
+                                                        openLoader("Anulando");
+                                                        $.ajax({
+                                                            type    : 'POST',
+                                                            %{--url     : '${createLink(controller: "tramiteAdmin", action: "anularSalida")}',--}%
+                                                            url     : '${createLink(controller: "tramiteAdmin", action: "anularNuevo")}',
+                                                            data    : {
+                                                                id    : id,
+                                                                tipo : 1,
+                                                                texto : $("#observacion").val(),
+                                                                aut   : $txt.val()
+                                                            },
+                                                            success : function (msg) {
+                                                                var parts = msg.split("*");
+                                                                if (parts[0] == 'OK') {
+                                                                    log("Trámite anulado correctamente", 'success');
+                                                                    setTimeout(function () {
+                                                                        location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                                    }, 500);
+                                                                } else if (parts[0] == 'NO') {
+                                                                    closeLoader();
+                                                                    log(parts[1], 'error');
+                                                                    setTimeout(function () {
+                                                                        location.href = "${createLink(controller: "tramite2", action: "bandejaSalidaDep")}";
+                                                                    }, 600);
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        return false;
                                                     }
                                                 }
-                                            });
-                                        } else {
-                                            return false;
+                                            }
                                         }
-                                    }
+                                    });
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
-                });
+                })
+
+
             }
         };//anular
 

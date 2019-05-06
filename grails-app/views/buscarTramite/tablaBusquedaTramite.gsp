@@ -140,6 +140,10 @@ html[xmlns] .clearfix {
                     <g:set var="clase" value="${clase + ' enviado'}"/>
                 </g:if>
 
+                <g:if test="${tramite?.estadoTramite?.codigo == 'E001'}">
+                    <g:set var="clase" value="${clase + ' E001'}"/>
+                </g:if>
+
                 <tr id="${tramite.id}" data-id="${tramite.id}" padre="${padre}" class="${clase} ${externo}" anulados="${receptoresAnulados.size()}"
                     dep="${tramite?.de?.departamentoId}" principal="${tramite.tramitePrincipal}" para="${para}" respuestas="${respuestas}"
                     de="${tramite.tipoDocumento.codigo == 'DEX' ? 'E_' + tramite.id :
