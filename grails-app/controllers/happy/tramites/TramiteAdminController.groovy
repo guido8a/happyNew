@@ -2051,13 +2051,18 @@ class TramiteAdminController /*extends Shield*/ {
             }
 
             /* si el trámite a anularse tiene contestación nueva viva no es necesario reactivar */
-
-            sql = "select count(*) cnta from trmt, prtr " +
-                "where prtrcnts = ${pdt.tramite.aQuienContesta.id} and trmtpdre = ${pdt.tramite.padre.id} and " +
-                "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+            if(pdt.tramite.aQuienContesta) {
+                sql = "select count(*) cnta from trmt, prtr " +
+                        "where prtrcnts = ${pdt.tramite.aQuienContesta.id} and trmtpdre = ${pdt.tramite.padre.id} and " +
+                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+            } else { /* es un trámite principal */
+                sql = "select count(*) cnta from trmt, prtr " +
+                        "where trmtpdre = ${pdt.tramite.id} and " +
+                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+            }
+            println "sql: $sql"
             def vivos = cn.rows(sql.toString())[0].cnta
 
-            println "sql: $sql"
             println "contestación viva: ${vivos}"
 
             /* solo que este como trámite vivo del padre 0> reactivar padre */
