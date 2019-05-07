@@ -2017,13 +2017,15 @@ class TramiteAdminController /*extends Shield*/ {
         def estadoArchivado = EstadoTramite.findByCodigo("E005")
         def estadoAnulado = EstadoTramite.findByCodigo("E006")
         def estadoPorEnviar = EstadoTramite.findByCodigo("E001")
-        def estados = [estadoArchivado, estadoAnulado, estadoPorEnviar]
+//        def estados = [estadoArchivado, estadoAnulado, estadoPorEnviar]
+        def estados = [estadoArchivado, estadoAnulado]
         def copia = RolPersonaTramite.findByCodigo("R002")
 
         if (pdt == null) {
             render "NO*el trámite no se puede anular"
             return
         }
+
 
         if (estados.contains(pdt?.estado)) {
             render "NO*No puede anular el trámite, se encuentra en estado ${pdt.estado.descripcion} "

@@ -727,16 +727,16 @@
             label  : 'Anular trámite',
             icon   : "fa fa-close",
             action: function () {
-                %{--$.ajax({--}%
-                    %{--type: 'POST',--}%
-                    %{--url: "${createLink(controller: 'tramite2', action: 'revisarHijos')}",--}%
-                    %{--data:{--}%
-                        %{--id: id--}%
-                    %{--},--}%
-                    %{--success: function (msg){--}%
-                        %{--if(msg == 'ok'){--}%
-                            %{--bootbox.alert("No se puedee anular el trámite, ya que posee trámites derivados");--}%
-                        %{--}else{--}%
+                $.ajax({
+                    type: 'POST',
+                    url: "${createLink(controller: 'tramite2', action: 'revisarHijos')}",
+                    data:{
+                        id: id
+                    },
+                    success: function (msg){
+                        if(msg == 'ok'){
+                            bootbox.alert("No se puedee anular el trámite, ya que posee trámites derivados");
+                        }else{
                             $.ajax({
                                 type    : "POST",
                                 url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAnulados')}",
@@ -801,13 +801,9 @@
                                     });
                                 }
                             });
-
-
-//                        }
-//                    }
-//                });
-
-
+                        }
+                    }
+                });
             }
         };//anular
 

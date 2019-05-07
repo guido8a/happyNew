@@ -537,7 +537,7 @@
                                                                     log(parts[1], 'error');
                                                                     setTimeout(function () {
                                                                         location.reload(true);
-                                                                    }, 1500);
+                                                                    }, 2500);
                                                                 }
                                                             }
                                                         });
