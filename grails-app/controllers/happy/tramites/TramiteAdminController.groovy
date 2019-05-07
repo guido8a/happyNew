@@ -2040,7 +2040,7 @@ class TramiteAdminController /*extends Shield*/ {
 
             sql = "update prtr set edtr__id = 9, prtrobsr = '${obsr}', prtrfcan = '${fcha}' " +
                     "where prtr__id in (select prtr__id from prtr_cadena(${pdt.id.toInteger()})) and " +
-                    "edtr__id != 9"
+                    "coalesce(edtr__id, 0) != 9"
             println "sql1: $sql"
             cn.execute(sql.toString())
             sql = "update trmt set trmtobsr = '${obsr}' " +
@@ -2056,11 +2056,11 @@ class TramiteAdminController /*extends Shield*/ {
             if(pdt.tramite.aQuienContesta) {
                 sql = "select count(*) cnta from trmt, prtr " +
                         "where prtrcnts = ${pdt.tramite.aQuienContesta.id} and trmtpdre = ${pdt.tramite.padre.id} and " +
-                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and coalesce(prtr.edtr__id,0) not in (9) and trmtesrn = 'S'"
             } else { /* es un trámite principal */
                 sql = "select count(*) cnta from trmt, prtr " +
                         "where trmtpdre = ${pdt.tramite.id} and " +
-                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and prtr.edtr__id not in (9) and trmtesrn = 'S'"
+                        "prtr.trmt__id = trmt.trmt__id and rltr__id in (1,2) and coalesce(prtr.edtr__id,0) not in (9) and trmtesrn = 'S'"
             }
             println "sql: $sql"
             def vivos = cn.rows(sql.toString())[0].cnta
@@ -2107,7 +2107,7 @@ class TramiteAdminController /*extends Shield*/ {
 
                         sql = "update prtr set edtr__id = 9, prtrobsr = '${obsr}', prtrfcan = '${fcha}' " +
                                 "where prtr__id in (select prtr__id from prtr_cadena(${pr.id.toInteger()})) and " +
-                                "edtr__id != 9"
+                                "coalesce(edtr__id,0) != 9"
                         println "sql1: $sql"
                         cn.execute(sql.toString())
                         sql = "update trmt set trmtobsr = '${obsr}' " +
