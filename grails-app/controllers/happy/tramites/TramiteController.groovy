@@ -520,7 +520,7 @@ class TramiteController extends happy.seguridad.Shield {
             return
         }
 
-//        println("params " + params)
+        println("params ct " + params)
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""
@@ -621,7 +621,7 @@ class TramiteController extends happy.seguridad.Shield {
             pdt = p.para
             padre = herm.padre
 
-//            println "Hermano: " + herm
+            println "Hermano: " + herm
             tramite.agregadoA = herm
 
             if (!padre) {
