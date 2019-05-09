@@ -2198,7 +2198,7 @@ class TramiteAdminController /*extends Shield*/ {
 
     def desanular() {
 
-//        println("params " + params)
+        println("params " + params)
 
         def pdt = PersonaDocumentoTramite.get(params.id)
         def tramite = pdt.tramite
@@ -2211,13 +2211,17 @@ class TramiteAdminController /*extends Shield*/ {
             def rol = RolPersonaTramite.findByCodigo("R001")
             def prtrPadre = PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(tramitePadre, rol)
             def fechaRecibidoPadre = prtrPadre.fechaRecepcion
+            def fechaEnviadoPadre = prtrPadre.fechaEnvio
 
             def fechaEnvioOriginal = tramite.fechaCreacion
 
-//            println("recibido " + fechaRecibidoPadre?.format("dd-MM-yyyy HH:mm"))
-//            println("fecha envio " + fechaEnvioOriginal?.format("dd-MM-yyyy HH:mm"))
+            println("recibido " + fechaRecibidoPadre?.format("dd-MM-yyyy HH:mm"))
+            println("enviado padre " + fechaEnviadoPadre?.format("dd-MM-yyyy HH:mm"))
+            println("fecha envio " + fechaEnvioOriginal?.format("dd-MM-yyyy HH:mm"))
 
-            if(fechaRecibidoPadre?.getTime()  <= fechaEnvioOriginal?.getTime()){
+//            if(fechaRecibidoPadre?.getTime()  <= fechaEnvioOriginal?.getTime()){
+            if(fechaEnviadoPadre?.getTime() <= fechaEnvioOriginal?.getTime()){
+                println("entro 1")
                 listaDesanular.each { p ->
                     println "desanular: " + p.rolPersonaTramite.descripcion
                     if (!desanularPdt(p)) {
@@ -2225,10 +2229,12 @@ class TramiteAdminController /*extends Shield*/ {
                     }
                 }
             }else{
+                println("entro 2")
                 ok = false
             }
 
         }else{
+            println("entro 3")
             listaDesanular.each { p ->
                 println "desanular: " + p.rolPersonaTramite.descripcion
                 if (!desanularPdt(p)) {
