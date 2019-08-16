@@ -5,8 +5,10 @@ import com.lowagie.text.Element
 import com.lowagie.text.Font
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfWriter
+import grails.converters.JSON
 import happy.seguridad.Persona;
 import happy.seguridad.Shield
+import happy.tramites.Departamento
 import happy.tramites.EstadoTramite
 import happy.tramites.PersonaDocumentoTramite
 import happy.tramites.RolPersonaTramite
@@ -358,4 +360,93 @@ class ReportesPersonalesController extends Shield {
         pw.close();
 
     }
+
+    def reportesGraficos () {
+
+    }
+
+    def estadoTramites () {
+
+//        println("tr " + params)
+        def departamento = Departamento.get(params.departamento)
+
+        def cn = dbConnectionService.getConnection()
+
+        def data = [:]
+        def retrasados = ""
+        def noRecibidos = ""
+        def generados = ""
+        def enviados = ""
+        def recibidos = ""
+        def noEnviados = ""
+
+        data.titulo = "Estados de trámites por Departamento"
+
+        def sql = "select * from retrasados(${departamento?.id}, '${params.fechaInicio}', '${params.fechaFin}') order by generados desc limit 1"
+
+//        println("sql " + sql)
+
+        cn.eachRow(sql.toString()) { d ->
+            retrasados += retrasados == ''? d.retrasados : "," + d.retrasados
+            noRecibidos += noRecibidos == ''? d.no_recibidos : "," + d.no_recibidos
+            generados += generados == ''? d.generados : "," + d.generados
+            enviados += enviados == ''? d.enviados : "," + d.enviados
+            recibidos += recibidos == ''? d.recibidos : "," + d.recibidos
+            noEnviados += noEnviados == ''? d.no_enviados : "," + d.no_enviados
+        }
+
+//        println "cantones: $sql"
+        data.cabecera = departamento?.descripcion ?: ''
+        data.retrasados = retrasados
+        data.noRecibidos = noRecibidos
+        data.generados = generados
+        data.enviados = enviados
+        data.recibidos = recibidos
+        data.noEnviados = noEnviados
+//        println "++data: $data"
+//        println "++data: ${data as JSON}"
+
+        render data as JSON
+    }
+
+
+    def seleccionOficina () {
+        def departamentos = Departamento.findAllByActivo('1').sort{it.descripcion}
+
+        return [departamentos: departamentos]
+    }
+
+    def tiemposRespuesta () {
+
+//        println("tr " + params)
+        def departamento = Departamento.get(params.departamento)
+
+        def cn = dbConnectionService.getConnection()
+
+        def data = [:]
+        def tiempo1 = ""
+        def tiempo2 = ""
+        def tiempo3 = ""
+
+        data.titulo = "Tiempos de Respuesta por Departamento"
+
+        def sql = "select sum(tmpo0003) dias3, sum(tmpo0410) de4a10, sum(tmpo11dd) mas11 from rp_tiempos('${params.fechaInicio}', '${params.fechaFin}', ${departamento?.id}, null);"
+
+//        println("sql " + sql)
+
+        cn.eachRow(sql.toString()) { d ->
+            tiempo1 += tiempo1 == ''? d.dias3 : "," + d.dias3
+            tiempo2 += tiempo2 == ''? d.de4a10 : "," + d.de4a10
+            tiempo3 += tiempo3 == ''? d.mas11 : "," + d.mas11
+        }
+
+        data.cabecera = departamento?.descripcion ?: ''
+        data.tiempo1 = tiempo1
+        data.tiempo2 = tiempo2
+        data.tiempo3 = tiempo3
+
+        render data as JSON
+    }
+
+
 }

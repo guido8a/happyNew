@@ -226,3 +226,14 @@ $.expr[":"].contains = $.expr.createPseudo(function (arg) {
         return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
     };
 });
+
+function cargarLoader(texto){
+
+    var dialog = bootbox.dialog({
+        message: '<p class="text-center mb-0" style="font-size: 14px"><i class="fa fa-3x fa-spin fa-cog"></i>' + texto + '</p>',
+        closeButton: false
+    });
+
+    return dialog
+
+}
