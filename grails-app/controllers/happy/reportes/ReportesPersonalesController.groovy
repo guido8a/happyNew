@@ -418,7 +418,7 @@ class ReportesPersonalesController extends Shield {
 
     def tiemposRespuesta () {
 
-        println("tr " + params)
+//        println("tr " + params)
         def departamento = Departamento.get(params.departamento)
 
         def cn = dbConnectionService.getConnection()
@@ -448,5 +448,20 @@ class ReportesPersonalesController extends Shield {
         render data as JSON
     }
 
+    def comprobarFechas () {
+
+        if(!params.fechaInicio || !params.fechaFin){
+            render "no_Ingrese las fechas solicitadas!"
+        }else{
+            def fechaInicio = new Date().parse("dd-MM-yyyy", params.fechaInicio)
+            def fechaFin = new Date().parse("dd-MM-yyyy", params.fechaFin)
+
+            if(fechaInicio >= fechaFin){
+                render "no_La fecha de INICIO es mayor a la fecha de FIN"
+            }else{
+                render "ok"
+            }
+        }
+    }
 
 }
