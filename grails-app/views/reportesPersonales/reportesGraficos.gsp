@@ -142,7 +142,7 @@
                                                 datasets: [
                                                     {
                                                         label: 'Recibidos',
-                                                        backgroundColor: "#9a53af",
+                                                        backgroundColor: "#b25522",
                                                         stack: 'Stack 1',
                                                         data: json.recibidos.split(',')
                                                     },
@@ -268,7 +268,7 @@
                                                 datasets: [
                                                     {
                                                         label: 'Tiempo hasta 3 días',
-                                                        backgroundColor: "#9a53af",
+                                                        backgroundColor: "#4ba0a0",
                                                         stack: 'Stack 1',
                                                         data: json.tiempo1.split(',')
                                                     },
@@ -374,7 +374,7 @@
                                                 labels:["Tiempo hasta 3 días", "Tiempo de 4 a 10 días", "Tiempo mayor a 11 días"],
                                                 datasets:[{
                                                     label:["Tiempo hasta 3 días", "Tiempo de 4 a 10 días", "Tiempo mayor a 11 días"],
-                                                    backgroundColor: ["#20a5da", "#00af30", "#9A53AF"],
+                                                    backgroundColor: ["#46a2db", "#4ba0a0", "#cf5354"],
                                                     data:[json.tiempo1, json.tiempo2, json.tiempo3]
                                                 }
                                                 ]

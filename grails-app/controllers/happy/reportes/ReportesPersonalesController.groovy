@@ -367,7 +367,7 @@ class ReportesPersonalesController extends Shield {
 
     def estadoTramites () {
 
-//        println("tr " + params)
+        println "estadoTramites: $params"
         def departamento = Departamento.get(params.departamento)
 
         def cn = dbConnectionService.getConnection()

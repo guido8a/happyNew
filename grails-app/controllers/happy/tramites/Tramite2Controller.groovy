@@ -2729,7 +2729,8 @@ class Tramite2Controller extends happy.seguridad.Shield {
 
         def tramite = Tramite.get(params.id)
 
-        def sql = "select * from trmt_cadena('${tramite?.id}') where edtr__id not in (9,5);"
+        def sql = "select * from trmt_cadena(${tramite?.id}) where edtr__id not in (9,5);"
+//        println "sql: $sql"
         def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 
