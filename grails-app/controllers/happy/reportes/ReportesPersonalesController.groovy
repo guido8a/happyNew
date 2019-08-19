@@ -418,7 +418,7 @@ class ReportesPersonalesController extends Shield {
 
     def tiemposRespuesta () {
 
-//        println("tr " + params)
+        println("tr " + params)
         def departamento = Departamento.get(params.departamento)
 
         def cn = dbConnectionService.getConnection()
