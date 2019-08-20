@@ -61,7 +61,7 @@
 %{--<div class="col-md-5"></div>--}%
 
 <div style="background-color: #fdfdff" class="chart-container grafico" id="chart-area" hidden>
-    <h3 id="subtitulo" class="hidden"></h3>
+    <h3 id="subtitulo"></h3>
     <h3 id="titulo"></h3>
 
     <div id="graf">
