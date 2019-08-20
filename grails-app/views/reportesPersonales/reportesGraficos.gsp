@@ -61,8 +61,8 @@
 %{--<div class="col-md-5"></div>--}%
 
 <div style="background-color: #fdfdff" class="chart-container grafico" id="chart-area" hidden>
-    <h3 id="titulo"></h3>
     <h3 id="subtitulo" class="hidden"></h3>
+    <h3 id="titulo"></h3>
 
     <div id="graf">
         <canvas id="clases" style="margin-top: 20px"></canvas>
@@ -143,7 +143,7 @@
 //                                        $("#graficar2").removeClass("active");
 
                                                     $("#chart-area").removeClass('hidden');
-                                                    $("#subtitulo").addClass("hidden")
+                                                    $("#subtitulo").html(json.cabecera)
                                                     $("#titulo").html(json.titulo)
                                                     $("#clases").remove();
                                                     $("#chart-area").removeAttr('hidden');
@@ -287,8 +287,7 @@
 //                                        $("#graficar3").removeClass("active");
 
                                                     $("#chart-area").removeClass('hidden');
-                                                    $("#subtitulo").addClass("hidden")
-
+                                                    $("#subtitulo").html(json.cabecera)
                                                     $("#titulo").html(json.titulo)
                                                     $("#clases").remove();
                                                     $("#chart-area").removeAttr('hidden');
