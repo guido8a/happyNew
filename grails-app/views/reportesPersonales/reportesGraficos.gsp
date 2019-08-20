@@ -170,6 +170,12 @@
                                                                     data: json.noRecibidos.split(',')
                                                                 },
                                                                 {
+                                                                    label: 'Generados',
+                                                                    backgroundColor: "#205060",
+                                                                    stack: 'Stack 5',
+                                                                    data: json.generados.split(',')
+                                                                },
+                                                                {
                                                                     label: 'Enviados',
                                                                     backgroundColor: "#d45840",
                                                                     stack: 'Stack 3',
@@ -180,12 +186,6 @@
                                                                     backgroundColor: "#00af80",
                                                                     stack: 'Stack 4',
                                                                     data: json.noEnviados.split(',')
-                                                                },
-                                                                {
-                                                                    label: 'Generados',
-                                                                    backgroundColor: "#205060",
-                                                                    stack: 'Stack 5',
-                                                                    data: json.generados.split(',')
                                                                 },
                                                                 {
                                                                     label: 'Retrasados',

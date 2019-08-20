@@ -16,7 +16,8 @@
         </label>
 
         <div class="col-md-4">
-            <elm:datepicker name="fechaInicio_name" title="fechaInicio" id="fechaInicio" class="datepicker form-control" default="none" noSelection="['': '']"/>
+            <elm:datepicker name="fechaInicio_name" title="fechaInicio" id="fechaInicio" class="datepicker form-control"
+                            default="none" noSelection="['': '']" value="01-06-2019"/>
         </div>
 
         <label for="fechaFin_name" class="col-md-2 control-label text-info">
@@ -24,6 +25,7 @@
         </label>
 
         <div class="col-md-4">
-            <elm:datepicker name="fechaFin_name" title="fechaFin" id="fechaFin" class="datepicker form-control" default="none" noSelection="['': '']"/>
+            <elm:datepicker name="fechaFin_name" title="fechaFin" id="fechaFin" class="datepicker form-control"
+                            default="none" noSelection="['': '']"/>
         </div>
 </div>

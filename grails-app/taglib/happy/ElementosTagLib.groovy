@@ -1045,7 +1045,8 @@ class ElementosTagLib {
 
         def br = "\n"
 
-        def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") + " value='${value}' class='${clase}' />"
+        def textfield = "<input type='text' name='${nameInput}' id='${id}' " + (readonly ? "readonly=''" : "") +
+                " value='${value}' class='${clase}' />"
         def hiddenDay = "<input type='hidden' name='${nameHiddenDay}' id='${nameHiddenDay}'/>"
         def hiddenMonth = "<input type='hidden' name='${nameHiddenMonth}' id='${nameHiddenMonth}'/>"
         def hiddenYear = "<input type='hidden' name='${nameHiddenYear}' id='${nameHiddenYear}'/>"
