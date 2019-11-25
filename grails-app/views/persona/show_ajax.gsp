@@ -110,20 +110,16 @@
 --}%
             %{--</g:if>--}%
 
-            %{--<g:if test="${personaInstance?.activo}">--}%
-%{--
             <div class="row">
                 <div class="col-md-${width} text-info">
-                    Activo
+                    <strong>Activo
                 </div>
 
                 <div class="col-md-7">
-                    ${personaInstance.activo == 1 ? "SI" : "NO"}
+                    ${personaInstance.activo == 1 ? "SI" : "NO"}<strong>
                 </div>
 
             </div>
---}%
-            %{--</g:if>--}%
 
 %{--
             <g:if test="${personaInstance?.titulo}">
