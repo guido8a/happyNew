@@ -109,7 +109,7 @@
         <div class="btn-toolbar toolbar">
             <div class="btn-group">
                 <a href="#" class="btn btn-primary btnBuscar"><i class="fa fa-book"></i> Buscar</a>
-                <a href="#" class="btn btn-success btnActualizar">
+                <a href="#" class="btn btn-success" id="btnActualizar">
                     <i class="fa fa-refresh"></i> Actualizar
                 </a>
 
@@ -226,7 +226,7 @@
                 $("#numRec").html($(".recibido").size()); //recibido
             }
 
-            function cargarBandeja() {
+            function cargarBandeja(actualizar) {
                 var memorando = $("#memorando").val();
                 var asunto = $("#asunto").val();
                 var fecha = $("#fechaBusqueda_input").val();
@@ -242,7 +242,8 @@
                     asunto    : asunto,
                     fecha     : fecha,
                     sort      : sort,
-                    order     : order
+                    order     : order,
+                    actualizar: actualizar
                 };
 
                 $.ajax({
@@ -252,6 +253,7 @@
                     success : function (msg) {
                         $("#tabla_bandeja").html(msg);
                         cargarAlertas();
+                        $("#btnActualizar").show(500);
                     }
                 });
             }
@@ -384,7 +386,7 @@
                             success : function (msg) {
                                 var parts = msg.split('_')
                                 openLoader();
-                                cargarBandeja();
+                                cargarBandeja(false);
                                 closeLoader();
                                 if (parts[0] == 'NO') {
                                     log(parts[1], "error");
@@ -451,7 +453,7 @@
                                             className : 'btn-danger',
                                             callback  : function () {
                                                 openLoader();
-                                                cargarBandeja();
+                                                cargarBandeja(false);
                                                 closeLoader()
                                             }
                                         },
@@ -471,7 +473,7 @@
                                                          aut   : $txt.val()*/
                                                     },
                                                     success : function (msg) {
-                                                        cargarBandeja();
+                                                        cargarBandeja(false);
                                                         closeLoader();
                                                         if (msg == 'ok') {
                                                             log("Trámite archivado correctamente", 'success')
@@ -532,7 +534,7 @@
                                             },
                                             success : function (msg) {
                                                 var parts = msg.split("_");
-                                                cargarBandeja();
+                                                cargarBandeja(false);
                                                 closeLoader();
                                                 log(parts[1], parts[0] == "NO" ? "error" : "success");
                                             }
@@ -798,7 +800,7 @@
                 $("input").keyup(function (ev) {
                     if (ev.keyCode == 13) {
 //                    submitForm($(".btnBusqueda"));
-                        cargarBandeja();
+                        cargarBandeja(false);
                     }
                 });
 
@@ -818,7 +820,7 @@
                         $col.data("order", "asc");
                         $col.removeClass("desc").addClass("asc");
                     }
-                    cargarBandeja();
+                    cargarBandeja(false);
                 });
 
 //                intervalBandeja = setInterval(function () {
@@ -832,9 +834,9 @@
                     $(".buscar").attr("hidden", false)
                 });
 
-                $(".btnActualizar").click(function () {
-
-                    cargarBandeja();
+                $("#btnActualizar").click(function () {
+                    $("#btnActualizar").hide(2000);
+                    cargarBandeja(true);
 //                    clearInterval(intervalBandeja);
 //                    intervalBandeja = setInterval(function () {
 //                        openLoader();
@@ -851,7 +853,7 @@
                     location.href = '${createLink(controller: 'tramite', action: 'archivados')}?dpto=' + 'si';
                 });
 
-                cargarBandeja();
+                cargarBandeja(false);
             });
 
             $(".btnSalir").click(function () {
@@ -864,12 +866,12 @@
                 $("#fechaBusqueda_month").val("");
                 $("#fechaBusqueda_year").val("");
                 openLoader();
-                cargarBandeja();
+                cargarBandeja(false);
                 closeLoader();
             });
 
             $(".btnBusqueda").click(function () {
-                cargarBandeja();
+                cargarBandeja(false);
                 return false;
             });
 

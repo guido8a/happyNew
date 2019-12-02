@@ -901,7 +901,8 @@ class Tramite3Controller extends happy.seguridad.Shield {
     }
 
     def tablaBandejaEntradaDpto() {
-//        println params
+//        println "tablaBandejaEntradaDpto: params $params"
+        def cn = dbConnectionService.getConnection()
 
         //** forzar actualización de bloqueos al Actualizar
 /*
@@ -950,9 +951,14 @@ class Tramite3Controller extends happy.seguridad.Shield {
             where += "(trmtcdgo ilike '%${params.memorando.trim()}%')"
         }
 
+        if(params.actualizar == "true") {
+            def sql_ac = "SELECT * FROM en_bandeja(${session.usuario.departamento.id})"
+            println "actualizar en_bandeja: $sql_ac"
+            cn.executeQuery(sql_ac.toString())
+        }
+
         def sql = "SELECT * FROM entrada_dpto($session.usuario.id) ${where} ORDER BY ${params.sort} ${params.order}"
 //        println "bandeja de entrada: $sql"
-        def cn = dbConnectionService.getConnection()
         def rows = cn.rows(sql.toString())
 //        println("rows " + rows)
         return [rows: rows, busca: busca]
