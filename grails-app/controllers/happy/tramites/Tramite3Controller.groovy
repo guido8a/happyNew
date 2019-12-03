@@ -952,7 +952,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
         }
 
         if(params.actualizar == "true") {
-            def sql_ac = "SELECT * FROM en_bandeja(${session.usuario.departamento.id})"
+            def sql_ac = "select * from en_bandeja(${session.usuario.departamento.id})"
             println "actualizar en_bandeja: $sql_ac"
             cn.executeQuery(sql_ac.toString())
         }
