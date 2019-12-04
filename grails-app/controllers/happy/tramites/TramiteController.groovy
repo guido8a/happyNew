@@ -520,7 +520,8 @@ class TramiteController extends happy.seguridad.Shield {
             return
         }
 
-        println("params ct " + params)
+//        println("params ct " + params)
+
         def rolesNo = [RolPersonaTramite.findByCodigo("E004"), RolPersonaTramite.findByCodigo("E003")]
         def padre = null
         def cc = ""

@@ -25,8 +25,8 @@ class BuscarTramiteController extends happy.seguridad.Shield {
 //                        return
 //                    }
 
-        println "puede: ${persona.puedeAgregarDocumento}, esDpto: ${esDepartamento} de: ${persona} = ${tramite.de}, " +
-                "deDpto: ${esDepartamento} : ${tramite.deDepartamento} = ${persona.departamento}"
+//        println "puede: ${persona.puedeAgregarDocumento}, esDpto: ${esDepartamento} de: ${persona} = ${tramite.de}, " +
+//                "deDpto: ${esDepartamento} : ${tramite.deDepartamento} = ${persona.departamento}"
 
         if(persona.puedeAgregarDocumento){
 //            println "puedeAgregarDocumento: ok"
