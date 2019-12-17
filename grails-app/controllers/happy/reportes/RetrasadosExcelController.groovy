@@ -1794,5 +1794,114 @@ class RetrasadosExcelController extends Shield {
 
     }
 
+    def reporteGeneradosArbolExcelSinSum () {
+
+        def desde = new Date().parse("dd-MM-yyyy HH:mm", params.desde + " 00:00")
+        def hasta = new Date().parse("dd-MM-yyyy HH:mm", params.hasta + " 23:59")
+
+        def fileName = "documentos_generados_sin_sum_"
+        def title = ["Reporte de documentos generados sin sumilla"]
+        def title2 = ""
+
+        def trams
+
+        def totalResumenGenerado = 0
+        def totalRecibido = 0
+        def usuario = Persona.get(session.usuario.id)
+        def departamentoUsuario = usuario?.departamento?.id
+
+        def downloadName = fileName + "_" + new Date().format("ddMMyyyy_hhmm") + ".xlsx";
+
+        def path = servletContext.getRealPath("/") + "xls/"
+        new File(path).mkdirs()
+        //esto crea un archivo temporal que puede ser siempre el mismo para no ocupar espacio
+        String filename = path + "text.xlsx";
+        String sheetName = "Resumen";
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet(sheetName);
+        CreationHelper createHelper = wb.getCreationHelper();
+        sheet.setAutobreaks(true);
+
+        XSSFRow rowTitle = sheet.createRow((short) 0);
+        Cell cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("GAD DE LA PROVINCIA DE PICHINCHA");
+        rowTitle = sheet.createRow((short) 1);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("SISTEMA DE ADMINISTRACION DOCUMENTAL");
+        rowTitle = sheet.createRow((short) 2);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue(title[0]);
+        rowTitle = sheet.createRow((short) 3);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue( usuario?.nombre + usuario?.apellido );
+        rowTitle = sheet.createRow((short) 4);
+        cellTitle = rowTitle.createCell((short) 0);
+        cellTitle.setCellValue("desde " + desde.format("dd-MM-yyyy") + " hasta " + hasta.format("dd-MM-yyyy"));
+
+        def index = 6
+        XSSFRow rowHead = sheet.createRow((short) index);
+        rowHead.setHeightInPoints(14)
+
+        Cell cell = rowHead.createCell((int) 0)
+        cell.setCellValue("Usuario")
+        sheet.setColumnWidth(0, 13000)
+
+        cell = rowHead.createCell((int) 1)
+        cell.setCellValue("Perfil")
+        sheet.setColumnWidth(1, 10000)
+
+        cell = rowHead.createCell((int) 2)
+        cell.setCellValue("Generados")
+        sheet.setColumnWidth(2, 3000)
+
+        cell = rowHead.createCell((int) 3)
+        cell.setCellValue("Enviados")
+        sheet.setColumnWidth(3, 3000)
+
+        cell = rowHead.createCell((int) 4)
+        cell.setCellValue("Recibidos")
+        sheet.setColumnWidth(3, 3000)
+        index++
+
+
+        def sqlGen
+        def sql
+        def cn2 = dbConnectionService.getConnection()
+        def cn = dbConnectionService.getConnection()
+        desde = desde.format("yyyy/MM/dd HH:mm")
+        hasta = hasta.format("yyyy/MM/dd HH:mm")
+
+
+        sqlGen = "select * from retrasados_sum("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        cn2.eachRow(sqlGen.toString()) {
+            XSSFRow row2 = sheet.createRow((short) index)
+            row2.createCell((int) 0).setCellValue("" + it?.usuario)
+            row2.createCell((int) 1).setCellValue("" + (it?.perfil ?: ''))
+            row2.createCell((int) 2).setCellValue(" " + it?.generados)
+            row2.createCell((int) 3).setCellValue(" " + it?.enviados)
+            row2.createCell((int) 4).setCellValue(" " + it?.recibidos)
+            index++
+        }
+
+        XSSFRow row = sheet.createRow((short) index + 2)
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        wb.write(fileOut);
+        fileOut.close();
+        String disHeader = "Attachment;Filename=\"${downloadName}\"";
+        response.setHeader("Content-Disposition", disHeader);
+        File desktopFile = new File(filename);
+        PrintWriter pw = response.getWriter();
+        FileInputStream fileInputStream = new FileInputStream(desktopFile);
+        int j;
+        while ((j = fileInputStream.read()) != -1) {
+            pw.write(j);
+        }
+        fileInputStream.close();
+        response.flushBuffer();
+        pw.flush();
+        pw.close();
+
+    }
+
 
 }
