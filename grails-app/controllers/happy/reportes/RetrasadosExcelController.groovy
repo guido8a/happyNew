@@ -1764,6 +1764,7 @@ class RetrasadosExcelController extends Shield {
 
 
         sqlGen = "select * from retrasados("+ params.id +"," + "'"  + desde + "'" + "," +  "'" + hasta + "'" + ")"
+        println "--> $sqlGen"
         cn2.eachRow(sqlGen.toString()) {
             XSSFRow row2 = sheet.createRow((short) index)
             row2.createCell((int) 0).setCellValue("" + it?.usuario)
