@@ -13,7 +13,7 @@ class BloqueosJob {
 
     static triggers = {
         null    // no ejecuta los bloqueos
-        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60 * 1, repeatInterval: 1000 * 60 * 8
+        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 60 * 1, repeatInterval: 1000 * 60 * 5
 //        simple name: 'bloqueoBandejaSalida', startDelay: 1000 * 10, repeatInterval: 1000 * 60 * 3
     }
 

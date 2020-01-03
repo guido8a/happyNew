@@ -6,9 +6,9 @@ import happy.seguridad.Persona
  * Created by svt on 7/3/2014.
  */
 class MailJob {
-    static triggers = {
-        simple name: 'mail', startDelay: 1000*60, repeatInterval: 1000*60*1
-    }
+//    static triggers = {
+//        simple name: 'mail', startDelay: 1000*60, repeatInterval: 1000*60*100
+//    }
 
 //    def mailService
 
@@ -32,6 +32,7 @@ class MailJob {
 //           procesaDep(dep,estadoR,estadoE,rolPara,rolCopia,now)
 //        }
     }
+
 
     def procesaDep(dep,estadoR,estadoE,rolPara,rolCopia,now){
         def hijos = Departamento.findAllByPadre(dep)
