@@ -996,11 +996,11 @@ class TramiteAdminController /*extends Shield*/ {
         def tramite = Tramite.get(params.id)
         def personasRec = []
 
+//        if (params.copia) {
+        if (params.cop == 'true') {
 
-        if (params.copia) {
             def prtrCopia = PersonaDocumentoTramite.get(params.prtr)
 
-//                println("entro")
             if (prtrCopia?.persona) {
 //                if (tramite?.de?.departamento != prtrCopia.persona.departamento) {
                 if (tramite?.departamento != prtrCopia.persona.departamento) {
@@ -1014,6 +1014,7 @@ class TramiteAdminController /*extends Shield*/ {
                     }
                 }
             } else {
+//                println("entro 1")
 //                if (tramite?.de?.departamento != prtrCopia.departamento) {
                 if (tramite?.departamento != prtrCopia.departamento) {
                     Persona.findAllByDepartamento(prtrCopia?.departamento).each { rc ->
@@ -1028,6 +1029,7 @@ class TramiteAdminController /*extends Shield*/ {
             }
 
         } else {
+//            println("entro 2")
 //            if (tramite?.de?.departamento != tramite?.para?.departamento) {
             if (tramite?.departamento != tramite?.para?.departamento) {
                 Persona.findAllByDepartamento(tramite.para?.departamento).each { r ->
@@ -1058,6 +1060,9 @@ class TramiteAdminController /*extends Shield*/ {
 
         def todas = personas + personasRec
         todas = todas.sort { it.value }
+
+//        println("personas " + todas)
+//        println("personas " + tramite.departamento)
 
 //        println "dpto: ${tramite.departamento.codigo}, ${tramite.para?.departamento.codigo}"
         return [tramite: tramite, icon: icon, msg: msg, personas: todas]

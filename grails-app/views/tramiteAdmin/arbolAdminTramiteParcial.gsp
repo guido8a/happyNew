@@ -774,6 +774,7 @@
                 }
             }
             if (estaArchivado && !estaAnulado) {
+                var cop = esCopia
                 items.desArchivar = {
                     separator_before : true,
                     label            : "Quitar archivado",
@@ -784,6 +785,8 @@
                             url     : "${createLink(controller: 'tramiteAdmin', action: 'dialogAdmin')}",
                             data    : {
                                 id   : tramiteId,
+                                cop: cop,
+                                prtr: nodeId,
                                 msg  : "<p class='lead'>Está por quitar el archivado del trámite<br/><strong>" + tramiteInfo + "</strong>.</p>",
                                 icon : "fa-magic"
                             },
