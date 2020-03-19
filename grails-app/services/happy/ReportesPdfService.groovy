@@ -915,7 +915,7 @@ class ReportesPdfService {
         def cn = dbConnectionService.getConnection()
         def sql = "select * from trmt_gestion(" + "'" + fechaDesde + "'" + "," + "'" + fechaHasta +"'" + "," + dpto + ")"
         def result = []
-
+        println "reporteGestion: $sql"
         cn.eachRow(sql) { re ->
             result.add(re.toRowResult())
         }

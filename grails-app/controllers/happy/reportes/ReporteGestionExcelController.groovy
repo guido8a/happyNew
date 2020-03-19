@@ -237,7 +237,8 @@ class ReporteGestionExcelController extends Shield {
         def j = 0
         def row = sheet.createRow((short) i);
         def cell = row.createCell((short) j);
-        cell.setCellValue(it.trmtpdre ?: it.trmtcdgo);
+//        cell.setCellValue(it.trmtpdre ?: it.trmtcdgo);
+        cell.setCellValue(it?.trmtpdre);
         j++
         cell = row.createCell((short) j);
         cell.setCellValue(it?.trmtcdgo);
