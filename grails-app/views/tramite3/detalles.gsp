@@ -315,7 +315,7 @@
                 </g:if>
                 <g:if test="${t.anexo == 1}">
                     <g:if test="${tramite.estadoTramite.codigo == 'E004'}">
-                         <g:if test="${session?.usuario?.id == tramite?.para?.persona?.id}">
+                         %{--<g:if test="${session?.usuario?.id == tramite?.para?.persona?.id}">--}%
                             <g:if test="${t.personaPuedeLeerAnexo(session.usuario)}">
                                 <div class="row" style="margin-bottom: 10px;margin-left: 2px">
                                     <g:each in="${DocumentoTramite.findAllByTramite(t)}" var="anexo" status="k">
@@ -329,7 +329,7 @@
                                     </g:each>
                                 </div>
                             </g:if>
-                        </g:if>
+                        %{--</g:if>--}%
                     </g:if>
                 </g:if>
             </div>
