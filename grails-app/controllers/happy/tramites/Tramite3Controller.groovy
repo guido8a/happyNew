@@ -868,7 +868,7 @@ class Tramite3Controller extends happy.seguridad.Shield {
             } else {
                 tp = tramite     /** arreglo **/
             }
-            println "trámite tp: ${tp.id}, ${tramite.tramitePrincipal.id}"
+            println "trámite tp: ${tp.id}, ${tramite.tramitePrincipal}"
         }
 
         tramites = tramites.reverse()
