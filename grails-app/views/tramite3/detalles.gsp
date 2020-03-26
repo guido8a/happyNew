@@ -119,8 +119,10 @@
                     <div class="col-xs-10  claseMin">${tp.observaciones}</div>
                 </div>
             </g:if>
+%{--            ${tramite.estadoTramite.codigo == 'E004'} ${tramite.id} ${tp.anexo == 1}
+al aprecer no se usa esta sección --}%
             <g:if test="${tp.anexo == 1}">
-                <g:if test="${tramite.estadoTramite.codigo == 'E004'}">
+%{--                <g:if test="${tramite.estadoTramite.codigo == 'E004'}">--}%
 %{--                    <g:if test="${session?.usuario?.id == tramite?.para?.persona?.id}">--}%
                         <g:if test="${tp.personaPuedeLeerAnexo(session.usuario)}">
                             <div class="row" style="margin-bottom: 10px;margin-left: 2px">
@@ -136,7 +138,7 @@
                             </div>
                         </g:if>
 %{--                    </g:if>--}%
-                </g:if>
+%{--                </g:if>--}%
 
             </g:if>
         </div>
@@ -314,7 +316,7 @@
                     </div>
                 </g:if>
                 <g:if test="${t.anexo == 1}">
-                    <g:if test="${tramite.estadoTramite.codigo == 'E004'}">
+%{--                    <g:if test="${tramite.estadoTramite.codigo == 'E004'}">--}%
                          %{--<g:if test="${session?.usuario?.id == tramite?.para?.persona?.id}">--}%
                             <g:if test="${t.personaPuedeLeerAnexo(session.usuario)}">
                                 <div class="row" style="margin-bottom: 10px;margin-left: 2px">
@@ -330,7 +332,7 @@
                                 </div>
                             </g:if>
                         %{--</g:if>--}%
-                    </g:if>
+%{--                    </g:if>--}%
                 </g:if>
             </div>
         </g:if>
