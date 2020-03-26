@@ -125,6 +125,7 @@ class DocumentoTramiteController extends happy.seguridad.Shield {
                 def file = new File(path)
                 def b = file.getBytes()
                 session.key = doc?.path.size() + doc.descripcion?.encodeAsMD5()?.substring(0, 10)
+                println"--> bajar ${path}"
                 render "ok"
             } catch (e) {
                 e.printStackTrace()
