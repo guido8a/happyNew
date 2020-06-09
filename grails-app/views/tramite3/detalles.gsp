@@ -178,7 +178,7 @@ al aprecer no se usa esta sección --}%
                     </div>
 
                     %{--Actualizar con datos del trámite--}%
-                    <div class="col-xs-6 claseMin">
+                    <div class="col-xs-6 claseMin" style="background-color: #d0d0d0; overflow-y: auto">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                             %{--${pdt?.estado?.descripcion}--}%
                             %{--${pdt?.id}--}%
@@ -211,7 +211,7 @@ al aprecer no se usa esta sección --}%
                                     </g:if>
                                 </g:else>
                             </g:else>
-
+                            %{--<br/>--}%
                             <span style="font-weight: bold">${pdt.rolPersonaTramite.descripcion}:</span>
                             <g:if test="${t.tipoDocumento.codigo == 'OFI' && pdt.rolPersonaTramite.codigo == 'R001'}">
                                 ${t.paraExterno} (EXT)
@@ -232,16 +232,18 @@ al aprecer no se usa esta sección --}%
                             </b> el ${fecha} <br>
 
 
-                            <g:set var="recibidoVar2" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramite(pdt?.tramite, recibe)?.personaNombre}"/>
+                            <g:set var="recibidoVar2" value="${happy.tramites.PersonaDocumentoTramite.findByTramiteAndRolPersonaTramiteAndDepartamentoPersona(pdt?.tramite, recibe, pdt.departamento)?.personaNombre}"/>
+                            %{--<g:set var="recibidoVar2" value="${pdt?.personaNombre}"/>--}%
 
                             <g:if test="${recibidoVar2 && tramite.estadoTramite.codigo == 'E004'}">
-                                <div class="row">
+                                %{--<div class="row">--}%
                                     <div class="col-xs-4 negrilla">RECIBIDO POR: </div>
                                     <div class="col-xs-8">${recibidoVar2}</div>
-                                </div>
+                                %{--</div>--}%
                             </g:if>
 
                         %{--${pdt.fechaRecepcion ? "(" + pdt.fechaRecepcion.format("dd-MM-yyyy") + ")" : ""}--}%
+                            <br/>
                         </g:each>
                     </div>
                 </div>
@@ -369,7 +371,7 @@ al aprecer no se usa esta sección --}%
                         </g:else>
                     </div>
 
-                    <div class="col-xs-6 claseMin">
+                    <div class="col-xs-6 claseMin"  style="background-color: #d0d0d0; overflow-y: auto">
                         <g:each in="${happy.tramites.PersonaDocumentoTramite.findAllByTramiteAndRolPersonaTramiteNotInList(t, rolesNo, [sort: 'rolPersonaTramite'])}" var="pdt" status="j">
                         %{--${pdt.estado.descripcion}${pdt.id}${pdt.estado?.codigo}--}%
                             <g:set var="fecha" value=""></g:set>
