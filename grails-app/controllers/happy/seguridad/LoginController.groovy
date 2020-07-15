@@ -226,7 +226,8 @@ class LoginController {
                         }
                     }
                     println "es admin: ${admin}"
-                    if (!admin) {
+//                    if (!admin) {
+                    if (true) {
                         def par = Parametros.list([sort: "id", order: "desc"])
                         if (par.size() > 0) {
                             par = par.pop()
@@ -236,7 +237,8 @@ class LoginController {
                         }
                     }
 
-                    if (!admin) {
+//                    if (!admin) {
+                    if (true) {
                         if (!conecta(user, params.pass)) {
                             flash.message = "No se pudo validar la información ingresada con el sistema LDAP, contraseña incorrecta o usuario no registrado en el LDAP"
                             flash.tipo = "error"
