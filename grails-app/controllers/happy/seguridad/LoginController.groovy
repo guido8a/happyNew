@@ -225,6 +225,7 @@ class LoginController {
                             admin = true
                         }
                     }
+                    println "es admin: ${admin}"
                     if (!admin) {
                         def par = Parametros.list([sort: "id", order: "desc"])
                         if (par.size() > 0) {
